@@ -436,6 +436,53 @@ class Completion:
                 and started.get('science') is False and receipt.get('returncode') == 0
                 and receipt.get('signal') is None and started.get('source') == receipt.get('source'))
 
+    def saved_pauli_recheck_directory(self, record, directory):
+        """Resolve a copied metadata recheck using its original candidate and receipts."""
+        if (record.get('method') != 'PR_PAULI' or record.get('scientific_failure')
+                or not str(record.get('reason')).startswith('A_PREPARATION:NEEDS_INPUT_SOURCE:')):
+            return None
+        if not self.recoverable_pauli_input_hold(
+                dict(method='PR_PAULI', reason='IndexError: list index out of range'), directory):
+            return None
+        paths = self.settings['pauli_saved_inputs']
+        original = read(directory/'A_BASE.json')
+        if not original.get('missing_inputs') or any(
+                not any(repr(path) in error for path in paths) for error in original['missing_inputs']):
+            return None
+        checked = directory/'saved-input-recheck'
+        try:
+            if not checked.is_dir() or checked.resolve() != checked:
+                return None
+            workspace = Path(self.settings.get('pauli_workspace', self.path('A_WORKSPACE')))
+            from .rpe_pauli_saved_inputs import saved_inputs
+            saved_inputs(workspace, paths)
+            for stage in ('A_BASE', 'A_DESIGN'):
+                started = read(checked/(stage+'.STARTED.json'))
+                receipt = read(checked/(stage+'.RETURN.json'))
+                command = started['command']
+                item, = read(checked/(stage+'.json'))['items']
+                if (started['science'] is not False or receipt['returncode'] != 0
+                        or receipt['signal'] is not None or started['source'] != receipt['source']
+                        or receipt['source'] != self.stage_source(stage)
+                        or Path(command[2]).name != 'rpe_pauli_saved_inputs.py'
+                        or json.loads(command[3]) != paths
+                        or Path(command[4]) != workspace/'scripts/prepare_pauli_candidate.py'
+                        or item['status'] != 'GENERATED'):
+                    return None
+            config = item['configuration']
+            design = record['request']['design']
+            spec = config['spec']
+            if (any(spec[k] != design[k] for k in ('L_D', 'formula'))
+                    or dec(spec['kappa']['value']) != dec(design['kappa'])
+                    or (design.get('delta_pf') is not None
+                        and dec(spec['delta_pf']) != dec(design['delta_pf']))
+                    or (record.get('configuration') and value(record['configuration']) != config)
+                    or config != read(checked/'CONFIGURATION.json')):
+                return None
+        except (OSError, KeyError, TypeError, ValueError, IndexError, subprocess.CalledProcessError):
+            return None
+        return checked
+
     def complete(self,request):
         request=deepcopy(request)  # internal descriptor resolution must not change the caller's cache key
         if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
@@ -456,16 +503,19 @@ class Completion:
                         reason='AMBIGUOUS_EXISTING_COMPLETION_REQUEST_NO_DUPLICATE',key=None)
                 if matches:
                     identifier,old=matches[0];d=self.directory/'candidates'/identifier
-            if old and old.get('directory'):
+            recheck = self.saved_pauli_recheck_directory(old, d) if old else None
+            if old and old.get('directory') and recheck is None:
                 previous=(ROOT/old['directory']).resolve()
                 if previous.is_relative_to(self.directory.resolve()):
                     d=previous
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
             recovered_input = (old is not None and old['status']=='HELD_TECHNICAL_FAILURE'
                                and self.recoverable_pauli_input_hold(old, d))
-            if recovered_input:
+            if recheck is not None:
+                d = recheck
+            elif recovered_input:
                 d = d/'saved-input-recheck'
-            if old and old['status'].startswith(('HELD','STOP','WAITING')) and not recovered_input:
+            if old and old['status'].startswith(('HELD','STOP','WAITING')) and not (recovered_input or recheck):
                 if old.get('scientific_failure'):return dict(old,resumed=True)
                 if not old.get('recoverable_preparation'):
                     self.ingest_price_results()
@@ -478,9 +528,10 @@ class Completion:
             rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
                       reason=None,recoverable_preparation=False)if old and old.get('recoverable_preparation')else
                  dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
-            if recovered_input:
+            if recovered_input or recheck:
                 rec['previous_hold'] = dict(status=old['status'],reason=old['reason'],
                                             metadata_receipt=rel(d.parent/'A_BASE.RETURN.json'))
+                rec['directory'] = rel(d)
             if old and (old.get('signal_deferred_for_price') or old.get('deferred_configuration')):
                 rec.update(deferred_configuration=old.get('deferred_configuration') or old['configuration'],
                            deferred_tail_descriptor=old.get('deferred_tail_descriptor'))

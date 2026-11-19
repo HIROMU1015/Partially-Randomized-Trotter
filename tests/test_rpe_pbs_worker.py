@@ -173,6 +173,22 @@ class AdmissionTests(unittest.TestCase):
             self.assertFalse(state['detail']['scientific_execution_started'])
             self.assertFalse(state['detail']['automatic_retry'])
 
+    def test_received_assignment_launches_without_waiting_for_the_next_poll(self):
+        with tempfile.TemporaryDirectory() as directory:
+            worker = self.worker(directory)
+            worker.work = Path(directory)
+            attempt = worker.work/'job'/'attempt'
+            attempt.mkdir(parents=True)
+            assignment = dict(job_id='job', attempt_id='attempt')
+            P.save_state(attempt, 'ASSIGNED')
+            def launch(path):
+                P.save_state(path, 'STARTING')
+            with patch.object(P.Worker, '_acquire') as acquire, patch.object(worker, '_launch', side_effect=launch) as start:
+                worker._receive_assignment(assignment)
+                worker._receive_assignment(assignment)
+            self.assertEqual(acquire.call_count, 2)
+            start.assert_called_once_with(attempt)
+
     def test_authoritative_pbs_bounds_allow_auto_slots_without_job_cgroup(self):
         with tempfile.TemporaryDirectory() as directory:
             worker = self.worker(directory)

@@ -11,6 +11,7 @@ from .rpe_host_profiles import select_host_profile as _select_q3_profile, valida
 from . import rpe_preparation_worker as Preparation
 from .rpe_preparation_artifacts import worker_cache, input_manifest
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import fcntl
 import hashlib
 import json
@@ -229,17 +230,33 @@ def validate_assignment(profile, assignment):
     return resolved
 
 
-def host_fingerprints(profile, challenges):
+def host_fingerprints(profile, challenges, *, q3_parallel=1):
     """Read current execution identities; never acquire or launch a job."""
     from .rpe_host_eligibility import current_host_fingerprint
     fingerprints, errors = {}, {}
-    for assignment in challenges:
+    def check(assignment):
         job = assignment['job_id']
         try:
-            fingerprints[job] = (Preparation.current_preparation_fingerprint(assignment, profile)
-                                 if Preparation.is_preparation(assignment) else current_host_fingerprint(assignment, profile))
+            fact = (Preparation.current_preparation_fingerprint(assignment, profile)
+                    if Preparation.is_preparation(assignment) else current_host_fingerprint(assignment, profile))
+            return job, fact, None
         except Exception as error:
-            errors[job] = type(error).__name__ + ': ' + str(error)
+            return job, None, type(error).__name__ + ': ' + str(error)
+
+    def collect(results):
+        for job, fact, error in results:
+            if error is None:
+                fingerprints[job] = fact
+            else:
+                errors[job] = error
+
+    q3 = [item for item in challenges if not Preparation.is_preparation(item)]
+    if q3_parallel > 1 and len(q3) > 1:
+        with ThreadPoolExecutor(max_workers=min(len(q3), q3_parallel)) as pool:
+            collect(pool.map(check, q3))
+        collect(map(check, (item for item in challenges if Preparation.is_preparation(item))))
+    else:
+        collect(map(check, challenges))
     return dict(host_fingerprints=fingerprints, readiness_errors=errors)
 
 
@@ -637,6 +654,12 @@ class Worker:
         for sha in missing:
             self._post('/v1/artifacts/put', dict(blobs=cache.get([sha])))
 
+    def _check_challenges(self, challenges, report):
+        return host_fingerprints(self.profile, challenges)
+
+    def _receive_assignment(self, assignment):
+        self._acquire(assignment)
+
     def tick(self, acquire=True):
         active = 0
         for attempt, assignment in list(self.records.items()):
@@ -686,13 +709,13 @@ class Worker:
                 self._prepare_challenge_artifacts(challenges)
                 payload = dict(slots=report['slots'], capacity=self.slots, resource_report=report, cached_prefixes=cached,
                                cached_artifact_sha256=worker_cache(self.profile).hashes(), source_sha=self.source_sha,
-                               accepting_new_jobs=storage_accepting, **host_fingerprints(self.profile, challenges))
+                               accepting_new_jobs=storage_accepting, **self._check_challenges(challenges, report))
                 response = self._post('/v1/poll', payload)
                 self._capacity_feedback(response)
                 self.eligibility_challenges = response.get('eligibility_challenges', [])
                 if storage_accepting and not response.get('assignments') and self.eligibility_challenges:
                     self._prepare_challenge_artifacts(self.eligibility_challenges)
-                    payload.update(host_fingerprints(self.profile, self.eligibility_challenges))
+                    payload.update(self._check_challenges(self.eligibility_challenges, report))
                     response = self._post('/v1/poll', payload)
                     self._capacity_feedback(response)
                     self.eligibility_challenges = response.get('eligibility_challenges', self.eligibility_challenges)
@@ -702,7 +725,7 @@ class Worker:
                 if len(new_assignments) > report['slots']:
                     raise ValueError('Controller overfilled announced slots')
                 for assignment in assignments:
-                    self._acquire(assignment)
+                    self._receive_assignment(assignment)
                 if response.get('stop'):
                     self.stop.set()
             except (OSError, ValueError, urllib.error.URLError) as error:

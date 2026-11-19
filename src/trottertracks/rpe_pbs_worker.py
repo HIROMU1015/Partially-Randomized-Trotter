@@ -20,7 +20,7 @@ import uuid
 from . import rpe_q3_resources as Resources
 from .rpe_host_profiles import check_runtime_profile
 from .rpe_q3_timing import stamp
-from .rpe_q3_worker import Worker, atomic, event, head, read, save_state
+from .rpe_q3_worker import Worker, atomic, event, head, host_fingerprints, read, save_state
 
 
 THREAD_VARIABLES = ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS',
@@ -222,6 +222,25 @@ class AllocationWorker(Worker):
             validate_assignment_release(read(deployment['manifest']),read(deployment['layout']),
                                         assignment,self.profile)
 
+    def _check_challenges(self, challenges, report):
+        if not challenges:
+            return super()._check_challenges(challenges, report)
+        started = time.monotonic()
+        parallel = max(1, min(report['slots'], 4))
+        result = host_fingerprints(self.profile, challenges, q3_parallel=parallel)
+        event(self.profile, 'PBS_READINESS_CHECKED', jobs=[item['job_id'] for item in challenges],
+              parallel=parallel, passed=len(result['host_fingerprints']),
+              seconds=time.monotonic()-started)
+        return result
+
+    def _receive_assignment(self, assignment):
+        # A later request's validation, the next status RPC, or a completed
+        # upload must not delay a request whose exact assignment is durable.
+        super()._receive_assignment(assignment)
+        attempt = self.work/assignment['job_id']/assignment['attempt_id']
+        if read(attempt/'WORKER_STATE.json')['state'] == 'ASSIGNED':
+            self._launch(attempt)
+
     def resource_snapshot(self):
         snapshot = super().resource_snapshot()
         # This cluster does not expose a per-job cpuset/cgroup. Its qstat
@@ -282,7 +301,7 @@ class AllocationWorker(Worker):
         # A slow transport reply can arrive after the last admission check. Keep
         # its original attempt and make the non-launch explicit; never roll its
         # reservation back or silently create another scientific attempt.
-        if not self.accepting():
+        if self.control().get('stop') or not self.accepting():
             save_state(attempt, 'UNKNOWN', reason='PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH',
                        scientific_execution_started=False, automatic_retry=False)
             event(self.profile, 'PBS_ADMISSION_HOLD', job_id=Path(attempt).parent.name,
