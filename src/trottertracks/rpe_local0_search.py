@@ -243,13 +243,14 @@ def resolve(config, request):
                 raise RequestError(method + '.kappa.multiplier', 'selected normal entry does not enforce a multiplier-only candidate range')
             physical_schedule = config.get('entry') == 'schedule' and config.get('absolute_kappa_schedule') is True
             combined=config.get('combined_width_search') and physical_schedule and method=='PR_PAULI'
-            if (config.get('entry') != 'neighbourhood' and not physical_schedule) or (methods != ['PR_PAULI'] and not combined):
-                raise RequestError(method + '.kappa.absolute', 'absolute min/max needs an adopted PR-Pauli neighbourhood entry; current entry is ' + config.get('entry', 'method'))
+            single_df = physical_schedule and methods == ['PR_DF']
+            if (config.get('entry') != 'neighbourhood' and not physical_schedule) or (methods != ['PR_PAULI'] and not combined and not single_df):
+                raise RequestError(method + '.kappa.absolute', 'absolute min/max needs a supported PR schedule entry')
             if 'values' in k: raise RequestError(method + '.kappa.values', 'normal entry takes bounds, not a discrete grid')
             a, b = Fraction(k['min']), Fraction(k['max'])
             if not 0 < a <= b: raise RequestError(method + '.kappa', 'invalid positive absolute bounds')
             if physical_schedule:
-                if combined:
+                if combined or single_df:
                     wide=spec.setdefault('search_overrides',{}).setdefault('schedule_wide_by_method',{})
                     wide[method]=dict(spec['search_overrides'].get('schedule_wide',{}),kappa_bounds=[str(a),str(b)],max_kappa=str(b))
                 else:
@@ -772,12 +773,13 @@ class Gateway:
         import run_rpe_method_optimizer as CLI
         root=Path(self.config['code_root'])
         fixed_implementation(self.config)
-        from .rpe_search_continuation import (preparation_rejected_before_science,
+        from .rpe_search_continuation import (preparation_rejected_before_science, reconciled_prior_runs,
                                               verify_pbs_prelaunch_rejections, verify_prior_q3_holds,
                                               verify_retired_preparation_attempts)
         prior_holds = verify_prior_q3_holds(root,run,problem,spec)
         retired_preparation = verify_retired_preparation_attempts(run)
         pbs_rejections = verify_pbs_prelaunch_rejections(run, spec.get('executor',{}).get('prior_run_dirs',[]))
+        reconciled = reconciled_prior_runs(spec)
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
         if spec.get('search_to_rule_stop') or spec.get('live_ready_refill'):
             from .rpe_schedule_search import requested_widths
@@ -815,7 +817,7 @@ class Gateway:
             prior_root=Path(directory)
             if (prior_root/'APPLIED_SCOPE.json').exists() and (prior_root/'LAUNCH.json').exists():
                 launch=load(prior_root/'LAUNCH.json');exit=load(prior_root/'EXIT.json') if (prior_root/'EXIT.json').exists() else {}
-                if launch.get('invocation_id')!=exit.get('invocation_id'):
+                if launch.get('invocation_id')!=exit.get('invocation_id') and prior_root.resolve() not in reconciled:
                     previous=load(prior_root/'APPLIED_SCOPE.json')
                     if set(previous['applied']['methods']) & set(spec['methods']):in_progress.append(str(prior_root))
             for path in Path(directory).glob('jobs/*/*/REQUEST.json'):
@@ -838,6 +840,7 @@ class Gateway:
         return dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
             prior_q3_holds=list(prior_holds.values()),retired_preparation_holds=sorted(str(path) for path in retired_preparation),
             prior_preparation_rejected_before_science=sorted(rejected_before_delivery),
+            reconciled_prior_runs={str(path): held for path, held in reconciled.items()},
             checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
             normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
 
@@ -918,6 +921,11 @@ def execute_run(config, run, invocation):
         from .rpe_search_continuation import verify_budget_parents
         if verify_budget_parents(run,load(run/'PROBLEM.json'),spec)!=load(run/'Q3_BUDGET_CONTINUATION.json'):
             raise RequestError('continuation','capped parent reconciliation changed before launch')
+    if spec.get('reconciled_prior_runs'):
+        from .rpe_search_continuation import reconciled_prior_runs
+        reconciled = {str(path): held for path, held in reconciled_prior_runs(spec).items()}
+        if reconciled != preflight.get('reconciled_prior_runs'):
+            raise RequestError('continuation', 'prior run reconciliation changed before launch')
     if spec.get('executor', {}).get('prior_q3_holds'):
         from .rpe_search_continuation import verify_prior_q3_holds
         holds = verify_prior_q3_holds(root,run,load(run/'PROBLEM.json'),spec)

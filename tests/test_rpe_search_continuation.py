@@ -15,7 +15,9 @@ from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
 from trottertracks.rpe_priority_search import run_priority
 from trottertracks.rpe_q3_coordinator import digest
 from trottertracks.rpe_release_registry import fingerprint
-from trottertracks.rpe_search_continuation import verify, verify_prior_q3_holds, verify_retired_preparation_attempts
+from trottertracks.rpe_search_continuation import (
+    reconciled_prior_runs, verify, verify_prior_q3_holds, verify_retired_preparation_attempts,
+)
 
 from test_rpe_optimizer_concurrent import fixture
 
@@ -59,6 +61,38 @@ class ContinuationTests(unittest.TestCase):
 
     def save(self, name, body):
         (self.original/name).write_text(json.dumps(body))
+
+    def test_reconcile_shutdown_without_rewriting_stop_or_unknown_attempt(self):
+        (self.original/'EXIT.json').unlink()
+        (self.original/'FAST_DRIVER.lock').touch()
+        (self.original/'distributed/relay').mkdir()
+        (self.original/'distributed/pbs').mkdir()
+        self.save('LAUNCH.json', dict(invocation_id='owned', pid=2**30))
+        self.save('NORMAL_DRIVER.json', dict(invocation_id='owned', pid=2**30))
+        self.save('STOP_REQUESTED.json', {'reason': 'USER_REQUESTED_STOP'})
+        self.save('distributed/relay/STATUS.json', {'pid': 2**30, 'stopped': True})
+        self.save('distributed/pbs/STATE.json', {'allocations': {
+            'token': {'status': 'R', 'observed': {'job_id': '17.pbs'}}}})
+        with sqlite3.connect(self.original/'distributed/QUEUE.sqlite3') as db:
+            db.execute('ALTER TABLE jobs ADD COLUMN detail')
+            db.execute('ALTER TABLE jobs ADD COLUMN request')
+            db.execute("UPDATE jobs SET method='PREPARATION:signal', state='UNKNOWN', detail=?, request=? WHERE job_id='b'",
+                       (json.dumps({'automatic_retry': False}),
+                        json.dumps({'preparation': {'provider': 'PAULI_SIGNALS'}})))
+            rows = db.execute('SELECT * FROM jobs ORDER BY job_id').fetchall()
+        evidence = dict(parent_directory=str(self.original), invocation_id='owned',
+                        queue_sha256=fingerprint(rows), terminal_pbs_jobs={})
+        self.round['reconciled_prior_runs'] = [evidence]
+        self.round['methods'] = ['PR_DF']
+        with self.assertRaisesRegex(ValueError, 'unresolved PBS'):
+            reconciled_prior_runs(self.round)
+        evidence['terminal_pbs_jobs']['17.pbs'] = 'F'
+        self.assertEqual(reconciled_prior_runs(self.round)[self.original][0]['attempt_id'], 'second')
+        self.assertFalse((self.original/'EXIT.json').exists())
+        self.assertTrue((self.original/'STOP_REQUESTED.json').exists())
+        self.round['methods'] = ['PR_PAULI']
+        with self.assertRaisesRegex(ValueError, 'unresolved attempt in scope'):
+            reconciled_prior_runs(self.round)
 
     def test_retired_preparation_validates_same_request_and_stopped_allocation(self):
         (self.successor/'distributed').mkdir(parents=True)

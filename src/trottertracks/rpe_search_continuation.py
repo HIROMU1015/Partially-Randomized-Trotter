@@ -1,5 +1,6 @@
 """Verify a technical-stop handoff without mutating its original ledger."""
 import hashlib
+import fcntl
 import json
 from pathlib import Path
 import sqlite3
@@ -9,6 +10,59 @@ from .rpe_release_registry import fingerprint
 
 def load(path):
     return json.loads(path.read_bytes())
+
+
+def reconciled_prior_runs(spec):
+    """Recognize ended owners without synthesizing an EXIT or changing attempts."""
+    priors = {Path(path).resolve() for path in spec['executor'].get('prior_run_dirs', [])}
+    verified = {}
+    for evidence in spec.get('reconciled_prior_runs', []):
+        parent = Path(evidence['parent_directory']).resolve()
+        if parent not in priors:
+            raise ValueError('Reconciled parent must stay in the duplicate audit')
+        launch = load(parent/'LAUNCH.json')
+        driver = load(parent/'NORMAL_DRIVER.json')
+        relay = load(parent/'distributed/relay/STATUS.json')
+        stop = load(parent/'STOP_REQUESTED.json')
+        failure = load(parent/'KAPPA_STATE.json').get('stop') or {}
+        if (launch['invocation_id'] != evidence['invocation_id']
+                or driver['invocation_id'] != launch['invocation_id']
+                or stop.get('reason') != 'USER_REQUESTED_STOP'
+                or relay.get('stopped') is not True
+                or failure.get('reason') != 'RUNTIME_EXCEPTION'
+                or failure.get('error_type') != 'TimeoutExpired'
+                or str(parent/'distributed/LOCAL_WORKER.json') not in failure.get('message', '')):
+            raise ValueError('Parent does not have the reconciled worker-shutdown evidence')
+        for owner in (launch, driver, relay):
+            pid = owner['pid']
+            if type(pid) is not int or pid <= 0 or (Path('/proc')/str(pid)).exists():
+                raise ValueError('Reconciled parent still has a live owner')
+        with (parent/'FAST_DRIVER.lock').open('rb') as lock:
+            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            with sqlite3.connect((parent/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
+                rows = db.execute('SELECT job_id, method, state, host_id, attempt_id, request_sha256, detail, request '
+                                  'FROM jobs ORDER BY job_id').fetchall()
+        if (fingerprint(rows) != evidence['queue_sha256']
+                or any(row[2] not in ('ACCEPTED', 'CANCELLED', 'UNKNOWN') for row in rows)):
+            raise ValueError('Reconciled parent queue changed or has live jobs')
+        unknown = [row for row in rows if row[2] == 'UNKNOWN']
+        if any(not row[4] or json.loads(row[6]).get('automatic_retry') is not False for row in unknown):
+            raise ValueError('Reconciled parent has an unbounded unknown attempt')
+        for job_id, method, _, _, _, _, _, request in unknown:
+            if method.startswith('PREPARATION:'):
+                provider = json.loads(request).get('preparation', {}).get('provider')
+                method = {'PAULI_SIGNALS': 'PR_PAULI'}.get(provider)
+            if method is None or method in spec['methods']:
+                raise ValueError('Reconciled parent has an unresolved attempt in scope: '+job_id)
+        receipts = evidence['terminal_pbs_jobs']
+        for record in load(parent/'distributed/pbs/STATE.json')['allocations'].values():
+            observed = record.get('observed') or {}
+            job = observed.get('job_id')
+            if not job or (record.get('status') != 'F' and receipts.get(job) != 'F'):
+                raise ValueError('Reconciled parent still has an unresolved PBS allocation')
+        verified[parent] = [dict(job_id=row[0], method=row[1], host_id=row[3],
+                                 attempt_id=row[4], request_sha256=row[5]) for row in unknown]
+    return verified
 
 
 def verify_retired_preparation_attempts(run):
