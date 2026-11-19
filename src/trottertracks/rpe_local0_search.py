@@ -717,9 +717,11 @@ class Gateway:
         root=Path(self.config['code_root'])
         fixed_implementation(self.config)
         from .rpe_search_continuation import (preparation_rejected_before_science,
-                                              verify_prior_q3_holds, verify_retired_preparation_attempts)
+                                              verify_pbs_prelaunch_rejections, verify_prior_q3_holds,
+                                              verify_retired_preparation_attempts)
         prior_holds = verify_prior_q3_holds(root,run,problem,spec)
         retired_preparation = verify_retired_preparation_attempts(run)
+        pbs_rejections = verify_pbs_prelaunch_rejections(run, spec.get('executor',{}).get('prior_run_dirs',[]))
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
         if spec.get('search_to_rule_stop') or spec.get('live_ready_refill'):
             from .rpe_schedule_search import requested_widths
@@ -763,7 +765,7 @@ class Gateway:
                 if job.resolve() in retired_preparation:continue
                 if (job/'LAUNCH.json').exists() or (job/'STARTING.json').exists():
                     if load(path).get('configuration_id') in ids and str(job.resolve()) not in prior_holds:
-                        if preparation_rejected_before_science(job):
+                        if job.resolve() in pbs_rejections or preparation_rejected_before_science(job):
                             rejected_before_delivery.append(str(job))
                         else:
                             in_progress.append(str(job))

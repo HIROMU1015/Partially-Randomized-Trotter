@@ -128,6 +128,51 @@ def preparation_rejected_before_science(job):
                 'ValueError: Pauli publication base ref differs from the fixed provider'))
 
 
+def verify_pbs_prelaunch_rejections(run, prior_dirs):
+    """Recognize one known supervisor rejection using its original attempt."""
+    from .rpe_q3_coordinator import digest
+
+    file = run/'PBS_PRELAUNCH_REJECTIONS.json'
+    if not file.is_file():
+        return set()
+    prior = {Path(path).resolve() for path in prior_dirs}
+    verified = set()
+    execution_files = {'WORKER_LAUNCH.json', 'SCIENTIFIC_STARTING.json', 'SUPERVISOR_STARTED.json',
+                       'PROCESS_RETURN.json', 'OUTCOME.json', 'PREPARATION_BODY.log'}
+    for evidence in load(file):
+        parent = Path(evidence['prior_run']).resolve()
+        assignment = evidence['assignment']
+        job, attempt = assignment['job_id'], assignment['attempt_id']
+        if parent not in prior or not all(len(value) <= 100 and Path(value).name == value for value in (job, attempt)):
+            raise ValueError('PBS prelaunch rejection is outside the prior scope')
+        with sqlite3.connect((parent/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
+            row = db.execute('SELECT method, host_id, attempt_id, request_sha256, request, state, detail, completion_sha256 '
+                             'FROM jobs WHERE job_id=?', (job,)).fetchone()
+        allocations = load(parent/'distributed/pbs/STATE.json')['allocations'].values()
+        owner = next((a for a in allocations if (a.get('observed') or {}).get('job_id') == evidence['job_id']), None)
+        if (not row or row[0] != 'PREPARATION:signal'
+                or row[1:4] != ('pbs-0', attempt, digest(assignment['request']))
+                or row[3] != assignment['request_sha256'] or json.loads(row[4]) != assignment['request']
+                or assignment['request']['preparation']['provider'] != 'PF_SIGNALS'
+                or row[5] != 'UNKNOWN' or row[7] is not None
+                or evidence['worker_state']['state'] != 'UNKNOWN'
+                or evidence['worker_state']['detail'] != json.loads(row[6])
+                or evidence['worker_state']['detail'].get('automatic_retry') is not False
+                or evidence['job_state'] != 'F' or not owner
+                or evidence['attempt'] != str(Path(owner['spec']['profile']['work_dir'])/job/attempt)
+                or not {'ASSIGNMENT.json','SUPERVISOR_LAUNCH.json','WORKER_SUPERVISOR.log'}.issubset(evidence['files'])
+                or execution_files.intersection(evidence['files'])
+                or not evidence['supervisor_log'].rstrip().endswith(
+                    'ValueError: Unsupported fixed PF entry: run_rpe_q3_worker.py')
+                or load(parent/'LAUNCH.json')['invocation_id'] != load(parent/'EXIT.json')['invocation_id']
+                or load(parent/'distributed/relay/STATUS.json')['stopped'] is not True):
+            raise ValueError('PBS prelaunch rejection evidence differs: '+job)
+        directory = parent/'jobs'/row[0]/job
+        if load(directory/'REQUEST.json') != assignment['request'] or (directory/'OUTCOME.json').exists():
+            raise ValueError('PBS prelaunch rejection no longer matches the prior job')
+        verified.add(directory.resolve())
+    return verified
+
 def verify_prior_q3_holds(root, run, problem, spec):
     """Keep an unresolved prior evaluation out of both reuse and new dispatch."""
     from .rpe_q3_coordinator import digest
