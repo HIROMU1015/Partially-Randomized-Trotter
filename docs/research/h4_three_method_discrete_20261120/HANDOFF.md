@@ -142,3 +142,25 @@ PF信号準備も保存receiptの元の絶対パス未解決で失敗した。PR
 全130条件の準備成功・探索完了・科学的成功解を主張しない。
 実行可能な候補のQ3は継続している。次はCodexが専用runtimeの不足、PF保存入力の経路、
 価格較正の独立コホート採用条件を整理し、固定契約の変更や再実行が必要な範囲を区別する。
+
+## 2026-11-20：利用者の修正・再実行指示への対応
+
+利用者が残件の修正と再実行を指示した。元9c runは通常Stopで回収し、EXIT=0、
+全25タスクのACCEPTED24・CANCELLED1を照合した（Q3は11件、準備は13件）。
+旧attemptと結果・STOPはそのまま保全し、選択した終了済み準備失敗だけを新runで再実行する。
+過去の旧Q3失敗4配分など、この修正と無関係な保留は解除しない。
+
+- DF_DESCRIPTOR：matplotlib・openfermionpyscfのimportを割当前に照合し、PBSとWSLは
+  その依存を満たす既存専用Pythonを使う。既存環境にパッケージを追加しない。
+- PF_SIGNALS：固定科学loaderを維持し、保存snapshot・receipt・contextをhash付きで配送し、
+  既存path resolverを固定loaderのI/Oへ接続する。
+- DF価格：固定gridの同じ有限schedule(q/R/K/time等)を確認して、候補ID・宣言κだけの違いを
+  同じ保存コホートとして扱う。SOURCE・compiler・seed・役割の照合とpooling禁止は維持する。
+- DF価格のλ照合：default/NEHALEMでLD7/8に1–3 ulp差が生じた。HASWELL・BLAS1 threadを
+  NumPy読込み前に適用すると、LD7・8・9で既存の保存λのhexと一致した。既存guard・許容値は変更しない。
+
+元runのDFコンパイル40軸を原receiptへ照合し、`continuation-inputs/h4-rerun-9c/price-recovery/`
+にbyte同一で保全した。監査済み価格やモデル成功に変換せず、通常の厳密な保存軸照合へ渡す。
+PFの完了済みcalibration（SOURCE raw_commit `960c0497534bc13924f41be4c7ca22c437653ac6`）も
+元bundleとreceiptを照合し、候補ID別の保存calibrationとして再利用する。
+新しいsignal/holdout等の不足分だけを許可済み130条件内で実行する。

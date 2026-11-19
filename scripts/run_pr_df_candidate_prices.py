@@ -211,7 +211,19 @@ def request_physical(request):
     We do not require a new configuration ID when only declaration metadata changed.
     """
     context=request['physical_context']
-    return {k:context[k]for k in PHYSICAL_FIELDS}
+    physical={k:deepcopy(context[k])for k in PHYSICAL_FIELDS}
+    law=physical['law']
+    # The fixed-grid mapper can declare a different paper kappa/configuration
+    # while producing exactly the same finite (q, R, K, time) wrapper. Sampling
+    # consumes physical_candidate, not these upstream declaration labels. Keep
+    # its entire physical candidate, finite law/source, mapping and compiler.
+    if (law.get('definition',{}).get('model')=='ideal_finite_RTE_law'
+            and law.get('event_mapping',{}).get('kind')=='A_SAVED_EARLY_FIXED_GRID_V1'):
+        law.pop('candidate_id',None)
+        law.pop('configuration_id',None)
+        if isinstance(law.get('kappa'),dict):
+            law['kappa'].pop('value',None)
+    return physical
 
 
 def validate_axis(cell,index,axis,witness,reader=None,source_reader=None):
@@ -258,7 +270,9 @@ def validate_axis(cell,index,axis,witness,reader=None,source_reader=None):
 def direct_witnesses(alternative,reader=None):
     """Registry schemas: saved mean.paths OR explicit receipt_source rows."""
     reader=reader or read
-    if alternative.get('receipt_source'):
+    if 'path_witnesses' in alternative:
+        rows=alternative['path_witnesses']
+    elif alternative.get('receipt_source'):
         rows=reader(alternative['receipt_source'])
     else:
         row=reader(alternative['source']);rows=row.get('paths',[])
@@ -306,6 +320,27 @@ def resolve_reuse(cells,quote,reader=None,source_reader=None):
                 elif errors:cell['axis_evidence'][str(i)][axis]=dict(status='HELD_UNRESOLVED_SAVED_AXIS',reasons=errors)
             summary.append(dict(m=cell['m'],axis=axis,alternatives=deepcopy(alternatives),accepted_indices=sorted(accepted),unresolved_reasons=errors))
     return summary
+
+
+def merge_saved_axis_quotes(quote, packages):
+    """Offer published partial receipts to the ordinary strict reuse checks.
+
+    This supplies no price/model verdict. Rows must match the exact physical
+    round; calibration/holdout roles and every receipt are checked at adoption.
+    """
+    merged=deepcopy(quote)
+    for package in packages:
+        if package.get('schema')!='PR_DF_PARTIAL_AXIS_QUOTES_V1':
+            raise ValueError('Unknown saved DF partial-axis quote schema')
+        for saved in package['rows']:
+            matches=[row for row in merged['rows'] if all(row.get(k)==saved.get(k)
+                     for k in ('m','axis','physical_id','q','R'))]
+            for row in matches:
+                alternatives=row.setdefault('direct_alternatives',[])
+                for alternative in saved['direct_alternatives']:
+                    if alternative not in alternatives:
+                        alternatives.append(deepcopy(alternative))
+    return merged
 
 
 def adopt_saved_calibration_cohorts(cells,quote,reader=None,source_reader=None):
@@ -391,9 +426,12 @@ def scalar_metadata(config,tail_descriptor=None):
     return dict(tail_source=tail_source,scalar=scalar,record=scalar_record)
 
 
-def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None,covered_rounds=None,*,parallel_axes=False):
+def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None,covered_rounds=None,*,parallel_axes=False,saved_axis_quotes=None):
     fixed(source);config=read(config_source);output=ROOT/output;output.mkdir(parents=True,exist_ok=True)
     selected=design(config,covered_rounds)
+    if saved_axis_quotes:
+        if price_quote is None:raise ValueError('Saved axis receipts require a fixed candidate quote')
+        price_quote=merge_saved_axis_quotes(price_quote,[read(locator)for locator in saved_axis_quotes])
     if price_quote is not None:
         if price_quote.get('configuration_id')!=config['id']:raise ValueError('Price quote belongs to another configuration')
         write(output/'PRICE_QUOTE.json',price_quote)
@@ -711,14 +749,15 @@ def compare(inputs,raw_commit,model_commit,source):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('mode',choices=('prepare','acquire','freeze','compare-holdout'));ap.add_argument('--source',required=True)
     ap.add_argument('--tail-descriptor',type=Path);ap.add_argument('--price-quote',type=Path);ap.add_argument('--configuration');ap.add_argument('--selector',default='[]');ap.add_argument('--output');ap.add_argument('--cohort');ap.add_argument('--input',type=Path);ap.add_argument('--inputs-commit');ap.add_argument('--stage',choices=('calibration','holdout'));ap.add_argument('--raw-commit');ap.add_argument('--model-commit');ap.add_argument('--covered-rounds',type=json.loads);ap.add_argument('--parallel-axes',action='store_true')
-    ap.add_argument('--openblas-coretype', choices=('NEHALEM',))
+    ap.add_argument('--saved-axis-quotes',type=Path)
+    ap.add_argument('--openblas-coretype', choices=('NEHALEM','HASWELL'))
     a=ap.parse_args()
     if a.openblas_coretype:
         if 'numpy' in sys.modules:
             raise ValueError('Fixed OpenBLAS core must be selected before loading NumPy')
         os.environ['OPENBLAS_CORETYPE']=a.openblas_coretype
     if a.mode=='prepare':
-        commit,path=a.configuration.split(':',1);prepare(dict(commit=commit,path=path,selector=json.loads(a.selector)),a.output,a.source,a.cohort,None if a.price_quote is None else json.loads(a.price_quote.read_text()),None if a.tail_descriptor is None else json.loads(a.tail_descriptor.read_text()),a.covered_rounds, parallel_axes=a.parallel_axes)
+        commit,path=a.configuration.split(':',1);prepare(dict(commit=commit,path=path,selector=json.loads(a.selector)),a.output,a.source,a.cohort,None if a.price_quote is None else json.loads(a.price_quote.read_text()),None if a.tail_descriptor is None else json.loads(a.tail_descriptor.read_text()),a.covered_rounds, parallel_axes=a.parallel_axes,saved_axis_quotes=None if a.saved_axis_quotes is None else json.loads(a.saved_axis_quotes.read_text()))
     else:
         inputs=load_inputs(a.input,a.inputs_commit,a.source)
         if a.mode=='acquire':return 0 if acquire(inputs,a.inputs_commit,a.stage,a.source,a.model_commit)else 2

@@ -87,6 +87,12 @@ _DF_SNAPSHOT_LOADERS = (
     dict(commit='155529e20a8fac39e00786c40b57830b71203c4f',
          path='scripts/h46_m5_tol_saved_input.py'),
 )
+_PF_SIGNAL_KERNEL_INPUTS = tuple(dict(commit=commit, path=path) for commit, path in (
+    ('e417ffc9f52b13c18f5493193ce510d858664259', 'scripts/h46_new2_core.py'),
+    ('dd24dd329949c255d5e37b90ff8993fa8df7159b', 'src/trottertracks/pf_power_stability.py'),
+    ('256caad3414a80de02fb68eca89c13c957ed6354', 'src/trottertracks/h6_df19_rpe_d2.py'),
+    ('71ba49bb28b295aa28e51101bc3b1bf07d500767', 'src/trotterlib/rte.py'),
+))
 _DF_PRICE_BACKEND = tuple(
     dict(commit='1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7',
          path='src/trottertracks/'+name+'.py')
@@ -140,9 +146,15 @@ def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest()
 
 
-def contract_runtime(values, script, configured):
+def contract_runtime(values, script, configured, provider=None):
     """Extract declared package/compiler identities without importing a provider."""
     result=deepcopy(configured);packages=result.setdefault('packages',{});compilers=set()
+    if provider == 'DF_DESCRIPTOR':
+        # The fixed saved-context loader imports trotterlib's public package,
+        # including plotting and chemistry imports. Probe these before a leaf
+        # is assigned; their availability was absent from the numeric pins.
+        result['imports'] = sorted(set(result.get('imports', ())) |
+                                   {'matplotlib.pyplot', 'openfermionpyscf'})
     def require(name,value):
         if name in packages and packages[name]not in(None,value):raise ValueError('Preparation runtime version conflicts with original input: '+name)
         packages[name]=value
@@ -366,6 +378,21 @@ class DistributedPreparationBridge:
         sha = hashlib.sha256(raw).hexdigest()
         self.executor.artifact_cache.put({sha: base64.b64encode(raw).decode('ascii')})
         return sha
+
+    def _saved_h4_snapshot(self, root, snapshot, inputs, bindings, working_hashes):
+        """Bind saved H4 file bytes under their original names for any PF/DF leaf."""
+        index = json.loads(subprocess.check_output(
+            ['git', 'show', _DF_SNAPSHOT_INDEX['commit']+':'+_DF_SNAPSHOT_INDEX['path']], cwd=root))
+        for item in (index['T20_reference_files']['H4'], *index['saved_inputs']['H4']['inputs'].values()):
+            original = Path(item['path'])
+            content = (Path(snapshot)/original.name).read_bytes()
+            sha = self._blob(content)
+            if sha != item['sha256']:
+                raise ValueError('Fixed H4 snapshot digest differs: '+original.name)
+            name = 'private/df-snapshot/'+original.name
+            inputs[name] = sha
+            bindings[str(original)] = '@WORK@/'+name
+            working_hashes.append(dict(path=name, sha256=sha))
 
     def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
@@ -594,24 +621,16 @@ class DistributedPreparationBridge:
         df_inputs = []
         df_locators = []
         snapshot = self.settings.get('df_snapshot_directory')
-        if snapshot and script.name in ('run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py',
-                                        'derive_pr_df_candidate_descriptor.py'):
-            extension = 'src/trottertracks/pr_df_descriptor_extension.py'
-            raw = subprocess.check_output(['git', 'show', source + ':' + extension], cwd=root)
-            source_files[extension] = hashlib.sha256(raw).hexdigest()
-            index = json.loads(subprocess.check_output(
-                ['git', 'show', _DF_SNAPSHOT_INDEX['commit']+':'+_DF_SNAPSHOT_INDEX['path']], cwd=root))
+        pf_signal = stage == 'PF_SIGNALS' and script.name == 'run_pf_preparation_stage.py'
+        if snapshot and (pf_signal or script.name in (
+                'run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py',
+                'derive_pr_df_candidate_descriptor.py')):
+            if not pf_signal:
+                extension = 'src/trottertracks/pr_df_descriptor_extension.py'
+                raw = subprocess.check_output(['git', 'show', source + ':' + extension], cwd=root)
+                source_files[extension] = hashlib.sha256(raw).hexdigest()
             df_locators.extend((_DF_SNAPSHOT_INDEX, *_DF_SNAPSHOT_LOADERS))
-            for item in (index['T20_reference_files']['H4'], *index['saved_inputs']['H4']['inputs'].values()):
-                original = Path(item['path'])
-                content = (Path(snapshot)/original.name).read_bytes()
-                sha = self._blob(content)
-                if sha != item['sha256']:
-                    raise ValueError('Fixed DF snapshot digest differs: '+original.name)
-                name = 'private/df-snapshot/'+original.name
-                inputs[name] = sha
-                bindings[str(original)] = '@WORK@/'+name
-                df_inputs.append(dict(path=name, sha256=sha))
+            self._saved_h4_snapshot(root, snapshot, inputs, bindings, df_inputs)
         if script.name=='run_pr_df_candidate_prices.py' and '-c' in command:
             runtime_inputs.append(dict(df_price_view=command[command.index(str(script))+1]))
         if script.name=='derive_pr_df_candidate_descriptor.py' and '--signal-view' in command:
@@ -708,6 +727,7 @@ class DistributedPreparationBridge:
             original_documents.extend(_DF_PRICE_BACKEND)
         if script.name == 'run_pf_preparation_stage.py':
             if stage == 'PF_SIGNALS':
+                original_documents.extend(_PF_SIGNAL_KERNEL_INPUTS)
                 payload = command[command.index('--input')+1]
                 original_documents.extend(json.loads(subprocess.check_output(
                     [command[0], '-B', '-c', _PF_STEP_INPUTS, str(root), payload], cwd=root)))
@@ -744,7 +764,7 @@ class DistributedPreparationBridge:
         for workspace in workspaces.values():
             combined=root_bundles+workspace['input_git_bundles']
             workspace['input_git_bundles']=list({item['sha256']:item for item in combined}.values())
-        requirements,compiler_bindings=contract_runtime(runtime_inputs,script,self.settings.get('runtime_requirements', {}).get(STAGES[stage], {}))
+        requirements,compiler_bindings=contract_runtime(runtime_inputs,script,self.settings.get('runtime_requirements', {}).get(STAGES[stage], {}),provider=stage)
         pauli_signals = stage == 'PAULI_SIGNALS' and script.name == 'run_pr_pauli_candidate_signals.py'
         if pauli_signals or stage in ('PF_SIGNALS', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
             pins = subprocess.check_output(['git', 'show', source+':requirements.txt'], cwd=root, text=True)

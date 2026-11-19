@@ -190,6 +190,11 @@ class Completion:
                         original_record=deepcopy(record),state_file=str(path),sha256=repair['sha256'],
                         reason='NONSCIENTIFIC_DF_PLAN_PATH_REPAIR')
                     self.state['records'].pop(identifier,None)
+            from .rpe_preparation_repair import retry_records
+            self.state['records'], repairs = retry_records(
+                self.state['records'], settings.get('preparation_retry_from', ()))
+            if repairs:
+                self.state['preparation_repairs'] = repairs
         if self.state['source']!=self.source:raise ValueError('Completion SOURCE changed; preserve prior state')
         self.lock=threading.RLock()
         self.pauli_price_lock=threading.RLock()
@@ -1118,7 +1123,11 @@ class Completion:
         quote_file=d/'AVAILABLE_PRICE_QUOTE.json';put(quote_file,quote)
         parallel=['--parallel-axes'] if self.settings.get('parallel_df_price_axes') is True else []
         price_source=self.stage_source('DF_PRICE_PREPARE')
-        self.call(args+['prepare']+parallel+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',price_source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
+        saved_axes=[]
+        if locators := self.settings.get('saved_df_price_axis_quotes'):
+            saved_file=d/'SAVED_AXIS_QUOTES.json';put(saved_file,locators)
+            saved_axes=['--saved-axis-quotes',str(saved_file)]
+        self.call(args+['prepare']+parallel+saved_axes+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',price_source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
         if not inp.exists():raise Held('DF_PRICE_RULE_OR_RECEIPT_REUSE_REQUIRED:'+str(read(base/'NEEDS.json')))
         inputs=publish([d],'Fix candidate DF calibration and independent holdout inputs')
         common=['--input',str(inp),'--inputs-commit',inputs,'--source',price_source]

@@ -5,6 +5,7 @@ import importlib.util
 import json
 from pathlib import Path
 import resource
+import subprocess
 import sys
 import tempfile
 import threading
@@ -17,7 +18,6 @@ from unittest.mock import patch
 DRAFT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('_partial_df_prices',DRAFT/'scripts/run_pr_df_candidate_prices.py')
 E=importlib.util.module_from_spec(spec);sys.modules[spec.name]=E;spec.loader.exec_module(E)
-SOURCE_FILE=E.FIXED_VIEW/'scripts/run_pr_df_ld_split.py'
 
 
 def digest(value):
@@ -100,7 +100,10 @@ def cohort_documents(c,axes=('X',)):
 
 
 class PartialReuseTests(unittest.TestCase):
-    def source(self,c,p):return SOURCE_FILE.read_bytes() if p=='scripts/run_pr_df_ld_split.py'else b'artificial fixed source'
+    def source(self,c,p):
+        if p=='scripts/run_pr_df_ld_split.py':
+            return subprocess.check_output(['git','show',E.REUSED+':'+p],cwd=DRAFT)
+        return b'artificial fixed source'
 
     def test_only_verified_axis_reused_mean_only_or_independent_held_per_axis(self):
         c=cell();docs,witnesses=documents(c,('X',));docs['MEAN.json']={'paths':witnesses}
@@ -140,13 +143,13 @@ class PartialReuseTests(unittest.TestCase):
         valid=E.validate_axis(c,0,'X',w[0],reader=lambda loc:docs[loc['path']],source_reader=self.source)
         c['axis_evidence']={'0':{'X':valid,'Y':{'status':'MISSING'}}}
         with tempfile.TemporaryDirectory()as td:
-            root=Path(td);R=fake_runtime(root);inputs=dict(output_directory='OUT',cells=[c],saved_input_files={},runtime={})
+            root=Path(td);R=fake_runtime(root);inputs=dict(output_directory='OUT',cells=[c],saved_input_files={},runtime={'provider_root':'/ARTIFICIAL_PROVIDER'})
             def reader(loc):
                 if loc['commit']=='RAW':return deepcopy(docs[loc['path']])
                 value=json.loads((root/loc['path']).read_text())
                 for key in loc.get('selector',[]):value=value[key]
                 return value
-            with patch.object(E,'ROOT',root),patch.object(E,'read',side_effect=reader),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R),patch.object(E,'ProcessPoolExecutor',InlinePool):
+            with patch.object(E,'load_fixed_fingerprint'),patch.object(E,'ROOT',root),patch.object(E,'read',side_effect=reader),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R),patch.object(E,'ProcessPoolExecutor',InlinePool):
                 self.assertTrue(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
                 result=json.loads((root/'OUT/calibration/acquisition/RESULT.json').read_text());self.assertEqual(result['reused_axes'],1);self.assertEqual(result['new_wrapper_axes'],1);self.assertEqual(result['compile_attempts'],1)
                 directory=root/'OUT/calibration/acquisition/m0/p0/axes_Y';self.assertTrue((directory/'sine.json').exists());self.assertFalse((directory/'cosine.json').exists())
@@ -158,8 +161,8 @@ class PartialReuseTests(unittest.TestCase):
     def test_held_X_does_not_prevent_missing_Y_and_partial_is_preserved(self):
         c=cell();c['axis_evidence']={'0':{'X':{'status':'HELD_UNRESOLVED_SAVED_AXIS','reasons':['MEAN_ONLY']},'Y':{'status':'MISSING'}}}
         with tempfile.TemporaryDirectory()as td:
-            root=Path(td);R=fake_runtime(root);inputs=dict(output_directory='OUT',cells=[c],saved_input_files={},runtime={})
-            with patch.object(E,'ROOT',root),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R),patch.object(E,'ProcessPoolExecutor',InlinePool):
+            root=Path(td);R=fake_runtime(root);inputs=dict(output_directory='OUT',cells=[c],saved_input_files={},runtime={'provider_root':'/ARTIFICIAL_PROVIDER'})
+            with patch.object(E,'load_fixed_fingerprint'),patch.object(E,'ROOT',root),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R),patch.object(E,'ProcessPoolExecutor',InlinePool):
                 self.assertFalse(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
                 result=json.loads((root/'OUT/calibration/acquisition/RESULT.json').read_text());self.assertEqual(result['new_wrapper_axes'],1);self.assertEqual(result['held_axes'],1);self.assertEqual(result['rows'][0]['axes']['Y']['status'],'REUSE')
                 self.assertFalse(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
@@ -176,7 +179,7 @@ class PartialReuseTests(unittest.TestCase):
         c['axis_evidence']={'0':{a:E.validate_axis(c,0,a,w[i],reader=lambda loc:docs[loc['path']],source_reader=self.source)for i,a in enumerate(('X','Y'))}}
         with tempfile.TemporaryDirectory()as td:
             root=Path(td);R=NS();inputs=dict(output_directory='OUT',cells=[c])
-            with patch.object(E,'ROOT',root),patch.object(E,'read',side_effect=lambda loc:deepcopy(docs[loc['path']])),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R):
+            with patch.object(E,'load_fixed_fingerprint'),patch.object(E,'ROOT',root),patch.object(E,'read',side_effect=lambda loc:deepcopy(docs[loc['path']])),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R):
                 self.assertTrue(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
                 result=json.loads((root/'OUT/calibration/acquisition/RESULT.json').read_text());self.assertEqual(result['new_paths'],0);self.assertEqual(result['reused_axes'],2)
                 c['axis_evidence']['0']['Y']['event_digest']='OTHER_EVENT'
@@ -204,10 +207,10 @@ class PartialReuseTests(unittest.TestCase):
         E.resolve_reuse([c],quote,reader=reader,source_reader=self.source)
         self.assertTrue(all(v['X']['status']=='REUSE'and v['Y']['status']=='MISSING'for v in c['axis_evidence'].values()))
         with tempfile.TemporaryDirectory()as td:
-            root=Path(td);R=fake_runtime(root);inputs=dict(output_directory='OUT',cells=[c],saved_input_files={},runtime={})
+            root=Path(td);R=fake_runtime(root);inputs=dict(output_directory='OUT',cells=[c],saved_input_files={},runtime={'provider_root':'/ARTIFICIAL_PROVIDER'})
             def read_all(loc):
                 return reader(loc)if loc['path']in docs else json.loads((root/loc['path']).read_text())
-            with patch.object(E,'ROOT',root),patch.object(E,'read',side_effect=read_all),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R),patch.object(E,'ProcessPoolExecutor',InlinePool):
+            with patch.object(E,'load_fixed_fingerprint'),patch.object(E,'ROOT',root),patch.object(E,'read',side_effect=read_all),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R),patch.object(E,'ProcessPoolExecutor',InlinePool):
                 self.assertTrue(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
                 result=json.loads((root/'OUT/calibration/acquisition/RESULT.json').read_text());self.assertEqual(result['compile_attempts'],4);self.assertEqual(result['resumed_partial_paths'],4);self.assertEqual(result['new_independent_paths'],0)
                 self.assertTrue(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
@@ -216,6 +219,51 @@ class PartialReuseTests(unittest.TestCase):
                 p=root/'OUT/calibration/acquisition/m0/p0/axes_Y/PATH_RECEIPT.json';v=json.loads(p.read_text());v['record']['event_digest']='OTHER_EVENT';p.write_text(json.dumps(v))
                 self.assertFalse(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
                 index=json.loads((root/'OUT/calibration/acquisition/m0/p0/PATH_INDEX.json').read_text());self.assertTrue(all(a['status']=='HELD_EVENT_DIGEST_MISMATCH'for a in index['axes'].values()))
+
+    def test_partial_quote_merge_keeps_physical_scope_and_inline_receipt_role(self):
+        saved=cell();saved.update(cohort='SAVED_CAL',indices=list(range(4)),seeds=[[17+i]for i in range(4)])
+        docs,row=cohort_documents(saved)
+        alternatives=deepcopy(row['direct_alternatives'])
+        alternatives[0]['path_witnesses']=docs['SAVED_CAL/MEAN.json']['paths']
+        quoted=dict(m=0,axis='X',physical_id='PHYSICAL0',q=1,R=1)
+        package=dict(schema='PR_DF_PARTIAL_AXIS_QUOTES_V1',rows=[dict(quoted,direct_alternatives=alternatives)])
+        quote={'rows':[dict(quoted),dict(quoted,m=6),dict(quoted,physical_id='OTHER')]}
+        merged=E.merge_saved_axis_quotes(quote,[package,package])
+        self.assertNotIn('direct_alternatives',quote['rows'][0])
+        self.assertEqual(len(merged['rows'][0]['direct_alternatives']),1)
+        self.assertNotIn('direct_alternatives',merged['rows'][1]);self.assertNotIn('direct_alternatives',merged['rows'][2])
+        c=deepcopy(saved);c['cohort']='NEW'
+        result=E.adopt_saved_calibration_cohorts([c],merged,reader=lambda loc:deepcopy(docs[loc['path']]),source_reader=self.source)
+        self.assertEqual(result[0]['status'],'ADOPTED_SAVED_CALIBRATION_COHORT')
+        hold=deepcopy(package);hold['rows'][0]['direct_alternatives'][0]['role']='INDEPENDENT_HOLDOUT'
+        c['cohort']='NEW'
+        result=E.adopt_saved_calibration_cohorts([c],E.merge_saved_axis_quotes(quote,[hold]),reader=lambda loc:deepcopy(docs[loc['path']]),source_reader=self.source)
+        self.assertEqual(result[0]['status'],'KEEP_NEW_FIXED_COHORT')
+
+    def test_same_finite_wrapper_adopts_saved_kappa_declaration_without_pooling(self):
+        saved=cell();saved.update(cohort='SAVED_CAL',indices=list(range(4)),seeds=[[17+i]for i in range(4)])
+        law=dict(definition={'model':'ideal_finite_RTE_law','source':{'commit':'LAW','path':'rte.py'}},
+                 event_mapping={'kind':'A_SAVED_EARLY_FIXED_GRID_V1'},candidate_id='OLD',configuration_id='OLD_CFG',
+                 kappa={'kind':'PAPER','value':24,'definition_source':{'equation':'E21'}})
+        saved['request']['physical_context']['law']=law
+        # Rebuild hashes through the regular axis request helper.
+        saved['request']['context_key']=digest(saved['request']['physical_context'])
+        saved['request']=E.selected_request(saved['request'],['X','Y'])
+        docs,row=cohort_documents(saved);c=deepcopy(saved);c.update(cohort='NEW',seeds=[[100+i]for i in range(4)])
+        c['request']['physical_context']['law'].update(candidate_id='NEW',configuration_id='NEW_CFG')
+        c['request']['physical_context']['law']['kappa']['value']=1
+        reader=lambda loc:deepcopy(docs[loc['path']])
+        report=E.adopt_saved_calibration_cohorts([c],{'rows':[row]},reader=reader,source_reader=self.source)
+        self.assertEqual(report[0]['status'],'ADOPTED_SAVED_CALIBRATION_COHORT')
+        E.resolve_reuse([c],{'rows':[row]},reader=reader,source_reader=self.source)
+        self.assertTrue(all(v['X']['status']=='REUSE'and v['Y']['status']=='MISSING'for v in c['axis_evidence'].values()))
+        for field,value in [('R_outer',2),('q',2)]:
+            changed=deepcopy(c);changed['cohort']='NEW';changed['request']['physical_context']['physical_candidate'][field]=value
+            result=E.adopt_saved_calibration_cohorts([changed],{'rows':[row]},reader=reader,source_reader=self.source)
+            self.assertEqual(result[0]['status'],'KEEP_NEW_FIXED_COHORT')
+        changed=deepcopy(c);changed['cohort']='NEW';changed['request']['physical_context']['law']['definition']['source']['commit']='OTHER'
+        result=E.adopt_saved_calibration_cohorts([changed],{'rows':[row]},reader=reader,source_reader=self.source)
+        self.assertEqual(result[0]['status'],'KEEP_NEW_FIXED_COHORT')
 
     def test_adoption_uses_source_order_not_price_preserves_holdout_and_rejects_incomplete(self):
         docs={};rows=[]
@@ -258,7 +306,7 @@ class PartialReuseTests(unittest.TestCase):
         c=cell();c['axis_evidence']={'0':{'X':{'status':'MISSING'},'Y':{'status':'MISSING'}}}
         with tempfile.TemporaryDirectory()as td:
             root=Path(td);R=fake_runtime(root);inputs=dict(output_directory='OUT',cells=[c]);out=root/'OUT/calibration/acquisition';out.mkdir(parents=True);(out/'STARTED_m0_p0_axesXY.json').write_text('{}')
-            with patch.object(E,'ROOT',root),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R):
+            with patch.object(E,'load_fixed_fingerprint'),patch.object(E,'ROOT',root),patch.object(E,'blob',side_effect=self.source),patch.object(E,'runtime',return_value=R):
                 self.assertFalse(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
                 result=json.loads((out/'RESULT.json').read_text());self.assertEqual(result['new_paths'],0);self.assertEqual(result['held_axes'],2)
 

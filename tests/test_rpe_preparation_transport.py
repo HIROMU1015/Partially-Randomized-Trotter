@@ -193,6 +193,20 @@ class PreparationTransportTests(unittest.TestCase):
         self.assertEqual((self.root/'adoption/shared/raw/circuit.json').read_bytes(),raw)
         self.assertEqual(list((self.root/'adoption').rglob('*.materialize-*')),[])
 
+    def test_fixed_blas_profile_reaches_the_actual_synthetic_child(self):
+        code="""import json,os
+from pathlib import Path
+keys=['OPENBLAS_CORETYPE','OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS']
+Path(r'@WORK@/result.json').write_text(json.dumps({k:os.environ.get(k) for k in keys}))
+"""
+        task=self.task('signal',code)
+        profile=dict(self.profile('local'),openblas_coretype='HASWELL')
+        directory=self.root/'fixed-blas-attempt'
+        outcome=P.execute(task,profile,directory)
+        self.assertEqual(outcome['status'],'PREPARATION_COMPLETE')
+        self.assertEqual(json.loads((directory/'result.json').read_text()),dict(
+            OPENBLAS_CORETYPE='HASWELL',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1'))
+
     def test_compile_artifacts_move_to_another_host_once(self):
         compile=self.task('compile',"from pathlib import Path;Path(r'@WORK@/result.json').write_text('{\"compiled\":7}')")
         compile_dir=self.root/'compiler-attempt'

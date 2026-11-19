@@ -222,6 +222,9 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         from .pf_optimizer_connection import read_source
         previous=settings.get('prior_waves_from')
         records=read_source(root,context['reader'],previous) if previous else {}
+        from .rpe_preparation_repair import retry_records
+        records,retries=retry_records(records,settings.get('preparation_retry_from',()),pf=True)
+        if retries:atomic_write(index.with_name('PREPARATION_REPAIRS.json'),retries)
         records,repaired=repair_metadata_waves(records,settings.get('metadata_repair_from',()))
         if repaired:atomic_write(index.with_name('METADATA_REPAIRS.json'),repaired)
         for row in records.values():

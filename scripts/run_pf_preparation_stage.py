@@ -15,6 +15,34 @@ import sys
 import time
 from copy import deepcopy
 from pathlib import Path
+from types import FunctionType
+
+
+def bind_saved_signal_paths():
+    """Relocate only frozen H4 loader I/O; retain its code and hash checks.
+
+    The provider's receipt and context retain their original absolute paths.
+    The worker supplies an explicit map to byte-verified attempt-local copies.
+    Numerical functions and the original provider files are never rewritten.
+    """
+    from trottertracks import pf_evidence_preparation as E
+    helper = Path(__file__).resolve().parents[1] / 'src/trottertracks/rpe_preparation_paths.py'
+    resolve = runpy.run_path(str(helper))['resolve']
+    original = E.N.load_shared_h4
+    scope = dict(original.__globals__)
+    original_path = scope['Path']
+
+    def mapped_path(value, *parts):
+        # Hash/read helpers in the frozen saved-snapshot loader all receive
+        # this same constructor, including paths stored inside the receipt.
+        return original_path(resolve(str(value)), *parts)
+
+    scope['Path'] = mapped_path
+    relocated = FunctionType(original.__code__, scope, original.__name__,
+                             original.__defaults__, original.__closure__)
+    relocated.__kwdefaults__ = original.__kwdefaults__
+    E.N.load_shared_h4 = relocated
+    return relocated
 
 
 def cache_mean_pool(root, directory):
@@ -143,6 +171,7 @@ def run(provider,request):
         return dict(status='PREFLIGHT_PASS',source=dict(commit=publication,caller='scripts/prepare_pf_candidate.py',
             input_plan=dict(commit=publication,path=str((out/'PLAN.json').relative_to(ROOT)))))
     if phase=='signal':
+        bind_saved_signal_paths()
         provider.signals(value,out,source)
         publication=publish([out],'Preserve PF signal task for central adoption')
         return dict(status='SIGNALS_READY',publication=publication)

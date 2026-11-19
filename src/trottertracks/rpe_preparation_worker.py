@@ -97,6 +97,18 @@ def _source(profile, source):
     return root
 
 
+def preparation_environment(profile):
+    """Select an explicitly pinned BLAS kernel before importing NumPy."""
+    env = dict(os.environ)
+    core = profile.get('openblas_coretype')
+    if core is not None:
+        if core not in ('HASWELL', 'NEHALEM'):
+            raise ValueError('Unsupported fixed preparation OpenBLAS core')
+        env.update(OPENBLAS_CORETYPE=core, OPENBLAS_NUM_THREADS='1',
+                   OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
+    return env
+
+
 def _runtime(profile, requirements):
     python=profile['interpreter']
     if not Path(python).is_absolute() or not Path(python).is_file():raise ValueError('Preparation Python missing: '+python)
@@ -117,7 +129,7 @@ print(json.dumps(dict(executable=sys.executable, version=sys.version,
 """
     result=subprocess.run([python,'-B','-c',probe],input=json.dumps(dict(
         packages=list(requirements.get('packages', {})), imports=requirements.get('imports', []))),
-        text=True,capture_output=True)
+        text=True,capture_output=True,env=preparation_environment(profile))
     if result.returncode:raise ValueError('Preparation runtime/package probe failed: '+result.stderr.strip()[-1500:])
     runtime=json.loads(result.stdout)
     if runtime['executable']!=python:
@@ -592,7 +604,7 @@ def execute(assignment, base_profile, directory):
     input_heads={}
     if spec.get('return_git_delta') is True:
         input_heads={alias:_head(workspace) for alias,(workspace,_) in owned.items()}
-    env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),
+    env=dict(preparation_environment(profile),PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),
              RPE_PREPARATION_PYTHON=profile['interpreter'])
     if spec.get('publish_pauli_binding') is True:
         provider, manifest = owned['provider']

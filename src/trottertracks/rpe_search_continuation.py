@@ -459,9 +459,10 @@ def verify(run, problem, spec):
     from .rpe_local0_search import digest
 
     contract = spec['continuation']
-    deployment_repair = contract.get('kind') == 'OPERATIVE_DEPLOYMENT_REPAIR'
+    preparation_repair = contract.get('kind') == 'OPERATIVE_PREPARATION_REPAIR'
+    deployment_repair = contract.get('kind') == 'OPERATIVE_DEPLOYMENT_REPAIR' or preparation_repair
     repair = contract.get('kind') == 'OPERATIVE_METADATA_REPAIR' or deployment_repair
-    if contract.get('kind') not in (None, 'OPERATIVE_METADATA_REPAIR', 'OPERATIVE_DEPLOYMENT_REPAIR'):
+    if contract.get('kind') not in (None, 'OPERATIVE_METADATA_REPAIR', 'OPERATIVE_DEPLOYMENT_REPAIR', 'OPERATIVE_PREPARATION_REPAIR'):
         raise ValueError('Unknown continuation kind')
     previous = Path(contract['parent_directory']).resolve()
     if previous == run.resolve() or previous.name != contract['parent_run_id']:
@@ -500,9 +501,12 @@ def verify(run, problem, spec):
                 or json.loads(stop_bytes).get('reason') != 'USER_REQUESTED_STOP'
                 or hashlib.sha256(stop_bytes).hexdigest() != contract.get('parent_stop_sha256')
                 or hashlib.sha256(metadata_bytes).hexdigest() != contract.get('parent_metadata_state_sha256')
-                or not isinstance(hold_keys, list) or not hold_keys
+                or not isinstance(hold_keys, list) or (not hold_keys and not preparation_repair)
                 or len(set(hold_keys)) != len(hold_keys)):
             raise ValueError('Continuation requires the saved normal STOP and deployment metadata hold')
+        if preparation_repair:
+            from .rpe_preparation_repair import verify_attempts
+            verify_attempts(previous, contract['preparation_retry_jobs'])
         for key in hold_keys:
             row = records.get(key) or {}
             if (row.get('method') != 'PR_DF' or row.get('status') != 'WAITING_DISTRIBUTED_PREPARATION'

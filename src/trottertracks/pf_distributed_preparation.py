@@ -102,6 +102,16 @@ def track_collected_prices(workspace, compiled):
             '--',str(relative))
 
 
+def saved_for_configuration(settings, field, configuration_id):
+    """Reuse a completed leaf only for its canonical configuration identity."""
+    plural = {'saved_calibration': 'saved_calibrations',
+              'saved_calibration_audit': 'saved_calibration_audits'}[field]
+    values = settings.get(plural, {})
+    if not isinstance(values, dict):
+        raise ValueError('PF '+plural+' must map canonical configuration IDs to saved receipts')
+    return values.get(configuration_id, settings.get(field))
+
+
 def complete_selected(root,spec,run,request,entry,output,runtime):
     """Original finite PF contract; no independent candidate/shot selection."""
     original=Path(entry).resolve().parents[1];run=Path(run)
@@ -185,11 +195,11 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
             values=deepcopy(value['direct_prices'])
             calibration=[r['m']for r in value['new_compile_cells']if r['role']!='HOLDOUT']
             if calibration:
-                saved=spec['pf_completion'].get('saved_calibration')
+                saved=saved_for_configuration(spec['pf_completion'],'saved_calibration',value['configuration']['id'])
                 compiled=(reuse_calibration(root,workspace,folder,value,calibration,saved) if saved else
                           call('compile','PF_COMPILE',cohort='calibration',rounds=calibration))
                 track_collected_prices(workspace,compiled)
-                saved_audit=spec['pf_completion'].get('saved_calibration_audit')
+                saved_audit=saved_for_configuration(spec['pf_completion'],'saved_calibration_audit',value['configuration']['id'])
                 if saved_audit:
                     prices=saved_audit['prices']
                     expected={(m,axis) for m in calibration for axis in ('X','Y')}
