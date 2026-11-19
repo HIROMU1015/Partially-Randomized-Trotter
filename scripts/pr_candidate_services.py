@@ -187,10 +187,12 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=
     sys.path.insert(0,str(DF_VIEW/'src'))
     from trottertracks.pr_df_signal_entry import DFSignalEntry,FixedRuntime
     runtime=FixedRuntime(ROOT,SIGNAL_VIEW)
-    from trottertracks.rpe_preparation_paths import resolve
+    path_spec=importlib.util.spec_from_file_location('_candidate_preparation_paths',ROOT/'src/trottertracks/rpe_preparation_paths.py')
+    path_module=importlib.util.module_from_spec(path_spec)
+    path_spec.loader.exec_module(path_module)
     from trottertracks.pr_df_signal_entry import SCALAR
     descriptor=read(INDEX)['T20_reference_files']['H4']
-    data=Path(resolve(descriptor['path'])).read_bytes()
+    data=Path(path_module.resolve(descriptor['path'])).read_bytes()
     if hashlib.sha256(data).hexdigest()!=descriptor['sha256']:
         raise ValueError('Saved tail descriptor differs')
     metadata=json.loads(data)
