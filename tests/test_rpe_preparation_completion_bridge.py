@@ -205,6 +205,10 @@ class CompletionBridgeTests(unittest.TestCase):
             for index in range(5):
                 name='scripts/fixed_provider_'+str(index)+'.py';path=provider/name;path.parent.mkdir(exist_ok=True)
                 path.write_text('# fixed provider fixture '+str(index)+'\n');files[name]=hashlib.sha256(path.read_bytes()).hexdigest()
+            for filename in ('references/base_files_v1.json', '.github/workflows/validation-manifest.yml'):
+                support = provider/filename
+                support.parent.mkdir(parents=True, exist_ok=True)
+                support.write_text('fixture: '+filename+'\n')
             git('add','.');git('commit','-qm','fixed PF fixture');source=git('rev-parse','HEAD')
             wrapper=transport/'wrapper.py';wrapper.write_text('# transport adapter fixture\n')
             d=provider/'docs/owned';d.mkdir(parents=True);C.put(d/'REQUEST.json',{'scope':'fixture'})
@@ -215,9 +219,24 @@ class CompletionBridgeTests(unittest.TestCase):
             task=bridge.build_request(completion,[sys.executable,'-B',str(wrapper),'--input',str(d/'REQUEST.json')],d,'PF_COMPILE')
             self.assertEqual(task['preparation']['source'],{'commit':source,'files':files})
             self.assertEqual(task['preparation']['path_bindings'][str(transport)],'@TRANSPORT@')
+            support_bundle, = [x for x in task['preparation']['input_git_bundles'] if x.get('workspace_objects')]
+            holdout = bridge.build_request(completion,[sys.executable,'-B',str(wrapper),'--input',str(d/'REQUEST.json')],d,'PF_HOLDOUT_COMPILE')
+            self.assertIn(support_bundle, holdout['preparation']['input_git_bundles'])
+            sparse = top/'sparse'
+            subprocess.run(['git','clone','-q','--no-hardlinks',str(provider),str(sparse)],check=True)
+            missing = []
+            for filename in ('references/base_files_v1.json', '.github/workflows/validation-manifest.yml'):
+                oid = git('rev-parse',source+':'+filename)
+                (sparse/'.git/objects'/oid[:2]/oid[2:]).unlink()
+                missing.append(oid)
+            subprocess.run(['git','-C',str(sparse),'bundle','unbundle',
+                            str(executor.artifact_cache.path(support_bundle['sha256']))],check=True,capture_output=True)
+            for oid in missing:
+                subprocess.run(['git','-C',str(sparse),'cat-file','-e',oid],check=True)
             task['preparation']['artificial']=True;task['request_id']='pf-fixture'
             assignment={'job_id':'pf-fixture','request':task,'request_sha256':W.digest(task),'source_manifest':task['preparation']['source']}
             profile={'host_id':'fixture','root':str(provider),'interpreter':sys.executable,'work_dir':str(top/'spool')}
+            W.worker_cache(profile).put(executor.artifact_cache.get([support_bundle['sha256']]))
             W.current_preparation_fingerprint(assignment,profile)
             (provider/next(iter(files))).write_text('# changed source\n')
             with self.assertRaisesRegex(ValueError,'SOURCE hash differs'):

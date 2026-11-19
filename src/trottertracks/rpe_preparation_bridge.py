@@ -388,8 +388,8 @@ class DistributedPreparationBridge:
             self.bundle_hashes[key] = sha
         return dict(sha256=sha, ref=ref, checkout_input_head=checkout)
 
-    def _workspace_bundle(self, root, view, prefix, outputs):
-        """Carry the Git objects a sparse signal workspace needs to materialize."""
+    def _workspace_bundle(self, root, view, prefix, outputs, *, extra_directories=()):
+        """Carry the Git objects an owned sparse workspace needs to materialize."""
         from .rpe_preparation_worker import checkout_directories, output_directories
 
         manifest = view['source']
@@ -420,7 +420,8 @@ class DistributedPreparationBridge:
                 add_listing(commit, (), [] if name == '.' else [name+'/'])
             # Fixed Git workflows and licenses can be read when a scoped
             # commit expands a sparse index.
-            add_listing(commit, ('-r','-t'), sorted(directories | {'.github','LICENSES'}))
+            add_listing(commit, ('-r','-t'),
+                        sorted(directories | {'.github','LICENSES',*extra_directories}))
         key = hashlib.sha256(b'\0'.join(sorted(objects))).hexdigest()
         ref = 'refs/rpe-preparation/input-bundles/workspace-' + base + '-' + key
         with self.lock:
@@ -643,12 +644,18 @@ class DistributedPreparationBridge:
                                (getattr(completion, 'settings', {}) or {}).get('pauli_price_wrapper_source') == source)
         if binding_publication:
             prep['publish_pauli_binding'] = True
-        if stage == 'PAULI_SIGNALS' or binding_publication:
+        pf_compile = stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
+        if stage == 'PAULI_SIGNALS' or binding_publication or pf_compile:
             declared = [*prep['outputs'], *prep.get('optional_outputs', [])]
-            prep['input_git_bundles'].append(self._workspace_bundle(root,prep,Path('workspace'),declared))
+            # The PF workspace also expands the index containing fixed
+            # references when adding the provider's declared output paths.
+            extra_directories = ('references',) if pf_compile else ()
+            prep['input_git_bundles'].append(self._workspace_bundle(
+                root, prep, Path('workspace'), declared, extra_directories=extra_directories))
             for alias, view in workspaces.items():
-                view['input_git_bundles'].append(
-                    self._workspace_bundle(workspace_roots[alias],view,Path('workspaces')/alias,declared))
+                view['input_git_bundles'].append(self._workspace_bundle(
+                    workspace_roots[alias], view, Path('workspaces')/alias, declared,
+                    extra_directories=extra_directories))
         if stage in ('DF_CALIBRATION', 'DF_HOLDOUT') and '--input' in command:
             frozen = read(Path(command[command.index('--input')+1]))
             if frozen.get('parallel_axes') is True:
