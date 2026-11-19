@@ -297,3 +297,22 @@ PBS割当 `267442.CPUcluster-PRISM`（4 CPU、9 GiB）と `267444.CPUcluster-PRI
 成功したPBS割当の使用CPU時間／確保CPU時間は、信号 `267457` が39／1,312 CPU秒、通常監査・固定 `267459` が34／1,208 CPU秒、独立検証監査・集計 `267461` が33／1,232 CPU秒。1構成の配送待ちを含む測定なので、複数の適格な実タスクでの高負荷効率は未検収。PBSでのcompileの厳密再現も残る。埋め合わせのcompileや追加Q3は実行していない。既存のC同期で探索マップを `75c736406df4fe2cc956c2932b1a4bb4f8adbf96` に公開した。
 
 Romulaptopでは通常の観測SSHが120秒でタイムアウトした。Cの通常observerが最終結果を照合した公開データをRomuTailから転送し、Windowsの既存同期エンジンでGit blob、SHA-256、配置先を検証して5ファイルを反映した。`H4-search-map/index.html` はC公開版と同じSHA-256 `b6ca0b4578844f8c244a473419cde5bc53819e8e42e03c4e8bf715d0eb3882c1`。`INDEX.json` のrun IDと、受領状態 `FINAL_RESULT_PUBLISHED` を確認した。Windowsの既存設定は維持し、通常の観測SSHのタイムアウトは継続課題として記録した。同期の実機記録は最終release配置の `WINDOWS_FINAL_SYNC_VERIFIED_COPY.log`。
+
+## 4方式の共通入口とPBS準備配分（2026-11-19）
+
+新規run用currentを `romutail-fleet-efficiency-b65a30d81-r2` から `romutail-mixed-methods-0c67daacd` へ切り替えた。controllerとPBS transportは `0c67daacd628ed1fe23a53b445179596fa1d2d4d`、科学Q3 SOURCEは引継ぎの `28d976b99cdf8329adcc1b79327e329e947ef774`。Windowsの `Invoke-RpeSearch.ps1` と共通 `scripts/run_rpe_search.py` は、版を明示しても省略しても4方式を含む同じPreview `search-897fdfe64b6b045839a3` を返した。検収範囲では科学予算を全工程ゼロとした。既存runのStatus・Resumeはrun IDを指定する。B0I実検収runのStatusが固定release `romutail-pbs-pf-live-4b3e5b7c2-r3` を解決することを切替後に照合した。
+
+| 方式 | この配置で確認した経路 | 残る実機検収 |
+|---|---|---|
+| Full PF | 固定workerとadapterが一致する `pf_b_pf6` Q3をPBSのwalltime規則に追加。旧PBS Full PF M5のQ3本体49.64秒・回収まで66.94秒を参照し、運用見積りを14400秒とした。PF信号・監査の固定runtimeと入力配布はB0Iとの共通経路。 | Full PF固有の入力で、新currentから準備・実Q3・公開までを確認する。 |
+| PR-Pauli | PR-DFと同じ人工runで、RomuTail信号、PBS compile、RomuTail監査を回収しQ3まで採用した。処理は人工入力。既存の実運用では固定の価格compileをRomuTailへ配分する。 | 固定公開Git束縛と隔離runtimeを満たすPBSの実compile。 |
+| PR-DF | PR-Pauliと同じ人工runで準備結果を回収しQ3を採用した。PBSの固定 `DF_SIGNALS` と `prdf_d2_split` の適格性規則を引き継いだ。 | PBSでの実価格較正・独立検証・監査は、該当SOURCEでの適格性と実績が必要。 |
+| B0I | 前項の実検収を引き継いだ。PBSで保存PF信号入力19件、監査入力35件を新配置から照合した。 | 固定tail scalarの一致を必要とするPF compileはserver2へ配分する。該当する旧PBS実行の数値不一致は継続課題。 |
+
+以前はPBS起動後の事前照合を待つ準備を合計1件として資源要求を作っていた。現在は他hostに適格な空き枠がない独立準備を個別に数え、既存のCPU・メモリ・同時枠制約で確保する。事前照合の成功後に各タスクを割り当てる。人工回帰では3方式の独立準備を6 CPU・3枠とし、未対応の工程を除外した。配置先の回帰73件、追加対象を含む回帰92件を通過した。
+
+実PBSの人工検収では、準備とQ3の14件を共通queueが採用した。RomuTailは13件、PBSは共用の人工compile 1件。PBSの1 CPU検収割当 `267463`、`267464` はともに終了コード0。初回のmanifest不一致で研究計算を始めなかった人工割当 `267462` は終了済み。人工結果は専用ディレクトリに保存した。今回の新規実信号・実compile・実Q3はいずれも0件。96 CPUの実探索での稼働率は未測定。
+
+RomuTail・server2・PBSの固定配置を確認した。検収時に休止中だったRomulaptopのWSLは、起動後に同じreleaseのmanifestで不足componentを取得し、worker profileと保存入力を照合する。server1も復帰後に同じ手順を適用する。Windows同期の `sync.py` には、元のウィンドウ非表示設定を維持し、既存SSHの応答をファイルで受け取る修正を配置した。通常同期経路で公開済みrun `search-51ec4b40deb95d9b8e5b` の `FINAL_RESULT_PUBLISHED` とC公開commit `75c736406df4fe2cc956c2932b1a4bb4f8adbf96` を照合した。
+
+RomuTailの配置・検収証拠は `.rpe-central/deployment/romutail-mixed-methods-0c67daacd/TECHNICAL_ACCEPTANCE.json` と同ディレクトリのPreviewにある。Full PFの旧実Q3の証拠は[旧固定版の検収記録](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/840525ed6a2dc3e018dd568898b9bc9e06349578/docs/research/rpe_pbs_h4_q3_portability_20261118/HANDOFF.md)。
