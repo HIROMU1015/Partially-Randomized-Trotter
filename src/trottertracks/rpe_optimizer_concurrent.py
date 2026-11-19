@@ -1501,6 +1501,9 @@ class DistributedExecutor(ConcurrentExecutor):
             try:
                 with self.state.cv:
                     while row is None and not self.state.closed:
+                        if self._user_stop_requested() or self.state.failure is not None:
+                            return dict(status='PREPARATION_STOPPED_BEFORE_RESERVATION',
+                                        job_id=job_id,calls=0,preparation_calls=0)
                         pending=self.preparation_pending[job_id]
                         if self._preparation_probe_hold(pending)is not None:break
                         if pending['decision']['eligible_host_ids'] and job_id in self.preparation_holds and self.preparation_holds[job_id].get('status')=='PREPARATION_BUDGET_OR_PERMISSION_HOLD':break

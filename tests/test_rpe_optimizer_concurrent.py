@@ -246,6 +246,23 @@ class SchedulerTests(unittest.TestCase):
             self.assertEqual(canonical(first),canonical(second));self.assertEqual(metrics.get('launched',0),0)
             self.assertEqual(markers,{str(p):p.read_bytes()for p in path.glob('jobs/*/*/LAUNCH.json')})
 
+    def test_stop_releases_preparation_waiting_for_reservation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            executor = object.__new__(C.DistributedExecutor)
+            executor.run_dir = Path(tmp)
+            executor.state = types.SimpleNamespace(cv=threading.Condition(), closed=False,
+                                                   failure=None, tasks={})
+            executor.store = types.SimpleNamespace(row=lambda job: None)
+            executor.preparation_pending = {'prep-artificial': {'decision': {'eligible_host_ids': []}}}
+            executor.preparation_holds = {}
+            executor._preparation_probe_hold = lambda pending: None
+            executor.log = lambda **event: None
+            (executor.run_dir/'STOP_REQUESTED.json').touch()
+            with patch.object(executor.state.cv, 'wait', side_effect=AssertionError('waited after Stop')):
+                result = executor.await_preparation('prep-artificial')
+            self.assertEqual(result['status'], 'PREPARATION_STOPPED_BEFORE_RESERVATION')
+            self.assertEqual(result['preparation_calls'], 0)
+
     def test_pending_and_crash_claim_not_retried(self):
         p,c,r=fixture(['PR_DF'],1)
         with tempfile.TemporaryDirectory()as tmp:
