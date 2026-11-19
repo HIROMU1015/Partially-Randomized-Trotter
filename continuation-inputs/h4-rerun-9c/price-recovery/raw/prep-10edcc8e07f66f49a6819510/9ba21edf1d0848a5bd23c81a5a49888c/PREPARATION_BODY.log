@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "<string>", line 23, in <module>
+  File "/home/abe/Project/Partially Randomized Trotter/.rpe-central/workers/local/spool/prep-10edcc8e07f66f49a6819510/9ba21edf1d0848a5bd23c81a5a49888c/workspace/scripts/run_pr_df_candidate_prices.py", line 724, in main
+    if a.mode=='acquire':return 0 if acquire(inputs,a.inputs_commit,a.stage,a.source,a.model_commit)else 2
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.rpe-central/workers/local/spool/prep-10edcc8e07f66f49a6819510/9ba21edf1d0848a5bd23c81a5a49888c/workspace/scripts/run_pr_df_candidate_prices.py", line 654, in acquire
+    try:return _acquire(inputs,input_commit,stage,source,model_commit)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.rpe-central/workers/local/spool/prep-10edcc8e07f66f49a6819510/9ba21edf1d0848a5bd23c81a5a49888c/workspace/scripts/run_pr_df_candidate_prices.py", line 599, in _acquire
+    runtimes[cell['m']]=r;contexts[cell['m']]=r.context(cell['request'])
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.rpe-central/workers/local/spool/prep-10edcc8e07f66f49a6819510/9ba21edf1d0848a5bd23c81a5a49888c/workspace/src/trottertracks/candidate_price_adapter.py@e827367629ca6c2920d9d908fc1631314399db86", line 206, in context
+ValueError: Preparation hash or exact tail lambda differs; empty tail outside domain

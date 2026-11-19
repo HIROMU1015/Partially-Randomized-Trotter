@@ -1,0 +1,3610 @@
+{
+  "schema": "PR_DF_CANDIDATE_PRICE_INPUTS_V1",
+  "source": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+  "configuration": {
+    "commit": "9ebe1006b1a6387bca515cc2253184c08b163213",
+    "path": "search-evidence/search-9c1865e787c6aab3d251/completion/candidates/5496051fc6ea607899d8/CONFIGURATION.json",
+    "selector": []
+  },
+  "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+  "output_directory": "search-evidence/search-9c1865e787c6aab3d251/completion/candidates/5496051fc6ea607899d8/df_price_groups/02d8888c5457fb0fb449/df_prices",
+  "covered_rounds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "parallel_axes": true,
+  "cohort_adoption": [
+    {
+      "m": 0,
+      "status": "KEEP_NEW_FIXED_COHORT",
+      "cohort": "D2_AUTO_DF_02d8888c5457fb0fb449_CALIBRATION",
+      "rejected": []
+    },
+    {
+      "m": 6,
+      "status": "KEEP_NEW_FIXED_COHORT",
+      "cohort": "D2_AUTO_DF_02d8888c5457fb0fb449_CALIBRATION",
+      "rejected": []
+    }
+  ],
+  "price_reuse": [],
+  "tail_descriptor": null,
+  "cells": [
+    {
+      "m": 0,
+      "role": "CALIBRATION",
+      "request": {
+        "schema": "PR_CANDIDATE_PRICE_REQUEST_V1",
+        "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+        "m": 0,
+        "identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 2,
+          "candidate": {
+            "id": "RMSE:b2478eadbb03aeab5d7b939248634b5bafd03332f8bc1739494fc99a91295604",
+            "method": "PR",
+            "system": "H4",
+            "prefix": 7,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "q": 2,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 72057594037927936
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 2,
+            "physical_method": "PR",
+            "source_candidate_id": "f3fbf69426d2550b000b"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 7,
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "deterministic_scope": "PREFIX",
+              "original_PF_method": "B0",
+              "lambda_R": {
+                "numerator": 2886490382642983,
+                "denominator": 9223372036854775808
+              },
+              "lambda_source": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "7"
+                ]
+              }
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+              "source": {
+                "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                "path": "scripts/run_pr_rpe_rmse_s0.py",
+                "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+              },
+              "target_rmse_ha": {
+                "numerator": 3890625249,
+                "denominator": 2441406250000
+              },
+              "error_contract": {
+                "A_policy": {
+                  "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                  "metric": "energy_RMSE",
+                  "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                  "family": "PR_PAPER_RMSE",
+                  "target_rmse": "3890625249/2441406250000",
+                  "qpe_rmse": "3890625249/4882812500000",
+                  "evolution_rmse": "3890625249/4882812500000",
+                  "error_rule": "minkowski",
+                  "normalization_rule": "finite_B_diagnostic",
+                  "N_terminal": 11,
+                  "slope_D": 4,
+                  "Cmax": {
+                    "PF": 0.08,
+                    "PR": 0.1
+                  },
+                  "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                  "source": {
+                    "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                    "path": "scripts/run_pr_rpe_rmse_s0.py",
+                    "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                  },
+                  "paper": {
+                    "url": "https://arxiv.org/pdf/2503.05647v2",
+                    "sections": [
+                      "B.2",
+                      "E.1",
+                      "E.3"
+                    ],
+                    "equations": [
+                      "A38",
+                      "B30",
+                      "E1",
+                      "E2",
+                      "E21",
+                      "E22"
+                    ]
+                  },
+                  "high_probability_compatible": false
+                },
+                "state_assumption": "saved_numerical_state_conditional_ground",
+                "energy_prior_ha": [
+                  -4.994249624417489,
+                  -2.0985459369977186
+                ],
+                "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+              },
+              "scientific_status": "PROPOSED_NOT_ADOPTED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+            "spec": {
+              "schedule_adapter": "A_FIXED_GRID_510FBACD_V1",
+              "A_input": {
+                "M": 12,
+                "kappa_paper": "1",
+                "design": {
+                  "system": "H4",
+                  "base_time": 0.1,
+                  "delta": 0.05,
+                  "formula": "2nd",
+                  "prefix": 7,
+                  "K": 2,
+                  "PF": {
+                    "method": "B0",
+                    "prefix": 7
+                  },
+                  "binding": {
+                    "T": 0.8,
+                    "basis": "STO-3G",
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "geometry": "linear_1Angstrom",
+                    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                    "profile_is_reference_only": true,
+                    "rank": 10,
+                    "rank_is_saved_observation_not_generation_argument": true,
+                    "rank_policy": "tol_only_1e-8",
+                    "series": "H4_TOL_ONLY_DF10",
+                    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                    "system": "H4"
+                  },
+                  "profile": {
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "wrapper": "full_Hadamard_with_measurement",
+                    "scope": "single_hadamard_interrogation_without_state_preparation",
+                    "P": 0,
+                    "qiskit_version": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed_transpiler": 17
+                  },
+                  "contract": {
+                    "completion": "saved_weighted_Hermitian_completion",
+                    "fragment_order": "saved_snapshot_order",
+                    "preparation_binding": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                      "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                    },
+                    "state_preparation_cost": 0,
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    }
+                  },
+                  "energy_prior_ha": [
+                    -4.994249624417489,
+                    -2.0985459369977186
+                  ],
+                  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1",
+                  "state_assumption": "saved_numerical_state_conditional_ground",
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  },
+                  "early_rounds": []
+                },
+                "tail_norm": {
+                  "binding": {
+                    "T": 0.8,
+                    "basis": "STO-3G",
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "geometry": "linear_1Angstrom",
+                    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                    "profile_is_reference_only": true,
+                    "rank": 10,
+                    "rank_is_saved_observation_not_generation_argument": true,
+                    "rank_policy": "tol_only_1e-8",
+                    "series": "H4_TOL_ONLY_DF10",
+                    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                    "system": "H4"
+                  },
+                  "prefix": 7,
+                  "lambda_R": 0.0003129539143720037,
+                  "source": {
+                    "index": {
+                      "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                      "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                    },
+                    "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                    "selector": [
+                      "prefixes",
+                      "7"
+                    ]
+                  }
+                },
+                "policy": {
+                  "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                  "metric": "energy_RMSE",
+                  "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                  "family": "PR_PAPER_RMSE",
+                  "target_rmse": "3890625249/2441406250000",
+                  "qpe_rmse": "3890625249/4882812500000",
+                  "evolution_rmse": "3890625249/4882812500000",
+                  "error_rule": "minkowski",
+                  "normalization_rule": "finite_B_diagnostic",
+                  "N_terminal": 11,
+                  "slope_D": 4,
+                  "Cmax": {
+                    "PF": 0.08,
+                    "PR": 0.1
+                  },
+                  "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                  "source": {
+                    "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                    "path": "scripts/run_pr_rpe_rmse_s0.py",
+                    "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                  },
+                  "paper": {
+                    "url": "https://arxiv.org/pdf/2503.05647v2",
+                    "sections": [
+                      "B.2",
+                      "E.1",
+                      "E.3"
+                    ],
+                    "equations": [
+                      "A38",
+                      "B30",
+                      "E1",
+                      "E2",
+                      "E21",
+                      "E22"
+                    ]
+                  },
+                  "high_probability_compatible": false
+                }
+              },
+              "A_release": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "binding": {
+                "T": 0.8,
+                "basis": "STO-3G",
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "geometry": "linear_1Angstrom",
+                "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                "profile_is_reference_only": true,
+                "rank": 10,
+                "rank_is_saved_observation_not_generation_argument": true,
+                "rank_policy": "tol_only_1e-8",
+                "series": "H4_TOL_ONLY_DF10",
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                "system": "H4",
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                },
+                "decomposition": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "contract": {
+                    "completion": "saved_weighted_Hermitian_completion",
+                    "fragment_order": "saved_snapshot_order",
+                    "preparation_binding": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                      "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                    },
+                    "state_preparation_cost": 0,
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    }
+                  },
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  }
+                }
+              },
+              "method": "PR",
+              "L_D": 7,
+              "split": {
+                "L_D": 7,
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "deterministic_scope": "PREFIX",
+                "original_PF_method": "B0",
+                "lambda_R": {
+                  "numerator": 2886490382642983,
+                  "denominator": 9223372036854775808
+                },
+                "lambda_source": {
+                  "index": {
+                    "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                    "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                  },
+                  "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                  "selector": [
+                    "prefixes",
+                    "7"
+                  ]
+                }
+              },
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 72057594037927936
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "M": 12,
+              "kappa": {
+                "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "url": "https://arxiv.org/pdf/2503.05647v2",
+                  "sections": [
+                    "B.2",
+                    "E.1",
+                    "E.3"
+                  ],
+                  "equations": [
+                    "A38",
+                    "B30",
+                    "E1",
+                    "E2",
+                    "E21",
+                    "E22"
+                  ]
+                }
+              },
+              "event_mapping": {
+                "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+                "source": {
+                  "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+                  "path": "src/trottertracks/pr_rpe_rmse.py"
+                },
+                "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+              },
+              "finite_K": 2,
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                }
+              },
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                "source": {
+                  "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                  "path": "scripts/run_pr_rpe_rmse_s0.py",
+                  "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                },
+                "target_rmse_ha": {
+                  "numerator": 3890625249,
+                  "denominator": 2441406250000
+                },
+                "error_contract": {
+                  "A_policy": {
+                    "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                    "metric": "energy_RMSE",
+                    "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                    "family": "PR_PAPER_RMSE",
+                    "target_rmse": "3890625249/2441406250000",
+                    "qpe_rmse": "3890625249/4882812500000",
+                    "evolution_rmse": "3890625249/4882812500000",
+                    "error_rule": "minkowski",
+                    "normalization_rule": "finite_B_diagnostic",
+                    "N_terminal": 11,
+                    "slope_D": 4,
+                    "Cmax": {
+                      "PF": 0.08,
+                      "PR": 0.1
+                    },
+                    "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                    "source": {
+                      "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                      "path": "scripts/run_pr_rpe_rmse_s0.py",
+                      "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                    },
+                    "paper": {
+                      "url": "https://arxiv.org/pdf/2503.05647v2",
+                      "sections": [
+                        "B.2",
+                        "E.1",
+                        "E.3"
+                      ],
+                      "equations": [
+                        "A38",
+                        "B30",
+                        "E1",
+                        "E2",
+                        "E21",
+                        "E22"
+                      ]
+                    },
+                    "high_probability_compatible": false
+                  },
+                  "state_assumption": "saved_numerical_state_conditional_ground",
+                  "energy_prior_ha": [
+                    -4.994249624417489,
+                    -2.0985459369977186
+                  ],
+                  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+                },
+                "scientific_status": "PROPOSED_NOT_ADOPTED"
+              },
+              "profile": {
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "f3fbf69426d2550b000b",
+              "R_outer": 1,
+              "K": 2,
+              "q_PF": 2,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+          "candidate_id": "RMSE:b2478eadbb03aeab5d7b939248634b5bafd03332f8bc1739494fc99a91295604",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_context": {
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 7,
+            "T": 0.1,
+            "q": 2,
+            "delta": 0.05,
+            "R_outer": 1,
+            "K": 2,
+            "id": "f3fbf69426d2550b000b"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "split": {
+            "L_D": 7,
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "deterministic_scope": "PREFIX",
+            "original_PF_method": "B0",
+            "lambda_R": {
+              "numerator": 2886490382642983,
+              "denominator": 9223372036854775808
+            },
+            "lambda_source": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "7"
+              ]
+            }
+          },
+          "one_body_policy": "DETERMINISTIC",
+          "law": {
+            "definition": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              },
+              "A_declaration": {
+                "model": "ideal_finite_RTE_law",
+                "candidate_id": "f3fbf69426d2550b000b",
+                "R_outer": 1,
+                "K": 2,
+                "q_PF": 2,
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              }
+            },
+            "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+            "candidate_id": "RMSE:b2478eadbb03aeab5d7b939248634b5bafd03332f8bc1739494fc99a91295604",
+            "kappa": {
+              "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              }
+            },
+            "event_mapping": {
+              "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+              "source": {
+                "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+                "path": "src/trottertracks/pr_rpe_rmse.py"
+              },
+              "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+            }
+          },
+          "price_profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17,
+            "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+          },
+          "preparation_hash": null,
+          "input_source": {
+            "configuration": {
+              "commit": "9ebe1006b1a6387bca515cc2253184c08b163213",
+              "path": "search-evidence/search-9c1865e787c6aab3d251/completion/candidates/5496051fc6ea607899d8/CONFIGURATION.json",
+              "selector": []
+            },
+            "tail": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "7"
+              ]
+            },
+            "scalar": {
+              "hamiltonian_constant": {
+                "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+                "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/SCALAR.json",
+                "selector": [
+                  "hamiltonian_constant"
+                ]
+              },
+              "tail": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "7"
+                ]
+              }
+            }
+          },
+          "execution_source": {
+            "commit": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+            "path": "scripts/run_pr_df_candidate_prices.py"
+          },
+          "implementation": {
+            "carrier": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+            "C1": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+            "fast_base": "5a67cea7705e80ff295306606611d774724ae2e2",
+            "adapter": "PR_CANDIDATE_PRICE_CONTEXT_V1"
+          },
+          "expected_scalar": 2.293146549384713
+        },
+        "context_key": "6468a8220a320f6daac3dbdb529366dfe8fc1cf40d9f5e265f70c233a6d05208",
+        "request_id": "c05647cff83991391bb9bb5764d258a3d2d4ae984f9d2b9bab04797147a09d53"
+      },
+      "cohort": "D2_AUTO_DF_02d8888c5457fb0fb449_CALIBRATION",
+      "indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "seeds": [
+        [
+          6111954270785941466,
+          7954804586772593489
+        ],
+        [
+          11461845302830290757,
+          13847619696391916159
+        ],
+        [
+          14738334698714009776,
+          16658592854909818303
+        ],
+        [
+          17585160408954532009,
+          9978825072590333143
+        ]
+      ],
+      "axis_evidence": {
+        "0": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        },
+        "1": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        },
+        "2": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        },
+        "3": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        }
+      }
+    },
+    {
+      "m": 6,
+      "role": "CALIBRATION",
+      "request": {
+        "schema": "PR_CANDIDATE_PRICE_REQUEST_V1",
+        "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+        "m": 6,
+        "identity": {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 128,
+          "candidate": {
+            "id": "RMSE:4276002cc9d71ee26de6b180e3bc9b383f6ff6fb1e19307077b1012062b72d3c",
+            "method": "PR",
+            "system": "H4",
+            "prefix": 7,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 562949953421312
+            },
+            "q": 128,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 72057594037927936
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 128,
+            "physical_method": "PR",
+            "source_candidate_id": "cc0dc2752d9a043566c9"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 7,
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "deterministic_scope": "PREFIX",
+              "original_PF_method": "B0",
+              "lambda_R": {
+                "numerator": 2886490382642983,
+                "denominator": 9223372036854775808
+              },
+              "lambda_source": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "7"
+                ]
+              }
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+              "source": {
+                "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                "path": "scripts/run_pr_rpe_rmse_s0.py",
+                "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+              },
+              "target_rmse_ha": {
+                "numerator": 3890625249,
+                "denominator": 2441406250000
+              },
+              "error_contract": {
+                "A_policy": {
+                  "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                  "metric": "energy_RMSE",
+                  "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                  "family": "PR_PAPER_RMSE",
+                  "target_rmse": "3890625249/2441406250000",
+                  "qpe_rmse": "3890625249/4882812500000",
+                  "evolution_rmse": "3890625249/4882812500000",
+                  "error_rule": "minkowski",
+                  "normalization_rule": "finite_B_diagnostic",
+                  "N_terminal": 11,
+                  "slope_D": 4,
+                  "Cmax": {
+                    "PF": 0.08,
+                    "PR": 0.1
+                  },
+                  "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                  "source": {
+                    "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                    "path": "scripts/run_pr_rpe_rmse_s0.py",
+                    "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                  },
+                  "paper": {
+                    "url": "https://arxiv.org/pdf/2503.05647v2",
+                    "sections": [
+                      "B.2",
+                      "E.1",
+                      "E.3"
+                    ],
+                    "equations": [
+                      "A38",
+                      "B30",
+                      "E1",
+                      "E2",
+                      "E21",
+                      "E22"
+                    ]
+                  },
+                  "high_probability_compatible": false
+                },
+                "state_assumption": "saved_numerical_state_conditional_ground",
+                "energy_prior_ha": [
+                  -4.994249624417489,
+                  -2.0985459369977186
+                ],
+                "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+              },
+              "scientific_status": "PROPOSED_NOT_ADOPTED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+            "spec": {
+              "schedule_adapter": "A_FIXED_GRID_510FBACD_V1",
+              "A_input": {
+                "M": 12,
+                "kappa_paper": "1",
+                "design": {
+                  "system": "H4",
+                  "base_time": 0.1,
+                  "delta": 0.05,
+                  "formula": "2nd",
+                  "prefix": 7,
+                  "K": 2,
+                  "PF": {
+                    "method": "B0",
+                    "prefix": 7
+                  },
+                  "binding": {
+                    "T": 0.8,
+                    "basis": "STO-3G",
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "geometry": "linear_1Angstrom",
+                    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                    "profile_is_reference_only": true,
+                    "rank": 10,
+                    "rank_is_saved_observation_not_generation_argument": true,
+                    "rank_policy": "tol_only_1e-8",
+                    "series": "H4_TOL_ONLY_DF10",
+                    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                    "system": "H4"
+                  },
+                  "profile": {
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "wrapper": "full_Hadamard_with_measurement",
+                    "scope": "single_hadamard_interrogation_without_state_preparation",
+                    "P": 0,
+                    "qiskit_version": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed_transpiler": 17
+                  },
+                  "contract": {
+                    "completion": "saved_weighted_Hermitian_completion",
+                    "fragment_order": "saved_snapshot_order",
+                    "preparation_binding": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                      "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                    },
+                    "state_preparation_cost": 0,
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    }
+                  },
+                  "energy_prior_ha": [
+                    -4.994249624417489,
+                    -2.0985459369977186
+                  ],
+                  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1",
+                  "state_assumption": "saved_numerical_state_conditional_ground",
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  },
+                  "early_rounds": []
+                },
+                "tail_norm": {
+                  "binding": {
+                    "T": 0.8,
+                    "basis": "STO-3G",
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "geometry": "linear_1Angstrom",
+                    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                    "profile_is_reference_only": true,
+                    "rank": 10,
+                    "rank_is_saved_observation_not_generation_argument": true,
+                    "rank_policy": "tol_only_1e-8",
+                    "series": "H4_TOL_ONLY_DF10",
+                    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                    "system": "H4"
+                  },
+                  "prefix": 7,
+                  "lambda_R": 0.0003129539143720037,
+                  "source": {
+                    "index": {
+                      "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                      "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                    },
+                    "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                    "selector": [
+                      "prefixes",
+                      "7"
+                    ]
+                  }
+                },
+                "policy": {
+                  "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                  "metric": "energy_RMSE",
+                  "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                  "family": "PR_PAPER_RMSE",
+                  "target_rmse": "3890625249/2441406250000",
+                  "qpe_rmse": "3890625249/4882812500000",
+                  "evolution_rmse": "3890625249/4882812500000",
+                  "error_rule": "minkowski",
+                  "normalization_rule": "finite_B_diagnostic",
+                  "N_terminal": 11,
+                  "slope_D": 4,
+                  "Cmax": {
+                    "PF": 0.08,
+                    "PR": 0.1
+                  },
+                  "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                  "source": {
+                    "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                    "path": "scripts/run_pr_rpe_rmse_s0.py",
+                    "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                  },
+                  "paper": {
+                    "url": "https://arxiv.org/pdf/2503.05647v2",
+                    "sections": [
+                      "B.2",
+                      "E.1",
+                      "E.3"
+                    ],
+                    "equations": [
+                      "A38",
+                      "B30",
+                      "E1",
+                      "E2",
+                      "E21",
+                      "E22"
+                    ]
+                  },
+                  "high_probability_compatible": false
+                }
+              },
+              "A_release": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "binding": {
+                "T": 0.8,
+                "basis": "STO-3G",
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "geometry": "linear_1Angstrom",
+                "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                "profile_is_reference_only": true,
+                "rank": 10,
+                "rank_is_saved_observation_not_generation_argument": true,
+                "rank_policy": "tol_only_1e-8",
+                "series": "H4_TOL_ONLY_DF10",
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                "system": "H4",
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                },
+                "decomposition": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "contract": {
+                    "completion": "saved_weighted_Hermitian_completion",
+                    "fragment_order": "saved_snapshot_order",
+                    "preparation_binding": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                      "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                    },
+                    "state_preparation_cost": 0,
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    }
+                  },
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  }
+                }
+              },
+              "method": "PR",
+              "L_D": 7,
+              "split": {
+                "L_D": 7,
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "deterministic_scope": "PREFIX",
+                "original_PF_method": "B0",
+                "lambda_R": {
+                  "numerator": 2886490382642983,
+                  "denominator": 9223372036854775808
+                },
+                "lambda_source": {
+                  "index": {
+                    "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                    "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                  },
+                  "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                  "selector": [
+                    "prefixes",
+                    "7"
+                  ]
+                }
+              },
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 72057594037927936
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "M": 12,
+              "kappa": {
+                "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "url": "https://arxiv.org/pdf/2503.05647v2",
+                  "sections": [
+                    "B.2",
+                    "E.1",
+                    "E.3"
+                  ],
+                  "equations": [
+                    "A38",
+                    "B30",
+                    "E1",
+                    "E2",
+                    "E21",
+                    "E22"
+                  ]
+                }
+              },
+              "event_mapping": {
+                "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+                "source": {
+                  "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+                  "path": "src/trottertracks/pr_rpe_rmse.py"
+                },
+                "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+              },
+              "finite_K": 2,
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                }
+              },
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                "source": {
+                  "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                  "path": "scripts/run_pr_rpe_rmse_s0.py",
+                  "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                },
+                "target_rmse_ha": {
+                  "numerator": 3890625249,
+                  "denominator": 2441406250000
+                },
+                "error_contract": {
+                  "A_policy": {
+                    "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                    "metric": "energy_RMSE",
+                    "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                    "family": "PR_PAPER_RMSE",
+                    "target_rmse": "3890625249/2441406250000",
+                    "qpe_rmse": "3890625249/4882812500000",
+                    "evolution_rmse": "3890625249/4882812500000",
+                    "error_rule": "minkowski",
+                    "normalization_rule": "finite_B_diagnostic",
+                    "N_terminal": 11,
+                    "slope_D": 4,
+                    "Cmax": {
+                      "PF": 0.08,
+                      "PR": 0.1
+                    },
+                    "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                    "source": {
+                      "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                      "path": "scripts/run_pr_rpe_rmse_s0.py",
+                      "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                    },
+                    "paper": {
+                      "url": "https://arxiv.org/pdf/2503.05647v2",
+                      "sections": [
+                        "B.2",
+                        "E.1",
+                        "E.3"
+                      ],
+                      "equations": [
+                        "A38",
+                        "B30",
+                        "E1",
+                        "E2",
+                        "E21",
+                        "E22"
+                      ]
+                    },
+                    "high_probability_compatible": false
+                  },
+                  "state_assumption": "saved_numerical_state_conditional_ground",
+                  "energy_prior_ha": [
+                    -4.994249624417489,
+                    -2.0985459369977186
+                  ],
+                  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+                },
+                "scientific_status": "PROPOSED_NOT_ADOPTED"
+              },
+              "profile": {
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "cc0dc2752d9a043566c9",
+              "R_outer": 1,
+              "K": 2,
+              "q_PF": 128,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+          "candidate_id": "RMSE:4276002cc9d71ee26de6b180e3bc9b383f6ff6fb1e19307077b1012062b72d3c",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_context": {
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 7,
+            "T": 6.4,
+            "q": 128,
+            "delta": 0.05,
+            "R_outer": 1,
+            "K": 2,
+            "id": "cc0dc2752d9a043566c9"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "split": {
+            "L_D": 7,
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "deterministic_scope": "PREFIX",
+            "original_PF_method": "B0",
+            "lambda_R": {
+              "numerator": 2886490382642983,
+              "denominator": 9223372036854775808
+            },
+            "lambda_source": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "7"
+              ]
+            }
+          },
+          "one_body_policy": "DETERMINISTIC",
+          "law": {
+            "definition": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              },
+              "A_declaration": {
+                "model": "ideal_finite_RTE_law",
+                "candidate_id": "cc0dc2752d9a043566c9",
+                "R_outer": 1,
+                "K": 2,
+                "q_PF": 128,
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              }
+            },
+            "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+            "candidate_id": "RMSE:4276002cc9d71ee26de6b180e3bc9b383f6ff6fb1e19307077b1012062b72d3c",
+            "kappa": {
+              "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              }
+            },
+            "event_mapping": {
+              "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+              "source": {
+                "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+                "path": "src/trottertracks/pr_rpe_rmse.py"
+              },
+              "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+            }
+          },
+          "price_profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17,
+            "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+          },
+          "preparation_hash": null,
+          "input_source": {
+            "configuration": {
+              "commit": "9ebe1006b1a6387bca515cc2253184c08b163213",
+              "path": "search-evidence/search-9c1865e787c6aab3d251/completion/candidates/5496051fc6ea607899d8/CONFIGURATION.json",
+              "selector": []
+            },
+            "tail": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "7"
+              ]
+            },
+            "scalar": {
+              "hamiltonian_constant": {
+                "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+                "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/SCALAR.json",
+                "selector": [
+                  "hamiltonian_constant"
+                ]
+              },
+              "tail": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "7"
+                ]
+              }
+            }
+          },
+          "execution_source": {
+            "commit": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+            "path": "scripts/run_pr_df_candidate_prices.py"
+          },
+          "implementation": {
+            "carrier": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+            "C1": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+            "fast_base": "5a67cea7705e80ff295306606611d774724ae2e2",
+            "adapter": "PR_CANDIDATE_PRICE_CONTEXT_V1"
+          },
+          "expected_scalar": 2.293146549384713
+        },
+        "context_key": "8f0b46149088de31c89708075dedbc79472d94ac1001ac6e5444f1b2d2d9046d",
+        "request_id": "42b7d85acac362ccd140816d324181ceb3969f6a80fd20131733e3d98e21b342"
+      },
+      "cohort": "D2_AUTO_DF_02d8888c5457fb0fb449_CALIBRATION",
+      "indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "seeds": [
+        [
+          17255637337142425434,
+          13528340440954056817,
+          3869999372718585170,
+          11159893337268108370,
+          5513670959894211591,
+          2173087757966437279,
+          6686460129842367425,
+          6601495884018022222,
+          7732663441007980170,
+          6210113454699591744,
+          48762616584248167,
+          14134707453271575064,
+          16846879637503266281,
+          7357561401580998648,
+          2412297578758104327,
+          998718419832061919,
+          2738944293917478117,
+          6917968420576992714,
+          191289707275672694,
+          4564845022162888198,
+          11820678745454762208,
+          1270571729977537721,
+          16198159759405432459,
+          4588263047310893770,
+          6991701185178933520,
+          17573293123571073366,
+          2491720549664974594,
+          15175808472862667589,
+          6919290846397869654,
+          6727226486220467390,
+          806782895563526233,
+          11930758566905529170,
+          2831799571339730191,
+          11724313397300078601,
+          4132678808839408653,
+          3292245171298534064,
+          5259147144520791379,
+          11373656983489954818,
+          14000492360324729203,
+          9838649631694441496,
+          13048809509606987288,
+          3761274024740757770,
+          16365945145050849574,
+          10173765628636181533,
+          3511953592988899124,
+          17338240925925159642,
+          6893800235393674053,
+          6573150066144822073,
+          11933016763352319721,
+          18402037650044609605,
+          10249174112766793955,
+          5182430409367103130,
+          15609930741466659634,
+          7087295078452547485,
+          195678878267732050,
+          7549901164107644294,
+          2968922471945495270,
+          2437303862987611210,
+          2616039207811238322,
+          7416323811182926623,
+          6605782769903085955,
+          5113275924323855521,
+          10471308656353124760,
+          841180458891377233,
+          16616981358756684480,
+          10550716739999336771,
+          7607585619204929564,
+          1468518235066231869,
+          88738457648737362,
+          1338247082026761789,
+          18288657854400511125,
+          2069626383563583092,
+          2169721295408597324,
+          16385485833916194510,
+          17643309575202617347,
+          976117007187777544,
+          588273224356054083,
+          3537107251281097216,
+          16017084506218363846,
+          13932494097657925160,
+          5450459962701630830,
+          9485291683744490237,
+          18297994957550847469,
+          15052158100642128626,
+          11053382024233576083,
+          10728275257316695628,
+          1117419193437270799,
+          15279722266681162858,
+          6589298971492918798,
+          8021709716605398801,
+          13012599237406559481,
+          613903000654341474,
+          17497739187824561041,
+          10476753869267066749,
+          3736641241305593857,
+          11549043862574620693,
+          11799346593884129132,
+          130952457742735543,
+          3520727070476827367,
+          183155240588912733,
+          15347865366684051611,
+          12436423743375274794,
+          13689715009427915990,
+          5758658450539315404,
+          6034093887973313276,
+          9254413233768192699,
+          7787424251137130100,
+          1670785586697443457,
+          13576438907970370075,
+          1510880834883536763,
+          507720764018607540,
+          12519252791599896907,
+          18206888556719354342,
+          16023795254745794596,
+          1610061919591222686,
+          6249508980055251144,
+          15756671945072748543,
+          2010356798755527297,
+          12458169460514040197,
+          3912251226290322396,
+          4387003915237642541,
+          16942319545196982542,
+          3300735906258823832,
+          6066121079098707058,
+          15575750365578152510,
+          6323343749528229689,
+          10030177336694192510,
+          952382846253954309
+        ],
+        [
+          3738842809812167207,
+          11959346652162680642,
+          1759778136613465613,
+          15539446691056071316,
+          12612772035766085174,
+          1460900032094231697,
+          2480234396687952421,
+          12874659761934066957,
+          600719472553664243,
+          15539407350646627303,
+          11559987573517451298,
+          7632258162771172845,
+          7478968249541632326,
+          11989616759478691825,
+          8934807261688706867,
+          6178624740360428179,
+          9373934967268285923,
+          225813796687870642,
+          14535506973162800111,
+          13879970741844889658,
+          18041744021598128082,
+          6148328611450327552,
+          3662731836584939175,
+          3288501136312283649,
+          11668720795306943884,
+          4929699548473616125,
+          16318237838387198034,
+          518485755419258675,
+          15153560952943025106,
+          12124769579844986805,
+          11652790048901709557,
+          4359534615766815023,
+          8299729126792473328,
+          7190222248654523770,
+          5848784166458563728,
+          11124035131303782486,
+          1613026150469760194,
+          8749913931356976962,
+          5052290776110666033,
+          8554506574876335670,
+          14905095970968070799,
+          12871288844873414748,
+          14262897997286834449,
+          7277064497666270551,
+          13889997532230052344,
+          15570058682700042835,
+          7868029151685687469,
+          18255634039762601872,
+          15409664242886934229,
+          17520658246090135853,
+          2185305444129326828,
+          15000001825946362921,
+          3852653771064894621,
+          10543247311627652983,
+          16413515902442850565,
+          9508778223320534489,
+          5747032632759773374,
+          18286820791139049523,
+          4332797263274955499,
+          9788692718588003624,
+          18105479418985513702,
+          7780201356292226420,
+          17149609450880818474,
+          74653044048231894,
+          17411856450106953177,
+          11917659063666772977,
+          11564999919843187056,
+          5089485009084449534,
+          16812135715333451442,
+          853614218954040180,
+          8865689189415971173,
+          10374872215142129940,
+          16988681048402537010,
+          17532385807365136918,
+          5214359692971063032,
+          4984503819952275021,
+          17151968035565276144,
+          8388519198836995896,
+          1696853315017636290,
+          10561850928032071294,
+          14876526950797446227,
+          8645175823228873809,
+          3609509074405173461,
+          9718665486272265147,
+          1003977259074173677,
+          12059214498722783837,
+          8441913932427246639,
+          14892517190946127397,
+          8836561011490605709,
+          6371708067157949738,
+          13026299374064579126,
+          10621530821571512813,
+          10476722643894246160,
+          3096968535688416346,
+          17113080970430319559,
+          17171070176371181458,
+          8186435883111721729,
+          14364083696719236174,
+          85579461252898661,
+          10776105235261700098,
+          109326248043361707,
+          8418066721580297644,
+          13676158389202778871,
+          3837948031184181678,
+          1710243083291027199,
+          3292035415819292748,
+          10529904865958462556,
+          4563252179038925511,
+          10275643429863832859,
+          7275759702223728277,
+          4692689809026175690,
+          2438801427507900033,
+          10221026685437563635,
+          3318925094827691328,
+          13429884149828506093,
+          13079305312862733711,
+          16017613039690885901,
+          7391614169130898742,
+          17157890731388131685,
+          13624383444254488032,
+          9256927542282557148,
+          15344908596364987532,
+          10944743747594551770,
+          10294807000924217139,
+          3420633491284160856,
+          2491264263116117829,
+          5578236881430825894,
+          15045385428456355137
+        ],
+        [
+          15221642136060588417,
+          1138308975736621760,
+          5271638327199267148,
+          17260790268769434622,
+          10047607748720868059,
+          9101302320132617362,
+          964771912104616329,
+          16519384125220087875,
+          7605135318461332537,
+          5547358798059841568,
+          15098922920815355428,
+          10143683750072977603,
+          3055099713690160555,
+          6244095070986832548,
+          487206835217833593,
+          18094428495826799983,
+          1749547920131400611,
+          14638110426318735691,
+          5399898185437343920,
+          15049661602400299237,
+          5227071476384005133,
+          13059013944870518704,
+          17150698927461558270,
+          16212259929223697478,
+          5570558502386167835,
+          16598215019488059855,
+          9114220882634017421,
+          17616685568407769827,
+          7020886682430661580,
+          5793870889919223685,
+          7554416183814755923,
+          8645106436767412049,
+          18407147793004216201,
+          419291611501261200,
+          1312186524360067016,
+          17268200389448120129,
+          2849998409148613930,
+          10210456555094667029,
+          15029059022143313773,
+          10503301409553816492,
+          14204793778061361397,
+          4895403828556565576,
+          17583424607625459585,
+          7752835142721376407,
+          10743107966047769919,
+          11646739985070261819,
+          17845909279621189008,
+          238362652618566426,
+          8660316790286424915,
+          15668902668272037839,
+          16993579411972387362,
+          11651380096587165444,
+          8713779344349499885,
+          15652521913739619530,
+          6673226289718417603,
+          12711476270300776980,
+          11574055766917787544,
+          18040438524366504494,
+          11024996769758849659,
+          3595939712406979215,
+          10117512345496606225,
+          5106731620114322525,
+          17230668740251314387,
+          13972010002844768748,
+          6181394035661509117,
+          13394980528460666193,
+          4431871767561623505,
+          13932632377735000543,
+          10711535067123085808,
+          5821261846353514825,
+          6403537110564085104,
+          1589028674018455366,
+          967415483033447771,
+          12748177588463665871,
+          2795827190287335812,
+          16155448343928256921,
+          5964894410613547150,
+          14849565449172946055,
+          17860933270242511690,
+          8679899468445512267,
+          120985057183550760,
+          7703681399248767973,
+          13433579469135906904,
+          7300450634891666674,
+          14341510928997693230,
+          9422520376079169675,
+          17712919193552005638,
+          17203626028902104278,
+          16299186615636643469,
+          5092761930550246635,
+          799279278918634448,
+          16276459615787845553,
+          10778926740080549372,
+          7157712745790405065,
+          13862378118108457619,
+          3764950001058083695,
+          4253633017519739185,
+          13519252389049037749,
+          14254396279872987922,
+          250677165105526122,
+          14827690228882488760,
+          9085771954473238845,
+          10984843727072277541,
+          17286617899087168117,
+          11617606048474987237,
+          14663642386607018105,
+          11011442495061786930,
+          11337076543266609584,
+          17381893512219720085,
+          7643141283870580405,
+          1227314652395311790,
+          7093837369371611410,
+          8055542769045840941,
+          8504873918347874853,
+          18201831810074119289,
+          1289189151371068722,
+          6202919646082100231,
+          8316955816359917040,
+          14595898987438165883,
+          8156166912037494475,
+          12736843955535649203,
+          4655300317720099901,
+          16752096814441422531,
+          6503993016232917030,
+          4362628733439008701,
+          17036165038688479027,
+          11140053934032247823,
+          661313898977409126
+        ],
+        [
+          10385835199861700470,
+          7459024217814609188,
+          10824274564432379980,
+          8205966561060961196,
+          13626963867858147088,
+          6601903173296492127,
+          12534483626363745890,
+          6925268820852262032,
+          1534447875987036058,
+          7333967508354699887,
+          12542756096098760000,
+          841738137464858270,
+          13116530450874254746,
+          13835351082892232426,
+          3649620464791024401,
+          17708314473759071686,
+          6006873412644355368,
+          11727503610411853988,
+          17794988142603238256,
+          11879606518921482243,
+          1652258330091803864,
+          11690504370002406465,
+          14266241172301861243,
+          5355100061342666701,
+          9641766419044084831,
+          11913628300577988897,
+          14466523990784535359,
+          4714023671780769506,
+          6107441916007431126,
+          12838900147896094257,
+          8971993845568545810,
+          9192701015039167511,
+          3166041741042614317,
+          2511099183507368857,
+          17920491060248779845,
+          3950661512617324339,
+          10863155484173724487,
+          6053133425094624036,
+          9375615321735084860,
+          4394288094846602158,
+          5514662732461912833,
+          710438733939451918,
+          8516614002661841090,
+          13015392568537549229,
+          61315592829980971,
+          1423689182330802725,
+          17418659898193425248,
+          9390478644680219462,
+          8417055171043739182,
+          12096497749681254764,
+          2926947076690976876,
+          6873245743957651268,
+          1271498996995785900,
+          5124122583378726879,
+          1475603194041471681,
+          6464765064524967946,
+          11164910562591147623,
+          8053757492667623979,
+          12815617774926022109,
+          15605760304640315094,
+          12273860549927098459,
+          13094780322574450404,
+          3415070259713671099,
+          14140866212877360341,
+          3338828292771666078,
+          11785178217696477577,
+          15666576691641529108,
+          12694776310144696549,
+          6298237970552256222,
+          7874647967730327303,
+          9662323453942394332,
+          8360496218613666851,
+          10440452697552182800,
+          15422386940488057585,
+          7542489329989037188,
+          8201633187666438551,
+          11709086567146389989,
+          5670695765408852833,
+          15669922331239471437,
+          8834986925090890942,
+          13923286399173042696,
+          12938141983635468121,
+          13845779337896456719,
+          9470955081985616133,
+          12767233043168460671,
+          15520939964990544768,
+          3070029357042506214,
+          10372672098890983733,
+          3464563831219369137,
+          9279706205231929748,
+          13893334564456203006,
+          8089039519350584097,
+          1831372654142699393,
+          17165064276412111240,
+          18103857447207173806,
+          4902042056178815237,
+          3407701099220975625,
+          6272781047375897372,
+          14335664476709174109,
+          7940349019340036048,
+          16306443263328205881,
+          12541324310691410955,
+          2467141277301836726,
+          654147667952923052,
+          7612665320081596431,
+          12341910559669994791,
+          4247479152074394321,
+          2959824133924356219,
+          16991449325892696104,
+          10132605191472124313,
+          2386979540452070240,
+          9086129925428743691,
+          18275856409871849186,
+          12137898638563067865,
+          11892244709134589598,
+          1241317453087669407,
+          10186039415428002944,
+          12567631929535769951,
+          1747680776273454307,
+          11610572953424676834,
+          16131372138766419503,
+          11909376353808311086,
+          8103620639372652164,
+          8877608498590061566,
+          3461431101045344539,
+          5674673772039527004,
+          7836960245825308399,
+          8237732997127610530
+        ]
+      ],
+      "axis_evidence": {
+        "0": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        },
+        "1": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        },
+        "2": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        },
+        "3": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        }
+      }
+    },
+    {
+      "m": 3,
+      "role": "HOLDOUT",
+      "request": {
+        "schema": "PR_CANDIDATE_PRICE_REQUEST_V1",
+        "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+        "m": 3,
+        "identity": {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 16,
+          "candidate": {
+            "id": "RMSE:090f13a9792207531609d70dab3dccd2359aad2fc2b1455feefb8d8926d33c73",
+            "method": "PR",
+            "system": "H4",
+            "prefix": 7,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q": 16,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 72057594037927936
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 16,
+            "physical_method": "PR",
+            "source_candidate_id": "65177398af820cb682f6"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 7,
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "deterministic_scope": "PREFIX",
+              "original_PF_method": "B0",
+              "lambda_R": {
+                "numerator": 2886490382642983,
+                "denominator": 9223372036854775808
+              },
+              "lambda_source": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "7"
+                ]
+              }
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+              "source": {
+                "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                "path": "scripts/run_pr_rpe_rmse_s0.py",
+                "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+              },
+              "target_rmse_ha": {
+                "numerator": 3890625249,
+                "denominator": 2441406250000
+              },
+              "error_contract": {
+                "A_policy": {
+                  "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                  "metric": "energy_RMSE",
+                  "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                  "family": "PR_PAPER_RMSE",
+                  "target_rmse": "3890625249/2441406250000",
+                  "qpe_rmse": "3890625249/4882812500000",
+                  "evolution_rmse": "3890625249/4882812500000",
+                  "error_rule": "minkowski",
+                  "normalization_rule": "finite_B_diagnostic",
+                  "N_terminal": 11,
+                  "slope_D": 4,
+                  "Cmax": {
+                    "PF": 0.08,
+                    "PR": 0.1
+                  },
+                  "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                  "source": {
+                    "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                    "path": "scripts/run_pr_rpe_rmse_s0.py",
+                    "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                  },
+                  "paper": {
+                    "url": "https://arxiv.org/pdf/2503.05647v2",
+                    "sections": [
+                      "B.2",
+                      "E.1",
+                      "E.3"
+                    ],
+                    "equations": [
+                      "A38",
+                      "B30",
+                      "E1",
+                      "E2",
+                      "E21",
+                      "E22"
+                    ]
+                  },
+                  "high_probability_compatible": false
+                },
+                "state_assumption": "saved_numerical_state_conditional_ground",
+                "energy_prior_ha": [
+                  -4.994249624417489,
+                  -2.0985459369977186
+                ],
+                "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+              },
+              "scientific_status": "PROPOSED_NOT_ADOPTED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+            "spec": {
+              "schedule_adapter": "A_FIXED_GRID_510FBACD_V1",
+              "A_input": {
+                "M": 12,
+                "kappa_paper": "1",
+                "design": {
+                  "system": "H4",
+                  "base_time": 0.1,
+                  "delta": 0.05,
+                  "formula": "2nd",
+                  "prefix": 7,
+                  "K": 2,
+                  "PF": {
+                    "method": "B0",
+                    "prefix": 7
+                  },
+                  "binding": {
+                    "T": 0.8,
+                    "basis": "STO-3G",
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "geometry": "linear_1Angstrom",
+                    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                    "profile_is_reference_only": true,
+                    "rank": 10,
+                    "rank_is_saved_observation_not_generation_argument": true,
+                    "rank_policy": "tol_only_1e-8",
+                    "series": "H4_TOL_ONLY_DF10",
+                    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                    "system": "H4"
+                  },
+                  "profile": {
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "wrapper": "full_Hadamard_with_measurement",
+                    "scope": "single_hadamard_interrogation_without_state_preparation",
+                    "P": 0,
+                    "qiskit_version": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed_transpiler": 17
+                  },
+                  "contract": {
+                    "completion": "saved_weighted_Hermitian_completion",
+                    "fragment_order": "saved_snapshot_order",
+                    "preparation_binding": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                      "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                    },
+                    "state_preparation_cost": 0,
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    }
+                  },
+                  "energy_prior_ha": [
+                    -4.994249624417489,
+                    -2.0985459369977186
+                  ],
+                  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1",
+                  "state_assumption": "saved_numerical_state_conditional_ground",
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  },
+                  "early_rounds": []
+                },
+                "tail_norm": {
+                  "binding": {
+                    "T": 0.8,
+                    "basis": "STO-3G",
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "geometry": "linear_1Angstrom",
+                    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                    "profile_is_reference_only": true,
+                    "rank": 10,
+                    "rank_is_saved_observation_not_generation_argument": true,
+                    "rank_policy": "tol_only_1e-8",
+                    "series": "H4_TOL_ONLY_DF10",
+                    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                    "system": "H4"
+                  },
+                  "prefix": 7,
+                  "lambda_R": 0.0003129539143720037,
+                  "source": {
+                    "index": {
+                      "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                      "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                    },
+                    "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                    "selector": [
+                      "prefixes",
+                      "7"
+                    ]
+                  }
+                },
+                "policy": {
+                  "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                  "metric": "energy_RMSE",
+                  "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                  "family": "PR_PAPER_RMSE",
+                  "target_rmse": "3890625249/2441406250000",
+                  "qpe_rmse": "3890625249/4882812500000",
+                  "evolution_rmse": "3890625249/4882812500000",
+                  "error_rule": "minkowski",
+                  "normalization_rule": "finite_B_diagnostic",
+                  "N_terminal": 11,
+                  "slope_D": 4,
+                  "Cmax": {
+                    "PF": 0.08,
+                    "PR": 0.1
+                  },
+                  "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                  "source": {
+                    "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                    "path": "scripts/run_pr_rpe_rmse_s0.py",
+                    "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                  },
+                  "paper": {
+                    "url": "https://arxiv.org/pdf/2503.05647v2",
+                    "sections": [
+                      "B.2",
+                      "E.1",
+                      "E.3"
+                    ],
+                    "equations": [
+                      "A38",
+                      "B30",
+                      "E1",
+                      "E2",
+                      "E21",
+                      "E22"
+                    ]
+                  },
+                  "high_probability_compatible": false
+                }
+              },
+              "A_release": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "binding": {
+                "T": 0.8,
+                "basis": "STO-3G",
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "geometry": "linear_1Angstrom",
+                "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                "profile_is_reference_only": true,
+                "rank": 10,
+                "rank_is_saved_observation_not_generation_argument": true,
+                "rank_policy": "tol_only_1e-8",
+                "series": "H4_TOL_ONLY_DF10",
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                "system": "H4",
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                },
+                "decomposition": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "contract": {
+                    "completion": "saved_weighted_Hermitian_completion",
+                    "fragment_order": "saved_snapshot_order",
+                    "preparation_binding": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                      "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                    },
+                    "state_preparation_cost": 0,
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    }
+                  },
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  }
+                }
+              },
+              "method": "PR",
+              "L_D": 7,
+              "split": {
+                "L_D": 7,
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "deterministic_scope": "PREFIX",
+                "original_PF_method": "B0",
+                "lambda_R": {
+                  "numerator": 2886490382642983,
+                  "denominator": 9223372036854775808
+                },
+                "lambda_source": {
+                  "index": {
+                    "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                    "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                  },
+                  "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                  "selector": [
+                    "prefixes",
+                    "7"
+                  ]
+                }
+              },
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 72057594037927936
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "M": 12,
+              "kappa": {
+                "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "url": "https://arxiv.org/pdf/2503.05647v2",
+                  "sections": [
+                    "B.2",
+                    "E.1",
+                    "E.3"
+                  ],
+                  "equations": [
+                    "A38",
+                    "B30",
+                    "E1",
+                    "E2",
+                    "E21",
+                    "E22"
+                  ]
+                }
+              },
+              "event_mapping": {
+                "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+                "source": {
+                  "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+                  "path": "src/trottertracks/pr_rpe_rmse.py"
+                },
+                "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+              },
+              "finite_K": 2,
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                }
+              },
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                "source": {
+                  "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                  "path": "scripts/run_pr_rpe_rmse_s0.py",
+                  "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                },
+                "target_rmse_ha": {
+                  "numerator": 3890625249,
+                  "denominator": 2441406250000
+                },
+                "error_contract": {
+                  "A_policy": {
+                    "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                    "metric": "energy_RMSE",
+                    "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                    "family": "PR_PAPER_RMSE",
+                    "target_rmse": "3890625249/2441406250000",
+                    "qpe_rmse": "3890625249/4882812500000",
+                    "evolution_rmse": "3890625249/4882812500000",
+                    "error_rule": "minkowski",
+                    "normalization_rule": "finite_B_diagnostic",
+                    "N_terminal": 11,
+                    "slope_D": 4,
+                    "Cmax": {
+                      "PF": 0.08,
+                      "PR": 0.1
+                    },
+                    "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                    "source": {
+                      "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                      "path": "scripts/run_pr_rpe_rmse_s0.py",
+                      "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                    },
+                    "paper": {
+                      "url": "https://arxiv.org/pdf/2503.05647v2",
+                      "sections": [
+                        "B.2",
+                        "E.1",
+                        "E.3"
+                      ],
+                      "equations": [
+                        "A38",
+                        "B30",
+                        "E1",
+                        "E2",
+                        "E21",
+                        "E22"
+                      ]
+                    },
+                    "high_probability_compatible": false
+                  },
+                  "state_assumption": "saved_numerical_state_conditional_ground",
+                  "energy_prior_ha": [
+                    -4.994249624417489,
+                    -2.0985459369977186
+                  ],
+                  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+                },
+                "scientific_status": "PROPOSED_NOT_ADOPTED"
+              },
+              "profile": {
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "65177398af820cb682f6",
+              "R_outer": 1,
+              "K": 2,
+              "q_PF": 16,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+          "candidate_id": "RMSE:090f13a9792207531609d70dab3dccd2359aad2fc2b1455feefb8d8926d33c73",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_context": {
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 7,
+            "T": 0.8,
+            "q": 16,
+            "delta": 0.05,
+            "R_outer": 1,
+            "K": 2,
+            "id": "65177398af820cb682f6"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "split": {
+            "L_D": 7,
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "deterministic_scope": "PREFIX",
+            "original_PF_method": "B0",
+            "lambda_R": {
+              "numerator": 2886490382642983,
+              "denominator": 9223372036854775808
+            },
+            "lambda_source": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "7"
+              ]
+            }
+          },
+          "one_body_policy": "DETERMINISTIC",
+          "law": {
+            "definition": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              },
+              "A_declaration": {
+                "model": "ideal_finite_RTE_law",
+                "candidate_id": "65177398af820cb682f6",
+                "R_outer": 1,
+                "K": 2,
+                "q_PF": 16,
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              }
+            },
+            "configuration_id": "6f994410149aeda099e006ffa67222c514f1b4b33c526a71631dc323dd082a2c",
+            "candidate_id": "RMSE:090f13a9792207531609d70dab3dccd2359aad2fc2b1455feefb8d8926d33c73",
+            "kappa": {
+              "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+              "value": {
+                "numerator": 1,
+                "denominator": 1
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              }
+            },
+            "event_mapping": {
+              "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+              "source": {
+                "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+                "path": "src/trottertracks/pr_rpe_rmse.py"
+              },
+              "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+            }
+          },
+          "price_profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17,
+            "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+          },
+          "preparation_hash": null,
+          "input_source": {
+            "configuration": {
+              "commit": "9ebe1006b1a6387bca515cc2253184c08b163213",
+              "path": "search-evidence/search-9c1865e787c6aab3d251/completion/candidates/5496051fc6ea607899d8/CONFIGURATION.json",
+              "selector": []
+            },
+            "tail": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "7"
+              ]
+            },
+            "scalar": {
+              "hamiltonian_constant": {
+                "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+                "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/SCALAR.json",
+                "selector": [
+                  "hamiltonian_constant"
+                ]
+              },
+              "tail": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "7"
+                ]
+              }
+            }
+          },
+          "execution_source": {
+            "commit": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+            "path": "scripts/run_pr_df_candidate_prices.py"
+          },
+          "implementation": {
+            "carrier": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+            "C1": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+            "fast_base": "5a67cea7705e80ff295306606611d774724ae2e2",
+            "adapter": "PR_CANDIDATE_PRICE_CONTEXT_V1"
+          },
+          "expected_scalar": 2.293146549384713
+        },
+        "context_key": "cff464e379c38422e9af30b263e6de264c6cd15410588cd40d615fe45c756b2e",
+        "request_id": "f4fdef0d6bf0d2f3bc0254edc451ede8a36503c1619bbe3882e8c3ab84dad309"
+      },
+      "cohort": "D2_AUTO_DF_02d8888c5457fb0fb449_HOLDOUT",
+      "indices": [
+        0,
+        1
+      ],
+      "seeds": [
+        [
+          16463402978058412937,
+          12461486512936514111,
+          6842359708491987094,
+          6345976418793115177,
+          5577107565087604354,
+          8736645786546735127,
+          14241450953395998374,
+          17489721809711588275,
+          6023023333133238492,
+          7156053189103374880,
+          15494000199934458237,
+          4124939824875638969,
+          14678448628097994456,
+          15972721127093931157,
+          9949149501002191629,
+          12011061819110438211
+        ],
+        [
+          15125429630871280827,
+          3540994291098904966,
+          6492477133658610111,
+          15094816886932530662,
+          8252829762000852254,
+          13143580718461405697,
+          6438254918360725533,
+          16256347065324660663,
+          14140482220720860375,
+          7409896781206364581,
+          14164763453561444016,
+          17824032042677092683,
+          17836581162645968492,
+          956532188348699340,
+          2224918819856754994,
+          1415529987510083757
+        ]
+      ],
+      "axis_evidence": {
+        "0": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        },
+        "1": {
+          "X": {
+            "status": "MISSING"
+          },
+          "Y": {
+            "status": "MISSING"
+          }
+        }
+      }
+    }
+  ],
+  "model_design": {
+    "status": "CALIBRATION_DESIGN_READY",
+    "reasons": [],
+    "mode": "FULL_AFFINE_Q_R1",
+    "calibration_rounds": [
+      0,
+      6
+    ],
+    "holdout_round": 3,
+    "covered_rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "runtime": {
+    "provider_root": "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider",
+    "input_config": "/home/AbeHiromu/projects/h46-pr-exploration-execution/20261021/private/authorization_run01/H4_PR_EXPLORATION/config_APPROVED_PRIVATE.json",
+    "old_cache": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/compiled_cache"
+  },
+  "saved_input_files": {
+    "H4_tol_receipt.json": {
+      "bytes": 7080,
+      "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+      "role": "tol_receipt",
+      "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+    },
+    "H4_tol_snapshot.npz": {
+      "bytes": 18126,
+      "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+      "role": "tol_snapshot",
+      "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+    }
+  },
+  "local_support": {
+    "src/trottertracks/p1_efficient_zz.py": "2653c5decbaf0e2d2f0dbf15637a3016c64e0b9c3daa467cbcab108a5387a277",
+    "src/trottertracks/efficient_controlled_zz.py": "7f42923996571e1523470f4a4b5e1a00c3e1c33b90663326935402f0c96be164",
+    "src/trottertracks/h4_df10_price_v1.py": "2a8601d9907151ea9eeef6f22c21147b08deae96c4bc429361c2e701c5af5be3",
+    "src/trottertracks/track_d_native_resources.py": "9b24be2db0d34317a9a2cd2852d03c7e3f6f1a97887b19a14a33add322c07087",
+    "scripts/h46_b3_fast_fingerprint.py": "75d6341b693d610f15c35cb6d8ec61a4af732f6e4026ed73e0c15001e1d689b0"
+  },
+  "reused_worker": "ea9e66092465d39dfcd4aeb6fea8e9f09808cabb",
+  "adapter_source": "e827367629ca6c2920d9d908fc1631314399db86",
+  "scalar": {
+    "hamiltonian_constant": {
+      "quantity": "HAMILTONIAN_CONSTANT",
+      "value": 2.29310124732,
+      "source": {
+        "locator": {
+          "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+          "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json",
+          "selector": [
+            "saved_inputs",
+            "H4",
+            "inputs"
+          ]
+        },
+        "snapshot": {
+          "bytes": 18126,
+          "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+          "role": "tol_snapshot",
+          "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+        },
+        "receipt": {
+          "bytes": 7080,
+          "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+          "role": "tol_receipt",
+          "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+        },
+        "array": {
+          "name": "constant",
+          "shape": [
+            1
+          ],
+          "dtype": "<f8",
+          "sha256": "874b34c93c04576c14050d91ecace903d7b2693560bf77a05b2178fc48fb232b"
+        },
+        "hamiltonian_hash": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+      }
+    },
+    "tail_identity": {
+      "value": 4.5302064712666724e-05,
+      "source": {
+        "index": {
+          "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+          "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+        },
+        "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+        "selector": [
+          "prefixes",
+          "7"
+        ]
+      }
+    },
+    "total": 2.293146549384713,
+    "total_hex": "0x1.2585d37d4573ap+1",
+    "application": "ONCE_AT_TOTAL_T"
+  },
+  "max_new_paths": 10,
+  "max_wrapper_compiles": 20,
+  "full_wrapper_statevector_validation": false,
+  "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH",
+  "model_qualification": "FINITE_COHORT_EXPLORATORY_REFERENCE_NOT_EXPECTATION"
+}
