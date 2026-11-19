@@ -251,3 +251,13 @@ B0Iの保存REQUESTは3件を比較した。RomuTailで失敗を記録した通�
 通常compileと独立検証compileの新規REQUESTにも、既存の疎なworkspace用bundleを追加する修正を `da84fc28aa` に固定した。固定SOURCE、宣言済みの出力先とその上位、workflow、ライセンス、参照ファイルを読むためのGitオブジェクトを含む。保存済みREQUESTの変更を伴わない。次はこの配送を通常入口からPBSへの人工実行・回収へ接続する。実機の通常キューで受付が確認できた工程から、配置・新規releaseの採用・採択済み実探索の検収へ進む。
 
 保存REQUESTの3件では、上記と同じ範囲に出力先の上位ディレクトリを含め、PBSの隔離workspaceを展開できた。既存workerの固定SOURCE照合と出力先追加まで3件が通過した。旧bundleの補助packは3件で共用し、25,084,145 bytes。結果とpackは `PBS_PF_SAVED_WORKSPACE_PARITY.json` と同名の `.pack` に保存した。通常キューへの切替は未実施。今回の新規科学実行は0件。
+
+### B0I準備の通常キューとPBS回収の検収
+
+通常Startの人工run `search-7094094e98e248075f1c` で、PBSが未受領の準備bundleを先に照合する問題を再現した。PBS `267441.CPUcluster-PRISM` は4 CPUを返却したが、中央が予約した通常compile・独立検証compile各1件はworkerに永続化されず、旧runの台帳では `UNKNOWN`。このrunとattemptは保存した。
+
+修正版 `bf7fac6d82dd675b7d36a63ebcc420c8b75c1ba7` では、受信したREQUESTのhashを確認し、準備bundleを取得してから固定release・SOURCE・入力を照合し、同じattemptをworkerに記録する。PBSの自動返却は中央に所有中のattemptがある間は待つ。明示Stopとwalltimeの受付制限は従来の処理を使う。固定release `romutail-pbs-pf-preparation-bf7fac6d8` をRomuTail、server2、WSL、PBSに配置した。通常運用のcurrentは `romutail-fleet-efficiency-b65a30d81-r2`。
+
+通常Preview・Startで人工run `search-b59a41c1f4a57987d510` を起動した。既存のB0I要求生成器が `PF_COMPILE` と `PF_HOLDOUT_COMPILE` を生成し、PBS workerの初期checkoutにない固定blob 2個を両要求に共通のbundleで供給した。PBSの計算ノードで両処理が正常終了し、中央が各receiptと成果のhashを照合して一度だけ採用した。RomuTailの監査2件が対応するcompileの成果とhashを読み、人工Q3 4件も通常経路で終了した。信号準備2件を含む計10件を各1回採用した。通常Resumeは `REUSED_COMPLETED`。追加割当、二重採用、追加PBS投入は各0件。
+
+PBS割当 `267442.CPUcluster-PRISM`（4 CPU、9 GiB）と `267444.CPUcluster-PRISM`（2 CPU、12 GiB）はともに終了コード0で返却された。検収記録は `.rpe-central/acceptance/romutail-pbs-pf-preparation-bf7fac6d8-artificial-01/ACCEPTANCE.json` と同階層の `PBS_EXIT.json`。関連回帰試験は84件とサブテスト3件が通過。人工出力は隔離領域に保存し、新規科学実行は0件。次の工程は、実探索で必要になる新規信号・価格用compile・監査を固定条件で実機確認し、完了成果を同じ候補の次工程へ戻すこと。PBSのCPU利用効率は別途、適格な実タスクが十分にある区間で測る。
