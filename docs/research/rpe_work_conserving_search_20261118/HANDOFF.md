@@ -261,3 +261,20 @@ B0Iの保存REQUESTは3件を比較した。RomuTailで失敗を記録した通�
 通常Preview・Startで人工run `search-b59a41c1f4a57987d510` を起動した。既存のB0I要求生成器が `PF_COMPILE` と `PF_HOLDOUT_COMPILE` を生成し、PBS workerの初期checkoutにない固定blob 2個を両要求に共通のbundleで供給した。PBSの計算ノードで両処理が正常終了し、中央が各receiptと成果のhashを照合して一度だけ採用した。RomuTailの監査2件が対応するcompileの成果とhashを読み、人工Q3 4件も通常経路で終了した。信号準備2件を含む計10件を各1回採用した。通常Resumeは `REUSED_COMPLETED`。追加割当、二重採用、追加PBS投入は各0件。
 
 PBS割当 `267442.CPUcluster-PRISM`（4 CPU、9 GiB）と `267444.CPUcluster-PRISM`（2 CPU、12 GiB）はともに終了コード0で返却された。検収記録は `.rpe-central/acceptance/romutail-pbs-pf-preparation-bf7fac6d8-artificial-01/ACCEPTANCE.json` と同階層の `PBS_EXIT.json`。関連回帰試験は84件とサブテスト3件が通過。人工出力は隔離領域に保存し、新規科学実行は0件。次の工程は、実探索で必要になる新規信号・価格用compile・監査を固定条件で実機確認し、完了成果を同じ候補の次工程へ戻すこと。PBSのCPU利用効率は別途、適格な実タスクが十分にある区間で測る。
+
+### PBSでのB0I実入力と通常起動の確認（2026-11-19）
+
+通常Startの対象をB0I `p=8`・`4th`・要求幅 `8h` の登録済み1構成に固定した。固定準備SOURCEは `36ad751d4ebf0ec160532615da6425b268a0c18a`。既存のQ3科学SOURCEは `28d976b99cdf8329adcc1b79327e329e947ef774`。元契約の入力、運用中の版、過去のSTOPを保全した。§10.5と固定providerの重複照合を通過した。準備計画は保存信号3ラウンドを再利用し、新規信号10ラウンド、通常compile 6ラウンド、独立検証compile 1ラウンドを要求した。検収設定は1探索サイクル、1探索step、工程別予算はsignal 1、compile 2、audit 4とした。
+
+| 通常Start | PBSの割当 | 確認結果 |
+| --- | --- | --- |
+| `search-e7e248d504cdaf8f31cd` | `267453.CPUcluster-PRISM` | 8 CPUを確保。準備入力照合の待機期限に達し、キュー予約0件。31秒で終了コード0。 |
+| `search-b909673782427d4eeb02` | `267454.CPUcluster-PRISM` | 入力照合後、信号1件を割当。起動設定が共通supervisorを呼べず、科学処理開始前に終了。compile 1件は未割当のまま取消。通常Stop後、8 CPUの割当は119秒で終了コード0。 |
+
+信号 `prep-05d084ffe4d5e45e787d4737`、attempt `d437dcdd6630446e90c24786d01264a7` の `UNKNOWN` と `automatic_retry=false` を保存した。元のPBS spoolでREQUEST・attemptを照合し、supervisorのエラーと `SCIENTIFIC_STARTING.json`・adapter起動・終了receiptの不在を確認した。新規実信号・実compile・監査・実Q3の実行と採用は各0件。CPU計測には準備照合と制御のみが含まれる。
+
+`0cb7952c6f` で元providerの絶対パスを隔離runtime内で解決し、保存入力をhash照合して読み取り専用で供給した。`a33370d47d` で通常入口の単独方式指定に予算親、未確定評価、既定の幅を関連付け、重複照合の履歴を保全した。`65769c5e0` でPBS起動後の入力転送・照合を待つ時間を確保し、未予約の要求は再開時に照会をやり直せるようにした。`d1804fe9f8` で準備用起動設定を共通supervisorに対応させた。
+
+`search-b909673782427d4eeb02` の通常Start応答は120秒でタイムアウトした。中央の `LAUNCH.json`、台帳、終了記録で同じrunを追跡し、Startの再送は行わなかった。
+
+修正版の配置 `romutail-pbs-pf-live-d1804fe9f-r2` はRomuTailとPBSの隔離領域で固定SHAを確認した。PBSの保存入力dry-checkでは元のsignal・compile REQUESTを変更せず、各19件の固定Git参照、既存Python 3.11.0rc1、compile用Qiskit 1.3.0の照合が2件とも通過した。PBS実機では、修正版が既存supervisorに到達し、完了済みの人工attemptを再起動しないことも確認した。回帰73件が通過。記録は `.rpe-central/deployment/romutail-pbs-pf-live-d1804fe9f-r2/` の `PBS_SAVED_RUNTIME_CHECK.log` と `PBS_SUPERVISOR_TERMINAL_CHECK.log`。通常運用のcurrentは `romutail-fleet-efficiency-b65a30d81-r2`。次は中央担当が元attemptとSTOPを照合して継続を決め、計算ノードで信号・compileの実処理、監査、同じ候補の評価への引継ぎを確認する。複数の実タスクを使ったPBSの効率計測はその後に行う。
