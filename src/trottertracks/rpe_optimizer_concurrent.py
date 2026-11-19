@@ -261,15 +261,19 @@ class ConcurrentExecutor(O.Executor):
     def _standby_capacity(self):
         return self.capacity
 
+    def _standby_headroom(self):
+        return 1
+
     def _standby_can_fill(self):
         s = self.state
         return (getattr(self, 'standby', None) and not s.failure and not s.closed and
                 s.active + sum(t.status == 'QUEUED' and t.rule['kind'] != 'preparation'
-                               for t in s.tasks.values()) < self._standby_capacity() + 1)
+                               for t in s.tasks.values()) <
+                self._standby_capacity() + self._standby_headroom())
 
     def _fill_standby(self):
-        # Keep one queued job ahead of dispatch. Advance the cursor on every
-        # duplicate/hold so completion notifications do not revisit the same work.
+        # Prepare the next jobs while the current ones run. Advance past
+        # duplicates and holds so a completion never revisits the same work.
         before = self.state.metrics['submitted']
         while True:
             with self.state.cv:
@@ -945,6 +949,25 @@ class DistributedExecutor(ConcurrentExecutor):
         policy, error = self._host_admission_policy()
         fresh = sum(self._offer_free(host, policy, error) for host in self.hosts)
         return max(self.capacity, self.state.active + fresh)
+
+    def _standby_headroom(self):
+        if not self.state.allocation_auto or not self.distributed.get('work_conserving_search'):
+            return super()._standby_headroom()
+        # Reserve the next requests early enough for host-specific readiness and
+        # transport. Offers from unobserved, paused or saturated-storage hosts
+        # do not justify speculation. Execution still uses the ordinary claim.
+        policy, error = self._host_admission_policy()
+        capacity = 0
+        for host, offer in self.hosts.items():
+            admission = self._host_admission(host, policy, error)
+            if (not self._offer_fresh(host) or not admission['accepting']
+                    or offer.get('accepting_new_jobs') is False):
+                continue
+            lanes = max(0, int(offer.get('capacity') or 0))
+            if admission['max_slots'] is not None:
+                lanes = min(lanes, admission['max_slots'])
+            capacity += lanes
+        return max(1, capacity)
 
     def has_spare_slot(self, *, allow_queued_speculation=False):
         # Auto capacity is sized against already queued jobs. With one job

@@ -296,6 +296,25 @@ class ControllerFailures(unittest.TestCase):
             waiter.join(timeout=3)
         self.assertEqual(answers[0]['status'], O.PASS)
 
+    def test_standby_prepares_the_next_wave_while_pbs_is_full(self):
+        ex = DistributedExecutor(ROOT, self.run, self.routes, {}, self.problem,
+            optimizer_source=self.source, max_concurrent='auto', budgets={'PR_PAULI': 5},
+            distributed=dict(port=0, affinity_wait_seconds=0, work_conserving_search=True))
+        self.executors.append(ex)
+        request = dict(host_id='pbs-0', slots=2, capacity=2, source_sha=self.source)
+        ex.rpc('/v1/poll', dict(request, observe_only=True))
+        view = ex.for_method('PR_PAULI')
+        proposals = [self.proposal(f'wave-{i}') for i in range(5)]
+        view.prefetch_standby(proposals[0], proposals[1:])
+        first = ex.rpc('/v1/poll', request)['assignments']
+        self.assertEqual(len(first), 2)
+        self.assertEqual(sum(x['state'] == 'QUEUED' for x in ex.store.rows()), 2)
+        for task in first:
+            ex.rpc('/v1/complete', dict(self.completion(task), host_id='pbs-0'))
+        second = ex.rpc('/v1/poll', request)['assignments']
+        self.assertEqual(len(second), 2)
+        self.assertTrue({a['job_id'] for a in first}.isdisjoint(a['job_id'] for a in second))
+
     def test_work_conserving_records_distinct_idle_slot_reasons(self):
         from trottertracks.rpe_preparation_queue import normalize_preparation_request
         from trottertracks.rpe_q3_timing import read_lines
