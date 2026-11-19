@@ -146,3 +146,11 @@ workerが `LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT` と報告し、中央
 PR-Pauliの信号に必要な疎なcheckoutのオブジェクトを、通常の準備REQUESTと既存の共有artifact cache経由で配布する。作業領域を展開する前にGit bundleを照合して取り込み、固定SOURCEと入力の照合を各workerで行う。作業領域を構築するための補助bundleは、回収する科学成果のGit履歴から除外する。
 
 人工・回帰101件とサブテスト3件が通過した。PBS gatewayでは `prep-7eedb01dbec53998d13aca2b` の保存REQUESTを新規作業領域で検査し、固定Git入力206件、作業入力3件、出力先の展開と人工Gitコミットを確認した。この検査の追加bundleは2点、計38,314,097 bytesで、同一の内容は既存cacheで共有する。RomulaptopはSSH照会時に対象WSLが停止していたため、同じ手順での現地再検査を残す。新規の実信号・compile・Q3・PBS投入は各0件。元run `search-f93ece39d4907cd3d3dd` のSTOPと3件の未確定attemptを保全した。
+
+### 継続runでの再開（2026-11-19）
+
+引き継いだPBS準備の未確定attemptは、今回の親runに加え、最初にその割当を所有したrunの終了記録と照合する。`job_id`、attempt、ホスト、入力、`automatic_retry=false` が一致した場合、元の保留を継承する。引継ぎ先の予約枠からは除外する。途中の台帳が異なる場合は照合を止める。人工・回帰34件で検証した。
+
+継続runは `search-6478c133043b892af38c`。release `romutail-prep-fleet-d447eb538` と科学SOURCE `28d976b99cdf8329adcc1b79327e329e947ef774` を固定した。元runの探索範囲と予算を引き継いだ。§10.5の保存Q3照合はPR-Pauli 234件、B0I 159件、PR-DF 64件が再利用可能。準備台帳36件を引き継ぎ、そのうちPBSの1件を元のattemptで保留した。元runで新たに未確定となったQ3 3件も照合し、再投入を抑止した。
+
+通常Resumeを1回送信した。クライアント応答は時間切れとなったため、通常Statusで `RUNNING` を確認した。RomuTail・server2・PBSで実Q3が始まり、RomuTailで新規PR-Pauli信号準備の完了と採用を確認した。確認時点で元runで受付済みまたは未確定だったQ3の重複開始は0件。中央の記録は `.rpe-central/deployment/romutail-prep-fleet-d447eb538/LIVE_CONTINUATION.json` にある。以降の状態確認と停止には通常入口で `search-6478c133043b892af38c` を指定する。
