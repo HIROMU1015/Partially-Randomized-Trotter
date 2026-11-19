@@ -72,6 +72,11 @@ _PF_PRICE_GUARD_INPUTS = tuple(
         ('pr_rpe_rmse_controller', '437ba4acdb82708b6fc98e3cd119a2a734f7cf64'),
         ('full_baseline_v2_requests', 'e7dca5f7301c8633b17a59b6a7161331303aef2d')))
 
+_DF_SPLIT_PRICE_IMPORTS = tuple(
+    dict(commit='e827367629ca6c2920d9d908fc1631314399db86',
+         path='src/trottertracks/'+name+'.py')
+    for name in ('compiled_price_fast', 'candidate_price_adapter', 'ld12_price_requests'))
+
 
 STAGES = {
     'PAULI_SIGNALS': 'signal', 'DF_SIGNALS': 'signal',
@@ -637,6 +642,10 @@ class DistributedPreparationBridge:
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
         original_documents=list(pauli_locators)
+        if script.name == 'run_pr_df_candidate_prices.py':
+            # The fixed split compiler loads these with git show from inside
+            # the sparse attempt checkout, even for audit-only commands.
+            original_documents.extend(_DF_SPLIT_PRICE_IMPORTS)
         if script.name == 'run_pf_preparation_stage.py':
             if stage == 'PF_SIGNALS':
                 payload = command[command.index('--input')+1]

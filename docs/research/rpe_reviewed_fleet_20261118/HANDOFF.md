@@ -408,3 +408,11 @@ PBS用の臨時配備では、入力bundleが移動するcontroller HEADを前�
 `bundle_fixed_source_only` を使用した。固定worker SOURCEしか持たない新規Git環境で
 通常 `git bundle verify` と固定入力の取り込みを確認した。旧attemptを起動せず、
 PBSの価格用と信号用の専用キャッシュそれぞれで不足オブジェクトを補った。
+
+通常Startの実run `search-587e36485284693c0a1c` は§10.5を通過した。
+PBSの計測が50 GiBを超えたため、既存の容量回復処理で約48.0 GiBまで戻し、
+枠 `267535.CPUcluster-PRISM` へ較正と信号を割り当てた。RomuTailは終了証跡を
+回収した。較正はworkerの疎なcheckoutに固定価格モジュールがなく、信号は
+固定スナップショットの旧絶対パスを解決できず停止した。失敗したattemptは保全した。
+実compile、監査、Q3と科学結果の採用は各0件。固定価格モジュールのGit locatorを
+配布に追加した。信号workerの保存入力のパス解決と両工程の実機での再照合が残る。
