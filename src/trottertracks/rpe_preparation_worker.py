@@ -271,6 +271,28 @@ def _guard_owned_source(root, source):
             raise ValueError('Imported workspace changed fixed scientific SOURCE: '+name)
 
 
+def checkout_directories(source_files):
+    directories={'scripts','src','configs','schemas','references'}
+    for name in source_files:
+        relative=artifact_path(name)
+        if len(relative.parts)>1 and relative.parts[0]not in directories:
+            directories.add(relative.parent.as_posix())
+    return directories
+
+
+def output_directories(outputs, prefix, workspace):
+    directories=set()
+    for name in outputs:
+        relative=Path(*artifact_path(name).parts)
+        try:relative=relative.relative_to(prefix)
+        except ValueError:continue
+        if not relative.parts:continue
+        target=workspace/relative
+        cone=relative if target.is_dir()or (not target.exists()and not relative.suffix) else relative.parent
+        if cone.parts:directories.add(cone.as_posix())
+    return directories
+
+
 def _clone(source, destination, bundles, cache, checkout_input_head=True, source_files=(), *, metadata_repository=None):
     destination=Path(destination)
     if destination.exists():raise ValueError('Preparation workspace already exists; never retry science')
@@ -281,11 +303,7 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
         clone.extend(['--reference',str(metadata_repository)])
     subprocess.run(clone+[str(source),str(destination)],check=True,capture_output=True)
     commit=_head(source)
-    directories={'scripts','src','configs','schemas','references'}
-    for name in source_files:
-        relative=artifact_path(name)
-        if len(relative.parts)>1 and relative.parts[0]not in directories:
-            directories.add(relative.parent.as_posix())
+    directories=checkout_directories(source_files)
     # Older supported Git versions interpret --cone after set as a path.
     # Keep untouched directories as sparse tree entries. A preparation commit
     # should not require the blobs beneath every unrelated archive subtree.
@@ -293,7 +311,6 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
                    cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','sparse-checkout','set','--stdin'],input='\n'.join(sorted(directories))+'\n',
                    text=True,cwd=destination,check=True,capture_output=True)
-    subprocess.run(['git','checkout','-b','preparation-owned',commit],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','remote','remove','origin'],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','config','user.name','HIROMU1015'],cwd=destination,check=True)
     subprocess.run(['git','config','user.email','u411612g@ecs.osaka-u.ac.jp'],cwd=destination,check=True)
@@ -302,32 +319,22 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
         if cache.missing([sha]):raise ValueError('Missing source Git bundle')
         subprocess.run(['git','bundle','verify',str(path)],cwd=destination,check=True,capture_output=True)
         ref=bundle.get('ref','HEAD')
-        heads=[]
-        if metadata_repository is not None:
-            heads=subprocess.check_output(['git','bundle','list-heads',str(path),ref],cwd=destination,text=True).splitlines()
-        if len(heads)==1:
-            tip=heads[0].split()[0]
-            subprocess.run(['git','cat-file','-e',tip+'^{commit}'],cwd=destination,check=True,capture_output=True)
-        else:
-            subprocess.run(['git','fetch',str(path),ref],cwd=destination,check=True,capture_output=True)
-            tip='FETCH_HEAD'
+        heads=subprocess.check_output(['git','bundle','list-heads',str(path),ref],cwd=destination,text=True).splitlines()
+        if len(heads)!=1:raise ValueError('Preparation bundle does not declare its unique checkout ref: '+ref)
+        if metadata_repository is None:
+            subprocess.run(['git','bundle','unbundle',str(path),ref],cwd=destination,check=True,capture_output=True)
+        tip=heads[0].split()[0]
+        subprocess.run(['git','cat-file','-e',tip+'^{commit}'],cwd=destination,check=True,capture_output=True)
         if checkout_input_head and bundle.get('checkout_input_head',True):
-            subprocess.run(['git','reset','--hard',tip],cwd=destination,check=True,capture_output=True)
+            commit=tip
+    subprocess.run(['git','checkout','-b','preparation-owned',commit],cwd=destination,check=True,capture_output=True)
     return destination
 
 
 def _include_declared_outputs(owned, directory, outputs):
     """Permit the provider's ordinary git add only inside declared output cones."""
     for alias,(workspace,source)in owned.items():
-        prefix=workspace.relative_to(directory);directories=set()
-        for name in outputs:
-            relative=Path(*artifact_path(name).parts)
-            try:relative=relative.relative_to(prefix)
-            except ValueError:continue
-            if not relative.parts:continue
-            target=workspace/relative
-            cone=relative if target.is_dir()or (not target.exists()and not relative.suffix) else relative.parent
-            if cone.parts:directories.add(cone.as_posix())
+        directories=output_directories(outputs,workspace.relative_to(directory),workspace)
         if directories:
             subprocess.run(['git','sparse-checkout','add','--stdin'],input='\n'.join(sorted(directories))+'\n',
                            text=True,cwd=workspace,check=True,capture_output=True)

@@ -316,9 +316,9 @@ class DistributedPreparationBridge:
         bundles.append(self._pack_bundle(root, ref, prerequisites, input_hashes, tracked_workspace))
         return bundles
 
-    def _pack_bundle(self, root, ref, prerequisites, input_hashes, checkout):
+    def _pack_bundle(self, root, ref, prerequisites, input_hashes, checkout, workspace_objects=()):
         locators = sorted({(row['commit'], row['path']) for row in input_hashes})
-        key = (ref, tuple(prerequisites), tuple(locators))
+        key = (ref, tuple(prerequisites), tuple(locators), tuple(workspace_objects))
         with self.lock:
             sha = self.bundle_hashes.get(key)
         if sha and self.executor.artifact_cache.path(sha).is_file():
@@ -336,6 +336,8 @@ class DistributedPreparationBridge:
             changed = subprocess.check_output(['git', 'rev-list', '--objects', *revisions], cwd=root)
             entries = dict(line.split(b' ', 1) if b' ' in line else (line, b'')
                            for line in changed.split(b'\n') if line)
+            for oid in workspace_objects:
+                entries.setdefault(oid, b'')
             # Sparse worker views can lack blobs and trees from earlier commits
             # even when Git already has their commit objects.
             expressions = {}
@@ -369,6 +371,51 @@ class DistributedPreparationBridge:
         with self.lock:
             self.bundle_hashes[key] = sha
         return dict(sha256=sha, ref=ref, checkout_input_head=checkout)
+
+    def _workspace_bundle(self, root, view, prefix, outputs):
+        """Carry the Git objects a sparse signal workspace needs to materialize."""
+        from .rpe_preparation_worker import checkout_directories, output_directories
+
+        manifest = view['source']
+        base = manifest['commit']
+        cache = self.executor.artifact_cache
+        checkout = base
+        if view.get('checkout_input_head', True):
+            for item in view['input_git_bundles']:
+                if item.get('checkout_input_head', True):
+                    checkout = subprocess.check_output(
+                        ['git','bundle','list-heads',str(cache.path(item['sha256'])),item['ref']],
+                        text=True).split()[0]
+        directories = checkout_directories(manifest['files']) | output_directories(outputs, prefix, root)
+        ancestors = {'.'} | {str(p) for d in directories for p in Path(d).parents}
+        objects = set()
+
+        def add_listing(commit, flags, paths):
+            listing = subprocess.check_output(['git','ls-tree','-z',*flags,commit,'--',*paths],cwd=root)
+            for entry in listing.split(b'\0'):
+                if entry:
+                    _, kind, oid = entry.split(b'\t',1)[0].split()
+                    if kind in (b'blob', b'tree'):
+                        objects.add(oid)
+
+        for commit in {base, checkout}:
+            # Cone checkout includes the files directly inside each ancestor.
+            for name in sorted(ancestors):
+                add_listing(commit, (), [] if name == '.' else [name+'/'])
+            # Fixed Git workflows and licenses can be read when a scoped
+            # commit expands a sparse index.
+            add_listing(commit, ('-r','-t'), sorted(directories | {'.github','LICENSES'}))
+        key = hashlib.sha256(b'\0'.join(sorted(objects))).hexdigest()
+        ref = 'refs/rpe-preparation/input-bundles/workspace-' + base + '-' + key
+        with self.lock:
+            if subprocess.run(['git','show-ref','--verify','--quiet',ref],cwd=root).returncode != 0:
+                date = subprocess.check_output(['git','show','-s','--format=%aI',base],cwd=root,text=True).strip()
+                tip = subprocess.check_output(
+                    ['git','-c','user.name=PREPARATION','-c','user.email=preparation@localhost',
+                     'commit-tree',base+'^{tree}','-p',base,'-m','Carry sparse checkout objects'],
+                    cwd=root,text=True,env=dict(os.environ,GIT_AUTHOR_DATE=date,GIT_COMMITTER_DATE=date)).strip()
+                subprocess.run(['git','update-ref',ref,tip],cwd=root,check=True)
+        return dict(self._pack_bundle(root,ref,[base],(),False,sorted(objects)), workspace_objects=True)
 
     def _validate_bundle_inputs(self, spec):
         sources = self.settings.get('bundle_validation_sources')
@@ -446,7 +493,7 @@ class DistributedPreparationBridge:
         bindings = {str(root): '@SOURCE@', command[0]: '@PYTHON@'}
         if root != self.root:
             bindings[str(self.root)] = '@TRANSPORT@'
-        workspaces = {};runtime_inputs=[]
+        workspaces = {};workspace_roots = {};runtime_inputs=[]
         pauli_inputs = []
         pauli_locators = []
         if script.name=='run_pr_df_candidate_prices.py' and '-c' in command:
@@ -516,6 +563,7 @@ class DistributedPreparationBridge:
                             raw = subprocess.check_output(['git','show',commit+':'+name],cwd=root)
                             files[name] = hashlib.sha256(raw).hexdigest()
                     workspaces[alias] = dict(source=dict(commit=commit, files=files), input_git_bundles=self._bundle(workspace,commit),checkout_input_head=False)
+                    workspace_roots[alias] = workspace
                     bindings[str(workspace)] = '@WORKSPACE:' + alias + '@'
                     leaf_directory = value.get('directory')
                     if leaf_directory:
@@ -572,6 +620,12 @@ class DistributedPreparationBridge:
                     required_paths=required_paths,
                     optional_outputs=optional_outputs, return_git_delta=True, stage_inputs=False,
                     runtime_requirements=requirements,compiler_bindings=compiler_bindings)
+        if stage == 'PAULI_SIGNALS':
+            declared = [*prep['outputs'], *prep.get('optional_outputs', [])]
+            prep['input_git_bundles'].append(self._workspace_bundle(root,prep,Path('workspace'),declared))
+            for alias, view in workspaces.items():
+                view['input_git_bundles'].append(
+                    self._workspace_bundle(workspace_roots[alias],view,Path('workspaces')/alias,declared))
         if stage in ('DF_CALIBRATION', 'DF_HOLDOUT') and '--input' in command:
             frozen = read(Path(command[command.index('--input')+1]))
             if frozen.get('parallel_axes') is True:
@@ -655,7 +709,7 @@ class DistributedPreparationBridge:
         if not view.get('checkout_input_head', True):
             raise ValueError('Result claims a Git input HEAD for a fixed checkout')
         cache = self.executor.artifact_cache
-        inputs = view.get('input_git_bundles', [])
+        inputs = [row for row in view.get('input_git_bundles', []) if not row.get('workspace_objects')]
         chosen = next((row for row in reversed(inputs) if row.get('checkout_input_head', True)), None)
         if not chosen or cache.missing(row['sha256'] for row in inputs):
             raise ValueError('Missing original Git inputs of returned preparation delta')

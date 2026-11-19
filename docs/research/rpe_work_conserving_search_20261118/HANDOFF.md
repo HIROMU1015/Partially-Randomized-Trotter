@@ -138,3 +138,11 @@ PBSの信号準備 `prep-7eedb01dbec53998d13aca2b` は、初回の作業領域�
 通常Statusは `RECONCILIATION_REQUIRED`。WSLのPR-Pauli `1372275cb36e31a0940b` の終了記録がなく、探索は `V2_RESULT_REQUIRES_REVIEW` で終了した。同じ期間にB0IのWSL評価2件にも終了記録がなかった。3件は保留している。上記実運用の修正をコードへ反映した次回用SOURCE `35f8ddd8ad92efa347ed86afa979237bf72b3445` は4環境に固定配置済み。
 
 PR-Pauliの価格較正は、元の固定設定のホスト別参照と、科学実行器が確認する公開済みGit束縛を準備するまで保留する。通常の信号生成および評価可能なQ3は独立して割り当てる。
+
+### Q3終了記録の欠落とPR-Pauli信号の作業領域
+
+workerが `LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT` と報告し、中央台帳で `job_id`、`attempt_id`、実行ホスト、`automatic_retry=false` を照合できるQ3は、該当構成だけを保留する。attemptの所有と予算消費を保持し、独立した候補の評価を続ける。通常の探索規則を進めて保留が残った場合、通常Statusは `RECONCILIATION_REQUIRED`、停止理由は `SCOPE_HELD_Q3` を返す。終了記録の欠落として特定できない異常には、従来の停止処理を適用する。
+
+PR-Pauliの信号に必要な疎なcheckoutのオブジェクトを、通常の準備REQUESTと既存の共有artifact cache経由で配布する。作業領域を展開する前にGit bundleを照合して取り込み、固定SOURCEと入力の照合を各workerで行う。作業領域を構築するための補助bundleは、回収する科学成果のGit履歴から除外する。
+
+人工・回帰101件とサブテスト3件が通過した。PBS gatewayでは `prep-7eedb01dbec53998d13aca2b` の保存REQUESTを新規作業領域で検査し、固定Git入力206件、作業入力3件、出力先の展開と人工Gitコミットを確認した。この検査の追加bundleは2点、計38,314,097 bytesで、同一の内容は既存cacheで共有する。RomulaptopはSSH照会時に対象WSLが停止していたため、同じ手順での現地再検査を残す。新規の実信号・compile・Q3・PBS投入は各0件。元run `search-f93ece39d4907cd3d3dd` のSTOPと3件の未確定attemptを保全した。

@@ -150,6 +150,34 @@ class FailureContinuity(unittest.TestCase):
             self.assertEqual(len(calls),1);self.assertEqual(result['new_calls'],1)
             self.assertEqual(result['stop_reason'],'Q3_BUDGET_EXHAUSTED')
 
+    def test_scope_finishes_independent_slices_with_unresolved_q3_visible(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            driver = E.WidthDriver.__new__(E.WidthDriver)
+            driver.run = pathlib.Path(tmp)
+            driver.a = SimpleNamespace(max_cycles=3, plan_only=False)
+            driver.state = dict(cycle=0, points=[], families={})
+            driver.spec = dict(science_approved=True)
+            driver.rule_stop = True
+            driver.widths = {}
+            driver.bootstrap_families = driver.complete_points = driver.save = lambda: None
+            driver.log = lambda **kwargs: None
+            driver.plan = lambda: ([], {})
+            attempt = dict(method='PR_PAULI', job_id='job', attempt_id='attempt', host_id='wsl')
+            calls = []
+
+            def batch():
+                calls.append(True)
+                return {'PR_PAULI': dict(stop_reason='NO_CANDIDATE_LEFT_IN_RANGE', new_calls=0,
+                                         executor_metrics=dict(unresolved_q3_attempts=[attempt])),
+                        'TRUNCATED_PF': dict(stop_reason='WORK_SLICE_YIELDED' if len(calls) == 1
+                                             else 'NO_CANDIDATE_LEFT_IN_RANGE', new_calls=1)}
+
+            driver.batch = batch
+            driver.loop()
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(driver.state['stop']['reason'], 'SCOPE_HELD_Q3')
+            self.assertEqual(driver.state['stop']['unresolved_q3_attempts'], [attempt])
+
     def test_stage_boundary_yield_reuses_success_and_never_retries_failure(self):
         with tempfile.TemporaryDirectory()as tmp:
             root=pathlib.Path(tmp);comp=C.Completion.__new__(C.Completion);comp.source='ARTIFICIAL';events=[]

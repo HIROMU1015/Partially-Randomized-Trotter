@@ -2131,11 +2131,16 @@ class DistributedExecutor(ConcurrentExecutor):
             return answer  # a concurrent transfer is not adoption by this selector
         if answer and answer.get('status') == 'BUDGET_EXHAUSTED' and job.name in self.eligibility_holds:
             return self._held_answer(proposal)
-        if answer and row is not None and self.store.row(row['job_id'])['state'] == 'ACCEPTED':
-            self.store.adopt(row['job_id'])
-        elif answer:
-            current = self.store.row(self.job_dir(proposal).name)
+        if answer:
+            current = self.store.row(job.name)
             if current and current['state'] == 'ACCEPTED': self.store.adopt(current['job_id'])
+            if (answer['status'] == 'UNKNOWN' and current and current['state'] == 'UNKNOWN'
+                    and not self.state.failure and current['attempt_id'] and current['host_id']
+                    and current['detail'].get('automatic_retry') is False
+                    and current['detail'].get('reason') == 'LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT'):
+                # The durable worker report identifies this unresolved attempt.
+                # Retain its ownership and isolate proposals that depend on it.
+                answer = dict(answer, failure_scope='CONFIGURATION', reason=current['detail']['reason'])
         return answer
 
     def record_prior_result_reuse(self, job):
@@ -2188,6 +2193,9 @@ class DistributedExecutor(ConcurrentExecutor):
                       allocation_settings=deepcopy(self.allocation_settings),
                       automatic_capacity=self.state.allocation_auto,
                       unresolved_owned_attempts=len(self._owned_attempts()),
+                      unresolved_q3_attempts=[
+                          {key: row[key] for key in ('method', 'job_id', 'attempt_id', 'host_id')}
+                          for row in rows if row['state'] == 'UNKNOWN' and not self._preparation_request(row['request'])],
                       host_offers={host:dict(capacity=info.get('capacity'),
                           fresh_free_slots=self._offer_free(host, admission_policy, admission_error),
                           reported_free_slots=info['reported_slots'],

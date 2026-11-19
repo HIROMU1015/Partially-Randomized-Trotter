@@ -662,6 +662,8 @@ class Gateway:
         if width_state.is_file():
             state = load(width_state)
             value['search_stop'] = state.get('stop')
+            if phase == 'COMPLETE' and (state.get('stop') or {}).get('reason') == 'SCOPE_HELD_Q3':
+                value['phase'] = 'RECONCILIATION_REQUIRED'
             value['candidate_holds'] = [
                 {key: row[key] for key in ('method', 'L_D', 'kappa', 'delta_pf', 'status', 'reason') if key in row}
                 for row in [*state.get('families', {}).values(), *state.get('points', [])]

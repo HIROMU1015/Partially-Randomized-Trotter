@@ -283,13 +283,15 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             completion=type('Completion',(),{'source':source})()
             task=bridge.build_request(completion,[sys.executable,'-B',str(script),str(request),str(d/'RESULT.json')],d,'PAULI_SIGNALS')
             bundles = task['preparation']['input_git_bundles']
-            base, inputs = bundles
+            base, inputs, workspace = bundles
+            self.assertTrue(workspace['workspace_objects'])
+            self.assertFalse(workspace['checkout_input_head'])
             self.assertGreater(executor.artifact_cache.path(base['sha256']).stat().st_size, 1024 * 1024)
             self.assertLess(executor.artifact_cache.path(inputs['sha256']).stat().st_size, 64 * 1024)
             other_run = type('Executor', (), {'run_dir': top/'other-run', 'artifact_cache': executor.artifact_cache})()
             other_bridge = B.DistributedPreparationBridge(other_run, root)
             locators = task['preparation']['input_hashes']
-            self.assertEqual(other_bridge._bundle(root, source, locators), bundles)
+            self.assertEqual(other_bridge._bundle(root, source, locators), bundles[:2])
             tracked_base, tracked = bridge._bundle(root, source, locators[1:], tracked_workspace=True)
             self.assertEqual(tracked_base, base)
             self.assertNotEqual(tracked['sha256'], inputs['sha256'])
@@ -328,7 +330,7 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             fixed_provider.write_text('# artificial source guard only\n')
             root_hashes={v['sha256']for v in task['preparation']['input_git_bundles']}
             provider_hashes={v['sha256']for v in task['preparation']['workspaces']['provider']['input_git_bundles']}
-            self.assertTrue(root_hashes<=provider_hashes)
+            self.assertTrue({base['sha256'], inputs['sha256']} <= provider_hashes)
             task['preparation']['artificial']=True;task['request_id']='fixture'
             assignment={'job_id':'fixture','request':task,'request_sha256':W.digest(task),'source_manifest':task['preparation']['source']}
             profile={'host_id':'simulated-other-host','root':str(view),'interpreter':sys.executable,

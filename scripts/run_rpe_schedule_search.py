@@ -1233,7 +1233,8 @@ class WidthDriver:
 
     def loop(self):
         previous=self.state.get('stop',{}).get('reason')
-        transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY'}
+        transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS',
+                   'SCOPE_HELD_Q3','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY'}
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return
         if previous:self.state.pop('stop')
@@ -1256,6 +1257,7 @@ class WidthDriver:
             self.save()
             return
         end=None if self.a.max_cycles is None else self.state['cycle']+self.a.max_cycles
+        held_q3, unresolved = False, []
         while end is None or self.state['cycle']<end:
             if (self.run/'STOP_REQUESTED.json').exists():
                 self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
@@ -1282,9 +1284,13 @@ class WidthDriver:
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
             caps=self.spec.get('max_new_q3_per_method',{})
             launched=self.state.get('q3_launched',{})
+            unresolved = next(iter(result.values()), {}).get('executor_metrics', {}).get('unresolved_q3_attempts', [])
+            held_q3 = bool(unresolved) or any(r.get('prior_q3_holds') or
+                any(h['status']=='UNKNOWN' for h in r.get('execution_holds', [])) for r in result.values())
             if (any(launched.values()) and
                     all(type(caps.get(m)) is int and launched[m] >= caps[m] for m in launched)):
-                self.state['stop']=dict(reason='Q3_BUDGET_EXHAUSTED',UTC=K.now(),launched=launched)
+                self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'Q3_BUDGET_EXHAUSTED',
+                    UTC=K.now(),launched=launched,unresolved_q3_attempts=unresolved)
                 self.save();return
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
@@ -1292,7 +1298,8 @@ class WidthDriver:
             pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
             if getattr(self,'rule_stop',False):
                 if any(r['stop_reason']=='STEP_LIMIT' for r in result.values()):
-                    self.state['stop']=dict(reason='EXPLICIT_STEP_LIMIT',UTC=K.now());self.save();return
+                    self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'EXPLICIT_STEP_LIMIT',
+                        UTC=K.now(),unresolved_q3_attempts=unresolved);self.save();return
                 if getattr(self,'pf_more',False) or any(r['stop_reason']=='WORK_SLICE_YIELDED' for r in result.values()):
                     continue
                 pending=any(p['status'] in ('COMPLETION','REGISTERED') for p in self.state['points'])
@@ -1302,9 +1309,12 @@ class WidthDriver:
                     p['status']=='HELD' for p in self.state['points']) or any(r.get('not_ready_candidates') for r in result.values())
                 reason=('SCOPE_HELD_INPUTS' if blocked else 'REQUESTED_WIDTH_RULE_EXHAUSTED') if getattr(self,'rule_stop',False) else (
                     'WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED')
+                if held_q3:reason='SCOPE_HELD_Q3'
                 self.state['stop']=dict(reason=reason,
-                    UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()});self.save();return
-        self.state['stop']=dict(reason='MAX_CYCLES',UTC=K.now());self.save()
+                    UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()},
+                    unresolved_q3_attempts=unresolved);self.save();return
+        self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'MAX_CYCLES',
+            UTC=K.now(),unresolved_q3_attempts=unresolved);self.save()
 
 
 def main(argv=None, *, driver_factory=None):

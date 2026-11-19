@@ -8,11 +8,13 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from trottertracks import rpe_preparation_worker as P
+from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
 from trottertracks.rpe_preparation_artifacts import ArtifactCache
 from trottertracks import rpe_q3_worker as W
 
@@ -129,6 +131,47 @@ subprocess.run(['git','commit','--only','-qm','new result','--',str(p)],check=Tr
         self.assertFalse((self.root/'sparse-attempt/workspace/docs/archive/unneeded.json').exists())
         self.assertTrue((self.root/'sparse-attempt/workspace/docs/provider-output/result.json').is_file())
         self.assertEqual(archive.read_text(),'{"historical":true}')
+
+    def test_signal_pack_restores_sparse_checkout_and_output_ancestors(self):
+        source = self.root/'source'
+        wanted = ['README.md', 'docs/research/sibling.md', 'LICENSES/license.txt']
+        unrelated = 'docs/archive/large.json'
+        for name in [*wanted, unrelated]:
+            path = source/name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(name)
+        subprocess.run(['git','add','.'], cwd=source, check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid',
+                        'commit','-qm','fixed tree'], cwd=source, check=True)
+        self.source['commit'] = P._head(source)
+        seed = self.root/'worker-source'
+        subprocess.run(['git','clone','-q','--no-checkout',str(source),str(seed)], check=True)
+        (seed/'leaf.py').write_bytes((source/'leaf.py').read_bytes())
+        for name in [*wanted, unrelated]:
+            oid = subprocess.check_output(['git','rev-parse','HEAD:'+name],cwd=source,text=True).strip()
+            (seed/'.git/objects'/oid[:2]/oid[2:]).unlink()
+        profile = dict(self.profile('wsl'), preparation_sources={self.source['commit']: str(seed)})
+        cache = P.worker_cache(profile)
+        bridge = DistributedPreparationBridge(SimpleNamespace(run_dir=self.root/'central',artifact_cache=cache), source)
+        outputs = ['workspace/docs/research/new-result']
+        view = dict(source=self.source, input_git_bundles=[])
+        bundle = bridge._workspace_bundle(source, view, Path('workspace'), outputs)
+        self.assertEqual(bundle, bridge._workspace_bundle(source, view, Path('workspace'), outputs))
+        code = """from pathlib import Path
+import subprocess
+p=Path('docs/research/new-result/output.json')
+p.parent.mkdir(parents=True)
+p.write_text('{}')
+subprocess.run(['git','add',str(p)],check=True)
+subprocess.run(['git','commit','--only','-qm','signal','--',str(p)],check=True)
+"""
+        task = self.task('signal',code,outputs=outputs,source_workspace=True,input_git_bundles=[bundle])
+        attempt = self.root/'wsl-attempt'
+        outcome = P.execute(task,profile,attempt)
+        self.assertEqual(outcome['status'], 'PREPARATION_COMPLETE')
+        checkout = attempt/'workspace'
+        self.assertEqual((checkout/'docs/research/sibling.md').read_text(), wanted[1])
+        self.assertFalse((checkout/unrelated).exists())
 
     def test_input_git_bundle_cannot_replace_fixed_scientific_code(self):
         malicious=self.root/'changed-code'

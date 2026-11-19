@@ -104,6 +104,29 @@ class ControllerFailures(unittest.TestCase):
         assignments = self.poll(executor, slots=2)['assignments']
         self.assertEqual(len(assignments), 2)
 
+    def test_missing_worker_exit_is_held_without_blocking_independent_assignment(self):
+        ex = self.executor(capacity='auto')
+        proposal = self.proposal('unresolved')
+        view = ex.for_method('PR_PAULI')
+        task = view._enqueue(proposal, demand=True)
+        assignment, = self.poll(ex)['assignments']
+        owner = {key: assignment[key] for key in ('job_id', 'attempt_id')}
+        owner['host_id'] = 'server1'
+        detail = dict(reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
+        ex.rpc('/v1/state', dict(owner, state='UNKNOWN', detail=detail))
+        answer = view.answer(proposal)
+        self.assertTrue(O.is_local_unknown(answer))
+        self.assertEqual(answer['calls'], 1)
+        view.hold_configuration(proposal, answer)
+        second = self.enqueue(ex, 'independent')
+        other, = ex.rpc('/v1/poll', dict(host_id='other', slots=1, source_sha=self.source))['assignments']
+        self.assertEqual(other['job_id'], second.job.name)
+        ex.rpc('/v1/complete', dict(self.completion(other), host_id='other'))
+        self.assertEqual(ex.store.row(task.job.name)['state'], 'UNKNOWN')
+        self.assertEqual(ex.store.row(task.job.name)['attempt_id'], assignment['attempt_id'])
+        self.assertTrue(O.is_local_unknown(view.answer(proposal)))
+        self.assertEqual(ex.metrics()['unresolved_q3_attempts'][0]['job_id'], task.job.name)
+
     def test_standby_probe_allows_completion_and_rechecks_stop_before_reserving(self):
         executor = self.executor(live_q3_readiness=True)
         self.enqueue(executor, 'owned')
