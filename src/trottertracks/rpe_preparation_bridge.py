@@ -65,6 +65,13 @@ _PF_NATIVE_GUARD_INPUTS = tuple(
         'src/trottertracks/resource_applicability/h6_hash_reuse_v1.py',
         'src/trotterlib/rte_compiled_cost.py'))
 
+_PF_PRICE_GUARD_INPUTS = tuple(
+    dict(commit=commit, path='src/trottertracks/'+name+'.py') for name, commit in (
+        ('h4_df10_rpe_connection', '437ba4acdb82708b6fc98e3cd119a2a734f7cf64'),
+        ('pf_pr_rpe_pipeline', '437ba4acdb82708b6fc98e3cd119a2a734f7cf64'),
+        ('pr_rpe_rmse_controller', '437ba4acdb82708b6fc98e3cd119a2a734f7cf64'),
+        ('full_baseline_v2_requests', 'e7dca5f7301c8633b17a59b6a7161331303aef2d')))
+
 
 STAGES = {
     'PAULI_SIGNALS': 'signal', 'DF_SIGNALS': 'signal',
@@ -633,6 +640,8 @@ class DistributedPreparationBridge:
                     [command[0], '-B', '-c', _PF_STEP_INPUTS, str(root), payload], cwd=root)))
             elif stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE', 'PF_AUDIT', 'PF_HOLDOUT_AUDIT'):
                 original_documents.extend(_PF_NATIVE_GUARD_INPUTS)
+            if stage in ('PF_AUDIT', 'PF_HOLDOUT_AUDIT', 'PF_MODEL_FREEZE', 'PF_FINISH'):
+                original_documents.extend(_PF_PRICE_GUARD_INPUTS)
         for name,sha in inputs.items():
             if name.endswith('.json'):
                 try:document=json.loads(self.executor.artifact_cache.path(sha).read_bytes())
