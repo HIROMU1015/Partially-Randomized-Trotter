@@ -65,7 +65,7 @@ class FakeExecutor:
         self.allocation_config = dict(offer_ttl_seconds=2)
         self.artifact_cache = ArtifactCache(self.run_dir/'artifacts')
         self.rows = {}
-        self.store = SimpleNamespace(row=lambda key:self.rows.get(key))
+        self.store = SimpleNamespace(row=lambda key:self.rows.get(key), preparation_reservations=lambda: {})
         self.calls = []
 
     def rpc(self, endpoint, payload):
@@ -370,6 +370,26 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(spec['resources']['mem'], '7gb')
             self.assertEqual(spec['profile']['slot_policy']['initial_slots'], 3)
             self.assertEqual(executor.calls, [])
+
+    def test_pbs_sizes_unreserved_readiness_checks_to_remaining_stage_budget(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, _ = self.manager(directory)
+            manager.settings['preparation_task_seconds'] = [
+                dict(stage='signal', provider='DF_SIGNALS', source='fixed', seconds=120)]
+            request = dict(route=dict(kind='preparation'), preparation=dict(
+                stage='signal', provider='DF_SIGNALS', source=dict(commit='fixed')))
+            executor._host_admission_policy = lambda: ({}, None)
+            executor._host_admission = lambda *_: dict(accepting=True)
+            executor._host_supports_stage = lambda *_: True
+            executor._ready_queue = lambda: []
+            executor._match_ready_jobs = lambda *_: set()
+            executor.store.artificial = lambda _: False
+            executor.preparation_pending.update({
+                job: dict(request=request, budget=4, approved=True) for job in ('one', 'two', 'three')})
+            executor.store.preparation_reservations = lambda: {'signal': 4}
+            self.assertEqual(manager._demand(), ([], [], 0, 0))
+            executor.store.preparation_reservations = lambda: {'signal': 3}
+            self.assertEqual(manager._demand(), ([], [(['pbs-0'], request)], 1, 0))
 
     def test_restart_keeps_submission_token_and_rejects_changed_settings(self):
         with tempfile.TemporaryDirectory() as directory:

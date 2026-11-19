@@ -363,12 +363,24 @@ class PbsManager:
             # allocation exists to check it. Retain that eligible demand if
             # there is no compatible free slot outside PBS.
             checks = {}
+            budgets = self.executor.store.preparation_reservations()
             for job, record in self.executor.preparation_pending.items():
                 request = record['request']
+                row = self.executor.store.row(job)
+                if row is not None and row['state'] not in ('QUEUED', 'CANCELLED'):
+                    continue
+                stage = request['preparation']['stage']
+                budget = record.get('budget')
+                needs_reservation = row is None or row['state'] == 'CANCELLED'
+                if needs_reservation and (not record.get('approved', True) or
+                        (budget not in (None, 'UNLIMITED') and budgets.get(stage, 0) >= budget)):
+                    continue
                 usable = [host for host in compatible(request, None, unchecked=True)
                           if host not in record.get('failures', {})]
                 if usable:
                     checks[job] = (usable, request)
+                    if needs_reservation and budget not in (None, 'UNLIMITED'):
+                        budgets[stage] = budgets.get(stage, 0) + 1
             ready = []
             for task in self.executor._ready_queue():
                 row = self.executor.store.row(task.job.name)

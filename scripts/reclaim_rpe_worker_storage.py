@@ -29,8 +29,16 @@ payload = json.load(sys.stdin)
 exec(compile(payload['source'], 'rpe_worker_storage.py', 'exec'), vars(storage))
 profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload['profile']
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
-print(json.dumps(storage.report(profile.get('storage_limit'), spools=spools, pbs_runs=payload.get('pbs_runs'),
-                               cache_directories=storage.prefix_caches(profile))))
+options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile))
+result = storage.report(profile.get('storage_limit'), **options)
+if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and payload.get('duplicate_inventory'):
+    result['duplicate_inventory'] = storage.duplicate_inventory(profile)
+if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and payload.get('verified_duplicates'):
+    removed = storage.reclaim_verified_duplicates(profile, payload['verified_duplicates'])
+    if removed:
+        result = storage.report(profile['storage_limit'], refresh=True, **options)
+        result.update(reclaimed_duplicate_artifacts=len(removed), reclaimed_duplicate_bytes=sum(removed.values()))
+print(json.dumps(result))
 """
 
 
@@ -175,6 +183,36 @@ def wsl_running(worker, ssh):
     return raw.replace(b'\x00', b'').strip() == b'running'
 
 
+def verified_remote_duplicates(run, host, inventory, target):
+    """Prove remote cache objects are still available in the current central CAS."""
+    with sqlite3.connect((run/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
+        if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
+                      ('STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""", (host,)).fetchone():
+            return {}
+        requests = db.execute("SELECT request FROM jobs WHERE state IN ('QUEUED','ASSIGNED')").fetchall()
+    retained = {sha for (request,) in requests for sha in _hashes(json.loads(request))}
+    pending = run/'distributed/PREPARATION_PENDING.json'
+    if pending.exists():
+        retained.update(_hashes(read(pending)))
+    proof = {}
+    size_verified = 0
+    central = run/'distributed/artifacts'
+    for sha, size in sorted(inventory.items(), key=lambda pair: -pair[1]):
+        if sha in retained or not re.fullmatch('[a-f0-9]{64}', sha):
+            continue
+        original = central/sha[:2]/sha
+        if original.is_symlink() or not original.is_file() or original.stat().st_size != size:
+            continue
+        with original.open('rb') as stream:
+            if hashlib.file_digest(stream, 'sha256').hexdigest() != sha:
+                continue
+        proof[sha] = size
+        size_verified += size
+        if size_verified >= target:
+            break
+    return proof
+
+
 def cleanup(run, source):
     distributed = run/'distributed'
     conf = distributed/'relay'/'CONFIG.json'
@@ -193,10 +231,20 @@ def cleanup(run, source):
             if not worker.get('enabled', True) or admission.get(host, {}).get('accepting') is False:
                 continue
             def remote(w=worker):
-                if w.get('transport') == 'ssh-wsl' and not wsl_running(w, relay.ssh):
+                wsl = w.get('transport') == 'ssh-wsl'
+                if wsl and not wsl_running(w, relay.ssh):
                     return dict(status='WSL_STOPPED')
                 command = [w['python'], '-B', '-c', REMOTE_REPORT, w['root'], w['profile']]
-                return relay.remote_command(w, command, 'storage-reclaim', dict(source=source))[0]
+                result = relay.remote_command(w, command, 'storage-reclaim',
+                                              dict(source=source, duplicate_inventory=wsl))[0]
+                inventory = result.pop('duplicate_inventory', {}) if result else {}
+                if inventory:
+                    target = result['used_bytes'] - result['limit_bytes'] * 9 // 10
+                    proof = verified_remote_duplicates(run, w['host_id'], inventory, target)
+                    if proof:
+                        result = relay.remote_command(w, command, 'storage-reclaim-verified',
+                                                      dict(source=source, verified_duplicates=proof))[0]
+                return result
             work.append((host, remote))
     if pbs.exists():
         settings = read(pbs)

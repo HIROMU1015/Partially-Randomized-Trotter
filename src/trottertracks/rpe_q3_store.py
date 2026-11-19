@@ -162,6 +162,11 @@ class JobStore:
         current = (host_fingerprints or {}).get(job_id)
         return isinstance(current, dict) and isinstance(expected, str) and digest(current) == expected
 
+    def preparation_reservations(self):
+        with self._connection() as db:
+            return dict(db.execute("""SELECT substr(method,13),count(*) FROM jobs
+                WHERE method LIKE 'PREPARATION:%' AND state!='CANCELLED' GROUP BY method"""))
+
     def reserve(self, method, job_id, request, budget, approved, contract=None, eligibility=None):
         if not isinstance(method, str) or not method or not isinstance(job_id, str) or not job_id:
             raise ValueError('Nonempty method and scientific job_id required')

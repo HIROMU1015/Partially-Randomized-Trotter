@@ -487,11 +487,6 @@ class Relay:
                         readiness_errors=current.get('readiness_errors', {}))
             response = self.post('/v1/poll', poll)
         feedback = response.get('capacity_feedback')
-        if feedback is not None and (status.get('resource_report') or {}).get('mode') == 'AUTO':
-            try:
-                self.remote(worker, 'resources', dict(capacity_feedback=feedback))
-            except Exception as error:
-                self.log('RESOURCE_FEEDBACK_PENDING', host_id=host, error=str(error))
         assignments = response['assignments']
         response_time=time.monotonic()
         for assignment in assignments:
@@ -500,6 +495,7 @@ class Relay:
             pending = self.directory/'deliveries'/assignment['job_id']
             pending.mkdir(parents=True, exist_ok=True)
             atomic_json(pending/'ASSIGNMENT.json', assignment)
+        for assignment in assignments:
             info['phase'] = 'MAILBOX_ARTIFACTS'
             self._deliver_artifacts(worker, assignment)
             info['phase'] = 'MAILBOX_SUBMIT'
@@ -512,6 +508,11 @@ class Relay:
             try:self.post('/v1/transfer-metric',dict(host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],
                 timing=dict(ssh_delivery_roundtrip_seconds=seconds,relay_response_to_submit_seconds=relay_wait)))
             except Exception as error:self.log('TELEMETRY_PENDING',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],error=str(error))
+        if feedback is not None and (status.get('resource_report') or {}).get('mode') == 'AUTO':
+            try:
+                self.remote(worker, 'resources', dict(capacity_feedback=feedback))
+            except Exception as error:
+                self.log('RESOURCE_FEEDBACK_PENDING', host_id=host, error=str(error))
         info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
             states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
 

@@ -1545,7 +1545,13 @@ class DistributedExecutor(ConcurrentExecutor):
                             reason=hold['reason'],host_reasons=hold.get('host_reasons', {}))
                     return job_id
                 if not self.store.reserve(method, job_id, request, budget, approved, contract=task_contract,eligibility=eligibility):
-                    self.preparation_holds[job_id] = dict(status='PREPARATION_BUDGET_OR_PERMISSION_HOLD',reason='EXISTING_STAGE_CONTRACT_DOES_NOT_ALLOW_NEW_CALL')
+                    stage = preparation['stage']
+                    hold = dict(status='PREPARATION_BUDGET_OR_PERMISSION_HOLD',
+                                reason='PREPARATION_STAGE_BUDGET_EXHAUSTED' if approved else 'PREPARATION_STAGE_NOT_APPROVED',
+                                stage=stage, budget=budget, reserved=self.store.preparation_reservations().get(stage, 0))
+                    if self.preparation_holds.get(job_id) != hold:
+                        self.log(event='PREPARATION_HOLD', job=job_id, **hold)
+                    self.preparation_holds[job_id] = hold
                     return job_id
                 row = self.store.row(job_id)
                 self.preparation_holds.pop(job_id, None)
@@ -1919,9 +1925,24 @@ class DistributedExecutor(ConcurrentExecutor):
             hosts={h:dict(capacity=v.get('capacity'),slots=v['slots'])for h,v in self.hosts.items()})
         if self.distributed.get('live_ready_refill'):
             ready = self._ready_queue()
+            reserved = self.store.preparation_reservations()
+            budget_blocked = {}
+            checking = False
+            for job, record in self.preparation_pending.items():
+                if job in snapshot or self.store.row(job) is not None:
+                    continue
+                stage = record['request']['preparation']['stage']
+                budget = record.get('budget')
+                if budget not in (None, 'UNLIMITED') and reserved.get(stage, 0) >= budget:
+                    budget_blocked[stage] = budget_blocked.get(stage, 0) + 1
+                else:
+                    checking = True
+            if budget_blocked:
+                payload['preparation_budget_blocked'] = {
+                    stage: dict(waiting=count, reserved=reserved.get(stage, 0))
+                    for stage, count in budget_blocked.items()}
             waiting_preparation = (any(task.rule['kind'] == 'preparation' and task.status in ('QUEUED', 'RUNNING')
-                                       for task in s.tasks.values()) or any(job not in snapshot
-                                       and self.store.row(job) is None for job in self.preparation_pending))
+                                       for task in s.tasks.values()) or checking)
             work_conserving = self.distributed.get('work_conserving_search')
             for host, observation in payload['hosts'].items():
                 free = self._offer_free(host, admission, admission_error)
@@ -1935,8 +1956,9 @@ class DistributedExecutor(ConcurrentExecutor):
                     compatible = self._match_ready_jobs(ready, {host: free})
                     if work_conserving:
                         observation['idle_reason'] = ('ASSIGNMENT_WAIT' if compatible else
-                            'ELIGIBLE_HOST_SHORTAGE' if ready or self.eligibility_holds else
-                            'PREPARATION_WAIT' if waiting_preparation else 'CANDIDATE_SHORTAGE')
+                            'ELIGIBLE_HOST_SHORTAGE' if ready else
+                            'PREPARATION_WAIT' if waiting_preparation else
+                            'PREPARATION_BUDGET_HOLD' if budget_blocked else 'CANDIDATE_SHORTAGE')
                     else:
                         observation['idle_reason'] = ('NO_READY_TASK' if not ready else
                             'DISPATCH_READINESS_OR_POLL_WAIT' if compatible else 'NO_ELIGIBLE_READY_TASK')

@@ -1,7 +1,9 @@
 """Host-wide intake limits and reclamation of acknowledged worker copies."""
 import fcntl
+import hashlib
 import json
 from pathlib import Path
+import re
 import shutil
 import stat
 import subprocess
@@ -14,6 +16,72 @@ from .rpe_dp_prefix_reuse import PrefixStore
 
 SAMPLE_SECONDS = 5
 PREPARATION_COPIES = ('inputs', 'workspace', 'workspaces')
+
+
+def duplicate_inventory(profile):
+    policy = profile.get('storage_limit') or {}
+    cache_path = profile.get('artifact_cache_directory')
+    if not cache_path or cache_path not in policy.get('roots', []):
+        return {}
+    cache = Path(cache_path)
+    return {path.name: path.stat().st_size for path in cache.glob('*/*')
+            if path.parent.name == path.name[:2] and re.fullmatch('[a-f0-9]{64}', path.name)
+            and path.resolve() == path and path.is_file() and path.stat().st_nlink == 1}
+
+
+def _referenced_hashes(value):
+    if isinstance(value, str) and re.fullmatch('[a-f0-9]{64}', value):
+        yield value
+    elif isinstance(value, (dict, list)):
+        for item in value.values() if isinstance(value, dict) else value:
+            yield from _referenced_hashes(item)
+
+
+def reclaim_verified_duplicates(profile, proof):
+    """Reclaim transport cache copies verified from the central CAS."""
+    policy = profile['storage_limit']
+    sample = Path(policy['sample_path'])
+    spool = Path(profile['work_dir'])
+    cache = Path(profile.get('artifact_cache_directory') or '.')
+    if str(cache) not in policy['roots'] or not spool.is_dir():
+        return {}
+    with (spool/'WORKER.lock').open('a+b') as worker_lock, sample.with_suffix('.lock').open('r+b') as storage_lock:
+        try:
+            fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return {}
+        fcntl.flock(storage_lock, fcntl.LOCK_EX)
+        observation = json.loads(sample.read_bytes())
+        report = observation['report']
+        if (observation['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots'])
+                or report['reason'] != 'STORAGE_LIMIT_REACHED'):
+            return {}
+        retained = set()
+        for marker in spool.glob('*/*/WORKER_STATE.json'):
+            status = json.loads(marker.read_bytes())['state']
+            if status == 'TRANSFERRED':
+                continue
+            if status != 'UNKNOWN':
+                return {}
+            for name in ('ASSIGNMENT.json', 'ARTIFACT_MANIFEST.json', 'OUTCOME.json'):
+                path = marker.with_name(name)
+                if path.is_file():
+                    retained.update(_referenced_hashes(json.loads(path.read_bytes())))
+        inventory = duplicate_inventory(profile)
+        removed = {}
+        target = report['used_bytes'] - report['limit_bytes'] * 9 // 10
+        for sha, size in proof.items():
+            if sha in retained or inventory.get(sha) != size:
+                continue
+            path = cache/sha[:2]/sha
+            with path.open('rb') as stream:
+                if hashlib.file_digest(stream, 'sha256').hexdigest() != sha:
+                    continue
+            removed[sha] = path.stat().st_blocks * 512
+            path.unlink()
+            if sum(removed.values()) >= target:
+                break
+        return removed
 
 
 def prefix_caches(profile):

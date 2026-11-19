@@ -315,6 +315,38 @@ class WorkerTests(unittest.TestCase):
             digest = eligible['duplicate']
             self.assertEqual((central/digest[:2]/digest).read_text(),'duplicate')
 
+    def test_remote_cache_reclaim_preserves_unknown_and_unverified_copies(self):
+        from trottertracks.rpe_worker_storage import duplicate_inventory, reclaim_verified_duplicates
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            cache = root/'cache'
+            spool = root/'spool'
+            attempt = spool/'job'/'attempt'
+            attempt.mkdir(parents=True)
+            sample = root/'usage.json'
+            policy = dict(limit_bytes=1024, roots=[str(cache)])
+            profile = dict(work_dir=str(spool), artifact_cache_directory=str(cache),
+                           storage_limit=dict(policy, sample_path=str(sample)))
+            W.atomic(sample, dict(policy=policy, report=dict(reason='STORAGE_LIMIT_REACHED',
+                                                            limit_bytes=1024, used_bytes=10240)))
+            sample.with_suffix('.lock').touch()
+            files = {}
+            for name in ('duplicated', 'unknown', 'local-only'):
+                sha = hashlib.sha256(name.encode()).hexdigest()
+                path = cache/sha[:2]/sha
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(name)
+                files[name] = path
+            W.atomic(attempt/'ASSIGNMENT.json', {'input': files['unknown'].name})
+            inventory = duplicate_inventory(profile)
+            proof = {files[name].name: inventory[files[name].name] for name in ('duplicated', 'unknown')}
+            W.atomic(attempt/'WORKER_STATE.json', {'state': 'RUNNING'})
+            self.assertEqual(reclaim_verified_duplicates(profile, proof), {})
+            W.atomic(attempt/'WORKER_STATE.json', {'state': 'UNKNOWN'})
+            self.assertEqual(set(reclaim_verified_duplicates(profile, proof)), {files['duplicated'].name})
+            self.assertTrue(files['unknown'].is_file())
+            self.assertTrue(files['local-only'].is_file())
+
     def test_artificial_execute_transfer_duplicate_ack_and_resume(self):
         with tempfile.TemporaryDirectory() as temporary:
             profile, assignment = fixture(temporary); remote = FakeController(assignment, lose_ack=True)
