@@ -115,15 +115,15 @@ def driver_type(fixture, *, preparation_source=None, pf_fixture=None, all_method
                 if df_price_chain and method == 'PR_DF':
                     signal = task('signal', identity, provider_name='DF_SIGNALS')
                     calibration = task('compile', identity, provider_name='DF_CALIBRATION')
-                    def receipt(job, path='compiled'):
-                        return {job: {'products/circuit.txt': path+'/circuit.txt',
-                                      'products/receipt.json': path+'/receipt.json'}}
+                    def receipt(job):
+                        return {job: {'products/circuit.txt': 'compiled/circuit.txt',
+                                      'products/receipt.json': 'compiled/receipt.json'}}
                     frozen = task('audit', 'freeze:'+identity, (calibration,), receipt(calibration),
                                   provider_name='DF_MODEL_FREEZE')
                     holdout = task('compile', 'holdout:'+identity, (frozen,),
                                    provider_name='DF_HOLDOUT')
                     compared = task('audit', 'compare:'+identity, (holdout, frozen),
-                                    dict(receipt(holdout), **receipt(frozen, 'model')),
+                                    {**receipt(holdout), frozen:{'products/receipt.json':'model/receipt.json'}},
                                     provider_name='DF_HOLDOUT_COMPARE')
                     for job in (signal, calibration, frozen, holdout, compared):
                         result = runtime.executor.preparation_result(job, wait=True)
