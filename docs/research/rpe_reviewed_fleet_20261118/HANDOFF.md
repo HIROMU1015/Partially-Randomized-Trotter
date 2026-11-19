@@ -378,3 +378,19 @@ OUTCOMEなし。後者はPF信号で科学本体の終了receiptなし。元証�
 既存の稼働中run保護と予算継承チェックはそのまま適用した。
 証拠は `pbs-prdf-current-check/READ_ONLY_DUPLICATE_PREFLIGHT_AFTER_ID_FIX.json`。
 通常入口の関連回帰22件を通過。実入力の計算と採用は未実施。
+
+### 停止済みrunからのPR-DF LD8の引継ぎ
+
+元run `search-300182abb6401030e0a6` は通常Stopを記録した。中央driverの
+タイムアウト記録、中継の終了、未所有のdriver lock、PBS枠
+`267529.CPUcluster-PRISM` の終了コード0、台帳のattemptを照合した。
+欠落した終了記録を追加せず、PR-Pauliの未確定5件と元台帳を保全した。
+
+固定controller `8b941595e6` の通常Startで
+`search-0285a4cc1bae8ce03c22` が§10.5を通過した。旧配分規則、M=12、
+PR-DF LD8・幅h・κ=1、PBS指定を確認した。候補の旧較正
+`prep-f8326fce37e9b1bdc80c9b72` はコンパイル前の入力照合で終了していた。
+保存スナップショットで確認したλは、要求の `0x1.5d3f2ff8b67fep-14` と
+固定providerの `0x1.5d3f2ff8b67ffp-14` でbinary64の1 ULP異なる。
+既存の厳密照合と保留を保持した。新規PBS投入、実較正、監査、Q3、採用は各0件。
+RomuTailの記録は `.rpe-central/acceptance/pbs-prdf-ld8-continuation-8b941595-r3/`。
