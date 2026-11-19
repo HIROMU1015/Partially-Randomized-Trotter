@@ -91,6 +91,23 @@ _DF_PRICE_BACKEND = tuple(
     dict(commit='1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7',
          path='src/trottertracks/'+name+'.py')
     for name in ('r_price_phase1', 'r_price_phase1_runner', 'r_price_phase1_science')
+) + tuple(
+    dict(commit=commit, path=path) for commit, paths in (
+        ('ea9e66092465d39dfcd4aeb6fea8e9f09808cabb', ('scripts/run_pr_df_ld_split.py',)),
+        ('155529e20a8fac39e00786c40b57830b71203c4f', (
+            'scripts/h46_long_time_native.py', 'scripts/h46_m5_tol_saved_input.py',
+            'scripts/h46_new2_core.py', 'scripts/h46_new2_native.py',
+            'scripts/h46_pr_pilot_repair.py', 'src/trotterlib/h46_m5_plan.py')),
+        ('326feadd093920bbea29b498108aa4eae6f67a75', (
+            'src/trottertracks/efficient_controlled_zz.py', 'src/trottertracks/p1_efficient_zz.py')),
+        ('c31ef424175c02379eafebe8fc6c7548c1d9aabe', (
+            'src/trotterlib/df_partial_randomized_pf.py', 'src/trotterlib/df_partial_s2.py',
+            'src/trotterlib/df_rte_circuit.py', 'src/trotterlib/df_rte_qiskit.py',
+            'src/trotterlib/df_trotter/ops.py', 'src/trotterlib/pr2_matched_accuracy_m1_execution.py',
+            'src/trotterlib/rte.py', 'src/trotterlib/rte_compiled_cost.py',
+            'src/trottertracks/resource_applicability/ax2b_native_df_v5.py')),
+        ('d83737b6d5241962ce39c81d39c56af3506c0cdd', ('src/trottertracks/price_model_validation.py',)),
+    ) for path in paths
 )
 
 STAGES = {
