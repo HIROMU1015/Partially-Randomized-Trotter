@@ -22,6 +22,29 @@ S=importlib.util.module_from_spec(spec);spec.loader.exec_module(S)
 
 
 class ControllerPaths(unittest.TestCase):
+    def test_missing_committed_metadata_is_repaired_only_with_identical_recovered_twin(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p=Path(directory)/'candidates/current';p.mkdir(parents=True)
+            config=dict(id='generated',spec=dict(L_D=9,formula='2nd',kappa=dict(value='1'),delta_pf='1/10'),rounds=[])
+            request=dict(method='PR_DF',design=dict(L_D=9,formula='2nd',kappa='1',delta_pf='1/10'))
+            locator='a'*40+':search-evidence/old/completion/candidates/fixed/CONFIGURATION.json'
+            record=dict(method='PR_DF',status='HELD_TECHNICAL_FAILURE',request=request,
+                reason="CalledProcessError: Command '"+str(['git','show',locator])+"' returned non-zero exit status 128.")
+            C.put(p/'df-generate.STARTED.json',dict(science=False))
+            C.put(p/'df-generate.RETURN.json',dict(returncode=0,signal=None))
+            C.put(p/'df-generate.json',dict(status='CONFIGURATION_READY',configuration=config))
+            C.put(p/'CONFIGURATION.json',config);C.put(p/'df-generate.INPUT.json',request)
+            (p/'df-generate.log').write_text('metadata completed')
+            C.put(p.parent.parent/'STATE.json',dict(records=dict(previous=dict(method='PR_DF',
+                configuration=dict(commit='a'*40,path=locator.split(':',1)[1]),configuration_id='generated',request=request))))
+            with patch.object(C,'git',return_value=json.dumps(config)):
+                self.assertTrue(C.Completion.metadata_path_failure(record,p))
+                other=dict(config,spec=dict(config['spec'],L_D=8))
+                with patch.object(C,'git',return_value=json.dumps(other)):
+                    self.assertFalse(C.Completion.metadata_path_failure(record,p))
+                C.put(p/'DF_SIGNALS.STARTED.json',dict(science=True))
+                self.assertFalse(C.Completion.metadata_path_failure(record,p))
+
     def test_service_carries_saved_path_map_without_changing_input(self):
         with tempfile.TemporaryDirectory() as directory:
             c=C.Completion.__new__(C.Completion)

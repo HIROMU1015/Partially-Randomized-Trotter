@@ -108,3 +108,12 @@ RomuTail Q3の固定adapter checkout参照を使用する。新しい科学条�
 継続用snapshotは `continuation-inputs/h4-discrete-906c799/` に元記録のまま保存する。
 実装・人工検査は親Codexと委任Codexが担当し、重要科学レビューではない。
 再開runと実worker確認は配置後に追記する。
+
+最初の修正版07961cefe4のrun `search-7d6ddb1b06ef919fac24` でQ3を19件回収した
+（Full PF9、B0I6、PR-DF4）。RomuTail自身でFull PF6件の実行・回収を確認した。
+追加descriptorのbundle照合先をmetadata作成用controllerと共用したため、controllerの
+metadata commit後に固定HEAD照合が保留された。通常Stopで起動済み処理を回収し、
+EXIT=0・全キューACCEPTED・全PBS枠F・relay終了を確認した。STOP原本を残す。
+後続配置ではdescriptorの専用exact checkoutを全hostに分離し、科学stageに入っていない
+recoverable operational holdだけ継続する。保存snapshotは
+`continuation-inputs/h4-discrete-7d6ddb/`。既存の科学失敗保留は引き継ぐ。

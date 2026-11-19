@@ -2,6 +2,7 @@
 import hashlib
 import json
 import unittest
+from unittest.mock import patch
 
 import test_rpe_search_continuation as base
 from trottertracks.rpe_release_registry import fingerprint
@@ -83,4 +84,78 @@ class MetadataRepairTests(unittest.TestCase):
     def test_metadata_continuation_cannot_reset_finite_budget(self):
         self.round['executor']['distributed']['preparation']['budgets']['signal'] = 1
         with self.assertRaisesRegex(ValueError, 'budget'):
+            verify(self.successor, self.problem, self.round)
+
+
+class DeploymentRepairTests(unittest.TestCase):
+    save = base.ContinuationTests.save
+    bind_error = MetadataRepairTests.bind_error
+
+    def setUp(self):
+        MetadataRepairTests.setUp(self)
+        self.round['continuation']['kind'] = 'OPERATIVE_DEPLOYMENT_REPAIR'
+        self.save('STOP_REQUESTED.json', {'reason': 'USER_REQUESTED_STOP'})
+        self.save('KAPPA_STATE.json', {'stop': {'reason': 'USER_REQUESTED_STOP'}})
+        self.save('EXIT.json', {'invocation_id': 'owned', 'returncode': 0})
+        (self.original/'completion').mkdir()
+        self.metadata = {'records': {'candidate': {
+            'method': 'PR_DF', 'status': 'WAITING_DISTRIBUTED_PREPARATION',
+            'recoverable_preparation': True, 'scientific_failure': False,
+            'reason': ('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_DESCRIPTOR:'
+                       'INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Fixed bundle validation view SOURCE differs: abc')}}}
+        self.bind_deployment()
+
+    def bind_deployment(self):
+        self.save('completion/STATE.json', self.metadata)
+        for key, name in [('parent_stop_sha256', 'STOP_REQUESTED.json'),
+                          ('parent_metadata_state_sha256', 'completion/STATE.json')]:
+            self.round['continuation'][key] = hashlib.sha256((self.original/name).read_bytes()).hexdigest()
+        self.round['continuation']['metadata_hold_keys'] = ['candidate']
+
+    def test_normal_stop_metadata_deployment_repair(self):
+        stop = (self.original/'STOP_REQUESTED.json').read_bytes()
+        verify(self.successor, self.problem, self.round)
+        self.assertEqual((self.original/'STOP_REQUESTED.json').read_bytes(), stop)
+        self.save('EXIT.json', {'invocation_id': 'owned', 'returncode': -2})
+        verify(self.successor, self.problem, self.round)
+
+    def test_deployment_repair_requires_matching_normal_exit_and_stop(self):
+        for code in [1, -9, None, False]:
+            with self.subTest(code=code):
+                self.save('EXIT.json', {'invocation_id': 'owned', 'returncode': code})
+                with self.assertRaisesRegex(ValueError, 'normal STOP'):
+                    verify(self.successor, self.problem, self.round)
+        self.save('EXIT.json', {'invocation_id': 'owned', 'returncode': 0})
+        self.save('KAPPA_STATE.json', {'stop': {'reason': 'UNKNOWN_RESULT'}})
+        with self.assertRaisesRegex(ValueError, 'normal STOP'):
+            verify(self.successor, self.problem, self.round)
+
+    def test_deployment_repair_binds_metadata_and_preserves_scientific_failure(self):
+        (self.original/'completion/STATE.json').write_text('{}')
+        with self.assertRaises((KeyError, ValueError)):
+            verify(self.successor, self.problem, self.round)
+        self.metadata['records']['candidate']['scientific_failure'] = True
+        self.bind_deployment()
+        with self.assertRaisesRegex(ValueError, 'scientific failure'):
+            verify(self.successor, self.problem, self.round)
+        self.metadata['records']['candidate']['scientific_failure'] = False
+        self.metadata['records']['other'] = {'scientific_failure': True}
+        self.bind_deployment()
+        with self.assertRaisesRegex(ValueError, 'candidate scientific STOP'):
+            verify(self.successor, self.problem, self.round)
+        self.round['candidate_completion'] = {'protected_stops_from': [
+            {'commit': 'synthetic', 'path': 'state.json'}]}
+        with patch('subprocess.check_output', return_value=json.dumps(self.metadata).encode()):
+            verify(self.successor, self.problem, self.round)
+        with patch('subprocess.check_output', return_value=b'{"records":{}}'):
+            with self.assertRaisesRegex(ValueError, 'candidate scientific STOP'):
+                verify(self.successor, self.problem, self.round)
+
+    def test_other_hold_and_default_kind_cannot_use_explicit_stop(self):
+        self.metadata['records']['candidate']['reason'] = 'NUMERICAL_ERROR'
+        self.bind_deployment()
+        with self.assertRaisesRegex(ValueError, 'another metadata hold'):
+            verify(self.successor, self.problem, self.round)
+        self.round['continuation'].pop('kind')
+        with self.assertRaisesRegex(ValueError, 'explicit STOP'):
             verify(self.successor, self.problem, self.round)

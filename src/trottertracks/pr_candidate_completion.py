@@ -8,6 +8,7 @@ from contextlib import nullcontext
 from copy import deepcopy
 from fractions import Fraction
 import hashlib
+import ast
 import json
 import os
 from pathlib import Path
@@ -227,6 +228,9 @@ class Completion:
     @staticmethod
     def metadata_path_failure(record,directory):
         """Only a recorded DF metadata lookup failure may start fresh metadata."""
+        if (record.get('method')=='PR_DF' and record.get('status')=='HELD_TECHNICAL_FAILURE'
+                and str(record.get('reason','')).startswith('CalledProcessError: Command ')):
+            return Completion.metadata_git_input_failure(record,directory)
         if (record.get('method')!='PR_DF' or record.get('status')!='HELD_WITH_REASON'
                 or not str(record.get('reason','')).startswith('STAGE_FAILED:df-plan:')):
             return False
@@ -243,6 +247,48 @@ class Completion:
             if (directory/'df-plan.json').exists():return False
             return "FileNotFoundError: [Errno 2] No such file or directory:" in (directory/'df-plan.log').read_text()
         except (OSError,ValueError,KeyError,TypeError):
+            return False
+
+    @staticmethod
+    def metadata_git_input_failure(record,directory):
+        """Re-resolve a missing committed physical twin before any science leaf."""
+        expected={'df-generate.STARTED.json','df-generate.RETURN.json','df-generate.json',
+                  'df-generate.INPUT.json','df-generate.log','CONFIGURATION.json'}
+        if {p.relative_to(directory).as_posix() for p in directory.rglob('*') if p.is_file()}!=expected:
+            return False
+        try:
+            reason=record['reason'];prefix='CalledProcessError: Command ';suffix=' returned non-zero exit status 128.'
+            if not reason.endswith(suffix):return False
+            literal=reason[len(prefix):-len(suffix)]
+            if not literal.startswith("'[") or not literal.endswith("]'"):return False
+            command=ast.literal_eval(literal[1:-1])
+            if (not isinstance(command,list) or len(command)!=3 or command[:2]!=['git','show']
+                    or not isinstance(command[2],str) or ':' not in command[2]):return False
+            commit,path=command[2].split(':',1)
+            if (len(commit)!=40 or any(c not in '0123456789abcdef' for c in commit)
+                    or Path(path).is_absolute() or '..' in Path(path).parts
+                    or Path(path).name!='CONFIGURATION.json'):return False
+            started=read(directory/'df-generate.STARTED.json');receipt=read(directory/'df-generate.RETURN.json')
+            generated=read(directory/'df-generate.json');config=read(directory/'CONFIGURATION.json')
+            if (started.get('science') is not False or receipt.get('returncode')!=0 or receipt.get('signal') is not None
+                    or generated.get('status')!='CONFIGURATION_READY' or generated.get('configuration')!=config):return False
+            design=record['request']['design'];spec=config['spec']
+            if (spec['L_D']!=design['L_D'] or spec['formula']!=design['formula']
+                    or dec(spec['kappa']['value'])!=dec(design['kappa'])
+                    or dec(spec['delta_pf'])!=dec(design['delta_pf'])):return False
+            recovered=json.loads(git('show',command[2]))
+            state=read(directory.parent.parent/'STATE.json')
+            matched=[r for r in state['records'].values() if r.get('method')=='PR_DF'
+                     and r.get('configuration')==dict(commit=commit,path=path)]
+            if not matched:return False
+            for previous in matched:
+                wanted=previous['request']['design'];actual=recovered['spec']
+                if (previous.get('configuration_id')!=recovered.get('id')
+                        or actual['L_D']!=wanted['L_D'] or actual['formula']!=wanted['formula']
+                        or dec(actual['kappa']['value'])!=dec(wanted['kappa'])
+                        or dec(actual['delta_pf'])!=dec(wanted['delta_pf'])):return False
+            return True
+        except (OSError,ValueError,KeyError,TypeError,SyntaxError,subprocess.CalledProcessError):
             return False
 
     def _step_rules(self):

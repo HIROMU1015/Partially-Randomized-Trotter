@@ -459,8 +459,9 @@ def verify(run, problem, spec):
     from .rpe_local0_search import digest
 
     contract = spec['continuation']
-    repair = contract.get('kind') == 'OPERATIVE_METADATA_REPAIR'
-    if contract.get('kind') not in (None, 'OPERATIVE_METADATA_REPAIR'):
+    deployment_repair = contract.get('kind') == 'OPERATIVE_DEPLOYMENT_REPAIR'
+    repair = contract.get('kind') == 'OPERATIVE_METADATA_REPAIR' or deployment_repair
+    if contract.get('kind') not in (None, 'OPERATIVE_METADATA_REPAIR', 'OPERATIVE_DEPLOYMENT_REPAIR'):
         raise ValueError('Unknown continuation kind')
     previous = Path(contract['parent_directory']).resolve()
     if previous == run.resolve() or previous.name != contract['parent_run_id']:
@@ -479,12 +480,52 @@ def verify(run, problem, spec):
             raise ValueError('Continuation changes the adopted scope: '+key)
     if previous.as_posix() not in spec['executor'].get('prior_run_dirs', []):
         raise ValueError('Continuation must retain the parent in the duplicate audit')
-    if (previous/'STOP_REQUESTED.json').exists():
+    if (previous/'STOP_REQUESTED.json').exists() and not deployment_repair:
         raise ValueError('Continuation preserves the previous explicit STOP')
     launch = load(previous/'LAUNCH.json')
     stopped = load(previous/'EXIT.json')
     end = load(previous/'KAPPA_STATE.json').get('stop') or {}
-    if repair:
+    if deployment_repair:
+        stop_file = previous/'STOP_REQUESTED.json'
+        metadata_file = previous/'completion/STATE.json'
+        stop_bytes = stop_file.read_bytes()
+        metadata_bytes = metadata_file.read_bytes()
+        records = json.loads(metadata_bytes)['records']
+        hold_keys = contract.get('metadata_hold_keys')
+        prefix = ('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_DESCRIPTOR:'
+                  'INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Fixed bundle validation view SOURCE differs: ')
+        if (stopped.get('invocation_id') != launch.get('invocation_id')
+                or type(stopped.get('returncode')) is not int or stopped['returncode'] not in (0, -2)
+                or end.get('reason') != 'USER_REQUESTED_STOP'
+                or json.loads(stop_bytes).get('reason') != 'USER_REQUESTED_STOP'
+                or hashlib.sha256(stop_bytes).hexdigest() != contract.get('parent_stop_sha256')
+                or hashlib.sha256(metadata_bytes).hexdigest() != contract.get('parent_metadata_state_sha256')
+                or not isinstance(hold_keys, list) or not hold_keys
+                or len(set(hold_keys)) != len(hold_keys)):
+            raise ValueError('Continuation requires the saved normal STOP and deployment metadata hold')
+        for key in hold_keys:
+            row = records.get(key) or {}
+            if (row.get('method') != 'PR_DF' or row.get('status') != 'WAITING_DISTRIBUTED_PREPARATION'
+                    or row.get('recoverable_preparation') is not True or row.get('scientific_failure') is not False
+                    or not row.get('reason', '').startswith(prefix)):
+                raise ValueError('Continuation cannot repair a scientific failure or another metadata hold')
+        if any(row.get('scientific_failure') is True for row in records.values()):
+            # Candidate-level stops remain terminal across a deployment repair.
+            # Completion imports these records without retrying them; require an
+            # immutable copy of the entire parent state in that existing path.
+            import subprocess
+            protected = spec.get('candidate_completion', {}).get('protected_stops_from', [])
+            preserved = False
+            for locator in protected:
+                raw = subprocess.check_output(
+                    ['git', 'show', locator['commit']+':'+locator['path']],
+                    cwd=Path(__file__).resolve().parents[2])
+                if json.loads(raw) == json.loads(metadata_bytes):
+                    preserved = True
+                    break
+            if not preserved:
+                raise ValueError('Continuation must preserve candidate scientific STOPs in the protected state')
+    elif repair:
         error_log = previous/'RUNTIME_ERRORS.jsonl'
         raw = error_log.read_bytes()
         entries = [json.loads(line) for line in raw.splitlines() if line.strip()]
@@ -502,15 +543,16 @@ def verify(run, problem, spec):
                 or any(driver.get(k) != end.get(k) for k in ('error_type', 'message'))
                 or driver.get('event') != 'RUNTIME_EXCEPTION'):
             raise ValueError('Continuation requires the saved metadata owner-check failure')
-        relay = previous/'distributed/relay/STATUS.json'
-        if relay.exists() and load(relay).get('stopped') is not True:
-            raise ValueError('Continuation parent relay is not stopped')
     elif (stopped.get('invocation_id') != launch.get('invocation_id')
             or stopped.get('returncode') in (None, 0)
             or end.get('reason') != 'RUNTIME_EXCEPTION'
             or end.get('error_type') != 'TimeoutExpired'
             or str(previous/'distributed/LOCAL_WORKER.json') not in end.get('message', '')):
         raise ValueError('Continuation requires a reconciled polling-worker shutdown failure')
+    if repair:
+        relay = previous/'distributed/relay/STATUS.json'
+        if relay.exists() and load(relay).get('stopped') is not True:
+            raise ValueError('Continuation parent relay is not stopped')
     result = previous/'ROUND_RESULT.json'
     if result.exists() or not repair:
         reasons = {row['stop_reason'] for row in load(result)['methods'].values()}
