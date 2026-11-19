@@ -278,3 +278,20 @@ PBS割当 `267442.CPUcluster-PRISM`（4 CPU、9 GiB）と `267444.CPUcluster-PRI
 `search-b909673782427d4eeb02` の通常Start応答は120秒でタイムアウトした。中央の `LAUNCH.json`、台帳、終了記録で同じrunを追跡し、Startの再送は行わなかった。
 
 修正版の配置 `romutail-pbs-pf-live-d1804fe9f-r2` はRomuTailとPBSの隔離領域で固定SHAを確認した。PBSの保存入力dry-checkでは元のsignal・compile REQUESTを変更せず、各19件の固定Git参照、既存Python 3.11.0rc1、compile用Qiskit 1.3.0の照合が2件とも通過した。PBS実機では、修正版が既存supervisorに到達し、完了済みの人工attemptを再起動しないことも確認した。回帰73件が通過。記録は `.rpe-central/deployment/romutail-pbs-pf-live-d1804fe9f-r2/` の `PBS_SAVED_RUNTIME_CHECK.log` と `PBS_SUPERVISOR_TERMINAL_CHECK.log`。通常運用のcurrentは `romutail-fleet-efficiency-b65a30d81-r2`。次は中央担当が元attemptとSTOPを照合して継続を決め、計算ノードで信号・compileの実処理、監査、同じ候補の評価への引継ぎを確認する。複数の実タスクを使ったPBSの効率計測はその後に行う。
+
+### B0I単一構成の実処理・Q3・公開の通し検収（2026-11-19）
+
+承認済みのB0I `p=8`・`4th`・`8h`（候補 `b3430ea5eb978ab4fbaf22e83c3c112fc0609cb8d00f06419e56f9d2b9164d6d`）を通常CLIから引き継いだ。旧runのSTOP、未確定attempt、失敗receiptと工程別消費は元台帳に残し、後継runに `RUN_LINEAGE.json` を保存した。固定準備SOURCE、科学Q3 SOURCE、範囲、精度条件、自動shot提案は継承した。後継の検収設定は各1サイクル・1探索stepとした。
+
+| 工程 | 実行先と確認した結果 |
+| --- | --- |
+| 信号 | `search-7a4dffac596af1366c09` のPBS `267457` で新規10ラウンド、保存信号再利用3ラウンド。中央採用した `MEAN_HANDOFF.json` は `a2bd134570f0fcca950438d34f93756844e0c8e5`。以降は13ラウンドを再利用し、新規信号の予算を0にした。 |
+| 通常compile | 同じrunのPBSでは、6ラウンドともB0I tail定数項の厳密一致検査に失敗し、回路compile 0件。`search-3e6b70bba6c78593eec3` のserver2が同じ検査を通過し、6ラウンド・12回路を完了。中央採用した原結果は `ded10db4e9ada379e479942a52dd45ae2a074c8e`。 |
+| 監査・独立検証 | 最終run `search-51ec4b40deb95d9b8e5b` は通常compileの12回路を再利用。PBSが通常監査とモデル固定を行い、server2が独立検証の1ラウンド・2回路をcompileし、PBSが独立検証監査と26軸の価格集計を完了した。独立検証後の再fitなし。価格は既存契約の条件付き比較モデル。 |
+| Q3・通常公開 | 同じ候補に `5a9e29b8eb7e795f61fb` をRomuTailで1回実行・回収・採用した。結果は `MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD`。今回の配分ではMSE適合点なし。Q3本体の壁時計91.64秒。通常公開 `74414217b1683466f49d735dd0d657eae089d193`。 |
+
+修正 `590a5fb40e` は固定providerの版指定済み化学依存を割当前に照合する。`4640caa0e1` は保存演算子とnative guardの固定Git参照を、`4b3e5b7c2b` はC監査が読む固定B/D APIを既存配送bundleへ含める。PBSの依存追加は検収領域の `openfermionpyscf==0.5` のみ。共有環境のPythonと既存科学SOURCEは固定。関連回帰52件とサブテスト3件が通った。
+
+最終runは `romutail-pbs-pf-live-4b3e5b7c2-r3` を明示して開始。信号・通常compileの再実行は0件。最終runの6タスクについて台帳の割当・受領・採用は各1回。通常終了後のrelay停止とPBS枠の返却を確認した。他候補の旧Q3 holdは維持し、この候補の評価は探索step上限1で終了した。通常運用currentは `romutail-fleet-efficiency-b65a30d81-r2`。
+
+成功したPBS割当の使用CPU時間／確保CPU時間は、信号 `267457` が39／1,312 CPU秒、通常監査・固定 `267459` が34／1,208 CPU秒、独立検証監査・集計 `267461` が33／1,232 CPU秒。1構成の配送待ちを含む測定なので、複数の適格な実タスクでの高負荷効率は未検収。PBSでのcompileの厳密再現も残る。埋め合わせのcompileや追加Q3は実行していない。既存のC同期で探索マップを `75c736406df4fe2cc956c2932b1a4bb4f8adbf96` に公開した。
