@@ -87,6 +87,38 @@ SHA-256照合を通ったWSLコピーを追加で回収する。実行中、未�
 server1は停止中。旧run、配分・採用の証拠と使用量ログはRomuTailの
 `.rpe-central/state/runs` に保存している。
 
+## 2026-11-20 旧入力receiptの再照合とPBSの起動短縮
+
+旧パスで `NEEDS_INPUT_SOURCE` となったPR-Pauli 14候補について、後続の
+`saved-input-recheck` に固定入力で構成を生成したreceiptが存在した。固定SOURCEの
+入力ハッシュ、メタデータ段階の終了、候補の設計・保存構成を照合し、コピーされた
+検査済みディレクトリへ戻るよう修正した。価格も揃った3候補を準備順で優先する。
+元の価格較正失敗、未回収評価、そのほかの科学条件は元の記録で管理する。
+
+PBSは空き枠の範囲で独立したQ3の入力照合を並行し、台帳とworkerに保存した割当を
+次の照会を待たずに起動する。終了時刻・停止・固定版の検査とattempt IDを引き継ぐ。
+`search-3566160c558272510a4c` のPBSでは、同じ枠への後続Q3と信号準備の補充を
+実機で確認した。終了済みPBS枠の合計CPU利用率は、旧runの19.5%（1601/8200 CPU秒）
+から35.6%（1160/3260 CPU秒）へ上がった。workerへの割当保存からQ3本体開始までの
+中央値は旧13件の16.2秒から新6件の10.3秒へ短縮した。比率にはPBS枠の立上げと
+回収待ちを含み、同一タスクセットの性能比較ではない。
+
+通常の継続先は `search-c18e36af4fdf8186b360`、releaseは
+`romutail-pbs-receipt-priority-134711613-r2`。先行runの準備・評価と旧STOPを保全し、
+§10.5の照合後に起動した。元の準備会計を保持し、信号枠は70→73→76件、compileと
+auditは35件・14件。途中で4件目も価格が揃い、直近の追加3枠は価格済み候補に使った。
+RomuTail、server2、PBSに最終releaseを配置した。WSLは最終配置時に停止中で、
+引継ぎ時に終了receiptを確認できなかった旧2評価を個別保留にした。
+Resumeのクライアント応答が時間切れでも、通常Statusで既存controllerを確認してから
+操作する。ソースは `134711613ba4de46fff7c2b1e03db13aee8f7a19`。
+
+優先復帰版では、LD5の2候補（κ=13・幅h、κ=64・幅8h）がQ3へ復帰し、
+初回評価を中央で採用した。κ=63・幅4hはPBSの固定信号runtimeで
+`openfermionpyscf` がなく信号計算0件で終了し、元attemptを保全した。
+κ=2・幅4hは信号枠待ち。PBSの10 CPU枠では後続Q3の5件が本体を開始した。
+最終固定版の回帰104件とsubtest 5件がPASS。別途、固定release束縛の旧mock
+2件は前版でも失敗し、入力を照合して保存する実経路は既存・新規回帰で確認した。
+
 ## 通常入口
 
 - Romulaptopでは既存の `Invoke-RpeSearch.ps1 -Action Preview -RequestFile SCOPE.json` を使う。RomuTailのCLIは `scripts/run_rpe_search.py --config .rpe-central/CLIENT.json --action preview --request-file SCOPE.json`。
