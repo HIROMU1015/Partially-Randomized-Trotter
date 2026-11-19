@@ -24,6 +24,44 @@ def fixture():
 
 
 class DescriptorTests(unittest.TestCase):
+    def test_saved_prefix_relocation_preserves_original_descriptor_source(self):
+        _,cfg,_=fixture();calls=[]
+        with tempfile.TemporaryDirectory() as directory:
+            saved=Path(directory)/'context.json'
+            descriptor=dict(lambda_R=.25,scalar=.125)
+            saved.write_text(json.dumps(dict(binding=cfg['spec']['binding'],prefixes={'6':descriptor})))
+            sha=hashlib.sha256(saved.read_bytes()).hexdigest()
+            index=dict(T20_reference_files=dict(H4=dict(path='/old/context.json',sha256=sha)),
+                       saved_inputs=dict(H4=dict(inputs={'snapshot':dict(path='/old/snapshot.npz')})))
+            source=dict(index=deepcopy(E.INDEX),context_sha256=sha,selector=['prefixes','6'])
+            cfg['spec']['split']['lambda_source']=source
+            namespace=dict(p=SimpleNamespace(same=lambda a,b:a==b),SimpleNamespace=SimpleNamespace)
+            exec("def load_context(root, binding):\n"
+                 "    index=p.SavedArtifacts(root).read(None)\n"
+                 "    assert index['saved_inputs']['H4']['inputs']['snapshot']['path'].endswith('/snapshot.npz')\n"
+                 "    return SimpleNamespace(matrices=[],state=[],ham=SimpleNamespace(constant=2.)), {'loaded':True}\n",namespace)
+            modules={'_artificial_provider.h4_pr_rmse_completion':SimpleNamespace(load_context=namespace['load_context']),
+                     '_artificial_provider.h4_four_method_screen':SimpleNamespace(PHYS={'fixture':'PHYS'})}
+            def read(root,locator):
+                return deepcopy(index) if locator==E.INDEX else dict(binding=cfg['spec']['binding'])
+            def make(*args,**kwargs):calls.append((args,kwargs));return SimpleNamespace()
+            provider=SimpleNamespace(__package__='_artificial_provider',make_context=make)
+            with patch.object(E,'read',side_effect=read),patch.dict(sys.modules,modules),\
+                 patch('trottertracks.rpe_preparation_paths.resolve',side_effect=lambda p:str(Path(directory)/Path(p).name)):
+                original=deepcopy(cfg)
+                result=E.context(ROOT,cfg,None,provider)
+                self.assertEqual(calls[0][0][3],{6:dict(descriptor,source=source)})
+                self.assertEqual(calls[0][1]['source'],E.INDEX)
+                self.assertEqual(result.state_metadata,{'loaded':True})
+                self.assertEqual(cfg,original)
+                for field in ('lambda_source','lambda_R'):
+                    bad=deepcopy(cfg);bad['spec']['split'][field]={} if field=='lambda_source' else 99
+                    with self.assertRaisesRegex(ValueError,'exact saved tail descriptor'):
+                        E.context(ROOT,bad,None,provider)
+                saved.write_text('{}')
+                with self.assertRaisesRegex(ValueError,'Original saved context bytes differ'):
+                    E.context(ROOT,cfg,None,provider)
+
     def test_binding_source_prefix_checks(self):
         loc,cfg,doc=fixture();self.assertEqual(E.validate(doc,loc,cfg),doc['descriptor'])
         for field in ('prefix','binding','derivation_source'):

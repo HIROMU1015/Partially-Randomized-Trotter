@@ -184,7 +184,7 @@ class Completion:
                     if not self.metadata_path_failure(record,directory):
                         raise ValueError('Metadata repair would retry a scientific or ambiguous failure: '+identifier)
                     carried=self.state['records'].get(identifier)
-                    if carried is not None and {k:v for k,v in carried.items() if k!='reused_from'}!=record:
+                    if carried is not None and {k:v for k,v in carried.items() if k!='reused_from'}!={k:v for k,v in record.items() if k!='reused_from'}:
                         raise ValueError('Metadata repair does not match the preserved failure: '+identifier)
                     self.state.setdefault('metadata_repairs',{})[identifier]=dict(
                         original_record=deepcopy(record),state_file=str(path),sha256=repair['sha256'],
@@ -240,14 +240,46 @@ class Completion:
                 or not str(record.get('reason','')).startswith('STAGE_FAILED:df-plan:')):
             return False
         try:
+            if not (directory/'df-plan.log').is_file():
+                # An inherited hold retains its original absolute log path.
+                # Resolve it only from a normally stopped owner; never inspect
+                # past a new local scientific attempt.
+                if any(directory.rglob('*.STARTED.json')):return False
+                original=Path(record['reason'].split(':',4)[-1])
+                if (not original.is_absolute() or original.name!='df-plan.log'
+                        or original.parent.name!=directory.name or original.parent.parent.name!='candidates'):return False
+                parent=original.parents[3]
+                launch=read(parent/'LAUNCH.json');ended=read(parent/'EXIT.json')
+                if (read(parent/'STOP_REQUESTED.json').get('reason')!='USER_REQUESTED_STOP'
+                        or launch.get('invocation_id')!=ended.get('invocation_id')
+                        or ended.get('returncode')not in(0,-2)
+                        or read(parent/'distributed/relay/STATUS.json').get('stopped')is not True):return False
+                directory=original.parent
             markers=list(directory.rglob('*.STARTED.json'))
+            descriptor=directory/'DF_TAIL_DESCRIPTOR.STARTED.json'
+            if descriptor in markers:
+                # A completed descriptor is immutable evidence, not a failed
+                # science leaf to retry. Only the later metadata lookup is
+                # being repaired; the descriptor must remain reusable.
+                from .pr_df_descriptor_extension import validate
+                started=read(descriptor);document=read(directory/'DF_TAIL_DESCRIPTOR.json')
+                returned=read(directory/'DF_DESCRIPTOR.RETURN.json')
+                if ((directory/'DF_TAIL_DESCRIPTOR.STOP.json').exists()
+                        or returned.get('returncode')!=0 or returned.get('signal')is not None
+                        or returned.get('automatic_retry')is not False or not returned.get('job_id')
+                        or started.get('source')!=document.get('execution_source')
+                        or started.get('configuration')!=document.get('configuration_source')
+                        or started.get('prefix')!=document.get('prefix')
+                        or returned.get('source')!=document['execution_source']['commit']):return False
+                validate(document,{},read(directory/'CONFIGURATION.json'))
+                markers.remove(descriptor)
             if not markers or any(p.parent!=directory or read(p).get('science') is not False for p in markers):return False
             for marker in markers:
                 stage=marker.name.removesuffix('.STARTED.json')
-                if stage not in ('df-generate','INITIAL_QUOTE','df-plan'):return False
+                if stage not in ('df-generate','DF_GENERATE_WITH_DESCRIPTOR','INITIAL_QUOTE','df-plan'):return False
                 receipt=read(directory/(stage+'.RETURN.json'))
                 if receipt.get('signal') is not None or receipt.get('returncode')!=(1 if stage=='df-plan'else 0):return False
-            if {p.name for p in markers}!={'df-generate.STARTED.json','INITIAL_QUOTE.STARTED.json','df-plan.STARTED.json'}:
+            if not {'df-generate.STARTED.json','INITIAL_QUOTE.STARTED.json','df-plan.STARTED.json'} <= {p.name for p in markers}:
                 return False
             if (directory/'df-plan.json').exists():return False
             log=(directory/'df-plan.log').read_text()

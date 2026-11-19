@@ -16,11 +16,12 @@ class DescriptorRuntime(unittest.TestCase):
             script = Path(temp) / 'leaf.py'
             script.write_text('# synthetic fixed descriptor\n')
             configured = {'packages': {'numpy': '1.26.4'}, 'imports': ['json']}
-            runtime, _ = B.contract_runtime([], script, configured, 'DF_DESCRIPTOR')
-            self.assertEqual(runtime['packages'], configured['packages'])
-            self.assertEqual(runtime['imports'], ['json', 'matplotlib.pyplot', 'openfermionpyscf'])
+            for provider in ('DF_DESCRIPTOR', 'DF_SIGNALS'):
+                runtime, _ = B.contract_runtime([], script, configured, provider)
+                self.assertEqual(runtime['packages'], configured['packages'])
+                self.assertEqual(runtime['imports'], ['json', 'matplotlib.pyplot', 'openfermionpyscf'])
             self.assertEqual(configured['imports'], ['json'])
-            ordinary, _ = B.contract_runtime([], script, configured, 'DF_SIGNALS')
+            ordinary, _ = B.contract_runtime([], script, configured, 'DF_CALIBRATION')
             self.assertEqual(ordinary, configured)
 
     def test_worker_runtime_preflight_rejects_missing_plotting_before_leaf(self):

@@ -54,14 +54,8 @@ def _hashes(value):
             yield from _hashes(item)
 
 
-def local_duplicate_cache(run, profile):
-    """Drop only idle local cache copies with a byte-verified central copy."""
-    policy = profile['storage_limit']
-    sample = Path(policy['sample_path'])
-    worker = Path(profile['artifact_cache_directory']).resolve()
-    spool = Path(profile['work_dir']).resolve()
-    if str(worker) not in policy['roots']:
-        return {}
+def central_artifact_caches(run):
+    """Current CAS and ended CAS owners of the same evaluation only."""
     state_dir = Path(read(run/'CONTROLLER_CONFIG.json')['state_directory'])
     index = read(state_dir/'RUNS.json')
     evaluation = (index.get(run.name) or {}).get('evaluation_identity')
@@ -73,11 +67,20 @@ def local_duplicate_cache(run, profile):
             prior = Path(item['run_directory']).resolve()
             if prior != run and (prior/'LAUNCH.json').is_file() and (prior/'EXIT.json').is_file() and not invocation_active(prior):
                 candidates.append(prior)
-    canonical = []
-    for owner in dict.fromkeys(candidates):
-        central = (owner/'distributed/artifacts').resolve()
-        if not central.is_relative_to(worker) and not worker.is_relative_to(central):
-            canonical.append(central)
+    return [(owner/'distributed/artifacts').resolve() for owner in dict.fromkeys(candidates)]
+
+
+def local_duplicate_cache(run, profile):
+    """Drop only idle local cache copies with a byte-verified central copy."""
+    policy = profile['storage_limit']
+    sample = Path(policy['sample_path'])
+    worker = Path(profile['artifact_cache_directory']).resolve()
+    spool = Path(profile['work_dir']).resolve()
+    if str(worker) not in policy['roots']:
+        return {}
+    state_dir = Path(read(run/'CONTROLLER_CONFIG.json')['state_directory'])
+    canonical = [central for central in central_artifact_caches(run)
+                 if not central.is_relative_to(worker) and not worker.is_relative_to(central)]
 
     def protected():
         if Path(read(state_dir/'CURRENT_TARGET.json')['run_directory']).resolve() != run:
@@ -184,7 +187,7 @@ def wsl_running(worker, ssh):
 
 
 def verified_remote_duplicates(run, host, inventory, target):
-    """Prove remote cache objects are still available in the current central CAS."""
+    """Prove remote copies exist in the current or ended same-evaluation CAS."""
     with sqlite3.connect((run/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
         if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
                       ('STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""", (host,)).fetchone():
@@ -196,16 +199,21 @@ def verified_remote_duplicates(run, host, inventory, target):
         retained.update(_hashes(read(pending)))
     proof = {}
     size_verified = 0
-    central = run/'distributed/artifacts'
+    canonical = central_artifact_caches(run)
     for sha, size in sorted(inventory.items(), key=lambda pair: -pair[1]):
         if sha in retained or not re.fullmatch('[a-f0-9]{64}', sha):
             continue
-        original = central/sha[:2]/sha
-        if original.is_symlink() or not original.is_file() or original.stat().st_size != size:
-            continue
-        with original.open('rb') as stream:
-            if hashlib.file_digest(stream, 'sha256').hexdigest() != sha:
+        verified = False
+        for central in canonical:
+            original = central/sha[:2]/sha
+            if original.is_symlink() or not original.is_file() or original.stat().st_size != size:
                 continue
+            with original.open('rb') as stream:
+                if hashlib.file_digest(stream, 'sha256').hexdigest() == sha:
+                    verified = True
+                    break
+        if not verified:
+            continue
         proof[sha] = size
         size_verified += size
         if size_verified >= target:

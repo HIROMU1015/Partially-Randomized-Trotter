@@ -149,7 +149,7 @@ def digest(value):
 def contract_runtime(values, script, configured, provider=None):
     """Extract declared package/compiler identities without importing a provider."""
     result=deepcopy(configured);packages=result.setdefault('packages',{});compilers=set()
-    if provider == 'DF_DESCRIPTOR':
+    if provider in ('DF_DESCRIPTOR', 'DF_SIGNALS'):
         # The fixed saved-context loader imports trotterlib's public package,
         # including plotting and chemistry imports. Probe these before a leaf
         # is assigned; their availability was absent from the numeric pins.

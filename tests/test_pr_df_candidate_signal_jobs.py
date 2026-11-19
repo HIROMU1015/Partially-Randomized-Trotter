@@ -42,6 +42,13 @@ def fixture():
 
 
 class ExecutionTests(unittest.TestCase):
+    def setUp(self):
+        # These orchestration fixtures have no real saved-input index. The
+        # relocated frozen-loader contract is tested in descriptor_extension.
+        context=patch.object(E,'saved_context',side_effect=lambda config,locator,provider:
+                             provider.load_h4_context(ROOT,config))
+        context.start();self.addCleanup(context.stop)
+
     def test_fixed_view_beats_preloaded_controller_module_and_survives_fork(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as temp:
             view = Path(temp)

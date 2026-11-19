@@ -22,6 +22,33 @@ S=importlib.util.module_from_spec(spec);spec.loader.exec_module(S)
 
 
 class ControllerPaths(unittest.TestCase):
+    def test_metadata_after_completed_descriptor_can_resume_without_rederivation(self):
+        from trottertracks.pr_df_descriptor_extension import BINDING_KEYS, INDEX, DERIVATION
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);parent=root/'old';p=parent/'completion/candidates/fixed';p.mkdir(parents=True)
+            record=dict(method='PR_DF',status='HELD_WITH_REASON',reason='STAGE_FAILED:df-plan:None:None:'+str(p/'df-plan.log'))
+            for stage in ('df-generate','INITIAL_QUOTE','DF_GENERATE_WITH_DESCRIPTOR','df-plan'):
+                C.put(p/(stage+'.STARTED.json'),dict(science=False))
+                C.put(p/(stage+'.RETURN.json'),dict(returncode=1 if stage=='df-plan'else 0,signal=None))
+            binding={k:'ARTIFICIAL'for k in BINDING_KEYS}
+            source=dict(commit='SOURCE',caller='descriptor.py');configuration=dict(commit='CONFIG',path='config.json')
+            C.put(p/'CONFIGURATION.json',dict(spec=dict(L_D=6,binding=binding)))
+            C.put(p/'DF_TAIL_DESCRIPTOR.STARTED.json',dict(source=source,configuration=configuration,prefix=6))
+            C.put(p/'DF_TAIL_DESCRIPTOR.json',dict(schema='PR_DF_TAIL_DESCRIPTOR_V1',prefix=6,
+                descriptor=dict(lambda_R=.25,scalar=.5),binding=binding,execution_source=source,
+                configuration_source=configuration,saved_index=INDEX,derivation_source=DERIVATION,input_source={'fixed':True}))
+            C.put(p/'DF_DESCRIPTOR.RETURN.json',dict(returncode=0,signal=None,automatic_retry=False,source='SOURCE',job_id='fixed'))
+            (p/'df-plan.log').write_text("validated_packet_index\nKeyError: 'means'\n")
+            self.assertTrue(C.Completion.metadata_path_failure(record,p))
+            C.put(parent/'STOP_REQUESTED.json',dict(reason='USER_REQUESTED_STOP'))
+            C.put(parent/'LAUNCH.json',dict(invocation_id='same'))
+            C.put(parent/'EXIT.json',dict(invocation_id='same',returncode=0))
+            C.put(parent/'distributed/relay/STATUS.json',dict(stopped=True))
+            self.assertTrue(C.Completion.metadata_path_failure(record,root/'new/completion/candidates/fixed'))
+            C.put(p/'DF_TAIL_DESCRIPTOR.STOP.json',dict(reason='FAILED'))
+            self.assertFalse(C.Completion.metadata_path_failure(record,p))
+            self.assertFalse(C.Completion.metadata_path_failure(record,root/'new/completion/candidates/fixed'))
+
     def test_missing_committed_metadata_is_repaired_only_with_identical_recovered_twin(self):
         with tempfile.TemporaryDirectory() as directory:
             p=Path(directory)/'candidates/current';p.mkdir(parents=True)

@@ -66,13 +66,14 @@ def entry(root,locator,base_class,*,runtime=None):
 
 
 def context(root,config,locator,provider):
-    """Existing saved-H loader + existing make_context with one supplied tail."""
+    """Relocate saved-H inputs while preserving supplied or saved tail SOURCE."""
     from trottertracks.rpe_preparation_paths import resolve
-    document=read(root,locator);descriptor=validate(document,locator,config)
     split=config['spec']['split']
-    if split['lambda_source']!=locator:raise ValueError('Configuration does not bind supplied DF descriptor')
-    value=split['lambda_R'];lam=Fraction(value['numerator'],value['denominator'])if isinstance(value,dict)else Fraction(value)
-    if lam!=Fraction(descriptor['lambda_R']):raise ValueError('Configuration DF lambda differs')
+    if locator is not None:
+        document=read(root,locator);descriptor=validate(document,locator,config)
+        if split['lambda_source']!=locator:raise ValueError('Configuration does not bind supplied DF descriptor')
+        value=split['lambda_R'];lam=Fraction(value['numerator'],value['denominator'])if isinstance(value,dict)else Fraction(value)
+        if lam!=Fraction(descriptor['lambda_R']):raise ValueError('Configuration DF lambda differs')
     # Relative module namespace is the fixed provider's own namespace.
     import importlib
     completion=importlib.import_module(provider.__package__+'.h4_pr_rmse_completion')
@@ -88,6 +89,21 @@ def context(root,config,locator,provider):
     if hashlib.sha256(raw).hexdigest()!=saved['sha256']:raise ValueError('Original saved context bytes differ')
     original=json.loads(raw)
     if any(original['binding'].get(k)!=config['spec']['binding'].get(k)for k in BINDING_KEYS):raise ValueError('Original saved H binding differs')
+    if locator is None:
+        screen=importlib.import_module(provider.__package__+'.h4_four_method_screen')
+        base=read(root,screen.PHYS)['binding']
+        if original['binding']!=base:raise ValueError('Saved tail H/state binding differs')
+        prefix=str(config['spec']['L_D'])
+        if prefix not in original['prefixes']:raise ValueError('No saved prefix-specific lambda/scalar descriptor')
+        descriptor=original['prefixes'][prefix]
+        tail_source=dict(index=deepcopy(INDEX),context_sha256=saved['sha256'],selector=['prefixes',prefix])
+        value=split['lambda_R'];lam=Fraction(value['numerator'],value['denominator'])if isinstance(value,dict)else Fraction(value)
+        if split['lambda_source']!=tail_source or descriptor['lambda_R']!=float(lam):
+            raise ValueError('B split must identify the exact saved tail descriptor')
+        context_source=deepcopy(INDEX)
+    else:
+        tail_source=deepcopy(locator)
+        context_source=dict(saved_index=INDEX,descriptor=locator,descriptor_execution_source=document['execution_source'])
     load_context=completion.load_context
     if relocated:
         # Pass relocated packet paths to the existing frozen loader. Its
@@ -99,8 +115,8 @@ def context(root,config,locator,provider):
         )
         load_context=FunctionType(load_context.__code__,namespace)
     loaded,state_metadata=load_context(root,original['binding'])
-    tails={config['spec']['L_D']:dict(descriptor,source=deepcopy(locator))}
+    tails={config['spec']['L_D']:dict(descriptor,source=tail_source)}
     result=provider.make_context(loaded.matrices,loaded.state,loaded.ham.constant,tails,
-        binding=config['spec']['binding'],source=dict(saved_index=INDEX,descriptor=locator,descriptor_execution_source=document['execution_source']))
+        binding=config['spec']['binding'],source=context_source)
     result.state_metadata=state_metadata
     return result

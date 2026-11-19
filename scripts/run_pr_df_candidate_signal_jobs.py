@@ -149,6 +149,13 @@ def one(job_and_reference):
     return value
 
 
+def saved_context(config, tail_descriptor, provider):
+    extension_path=ROOT/'src/trottertracks/pr_df_descriptor_extension.py'
+    extension_spec=importlib.util.spec_from_file_location('_df_signal_descriptor_extension',extension_path)
+    extension=importlib.util.module_from_spec(extension_spec);extension_spec.loader.exec_module(extension)
+    return extension.context(ROOT,config,tail_descriptor,provider)
+
+
 def execute(config, plan, output, provider, metadata, b, *, workers=None, tail_descriptor=None):
     """Small testable orchestration layer; real entry supplies the pinned runtime."""
     output = Path(output).resolve(); output.mkdir(parents=True, exist_ok=True)
@@ -176,13 +183,7 @@ def execute(config, plan, output, provider, metadata, b, *, workers=None, tail_d
             pending_jobs.append((job, reference))
         if pending_jobs:
             event(output, 'CONTEXT_START')
-            if tail_descriptor is None:
-                ctx = provider.load_h4_context(ROOT, config)
-            else:
-                extension_path=ROOT/'src/trottertracks/pr_df_descriptor_extension.py'
-                extension_spec=importlib.util.spec_from_file_location('_df_signal_descriptor_extension',extension_path)
-                extension=importlib.util.module_from_spec(extension_spec);extension_spec.loader.exec_module(extension)
-                ctx=extension.context(ROOT,config,tail_descriptor,provider)
+            ctx=saved_context(config,tail_descriptor,provider)
             event(output, 'CONTEXT_END', scalar_components=dict(
                 hamiltonian_constant=ctx.constant,
                 tail_identity=ctx.tails[config['spec']['L_D']]['scalar'],
