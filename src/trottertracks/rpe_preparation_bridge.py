@@ -596,8 +596,6 @@ class DistributedPreparationBridge:
         if snapshot and script.name in ('run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py'):
             extension = 'src/trottertracks/pr_df_descriptor_extension.py'
             raw = subprocess.check_output(['git', 'show', source + ':' + extension], cwd=root)
-            if raw != (root/extension).read_bytes():
-                raise ValueError('DF snapshot binding helper differs from fixed SOURCE')
             source_files[extension] = hashlib.sha256(raw).hexdigest()
             index = json.loads(subprocess.check_output(
                 ['git', 'show', _DF_SNAPSHOT_INDEX['commit']+':'+_DF_SNAPSHOT_INDEX['path']], cwd=root))

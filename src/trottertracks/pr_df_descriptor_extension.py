@@ -13,8 +13,6 @@ from pathlib import Path
 import subprocess
 from types import FunctionType, SimpleNamespace
 
-from trottertracks.rpe_preparation_paths import resolve
-
 INDEX=dict(commit='7a8bc7f132e166390c943e6b32c92cc6abe1baf4',path='artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json')
 DERIVATION=dict(commit='7f4c9a171a1d4caeaeaee6c443217edec761f4c9',path='scripts/h46_new2_core.py',function='matrix_only_tail_coefficients')
 BINDING_KEYS=('system','basis','geometry','rank','rank_policy','hamiltonian','state','snapshot')
@@ -69,6 +67,7 @@ def entry(root,locator,base_class,*,runtime=None):
 
 def context(root,config,locator,provider):
     """Existing saved-H loader + existing make_context with one supplied tail."""
+    from trottertracks.rpe_preparation_paths import resolve
     document=read(root,locator);descriptor=validate(document,locator,config)
     split=config['spec']['split']
     if split['lambda_source']!=locator:raise ValueError('Configuration does not bind supplied DF descriptor')

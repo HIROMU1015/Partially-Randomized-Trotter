@@ -1017,6 +1017,8 @@ class Completion:
         d.mkdir(parents=True,exist_ok=True);base=d/'df_prices';inp=base/'INPUTS.json'
         args=[self.path('PRICE'),'-B','-c',_DF_PRICE_BOOTSTRAP,
               str(ROOT/'scripts/run_pr_df_candidate_prices.py'),str(self.path('DF_VIEW'))]
+        if core := self.settings.get('df_price_openblas_coretype'):
+            args.extend(['--openblas-coretype',core])
         descriptor_file=d/'DF_DESCRIPTOR_LOCATOR.json'
         if descriptor:put(descriptor_file,descriptor)
         quote_file=d/'AVAILABLE_PRICE_QUOTE.json';put(quote_file,quote)

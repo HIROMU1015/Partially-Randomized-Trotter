@@ -687,7 +687,13 @@ def compare(inputs,raw_commit,model_commit,source):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('mode',choices=('prepare','acquire','freeze','compare-holdout'));ap.add_argument('--source',required=True)
-    ap.add_argument('--tail-descriptor',type=Path);ap.add_argument('--price-quote',type=Path);ap.add_argument('--configuration');ap.add_argument('--selector',default='[]');ap.add_argument('--output');ap.add_argument('--cohort');ap.add_argument('--input',type=Path);ap.add_argument('--inputs-commit');ap.add_argument('--stage',choices=('calibration','holdout'));ap.add_argument('--raw-commit');ap.add_argument('--model-commit');ap.add_argument('--covered-rounds',type=json.loads);ap.add_argument('--parallel-axes',action='store_true');a=ap.parse_args()
+    ap.add_argument('--tail-descriptor',type=Path);ap.add_argument('--price-quote',type=Path);ap.add_argument('--configuration');ap.add_argument('--selector',default='[]');ap.add_argument('--output');ap.add_argument('--cohort');ap.add_argument('--input',type=Path);ap.add_argument('--inputs-commit');ap.add_argument('--stage',choices=('calibration','holdout'));ap.add_argument('--raw-commit');ap.add_argument('--model-commit');ap.add_argument('--covered-rounds',type=json.loads);ap.add_argument('--parallel-axes',action='store_true')
+    ap.add_argument('--openblas-coretype', choices=('NEHALEM',))
+    a=ap.parse_args()
+    if a.openblas_coretype:
+        if 'numpy' in sys.modules:
+            raise ValueError('Fixed OpenBLAS core must be selected before loading NumPy')
+        os.environ['OPENBLAS_CORETYPE']=a.openblas_coretype
     if a.mode=='prepare':
         commit,path=a.configuration.split(':',1);prepare(dict(commit=commit,path=path,selector=json.loads(a.selector)),a.output,a.source,a.cohort,None if a.price_quote is None else json.loads(a.price_quote.read_text()),None if a.tail_descriptor is None else json.loads(a.tail_descriptor.read_text()),a.covered_rounds, parallel_axes=a.parallel_axes)
     else:

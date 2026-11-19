@@ -76,7 +76,7 @@ class DescriptorTests(unittest.TestCase):
             completion=SimpleNamespace(load_context=namespace['load_context'])
             provider=SimpleNamespace(__package__='_artificial_provider',make_context=lambda *a, **kw:SimpleNamespace())
             with (patch.object(E,'read',side_effect=[doc,deepcopy(index)]),
-                  patch.object(E,'resolve',side_effect=lambda path:str(Path(directory)/Path(path).name)),
+                  patch('trottertracks.rpe_preparation_paths.resolve',side_effect=lambda path:str(Path(directory)/Path(path).name)),
                   patch.dict(sys.modules,{'_artificial_provider.h4_pr_rmse_completion':completion})):
                 ctx=E.context(ROOT,cfg,loc,provider)
             self.assertEqual(ctx.state_metadata,str(Path(directory)/'snapshot.npz'))
