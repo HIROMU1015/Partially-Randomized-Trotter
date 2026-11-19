@@ -25,77 +25,16 @@
   "search_progress": {
     "schema": "H4_SEARCH_PROGRESS_V1",
     "status": "RECORDED",
-    "controller_cycle": 1,
-    "planner_cycle": 1,
+    "controller_cycle": 2,
+    "planner_cycle": 2,
     "controller_stop": {
       "reason": "USER_REQUESTED_STOP",
-      "UTC": "2026-11-19T23:02:15Z"
+      "UTC": "2026-11-19T23:15:17Z"
     },
     "planner_stop": null,
     "families": [
       {
         "family": "PR_DF|LD5|2nd|delta=3602879701896397/36028797018963968|K2",
-        "point_status": {},
-        "next_candidates": [],
-        "decisions": [],
-        "method": "PR_DF",
-        "L_D": 5,
-        "formula": "2nd",
-        "K": 2,
-        "requested_delta_pf": {
-          "numerator": 3602879701896397,
-          "denominator": 36028797018963968
-        },
-        "status": "READY_METADATA"
-      },
-      {
-        "family": "PR_DF|LD5|2nd|delta=3602879701896397/72057594037927936|K2",
-        "point_status": {},
-        "next_candidates": [],
-        "decisions": [],
-        "method": "PR_DF",
-        "L_D": 5,
-        "formula": "2nd",
-        "K": 2,
-        "requested_delta_pf": {
-          "numerator": 3602879701896397,
-          "denominator": 72057594037927936
-        },
-        "status": "READY_METADATA"
-      },
-      {
-        "family": "PR_DF|LD6|2nd|delta=3602879701896397/36028797018963968|K2",
-        "point_status": {
-          "EVALUATED": 1,
-          "HELD": 1
-        },
-        "next_candidates": [
-          {
-            "kappa": "1",
-            "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "HELD"
-          }
-        ],
-        "decisions": [
-          {
-            "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
-          }
-        ],
-        "method": "PR_DF",
-        "L_D": 6,
-        "formula": "2nd",
-        "K": 2,
-        "requested_delta_pf": {
-          "numerator": 3602879701896397,
-          "denominator": 36028797018963968
-        },
-        "status": "READY_METADATA",
-        "upper_basis": "EXPLICIT_DISCRETE_GRID",
-        "refinement": "OPEN"
-      },
-      {
-        "family": "PR_DF|LD6|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
           "HELD": 2
         },
@@ -122,6 +61,84 @@
           }
         ],
         "method": "PR_DF",
+        "L_D": 5,
+        "formula": "2nd",
+        "K": 2,
+        "requested_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "status": "READY_METADATA",
+        "upper_basis": "EXPLICIT_DISCRETE_GRID",
+        "refinement": "OPEN"
+      },
+      {
+        "family": "PR_DF|LD5|2nd|delta=3602879701896397/72057594037927936|K2",
+        "point_status": {
+          "HELD": 2
+        },
+        "next_candidates": [
+          {
+            "kappa": "1",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          },
+          {
+            "kappa": "2",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "1"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "2"
+          }
+        ],
+        "method": "PR_DF",
+        "L_D": 5,
+        "formula": "2nd",
+        "K": 2,
+        "requested_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 72057594037927936
+        },
+        "status": "READY_METADATA",
+        "upper_basis": "EXPLICIT_DISCRETE_GRID",
+        "refinement": "OPEN"
+      },
+      {
+        "family": "PR_DF|LD6|2nd|delta=3602879701896397/36028797018963968|K2",
+        "point_status": {
+          "EVALUATED": 1,
+          "HELD": 1
+        },
+        "next_candidates": [],
+        "decisions": [],
+        "method": "PR_DF",
+        "L_D": 6,
+        "formula": "2nd",
+        "K": 2,
+        "requested_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "status": "READY_METADATA",
+        "upper_basis": "EXPLICIT_DISCRETE_GRID",
+        "refinement": "OPEN"
+      },
+      {
+        "family": "PR_DF|LD6|2nd|delta=3602879701896397/72057594037927936|K2",
+        "point_status": {
+          "HELD": 2
+        },
+        "next_candidates": [],
+        "decisions": [],
+        "method": "PR_DF",
         "L_D": 6,
         "formula": "2nd",
         "K": 2,
@@ -136,10 +153,22 @@
       {
         "family": "PR_DF|LD7|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
-          "REGISTERED": 1
+          "REGISTERED": 1,
+          "HELD": 1
         },
-        "next_candidates": [],
-        "decisions": [],
+        "next_candidates": [
+          {
+            "kappa": "2",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "2"
+          }
+        ],
         "method": "PR_DF",
         "L_D": 7,
         "formula": "2nd",
@@ -155,11 +184,11 @@
       {
         "family": "PR_DF|LD7|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "HELD": 1
+          "HELD": 2
         },
         "next_candidates": [
           {
-            "kappa": "1",
+            "kappa": "2",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "HELD"
           }
@@ -167,7 +196,7 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
+            "kappa": "2"
           }
         ],
         "method": "PR_DF",
@@ -185,11 +214,11 @@
       {
         "family": "PR_DF|LD8|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
-          "HELD": 1
+          "HELD": 2
         },
         "next_candidates": [
           {
-            "kappa": "1",
+            "kappa": "2",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "HELD"
           }
@@ -197,7 +226,7 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
+            "kappa": "2"
           }
         ],
         "method": "PR_DF",
@@ -215,11 +244,11 @@
       {
         "family": "PR_DF|LD8|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "HELD": 1
+          "HELD": 2
         },
         "next_candidates": [
           {
-            "kappa": "1",
+            "kappa": "2",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "HELD"
           }
@@ -227,7 +256,7 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
+            "kappa": "2"
           }
         ],
         "method": "PR_DF",
@@ -247,19 +276,8 @@
         "point_status": {
           "HELD": 1
         },
-        "next_candidates": [
-          {
-            "kappa": "1",
-            "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "HELD"
-          }
-        ],
-        "decisions": [
-          {
-            "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
-          }
-        ],
+        "next_candidates": [],
+        "decisions": [],
         "method": "PR_DF",
         "L_D": 9,
         "formula": "2nd",
@@ -277,19 +295,8 @@
         "point_status": {
           "HELD": 1
         },
-        "next_candidates": [
-          {
-            "kappa": "1",
-            "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "HELD"
-          }
-        ],
-        "decisions": [
-          {
-            "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
-          }
-        ],
+        "next_candidates": [],
+        "decisions": [],
         "method": "PR_DF",
         "L_D": 9,
         "formula": "2nd",
@@ -304,6 +311,6 @@
       }
     ],
     "state_path": "docs/research/romutail_controller_runs/search-2bf68d58d3d7c32243c8/KAPPA_STATE.json",
-    "state_sha256": "7b3f5db9554852ff87e02725ccd218d8368c504ceced1db9f748f718140a2238"
+    "state_sha256": "2aca0e54a88bcc1f55be5da85f02579c0ef9350356e3354da9d232e4ecf495fb"
   }
 }
