@@ -51,12 +51,25 @@ def local_duplicate_cache(run, profile):
     policy = profile['storage_limit']
     sample = Path(policy['sample_path'])
     worker = Path(profile['artifact_cache_directory']).resolve()
-    central = (run/'distributed/artifacts').resolve()
     spool = Path(profile['work_dir']).resolve()
-    if (str(worker) not in policy['roots'] or worker == central
-            or central.is_relative_to(worker) or worker.is_relative_to(central)):
+    if str(worker) not in policy['roots']:
         return {}
     state_dir = Path(read(run/'CONTROLLER_CONFIG.json')['state_directory'])
+    index = read(state_dir/'RUNS.json')
+    evaluation = (index.get(run.name) or {}).get('evaluation_identity')
+    candidates = [run]
+    if evaluation:
+        for item in index.values():
+            if item.get('evaluation_identity') != evaluation:
+                continue
+            prior = Path(item['run_directory']).resolve()
+            if prior != run and (prior/'LAUNCH.json').is_file() and (prior/'EXIT.json').is_file() and not invocation_active(prior):
+                candidates.append(prior)
+    canonical = []
+    for owner in dict.fromkeys(candidates):
+        central = (owner/'distributed/artifacts').resolve()
+        if not central.is_relative_to(worker) and not worker.is_relative_to(central):
+            canonical.append(central)
 
     def protected():
         if Path(read(state_dir/'CURRENT_TARGET.json')['run_directory']).resolve() != run:
@@ -110,10 +123,14 @@ def local_duplicate_cache(run, profile):
             if (path.name in retained or path.parent.name != path.name[:2]
                     or not re.fullmatch('[a-f0-9]{64}', path.name) or path.is_symlink() or not path.is_file()):
                 continue
-            original = central/path.relative_to(worker)
             stat = path.stat()
-            if (stat.st_nlink != 1 or not original.is_file() or original.is_symlink()
-                    or original.stat().st_size != stat.st_size or sha(path) != path.name or sha(original) != path.name):
+            if stat.st_nlink != 1:
+                continue
+            relative = path.relative_to(worker)
+            originals = (cache/relative for cache in canonical)
+            if not any(original.is_file() and not original.is_symlink()
+                       and original.stat().st_size == stat.st_size and sha(original) == path.name
+                       for original in originals) or sha(path) != path.name:
                 continue
             with (state_dir/'REGISTRY.lock').open('rb') as registry:
                 try:
@@ -162,6 +179,8 @@ def cleanup(run, source):
     distributed = run/'distributed'
     conf = distributed/'relay'/'CONFIG.json'
     relay = Relay(conf) if conf.exists() else None
+    admission_path = run/'HOST_ADMISSION.json'
+    admission = read(admission_path).get('hosts', {}) if admission_path.exists() else {}
     local = distributed/'LOCAL_WORKER.json'
     pbs = distributed/'pbs'/'SETTINGS.json'
     work = []
@@ -171,7 +190,7 @@ def cleanup(run, source):
     if relay is not None:
         for worker in relay.config['workers']:
             host = worker['host_id']
-            if not worker.get('enabled', True):
+            if not worker.get('enabled', True) or admission.get(host, {}).get('accepting') is False:
                 continue
             def remote(w=worker):
                 if w.get('transport') == 'ssh-wsl' and not wsl_running(w, relay.ssh):
@@ -204,6 +223,15 @@ def cleanup(run, source):
             print(json.dumps(dict(epoch=time.time(), host_id=host, storage=result)), flush=True)
 
 
+def invocation_active(run):
+    launch = run/'LAUNCH.json'
+    if not launch.is_file():
+        return False
+    invocation = read(launch)['invocation_id']
+    finished = run/'EXIT.json'
+    return not finished.is_file() or read(finished).get('invocation_id') != invocation
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('run', type=Path)
@@ -218,7 +246,7 @@ def main():
         return
     with closing((run/'distributed'/'STORAGE_RECLAIM.lock').open('a+b')) as lock:
         acquire_lock(lock)
-        while not (run/'EXIT.json').exists():
+        while invocation_active(run):
             cleanup(run, source)
             time.sleep(60)
 

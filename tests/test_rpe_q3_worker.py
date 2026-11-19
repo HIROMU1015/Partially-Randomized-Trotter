@@ -259,6 +259,19 @@ class WorkerTests(unittest.TestCase):
             self.assertEqual(report['evicted_prefix_checkpoints'], 1)
             self.assertFalse(checkpoint.exists())
 
+    def test_storage_watcher_follows_the_resumed_invocation(self):
+        sys.path.insert(0, str(ROOT/'scripts'))
+        from reclaim_rpe_worker_storage import invocation_active
+
+        with tempfile.TemporaryDirectory() as temporary:
+            run = Path(temporary)
+            self.assertFalse(invocation_active(run))
+            W.atomic(run/'LAUNCH.json', dict(invocation_id='new'))
+            W.atomic(run/'EXIT.json', dict(invocation_id='previous'))
+            self.assertTrue(invocation_active(run))
+            W.atomic(run/'EXIT.json', dict(invocation_id='new'))
+            self.assertFalse(invocation_active(run))
+
     def test_local_cache_duplicate_reclaim_preserves_queued_and_unmatched_files(self):
         sys.path.insert(0, str(ROOT/'scripts'))
         from reclaim_rpe_worker_storage import local_duplicate_cache
@@ -268,9 +281,16 @@ class WorkerTests(unittest.TestCase):
             central = run/'distributed/artifacts'
             central.mkdir(parents=True)
             profile = dict(host_id='local', artifact_cache_directory=str(cache), work_dir=str(root/'spool'),
-                           storage_limit=dict(roots=[str(cache)], limit_bytes=1, sample_path=str(root/'usage.json')))
+                           storage_limit=dict(roots=[str(cache)], limit_bytes=1024, sample_path=str(root/'usage.json')))
+            previous, other = root/'previous', root/'other'
+            for parent in (previous, other):
+                parent.mkdir()
+                W.atomic(parent/'LAUNCH.json', dict(invocation_id=parent.name))
+                W.atomic(parent/'EXIT.json', dict(invocation_id=parent.name))
             eligible = {}
-            for name, copies in (('duplicate', (cache,central)), ('queued', (cache,central)), ('private', (cache,))):
+            for name, copies in (('duplicate', (cache,central)), ('queued', (cache,central)),
+                                 ('previous', (cache,previous/'distributed/artifacts')),
+                                 ('different', (cache,other/'distributed/artifacts')), ('private', (cache,))):
                 raw = name.encode()
                 digest = hashlib.sha256(raw).hexdigest()
                 eligible[name] = digest
@@ -280,14 +300,15 @@ class WorkerTests(unittest.TestCase):
                     target.write_bytes(raw)
             W.atomic(run/'CONTROLLER_CONFIG.json', dict(state_directory=str(root)))
             W.atomic(root/'CURRENT_TARGET.json', dict(run_directory=str(run)))
-            W.atomic(root/'RUNS.json', {'r':dict(run_directory=str(run))})
+            W.atomic(root/'RUNS.json', {p.name:dict(run_directory=str(p),evaluation_identity=identity)
+                                       for p,identity in ((run,'same'),(previous,'same'),(other,'different'))})
             (root/'REGISTRY.lock').touch(); (root/'usage.lock').touch()
-            W.atomic(root/'usage.json', dict(policy=dict(limit_bytes=1,roots=[str(cache)]),
-                       report=dict(reason='STORAGE_LIMIT_REACHED',limit_bytes=1,used_bytes=10)))
+            W.atomic(root/'usage.json', dict(policy=dict(limit_bytes=1024,roots=[str(cache)]),
+                       report=dict(reason='STORAGE_LIMIT_REACHED',limit_bytes=1024,used_bytes=1024**3)))
             with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
                 db.execute('CREATE TABLE jobs(host_id,state,request)')
                 db.execute('INSERT INTO jobs VALUES (NULL,?,?)', ('QUEUED',json.dumps({'sha':eligible['queued']})))
-            self.assertEqual(set(local_duplicate_cache(run,profile)),{eligible['duplicate']})
+            self.assertEqual(set(local_duplicate_cache(run,profile)),{eligible['duplicate'],eligible['previous']})
             for name in ('queued','private'):
                 digest = eligible[name]
                 self.assertEqual((cache/digest[:2]/digest).read_text(),name)

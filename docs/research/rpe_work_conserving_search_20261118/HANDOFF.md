@@ -316,3 +316,9 @@ Romulaptopでは通常の観測SSHが120秒でタイムアウトした。Cの通
 RomuTail・server2・PBSの固定配置を確認した。検収時に休止中だったRomulaptopのWSLは、起動後に同じreleaseのmanifestで不足componentを取得し、worker profileと保存入力を照合する。server1も復帰後に同じ手順を適用する。Windows同期の `sync.py` には、元のウィンドウ非表示設定を維持し、既存SSHの応答をファイルで受け取る修正を配置した。通常同期経路で公開済みrun `search-51ec4b40deb95d9b8e5b` の `FINAL_RESULT_PUBLISHED` とC公開commit `75c736406df4fe2cc956c2932b1a4bb4f8adbf96` を照合した。
 
 RomuTailの配置・検収証拠は `.rpe-central/deployment/romutail-mixed-methods-0c67daacd/TECHNICAL_ACCEPTANCE.json` と同ディレクトリのPreviewにある。Full PFの旧実Q3の証拠は[旧固定版の検収記録](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/840525ed6a2dc3e018dd568898b9bc9e06349578/docs/research/rpe_pbs_h4_q3_portability_20261118/HANDOFF.md)。
+
+### 停止済み本探索の再開と容量監視
+
+通常Resumeで `search-d1fd259351dae2f86070` を再開した。固定版 `romutail-fleet-efficiency-3cea00961` の探索範囲と工程別予算を継承し、runの `HOST_ADMISSION.json` でWSLの新規受付を閉じた。§10.5照合はPASS。RomuTail・server2・PBSで実PR-Pauli Q3を中央回収した。4 CPUのPBS割当 `267466` の観測値は、壁時計197秒までの110 CPU秒で、全割当CPU時間の約14%。同じ採択条件の実Q3本体114.10秒に対し、割当から中央受領までは約180秒だった。準備済み要求の供給と割当から受領までの差が残る。
+
+容量監視は `LAUNCH.json` と `EXIT.json` の invocation IDを照合して、以前の終了receiptが残る再開runでも継続する。受付を閉じたrelay先は監視の対象外。事前に同じ評価条件の終了済みrunに中央原本があるローカルキャッシュも候補にし、コピーと原本の両方のSHA-256を照合する。待機・未確定入力、別の稼働中run、原本とreceiptは保全する。この手順でRomuTailの重複コピー65個（2,550,206,464 bytes）を除去し、50 GiB未満での受付再開を確認した。調査・回収のログは対象run内の `distributed/STORAGE_RECLAIM.log`。
