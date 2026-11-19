@@ -284,3 +284,59 @@ RomuTailに `rpe-storage-recovery.service` をユーザーサービスとして�
 中央がserver2の3つの空き枠を再認識した。WSLでも作業コピー等を回収した。
 対象の原結果、台帳、未確定attemptは保持した。技術回帰74件、サブテスト14件通過。
 ログは `journalctl --user -u rpe-storage-recovery.service`。
+
+## 2026-11-20 PBS限定の4方式検収
+
+通常入口のscopeに `"execution_hosts": ["pbs-0"]` を追加した。Previewに選択先を表示し、
+Prepareで固定設定に保存する。対象runからローカルworkerとrelayの起動設定を除き、
+コントローラーも範囲外のホストへの新規割当を拒否する。provider・SOURCE・runtimeの
+適格性と工程別予算は従来の規則に従う。省略した通常runの配分は従来どおり。
+RomuTailの中央台帳・候補選択・回収・採用をそのまま使う。
+
+### 人工ジョブの実機検収
+
+RomuTailの `.rpe-central/acceptance/pbs-only-four-03` に隔離。
+通常Preview、PlanOnly、Start、Resumeを `scripts/run_rpe_search.py` から検証した。
+人工run `search-da86d3996b14b14f03bf` は固定controller `62eff1c7f2` で実行し、
+PBS `267523.CPUcluster-PRISM` の4 CPU枠を終了コード0で返却した。
+
+| 方式 | 信号 | 価格用compile | 監査 | Q3 |
+| --- | ---: | ---: | ---: | ---: |
+| PR-Pauli | 1 | 1 | 1 | 2 |
+| PR-DF | 1 | 1 | 1 | 2 |
+| Full PF | 1 | 1 | 1 | 2 |
+| B0I | 1 | 1 | 1 | 2 |
+
+全20件をPBSの計算ノードで実行し、RomuTailが全件採用した。他ホストの実行は0件。
+Full PFのQ3と別候補のPR-Pauli監査が並行した。台帳の中央値はキュー登録から
+割当まで11.93秒、割当から実行開始まで5.53秒、完了通知から採用まで0.009秒。
+完了済みrunの通常Resumeは `REUSED_COMPLETED`。追加起動、二重採用、PBS再投入は0件。
+
+通信検収は `.rpe-central/acceptance/pbs-only-fault-01` の
+`search-b9c0e09794cc0365d164`。通常Startから投入したPBS `267530.CPUcluster-PRISM` で
+投入応答欠落を再現し、同じ割当を照合した。完了後・転送前の切断を解除すると、
+`prep-e78995612fef442d20d07810` が元の `27f347c828fc4d00a50472e47b512d92`
+で採用された。通常Resumeで追加起動と二重採用は0件。
+
+### 保存実入力と検収用の固定設定
+
+- `.rpe-central/acceptance/pbs-only-four-02/PBS_SAVED_PREFLIGHT.jsonl` に、
+  PR-Pauliの信号・compile・監査、PF共通経路の信号・compile・監査、
+  PR-DFのdescriptor・信号・較正の保存REQUEST、計9件のdry-check PASSを保存した。
+- PR-Pauliの固定compileは既存の隔離runtimeに保存入力を対応付け、公開固定refの照合に
+  専用PythonラッパーからHTTPSを使う。固定refのSHAをPBSログインノードで確認した。
+  PF compileは既存のPF専用runtimeを参照し、`openfermionpyscf` を含む依存関係を照合した。
+  PR-DFの不足Gitオブジェクトは、固定bundleの前提から特定して隔離キャッシュに補った。
+- PR-DFの現行信号SOURCE `9ed5fcc98` と現行価格SOURCE `3b38e4af6` の較正・holdout・
+  モデル固定・比較で、固定ファイルとPython環境を照合した。保存REQUESTで較正まで
+  通したのは旧 `d887abdc`。現行版の監査までの保存REQUEST通しは未検収。
+- PR-Pauli、PR-DF split、Full PF、B0Iの保存Q3入力は、PBSの固定profileで照合した
+  （`PBS_SAVED_Q3.jsonl`）。Full PF/M5の実Q3の既報は `925985b4e` での1件。
+- 固定profileとwalltimeを入れた実入力用の隔離release
+  `romutail-pbs-only-62eff1c7f-saved-r4` は、科学予算をすべて0にした通常Preview、
+  PlanOnlyまで確認した。RomuTailの同名acceptanceディレクトリにCLIENT、SERVICE、
+  SCOPE、ROUND、PBS_WALLTIME_POLICYを保存した。現行PR-DF監査・価格用実compileと、
+  4方式すべての実H4通しは、次回の個別検証で確認する。
+  通常運用のcurrent `romutail-pbs-task-resources-f67a86291` と探索
+  `search-300182abb6401030e0a6` は切り替えていない。新規実H4信号・実compile・
+  実Q3・価格fitはいずれも0件。
