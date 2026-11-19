@@ -1,0 +1,549 @@
+{
+  "schema": "RPE_PRICE_MODEL_VALIDATIONS_V1",
+  "models": [
+    {
+      "model_id": "fca6ed38939d28b835afc9e1f46917847befdd235e047814ce2bee285295c3f8",
+      "identity": {
+        "actual_step": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "coefficients": {
+          "X": {
+            "one": {
+              "numerator": 3751,
+              "denominator": 14
+            },
+            "q": {
+              "numerator": 97315,
+              "denominator": 14
+            }
+          },
+          "Y": {
+            "one": {
+              "numerator": 3751,
+              "denominator": 14
+            },
+            "q": {
+              "numerator": 97315,
+              "denominator": 14
+            }
+          }
+        },
+        "event_recipe": {
+          "binding": {
+            "A_declaration": {
+              "K": 2,
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            },
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "round_definition": {
+            "A_declaration": {
+              "K": 2,
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            },
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "family": {
+          "K": 2,
+          "L_D": 8,
+          "binding": {
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "decomposition": {
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "preparation_binding": {
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING",
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+                },
+                "state_preparation_cost": 0
+              },
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "source": {
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            },
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "source": {
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "formula": "2nd",
+          "implementation": {
+            "contract_source": {
+              "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+              "path": "src/trottertracks/p2_direct_pilot.py"
+            },
+            "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+            "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+            "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+            "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          },
+          "method": "PR_DF",
+          "profile": {
+            "P": 0,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "seed_transpiler": 17,
+            "wrapper": "full_Hadamard_with_measurement"
+          },
+          "split": {
+            "L_D": 8,
+            "deterministic_scope": "PREFIX",
+            "lambda_R": {
+              "numerator": 6144015133796351,
+              "denominator": 73786976294838206464
+            },
+            "lambda_source": {
+              "commit": "148f47e89a9e6fcc6b955097a69992b0438cbf88",
+              "path": "docs/research/rpe_reviewed_fleet_20261118/PR_DF_LD8_DESCRIPTOR.json"
+            },
+            "original_PF_method": "B0",
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "source": {
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          }
+        },
+        "mode": "FULL_AFFINE_Q_R1",
+        "model_source": {
+          "commit": "ce9de463cc993a5fb2354824de164b8cef0727d0",
+          "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/FROZEN_MODELS.json"
+        },
+        "piece_pattern": {
+          "allocation": [
+            {
+              "numerator": 1,
+              "denominator": 1
+            }
+          ],
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "formula_id": "S2",
+          "law_model": "ideal_finite_RTE_law",
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "signed_weights": [
+            {
+              "numerator": 1,
+              "denominator": 1
+            }
+          ]
+        }
+      },
+      "registry": "ACTUAL_STEP:b3b5c88adfc906b1e28bc4c69310580e6b83a17092a891d6dc33232d79087e20",
+      "calibration_sources": [
+        {
+          "commit": "3d0c83c3c71ab884db086977a353d430002da555",
+          "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/INPUTS.json"
+        },
+        {
+          "commit": "ce9de463cc993a5fb2354824de164b8cef0727d0",
+          "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/FROZEN_MODELS.json"
+        },
+        {
+          "commit": "ce9de463cc993a5fb2354824de164b8cef0727d0",
+          "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/AXIS_PRICES.json"
+        }
+      ],
+      "calibration_points": [],
+      "evidence_sources": [
+        {
+          "source": {
+            "commit": "6707486ffd652c674746bd02459ee879827bfd6d",
+            "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/HOLDOUT_COMPARISON.json"
+          },
+          "role": "INDEPENDENT_HOLDOUT"
+        }
+      ],
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          1,
+          1
+        ]
+      },
+      "qualified_for_candidate": false,
+      "status": "INDEPENDENT_MEASURED",
+      "label": "独立実測あり",
+      "validation_points": [
+        {
+          "m": 3,
+          "q": 8,
+          "R": 1,
+          "source": {
+            "commit": "6707486ffd652c674746bd02459ee879827bfd6d",
+            "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/HOLDOUT_COMPARISON.json",
+            "selector": [
+              0
+            ]
+          },
+          "observations": [
+            {
+              "path_id": "0",
+              "axis": "X",
+              "compiled_RZ": 56093,
+              "source": {
+                "commit": "94a933d1c876430e37b6fc5ab510bccb9d6597eb",
+                "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/holdout/acquisition/m3/p0/axes_X/cosine.json"
+              }
+            },
+            {
+              "path_id": "1",
+              "axis": "X",
+              "compiled_RZ": 56049,
+              "source": {
+                "commit": "94a933d1c876430e37b6fc5ab510bccb9d6597eb",
+                "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/holdout/acquisition/m3/p1/axes_X/cosine.json"
+              }
+            },
+            {
+              "path_id": "0",
+              "axis": "Y",
+              "compiled_RZ": 56093,
+              "source": {
+                "commit": "94a933d1c876430e37b6fc5ab510bccb9d6597eb",
+                "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/holdout/acquisition/m3/p0/axes_Y/sine.json"
+              }
+            },
+            {
+              "path_id": "1",
+              "axis": "Y",
+              "compiled_RZ": 56049,
+              "source": {
+                "commit": "94a933d1c876430e37b6fc5ab510bccb9d6597eb",
+                "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df_price_groups/cdc675002077b5e23ecf/df_prices/holdout/acquisition/m3/p1/axes_Y/sine.json"
+              }
+            }
+          ],
+          "predicted_RZ": {
+            "X": {
+              "numerator": 111753,
+              "denominator": 2
+            },
+            "Y": {
+              "numerator": 111753,
+              "denominator": 2
+            }
+          },
+          "observed_mean_RZ": {
+            "X": {
+              "numerator": 56071,
+              "denominator": 1
+            },
+            "Y": {
+              "numerator": 56071,
+              "denominator": 1
+            }
+          },
+          "signed_relative_difference": {
+            "X": {
+              "numerator": -389,
+              "denominator": 112142
+            },
+            "Y": {
+              "numerator": -389,
+              "denominator": 112142
+            }
+          },
+          "independent_paths": 2
+        }
+      ],
+      "issues": [],
+      "evidence_parser_version": 4
+    }
+  ],
+  "model_scope": "CURRENT_RUN_USED_MODELS",
+  "applications": [
+    {
+      "configuration_id": "466f11ab92a1285a1e6327c1e593ed5777724455b6f2485d0e6eb9a2e0aab3c4",
+      "model_id": "fca6ed38939d28b835afc9e1f46917847befdd235e047814ce2bee285295c3f8",
+      "points": [
+        {
+          "m": 0,
+          "q": 1,
+          "R": 1,
+          "physical_id": "RMSE:6cc10198bbc83e4c4d69303fee003fee3e7a98abe3adf7e3db0c378c857c0dd4"
+        },
+        {
+          "m": 1,
+          "q": 2,
+          "R": 1,
+          "physical_id": "RMSE:e43b7d02fcf3eec62f6b1483b9b1cb79ed9e57a1409ead8ba5d70cc404c73447"
+        },
+        {
+          "m": 2,
+          "q": 4,
+          "R": 1,
+          "physical_id": "RMSE:2fa97989bbf735b5ccac2d199268a8b9eefdb8fd17f1d106716c125d8918613a"
+        },
+        {
+          "m": 3,
+          "q": 8,
+          "R": 1,
+          "physical_id": "RMSE:b6f6c02cd6589702d86e6bc3f7e00109f7d1203a227fbc376126b01e7b22fb98"
+        },
+        {
+          "m": 4,
+          "q": 16,
+          "R": 1,
+          "physical_id": "RMSE:ac87723ea4eba609c7027fb1b59ee20bc5ac92b84d10a325d22e978efd075ba3"
+        },
+        {
+          "m": 5,
+          "q": 32,
+          "R": 1,
+          "physical_id": "RMSE:911144c9a78277d6d08b7ecc6c56a8ea23dc083bd82c73e146effe29e8b297d2"
+        },
+        {
+          "m": 6,
+          "q": 64,
+          "R": 1,
+          "physical_id": "RMSE:f94a95d38448d9e9d8cfd93547a2904c68246adfacca3c014085b8f3d50b790b"
+        },
+        {
+          "m": 7,
+          "q": 128,
+          "R": 1,
+          "physical_id": "RMSE:875f438fc818efe109cf30ed9eb316cadd6e08a38421cab4a8fc4e8cf5065e0d"
+        },
+        {
+          "m": 8,
+          "q": 256,
+          "R": 1,
+          "physical_id": "RMSE:12b23bcaa6c5937b5defd0259a05bcd49ba806ccab0e289651a3ef6a2577a9ef"
+        },
+        {
+          "m": 9,
+          "q": 512,
+          "R": 1,
+          "physical_id": "RMSE:f6a78e79d51a1db9288109fd3257ccdb1d9b73abfbe9415cbdffa634767fdf33"
+        },
+        {
+          "m": 10,
+          "q": 1024,
+          "R": 1,
+          "physical_id": "RMSE:64cda907953576f35fa2825fdbfbb626aaa11c566b55eda569d386c706f1f305"
+        },
+        {
+          "m": 11,
+          "q": 2048,
+          "R": 1,
+          "physical_id": "RMSE:1c2a47f093472f85cae137661aebf1d28a74aaf1d15c8ff77a1bc72f3476d05a"
+        },
+        {
+          "m": 12,
+          "q": 4096,
+          "R": 1,
+          "physical_id": "RMSE:7346334da25325e31ce0d085120c2735ab69724b81d3e89de15f9282f56b9986"
+        }
+      ],
+      "prices": [
+        {
+          "numerator": 7219,
+          "denominator": 1
+        },
+        {
+          "numerator": 7219,
+          "denominator": 1
+        },
+        {
+          "numerator": 198381,
+          "denominator": 14
+        },
+        {
+          "numerator": 198381,
+          "denominator": 14
+        },
+        {
+          "numerator": 393011,
+          "denominator": 14
+        },
+        {
+          "numerator": 393011,
+          "denominator": 14
+        },
+        {
+          "numerator": 111753,
+          "denominator": 2
+        },
+        {
+          "numerator": 111753,
+          "denominator": 2
+        },
+        {
+          "numerator": 1560791,
+          "denominator": 14
+        },
+        {
+          "numerator": 1560791,
+          "denominator": 14
+        },
+        {
+          "numerator": 3117831,
+          "denominator": 14
+        },
+        {
+          "numerator": 3117831,
+          "denominator": 14
+        },
+        {
+          "numerator": 890273,
+          "denominator": 2
+        },
+        {
+          "numerator": 890273,
+          "denominator": 2
+        },
+        {
+          "numerator": 12460071,
+          "denominator": 14
+        },
+        {
+          "numerator": 12460071,
+          "denominator": 14
+        },
+        {
+          "numerator": 24916391,
+          "denominator": 14
+        },
+        {
+          "numerator": 24916391,
+          "denominator": 14
+        },
+        {
+          "numerator": 7118433,
+          "denominator": 2
+        },
+        {
+          "numerator": 7118433,
+          "denominator": 2
+        },
+        {
+          "numerator": 99654311,
+          "denominator": 14
+        },
+        {
+          "numerator": 99654311,
+          "denominator": 14
+        },
+        {
+          "numerator": 199304871,
+          "denominator": 14
+        },
+        {
+          "numerator": 199304871,
+          "denominator": 14
+        },
+        {
+          "numerator": 56943713,
+          "denominator": 2
+        },
+        {
+          "numerator": 56943713,
+          "denominator": 2
+        }
+      ],
+      "signal_source": {
+        "commit": "b6ed6561dea3fa313805d6fce5414b37fc6e0f7c",
+        "path": "ld8-manual-retry-evidence/search-d92e9c1c3114f20a522c/completion/candidates/c7acf58917048800cbf7/df-bundle.json"
+      }
+    }
+  ],
+  "issues": {},
+  "alters_model_coefficients": false,
+  "alters_qualification": false,
+  "alters_cost_or_ranking": false
+}
