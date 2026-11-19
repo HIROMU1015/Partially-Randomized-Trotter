@@ -194,3 +194,16 @@ Q3の入力は準備済みの信号、候補の条件、ショット配分。Q3�
 修正版は `4d20f4b7a009c42d9a4918f8db17dc87503d060e`、継続runは `search-04c58930814ee4ae1d25`。4環境の配置を照合し、旧runの通常終了を待って、保存Q3 572件と準備台帳70件を引き継いだ。通常Resumeで再開し、容量点検をrun終了まで起動した。以前の監査失敗と科学実行のSTOPは旧台帳に保持した。
 
 RomuTailの容量点検には、同じrunの中央原本とSHA-256が一致する作業用artifact cacheの整理も加えた。容量上限に達し、登録上このrunのみが稼働している条件で、ローカルの所有・予約・キューを照合して整理する。中央にないコピーや未確定attemptの参照は保全する。点検用の固定変更は `44edf793614129a03615e6ab06f596309af3ae7d`。追加の保全試験を含む関連試験36件が通過した。
+
+### PBS割当の再利用とworker容量の先行回収（2026-11-19）
+
+新規runの `current` は `romutail-fleet-efficiency-ffd406f4e`。controllerとworker輸送SOURCEは `ffd406f4ed966f8ec712cba65a4d378cec43cac8`。RomuTail、server2、Romulaptop WSL、PBSゲートウェイで配置後の固定版を照合した。科学Q3のSOURCEは `28d976b99cdf8329adcc1b79327e329e947ef774`。既存run `search-04c58930814ee4ae1d25` は通常Statusで固定release `romutail-prep-fleet-4d20f4b7a` を解決した。旧runのSTOP、原結果、台帳、受付規則を引き継いだ。
+
+- 準備の初回ホスト照合待ちを `PREPARATION_PROBE_PENDING` に記録する。保留時はホスト別に工程profile、PBS見積り、受付状態、runtime・入力照合の理由を残す。PBSだけが照合可能な準備では、その候補の作業だけを時間を区切って待たせる。予約と予算消費は既存の要求別fingerprint通過後に行う。旧runの一律 `NO_MATCHING_PREPARATION_STAGE_HOST` 13回はいずれも後から候補に適格ホストが見つかった。
+- PBSでは、直近に完了した必須準備が次の工程・Q3に戻る間、既存の割当を短時間保持できる。判断に使う直近数件の投入から受付可能までの実測は、15〜30秒の範囲に制限する。適格な待機仕事、CPU・RAM・残りwalltimeに沿う既存の割当サイズ選択とdrainを使う。通常配置では単一割当の最大96 CPUと既存のPBS側CPU会計を使用する。
+- PR-Pauliの監査 `PAULI_AUDIT` は固定 `4d20f4b7a009c42d9a4918f8db17dc87503d060e` の保存入力222件をPBS上で照合した。保存済みの実行時間とピークRSSに余裕を取り、同じSOURCEに限り180秒・4 GiBの見積りを登録した。PR-Pauliのcompileは固定providerでGit公開とローカルの分離実行条件を要求するため、現在の適格先はRomuTail。
+- ホストの容量制限は50 GiB。成果の転送ack後に再生成可能な作業コピーを直ちに整理できる。47.5 GiB以上では45 GiBを目安に点検し、ack済みコピーを優先する。原結果、終了receipt、実行中・未回収・未確定attemptは保持する。容量が戻れば次のworker照会で受付が復旧する。手動PauseやWSL停止は既存設定に従う。
+
+回帰・人工試験77件が通過した。Romulaptop WSLの一時領域で、未転送コピーが保持され、転送済みコピーの容量点検後に528384バイトを回収し、原結果と受付可能状態を確認した。通常Startによる隔離人工run `search-e1ff566f81b6a76eb034` は、実PBS `267426.CPUcluster-PRISM` の2 CPUで人工compile 1件・Q3 4件を実行し、RomuTailの人工信号2件・監査1件と合わせて8件を各1回採用した。通常Resumeは `REUSED_COMPLETED`、追加起動・採用・PBS投入は各0件。PBSは終了コード0で枠を返却した。先行の人工runはクラスタの管理対象パス外を指定したため、PBS投入0件で通常Stopし、管理対象内の専用名前空間で再検証した。明示・無指定の通常CLI Previewと旧runの固定版解決が通過した。
+
+検収記録は `.rpe-central/deployment/romutail-fleet-efficiency-ffd406f4e` と `.rpe-central/acceptance/romutail-fleet-efficiency-ffd406f4e-scheduler` に保存した。今回の新規実信号・実compile・監査による新規科学計算・実Q3は各0件。次に実際の探索を行う際は、通常Startで利用者指定の範囲を渡し、工程別の準備完了からQ3開始までの待ち時間、容量による受付保留時間、PBSの確保CPU時間と完了件数を採取する。server1は復帰後に同じmanifestの配置と保存入力照合を行ってから受付を判断する。
