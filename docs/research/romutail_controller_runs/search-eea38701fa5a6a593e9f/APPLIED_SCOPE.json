@@ -1,0 +1,4376 @@
+{
+  "schema": "LOCAL0_APPLIED_SEARCH_SCOPE_V1",
+  "run_id": "search-eea38701fa5a6a593e9f",
+  "signature": "eea38701fa5a6a593e9f1b381ff161e6405f34fc06d1bfb5c749486e9617a37a",
+  "evaluation_identity": "e6d6e48e6bcda9df3cdf6d5bd04bceeba6be414ecc643a21d11d48d789d881bc",
+  "entry": "schedule",
+  "code_source": "cac95fd9c483995170a429c7ed5b8f7001873d12",
+  "applied": {
+    "methods": [
+      "FULL_PF",
+      "TRUNCATED_PF",
+      "PR_DF"
+    ],
+    "requested": {
+      "methods": [
+        "FULL_PF",
+        "TRUNCATED_PF",
+        "PR_DF"
+      ],
+      "per_method": {
+        "FULL_PF": {
+          "formulas": [
+            "2nd",
+            "4th",
+            "4th(m5_best)"
+          ],
+          "delta_over_h_values": [
+            "2",
+            "4",
+            "8",
+            "16"
+          ]
+        },
+        "TRUNCATED_PF": {
+          "p": [
+            6,
+            7,
+            8,
+            9
+          ],
+          "formulas": [
+            "2nd",
+            "4th",
+            "4th(m5_best)"
+          ],
+          "delta_over_h_values": [
+            "2",
+            "4",
+            "8",
+            "16"
+          ]
+        },
+        "PR_DF": {
+          "L_D": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1/2",
+            "1"
+          ],
+          "kappa": {
+            "mode": "absolute",
+            "values": [
+              "1",
+              "2",
+              "4",
+              "8",
+              "16",
+              "32",
+              "64"
+            ]
+          }
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_new_q3_per_method": "UNLIMITED"
+      },
+      "scaled_shots": {
+        "M": [
+          11,
+          12,
+          13
+        ],
+        "grid": {
+          "min_k": -12,
+          "max_k": 16,
+          "divisor": 4
+        },
+        "compare_paper": true
+      }
+    },
+    "fixed": {
+      "problem": {
+        "system": "H4",
+        "geometry": "linear_1Angstrom",
+        "basis": "STO-3G",
+        "rank_policy": "tol_only_1e-8",
+        "hamiltonian_data": {
+          "snapshot": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_snapshot.npz",
+            "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+          },
+          "receipt": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_receipt.json",
+            "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+          },
+          "expected": {
+            "fragment_count": 10,
+            "n_qubits": 8,
+            "sector_dimension": 36
+          }
+        }
+      },
+      "accuracy": {
+        "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+        "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+        "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+        "epsilon_E_decimal": "0.00159360010199040",
+        "scope": "MODEL_MSE_FILTER_ONLY"
+      },
+      "target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        }
+      },
+      "rpe": {
+        "M": 12
+      }
+    },
+    "method_settings": {
+      "FULL_PF": {
+        "family": "PF",
+        "index_method": "FULL_PF",
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "2",
+          "16"
+        ],
+        "caps": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ],
+        "p_values": [
+          10
+        ],
+        "delta_over_h_values": [
+          "2",
+          "4",
+          "8",
+          "16"
+        ],
+        "configuration_ids": null
+      },
+      "TRUNCATED_PF": {
+        "family": "PF",
+        "index_method": "B0I_P7",
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "2",
+          "16"
+        ],
+        "caps": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ],
+        "p_values": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "configuration_ids": null,
+        "delta_over_h_values": [
+          "2",
+          "4",
+          "8",
+          "16"
+        ]
+      },
+      "PR_DF": {
+        "family": "PR",
+        "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body separate head; prefix and tail non-empty",
+        "L_D_range": {
+          "min": 5,
+          "max_offset_from_fragment_count": -1
+        },
+        "caps": [
+          64,
+          60,
+          56,
+          52,
+          47,
+          43,
+          38,
+          34,
+          30,
+          25,
+          21,
+          17,
+          12
+        ],
+        "generation": {
+          "kind": "prdf_a_fixed_grid",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "baseline": {
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1/2",
+            "1"
+          ],
+          "kappa_multipliers": [
+            "1",
+            "2"
+          ],
+          "mapper": "D2 B release 437ba4ac A_FIXED_GRID_510FBACD_V1 adapter (run_pr_df_ld7_v0.signal_modules) with the paper common-kappa mapper",
+          "supported_formulas": [
+            "2nd",
+            "4th(m5_best)"
+          ],
+          "note": "delta must make T_m/delta integral for every round (A fixed grid); h stays the RPE base time"
+        },
+        "L_D_values": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false,
+        "absolute_kappa_bounds": [
+          "1",
+          "64"
+        ],
+        "absolute_kappa_values": [
+          "1",
+          "2",
+          "4",
+          "8",
+          "16",
+          "32",
+          "64"
+        ]
+      }
+    },
+    "method_overrides": {
+      "TRUNCATED_PF": {
+        "p_values": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "configuration_ids": null,
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "2",
+          "16"
+        ],
+        "delta_over_h_values": [
+          "2",
+          "4",
+          "8",
+          "16"
+        ]
+      },
+      "PR_DF": {
+        "L_D_values": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1/2",
+            "1"
+          ]
+        },
+        "L_D_range": {
+          "min": 5,
+          "max_offset_from_fragment_count": -1
+        },
+        "absolute_kappa_bounds": [
+          "1",
+          "64"
+        ],
+        "absolute_kappa_values": [
+          "1",
+          "2",
+          "4",
+          "8",
+          "16",
+          "32",
+          "64"
+        ]
+      },
+      "FULL_PF": {
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_values": [
+          "2",
+          "4",
+          "8",
+          "16"
+        ],
+        "delta_over_h_range": [
+          "2",
+          "16"
+        ],
+        "configuration_ids": null,
+        "p_values": [
+          10
+        ]
+      }
+    },
+    "search": {
+      "rule": "RPE_SCALED_SHOTS_V1",
+      "decrement_steps": [
+        1,
+        2
+      ],
+      "large_step_headroom": "9/10",
+      "seed_rules": [
+        "B_PRICE",
+        "A_SHAPE"
+      ],
+      "max_steps_per_method": 40,
+      "max_new_q3_per_method": 0,
+      "seed_saved_same_L_D": true,
+      "explore_every": 4,
+      "explore_window": "3/2",
+      "small_gain_fraction": "1/1000",
+      "deferral_fail_margin": "1/10000",
+      "transfer_count": 2,
+      "lookahead": 16,
+      "lookahead_mode": "HYBRID",
+      "adaptive_lookahead": false,
+      "coarse_gain_fraction": "1/100",
+      "small_and_deferred": "STOP",
+      "schedule_wide": {
+        "rule": "SCHEDULE_WIDE_V1",
+        "ladder_ratio": "4",
+        "explore_ratio": "2",
+        "refine_ratio": "33/32",
+        "exploit_per_explore": 2,
+        "window": "3/2",
+        "upper_stop_steps": 2,
+        "upper_stop_margin": "1/20",
+        "max_kappa": "65536",
+        "per_decision": 8,
+        "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family"
+      },
+      "note": "Absolute requested PF widths. JSON .2 retains binary64, string 1/5 exact rational. Fixed h/M/T and evaluation contract unchanged; mapper may reject per method.",
+      "adaptive_hybrid": true,
+      "allocation_exchange": {
+        "enabled": true
+      },
+      "kappa_neighbourhood": {
+        "outer_planner": "SCHEDULE_WIDE_V1"
+      },
+      "requested_widths": {
+        "PR_DF": [
+          {
+            "numerator": 3602879701896397,
+            "denominator": 72057594037927936
+          },
+          {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          }
+        ]
+      },
+      "self_price_floor": true,
+      "review_search_order": true,
+      "common_pauli_price_floor": true,
+      "schedule_wide_by_method": {
+        "PR_PAULI": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "ladder_ratio": "4",
+          "explore_ratio": "2",
+          "refine_ratio": "33/32",
+          "exploit_per_explore": 2,
+          "window": "3/2",
+          "upper_stop_steps": 2,
+          "upper_stop_margin": "1/20",
+          "max_kappa": "64",
+          "per_decision": 8,
+          "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family",
+          "kappa_bounds": [
+            "2",
+            "64"
+          ]
+        },
+        "PR_DF": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "ladder_ratio": "4",
+          "explore_ratio": "2",
+          "refine_ratio": "33/32",
+          "exploit_per_explore": 2,
+          "window": "3/2",
+          "upper_stop_steps": 2,
+          "upper_stop_margin": "1/20",
+          "max_kappa": "64",
+          "per_decision": 8,
+          "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family",
+          "kappa_bounds": [
+            "1",
+            "64"
+          ],
+          "kappa_values": [
+            "1",
+            "2",
+            "4",
+            "8",
+            "16",
+            "32",
+            "64"
+          ]
+        }
+      },
+      "work_conserving_search": true,
+      "scaled_shots": {
+        "M": [
+          11,
+          12,
+          13
+        ],
+        "grid": {
+          "min_k": -12,
+          "max_k": 16,
+          "divisor": 4
+        },
+        "compare_paper": true
+      }
+    },
+    "max_new_q3_per_method": {
+      "FULL_PF": "UNLIMITED",
+      "TRUNCATED_PF": "UNLIMITED",
+      "PR_DF": "UNLIMITED"
+    },
+    "max_steps_per_method": null,
+    "scaled_shot_allocations": [
+      {
+        "M": 11,
+        "allocations": [
+          {
+            "N_X": [
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              4,
+              3,
+              3,
+              2,
+              2
+            ],
+            "N_Y": [
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              4,
+              3,
+              3,
+              2,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -12,
+                "divisor": 4,
+                "value": "2^(-3)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              9,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              3,
+              3,
+              2
+            ],
+            "N_Y": [
+              9,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              3,
+              3,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -11,
+                "divisor": 4,
+                "value": "2^(-11/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              10,
+              10,
+              9,
+              8,
+              7,
+              7,
+              6,
+              5,
+              5,
+              4,
+              3,
+              2
+            ],
+            "N_Y": [
+              10,
+              10,
+              9,
+              8,
+              7,
+              7,
+              6,
+              5,
+              5,
+              4,
+              3,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -10,
+                "divisor": 4,
+                "value": "2^(-5/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              4,
+              3
+            ],
+            "N_Y": [
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              4,
+              3
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -9,
+                "divisor": 4,
+                "value": "2^(-9/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3
+            ],
+            "N_Y": [
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -8,
+                "divisor": 4,
+                "value": "2^(-2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              17,
+              16,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7,
+              6,
+              5,
+              4
+            ],
+            "N_Y": [
+              17,
+              16,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7,
+              6,
+              5,
+              4
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -7,
+                "divisor": 4,
+                "value": "2^(-7/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              20,
+              19,
+              17,
+              16,
+              14,
+              13,
+              11,
+              10,
+              9,
+              7,
+              6,
+              4
+            ],
+            "N_Y": [
+              20,
+              19,
+              17,
+              16,
+              14,
+              13,
+              11,
+              10,
+              9,
+              7,
+              6,
+              4
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -6,
+                "divisor": 4,
+                "value": "2^(-3/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              24,
+              22,
+              20,
+              19,
+              17,
+              15,
+              14,
+              12,
+              10,
+              8,
+              7,
+              5
+            ],
+            "N_Y": [
+              24,
+              22,
+              20,
+              19,
+              17,
+              15,
+              14,
+              12,
+              10,
+              8,
+              7,
+              5
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -5,
+                "divisor": 4,
+                "value": "2^(-5/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              28,
+              26,
+              24,
+              22,
+              20,
+              18,
+              16,
+              14,
+              12,
+              10,
+              8,
+              6
+            ],
+            "N_Y": [
+              28,
+              26,
+              24,
+              22,
+              20,
+              18,
+              16,
+              14,
+              12,
+              10,
+              8,
+              6
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -4,
+                "divisor": 4,
+                "value": "2^(-1)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              33,
+              31,
+              28,
+              26,
+              24,
+              21,
+              19,
+              17,
+              14,
+              12,
+              9,
+              7
+            ],
+            "N_Y": [
+              33,
+              31,
+              28,
+              26,
+              24,
+              21,
+              19,
+              17,
+              14,
+              12,
+              9,
+              7
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -3,
+                "divisor": 4,
+                "value": "2^(-3/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              39,
+              37,
+              34,
+              31,
+              28,
+              25,
+              22,
+              20,
+              17,
+              14,
+              11,
+              8
+            ],
+            "N_Y": [
+              39,
+              37,
+              34,
+              31,
+              28,
+              25,
+              22,
+              20,
+              17,
+              14,
+              11,
+              8
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -2,
+                "divisor": 4,
+                "value": "2^(-1/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              47,
+              43,
+              40,
+              37,
+              33,
+              30,
+              27,
+              23,
+              20,
+              16,
+              13,
+              10
+            ],
+            "N_Y": [
+              47,
+              43,
+              40,
+              37,
+              33,
+              30,
+              27,
+              23,
+              20,
+              16,
+              13,
+              10
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -1,
+                "divisor": 4,
+                "value": "2^(-1/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              55,
+              51,
+              47,
+              43,
+              39,
+              35,
+              31,
+              27,
+              23,
+              19,
+              15,
+              11
+            ],
+            "N_Y": [
+              55,
+              51,
+              47,
+              43,
+              39,
+              35,
+              31,
+              27,
+              23,
+              19,
+              15,
+              11
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 0,
+                "divisor": 4,
+                "value": "2^(0)"
+              },
+              {
+                "kind": "UNIT_REFERENCE",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              66,
+              61,
+              56,
+              52,
+              47,
+              42,
+              37,
+              33,
+              28,
+              23,
+              18,
+              14
+            ],
+            "N_Y": [
+              66,
+              61,
+              56,
+              52,
+              47,
+              42,
+              37,
+              33,
+              28,
+              23,
+              18,
+              14
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 1,
+                "divisor": 4,
+                "value": "2^(1/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              78,
+              73,
+              67,
+              61,
+              56,
+              50,
+              44,
+              39,
+              33,
+              27,
+              22,
+              16
+            ],
+            "N_Y": [
+              78,
+              73,
+              67,
+              61,
+              56,
+              50,
+              44,
+              39,
+              33,
+              27,
+              22,
+              16
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 2,
+                "divisor": 4,
+                "value": "2^(1/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              93,
+              86,
+              80,
+              73,
+              66,
+              59,
+              53,
+              46,
+              39,
+              32,
+              26,
+              19
+            ],
+            "N_Y": [
+              93,
+              86,
+              80,
+              73,
+              66,
+              59,
+              53,
+              46,
+              39,
+              32,
+              26,
+              19
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 3,
+                "divisor": 4,
+                "value": "2^(3/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              110,
+              102,
+              94,
+              86,
+              78,
+              70,
+              62,
+              54,
+              46,
+              38,
+              30,
+              22
+            ],
+            "N_Y": [
+              110,
+              102,
+              94,
+              86,
+              78,
+              70,
+              62,
+              54,
+              46,
+              38,
+              30,
+              22
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 4,
+                "divisor": 4,
+                "value": "2^(1)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              131,
+              122,
+              112,
+              103,
+              93,
+              84,
+              74,
+              65,
+              55,
+              46,
+              36,
+              27
+            ],
+            "N_Y": [
+              131,
+              122,
+              112,
+              103,
+              93,
+              84,
+              74,
+              65,
+              55,
+              46,
+              36,
+              27
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 5,
+                "divisor": 4,
+                "value": "2^(5/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              156,
+              145,
+              133,
+              122,
+              111,
+              99,
+              88,
+              77,
+              66,
+              54,
+              43,
+              32
+            ],
+            "N_Y": [
+              156,
+              145,
+              133,
+              122,
+              111,
+              99,
+              88,
+              77,
+              66,
+              54,
+              43,
+              32
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 6,
+                "divisor": 4,
+                "value": "2^(3/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              185,
+              172,
+              159,
+              145,
+              132,
+              118,
+              105,
+              91,
+              78,
+              64,
+              51,
+              37
+            ],
+            "N_Y": [
+              185,
+              172,
+              159,
+              145,
+              132,
+              118,
+              105,
+              91,
+              78,
+              64,
+              51,
+              37
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 7,
+                "divisor": 4,
+                "value": "2^(7/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              220,
+              204,
+              188,
+              172,
+              156,
+              140,
+              124,
+              108,
+              92,
+              76,
+              60,
+              44
+            ],
+            "N_Y": [
+              220,
+              204,
+              188,
+              172,
+              156,
+              140,
+              124,
+              108,
+              92,
+              76,
+              60,
+              44
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 8,
+                "divisor": 4,
+                "value": "2^(2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              262,
+              243,
+              224,
+              205,
+              186,
+              167,
+              148,
+              129,
+              110,
+              91,
+              72,
+              53
+            ],
+            "N_Y": [
+              262,
+              243,
+              224,
+              205,
+              186,
+              167,
+              148,
+              129,
+              110,
+              91,
+              72,
+              53
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 9,
+                "divisor": 4,
+                "value": "2^(9/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              312,
+              289,
+              266,
+              244,
+              221,
+              198,
+              176,
+              153,
+              131,
+              108,
+              85,
+              63
+            ],
+            "N_Y": [
+              312,
+              289,
+              266,
+              244,
+              221,
+              198,
+              176,
+              153,
+              131,
+              108,
+              85,
+              63
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 10,
+                "divisor": 4,
+                "value": "2^(5/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              370,
+              344,
+              317,
+              290,
+              263,
+              236,
+              209,
+              182,
+              155,
+              128,
+              101,
+              74
+            ],
+            "N_Y": [
+              370,
+              344,
+              317,
+              290,
+              263,
+              236,
+              209,
+              182,
+              155,
+              128,
+              101,
+              74
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 11,
+                "divisor": 4,
+                "value": "2^(11/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              440,
+              408,
+              376,
+              344,
+              312,
+              280,
+              248,
+              216,
+              184,
+              152,
+              120,
+              88
+            ],
+            "N_Y": [
+              440,
+              408,
+              376,
+              344,
+              312,
+              280,
+              248,
+              216,
+              184,
+              152,
+              120,
+              88
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 12,
+                "divisor": 4,
+                "value": "2^(3)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              524,
+              486,
+              448,
+              410,
+              372,
+              333,
+              295,
+              257,
+              219,
+              181,
+              143,
+              105
+            ],
+            "N_Y": [
+              524,
+              486,
+              448,
+              410,
+              372,
+              333,
+              295,
+              257,
+              219,
+              181,
+              143,
+              105
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 13,
+                "divisor": 4,
+                "value": "2^(13/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              623,
+              577,
+              532,
+              487,
+              442,
+              396,
+              351,
+              306,
+              261,
+              215,
+              170,
+              125
+            ],
+            "N_Y": [
+              623,
+              577,
+              532,
+              487,
+              442,
+              396,
+              351,
+              306,
+              261,
+              215,
+              170,
+              125
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 14,
+                "divisor": 4,
+                "value": "2^(7/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              740,
+              687,
+              633,
+              579,
+              525,
+              471,
+              418,
+              364,
+              310,
+              256,
+              202,
+              148
+            ],
+            "N_Y": [
+              740,
+              687,
+              633,
+              579,
+              525,
+              471,
+              418,
+              364,
+              310,
+              256,
+              202,
+              148
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 15,
+                "divisor": 4,
+                "value": "2^(15/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              880,
+              816,
+              752,
+              688,
+              624,
+              560,
+              496,
+              432,
+              368,
+              304,
+              240,
+              176
+            ],
+            "N_Y": [
+              880,
+              816,
+              752,
+              688,
+              624,
+              560,
+              496,
+              432,
+              368,
+              304,
+              240,
+              176
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 16,
+                "divisor": 4,
+                "value": "2^(4)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "M": 12,
+        "allocations": [
+          {
+            "N_X": [
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              4,
+              3,
+              3,
+              2,
+              2
+            ],
+            "N_Y": [
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              4,
+              3,
+              3,
+              2,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -12,
+                "divisor": 4,
+                "value": "2^(-3)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              9,
+              9,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              3,
+              3,
+              2
+            ],
+            "N_Y": [
+              9,
+              9,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              3,
+              3,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -11,
+                "divisor": 4,
+                "value": "2^(-11/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              7,
+              6,
+              5,
+              5,
+              4,
+              3,
+              2
+            ],
+            "N_Y": [
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              7,
+              6,
+              5,
+              5,
+              4,
+              3,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -10,
+                "divisor": 4,
+                "value": "2^(-5/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              13,
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              4,
+              3
+            ],
+            "N_Y": [
+              13,
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              4,
+              3
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -9,
+                "divisor": 4,
+                "value": "2^(-9/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3
+            ],
+            "N_Y": [
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -8,
+                "divisor": 4,
+                "value": "2^(-2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              18,
+              17,
+              16,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7,
+              6,
+              5,
+              4
+            ],
+            "N_Y": [
+              18,
+              17,
+              16,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7,
+              6,
+              5,
+              4
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -7,
+                "divisor": 4,
+                "value": "2^(-7/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              21,
+              20,
+              19,
+              17,
+              16,
+              14,
+              13,
+              11,
+              10,
+              9,
+              7,
+              6,
+              4
+            ],
+            "N_Y": [
+              21,
+              20,
+              19,
+              17,
+              16,
+              14,
+              13,
+              11,
+              10,
+              9,
+              7,
+              6,
+              4
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -6,
+                "divisor": 4,
+                "value": "2^(-3/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              25,
+              24,
+              22,
+              20,
+              19,
+              17,
+              15,
+              14,
+              12,
+              10,
+              8,
+              7,
+              5
+            ],
+            "N_Y": [
+              25,
+              24,
+              22,
+              20,
+              19,
+              17,
+              15,
+              14,
+              12,
+              10,
+              8,
+              7,
+              5
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -5,
+                "divisor": 4,
+                "value": "2^(-5/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              30,
+              28,
+              26,
+              24,
+              22,
+              20,
+              18,
+              16,
+              14,
+              12,
+              10,
+              8,
+              6
+            ],
+            "N_Y": [
+              30,
+              28,
+              26,
+              24,
+              22,
+              20,
+              18,
+              16,
+              14,
+              12,
+              10,
+              8,
+              6
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -4,
+                "divisor": 4,
+                "value": "2^(-1)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              36,
+              33,
+              31,
+              28,
+              26,
+              24,
+              21,
+              19,
+              17,
+              14,
+              12,
+              9,
+              7
+            ],
+            "N_Y": [
+              36,
+              33,
+              31,
+              28,
+              26,
+              24,
+              21,
+              19,
+              17,
+              14,
+              12,
+              9,
+              7
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -3,
+                "divisor": 4,
+                "value": "2^(-3/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              42,
+              39,
+              37,
+              34,
+              31,
+              28,
+              25,
+              22,
+              20,
+              17,
+              14,
+              11,
+              8
+            ],
+            "N_Y": [
+              42,
+              39,
+              37,
+              34,
+              31,
+              28,
+              25,
+              22,
+              20,
+              17,
+              14,
+              11,
+              8
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -2,
+                "divisor": 4,
+                "value": "2^(-1/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              50,
+              47,
+              43,
+              40,
+              37,
+              33,
+              30,
+              27,
+              23,
+              20,
+              16,
+              13,
+              10
+            ],
+            "N_Y": [
+              50,
+              47,
+              43,
+              40,
+              37,
+              33,
+              30,
+              27,
+              23,
+              20,
+              16,
+              13,
+              10
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -1,
+                "divisor": 4,
+                "value": "2^(-1/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              59,
+              55,
+              51,
+              47,
+              43,
+              39,
+              35,
+              31,
+              27,
+              23,
+              19,
+              15,
+              11
+            ],
+            "N_Y": [
+              59,
+              55,
+              51,
+              47,
+              43,
+              39,
+              35,
+              31,
+              27,
+              23,
+              19,
+              15,
+              11
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 0,
+                "divisor": 4,
+                "value": "2^(0)"
+              },
+              {
+                "kind": "UNIT_REFERENCE",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              71,
+              66,
+              61,
+              56,
+              52,
+              47,
+              42,
+              37,
+              33,
+              28,
+              23,
+              18,
+              14
+            ],
+            "N_Y": [
+              71,
+              66,
+              61,
+              56,
+              52,
+              47,
+              42,
+              37,
+              33,
+              28,
+              23,
+              18,
+              14
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 1,
+                "divisor": 4,
+                "value": "2^(1/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              84,
+              78,
+              73,
+              67,
+              61,
+              56,
+              50,
+              44,
+              39,
+              33,
+              27,
+              22,
+              16
+            ],
+            "N_Y": [
+              84,
+              78,
+              73,
+              67,
+              61,
+              56,
+              50,
+              44,
+              39,
+              33,
+              27,
+              22,
+              16
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 2,
+                "divisor": 4,
+                "value": "2^(1/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              100,
+              93,
+              86,
+              80,
+              73,
+              66,
+              59,
+              53,
+              46,
+              39,
+              32,
+              26,
+              19
+            ],
+            "N_Y": [
+              100,
+              93,
+              86,
+              80,
+              73,
+              66,
+              59,
+              53,
+              46,
+              39,
+              32,
+              26,
+              19
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 3,
+                "divisor": 4,
+                "value": "2^(3/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              118,
+              110,
+              102,
+              94,
+              86,
+              78,
+              70,
+              62,
+              54,
+              46,
+              38,
+              30,
+              22
+            ],
+            "N_Y": [
+              118,
+              110,
+              102,
+              94,
+              86,
+              78,
+              70,
+              62,
+              54,
+              46,
+              38,
+              30,
+              22
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 4,
+                "divisor": 4,
+                "value": "2^(1)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              141,
+              131,
+              122,
+              112,
+              103,
+              93,
+              84,
+              74,
+              65,
+              55,
+              46,
+              36,
+              27
+            ],
+            "N_Y": [
+              141,
+              131,
+              122,
+              112,
+              103,
+              93,
+              84,
+              74,
+              65,
+              55,
+              46,
+              36,
+              27
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 5,
+                "divisor": 4,
+                "value": "2^(5/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              167,
+              156,
+              145,
+              133,
+              122,
+              111,
+              99,
+              88,
+              77,
+              66,
+              54,
+              43,
+              32
+            ],
+            "N_Y": [
+              167,
+              156,
+              145,
+              133,
+              122,
+              111,
+              99,
+              88,
+              77,
+              66,
+              54,
+              43,
+              32
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 6,
+                "divisor": 4,
+                "value": "2^(3/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              199,
+              185,
+              172,
+              159,
+              145,
+              132,
+              118,
+              105,
+              91,
+              78,
+              64,
+              51,
+              37
+            ],
+            "N_Y": [
+              199,
+              185,
+              172,
+              159,
+              145,
+              132,
+              118,
+              105,
+              91,
+              78,
+              64,
+              51,
+              37
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 7,
+                "divisor": 4,
+                "value": "2^(7/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              236,
+              220,
+              204,
+              188,
+              172,
+              156,
+              140,
+              124,
+              108,
+              92,
+              76,
+              60,
+              44
+            ],
+            "N_Y": [
+              236,
+              220,
+              204,
+              188,
+              172,
+              156,
+              140,
+              124,
+              108,
+              92,
+              76,
+              60,
+              44
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 8,
+                "divisor": 4,
+                "value": "2^(2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              281,
+              262,
+              243,
+              224,
+              205,
+              186,
+              167,
+              148,
+              129,
+              110,
+              91,
+              72,
+              53
+            ],
+            "N_Y": [
+              281,
+              262,
+              243,
+              224,
+              205,
+              186,
+              167,
+              148,
+              129,
+              110,
+              91,
+              72,
+              53
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 9,
+                "divisor": 4,
+                "value": "2^(9/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              334,
+              312,
+              289,
+              266,
+              244,
+              221,
+              198,
+              176,
+              153,
+              131,
+              108,
+              85,
+              63
+            ],
+            "N_Y": [
+              334,
+              312,
+              289,
+              266,
+              244,
+              221,
+              198,
+              176,
+              153,
+              131,
+              108,
+              85,
+              63
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 10,
+                "divisor": 4,
+                "value": "2^(5/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              397,
+              370,
+              344,
+              317,
+              290,
+              263,
+              236,
+              209,
+              182,
+              155,
+              128,
+              101,
+              74
+            ],
+            "N_Y": [
+              397,
+              370,
+              344,
+              317,
+              290,
+              263,
+              236,
+              209,
+              182,
+              155,
+              128,
+              101,
+              74
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 11,
+                "divisor": 4,
+                "value": "2^(11/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              472,
+              440,
+              408,
+              376,
+              344,
+              312,
+              280,
+              248,
+              216,
+              184,
+              152,
+              120,
+              88
+            ],
+            "N_Y": [
+              472,
+              440,
+              408,
+              376,
+              344,
+              312,
+              280,
+              248,
+              216,
+              184,
+              152,
+              120,
+              88
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 12,
+                "divisor": 4,
+                "value": "2^(3)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              562,
+              524,
+              486,
+              448,
+              410,
+              372,
+              333,
+              295,
+              257,
+              219,
+              181,
+              143,
+              105
+            ],
+            "N_Y": [
+              562,
+              524,
+              486,
+              448,
+              410,
+              372,
+              333,
+              295,
+              257,
+              219,
+              181,
+              143,
+              105
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 13,
+                "divisor": 4,
+                "value": "2^(13/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              668,
+              623,
+              577,
+              532,
+              487,
+              442,
+              396,
+              351,
+              306,
+              261,
+              215,
+              170,
+              125
+            ],
+            "N_Y": [
+              668,
+              623,
+              577,
+              532,
+              487,
+              442,
+              396,
+              351,
+              306,
+              261,
+              215,
+              170,
+              125
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 14,
+                "divisor": 4,
+                "value": "2^(7/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              794,
+              740,
+              687,
+              633,
+              579,
+              525,
+              471,
+              418,
+              364,
+              310,
+              256,
+              202,
+              148
+            ],
+            "N_Y": [
+              794,
+              740,
+              687,
+              633,
+              579,
+              525,
+              471,
+              418,
+              364,
+              310,
+              256,
+              202,
+              148
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 15,
+                "divisor": 4,
+                "value": "2^(15/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              944,
+              880,
+              816,
+              752,
+              688,
+              624,
+              560,
+              496,
+              432,
+              368,
+              304,
+              240,
+              176
+            ],
+            "N_Y": [
+              944,
+              880,
+              816,
+              752,
+              688,
+              624,
+              560,
+              496,
+              432,
+              368,
+              304,
+              240,
+              176
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 16,
+                "divisor": 4,
+                "value": "2^(4)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "M": 13,
+        "allocations": [
+          {
+            "N_X": [
+              8,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              4,
+              3,
+              3,
+              2,
+              2
+            ],
+            "N_Y": [
+              8,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              4,
+              3,
+              3,
+              2,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -12,
+                "divisor": 4,
+                "value": "2^(-3)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              10,
+              9,
+              9,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              3,
+              3,
+              2
+            ],
+            "N_Y": [
+              10,
+              9,
+              9,
+              8,
+              7,
+              7,
+              6,
+              6,
+              5,
+              5,
+              4,
+              3,
+              3,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -11,
+                "divisor": 4,
+                "value": "2^(-11/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              7,
+              6,
+              5,
+              5,
+              4,
+              3,
+              2
+            ],
+            "N_Y": [
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              7,
+              6,
+              5,
+              5,
+              4,
+              3,
+              2
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -10,
+                "divisor": 4,
+                "value": "2^(-5/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              14,
+              13,
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              4,
+              3
+            ],
+            "N_Y": [
+              14,
+              13,
+              12,
+              11,
+              10,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              4,
+              3
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -9,
+                "divisor": 4,
+                "value": "2^(-9/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              16,
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3
+            ],
+            "N_Y": [
+              16,
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -8,
+                "divisor": 4,
+                "value": "2^(-2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              19,
+              18,
+              17,
+              16,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7,
+              6,
+              5,
+              4
+            ],
+            "N_Y": [
+              19,
+              18,
+              17,
+              16,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              7,
+              6,
+              5,
+              4
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -7,
+                "divisor": 4,
+                "value": "2^(-7/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              23,
+              21,
+              20,
+              19,
+              17,
+              16,
+              14,
+              13,
+              11,
+              10,
+              9,
+              7,
+              6,
+              4
+            ],
+            "N_Y": [
+              23,
+              21,
+              20,
+              19,
+              17,
+              16,
+              14,
+              13,
+              11,
+              10,
+              9,
+              7,
+              6,
+              4
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -6,
+                "divisor": 4,
+                "value": "2^(-3/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              27,
+              25,
+              24,
+              22,
+              20,
+              19,
+              17,
+              15,
+              14,
+              12,
+              10,
+              8,
+              7,
+              5
+            ],
+            "N_Y": [
+              27,
+              25,
+              24,
+              22,
+              20,
+              19,
+              17,
+              15,
+              14,
+              12,
+              10,
+              8,
+              7,
+              5
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -5,
+                "divisor": 4,
+                "value": "2^(-5/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              32,
+              30,
+              28,
+              26,
+              24,
+              22,
+              20,
+              18,
+              16,
+              14,
+              12,
+              10,
+              8,
+              6
+            ],
+            "N_Y": [
+              32,
+              30,
+              28,
+              26,
+              24,
+              22,
+              20,
+              18,
+              16,
+              14,
+              12,
+              10,
+              8,
+              6
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -4,
+                "divisor": 4,
+                "value": "2^(-1)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              38,
+              36,
+              33,
+              31,
+              28,
+              26,
+              24,
+              21,
+              19,
+              17,
+              14,
+              12,
+              9,
+              7
+            ],
+            "N_Y": [
+              38,
+              36,
+              33,
+              31,
+              28,
+              26,
+              24,
+              21,
+              19,
+              17,
+              14,
+              12,
+              9,
+              7
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -3,
+                "divisor": 4,
+                "value": "2^(-3/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              45,
+              42,
+              39,
+              37,
+              34,
+              31,
+              28,
+              25,
+              22,
+              20,
+              17,
+              14,
+              11,
+              8
+            ],
+            "N_Y": [
+              45,
+              42,
+              39,
+              37,
+              34,
+              31,
+              28,
+              25,
+              22,
+              20,
+              17,
+              14,
+              11,
+              8
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -2,
+                "divisor": 4,
+                "value": "2^(-1/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              53,
+              50,
+              47,
+              43,
+              40,
+              37,
+              33,
+              30,
+              27,
+              23,
+              20,
+              16,
+              13,
+              10
+            ],
+            "N_Y": [
+              53,
+              50,
+              47,
+              43,
+              40,
+              37,
+              33,
+              30,
+              27,
+              23,
+              20,
+              16,
+              13,
+              10
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": -1,
+                "divisor": 4,
+                "value": "2^(-1/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              63,
+              59,
+              55,
+              51,
+              47,
+              43,
+              39,
+              35,
+              31,
+              27,
+              23,
+              19,
+              15,
+              11
+            ],
+            "N_Y": [
+              63,
+              59,
+              55,
+              51,
+              47,
+              43,
+              39,
+              35,
+              31,
+              27,
+              23,
+              19,
+              15,
+              11
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 0,
+                "divisor": 4,
+                "value": "2^(0)"
+              },
+              {
+                "kind": "UNIT_REFERENCE",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              75,
+              71,
+              66,
+              61,
+              56,
+              52,
+              47,
+              42,
+              37,
+              33,
+              28,
+              23,
+              18,
+              14
+            ],
+            "N_Y": [
+              75,
+              71,
+              66,
+              61,
+              56,
+              52,
+              47,
+              42,
+              37,
+              33,
+              28,
+              23,
+              18,
+              14
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 1,
+                "divisor": 4,
+                "value": "2^(1/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              90,
+              84,
+              78,
+              73,
+              67,
+              61,
+              56,
+              50,
+              44,
+              39,
+              33,
+              27,
+              22,
+              16
+            ],
+            "N_Y": [
+              90,
+              84,
+              78,
+              73,
+              67,
+              61,
+              56,
+              50,
+              44,
+              39,
+              33,
+              27,
+              22,
+              16
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 2,
+                "divisor": 4,
+                "value": "2^(1/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              106,
+              100,
+              93,
+              86,
+              80,
+              73,
+              66,
+              59,
+              53,
+              46,
+              39,
+              32,
+              26,
+              19
+            ],
+            "N_Y": [
+              106,
+              100,
+              93,
+              86,
+              80,
+              73,
+              66,
+              59,
+              53,
+              46,
+              39,
+              32,
+              26,
+              19
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 3,
+                "divisor": 4,
+                "value": "2^(3/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              126,
+              118,
+              110,
+              102,
+              94,
+              86,
+              78,
+              70,
+              62,
+              54,
+              46,
+              38,
+              30,
+              22
+            ],
+            "N_Y": [
+              126,
+              118,
+              110,
+              102,
+              94,
+              86,
+              78,
+              70,
+              62,
+              54,
+              46,
+              38,
+              30,
+              22
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 4,
+                "divisor": 4,
+                "value": "2^(1)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              150,
+              141,
+              131,
+              122,
+              112,
+              103,
+              93,
+              84,
+              74,
+              65,
+              55,
+              46,
+              36,
+              27
+            ],
+            "N_Y": [
+              150,
+              141,
+              131,
+              122,
+              112,
+              103,
+              93,
+              84,
+              74,
+              65,
+              55,
+              46,
+              36,
+              27
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 5,
+                "divisor": 4,
+                "value": "2^(5/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              179,
+              167,
+              156,
+              145,
+              133,
+              122,
+              111,
+              99,
+              88,
+              77,
+              66,
+              54,
+              43,
+              32
+            ],
+            "N_Y": [
+              179,
+              167,
+              156,
+              145,
+              133,
+              122,
+              111,
+              99,
+              88,
+              77,
+              66,
+              54,
+              43,
+              32
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 6,
+                "divisor": 4,
+                "value": "2^(3/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              212,
+              199,
+              185,
+              172,
+              159,
+              145,
+              132,
+              118,
+              105,
+              91,
+              78,
+              64,
+              51,
+              37
+            ],
+            "N_Y": [
+              212,
+              199,
+              185,
+              172,
+              159,
+              145,
+              132,
+              118,
+              105,
+              91,
+              78,
+              64,
+              51,
+              37
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 7,
+                "divisor": 4,
+                "value": "2^(7/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              252,
+              236,
+              220,
+              204,
+              188,
+              172,
+              156,
+              140,
+              124,
+              108,
+              92,
+              76,
+              60,
+              44
+            ],
+            "N_Y": [
+              252,
+              236,
+              220,
+              204,
+              188,
+              172,
+              156,
+              140,
+              124,
+              108,
+              92,
+              76,
+              60,
+              44
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 8,
+                "divisor": 4,
+                "value": "2^(2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              300,
+              281,
+              262,
+              243,
+              224,
+              205,
+              186,
+              167,
+              148,
+              129,
+              110,
+              91,
+              72,
+              53
+            ],
+            "N_Y": [
+              300,
+              281,
+              262,
+              243,
+              224,
+              205,
+              186,
+              167,
+              148,
+              129,
+              110,
+              91,
+              72,
+              53
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 9,
+                "divisor": 4,
+                "value": "2^(9/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              357,
+              334,
+              312,
+              289,
+              266,
+              244,
+              221,
+              198,
+              176,
+              153,
+              131,
+              108,
+              85,
+              63
+            ],
+            "N_Y": [
+              357,
+              334,
+              312,
+              289,
+              266,
+              244,
+              221,
+              198,
+              176,
+              153,
+              131,
+              108,
+              85,
+              63
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 10,
+                "divisor": 4,
+                "value": "2^(5/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              424,
+              397,
+              370,
+              344,
+              317,
+              290,
+              263,
+              236,
+              209,
+              182,
+              155,
+              128,
+              101,
+              74
+            ],
+            "N_Y": [
+              424,
+              397,
+              370,
+              344,
+              317,
+              290,
+              263,
+              236,
+              209,
+              182,
+              155,
+              128,
+              101,
+              74
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 11,
+                "divisor": 4,
+                "value": "2^(11/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              504,
+              472,
+              440,
+              408,
+              376,
+              344,
+              312,
+              280,
+              248,
+              216,
+              184,
+              152,
+              120,
+              88
+            ],
+            "N_Y": [
+              504,
+              472,
+              440,
+              408,
+              376,
+              344,
+              312,
+              280,
+              248,
+              216,
+              184,
+              152,
+              120,
+              88
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 12,
+                "divisor": 4,
+                "value": "2^(3)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              600,
+              562,
+              524,
+              486,
+              448,
+              410,
+              372,
+              333,
+              295,
+              257,
+              219,
+              181,
+              143,
+              105
+            ],
+            "N_Y": [
+              600,
+              562,
+              524,
+              486,
+              448,
+              410,
+              372,
+              333,
+              295,
+              257,
+              219,
+              181,
+              143,
+              105
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 13,
+                "divisor": 4,
+                "value": "2^(13/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              713,
+              668,
+              623,
+              577,
+              532,
+              487,
+              442,
+              396,
+              351,
+              306,
+              261,
+              215,
+              170,
+              125
+            ],
+            "N_Y": [
+              713,
+              668,
+              623,
+              577,
+              532,
+              487,
+              442,
+              396,
+              351,
+              306,
+              261,
+              215,
+              170,
+              125
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 14,
+                "divisor": 4,
+                "value": "2^(7/2)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              848,
+              794,
+              740,
+              687,
+              633,
+              579,
+              525,
+              471,
+              418,
+              364,
+              310,
+              256,
+              202,
+              148
+            ],
+            "N_Y": [
+              848,
+              794,
+              740,
+              687,
+              633,
+              579,
+              525,
+              471,
+              418,
+              364,
+              310,
+              256,
+              202,
+              148
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 15,
+                "divisor": 4,
+                "value": "2^(15/4)"
+              }
+            ]
+          },
+          {
+            "N_X": [
+              1008,
+              944,
+              880,
+              816,
+              752,
+              688,
+              624,
+              560,
+              496,
+              432,
+              368,
+              304,
+              240,
+              176
+            ],
+            "N_Y": [
+              1008,
+              944,
+              880,
+              816,
+              752,
+              688,
+              624,
+              560,
+              496,
+              432,
+              368,
+              304,
+              240,
+              176
+            ],
+            "aliases": [
+              {
+                "kind": "GRID",
+                "k": 16,
+                "divisor": 4,
+                "value": "2^(4)"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "preparation_budgets": {
+      "signal": "UNLIMITED",
+      "compile": "UNLIMITED",
+      "audit": "UNLIMITED"
+    },
+    "live_ready_refill": true,
+    "work_conserving_search": true,
+    "worker_storage_limits_bytes": {
+      "local": 53687091200,
+      "server2": 53687091200,
+      "local0-wsl": 53687091200,
+      "server1": 53687091200,
+      "pbs-0": 53687091200
+    },
+    "reviewed_pr_q3": {
+      "compact_q3_evidence": true,
+      "parallel_dp_residual": true,
+      "prefix_cache_max_bytes": 42949672960,
+      "prefix_checkpoint_rounds": [
+        5,
+        11
+      ]
+    },
+    "parallel_df_price_axes": true,
+    "df_signal_source": "fa3d5c96c2e2293057e52e39fc9461eba51811fa",
+    "pbs_walltime": {
+      "policy": {
+        "id": "romutail-h4-rerun2-cac95fd9c4",
+        "sha256": "32ec041142a0bd6cb53bce2b959d4449c26f8cb5e314889de4433b3c6bc35b27"
+      },
+      "q3": [
+        {
+          "id": "b0i-pf6",
+          "method": "TRUNCATED_PF",
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "adapter_source": "f67a86291a8a0247f99bd952d7ea0b41ab1a14b9",
+          "seconds": 14400,
+          "memory_bytes": 8589934592,
+          "hosts": [
+            "pbs-0"
+          ]
+        },
+        {
+          "id": "prdf-d2-split",
+          "method": "PR_DF",
+          "route_kind": "prdf_d2_split",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "adapter_source": "f67a86291a8a0247f99bd952d7ea0b41ab1a14b9",
+          "seconds": 3600,
+          "hosts": [
+            "pbs-0"
+          ]
+        },
+        {
+          "id": "full-pf6",
+          "method": "FULL_PF",
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "adapter_source": "f67a86291a8a0247f99bd952d7ea0b41ab1a14b9",
+          "seconds": 14400,
+          "memory_bytes": 8589934592,
+          "hosts": [
+            "pbs-0"
+          ]
+        },
+        {
+          "id": "mixed-prdf-d2-common-isolated",
+          "method": "PR_DF",
+          "route_kind": "prdf_d2_common_entry",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "adapter_source": "f67a86291a8a0247f99bd952d7ea0b41ab1a14b9",
+          "seconds": 14400,
+          "memory_bytes": 8589934592,
+          "hosts": [
+            "pbs-0"
+          ]
+        }
+      ],
+      "preparation": [
+        {
+          "id": "pauli_signals",
+          "stage": "signal",
+          "provider": "PAULI_SIGNALS",
+          "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+          "seconds": 120
+        },
+        {
+          "id": "pauli_compile",
+          "stage": "compile",
+          "provider": "PAULI_COMPILE",
+          "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+          "seconds": 180
+        },
+        {
+          "id": "pauli_signals_saved_inputs",
+          "stage": "signal",
+          "provider": "PAULI_SIGNALS",
+          "source": "8d03cd254db4ae5f7b4d786f54e4fc66f0fcb4a8",
+          "seconds": 120
+        },
+        {
+          "id": "pauli_signals_preparation_throughput",
+          "stage": "signal",
+          "provider": "PAULI_SIGNALS",
+          "source": "8cc86e60a337272b2b013bd100a6a9c6c8da93ae",
+          "seconds": 120,
+          "memory_bytes": 4294967296
+        },
+        {
+          "id": "prdf-signals-fixed-provider",
+          "stage": "signal",
+          "provider": "DF_SIGNALS",
+          "source": "9ed5fcc98d38c328c447f4270eabc73090fcaa02",
+          "seconds": 120
+        },
+        {
+          "id": "pf_audit",
+          "stage": "audit",
+          "provider": "PF_AUDIT",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_finish",
+          "stage": "audit",
+          "provider": "PF_FINISH",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_holdout_audit",
+          "stage": "audit",
+          "provider": "PF_HOLDOUT_AUDIT",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_model_freeze",
+          "stage": "audit",
+          "provider": "PF_MODEL_FREEZE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_compile",
+          "stage": "compile",
+          "provider": "PF_COMPILE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 3600
+        },
+        {
+          "id": "pf_holdout_compile",
+          "stage": "compile",
+          "provider": "PF_HOLDOUT_COMPILE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 3600
+        },
+        {
+          "id": "pf_signals",
+          "stage": "signal",
+          "provider": "PF_SIGNALS",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pauli-audit-raw-receipts-4d20f4b7a",
+          "stage": "audit",
+          "provider": "PAULI_AUDIT",
+          "source": "4d20f4b7a009c42d9a4918f8db17dc87503d060e",
+          "seconds": 180,
+          "memory_bytes": 4294967296
+        },
+        {
+          "id": "mixed-prdf-signals-fixed-provider-portable",
+          "stage": "signal",
+          "provider": "DF_SIGNALS",
+          "source": "fa3d5c96c2e2293057e52e39fc9461eba51811fa",
+          "seconds": 120
+        },
+        {
+          "id": "mixed-df_calibration_fixed_3b38-portable-manual",
+          "stage": "compile",
+          "provider": "DF_CALIBRATION",
+          "source": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+          "seconds": 3600
+        },
+        {
+          "id": "mixed-df_holdout_fixed_3b38-portable-manual",
+          "stage": "compile",
+          "provider": "DF_HOLDOUT",
+          "source": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+          "seconds": 3600
+        },
+        {
+          "id": "mixed-df_model_freeze_fixed_3b38-portable-manual",
+          "stage": "audit",
+          "provider": "DF_MODEL_FREEZE",
+          "source": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+          "seconds": 600
+        },
+        {
+          "id": "mixed-df_holdout_compare_fixed_3b38-portable-manual",
+          "stage": "audit",
+          "provider": "DF_HOLDOUT_COMPARE",
+          "source": "22b2e3e5dd0b8ae7a040ee80161ff008b790e729",
+          "seconds": 600
+        },
+        {
+          "id": "rerun-df_calibration-13b7a905e5",
+          "stage": "compile",
+          "provider": "DF_CALIBRATION",
+          "source": "13b7a905e59b9d0d4494c6d62ba1e22365f24f5d",
+          "seconds": 3600
+        },
+        {
+          "id": "rerun-df_holdout-13b7a905e5",
+          "stage": "compile",
+          "provider": "DF_HOLDOUT",
+          "source": "13b7a905e59b9d0d4494c6d62ba1e22365f24f5d",
+          "seconds": 3600
+        },
+        {
+          "id": "rerun-df_model_freeze-13b7a905e5",
+          "stage": "audit",
+          "provider": "DF_MODEL_FREEZE",
+          "source": "13b7a905e59b9d0d4494c6d62ba1e22365f24f5d",
+          "seconds": 600
+        },
+        {
+          "id": "rerun-df_holdout_compare-13b7a905e5",
+          "stage": "audit",
+          "provider": "DF_HOLDOUT_COMPARE",
+          "source": "13b7a905e59b9d0d4494c6d62ba1e22365f24f5d",
+          "seconds": 600
+        },
+        {
+          "id": "rerun-df_calibration-cac95fd9c4",
+          "stage": "compile",
+          "provider": "DF_CALIBRATION",
+          "source": "cac95fd9c483995170a429c7ed5b8f7001873d12",
+          "seconds": 3600
+        },
+        {
+          "id": "rerun-df_holdout-cac95fd9c4",
+          "stage": "compile",
+          "provider": "DF_HOLDOUT",
+          "source": "cac95fd9c483995170a429c7ed5b8f7001873d12",
+          "seconds": 3600
+        },
+        {
+          "id": "rerun-df_model_freeze-cac95fd9c4",
+          "stage": "audit",
+          "provider": "DF_MODEL_FREEZE",
+          "source": "cac95fd9c483995170a429c7ed5b8f7001873d12",
+          "seconds": 600
+        },
+        {
+          "id": "rerun-df_holdout_compare-cac95fd9c4",
+          "stage": "audit",
+          "provider": "DF_HOLDOUT_COMPARE",
+          "source": "cac95fd9c483995170a429c7ed5b8f7001873d12",
+          "seconds": 600
+        }
+      ],
+      "drain_seconds": 30,
+      "unconfigured_q3_methods": {},
+      "allocation_sizing": {
+        "q3_startup_memory_bytes_per_task": 8589934592,
+        "per_task_resources": true
+      }
+    }
+  },
+  "problem_sha256": "f588d4ce3a1f913b950aafe56eb1f48555d1d1d3b0eb1ab0ca58f399b491859c",
+  "round_requested_sha256": "a70161bdfb787f3a15fe2089ddf38c7b1d337af26ffe7da441d3efc468ce9013",
+  "scope": {
+    "methods": [
+      "FULL_PF",
+      "TRUNCATED_PF",
+      "PR_DF"
+    ],
+    "per_method": {
+      "FULL_PF": {
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_values": [
+          "2",
+          "4",
+          "8",
+          "16"
+        ]
+      },
+      "TRUNCATED_PF": {
+        "p": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_values": [
+          "2",
+          "4",
+          "8",
+          "16"
+        ]
+      },
+      "PR_DF": {
+        "L_D": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_values": [
+          "1/2",
+          "1"
+        ],
+        "kappa": {
+          "mode": "absolute",
+          "values": [
+            "1",
+            "2",
+            "4",
+            "8",
+            "16",
+            "32",
+            "64"
+          ]
+        }
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_new_q3_per_method": "UNLIMITED"
+    },
+    "scaled_shots": {
+      "M": [
+        11,
+        12,
+        13
+      ],
+      "grid": {
+        "min_k": -12,
+        "max_k": 16,
+        "divisor": 4
+      },
+      "compare_paper": true
+    }
+  }
+}
