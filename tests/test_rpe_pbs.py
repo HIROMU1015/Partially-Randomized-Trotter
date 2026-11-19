@@ -297,6 +297,10 @@ class ManagerTests(unittest.TestCase):
             observed = dict(token=token, host_id='pbs-0', job_id='42', status='R',
                             worker=dict(accepting=True))
             gateway.call = lambda message: dict(allocations=[observed], requests={})
+            executor._owned_attempts = lambda: [dict(host_id='pbs-0',state='ASSIGNED')]
+            manager.cycle()
+            self.assertFalse(manager.controls[token]['release_when_idle'])
+            executor._owned_attempts = lambda: []
             manager.cycle()
             self.assertTrue(manager.controls[token]['release_when_idle'])
             request = dict(preparation={})

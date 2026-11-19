@@ -1,4 +1,6 @@
 """Synthetic checks of PBS allocation boundaries and durable communication only."""
+import base64
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -129,6 +131,34 @@ class AdmissionTests(unittest.TestCase):
         worker.profile = profile()
         worker.profile['work_dir'] = directory
         return worker
+
+    def test_release_validation_waits_for_assignment_bundles(self):
+        from trottertracks import rpe_release_deployment as deployment
+        from trottertracks.rpe_q3_worker import digest, worker_cache
+        with tempfile.TemporaryDirectory() as directory:
+            worker = self.worker(directory)
+            worker.work = Path(directory)
+            worker.records = {}
+            manifest, layout = (worker.work/name for name in ('MANIFEST.json','HOST.json'))
+            for path in (manifest, layout):
+                P.atomic(path, {})
+            worker.profile['pbs']['deployment'] = dict(manifest=manifest, layout=layout)
+            raw = b'ARTIFICIAL_SYNTHETIC_BUNDLE'
+            sha = hashlib.sha256(raw).hexdigest()
+            request = dict(route=dict(kind='preparation'), preparation=dict(stage='compile',
+                provider='PF_COMPILE', artificial=True, input_git_bundles=[dict(sha256=sha)]))
+            assignment = dict(job_id='prep-fixed', attempt_id='attempt-fixed', request=request,
+                              request_sha256=digest(request))
+            durable = worker.work/'prep-fixed/attempt-fixed/ASSIGNMENT.json'
+            def validate(*args):
+                self.assertEqual(worker_cache(worker.profile).path(sha).read_bytes(), raw)
+                self.assertFalse(durable.exists())
+            with patch.object(worker, '_post', return_value={'blobs': {sha:base64.b64encode(raw).decode()}}) as post, \
+                    patch.object(deployment, 'validate_assignment_release', side_effect=validate) as validation:
+                worker._acquire(assignment)
+            post.assert_called_once_with('/v1/artifacts/get', {'hashes':[sha]})
+            validation.assert_called_once()
+            self.assertTrue(durable.exists())
 
     def test_delayed_assignment_never_launches_past_admission_cutoff(self):
         with tempfile.TemporaryDirectory() as directory:

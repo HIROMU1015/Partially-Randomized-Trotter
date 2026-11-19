@@ -215,13 +215,12 @@ class AllocationWorker(Worker):
         path = self.directory / 'CONTROL.json'
         return read(path) if path.exists() else {}
 
-    def _acquire(self, assignment):
+    def _validate_acquisition(self, assignment):
         deployment=self.profile['pbs'].get('deployment')
         if deployment:
             from .rpe_release_deployment import validate_assignment_release
             validate_assignment_release(read(deployment['manifest']),read(deployment['layout']),
                                         assignment,self.profile)
-        return super()._acquire(assignment)
 
     def resource_snapshot(self):
         snapshot = super().resource_snapshot()

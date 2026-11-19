@@ -481,6 +481,7 @@ class PbsManager:
         keep_for_preparation = (not (outstanding or pending) and not stopping and any(
             a['status'] == 'R' and (a.get('worker') or {}).get('accepting') for a in active)
             and self._recent_preparation_completion(self.readiness_wait_seconds()))
+        hosts_with_attempts = {row['host_id'] for row in self.executor._owned_attempts()}
         for allocation in self.allocations:
             if allocation['status'] not in TERMINAL:
                 token, host = allocation['token'], allocation['host_id']
@@ -500,14 +501,13 @@ class PbsManager:
                         and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')
                         and (memory_mismatch or
                              min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task) >= 2 * current_cpus)
-                        and not any(row['host_id'] == host for row in self.executor._owned_attempts())):
+                        and host not in hosts_with_attempts):
                     record['resize_requested'] = True
                     self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
                              previous_cpus=current_cpus, compatible_ready_jobs=requested_slots)
                 self.controls[token] = dict(stop=stopping or record.get('resize_requested', False),
-                                            release_when_idle=not waiting and not keep_for_preparation)
-                if stopping and allocation['status'] in ('Q','H','W') and allocation.get('job_id') and not any(
-                        row['host_id'] == allocation['host_id'] for row in self.executor._owned_attempts()):
+                    release_when_idle=not waiting and not keep_for_preparation and host not in hosts_with_attempts)
+                if stopping and allocation['status'] in ('Q','H','W') and allocation.get('job_id') and host not in hosts_with_attempts:
                     result = self.gateway.call(dict(action='delete', token=allocation['token']))
                     self.log('PBS_UNUSED_ALLOCATION_CANCELLED', token=allocation['token'],
                         job_id=allocation['job_id'], result=result, reason='STOP_WITHOUT_OWNED_SCIENTIFIC_ATTEMPTS')
@@ -525,7 +525,7 @@ class PbsManager:
                 if any(record['spec']['profile']['host_id'] == host and record['status'] == 'SUBMIT_REJECTED'
                        for record in self.state['allocations'].values()): continue
                 # UNKNOWN/transfer-pending original attempts prevent reuse.
-                if any(row['host_id'] == host for row in self.executor._owned_attempts()): continue
+                if host in hosts_with_attempts: continue
                 requests = [request for usable, request in outstanding if host in usable]
                 if not requests and not any(host in usable for usable, _ in pending): continue
                 if not requests:

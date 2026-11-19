@@ -529,8 +529,14 @@ class Worker:
     def _post(self, endpoint, payload):
         return self.transport(endpoint, dict(host_id=self.host_id, **payload))
 
+    def _validate_acquisition(self, assignment):
+        """An allocation worker may also enforce a deployed release contract."""
+
     def _acquire(self, assignment):
         assignment = deepcopy(assignment)
+        safe_id(assignment['job_id']); safe_id(assignment['attempt_id'])
+        if digest(assignment['request']) != assignment['request_sha256']:
+            raise ValueError('Assignment request SHA256 differs')
         incoming = assignment.pop('artifact_blobs', {})
         if Preparation.is_preparation(assignment):
             cache = worker_cache(self.profile)
@@ -543,9 +549,9 @@ class Worker:
             if missing:
                 cache.put(self._post('/v1/artifacts/get', dict(hashes=missing))['blobs'])
             if cache.missing(hashes):raise ValueError('Preparation input artifacts not available')
-        safe_id(assignment['job_id']); safe_id(assignment['attempt_id'])
-        if digest(assignment['request']) != assignment['request_sha256']:
-            raise ValueError('Assignment request SHA256 differs')
+        # Fixed release validation also checks the preparation input metadata.
+        # It needs the verified bundles but must precede durable ownership.
+        self._validate_acquisition(assignment)
         attempt = self.work / assignment['job_id'] / assignment['attempt_id']
         attempt.mkdir(parents=True, exist_ok=True)
         if (attempt / 'ASSIGNMENT.json').exists():
