@@ -1,5 +1,7 @@
 # PR最適化の空き枠補充と評価順
 
+配置・継続・障害復旧の共通手順は[H4 RPE分散探索の運用ルール](../rpe_distributed_operations.md)を参照する。
+
 中央固定SOURCEは `5c8ced4b2d407a3828d189e1e0f0a24a4807f94a`。採用currentは `romutail-work-conserving-5c8ced4b2`。中央状態はRomuTailの `.rpe-central/state`。旧current `romutail-auto-preparation-5b48aabbc` の運用設定に、検収済み後着READYと固定 `1e5d63c326282382a311304e21d995ac09954003` の補充・順序選定と保存Q3索引を統合した。切替時に既存run 30件の固定設定を照合し、起動中のcontroller・relayがないことを確認した。R08の切替スクリプトと固定入力は参照した。
 
 ## 通常操作
