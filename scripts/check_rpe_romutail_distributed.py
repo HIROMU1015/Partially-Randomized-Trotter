@@ -195,7 +195,8 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
     fixture_spec=read(round_path)
     if fixture_spec.get('artificial_pbs_acceptance'):
         import check_rpe_pbs as PBS
-        driver=PBS.driver_type(F,preparation_source=fixture_spec.get('artificial_preparation_source'))
+        driver=PBS.driver_type(F,preparation_source=fixture_spec.get('artificial_preparation_source'),
+                               pf_fixture=fixture_spec.get('artificial_pf_preparation'))
     else:
         driver=(F.fixture_driver()if fixture_spec.get('artificial_mode')=='Q3_ONLY'else fixture_driver(directory))
     try:E.main(command,driver_factory=driver)

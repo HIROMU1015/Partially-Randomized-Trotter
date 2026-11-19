@@ -74,7 +74,7 @@ def prepare(directory, source, settings=None, *, exercise_faults=False):
         ['git','rev-parse','HEAD'],cwd=source,text=True).strip()))
 
 
-def driver_type(fixture, *, preparation_source=None):
+def driver_type(fixture, *, preparation_source=None, pf_fixture=None):
     from trottertracks.rpe_preparation_queue import normalize_preparation_request
     Base = fixture.fixture_driver()
 
@@ -109,11 +109,15 @@ def driver_type(fixture, *, preparation_source=None):
                     return runtime.executor.submit_preparation(value, approved=True,budget=100,
                         contract=dict(artificial=True))
                 signal=task('signal',cid)
-                compile=task('compile','ONE_SHARED_ARTIFICIAL_CIRCUIT')
-                audit=task('audit','SHARED_CROSS_HOST_AUDIT',(compile,), {compile:{
-                    'products/circuit.txt':'compiled/circuit.txt',
-                    'products/receipt.json':'compiled/receipt.json'}})
-                for job in (signal,compile,audit):
+                if pf_fixture is None:
+                    compile=task('compile','ONE_SHARED_ARTIFICIAL_CIRCUIT')
+                    compiles = [(compile, 'products')]
+                else:
+                    compiles = submit_pf_fixture(runtime.executor, pf_fixture)
+                audits = [task('audit','SHARED_CROSS_HOST_AUDIT'+(':'+job if pf_fixture else ''),(job,), {job:{
+                    prefix+'/circuit.txt':'compiled/circuit.txt',
+                    prefix+'/receipt.json':'compiled/receipt.json'}}) for job, prefix in compiles]
+                for job in (signal, *(job for job, _ in compiles), *audits):
                     result=runtime.executor.preparation_result(job,wait=True)
                     if result['status'] != 'PREPARATION_COMPLETE': raise AssertionError(result)
                 with save_lock:
@@ -128,6 +132,29 @@ def driver_type(fixture, *, preparation_source=None):
             completion.install_snapshot=types.MethodType(install_snapshot,completion)
             return completion
     return Driver
+
+
+def submit_pf_fixture(executor, fixture):
+    """Use the ordinary PF request builder with a fixed synthetic compiler."""
+    from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
+    root = Path(fixture['root'])
+    if fixture.get('only_artificial') is not True:
+        raise ValueError('Explicit synthetic PF fixture required')
+    script = root/'scripts/artificial_pf_fixture.py'
+    completion = types.SimpleNamespace(source=fixture['commit'], preparation_root=root)
+    bridge = DistributedPreparationBridge(executor, root)
+    jobs = []
+    for stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
+        relative = 'docs/fixture/'+stage
+        output = root/relative
+        request = bridge.build_request(completion,
+            [sys.executable, '-B', str(script), '--output', str(output)], output, stage)
+        request['method'] = 'ARTIFICIAL'
+        request['preparation']['artificial'] = True
+        job = executor.submit_preparation(request, approved=True, budget=2,
+                                          contract=dict(artificial=True))
+        jobs.append((job, 'workspace/'+relative))
+    return jobs
 
 
 @contextmanager
