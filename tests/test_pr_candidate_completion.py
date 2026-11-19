@@ -102,6 +102,16 @@ def main():
             self.assertEqual(sent['formula'],'4th(m5_best)');self.assertEqual(sent['delta_over_h'],'2')
             self.assertEqual(config,result)
 
+    def test_pauli_price_uses_frozen_preparation_only_for_unchanged_calibration_inputs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'PREPARATION.json'
+            saved = dict(configuration={'id': 'fixed'}, schedule=[1], signal_plan={'REQUEST': 13})
+            C.put(path, saved)
+            current = dict(saved, signal_plan={'REUSE': 12})
+            self.assertEqual(C.Completion.pauli_price_preparation(path, current), saved)
+            changed = dict(current, schedule=[2])
+            self.assertEqual(C.Completion.pauli_price_preparation(path, changed), changed)
+
     def test_pauli_missing_saved_input_is_held_before_science(self):
         request = dict(design=dict(L_D=4))
         paths = {'/fixed/receipt.json': '/local/receipt.json'}

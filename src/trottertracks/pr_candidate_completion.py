@@ -820,6 +820,18 @@ class Completion:
         with (lock if r['method']=='PR_PAULI'and lock is not None else nullcontext()):
             return self._price(config,cref,prepared,r,d,initial_quote)
 
+    @staticmethod
+    def pauli_price_preparation(path, prepared):
+        # The calibration entry reads the fixed configuration, dictionary,
+        # schedule and implementation. Its predecessor's signal acquisition
+        # plan may differ after more saved means become available.
+        if not path.is_file() or not isinstance(prepared, dict):
+            return prepared
+        frozen = read(path)
+        signal_metadata = {'configuration_file', 'signal_plan', 'signal_plan_command'}
+        scientific = lambda item: {k: v for k, v in item.items() if k not in signal_metadata}
+        return frozen if scientific(frozen) == scientific(prepared) else prepared
+
     def _price(self,config,cref,prepared,r,d,initial_quote=None):
         registry=d/'PRICE_RULES.json'
         req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
@@ -831,8 +843,13 @@ class Completion:
         if not quote['complete']:
             if r['method']=='PR_PAULI':
                 inp=d/'PAULI_PRICE_REQUEST.json';out=d/'PAULI_PRICE_RESULT.json'
-                put(inp,dict(configuration_source=cref,configuration=config,prepared_item=prepared,price_quote=quote,registry_file=str(registry),workspace=str(self.settings.get('pauli_workspace',self.path('A_WORKSPACE'))),
-                    directory='docs/research/d2_automatic_price_20261116/'+config['id'][:20],private_root=str(ROOT.parent/'d2-auto-private'/config['id'][:20]),d2_view=str(self.path('D2_VIEW')),interpreter=self.path('PRICE'),
+                workspace=Path(self.settings.get('pauli_workspace',self.path('A_WORKSPACE')))
+                relative='docs/research/d2_automatic_price_20261116/'+config['id'][:20]
+                price_prepared=self.pauli_price_preparation(workspace/relative/'PREPARATION.json',prepared)
+                put(inp,dict(configuration_source=cref,configuration=config,prepared_item=price_prepared,
+                    price_quote=quote,registry_file=str(registry),workspace=str(workspace),
+                    directory=relative,private_root=str(ROOT.parent/'d2-auto-private'/config['id'][:20]),
+                    d2_view=str(self.path('D2_VIEW')),interpreter=self.path('PRICE'),
                     scoped_registration=True,execution_source=self.source))
                 try:
                     cmd=[self.path('PRICE'),'-B',str(ROOT/'scripts/run_pr_pauli_candidate_prices.py'),'--request',str(inp),'--output',str(out),'--execute']
