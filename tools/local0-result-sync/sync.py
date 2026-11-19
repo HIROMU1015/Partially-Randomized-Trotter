@@ -45,7 +45,8 @@ def remote(config,payload):
         # Git for Windows SSH can retain Python's capture pipes when launched
         # inside Windows OpenSSH. The same command exits with file-backed output.
         with tempfile.TemporaryFile() as output:
-            result=subprocess.run(command,stdout=output,timeout=120)
+            result=subprocess.run(command,stdout=output,timeout=120,
+                                  creationflags=subprocess.CREATE_NO_WINDOW)
             output.seek(0)
             code,raw,error=result.returncode,output.read(),b''
     else:
