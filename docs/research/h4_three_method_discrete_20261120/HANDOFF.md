@@ -117,3 +117,28 @@ EXIT=0・全キューACCEPTED・全PBS枠F・relay終了を確認した。STOP�
 後続配置ではdescriptorの専用exact checkoutを全hostに分離し、科学stageに入っていない
 recoverable operational holdだけ継続する。保存snapshotは
 `continuation-inputs/h4-discrete-7d6ddb/`。既存の科学失敗保留は引き継ぐ。
+
+## 最終の再開配置
+
+SOURCE `b0c04ae1915661af8de4f34957304e2cb0e7aed9`、設定release
+`romutail-h4-repair2-b0c04ae191-r3` で、通常入口から
+`search-9c1865e787c6aab3d251` を開始した。scopeは同じ130条件であり、予算も引き継ぐ。
+直前の2配置は保存状態の読込優先順位・検査出力を固定入力へ含めた設定不整合により
+科学起動前に保留された。LAUNCHを持たず、既存attemptを再試行したものではない。
+最終配置では親の全状態を先に読み、過去の候補STOPを保全して、検査出力を固定入力から除く。
+
+起動前の継続照合と§10.5はPASS。RomuTailの新Q3を中央ACCEPTEDで回収し、server2とPBSでも
+Q3の実計算開始を確認した。修正したDF_DESCRIPTORはWSLで実行に入り、RomuTailでは
+PR-DFの価格準備compileが始まった。準備stageは回収まで別途確認する。
+旧20件と直前19件の原結果、通常Stop、旧科学処理の失敗保留は保持した。
+親Codexの最終関連回帰は37 passed・8 subtests passed。人工テストは科学性能の証明ではない。
+科学SOURCEや進行中runは変更せず、通常Stopも追加発行せず探索を継続する。
+
+準備stageの回収結果は成功とは区別する。DF_DESCRIPTORはWSLで実行されたが、保存loaderが
+間接importする `matplotlib` が専用runtimeに存在せず終了コード1となった。
+PF信号準備も保存receiptの元の絶対パス未解決で失敗した。PR-DF価格較正は8 compile完了後、
+`INDEPENDENT_COHORT_REQUIRES_EXPLICIT_INPUT_ADOPTION_NO_POOLING` によりSTOP_PARTIAL
+となった例を確認した。これらのraw・receipt・失敗候補を残し、自動再試行はしない。
+全130条件の準備成功・探索完了・科学的成功解を主張しない。
+実行可能な候補のQ3は継続している。次はCodexが専用runtimeの不足、PF保存入力の経路、
+価格較正の独立コホート採用条件を整理し、固定契約の変更や再実行が必要な範囲を区別する。
