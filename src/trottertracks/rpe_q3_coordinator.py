@@ -76,6 +76,20 @@ def input_hashes(root, request, cache=None):
         if 'configurations' in effective:
             effective['configurations'] = {request['configuration_id']:effective['configurations'][request['configuration_id']]}
         visit(effective)
+        if effective['kind'] == 'pauli_b_common_entry':
+            entry = (effective.get('configurations') or {}).get(request['configuration_id'], {})
+            locator = entry.get('configuration') or {}
+            if locator.get('path', '').endswith('.json') and locator.get('commit'):
+                dependency_key = ('pauli_dictionary', digest(locator))
+                if dependency_key not in cache:
+                    selected = json.loads(subprocess.check_output(
+                        ['git', 'show', locator['commit']+':'+locator['path']], cwd=root))
+                    for part in locator.get('selector', []):
+                        selected = selected[part]
+                    # Sparse worker views also need the fixed residual receipt
+                    # referenced inside the canonical Pauli dictionary identity.
+                    cache[dependency_key] = selected['spec']['split'].get('tail_dictionary')
+                visit(cache[dependency_key])
     return list(found.values())
 
 
