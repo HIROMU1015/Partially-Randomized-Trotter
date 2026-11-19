@@ -807,7 +807,10 @@ class Gateway:
         missing=[str(p) for p in spec.get('executor',{}).get('prior_run_dirs',[]) if not Path(p).is_dir()]
         in_progress=[]
         rejected_before_delivery=[]
-        ids={c['configuration_id'] for c in context['candidates'] if c['method'] in spec['methods']}
+        # An unresolved candidate has no configuration identity. It must
+        # not match unrelated prior attempts that also omit that identity.
+        ids = {c['configuration_id'] for c in context['candidates']
+               if c['method'] in spec['methods'] and c.get('configuration_id')}
         for directory in spec.get('executor',{}).get('prior_run_dirs',[]):
             prior_root=Path(directory)
             if (prior_root/'APPLIED_SCOPE.json').exists() and (prior_root/'LAUNCH.json').exists():

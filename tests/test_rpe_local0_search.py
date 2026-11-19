@@ -265,6 +265,25 @@ class Tests(unittest.TestCase):
     def test_missing_prior_directory_is_not_treated_as_unseen(self):
         r=load(self.config['round']);r['executor']['prior_run_dirs']=[str(self.home/'missing-source')];write(self.config['round'],r)
         with self.assertRaisesRegex(RequestError,'10.5'):build(self.config).handle(request(5,7))
+    def test_unidentified_rows_do_not_create_a_false_ownership_match(self):
+        from unittest.mock import patch
+        from rpe_local0_acceptance_fixture import context, O
+        gateway = Gateway(self.config)
+        prior = self.home/'prior'
+        attempt = prior/'jobs'/'PREPARATION:signal'/'unrelated'
+        write(attempt/'REQUEST.json', dict(configuration_id=None))
+        write(attempt/'LAUNCH.json', dict(pid=1))
+        problem = load(self.config['problem'])
+        spec = load(self.config['round'])
+        spec['executor']['prior_run_dirs'] = [str(prior)]
+        candidate_context = context(problem)
+        candidate_context['candidates'].append(dict(candidate_context['candidates'][0],
+                                                   configuration_id=None, ready=False))
+        with patch.object(O, 'prepare', return_value=candidate_context):
+            report = gateway.normal_preflight(self.home/'next', problem, spec)
+        self.assertEqual(report['status'], 'PASS')
+        self.assertEqual(report['owned_unresolved_prior_jobs'], [])
+
     def test_existing_launched_unknown_job_is_not_restarted(self):
         g=build(self.config);old=g.handle(request(4,6));prior=seed(old['run_directory'],self.config)
         job=pathlib.Path(prior['job']);(job/'OUTCOME.json').unlink();write(job/'LAUNCH.json',dict(pid=1))
