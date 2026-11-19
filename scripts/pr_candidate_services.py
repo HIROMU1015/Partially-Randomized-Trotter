@@ -187,6 +187,19 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=
     sys.path.insert(0,str(DF_VIEW/'src'))
     from trottertracks.pr_df_signal_entry import DFSignalEntry,FixedRuntime
     runtime=FixedRuntime(ROOT,SIGNAL_VIEW)
+    from trottertracks.rpe_preparation_paths import resolve
+    from trottertracks.pr_df_signal_entry import SCALAR
+    descriptor=read(INDEX)['T20_reference_files']['H4']
+    data=Path(resolve(descriptor['path'])).read_bytes()
+    if hashlib.sha256(data).hexdigest()!=descriptor['sha256']:
+        raise ValueError('Saved tail descriptor differs')
+    metadata=json.loads(data)
+    metadata['descriptor_sha256']=descriptor['sha256']
+    metadata['hamiltonian_constant']=read(SCALAR)['hamiltonian_constant']
+    class RelocatedEntry(DFSignalEntry):
+        def __init__(self,root,**kwargs):
+            super().__init__(root,metadata=metadata,**kwargs)
+    DFSignalEntry=RelocatedEntry
     entry=(DFSignalEntry(ROOT,runtime=runtime)if tail_descriptor is None else
            df_extension().entry(ROOT,tail_descriptor,DFSignalEntry,runtime=runtime))
     entry.saved.extend(x for x in saved_bundles if x not in entry.saved)
