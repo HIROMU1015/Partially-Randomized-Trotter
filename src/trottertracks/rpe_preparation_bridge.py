@@ -333,9 +333,13 @@ class DistributedPreparationBridge:
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         bundles = []
         namespace = 'refs/rpe-preparation/input-bundles/'
+        # A worker with only its fixed SOURCE cannot rely on a moving
+        # controller HEAD. In this mode carry that history in the same bundle
+        # as the inputs rather than making it a separate prerequisite.
+        fixed_source_only = bool(input_hashes) and self.settings.get('bundle_fixed_source_only') is True
         # Send the shared checkout history once per worker cache. Retain that
         # history for provider code that resolves hard-coded Git references.
-        if head != source and subprocess.check_output(
+        if not fixed_source_only and head != source and subprocess.check_output(
             ['git', 'rev-list', '-1', head, '^' + source], cwd=root, text=True,
         ).strip():
             ref = namespace + 'base-' + head
@@ -364,7 +368,7 @@ class DistributedPreparationBridge:
         ref = namespace + 'inputs-' + tip
         with self.lock:
             subprocess.run(['git', 'update-ref', ref, tip], cwd=root, check=True)
-        prerequisites = list(dict.fromkeys([source, head]))
+        prerequisites = [source] if fixed_source_only else list(dict.fromkeys([source, head]))
         bundles.append(self._pack_bundle(root, ref, prerequisites, input_hashes, tracked_workspace))
         return bundles
 

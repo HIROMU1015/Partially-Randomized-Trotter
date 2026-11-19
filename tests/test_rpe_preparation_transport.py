@@ -469,5 +469,20 @@ subprocess.run(['git','commit','--only','-qm','signal','--',str(p)],check=True)
         for locator in locators:
             self.assertEqual(git('show', locator['commit']+':'+locator['path'], cwd=worker), '{}')
 
+        # A new worker starts with the fixed SOURCE only, while the central
+        # checkout has advanced to the producer commit.
+        git('checkout', '--detach', raw_commit)
+        bridge.settings['bundle_fixed_source_only'] = True
+        bundles = bridge._bundle(source, self.source['commit'], locators)
+        self.assertEqual(len(bundles), 1)
+        clean = self.root/'fixed-worker'
+        git('init', str(clean))
+        git('fetch', '--depth=1', str(source), self.source['commit'], cwd=clean)
+        bundle = str(cache.path(bundles[0]['sha256']))
+        git('bundle', 'verify', bundle, cwd=clean)
+        git('bundle', 'unbundle', bundle, cwd=clean)
+        for locator in locators:
+            self.assertEqual(git('show', locator['commit']+':'+locator['path'], cwd=clean), '{}')
+
 
 if __name__=='__main__':unittest.main()
