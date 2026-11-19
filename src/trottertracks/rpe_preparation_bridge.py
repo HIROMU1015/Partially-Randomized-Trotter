@@ -77,6 +77,21 @@ _DF_SPLIT_PRICE_IMPORTS = tuple(
          path='src/trottertracks/'+name+'.py')
     for name in ('compiled_price_fast', 'candidate_price_adapter', 'ld12_price_requests'))
 
+_DF_SNAPSHOT_INDEX = dict(
+    commit='7a8bc7f132e166390c943e6b32c92cc6abe1baf4',
+    path='artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json',
+)
+_DF_SNAPSHOT_LOADERS = (
+    dict(commit='ac873e7fcc42e937084fa153476cbd87565702b4',
+         path='src/trottertracks/h4_df10_rpe_batch_provider.py'),
+    dict(commit='155529e20a8fac39e00786c40b57830b71203c4f',
+         path='scripts/h46_m5_tol_saved_input.py'),
+)
+_DF_PRICE_BACKEND = tuple(
+    dict(commit='1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7',
+         path='src/trottertracks/'+name+'.py')
+    for name in ('r_price_phase1', 'r_price_phase1_runner', 'r_price_phase1_science')
+)
 
 STAGES = {
     'PAULI_SIGNALS': 'signal', 'DF_SIGNALS': 'signal',
@@ -558,6 +573,28 @@ class DistributedPreparationBridge:
         workspaces = {};workspace_roots = {};runtime_inputs=[]
         pauli_inputs = []
         pauli_locators = []
+        df_inputs = []
+        df_locators = []
+        snapshot = self.settings.get('df_snapshot_directory')
+        if snapshot and script.name in ('run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py'):
+            extension = 'src/trottertracks/pr_df_descriptor_extension.py'
+            raw = subprocess.check_output(['git', 'show', source + ':' + extension], cwd=root)
+            if raw != (root/extension).read_bytes():
+                raise ValueError('DF snapshot binding helper differs from fixed SOURCE')
+            source_files[extension] = hashlib.sha256(raw).hexdigest()
+            index = json.loads(subprocess.check_output(
+                ['git', 'show', _DF_SNAPSHOT_INDEX['commit']+':'+_DF_SNAPSHOT_INDEX['path']], cwd=root))
+            df_locators.extend((_DF_SNAPSHOT_INDEX, *_DF_SNAPSHOT_LOADERS))
+            for item in (index['T20_reference_files']['H4'], *index['saved_inputs']['H4']['inputs'].values()):
+                original = Path(item['path'])
+                content = (Path(snapshot)/original.name).read_bytes()
+                sha = self._blob(content)
+                if sha != item['sha256']:
+                    raise ValueError('Fixed DF snapshot digest differs: '+original.name)
+                name = 'private/df-snapshot/'+original.name
+                inputs[name] = sha
+                bindings[str(original)] = '@WORK@/'+name
+                df_inputs.append(dict(path=name, sha256=sha))
         if script.name=='run_pr_df_candidate_prices.py' and '-c' in command:
             runtime_inputs.append(dict(df_price_view=command[command.index(str(script))+1]))
         # Original JSON remains byte-for-byte unchanged. Only runtime path
@@ -641,11 +678,12 @@ class DistributedPreparationBridge:
                 if Path(private).exists():
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
-        original_documents=list(pauli_locators)
+        original_documents=[*pauli_locators, *df_locators]
         if script.name == 'run_pr_df_candidate_prices.py':
             # The fixed split compiler loads these with git show from inside
             # the sparse attempt checkout, even for audit-only commands.
             original_documents.extend(_DF_SPLIT_PRICE_IMPORTS)
+            original_documents.extend(_DF_PRICE_BACKEND)
         if script.name == 'run_pf_preparation_stage.py':
             if stage == 'PF_SIGNALS':
                 payload = command[command.index('--input')+1]
@@ -664,6 +702,7 @@ class DistributedPreparationBridge:
                     original_documents.extend(pauli_audit_raw_inputs(name, document))
         input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs)
         working_hashes.extend(pauli_inputs)
+        working_hashes.extend(df_inputs)
         required_views=collect_required_views(runtime_inputs)
         if stage in ('PAULI_COMPILE', 'PAULI_AUDIT') and script.name=='run_pr_pauli_candidate_prices.py':
             required_views.update(pauli_calibration_view(root))

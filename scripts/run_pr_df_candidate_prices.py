@@ -346,7 +346,8 @@ def scalar_metadata(config,tail_descriptor=None):
     Both calibration and optional validation use this same fixed input mapping.
     Historical canonical configurations intentionally need not embed scalar.
     """
-    index=read(INDEX);descriptor=index['T20_reference_files']['H4'];data=Path(descriptor['path']).read_bytes()
+    from trottertracks.rpe_preparation_paths import resolve
+    index=read(INDEX);descriptor=index['T20_reference_files']['H4'];data=Path(resolve(descriptor['path'])).read_bytes()
     if hashlib.sha256(data).hexdigest()!=descriptor['sha256']:raise ValueError('Saved tail descriptor bytes differ')
     context=json.loads(data);ld=config['spec']['L_D']
     if tail_descriptor is None:
@@ -561,7 +562,10 @@ def _acquire(inputs,input_commit,stage,source,model_commit=None):
             evidence=scan_path_axes(cell,index,out);initial[cell['m'],index]=evidence
             pending.extend(pending_axis_jobs(cell,index,out,evidence,inputs.get('parallel_axes') is True))
     if pending:
-        ham,metadata=R.restore(pending[0][0]['request'],inputs['saved_input_files'],inputs['runtime']);contexts={};runtimes={}
+        from trottertracks.rpe_preparation_paths import resolve
+        saved_files={name: dict(row,path=resolve(row['path'])) for name,row in inputs['saved_input_files'].items()}
+        runtime_paths=dict(inputs['runtime'],provider_root=resolve(inputs['runtime']['provider_root']))
+        ham,metadata=R.restore(pending[0][0]['request'],saved_files,runtime_paths);contexts={};runtimes={}
         for cell in cells:
             if not any(pair[0]['m']==cell['m']for pair in pending):continue
             pc=cell['request']['physical_context'];r=R.D.NativeRuntime(ROOT,ham,binding=pc['binding'],input_source=pc['input_source'],execution_source=pc['execution_source'])

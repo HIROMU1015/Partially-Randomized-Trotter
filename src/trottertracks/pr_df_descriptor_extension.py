@@ -11,6 +11,9 @@ import json
 import math
 from pathlib import Path
 import subprocess
+from types import FunctionType, SimpleNamespace
+
+from trottertracks.rpe_preparation_paths import resolve
 
 INDEX=dict(commit='7a8bc7f132e166390c943e6b32c92cc6abe1baf4',path='artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json')
 DERIVATION=dict(commit='7f4c9a171a1d4caeaeaee6c443217edec761f4c9',path='scripts/h46_new2_core.py',function='matrix_only_tail_coefficients')
@@ -74,11 +77,29 @@ def context(root,config,locator,provider):
     # Relative module namespace is the fixed provider's own namespace.
     import importlib
     completion=importlib.import_module(provider.__package__+'.h4_pr_rmse_completion')
-    index=read(root,INDEX);saved=index['T20_reference_files']['H4'];raw=Path(saved['path']).read_bytes()
+    index=read(root,INDEX)
+    saved=index['T20_reference_files']['H4']
+    inputs=index['saved_inputs']['H4']['inputs']
+    relocated = False
+    for entry in (saved, *inputs.values()):
+        original=entry['path']
+        entry['path']=resolve(original)
+        relocated |= entry['path'] != original
+    raw=Path(saved['path']).read_bytes()
     if hashlib.sha256(raw).hexdigest()!=saved['sha256']:raise ValueError('Original saved context bytes differ')
     original=json.loads(raw)
     if any(original['binding'].get(k)!=config['spec']['binding'].get(k)for k in BINDING_KEYS):raise ValueError('Original saved H binding differs')
-    loaded,state_metadata=completion.load_context(root,original['binding'])
+    load_context=completion.load_context
+    if relocated:
+        # Pass relocated packet paths to the existing frozen loader. Its
+        # original hash, layout and state checks still run on the same bytes.
+        namespace=dict(load_context.__globals__)
+        namespace['p']=SimpleNamespace(
+            SavedArtifacts=lambda root: SimpleNamespace(read=lambda locator: deepcopy(index)),
+            same=namespace['p'].same,
+        )
+        load_context=FunctionType(load_context.__code__,namespace)
+    loaded,state_metadata=load_context(root,original['binding'])
     tails={config['spec']['L_D']:dict(descriptor,source=deepcopy(locator))}
     result=provider.make_context(loaded.matrices,loaded.state,loaded.ham.constant,tails,
         binding=config['spec']['binding'],source=dict(saved_index=INDEX,descriptor=locator,descriptor_execution_source=document['execution_source']))

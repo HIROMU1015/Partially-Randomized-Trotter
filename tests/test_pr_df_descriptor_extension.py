@@ -49,7 +49,8 @@ class DescriptorTests(unittest.TestCase):
         loc,cfg,doc=fixture();calls=[]
         with tempfile.TemporaryDirectory()as d:
             saved=Path(d)/'context.json';saved.write_text(json.dumps({'binding':cfg['spec']['binding']}));raw=saved.read_bytes()
-            index={'T20_reference_files':{'H4':{'path':str(saved),'sha256':hashlib.sha256(raw).hexdigest()}}}
+            index={'T20_reference_files':{'H4':{'path':str(saved),'sha256':hashlib.sha256(raw).hexdigest()}},
+                   'saved_inputs':{'H4':{'inputs':{}}}}
             loaded=SimpleNamespace(matrices=['ARTIFICIAL_MATRICES'],state=['ARTIFICIAL_STATE'],ham=SimpleNamespace(constant=2.))
             completion=SimpleNamespace(load_context=lambda root,b:(loaded,{'fixture':'STATE_METADATA'}))
             def make(*args,**kwargs):calls.append((args,kwargs));return SimpleNamespace()
@@ -58,6 +59,28 @@ class DescriptorTests(unittest.TestCase):
                 ctx=E.context(ROOT,cfg,loc,provider)
             self.assertEqual(calls[0][1]['binding'],cfg['spec']['binding']);self.assertEqual(calls[0][1]['tails']if'tails'in calls[0][1]else calls[0][0][3],{6:dict(doc['descriptor'],source=loc)})
             self.assertEqual(ctx.state_metadata,{'fixture':'STATE_METADATA'})
+
+    def test_relocation_passes_snapshot_paths_to_the_frozen_loader(self):
+        loc,cfg,doc=fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            saved=Path(directory)/'context.json'
+            saved.write_text(json.dumps({'binding':cfg['spec']['binding']}))
+            index={'T20_reference_files':{'H4':{'path':'/old/context.json',
+                       'sha256':hashlib.sha256(saved.read_bytes()).hexdigest()}},
+                   'saved_inputs':{'H4':{'inputs':{'snapshot':{'path':'/old/snapshot.npz'}}}}}
+            namespace=dict(p=SimpleNamespace(same=lambda a,b:a==b), SimpleNamespace=SimpleNamespace)
+            exec("def load_context(root, binding):\n"
+                 "    index = p.SavedArtifacts(root).read(None)\n"
+                 "    loaded = SimpleNamespace(matrices=[], state=[], ham=SimpleNamespace(constant=2.))\n"
+                 "    return loaded, index['saved_inputs']['H4']['inputs']['snapshot']['path']\n",namespace)
+            completion=SimpleNamespace(load_context=namespace['load_context'])
+            provider=SimpleNamespace(__package__='_artificial_provider',make_context=lambda *a, **kw:SimpleNamespace())
+            with (patch.object(E,'read',side_effect=[doc,deepcopy(index)]),
+                  patch.object(E,'resolve',side_effect=lambda path:str(Path(directory)/Path(path).name)),
+                  patch.dict(sys.modules,{'_artificial_provider.h4_pr_rmse_completion':completion})):
+                ctx=E.context(ROOT,cfg,loc,provider)
+            self.assertEqual(ctx.state_metadata,str(Path(directory)/'snapshot.npz'))
+            self.assertEqual(index['saved_inputs']['H4']['inputs']['snapshot']['path'],'/old/snapshot.npz')
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
