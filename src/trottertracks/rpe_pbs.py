@@ -186,7 +186,7 @@ def resource_need(request, profile, settings, host):
             max(1, memory, (profile.get('pbs') or {}).get('task_memory_bytes') or 0))
 
 
-def packed_resources(requests, profile, settings, host):
+def packed_resources(requests, profile, settings, host, *, selected=None):
     resources = settings['resources']
     limits = profile.get('slot_policy', {}).get('resource_limits', {})
     cpu_limit = min(resources['ncpus'], limits.get('cpu_count', resources['ncpus']))
@@ -208,6 +208,8 @@ def packed_resources(requests, profile, settings, host):
             cpus += cpu
             memory += ram
             count += 1
+            if selected is not None:
+                selected.append(request)
     return cpus, (memory + GIB - 1) // GIB + 1, count
 
 
@@ -280,6 +282,23 @@ class PbsManager:
                    and (allocation.get('worker') or {}).get('accepting')
                    and not self.state['allocations'][allocation['token']].get('resize_requested')
                    for allocation in self.allocations)
+
+    def startup_jobs(self, *, except_host=None):
+        """Offer a sized allocation a brief first chance at its checked work."""
+        now = stamp()
+        jobs = set()
+        for record in list(self.state['allocations'].values()):
+            spec = record['spec']
+            submitted = record['submitted_clock']
+            reason = spec['reason']
+            if (record['status'] in ('INTENT', 'Q', 'R')
+                    and spec['profile']['host_id'] != except_host
+                    and not record.get('resize_requested')
+                    and not record.get('worker_storage_hold')
+                    and now['clock_id'] == submitted['clock_id']
+                    and now['monotonic'] - submitted['monotonic'] < reason.get('startup_wait_seconds', 0)):
+                jobs.update(reason.get('startup_jobs', ()))
+        return jobs
 
     def preparation_readiness_wait_seconds(self, host):
         # Queue wait and worker-side preflight have different budgets. A live
@@ -489,7 +508,8 @@ class PbsManager:
                 if usable or unchecked:
                     ready.append((task, usable, unchecked, row['request']))
             available = {host:self.executor._offer_free(host,policy,error) for host in self.executor.hosts if host not in self.configured}
-            matched = self.executor._match_ready_jobs([task for task, _, _, _ in ready],
+            startup = self.startup_jobs()
+            matched = self.executor._match_ready_jobs([task for task, _, _, _ in ready if task.job.name not in startup],
                 {host:count for host,count in available.items() if count > 0})
             outstanding = [(usable, request) for task, usable, _, request in ready
                            if usable and task.job.name not in matched]
@@ -504,13 +524,27 @@ class PbsManager:
         resources = deepcopy(self.settings['resources'])
         sizing = self.settings.get('allocation_sizing')
         if sizing and sizing.get('per_task_resources'):
-            cpus, gib, capacity = packed_resources(requests, profile, self.settings, host)
+            packed = []
+            cpus, gib, capacity = packed_resources(requests, profile, self.settings, host, selected=packed)
             if not capacity:
                 raise ValueError('No PBS task fits the configured CPU and memory pool')
             resources.update(ncpus=cpus, mem=f'{gib}gb')
             profile.setdefault('pbs', {})['per_task_resources'] = True
             profile.setdefault('slot_policy', {})['initial_slots'] = capacity
             demand = dict(demand, requested_task_capacity=capacity, per_task_resources=True)
+            # Hold only work that passed the PBS-specific input check and fit
+            # this actual request. No queue owner, attempt or budget is changed.
+            startup_jobs = []
+            for request in packed:
+                job = request.get('request_id')
+                row = self.executor.store.row(job) if job else None
+                if row and row['state'] == 'QUEUED' and host in (row.get('eligibility') or {}).get('eligible_host_ids', ()):
+                    startup_jobs.append(job)
+            if startup_jobs:
+                samples = [a['submit_to_ready_seconds'] for a in self.state['allocations'].values()
+                           if 'submit_to_ready_seconds' in a]
+                demand.update(startup_jobs=startup_jobs, startup_wait_seconds=min(
+                    120., max(samples[-6:], default=30.) + self.readiness_wait_seconds()))
         elif sizing:
             cost = task_cpu_footprint(profile)
             maximum = int(min(resources['ncpus'], (profile.get('slot_policy') or {}).get(

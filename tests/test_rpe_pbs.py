@@ -178,6 +178,29 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(gateway.calls[0]['spec']['token'], token)
             self.assertEqual(P.read(manager.path)['allocations'][token]['status'], 'INTENT')
 
+    def test_sized_allocation_briefly_keeps_only_its_checked_queue_entries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, _ = self.manager(directory)
+            config = manager.configured['pbs-0']
+            manager.settings['resources']['mem'] = '5gb'
+            manager.settings['allocation_sizing'] = dict(
+                per_task_resources=True, q3_startup_memory_bytes_per_task=2*P.GIB)
+            jobs = [dict(route=dict(kind='artificial'), request_id=f'job-{i}') for i in range(3)]
+            for index, job in enumerate(jobs):
+                executor.rows[job['request_id']] = dict(state='QUEUED',
+                    eligibility=dict(eligible_host_ids=['pbs-0'] if index != 1 else []))
+            spec = manager._submit('pbs-0', config, dict(shortage=3), jobs)
+            record = manager.state['allocations'][spec['token']]
+            self.assertEqual(spec['reason']['requested_task_capacity'], 2)
+            self.assertEqual(manager.startup_jobs(), {'job-0'})
+            self.assertFalse(manager.startup_jobs(except_host='pbs-0'))
+            record['worker_storage_hold'] = 'STORAGE_USAGE_UNAVAILABLE'
+            self.assertFalse(manager.startup_jobs())
+            record.pop('worker_storage_hold')
+            record['submitted_clock']['monotonic'] -= 121
+            self.assertFalse(manager.startup_jobs())
+            self.assertTrue(all(r['state']=='QUEUED' for r in executor.rows.values()))
+
     def test_storage_hold_prevents_new_pbs_allocation_and_reopens(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(P, 'SAMPLE_SECONDS', 0):
             manager, executor, gateway = self.manager(directory)

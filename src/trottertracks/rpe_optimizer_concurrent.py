@@ -2114,6 +2114,11 @@ class DistributedExecutor(ConcurrentExecutor):
                 if value.get('observe_only') is True:
                     self._timing_queue()
                     return reply(assignments=[], stop=False, eligibility_challenges=challenges, host_admission=admission)
+                if self.pbs_manager is not None:
+                    starting = self.pbs_manager.startup_jobs(except_host=host)
+                    eligible = [task for task in eligible if task.job.name not in starting]
+                    starting = self.pbs_manager.startup_jobs()
+                    queue = [task for task in queue if task.job.name not in starting]
                 reserved_for_preferred = self._preferred_ready_jobs(host, queue, admission_policy, admission_error)
                 if reserved_for_preferred:
                     skipped_preferred = False
