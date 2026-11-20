@@ -245,7 +245,41 @@ class StepPriceRegistry:
                     'DF_DIRECT_SCOPE_CONTRACT_DIFFERS')
         else:
             require(hold is not None and hold.get('status') in ('DESCRIPTIVE_COMPLETE','DESCRIPTIVE_COMPLETE_RELATIVE_UNDEFINED')
-                    and hold.get('refit') is False and hold.get('model_commit') == package['model_source']['commit'], 'DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS')
+                    and hold.get('refit') is False, 'DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS')
+            frozen = hold.get('model_commit')
+            if frozen != package['model_source']['commit']:
+                # A resumed publish can return the current HEAD when all
+                # outputs were already committed. Recover the original
+                # freeze from the independent comparison receipt.
+                package = dict(package)
+                require(isinstance(frozen, str) and len(frozen) == 40
+                        and all(c in '0123456789abcdef' for c in frozen),
+                        'DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS')
+                blob = getattr(self.reader, 'blob', None)
+                if blob is None:
+                    def blob(commit, path):
+                        return subprocess.check_output(['git','show',commit+':'+path],cwd=self.root)
+                committed_paths = None
+                for role in ('model_source','price_source'):
+                    later = fixed_ref(package[role])
+                    original = fixed_ref(dict(later, commit=frozen))
+                    try:
+                        original_bytes = blob(original['commit'], original['path'])
+                    except (KeyError, subprocess.CalledProcessError):
+                        if committed_paths is None:
+                            committed_paths = subprocess.check_output(
+                                ['git','diff-tree','--root','--no-commit-id','--name-only','-r',frozen],
+                                cwd=self.root,text=True).splitlines()
+                        suffix = Path(later['path']).parts[2:]
+                        require(len(suffix) >= 4 and suffix[0] == 'completion',
+                                'DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS')
+                        matches = [name for name in committed_paths if Path(name).parts[2:] == suffix]
+                        require(len(matches) == 1, 'DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS')
+                        original['path'] = matches[0]
+                        original_bytes = blob(original['commit'], original['path'])
+                    require(original_bytes == blob(later['commit'], later['path']),
+                            'DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS')
+                    package[role] = original
         require(mode in ('FULL_AFFINE_Q_R1','FULL_AFFINE_QR','DIRECT_FINITE_COHORT'), 'DF_MODEL_MODE_NOT_SUPPORTED')
         require(set(model['models']) == set(AXES), 'DF_BOTH_AXIS_MODELS_REQUIRED')
         calibration = [r for a in AXES for r in model['models'][a]['calibration']]

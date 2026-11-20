@@ -329,7 +329,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                ('PRICE_RECEIPT_RECHECK_AVAILABLE', 'PRICE_RECHECK_AVAILABLE')}
     waiting = {cid for cid, row in records.items() if row['status'] == 'PREPARATION_WAITING'} if recheck_waiting else set()
     selection=select(context,spec['methods'],records.keys()-pending-revisit-waiting,
-                     include_full=limit>1 or 'TRUNCATED_PF' not in spec['methods']
+                     include_full=distributed_completion or limit>1 or 'TRUNCATED_PF' not in spec['methods']
                      or any(records[cid].get('method') == 'FULL_PF' for cid in pending | revisit | waiting))
     if selection['selected'] is None and not pending:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)

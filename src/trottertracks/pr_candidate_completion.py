@@ -598,6 +598,30 @@ class Completion:
             recovered_by='METADATA_REQUERY_NO_SCIENTIFIC_RETRY')
         self.save();return record
 
+    def reconcile_committed_df_holdout(self, record):
+        """Reopen a publication mismatch only after the original results pass intake."""
+        if (record.get('method') != 'PR_DF'
+                or record.get('reason') != 'ValueError: DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS'
+                or not all(record.get(key) for key in ('configuration','signal','intake','directory'))):
+            return False
+        directory = (ROOT/record['directory']).resolve()
+        if not directory.is_relative_to(self.directory.resolve()):
+            return False
+        packages = [read(path) for path in directory.glob('df_price_groups/*/PRICE_EVIDENCE.json')]
+        if not packages or any(p['configuration_source'] != record['configuration'] for p in packages):
+            return False
+        try:
+            self.ingest_price_results(packages)
+        except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as error:
+            self.log(event='DF_PUBLISHED_HOLDOUT_STILL_UNRESOLVED', key=record['key'], reason=str(error))
+            return False
+        self.state.setdefault('metadata_repairs', {})[record['key']+':df-holdout'] = dict(
+            action='RECOVER_ORIGINAL_FROZEN_DF_PRICE_EVIDENCE', previous=deepcopy(record))
+        record.update(status='WAITING_INPUTS',reason='PRICE_RULE_INCOMPLETE:REQUERY_AFTER_FROZEN_DF_PRICE_RECONCILIATION',
+                      scientific_failure=False)
+        self.save()
+        return True
+
     def recoverable_pauli_input_hold(self, record, directory):
         """An old empty metadata response can be rechecked with fixed saved inputs."""
         if (record.get('method') != 'PR_PAULI' or record.get('configuration')

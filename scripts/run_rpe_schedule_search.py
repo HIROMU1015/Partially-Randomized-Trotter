@@ -847,6 +847,12 @@ class WidthDriver:
                         wait_for_preparation=None, *, continuous=False):
         comp=self.completion_api()
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
+        if hasattr(comp,'reconcile_committed_df_holdout'):
+            for point in self.state['points']:
+                completion = point.get('completion') or {}
+                record = comp.state['records'].get(completion.get('key'))
+                if point['status'] == 'HELD' and record and comp.reconcile_committed_df_holdout(record):
+                    point.update(status='WAITING_INPUTS',reason=record['reason'])
         # INIT may expose a whole far-kappa ladder at once. Distributed
         # preparation refills bounded lanes as candidates finish; other callers
         # keep a single per-decision wave.
