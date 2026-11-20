@@ -88,6 +88,41 @@ class ScaleTests(unittest.TestCase):
         self.assertEqual(result['pending_request']['status'], 'PENDING')
         self.assertEqual(result['new_calls'], 0)
 
+    def test_fleet_supplies_independent_paper_comparison_before_grid_answer(self):
+        policy = S.settings(dict(M=[0], grid=dict(min_k=-2, max_k=0, divisor=2)))
+        search = dict(scaled_shots=policy, prefetch_independent_references=True)
+        candidate = self.candidate('c', [1, 1])
+        for budget, expected in ((None, [(19, 19)]), (2, [])):
+            waves = []
+            answer = O.FixtureBackend(lambda cid, vector: self.bounds(True), TAU)
+            result = S.run('PR_PAULI', [candidate], {}, answer, search, TAU, budget,
+                submit_standby=lambda first, rest: waves.append((first['vector'], [r['vector'] for r in rest])))
+            self.assertEqual(waves[0], ((6, 6), expected))
+            self.assertEqual(result['by_configuration'][0]['best']['N_X'], [6])
+
+    def test_late_ready_wakeup_preserves_owned_allocation_and_adopts_it_once(self):
+        first = self.candidate('a', [2, 2])
+        late = self.candidate('b', [1, 1])
+        policy = S.settings(dict(M=[0], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
+        answers = []
+        class Backend:
+            def answer(_, row):
+                answers.append(row['configuration_id'])
+                if len(answers) == 1:
+                    return dict(status='RESELECT_READY', calls=0)
+                return dict(status=O.PASS, MSE_lower=TAU/2, MSE_upper=TAU/2, calls=1, source='fixture')
+        delivered = [False]
+        def refresh():
+            if answers and not delivered[0]:
+                delivered[0] = True
+                return [late], {}
+            return [], {}
+        result = S.run('PR_PAULI', [first], {}, Backend(), dict(scaled_shots=policy), TAU, None,
+                       refresh_ready=refresh)
+        self.assertEqual(answers, ['a', 'b', 'a'])
+        self.assertEqual(result['new_calls'], 2)
+        self.assertTrue(all(r['minimum_status'] == 'GRID_MINIMUM_CONFIRMED' for r in result['by_configuration']))
+
     def test_off_grid_reference_costs_less_without_becoming_grid_best(self):
         p = S.settings(dict(M=[0], grid=dict(min_k=2, max_k=2, divisor=1)))
         c = self.candidate('c', [2, 2], kappa='2')

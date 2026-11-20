@@ -56,6 +56,25 @@ def read_loc(loc):
 def apply_worker_trial(spec, trial):
     """Install the selected execution policy in memory after fixed-input checks."""
     distributed = spec['executor']['distributed']
+    if 'ready_queue_waves' in trial:
+        distributed['ready_queue_waves'] = trial['ready_queue_waves']
+    for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
+                               ('rpe_scaled_shots', 'scaled_shots_sha256')):
+        if field not in trial:
+            continue
+        # A resumed run imports other modules from its fixed base release.
+        import hashlib
+        import importlib.util
+        path = Path(__file__).resolve().parents[1]/'src/trottertracks'/(module_name+'.py')
+        if hashlib.sha256(path.read_bytes()).hexdigest() != trial[field]:
+            raise ValueError('Selected scheduler helper differs: '+module_name)
+        name = 'trottertracks.'+module_name
+        helper = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(helper)
+        helper.loader.exec_module(module)
+        sys.modules[name] = module
+        # The optimizer also imports from the package directly.
+        setattr(sys.modules['trottertracks'], module_name, module)
     for host, workers in trial.get('calibration_workers', {}).items():
         profile = (distributed['local_worker'] if host == 'local' else
                    json.loads(Path(distributed['preparation_profiles'][host]).read_text()))
@@ -923,7 +942,8 @@ class WidthDriver:
                     split = (split, id(point))
                 groups.setdefault(method, {}).setdefault(split, []).append(point)
             parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
-            lanes = {m: max(1, min(limit, parallel, len(splits)) if m in parallel_methods else 1)
+            lane_limit = parallel if continuous else min(limit, parallel)
+            lanes = {m: max(1, min(lane_limit, len(splits)) if m in parallel_methods else 1)
                      for m, splits in groups.items()}
             with ExitStack() as stack:
                 pools = {method: stack.enter_context(ThreadPoolExecutor(max_workers=workers))
@@ -1200,6 +1220,8 @@ class WidthDriver:
         active_spec=deepcopy(self.spec);active_spec['max_new_q3_per_method']=budgets
         active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
         if self.live_ready_refill and active_spec['executor'].get('distributed'):
+            if self.work_conserving_search and (active_spec['executor']['distributed'].get('ready_queue_waves', 2) > 1):
+                search['prefetch_independent_references'] = True
             active_spec['executor']['distributed'] = dict(active_spec['executor']['distributed'], live_ready_refill=True,
                 work_conserving_search=self.work_conserving_search)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)

@@ -22,6 +22,7 @@ from . import rpe_method_optimizer as O
 from .rpe_q3_timing import stamp
 
 LIVE_READINESS_RETRY_SECONDS = 10
+_CHECK_PENDING = object()
 
 
 def _write(path, value):
@@ -438,6 +439,9 @@ class ConcurrentExecutor(O.Executor):
                     and not any(t.status == 'QUEUED' and (t.demand or not allow_queued_speculation)
                                 for t in self.state.tasks.values()))
 
+    def _can_take_ready_candidates(self):
+        return self.has_spare_slot()
+
     def _wait_for_task(self, task):
         """Wake the selector for fresh work only when the queue can use it."""
         s = self.state
@@ -449,7 +453,7 @@ class ConcurrentExecutor(O.Executor):
                 return True
 
             def fresh_ready():
-                return ready_pending is not None and ready_pending() and self.has_spare_slot()
+                return ready_pending is not None and ready_pending() and self._can_take_ready_candidates()
 
             while True:
                 with s.cv:
@@ -606,6 +610,9 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_store import JobStore
         from . import rpe_q3_coordinator as Q
         self.distributed = deepcopy(distributed)
+        self.ready_queue_waves = distributed.get('ready_queue_waves', 2 if distributed.get('work_conserving_search') else 1)
+        if type(self.ready_queue_waves) is not int or self.ready_queue_waves < 1:
+            raise ValueError('ready_queue_waves must be a positive integer')
         self.eligibility_holds = {}
         self.eligibility_policy_cache = {}
         self.live_readiness_inflight = {}
@@ -1033,21 +1040,95 @@ class DistributedExecutor(ConcurrentExecutor):
     def _standby_headroom(self):
         if not self.state.allocation_auto or not self.distributed.get('work_conserving_search'):
             return super()._standby_headroom()
-        # Reserve the next requests early enough for host-specific readiness and
-        # transport. Offers from unobserved, paused or saturated-storage hosts
-        # do not justify speculation. Execution still uses the ordinary claim.
         policy, error = self._host_admission_policy()
-        capacity = 0
-        for host, offer in self.hosts.items():
+        targets = {}
+        manager = self.pbs_manager
+        potential = {}
+        if (self.ready_queue_waves > 1 and manager is not None
+                and manager.settings.get('allocation_sizing', {}).get('per_task_resources')):
+            # Size the preparation of requests against the authorized pool. A
+            # small first qsub must not become the ceiling for the next qsub.
+            from .rpe_pbs import usable_memory
+            from .rpe_pbs_worker import runtime_cpu_footprint
+            settings = manager.settings
+            for host, worker in manager.configured.items():
+                profile = worker['profile']
+                slots = profile.get('slot_policy', {})
+                cpu = min(settings['resources']['ncpus'], slots.get('resource_limits', {}).get(
+                    'cpu_count', settings['resources']['ncpus']))
+                runtimes = [profile] + [r['profile'] for r in profile.get('route_profiles', ())]
+                per_job = max(runtime_cpu_footprint(profile, rt) for rt in runtimes)
+                memory = max(settings['allocation_sizing']['q3_startup_memory_bytes_per_task'],
+                             (profile.get('pbs') or {}).get('task_memory_bytes') or 0)
+                potential[host] = min(cpu // per_job, usable_memory(profile, settings) // memory,
+                                      slots.get('max_slots') or cpu)
+        for host in self.hosts.keys() | potential.keys():
             admission = self._host_admission(host, policy, error)
-            if (not self._offer_fresh(host) or not admission['accepting']
-                    or offer.get('accepting_new_jobs') is False):
+            offer = self.hosts.get(host, {})
+            if not admission['accepting']:
                 continue
-            lanes = max(0, int(offer.get('capacity') or 0))
+            fresh = self._offer_fresh(host)
+            if fresh and offer.get('accepting_new_jobs') is False:
+                continue
+            lanes = max(potential.get(host, 0), int(offer.get('capacity') or 0) if fresh else 0)
             if admission['max_slots'] is not None:
                 lanes = min(lanes, admission['max_slots'])
-            capacity += lanes
+            if lanes and self._host_supports_stage(host, {}):
+                targets[host] = lanes * self.ready_queue_waves
+        capacity = sum(targets.values())
+        if self.ready_queue_waves > 1 and capacity:
+            # A backlog usable only on one host can conceal a shortage on the
+            # others. Look ahead by at most their missing waves as well.
+            covered = Counter()
+            for task in self.state.tasks.values():
+                if task.status == 'QUEUED' and task.rule['kind'] != 'preparation':
+                    allowed = task.supply_hosts
+                    covered.update(targets.keys() if allowed is None else targets.keys() & allowed)
+            capacity += sum(max(0, count - covered[host]) for host, count in targets.items())
         return max(1, capacity)
+
+    def _can_take_ready_candidates(self):
+        if self.ready_queue_waves > 1 and self.state.allocation_auto and self.distributed.get('work_conserving_search'):
+            queued = sum(t.status == 'QUEUED' and t.rule['kind'] != 'preparation' for t in self.state.tasks.values())
+            return not self._budget_reserved() and queued < self._standby_headroom()
+        return super()._can_take_ready_candidates()
+
+    def _standby_can_fill(self):
+        return (getattr(self, '_awaiting_probe_revision', None) !=
+                getattr(self.state, 'probe_revision', 0) and super()._standby_can_fill())
+
+    def _fill_standby(self):
+        if not (self.live_readiness_pool and self.ready_queue_waves > 1
+                and self.distributed.get('work_conserving_search')):
+            return super()._fill_standby()
+        # A selector must be able to adopt its demand result while later
+        # requests are still in dry-check. Leave pending proposals unreserved.
+        waiting = []
+        added = 0
+        with self.state.cv:
+            revision = getattr(self.state, 'probe_revision', 0)
+        while True:
+            with self.state.cv:
+                if not self._standby_can_fill():
+                    break
+                if self._budget_reserved() or self._user_stop_requested():
+                    self.standby.clear()
+                    waiting.clear()
+                    break
+                proposal = self.standby.popleft()
+            task = self._enqueue(proposal, defer_readiness=True)
+            if task is _CHECK_PENDING:
+                waiting.append(proposal)
+                if len(waiting) >= self.live_readiness_workers:
+                    break
+            elif task:
+                added += 1
+        with self.state.cv:
+            if waiting:
+                self.standby.extendleft(reversed(waiting))
+                self._awaiting_probe_revision = revision
+        if added:
+            self.log(event='Q3_STANDBY_REFILL', added=added, remaining=len(self.standby))
 
     def has_spare_slot(self, *, allow_queued_speculation=False):
         # Auto capacity is sized against already queued jobs. With one job
@@ -1304,8 +1385,12 @@ class DistributedExecutor(ConcurrentExecutor):
             future = self.live_readiness_inflight.get(key)
             missing_host = host is not None and host in seen and host not in eligible['eligible_host_ids']
             if blocking or missing_host or prefetch:
+                holds = (eligible.get('host_decisions') or {}).values()
+                fixed_scope_hold = holds and all(h.get('reasons') in (
+                    ['COUNT_ONLY_SCOPE_EXCEEDED'], ['OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN'])
+                    for h in holds)
                 stale = (not cached or cached[1] != seen or
-                         (not eligible['eligible_host_ids'] or missing_host) and
+                         not fixed_scope_hold and (not eligible['eligible_host_ids'] or missing_host) and
                          time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS)
                 if (stale and future is None and not self.state.closed and not self._user_stop_requested()
                         and (blocking or len(self.live_readiness_inflight) < self.live_readiness_workers)):
@@ -1326,6 +1411,7 @@ class DistributedExecutor(ConcurrentExecutor):
                             decision.pop('decision_sha256', None)
                             decision['decision_sha256'] = digest(decision)
                             self.live_readiness_partial[key] = decision
+                            self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
                             self.state.cv.notify_all()
 
                     def check():
@@ -1339,6 +1425,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                 cache[key] = (time.monotonic(), seen, decision)
                                 self.live_readiness_partial.pop(key, None)
                                 self.live_readiness_inflight.pop(key, None)
+                                self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
                                 self.state.cv.notify_all()
                         return decision
 
@@ -1355,6 +1442,7 @@ class DistributedExecutor(ConcurrentExecutor):
         return deepcopy(future.result())
 
     def prefetch_standby(self, choice, proposals):
+        self._awaiting_probe_revision = None
         if self.distributed.get('controller_queue_first') and self.live_readiness_pool:
             # Start the fixed-input checks for the demand and independent next
             # candidates together. A check does not create a reservation.
@@ -1810,6 +1898,8 @@ class DistributedExecutor(ConcurrentExecutor):
             owner=(method, proposal['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
             event=threading.Event(), enqueue=time.monotonic()-max(0, time.time()-row['enqueued_epoch']),
             error=None, started=running, speculative=not demand, optional_price_validation=optional)
+        decision = row.get('eligibility')
+        task.supply_hosts = None if decision is None else frozenset(decision['eligible_host_ids'])
         self.state.tasks[job] = task
         if running:
             self.state.active += 1
@@ -1863,7 +1953,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self.prior_q3_holds = [hold for hold in self.prior_q3_holds if hold.get('replay_exact') is not True]
         return True
 
-    def _enqueue(self, proposal, demand=False, *, replay=None):
+    def _enqueue(self, proposal, demand=False, *, replay=None, defer_readiness=False):
         from .rpe_q3_coordinator import prefix_key
         if not self._candidate_preparation_ready(proposal):
             return False
@@ -1906,7 +1996,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     return False
             request = row['request'] if row else replay[1] if replay else self.request(proposal, job, rule)
 
-        eligibility = self._eligibility_for(request, job.name, previous=row and row['eligibility'])
+        options = dict(blocking=False, prefetch=True) if defer_readiness else {}
+        eligibility = self._eligibility_for(request, job.name, previous=row and row['eligibility'], **options)
 
         with s.cv:
             resolved, task, row = current_job()
@@ -1916,6 +2007,17 @@ class DistributedExecutor(ConcurrentExecutor):
                 if row['state'] == 'QUEUED':
                     return self._restore_task(row, proposal, demand)
                 raise ValueError('Scientific request changed during host readiness')
+            if defer_readiness and eligibility and not eligibility['eligible_host_ids']:
+                key = (job.name, eligibility['request_sha256'])
+                if key in self.live_readiness_inflight:
+                    return _CHECK_PENDING
+                if eligibility['reasons'] in (['NO_REQUEST_SPECIFIC_HOST_EVIDENCE'],
+                                              ['HOST_ELIGIBILITY_CHANGED_REQUEST_SHA256']):
+                    cached = self.eligibility_policy_cache.get('live_checks', {}).get(key)
+                    if cached is None:
+                        return _CHECK_PENDING
+                    # The asynchronous check may have finished outside the lock.
+                    eligibility = cached[2]
             if not self.store.eligible(request, eligibility):
                 if row and row['state'] == 'QUEUED':
                     self.store.set_eligibility(job.name, eligibility)
@@ -2146,6 +2248,7 @@ class DistributedExecutor(ConcurrentExecutor):
                         skipped = True
                         continue
                     self.eligibility_holds.pop(row['job_id'], None)
+                    task.supply_hosts = None if decision is None else frozenset(decision['eligible_host_ids'])
                     if decision is not None and host not in decision['eligible_host_ids']:
                         skipped = True
                         continue

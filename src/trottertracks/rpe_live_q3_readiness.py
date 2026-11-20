@@ -106,7 +106,8 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
                               capture_output=True, text=True, timeout=90)
     result = json.loads((output/'READINESS.json').read_text()) if (output/'READINESS.json').exists() else {}
     if checked.returncode or result.get('status') != 'REAL_HOST_DRY_CHECK_PASS':
-        print(json.dumps(dict(status='HOLD', reason=result.get('error') or checked.stderr[-2000:])))
+        dry = result.get('adapter_result') or {}
+        print(json.dumps(dict(status='HOLD', reason=dry.get('reason') or result.get('error') or checked.stderr[-2000:])))
     elif result.get('scientific_evaluation_calls') != 0 or result.get('request_sha256') != assignment['request_sha256']:
         raise ValueError('Dry-check changed the request or executed a scientific call')
     else:

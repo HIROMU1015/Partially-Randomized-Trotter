@@ -217,8 +217,22 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             pending = choice
             break
         if submit_standby is not None and science_approved and (budget is None or spent + used < budget):
-            submit_standby(choice, proposals[1:])
+            standby = proposals[1:]
+            if search.get('prefetch_independent_references') and budget is None:
+                # An off-grid comparison remains due whichever grid point
+                # passes. A later grid point can still be pruned by that pass.
+                # Keep the selected lead and every other group's lead first.
+                heads = {id(row) for row in proposals}
+                references = [row for group in groups.values() for row in group['rows']
+                              if row['status'] == 'PENDING' and row['smallest_grid_k'] is None
+                              and id(row) not in heads]
+                standby.extend(sorted(references, key=lambda row: (row['cost'], row['M'], row['configuration_id'])))
+            submit_standby(choice, standby)
         answer = backend.answer(choice) if backend is not None else None
+        if answer is not None and answer.get('status') == 'RESELECT_READY':
+            # The original job still has an owner. Refresh the candidate set
+            # and obtain its original receipt when the selector returns to it.
+            continue
         if answer is None or answer.get('status') in ('BUDGET_EXHAUSTED', 'STOP_REQUESTED'):
             pending = choice
             if answer is not None:

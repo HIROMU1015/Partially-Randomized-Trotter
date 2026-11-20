@@ -405,7 +405,7 @@ class ControllerFailures(unittest.TestCase):
     def test_standby_prepares_the_next_wave_while_pbs_is_full(self):
         ex = DistributedExecutor(ROOT, self.run, self.routes, {}, self.problem,
             optimizer_source=self.source, max_concurrent='auto', budgets={'PR_PAULI': 5},
-            distributed=dict(port=0, affinity_wait_seconds=0, work_conserving_search=True))
+            distributed=dict(port=0, affinity_wait_seconds=0, work_conserving_search=True, ready_queue_waves=1))
         self.executors.append(ex)
         request = dict(host_id='pbs-0', slots=2, capacity=2, source_sha=self.source)
         ex.rpc('/v1/poll', dict(request, observe_only=True))
@@ -420,6 +420,79 @@ class ControllerFailures(unittest.TestCase):
         second = ex.rpc('/v1/poll', request)['assignments']
         self.assertEqual(len(second), 2)
         self.assertTrue({a['job_id'] for a in first}.isdisjoint(a['job_id'] for a in second))
+
+    def test_fleet_prepares_two_waves_for_each_host_before_pbs_first_offer(self):
+        from types import SimpleNamespace
+        ex = self.executor(capacity='auto', controller_queue_first=True, work_conserving_search=True)
+        for host in ('local', 'server2', 'local0-wsl'):
+            ex.rpc('/v1/poll', dict(host_id=host, slots=1, capacity=1, source_sha=self.source, observe_only=True))
+        ex.state.budgets['PR_PAULI'] = 64
+        view = ex.for_method('PR_PAULI')
+        gib = 1024**3
+        # The memory allowance fits four two-CPU Q3s, despite 96 configured CPUs.
+        view.pbs_manager = SimpleNamespace(configured={'pbs-0': {'profile': {'dp_workers': 2}}},
+            settings={'resources': {'ncpus': 96, 'mem': '33gb'}, 'allocation_sizing': {
+                'per_task_resources': True, 'q3_startup_memory_bytes_per_task': 8*gib}},
+            accepting_allocation=lambda *_: False)
+        candidates = [self.proposal(f'candidate-{i}') for i in range(48)]
+        view.prefetch_standby(candidates[0], candidates[1:])
+        rows = ex.store.rows()
+        self.assertEqual(len(rows), 3 + 2*(3+4))
+        self.assertTrue(all(row['state'] == 'QUEUED' for row in rows))
+        for task in view.state.tasks.values():
+            task.supply_hosts = {'server2'}
+        self.assertTrue(view._standby_can_fill())
+        view._fill_standby()
+        self.assertGreater(len(ex.store.rows()), len(rows))
+        delivered = set()
+        for host in ('local', 'server2', 'local0-wsl', 'pbs-0'):
+            poll = dict(host_id=host, slots=1, capacity=1, source_sha=self.source)
+            for wave in range(2):
+                assignment, = ex.rpc('/v1/poll', poll)['assignments']
+                self.assertNotIn(assignment['job_id'], delivered)
+                delivered.add(assignment['job_id'])
+                ex.rpc('/v1/complete', dict(self.completion(assignment), host_id=host))
+        self.assertEqual(len(delivered), 8)
+
+    def test_standby_dry_checks_roll_while_slow_request_is_pending(self):
+        from concurrent.futures import ThreadPoolExecutor
+        ex = self.executor(capacity=4, controller_queue_first=True, work_conserving_search=True,
+            live_q3_readiness=True, host_eligibility=dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))
+        ex.live_readiness_pool.shutdown()
+        ex.live_readiness_pool = ThreadPoolExecutor(2)
+        ex.live_readiness_workers = 2
+        view = ex.for_method('PR_PAULI')
+        ex.state.budgets['PR_PAULI'] = 4
+        gate = threading.Event()
+        observed = []
+        def check(executor, request, job, decision, *, publish):
+            name = request['configuration_id']
+            observed.append(name)
+            if name == 'slow':
+                gate.wait(5)
+            return dict(decision, eligible_host_ids=['server1'], host_fingerprints={'server1': 'fixture'})
+        proposals = [self.proposal(i) for i in ('demand', 'slow', 'fast', 'next', 'extra')]
+        try:
+            with patch('trottertracks.rpe_live_q3_readiness.probe', side_effect=check):
+                view.prefetch_standby(proposals[0], proposals[1:])
+                import time
+                end = time.monotonic() + 3
+                while time.monotonic() < end and ex.store.counts('PR_PAULI') < 3:
+                    with ex.state.cv:
+                        ex.state.cv.wait_for(view._standby_can_fill, timeout=.1)
+                    view._fill_standby()
+                self.assertIsNone(ex.store.row(view.job_dir(proposals[1]).name))
+                self.assertIsNotNone(ex.store.row(view.job_dir(proposals[3]).name))
+                gate.set()
+                end = time.monotonic() + 3
+                while time.monotonic() < end and ex.store.counts('PR_PAULI') < 4:
+                    with ex.state.cv:
+                        ex.state.cv.wait_for(view._standby_can_fill, timeout=.1)
+                    view._fill_standby()
+                self.assertEqual(ex.store.counts('PR_PAULI'), 4)
+                self.assertEqual(len(observed), len(set(observed)))
+        finally:
+            gate.set()
 
     def test_work_conserving_records_distinct_idle_slot_reasons(self):
         from trottertracks.rpe_preparation_queue import normalize_preparation_request
