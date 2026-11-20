@@ -23,8 +23,10 @@ Stops when the plan proposes nothing, nothing is pending and V2 has no non-small
 before any signal, calibration or Q3 (metadata only).
 """
 import argparse
+from contextlib import contextmanager
 from copy import deepcopy
 from fractions import Fraction
+from functools import wraps
 import json
 import subprocess
 from pathlib import Path
@@ -86,6 +88,32 @@ def apply_worker_trial(spec, trial):
     if trial.get('pbs_preparation_resources'):
         from trottertracks.rpe_pbs import apply_preparation_resources
         apply_preparation_resources(distributed, trial['pbs_preparation_resources'])
+
+
+@contextmanager
+def serialize_legacy_ast():
+    """Keep parallel controller metadata reads safe on the pinned CPython."""
+    if sys.implementation.name != 'cpython' or not (3, 11, 0) <= sys.version_info[:3] < (3, 11, 8):
+        yield
+        return
+    import ast
+    from threading import RLock
+
+    # CPython gh-106905: these releases share AST-conversion recursion
+    # state. Serialize just AST parsing, leaving all worker jobs parallel.
+    parse = ast.parse
+    lock = RLock()
+
+    @wraps(parse)
+    def parse_serially(*args, **kwargs):
+        with lock:
+            return parse(*args, **kwargs)
+
+    ast.parse = parse_serially
+    try:
+        yield
+    finally:
+        ast.parse = parse
 
 
 class WideDriver(K.Driver):
@@ -1435,6 +1463,7 @@ class WidthDriver:
             UTC=K.now(),unresolved_q3_attempts=unresolved);self.save()
 
 
+@serialize_legacy_ast()
 def main(argv=None, *, driver_factory=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--problem', type=Path, required=True);ap.add_argument('--round', type=Path, required=True)

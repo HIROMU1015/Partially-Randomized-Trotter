@@ -973,10 +973,16 @@ class DistributedExecutor(ConcurrentExecutor):
     def _ready_queue(self):
         def priority(task):
             preparation = task.rule['kind'] == 'preparation'
-            rank = 2 if not task.demand else int(self.distributed.get('live_ready_refill', False) and preparation)
-            if (self.distributed.get('work_conserving_search') and not preparation and not task.demand
-                    and task.proposal.get('origin', {}).get('kind') != 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'):
-                rank = 1  # queued independent Q3 competes with necessary preparation
+            conditional = (task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
+                           and not task.demand)
+            if self.distributed.get('controller_queue_first'):
+                # Fill workers from ready independent steps across candidates.
+                # A candidate's current Q3 does not outrank others' preparation.
+                rank = int(conditional)
+            else:
+                rank = 2 if not task.demand else int(self.distributed.get('live_ready_refill', False) and preparation)
+                if self.distributed.get('work_conserving_search') and not preparation and not task.demand and not conditional:
+                    rank = 1
             return (getattr(task, 'optional_price_validation', False), rank,
                     self.state.owner_clock.get(task.owner, -1), task.enqueue)
 

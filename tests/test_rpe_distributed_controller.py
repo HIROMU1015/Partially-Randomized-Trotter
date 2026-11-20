@@ -148,6 +148,20 @@ class ControllerFailures(unittest.TestCase):
         self.assertTrue(all(call.kwargs.get('prefetch') is True and not call.kwargs['blocking'] for call in calls[:2]))
         self.assertEqual(len(executor.store.rows()), 2)
 
+    def test_coordinator_does_not_promote_q3_ahead_of_older_ready_preparation(self):
+        from trottertracks.rpe_preparation_queue import normalize_preparation_request
+        executor = self.executor(controller_queue_first=True, live_ready_refill=True, work_conserving_search=True)
+        prep = normalize_preparation_request(dict(route={'kind': 'preparation'}, method='ARTIFICIAL',
+            preparation=dict(stage='signal', provider='ARTIFICIAL_SIGNAL', artificial=True,
+                source=executor.source_manifest, identity='independent', outputs=['products'],
+                command=['@PYTHON@', '@SOURCE@/scripts/artificial_preparation_leaf.py'])))
+        prepare_id = executor.submit_preparation(prep, budget=1, approved=True)
+        evaluation = self.enqueue(executor, 'demand')
+        view = executor.for_method('PR_PAULI')
+        ahead = view._enqueue(dict(self.proposal('conditional'),
+                                  origin=dict(kind='CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES')))
+        self.assertEqual([t.job.name for t in executor._ready_queue()], [prepare_id, evaluation.job.name, ahead.job.name])
+
     def test_existing_queue_with_explicit_auto_round_keeps_auto_capacity(self):
         from trottertracks.rpe_q3_store import JobStore
 

@@ -67,9 +67,12 @@ PBS枠の起動直後にジョブ履歴や初回の容量計測を待つ間は�
 
 `worker_trial.controller_queue_first` を使う場合、RomuTailは候補と固定入力の
 照合を先行し、独立したPF候補は既存の準備並列度の範囲で同じ波に載せる。
+割当可能になった準備と独立したQ3を、工程の種類で優先せずに共通キューから配る。
 空きのある遠隔workerへの割当を優先する。RomuTailのworkerは受け持てる
 必要な準備を先に処理し、余力でQ3にも参加する。RomuTailのworkerプロセス
 には中央ドライバーより低いCPUスケジューリング優先度を使う。
+旧CPython 3.11を使う固定controllerでは、並行準備中のASTパースを
+直列化する。準備タスク本体とworkerの計算は並行して進める。
 固定runで中央の準備成果受領・保管処理を更新する場合は、同じ運用版の
 `preparation_sha256` で受領処理と準備成果の保管・配送モジュールを選ぶ。
 通常Statusの `central_maintenance` で保守状態を確認できる。
