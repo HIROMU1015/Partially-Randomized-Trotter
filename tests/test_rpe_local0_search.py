@@ -24,6 +24,46 @@ class Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
 
+    def test_technical_ast_resume_requires_ended_owners_and_preserves_stop(self):
+        import sqlite3
+
+        started = []
+        invocation = '1' * 32
+        gateway = Gateway(self.config, preflight=lambda *args: {'status': 'PASS'},
+                          launch=lambda run, *args: started.append(run), resume_ast_failure=invocation)
+        prepared = gateway.handle(dict(request(4, 6), action='prepare'))
+        run = pathlib.Path(prepared['run_directory'])
+        launch = dict(invocation_id=invocation, pid=2147483647)
+        ended = dict(invocation_id=invocation, returncode=1)
+        history = run/'invocations'/invocation
+        for p in (run, history):
+            write(p/'LAUNCH.json', launch)
+            write(p/'EXIT.json', ended)
+        write(run/'NORMAL_DRIVER.json', launch)
+        write(run/'distributed/relay/STATUS.json', dict(stopped=True, pid=2147483647))
+        write(run/'distributed/pbs/STATE.json', dict(allocations={}))
+        stop = dict(reason='RUNTIME_EXCEPTION', error_type='SystemError',
+                    message='AST constructor recursion depth mismatch (synthetic)')
+        write(run/'KAPPA_STATE.json', dict(stop=stop))
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(dict(
+            stop, phase='DRIVER', traceback='pf_optimizer_connection.py'))+'\n')
+        (run/'FAST_DRIVER.lock').touch()
+        with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+            db.execute('CREATE TABLE jobs (state TEXT, attempt_id TEXT, detail TEXT)')
+            db.execute("INSERT INTO jobs VALUES ('RUNNING','attempt','{}')")
+        resume = dict(action='resume', instruction='Artificial technical restart')
+        with self.assertRaisesRegex(RequestError, 'unresolved execution or recovery'):
+            gateway.start(run, resume)
+        self.assertEqual(started, [])
+        with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+            db.execute("UPDATE jobs SET state='UNKNOWN', detail=?",
+                       (json.dumps(dict(automatic_retry=False, resource_released=True)),))
+        self.assertEqual(gateway.start(run, resume), 'STARTED')
+        self.assertEqual(started, [run])
+        self.assertEqual(load(run/'stop-history'/('ast-'+invocation+'.json')), stop)
+        self.assertEqual(load(run/'EXIT.json'), ended)
+        self.assertEqual(load(history/'EXIT.json'), ended)
+
     def test_resume_restores_archived_input_after_ownership_guard_and_before_preflight(self):
         import gzip
         from trottertracks.rpe_preparation_retention import file_sha256, restore_resume_archives

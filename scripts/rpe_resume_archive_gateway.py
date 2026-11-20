@@ -23,6 +23,7 @@ def preflight_with_archives(state, normal_preflight, request_error):
             report['preparation_archive_recovery'] = recovered
         return report
 
+    preflight.restores_preparation_archives = True
     return preflight
 
 

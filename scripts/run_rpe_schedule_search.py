@@ -1378,6 +1378,14 @@ class WidthDriver:
         previous=self.state.get('stop',{}).get('reason')
         transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS',
                    'SCOPE_HELD_Q3','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY','DISCRETE_SCHEDULE_PLAN_ONLY'}
+        recovery = (globals().get('FIXED_RUN_WORKER_TRIAL') or {}).get('resumed_ast_failure')
+        if previous == 'RUNTIME_EXCEPTION' and recovery and not self.a.plan_only:
+            preserved = O.load_json(self.run/'stop-history'/('ast-'+recovery+'.json'))
+            if preserved != self.state['stop']:
+                raise ValueError('Reconciled AST failure differs from its saved stop')
+            self.state.pop('stop')
+            self.log(event='RESUMED_AFTER_AST_FAILURE', invocation_recovered=recovery)
+            previous = None
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return
         if previous:self.state.pop('stop')

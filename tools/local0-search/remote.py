@@ -113,7 +113,21 @@ try:
                             return Gateway(pinned).normal_launch(run, problem, spec)
                         selection = dict(release_policy, run_id=applied['run_id'])
                         return operations.Gateway(pinned).normal_launch(run, problem, spec, schedule_resume=selection)
-            result = Gateway(config, launch=launch).handle(request)
+            if resume is not None and resume.get('resume_ast_failure'):
+                operations.RequestError = RequestError
+                preflight = None
+                if not getattr(Gateway, 'restores_preparation_archives_on_resume', False):
+                    archive_spec = spec_from_file_location(
+                        '_rpe_resume_archives', deployment/'scripts/rpe_resume_archive_gateway.py')
+                    archives = module_from_spec(archive_spec)
+                    archive_spec.loader.exec_module(archives)
+                    preflight = archives.preflight_with_archives(
+                        config['state_directory'], Gateway(selected).normal_preflight, RequestError)
+                gateway = operations.Gateway(selected, launch=launch, preflight=preflight,
+                                             resume_ast_failure=resume['resume_ast_failure'])
+            else:
+                gateway = Gateway(config, launch=launch)
+            result = gateway.handle(request)
             transport_hook=config.get('relay_transport_command')
             if (request['action']in('start','resume')and transport_hook
                     and result.get('status')in('STARTED','ALREADY_RUNNING')):
