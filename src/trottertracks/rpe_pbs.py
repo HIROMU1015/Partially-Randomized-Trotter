@@ -840,6 +840,8 @@ class PbsManager:
                     memory_mismatch = requested_cpus > 0 and not fits_current
                 else:
                     requested_cpus = min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task)
+                cpu_limit = self.settings['resources']['ncpus']
+                growth_min = min(cpu_limit, current_cpus + max(2, (current_cpus + 7) // 8))
                 # Releasing the old idle allocation is required before another
                 # allocation can take ownership under this PBS host identity.
                 # Give a newly ready worker a chance to round-trip its input
@@ -855,26 +857,40 @@ class PbsManager:
                         and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')
                         and offered_long_enough
                         and (memory_mismatch or
-                             requested_cpus >= 2 * current_cpus)
+                             (requested_cpus > current_cpus and requested_cpus >= growth_min))
                         and host not in hosts_with_attempts):
                     record['resize_requested'] = True
                     self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
                              previous_cpus=current_cpus, compatible_ready_jobs=requested_slots)
+                resize_reason = None
                 if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'Q'
-                        and not record.get('resize_requested') and host not in hosts_with_attempts
-                        and 2 * requested_cpus <= current_cpus):
-                    since = record.get('queued_excess_since') or {}
-                    if since.get('clock_id') != now['clock_id']:
-                        record['queued_excess_since'] = now
-                    elif now['monotonic'] - since['monotonic'] >= self.readiness_wait_seconds():
-                        # Mark the submission as draining before contacting PBS
-                        # so a late start cannot claim work during replacement.
-                        record['resize_requested'] = True
-                        self.save()
-                        self.log('PBS_QUEUED_ALLOCATION_RESIZE', token=token, host_id=host,
-                                 previous_cpus=current_cpus, requested_cpus=requested_cpus)
-                else:
-                    record.pop('queued_excess_since', None)
+                        and not record.get('resize_requested') and host not in hosts_with_attempts):
+                    if 2 * requested_cpus <= current_cpus:
+                        resize_reason = 'QUEUED_ALLOCATION_EXCEEDS_COMPATIBLE_DEMAND'
+                    elif (requested_cpus > current_cpus and requested_cpus >= growth_min) or memory_mismatch:
+                        # Unchecked preparation may need an initial bootstrap.
+                        # Grow an existing reservation only for checked work.
+                        checked = [request for hosts, request in outstanding if host in hosts]
+                        if spec['profile'].get('pbs', {}).get('per_task_resources'):
+                            checked_cpus, checked_gib, _ = packed_resources(checked, base, self.settings, host)
+                            needs_memory = memory_mismatch and checked_cpus > 0 and checked_gib * GIB > ram + GIB
+                        else:
+                            checked_cpus = min(cpu_limit, len(checked) * cpu_per_task)
+                            needs_memory = False
+                        grows = checked_cpus > current_cpus and checked_cpus >= growth_min
+                        if grows or needs_memory:
+                            resize_reason = 'QUEUED_ALLOCATION_UNDERSIZES_COMPATIBLE_DEMAND'
+                since = record.get('queued_resize_since') or {}
+                if resize_reason is None:
+                    record.pop('queued_resize_since', None)
+                elif since.get('clock_id') != now['clock_id'] or since.get('reason') != resize_reason:
+                    record['queued_resize_since'] = dict(now, reason=resize_reason)
+                elif now['monotonic'] - since['monotonic'] >= self.readiness_wait_seconds():
+                    # Fence late polls before cancelling an unused submission.
+                    record.update(resize_requested=True, resize_reason=resize_reason)
+                    self.save()
+                    self.log('PBS_QUEUED_ALLOCATION_RESIZE', token=token, host_id=host,
+                             previous_cpus=current_cpus, requested_cpus=requested_cpus, reason=resize_reason)
                 self.controls[token] = dict(stop=stopping or record.get('resize_requested', False),
                     release_when_idle=not waiting and not keep_for_preparation and host not in hosts_with_attempts)
                 queued_stop = stopping and allocation['status'] in ('Q', 'H', 'W')
@@ -884,7 +900,7 @@ class PbsManager:
                     self.log('PBS_UNUSED_ALLOCATION_CANCELLED', token=allocation['token'],
                         job_id=allocation['job_id'], result=result,
                         reason=('STOP_WITHOUT_OWNED_SCIENTIFIC_ATTEMPTS' if queued_stop
-                                else 'QUEUED_ALLOCATION_EXCEEDS_COMPATIBLE_DEMAND'))
+                                else record.get('resize_reason', 'QUEUED_ALLOCATION_EXCEEDS_COMPATIBLE_DEMAND')))
         if shortage and not stopping:
             owned_hosts = {a['host_id'] for a in active}
             # A lost remote response may leave an intent absent from this

@@ -1531,14 +1531,14 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 ex.ready_pending = pending_ready
 
                 def refresh_ready():
-                    added = take_ready()
+                    added, saved_snapshot = take_ready()
                     if not added:
                         return [], {}
                     if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                         added = scaled.horizon_candidates(added, problem, policy, ex, context.get('catalog'))
                     ids = {c['configuration_id'] for c in added}
                     cands[:] = [c for c in cands if c['configuration_id'] not in ids] + added
-                    saved = ingest(initial_knowledge(context['saved'], added, start), added, extra_results)
+                    saved = ingest(initial_knowledge(saved_snapshot or context['saved'], added, start), added, extra_results)
                     ingest_start = time.perf_counter()
                     prior_saved, _ = ex.prior_records(added)
                     ex.log(event='PRIOR_READY_INGEST_END', seconds=time.perf_counter()-ingest_start,

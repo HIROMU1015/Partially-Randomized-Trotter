@@ -59,7 +59,8 @@ def apply_worker_trial(spec, trial):
     if 'ready_queue_waves' in trial:
         distributed['ready_queue_waves'] = trial['ready_queue_waves']
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
-                               ('rpe_scaled_shots', 'scaled_shots_sha256')):
+                               ('rpe_scaled_shots', 'scaled_shots_sha256'),
+                               ('rpe_method_optimizer', 'method_optimizer_sha256')):
         if field not in trial:
             continue
         # A resumed run imports other modules from its fixed base release.
@@ -70,7 +71,9 @@ def apply_worker_trial(spec, trial):
             raise ValueError('Selected scheduler helper differs: '+module_name)
         name = 'trottertracks.'+module_name
         helper = importlib.util.spec_from_file_location(name, path)
-        module = importlib.util.module_from_spec(helper)
+        # The executor and CLI may already hold the base optimizer module.
+        # Update that module before starting selectors so both use the handoff.
+        module = O if module_name == 'rpe_method_optimizer' else importlib.util.module_from_spec(helper)
         helper.loader.exec_module(module)
         sys.modules[name] = module
         # The optimizer also imports from the package directly.
@@ -1093,6 +1096,9 @@ class WidthDriver:
         from types import SimpleNamespace
         announced = {method: set() for method in self.methods}
         observed = {method: set() for method in self.methods}
+        from trottertracks.rpe_preparation_round import PF_METHODS, _merge_pf, snapshot_context
+        pf_snapshot = None
+        pf_observed = set()
         state = executor.state
         condition = state.cv
 
@@ -1113,32 +1119,56 @@ class WidthDriver:
                 announced[method].add(record['key'])
                 condition.notify_all()
 
+        def announce_pf(future):
+            nonlocal pf_snapshot
+            if not future.cancelled() and future.exception() is None:
+                context, routes, _ = future.result()
+                with condition:
+                    pf_snapshot = (context, routes)
+                    condition.notify_all()
+
         def has_new(method):
             with condition:
-                return not stop_preparation.is_set() and bool(announced[method] - observed[method])
+                return not stop_preparation.is_set() and (
+                    bool(announced[method] - observed[method]) or
+                    (method in PF_METHODS and pf_snapshot is not None and method not in pf_observed))
 
         def subscriber(method, context, candidates, view):
             seen = set()
+            pf_seen = False
 
             def pending():
                 with condition:
-                    return not stop_preparation.is_set() and bool(announced[method] - seen)
+                    return not stop_preparation.is_set() and (
+                        bool(announced[method] - seen) or
+                        (method in PF_METHODS and pf_snapshot is not None and not pf_seen))
 
             def take():
+                nonlocal pf_seen
                 with condition:
                     keys = announced[method] - seen
                     seen.update(keys)
                     observed[method].update(keys)
-                if not keys or stop_preparation.is_set():
-                    return []
+                    pf = pf_snapshot if method in PF_METHODS and not pf_seen else None
+                    if pf is not None:
+                        pf_seen = True
+                        pf_observed.add(method)
+                if (not keys and pf is None) or stop_preparation.is_set():
+                    return [], None
                 scratch = dict(context, candidates=deepcopy(candidates), expected=dict(view.expected))
                 scoped = dict(problem, execution_routes=view.routes)
-                if hasattr(completion, 'install_snapshot'):
+                if pf is not None:
+                    scratch = snapshot_context(scratch)
+                    scratch, routes = _merge_pf(scratch, pf[0], dict(view.routes), pf[1], [method])
+                    registered = {c['configuration_id'] for c in scratch['candidates'] if c['method'] == method}
+                elif hasattr(completion, 'install_snapshot'):
                     routes, records = completion.install_snapshot(scratch, scoped, keys)
                 else:
                     with getattr(completion, 'lock', nullcontext()):
                         records = deepcopy([completion.state['records'][key] for key in keys])
                     routes = completion.install(scratch, scoped, records)
+                if pf is None:
+                    registered = {r.get('installed_configuration_id', r.get('configuration_id')) for r in records}
                 O.scope_absolute_kappa(scratch, problem)
                 O.apply_published(scratch['candidates'], routes)
                 # The installer resolves aliases. Keep existing routes and
@@ -1146,7 +1176,6 @@ class WidthDriver:
                 trial = view.for_method(method)
                 trial.routes, trial.expected = routes, scratch['expected']
                 existing = {c['configuration_id'] for c in candidates if c['ready']}
-                registered = {r.get('installed_configuration_id', r.get('configuration_id')) for r in records}
                 added = []
                 new_routes = []
                 expected = dict(view.expected)
@@ -1168,9 +1197,10 @@ class WidthDriver:
                 if added:
                     self.log(event='LIVE_READY_INSTALLED', method=method,
                              configurations=[c['configuration_id'] for c in added])
-                return added
+                return added, scratch.get('saved') if pf is not None else None
             return pending, take
-        return announce, wait_for_preparation, SimpleNamespace(subscribe=subscriber, has_new=has_new)
+        return announce, wait_for_preparation, SimpleNamespace(subscribe=subscriber, has_new=has_new,
+                                                              announce_pf=announce_pf)
 
     def batch(self, prepare_during=False):
         # Same V2/Executor and risk contract as the old ordinary round entry.
@@ -1222,7 +1252,8 @@ class WidthDriver:
         if self.live_ready_refill and active_spec['executor'].get('distributed'):
             if self.work_conserving_search and (active_spec['executor']['distributed'].get('ready_queue_waves', 2) > 1):
                 search['prefetch_independent_references'] = True
-                search['ready_work_at_slice'] = 'drain'
+                discrete = all(W.kappa_values(self.wide_for(method)) is not None for method in self.widths)
+                search['ready_work_at_slice'] = 'refill' if discrete else 'drain'
             active_spec['executor']['distributed'] = dict(active_spec['executor']['distributed'], live_ready_refill=True,
                 work_conserving_search=self.work_conserving_search)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
@@ -1273,6 +1304,8 @@ class WidthDriver:
                     pf_future=preparation_pool.submit(pf_candidate_selection.prepare_next,ROOT,problem,
                         snapshot_context(context),active_spec,self.run,deepcopy(routes),runtime,
                         stop_requested=stop_preparation.is_set)
+                    if self.live_ready_refill:
+                        pf_future.add_done_callback(subscriber.announce_pf)
 
                 def install_pf():
                     nonlocal context, routes, pf_future
@@ -1334,12 +1367,6 @@ class WidthDriver:
                 O.apply_published(context['candidates'],routes)
             if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
             else:
-                if (search.get('ready_work_at_slice') == 'drain' and not getattr(self, 'pf_more', False)
-                        and all(W.kappa_values(self.wide_for(method)) is not None for method in self.widths)):
-                    # The discrete outer design is enumerated and the preparation
-                    # pass has finished. Keep replenishing the same queue while
-                    # a valid allocation is still due in this search.
-                    search['ready_work_at_slice'] = 'refill'
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
                     result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
                         initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,

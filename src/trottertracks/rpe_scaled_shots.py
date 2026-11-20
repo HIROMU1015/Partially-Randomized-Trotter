@@ -214,17 +214,13 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             break
         if step_limit is not None and steps >= step_limit:
             mode = search.get('ready_work_at_slice')
-            can_continue = mode in ('drain', 'refill') and budget is None and free is not None
-            if can_continue:
+            can_continue = mode == 'refill' and budget is None and submit_standby is not None
+            if mode == 'drain' and budget is None and free is not None:
                 from itertools import chain
-                due = (row for row in chain(proposals, references) if free(row))
-                if mode == 'drain':
-                    # Another producer can expose new designs at the outer boundary.
-                    # Finish currently due work before the method closes its queue.
-                    proposals, references = list(due), []
-                    can_continue = bool(proposals)
-                else:
-                    can_continue = next(due, None) is not None
+                # Yield to the adaptive outer planner after the reservations.
+                proposals = [row for row in chain(proposals, references) if free(row)]
+                references = []
+                can_continue = bool(proposals)
             if not can_continue:
                 requested_stop = 'WORK_SLICE_YIELDED'
                 break

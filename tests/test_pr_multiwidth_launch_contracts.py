@@ -5,6 +5,7 @@ constructor is bypassed only to install synthetic family metadata; its actual
 plan() and the existing wide-schedule planner run unchanged.
 """
 from copy import deepcopy
+from concurrent.futures import Future
 from fractions import Fraction
 import importlib.util
 import json
@@ -292,6 +293,38 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         self.assertLess(calls.index('first'), calls.index('next'))
         self.assertLess(calls.index('next'), calls.index('shared'))
         self.assertEqual(d.state['cycle'], 1)
+
+    def test_pf_wave_notifies_selector_without_waiting_for_another_method(self):
+        d = driver(['PR_DF'])
+        d.methods = ['PR_DF', 'TRUNCATED_PF']
+        d.log = lambda **event: None
+        executor = SimpleNamespace(state=SimpleNamespace(cv=threading.Condition()))
+        _, _, ready = d.live_ready_source(executor, None, {'methods': {}}, threading.Event())
+        cid = 'pf-ready'
+        method = 'TRUNCATED_PF'
+        old = dict(method=method, configuration_id=cid, ready=False)
+        pf = dict(old, ready=True)
+        view = SimpleNamespace(routes={}, expected={}, for_method=lambda _: trial)
+        trial = SimpleNamespace(route=lambda _: {'kind': 'artificial'}, refresh_execution_hold=lambda _: False,
+                                expected_for=lambda identity, _: identity)
+        original = dict(candidates=[old], expected={}, saved=SimpleNamespace(table={}))
+        pending, take = ready.subscribe(method, original, [old], view)
+        future = Future()
+        future.add_done_callback(ready.announce_pf)
+        self.assertFalse(pending())
+        future.set_result((dict(candidates=[pf], expected={cid: cid},
+                                saved=SimpleNamespace(table={(cid, (1, 1)): 'saved'})), {}, {}))
+        self.assertTrue(ready.has_new(method))
+        self.assertFalse(ready.has_new('PR_DF'))
+        self.assertTrue(pending())
+        added, saved = take()
+        self.assertEqual([c['configuration_id'] for c in added], [cid])
+        self.assertEqual(saved.table, {(cid, (1, 1)): 'saved'})
+        self.assertEqual(view.expected, {cid: cid})
+        self.assertEqual(original['candidates'], [old])
+        self.assertEqual(original['saved'].table, {})
+        self.assertFalse(ready.has_new(method))
+        self.assertEqual(take(), ([], None))
 
     def test_joint_method_planning_matches_independent_method_refinements(self):
         methods=('PR_PAULI','PR_DF')

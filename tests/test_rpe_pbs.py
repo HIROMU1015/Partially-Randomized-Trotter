@@ -449,26 +449,37 @@ class ManagerTests(unittest.TestCase):
             manager.cycle()
             self.assertTrue(manager.controls[token]['release_when_idle'])
 
-    def test_queued_excess_allocation_is_replaced_only_for_remaining_demand(self):
-        for remaining in (0, 2):
-            with self.subTest(remaining=remaining), tempfile.TemporaryDirectory() as directory:
-                manager, _, gateway = self.manager(directory)
-                manager.settings['resources']['ncpus'] = 4
-                manager.settings['allocation_sizing'] = {'q3_startup_memory_bytes_per_task': P.GIB}
+    def test_unused_queued_allocation_resizes_for_persistent_checked_demand(self):
+        for initial, remaining in ((4, 0), (4, 2), (2, 8)):
+            with self.subTest(initial=initial, remaining=remaining), tempfile.TemporaryDirectory() as directory:
+                manager, executor, gateway = self.manager(directory)
+                manager.settings['resources'].update(ncpus=8, mem='9gb')
+                manager.settings['allocation_sizing'] = dict(per_task_resources=True,
+                    q3_startup_memory_bytes_per_task=P.GIB)
                 request = dict(route=dict(kind='artificial'))
-                spec = manager._submit('pbs-0', manager.configured['pbs-0'], {}, [request]*4)
+                spec = manager._submit('pbs-0', manager.configured['pbs-0'], {}, [request]*initial)
                 token = spec['token']
                 observed = dict(token=token, status='Q', host_id='pbs-0', job_id='test.PBS', worker={})
                 original = gateway.call
                 gateway.call = lambda message: (dict(allocations=[observed], requests={})
                                                 if message['action'] == 'exchange' else original(message))
                 gateway.harvest['host_id'] = 'pbs-0'
-                manager._demand = lambda: ([(['pbs-0'], request)] * remaining, [], remaining, 0)
+                demand = [(['pbs-0'], request)] * remaining
+                manager._demand = lambda: ([], demand, remaining, 0)
                 manager._recent_preparation_completion = lambda _: False
+                record = manager.state['allocations'][token]
+                if initial < remaining:
+                    manager.cycle()
+                    self.assertNotIn('queued_resize_since', record)
+                    executor._owned_attempts = lambda: [{'host_id': 'pbs-0'}]
+                    manager._demand = lambda: (demand, [], remaining, 0)
+                    manager.cycle()
+                    self.assertNotIn('queued_resize_since', record)
+                    executor._owned_attempts = lambda: []
+                manager._demand = lambda: (demand, [], remaining, 0)
                 manager.cycle()
                 self.assertFalse(any(call['action'] == 'delete' for call in gateway.calls))
-                record = manager.state['allocations'][token]
-                record['queued_excess_since']['monotonic'] -= manager.readiness_wait_seconds() + 1
+                record['queued_resize_since']['monotonic'] -= manager.readiness_wait_seconds() + 1
                 manager.cycle()
                 self.assertTrue(manager.controls[token]['stop'])
                 self.assertTrue(P.read(manager.path)['allocations'][token]['resize_requested'])

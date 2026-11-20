@@ -126,14 +126,15 @@ class ScaleTests(unittest.TestCase):
     def test_work_slice_keeps_due_jobs_but_explicit_limit_still_stops(self):
         policy = S.settings(dict(M=[0], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
         candidates = [self.candidate(k, [1, 1]) for k in 'abcd']
-        for mode, hard_limit, expected in [('drain', None, 'abc'), ('refill', None, 'abcd'), ('refill', 2, 'ab')]:
+        for mode, hard_limit, initial, expected in [('drain', None, 'bc', 'abc'),
+                ('refill', None, 'bc', 'abcd'), ('refill', None, '', 'abdc'), ('refill', 2, 'bc', 'ab')]:
             owned = set()
             choices = []
             def supply(first, rest):
                 choices.append(first['configuration_id'])
                 # Two more jobs already passed input checks at the first yield.
                 if len(choices) == 1:
-                    owned.update('bc')
+                    owned.update(initial)
                 elif mode == 'refill' and rest:
                     owned.add(rest[-1]['configuration_id'])
             search = dict(scaled_shots=policy, work_slice_steps=1, max_steps_per_method=hard_limit,
