@@ -19,7 +19,7 @@ SCHEMA = 'PR_ACTUAL_STEP_PRICE_REGISTRY_V1'
 AXES = ('X', 'Y')
 PRICE_SOURCE_CONFLICT = 'MULTIPLE_SCOPED_MODELS_CHOOSE_SOURCE_NO_POOLING'
 PRICE_EXTRAPOLATION_HOLD = 'SCOPED_MODEL_EXTRAPOLATION_REQUIRES_EVIDENCE'
-QUOTE_POLICY_REVISION = 2
+QUOTE_POLICY_REVISION = 3
 
 
 def frac(value):
@@ -376,7 +376,8 @@ class StepPriceRegistry:
 
         if direct:
             if len(direct) > 1:
-                row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[entry['id'] for entry, _ in direct])
+                row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], source_kind='DIRECT_RECEIPTS',
+                                    entry_ids=[entry['id'] for entry, _ in direct])
                 return
             entry, observed = direct[0]
             row.update(unit_price_RZ=observed['value'], classification='DIRECT_FINITE_COHORT',
@@ -385,7 +386,8 @@ class StepPriceRegistry:
         elif models:
             # A previously ambiguous scope may only be resolved with
             # in-range evidence. Keep the existing single-entry policy.
-            choices = [model for model in models if not model[2]] if len(matching) > 1 else models
+            competing = sum(entry['mode'] != 'DIRECT_FINITE_COHORT' for entry in matching) > 1
+            choices = [model for model in models if not model[2]] if competing else models
             if not choices:
                 row['needs'] = dict(reasons=[PRICE_EXTRAPOLATION_HOLD],
                     entry_ids=[entry['id'] for entry, _, _ in models],
@@ -408,6 +410,22 @@ class StepPriceRegistry:
             return
         row.pop('needs', None)
 
+    def _df_calibration_alternatives(self, round_row, axis, matching):
+        """Offer original measured paths to the existing cross-cohort receipt gate."""
+        alternatives = []
+        for entry in matching:
+            if entry['mode'] == 'DIRECT_FINITE_COHORT':
+                continue
+            model = entry['model']['models'].get(axis, {})
+            measured = [c for c in model.get('calibration', [])
+                        if c.get('m') == round_row['m'] and c.get('physical_id') == round_row['physical_candidate']['id']
+                        and c.get('paths') and c.get('cohort')]
+            for cell in measured:
+                alternatives.append(dict(cohort=cell['cohort'], role='CALIBRATION',
+                                         source=entry['provenance']['price_source'],
+                                         path_witnesses=deepcopy(cell['paths'])))
+        return alternatives
+
     def quote(self, configuration, implementation, base_quote=None):
         config=configuration;family=self.api['family'](config,implementation)
         if base_quote is None:
@@ -426,11 +444,16 @@ class StepPriceRegistry:
                 row=rows[round_row['m'],axis]
                 require(row.get('physical_id')==round_row['candidate']['id'] and row.get('q')==p['q'] and row.get('R')==p['R'],
                         'BASE_QUOTE_PHYSICAL_AXIS_DIFFERS')
-                if row.get('unit_price_RZ') is not None or not matching:continue
+                if not matching:continue
+                if row.get('unit_price_RZ') is not None:continue
                 if family['method'] != 'PR_DF' and len(matching) > 1:
                     row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[e['id'] for e in matching])
                     continue
                 self._scoped_price(row, p, matching, family)
+                if family['method'] == 'PR_DF' and row.get('unit_price_RZ') is None:
+                    measured = self._df_calibration_alternatives(round_row, axis, matching)
+                    if measured:
+                        row['direct_alternatives'] = [*row.get('direct_alternatives', []), *measured]
         values=sorted(rows.values(),key=lambda r:(r['m'],r['axis']))
         from .rpe_price_validation import describe,describe_steps
         fixed=self.api['PriceRules'](self.reader,self.registry)

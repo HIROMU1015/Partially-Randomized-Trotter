@@ -130,6 +130,8 @@ PBS枠の起動直後にジョブ履歴や初回の容量計測を待つ間は�
 
 Full PF・B0Iの分散準備は、現run・設定済みの継承run・固定の `pf_completion.saved_price_receipts` から既存のC監査を通った価格を読む。監査結果が届く、または既知の元所有先が完了記録を出すと、同じ候補を次の準備サイクルか通常Resumeで再照合する。実行が確認できる元プロセスは終了を再照会する。価格待ちの間に完了した独立ラウンドは、元のcompile・auditの終了と既存の価格受入を照合して引き継ぐ。再照合の前後で旧要求と旧attemptを保持する。元結果を確定できない場合は `PRICE_ACTION_UNAVAILABLE` と理由を表示し、同じ証跡の繰り返し照合を省く。旧集計表の記録だけがある場合は、元結果を既存の受入規則に通すまで、この理由が残る。
 
+PR-DFの価格照合は、現行の価格規則と登録済みreceiptを軸ごとに使う。通常較正で解決できる場合は、従来の同一stepの較正・独立holdoutを使う。それで採用価格を確定できない場合は、固定workerが扱えるラウンドだけに既存の有限コホート直接価格を要求する。既存の個別パスreceiptを先に照合し、同じ物理回路の所有記録があれば元の要求を回収する。計算済みの軸を含む場合は、元の価格と一致する対軸の保存receiptがある場合に不足軸だけをcompileする。条件を満たせない軸は `PRICE_ACTION_UNAVAILABLE` と理由を記録し、価格証跡が更新されたときに再照合する。理由とラウンド・軸別の計画は通常Statusと候補作業先の `DF_PRICE_DECISIONS.json` で確認できる。
+
 ## 価格用compileから監査への引継ぎ
 
 - PR-Pauliの監査要求は、各グループの `PRICE_STATE.json` が `COMPILE_READY_FOR_AUDIT` になった成果から作る。compileの原結果を保存したGit commitの `BINDING.json`、`COMPILE_RECEIPTS.json`、`RESULT.json` と、入力を固定したcommitの `CONFIGURATION.json` を、commit・パス・SHA-256付きの監査入力として渡す。原結果が別のGitブランチにある場合も、そのcommitで該当ファイルを読めるように既存bundleへ含める。監査が参照する回路ファイルや実行記録は、receiptにあるハッシュを使って受け渡す。

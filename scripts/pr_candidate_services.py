@@ -285,6 +285,47 @@ def df_generate(request):
     return dict(status='CONFIGURATION_READY',configuration=config,tail_descriptor=tail,descriptor_source=source)
 
 
+def df_price_disposition(config, quote, runner):
+    """Keep valid prices and choose the existing minimum acquisition scope."""
+    plan = runner.design_groups(config, quote)
+    rows = {(r['m'], r['axis']): r for r in quote['rows']}
+    scoped = {axis for axis, row in rows.items()
+              if row.get('unit_price_RZ') is None and (row.get('needs') or {}).get('entry_ids')}
+    actions = {(r['m'], r['axis']): r for r in plan['round_actions']}
+    groups = []
+    for group in plan['groups']:
+        pending = {(r['m'], r['axis']) for r in group['axis_keys']}
+        if (group['status'] == 'CALIBRATION_DESIGN_READY' and not pending & scoped
+                and not any(rows[k].get('direct_alternatives') for k in pending)):
+            groups.append(group)
+            continue
+        for m in sorted({m for m, _ in pending}):
+            axes = [axis for axis in ('X', 'Y') if (m, axis) in pending]
+            companion = [axis for axis in ('X', 'Y') if axis not in axes]
+            design = runner.design(config, [m])
+            if any(rows[m, axis].get('needs', {}).get('source_kind') == 'DIRECT_RECEIPTS'
+                   for axis in axes):
+                reasons = ['MULTIPLE_ADMITTED_DIRECT_COHORTS_REQUIRE_SOURCE_SELECTION']
+            else:
+                reasons = design['reasons']
+            if reasons:
+                for axis in axes:
+                    actions[m, axis].update(action='NO_SAFE_PRICE_ACTION', group_id=None, reasons=reasons)
+                continue
+            round_row = config['rounds'][m]
+            identity = dict(family={k: config['spec'][k] for k in ('binding', 'split', 'formula', 'finite_K', 'law', 'profile')},
+                            physical=round_row['physical_candidate'], structure=round_row['structure'])
+            ident = hashlib.sha256(json.dumps(identity, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+            groups.append(dict(group_id=ident, actual_step=round_row['actual_delta_pf'], covered_rounds=[m],
+                               axis_keys=[dict(m=m, axis=axis) for axis in axes],
+                               required_saved_companions=companion, direct_resolution=True,
+                               design={k: v for k, v in design.items() if k != 'matrix'},
+                               status='CALIBRATION_DESIGN_READY'))
+            for axis in axes:
+                actions[m, axis].update(action='VERIFY_SAVED_PATHS_THEN_ACQUIRE_MISSING', group_id=ident, reasons=[])
+    return dict(plan, groups=groups, round_actions=list(actions.values()))
+
+
 def main():
     global DF_VIEW,SIGNAL_VIEW
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=('df-generate','df-plan','df-stage','df-bundle','df-price-design','pauli-price-plan','quote','intake'))
@@ -306,7 +347,9 @@ def main():
     elif a.mode=='df-price-design':
         spec=importlib.util.spec_from_file_location('_df_candidate_price_design',ROOT/'scripts/run_pr_df_candidate_prices.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
-        value=helper.design_groups(read(r['configuration']),r.get('price_quote'))
+        config=read(r['configuration'])
+        value=(df_price_disposition(config,r['price_quote'],helper) if r.get('resolve_axes')
+               else helper.design_groups(config,r.get('price_quote')))
         for group in value.get('groups',[]):group.get('design',{}).pop('matrix',None)
     elif a.mode=='pauli-price-plan':
         sys.path.insert(0,str(ROOT/'src'))

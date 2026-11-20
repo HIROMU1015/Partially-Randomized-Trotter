@@ -484,7 +484,8 @@ def local0_progress(applied, spec, run=None):
     if width_state.is_file():
         state = load(width_state)
         pending = {'UNSUPPORTED_MAPPER': 'UNSUPPORTED_GENERATION', 'WAITING_INPUTS': 'PREPARATION_WAITING',
-                   'NEEDS_FAMILY_CONFIGURATION_SOURCE': 'MISSING_FIXED_INPUT', 'HELD': 'TECHNICAL_FAILURE'}
+                   'NEEDS_FAMILY_CONFIGURATION_SOURCE': 'MISSING_FIXED_INPUT', 'HELD': 'TECHNICAL_FAILURE',
+                   'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE'}
         for key, point in state.get('families', {}).items():
             if point.get('status') in pending:
                 observations[key] = dict(candidate_id=key, method=point['method'],
@@ -496,6 +497,8 @@ def local0_progress(applied, spec, run=None):
                 status = 'REUSED_SAVED_RESULT'
             if key and status:
                 observations[key] = dict(candidate_id=key, method=point['method'], state=status, reason=point.get('reason'))
+                if (actions := point.get('completion', {}).get('price_actions')):
+                    observations[key]['price_actions'] = actions
     pf_status = run/'PF_PREPARATION_STATUS.json'
     if pf_status.is_file():
         pending = {'PREPARATION_WAITING': 'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE': 'TECHNICAL_FAILURE',

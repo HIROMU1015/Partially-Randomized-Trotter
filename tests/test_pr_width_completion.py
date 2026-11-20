@@ -13,6 +13,7 @@ from pathlib import Path
 import sys
 import tempfile
 import threading
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -57,7 +58,8 @@ class WidthCompletionTests(unittest.TestCase):
             scientific=[]
             def service(mode,request,d,tag=None,**kwargs):
                 if mode=='quote':return deepcopy(q)
-                if mode=='intake':return dict(binding_id='BIND',total_configuration_id='TOTAL')
+                if mode=='intake':return dict(binding_id='BIND',total_configuration_id='TOTAL',
+                                              configuration=request['configuration'],signal_packet=request['packet'])
                 self.fail('Unexpected metadata service '+mode)
             def leaf(cmd,d,stage,output=None,science=False):
                 self.assertEqual(stage,'PAULI_PRICES');scientific.append(stage)
@@ -102,7 +104,7 @@ class WidthCompletionTests(unittest.TestCase):
                 self.assertEqual(service.call_count,2)
                 self.assertEqual(c.complete(request)['status'],'READY_FOR_SEARCH');self.assertEqual(service.call_count,2)
 
-    def test_df_overlap_is_requoted_once_and_extrapolation_does_not_start_calibration(self):
+    def test_df_overlap_and_extrapolation_plan_only_the_missing_rounds(self):
         reader=Documents();cfg=enrich(config(.1,pauli=False));imp=implementation(False)
         reg=StepPriceRegistry(reader)
         df_model(reg,cfg,imp,'R1',varying=False,q_max=64)
@@ -126,33 +128,34 @@ class WidthCompletionTests(unittest.TestCase):
                         registry_at_hold=old_digest)
             c.state['records'][ident]=record;c.save()
 
-            def service(mode,*_args,**_kwargs):
+            runner=load_script('run_pr_df_candidate_prices.py')
+            planner=load_script('pr_candidate_services.py')
+            def service(mode,payload,*_args,**_kwargs):
                 if mode=='df-generate':return dict(status='CONFIGURATION_READY',configuration=cfg)
                 if mode=='df-plan':return dict(rounds=[],reuse_rounds=list(range(13)))
                 if mode=='quote':return deepcopy(quote)
+                if mode=='df-price-design':return planner.df_price_disposition(cfg,payload['price_quote'],runner)
                 self.fail('Unexpected metadata service '+mode)
 
             with patch.object(C,'value',side_effect=reader.read),patch.object(c,'service',side_effect=service) as run, \
                  patch.object(c,'call',side_effect=AssertionError('No scientific acquisition')), \
                  patch.object(c,'df_price',side_effect=AssertionError('No duplicate calibration')):
                 plan=c.plan(request)
-                self.assertEqual(plan['calibration_requests'],[])
-                self.assertEqual(plan['calibration_plan']['status'],'WAITING_PRICE_EVIDENCE')
+                requests=plan['calibration_requests']
+                self.assertEqual([g['covered_rounds'] for g in requests],[[m] for m in [*range(7),12]])
+                self.assertTrue(all(g['direct_resolution'] and g['design']['holdout_round'] is None
+                                    for g in requests))
                 self.assertIn(C.PRICE_EXTRAPOLATION_HOLD,plan['reason'])
-                run.reset_mock()
-                held=c.complete(request)
-                self.assertEqual(held['status'],'WAITING_INPUTS')
-                self.assertEqual(held['previous_hold']['reason'],old_reason)
-                self.assertEqual({a['m'] for a in held['extrapolated_price_axes']},{12})
-                self.assertEqual({a['m'] for a in held['conflicting_price_axes']},set(range(7)))
-                self.assertEqual(c.complete(request),held)
-                self.assertEqual(run.call_count,1)
+                self.assertEqual({a['m'] for a in plan['extrapolated_price_axes']},{12})
+                self.assertEqual({a['m'] for a in plan['conflicting_price_axes']},set(range(7)))
+                self.assertEqual(run.call_count,4)
 
     def test_df_price_hold_skips_signal_and_resumes_fixed_configuration(self):
         reader=Documents();cfg=enrich(config(.1,pauli=False))
         request=dict(method='PR_DF',design=dict(L_D=8,delta_pf=.1,kappa='2'))
         hold=missing_quote(cfg,'PR_DF')
-        hold['rows'][2]['needs']=dict(reasons=[C.PRICE_SOURCE_CONFLICT],entry_ids=['a','b'])
+        hold['rows'][2]['needs']=dict(reasons=[C.PRICE_SOURCE_CONFLICT],entry_ids=['a','b'],
+                                     source_kind='DIRECT_RECEIPTS')
         ready=deepcopy(hold);ready['complete']=True
         for row in ready['rows']:
             row['unit_price_RZ']=exact(2)
@@ -166,15 +169,17 @@ class WidthCompletionTests(unittest.TestCase):
                 if mode=='df-generate':return dict(status='CONFIGURATION_READY',configuration=cfg)
                 if mode=='df-plan':return dict(rounds=[dict(decision='REQUEST',m=4)])
                 if mode=='intake':return dict(binding_id='BIND',total_configuration_id='TOTAL')
+                if mode=='df-price-design':
+                    return dict(groups=[],round_actions=[dict(m=1,axis='X',action='NO_SAFE_PRICE_ACTION')])
                 self.fail('Unexpected stage: '+mode)
 
             with patch.object(c,'service',side_effect=service), patch.object(C,'value',side_effect=reader.read), \
                  patch.object(C,'publish',side_effect=publisher), patch.object(c,'initial_quote',side_effect=[hold,ready,ready]), \
                  patch.object(c,'price',return_value=ready) as price, patch.object(c,'df_signals',return_value=signal) as signals:
                 held=c.complete(request)
-                self.assertEqual(held['status'],'WAITING_INPUTS')
+                self.assertEqual(held['status'],'PRICE_ACTION_UNAVAILABLE')
                 self.assertEqual(c.price_deferred_keys(),{held['key']})
-                self.assertEqual(modes,['df-generate'])
+                self.assertEqual(modes,['df-generate','df-price-design'])
                 self.assertTrue(c.complete(request)['resumed'])
                 signals.assert_not_called();price.assert_not_called()
                 original=(C.ROOT/held['directory']/'FINAL_QUOTE.json').read_bytes()
@@ -191,9 +196,110 @@ class WidthCompletionTests(unittest.TestCase):
                 self.assertEqual(accepted['directory'],selected['directory'])
                 self.assertNotEqual(accepted['directory'],held['directory'])
                 self.assertEqual((C.ROOT/held['directory']/'FINAL_QUOTE.json').read_bytes(),original)
-                self.assertEqual(modes,['df-generate','df-plan','df-plan','intake'])
+                self.assertEqual(modes,['df-generate','df-price-design','df-plan','df-plan','intake'])
                 self.assertEqual(signals.call_args.kwargs['plan']['rounds'],[dict(decision='REQUEST',m=4)])
                 price.assert_called_once()
+
+    def test_df_original_owner_resumes_and_shared_request_adopts_once(self):
+        reader,cfg,imp,package=df_direct_fixture()
+        quote=missing_quote(cfg,'PR_DF');quote['implementation']=imp
+        for row in quote['rows']:
+            if row['m']:
+                row.update(unit_price_RZ=exact(10),source={'kind':'fixed'})
+            else:
+                row['needs']=dict(reasons=[C.PRICE_EXTRAPOLATION_HOLD])
+        group=dict(group_id='shared', covered_rounds=[0], direct_resolution=True,
+                   axis_keys=[dict(m=0,axis=a) for a in ('X','Y')],required_saved_companions=[],
+                   status='CALIBRATION_DESIGN_READY')
+        with (tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)),
+              patch.object(C,'value',side_effect=reader.read),
+              patch('trottertracks.pr_price_rules.GitReader',return_value=reader)):
+            c,_=self.setup_completion(Path(tmp),reader)
+            cref=package['configuration_source']
+            a,b=(c.directory/'candidates'/name for name in ('owner','alias'))
+            with (patch.object(c,'df_price_plan',return_value=dict(groups=[group])),
+                  patch.object(c,'df_price_group',side_effect=[C.PreparationWait('owned'),package]) as worker):
+                with self.assertRaises(C.PreparationWait):c.df_price(cref,quote,a,c.registry)
+                with self.assertRaises(C.PreparationWait):c.df_price(cref,quote,b,c.registry)
+                self.assertEqual(worker.call_count,1)
+                c.df_price(cref,quote,a,c.registry)
+                self.assertEqual(worker.call_args_list[0].args[2],worker.call_args_list[1].args[2])
+                c.df_price(cref,quote,b,c.registry)
+                self.assertEqual(worker.call_count,2)
+                self.assertEqual(len(C.read(c.step_registry_path)['entries']),1)
+
+    def test_df_normal_resume_acquires_exact_price_and_keeps_original_signal(self):
+        reader,cfg,imp,package=df_direct_fixture()
+        enrich(cfg)
+        reader.docs['ARTIFICIAL','CONFIG.json']=deepcopy(cfg)
+        quote=missing_quote(cfg,'PR_DF');quote['implementation']=imp
+        for row in quote['rows']:
+            if row['m']:
+                row.update(unit_price_RZ=exact(10),source={'commit':'ARTIFICIAL','path':'fixed'})
+            else:
+                row['needs']=dict(reasons=[C.PRICE_SOURCE_CONFLICT],entry_ids=['old_model','other_model'])
+        planner=load_script('pr_candidate_services.py')
+        runner=load_script('run_pr_df_candidate_prices.py')
+        def service(mode,payload,*args,**kwargs):
+            if mode=='quote':return deepcopy(quote)
+            if mode=='df-price-design':return planner.df_price_disposition(cfg,payload['price_quote'],runner)
+            self.fail('Original signal and configuration should have been reused: '+mode)
+        with (tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)),
+              patch.object(C,'value',side_effect=reader.read),
+              patch('trottertracks.pr_price_rules.GitReader',return_value=reader)):
+            c,publisher=self.setup_completion(Path(tmp),reader)
+            request=dict(method='PR_DF',design=dict(L_D=3,kappa='2',delta_pf=.2))
+            ident=C.key(request);cref=package['configuration_source']
+            signal=dict(packet_source={'commit':'ARTIFICIAL','path':'ORIGINAL_SIGNAL'})
+            c.state['records'][ident]=dict(status='WAITING_INPUTS',key=ident,method='PR_DF',selection=None,
+                request=request,directory=C.rel(c.directory/'candidates'/ident),configuration=cref,
+                signal=signal,intake={'binding_id':'ORIGINAL_INTAKE'},registry_at_hold='previous-policy',
+                reason='PRICE_EVIDENCE_REQUIRED:'+C.PRICE_SOURCE_CONFLICT)
+            with (patch.object(c,'service',side_effect=service), patch.object(C,'publish',side_effect=publisher),
+                  patch.object(c,'df_price_group',return_value=package) as acquire,
+                  patch.object(c,'df_signals',side_effect=AssertionError('No signal restart'))):
+                record=c.complete(request)
+                self.assertEqual(record['status'],'READY_FOR_SEARCH',record.get('reason'))
+                self.assertEqual(record['signal'],signal)
+                self.assertEqual(acquire.call_args.args[4]['covered_rounds'],[0])
+                self.assertEqual(record['prices'][:2],[exact(31),exact(32)])
+                self.assertTrue(c.complete(request)['resumed'])
+                self.assertEqual(acquire.call_count,1)
+
+    def test_df_direct_leaf_protects_already_priced_companion(self):
+        reader,cfg,imp,package=df_direct_fixture()
+        quote=missing_quote(cfg,'PR_DF')
+        quote['rows'][0].update(unit_price_RZ=exact(31),source={'kind':'fixed'})
+        cell=dict(m=0,axis_evidence={'0':{'X':dict(status='MISSING'),'Y':dict(status='MISSING')}})
+        group=dict(covered_rounds=[0],direct_resolution=True,required_saved_companions=['X'])
+        with tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)):
+            c,_=self.setup_completion(Path(tmp),reader)
+            def call(cmd, directory, stage, *args, **kwargs):
+                self.assertEqual(stage,'DF_PRICE_PREPARE')
+                C.put(directory/'df_prices/INPUTS.json',dict(cells=[cell],model_design={'holdout_round':None}))
+            with patch.object(c,'call',side_effect=call) as execute:
+                with self.assertRaisesRegex(C.Held,'DIRECT_PAIR_REQUIRES_SAVED_COMPANION'):
+                    c.df_price_group(package['configuration_source'],quote,c.directory/'direct',c.registry,group)
+                self.assertEqual(execute.call_count,1)
+                self.assertFalse((c.directory/'direct/EXECUTION_LEAF.json').exists())
+            # An admissible companion makes only the missing axis runnable.
+            cell['axis_evidence']['0']['X']=dict(status='REUSE',C=31)
+            c.stage_executor=SimpleNamespace(handles=lambda stage:stage=='DF_CALIBRATION')
+            launched=[]
+            def worker(cmd, directory, stage, *args, **kwargs):
+                if stage=='DF_PRICE_PREPARE':
+                    return call(cmd,directory,stage)
+                if stage=='DF_CALIBRATION':
+                    self.assertTrue(kwargs['science'])
+                    fixed=C.read(directory/'df_prices/INPUTS.json')['cells'][0]['axis_evidence']['0']
+                    launched.extend(axis for axis,value in fixed.items() if value['status']=='MISSING')
+                    raise C.PreparationWait('fixture leaves original owner outstanding')
+                self.fail('Unexpected scientific stage '+stage)
+            with (patch.object(c,'call',side_effect=worker), patch.object(C,'publish',return_value='ARTIFICIAL')):
+                with self.assertRaises(C.PreparationWait):
+                    c.df_price_group(package['configuration_source'],quote,c.directory/'direct',c.registry,group)
+            self.assertEqual(launched,['Y'])
+            self.assertTrue((c.directory/'direct/EXECUTION_LEAF.json').is_file())
 
     def test_pauli_waits_on_confirmed_price_hold_and_resumes_from_its_configuration(self):
         reader,cfg,_,_=pauli_fixture();enrich(cfg)
@@ -274,8 +380,11 @@ class WidthCompletionTests(unittest.TestCase):
         candidate=dict(method='PR_PAULI',family='PR',configuration_id=cfg['id'],generated_configuration=cfg,
             configuration_source=oldref,ready=True,caps={},schedule_keys=O.schedule_keys(cfg),key=dict(L_D=3))
         self.assertEqual(O.schedule_keys(cfg),O.schedule_keys(other))  # intentionally exercise the legacy collision
+        packet={'commit':'ARTIFICIAL','path':'PACKET'}
         rec=dict(method='PR_PAULI',status='READY_FOR_SEARCH',configuration=newref,
-            signal={'packet_source':{'commit':'ARTIFICIAL','path':'PACKET'}},intake={'binding_id':'B','total_configuration_id':'T'},prices=[exact(3)]*26,quote=qref)
+            signal={'packet_source':packet},
+            intake={'binding_id':'B','total_configuration_id':'T','configuration':newref,'signal_packet':packet},
+            prices=[exact(3)]*26,quote=qref)
         with tempfile.TemporaryDirectory()as tmp:
             c=C.Completion.__new__(C.Completion);c.directory=Path(tmp);c.state={'records':{}};c.state_path=Path(tmp)/'STATE.json';c.lock=threading.RLock()
             ctx=dict(candidates=[candidate],expected={});problem=dict(methods={'PR_PAULI':dict(requested_delta_pf_values=[exact(.2)])},execution_routes={'PR_PAULI':[]})

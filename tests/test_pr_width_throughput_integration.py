@@ -115,7 +115,9 @@ class Completion(C.Completion):
         if mode=='df-plan':return dict(rounds=[dict(m=0,decision='REUSE')])
         if mode=='df-price-design':return dict(groups=[dict(status='CALIBRATION_DESIGN_READY')])
         if mode=='intake':
-            cfg=WORLD.reader.read(request['configuration']);return dict(binding_id='ARTIFICIAL_BINDING',total_configuration_id='ARTIFICIAL_TOTAL:'+cfg['id'])
+            cfg=WORLD.reader.read(request['configuration'])
+            return dict(binding_id='ARTIFICIAL_BINDING',total_configuration_id='ARTIFICIAL_TOTAL:'+cfg['id'],
+                        configuration=request['configuration'],signal_packet=request['packet'])
         if mode=='quote':
             cfg=WORLD.reader.read(request['configuration'])if 'commit'in request['configuration']else request['configuration']
             return WORLD.quote(cfg)
