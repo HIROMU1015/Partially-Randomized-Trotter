@@ -350,20 +350,24 @@ class Relay:
             self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
             self.log('METADATA_GIT_BUNDLE_DELIVERED',host_id=worker['host_id'],sha256=sha)
 
-    def _readiness_batch(self, worker, challenges, cached=None):
-        # Large input bundles are transferred serially. Report the first ready
-        # request before transferring others, while rotating repeated HOLDs even
-        # when the controller rotates its own challenge batches.
-        preparation = [item for item in challenges
+    def _readiness_batch(self, worker, challenges, cached=None, *, slots):
+        # Fill free slots with requests that need no extra bundle delivery.
+        # Rotate the first request even when earlier checks keep returning HOLD.
+        preparation = [(item, self._readiness_bundle_hashes([item])) for item in challenges
                        if item.get('request', {}).get('route', {}).get('kind') == 'preparation']
         if not preparation:
             return challenges
         counts = self.readiness_probe_counts.setdefault(worker['host_id'], {})
-        chosen = min(preparation, key=lambda item: (counts.get(item['job_id'], 0),
-            len(self._readiness_bundle_hashes([item]) - cached) if cached is not None else 0))
-        counts[chosen['job_id']] = counts.get(chosen['job_id'], 0) + 1
+        known = cached if cached is not None else set()
+        preparation.sort(key=lambda pair: (counts.get(pair[0]['job_id'], 0),
+            len(pair[1] - known) if cached is not None else 0))
+        delivered = known | preparation[0][1]
+        selected = [item['job_id'] for item, hashes in preparation if hashes <= delivered][:slots]
+        for job in selected:
+            counts[job] = counts.get(job, 0) + 1
         return [item for item in challenges if
-                item.get('request', {}).get('route', {}).get('kind') != 'preparation' or item is chosen]
+                item.get('request', {}).get('route', {}).get('kind') != 'preparation'
+                or item['job_id'] in selected]
 
     def _discover(self, worker):
         # Status and current-request checks may run concurrently for independent
@@ -376,9 +380,9 @@ class Relay:
         observed = self.post('/v1/poll', dict(poll, observe_only=True))
         challenges = observed.get('eligibility_challenges') or []
         if challenges and status['slots']:
-            cached = (set(status.get('cached_artifact_sha256', []))
-                      if worker.get('transport') == 'ssh-wsl' else None)
-            challenges = self._readiness_batch(worker, challenges, cached)
+            cached = status.get('cached_artifact_sha256')
+            cached = set(cached) if cached is not None else None
+            challenges = self._readiness_batch(worker, challenges, cached, slots=status['slots'])
             # A fresh worker inventory avoids an SSH round trip. The worker
             # still verifies and binds all metadata in its readiness check.
             if cached is None or self._readiness_bundle_hashes(challenges) - cached:
@@ -520,12 +524,14 @@ class Relay:
         if not response['assignments'] and response.get('eligibility_challenges'):
             challenges = response['eligibility_challenges']
             if observed is not None:
-                # cycle() already gave preparation one discovery opportunity.
+                # cycle() already checked one group of preparation requests.
                 # Preserve the existing inexpensive Q3 checks on this fallback.
                 challenges = [item for item in challenges if
                               item.get('request', {}).get('route', {}).get('kind') != 'preparation']
             else:
-                challenges = self._readiness_batch(worker, challenges)
+                cached = status.get('cached_artifact_sha256')
+                challenges = self._readiness_batch(worker, challenges,
+                    set(cached) if cached is not None else None, slots=status['slots'])
             if challenges:
                 self._deliver_challenge_artifacts(worker,challenges)
                 current, _ = self.remote(worker, 'readiness', dict(challenges=challenges))

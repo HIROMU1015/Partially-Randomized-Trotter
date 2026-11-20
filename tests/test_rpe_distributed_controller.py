@@ -135,18 +135,20 @@ class ControllerFailures(unittest.TestCase):
         executor.live_readiness_workers = 2
         view = executor.for_method('PR_PAULI')
         first, second = self.proposal('demand'), self.proposal('standby')
+        saved = self.proposal('already-known')
 
         def checked(request, job, *, prefetch=False, **kwargs):
             if prefetch:
                 self.assertIsNone(executor.store.row(job))
             return None
 
-        with patch.object(view, '_eligibility_for', side_effect=checked) as check:
-            view.prefetch_standby(first, [second])
-        calls = check.call_args_list
+        with patch.object(view, '_eligibility_for', side_effect=checked) as check, \
+                patch.object(view, 'has_job', side_effect=lambda p: p == saved):
+            view.prefetch_standby(first, [saved, second])
+        calls = [call for call in check.call_args_list if call.kwargs.get('prefetch')]
         self.assertEqual([call.args[1] for call in calls[:2]], [view.job_dir(p).name for p in (first, second)])
-        self.assertTrue(all(call.kwargs.get('prefetch') is True and not call.kwargs['blocking'] for call in calls[:2]))
-        self.assertEqual(len(executor.store.rows()), 2)
+        self.assertTrue(all(not call.kwargs['blocking'] for call in calls))
+        self.assertTrue(all(executor.store.row(view.job_dir(p).name) for p in (first, second)))
 
     def test_coordinator_does_not_promote_q3_ahead_of_older_ready_preparation(self):
         from trottertracks.rpe_preparation_queue import normalize_preparation_request

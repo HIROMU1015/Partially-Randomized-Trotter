@@ -22,7 +22,6 @@ from . import rpe_method_optimizer as O
 from .rpe_q3_timing import stamp
 
 LIVE_READINESS_RETRY_SECONDS = 10
-PREPARATION_PROBE_BATCH = 4
 
 
 def _write(path, value):
@@ -1327,9 +1326,11 @@ class DistributedExecutor(ConcurrentExecutor):
             # candidates together. A check does not create a reservation.
             proposals = list(proposals)
             candidates = ([choice] if choice is not None else []) + proposals
-            for proposal in candidates[:self.live_readiness_workers]:
+            checked = 0
+            for proposal in candidates:
                 with self.state.cv:
                     if (self.state.closed or self._user_stop_requested() or self._budget_reserved()
+                            or checked >= self.live_readiness_workers
                             or len(self.live_readiness_inflight) >= self.live_readiness_workers):
                         break
                 if self.has_job(proposal) or not self._candidate_preparation_ready(proposal):
@@ -1340,6 +1341,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 job = self.job_dir(proposal)
                 request = self.request(proposal, job, route)
                 self._eligibility_for(request, job.name, blocking=False, prefetch=True)
+                checked += 1
         return super().prefetch_standby(choice, proposals)
 
     @staticmethod
@@ -1503,7 +1505,7 @@ class DistributedExecutor(ConcurrentExecutor):
             reason='ALL_PARTICIPATING_PREPARATION_HOSTS_FAIL_OR_UNCHECKED'if targets else'NO_PARTICIPATING_PREPARATION_HOST',
             host_reasons=reasons,probe_host_ids=sorted(targets))
 
-    def _pending_preparation_challenges(self, host):
+    def _pending_preparation_challenges(self, host, free_slots):
         if host not in self._preparation_probe_targets():return []
         candidates = []
         for job_id, record in self.preparation_pending.items():
@@ -1515,12 +1517,11 @@ class DistributedExecutor(ConcurrentExecutor):
             self.preparation_probe_offsets.pop(host, None)
             return []
         start = self.preparation_probe_offsets.get(host, 0) % len(candidates)
-        batch = (candidates[start:]+candidates[:start])[:PREPARATION_PROBE_BATCH]
-        # Each preparation may verify many Git locators. Rotate on each poll
-        # so requests that still HOLD cannot block later requests on this host.
-        self.preparation_probe_offsets[host] = (start + len(batch)) % len(candidates)
+        # Fill the current offer. Even a busy host can check the next request
+        # in advance. Advance past failures and rotate through later requests.
+        target = max(1, free_slots)
         challenges = []
-        for job_id, record in batch:
+        for examined, (job_id, record) in enumerate(candidates[start:]+candidates[:start], 1):
             try:challenges.append(self._pending_preparation_assignment(record,host))
             except (OSError,KeyError,ValueError,TypeError)as exc:
                 failure=str(exc)
@@ -1529,6 +1530,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 hold=self._preparation_probe_hold(record)
                 if hold is not None:self.preparation_holds[job_id]=hold
                 continue
+            if len(challenges) == target:
+                break
+        self.preparation_probe_offsets[host] = (start + examined) % len(candidates)
         return challenges
 
     def _refresh_pending_preparation(self, host, fingerprints, errors):
@@ -2060,10 +2064,10 @@ class DistributedExecutor(ConcurrentExecutor):
                                        cached_prefixes=value.get('cached_prefixes', []),
                                        host_fingerprints=fingerprints)
                 self._refresh_pending_preparation(host,fingerprints,value.get('readiness_errors')or{})
-                pending_challenges=self._pending_preparation_challenges(host)
                 self._refresh_capacity(admission_policy, admission_error)
                 s.cv.notify_all()
                 new_slots = self._offer_free(host, admission_policy, admission_error)
+                pending_challenges = self._pending_preparation_challenges(host, new_slots)
                 def reply(**fields):
                     existing=fields.get('eligibility_challenges',[])
                     fields['eligibility_challenges']=list({item['job_id']:item for item in existing+pending_challenges}.values())

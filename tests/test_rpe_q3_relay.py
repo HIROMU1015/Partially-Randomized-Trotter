@@ -44,17 +44,17 @@ def wait_until(predicate, seconds=8):
 
 
 class Harness:
-    def __init__(self, directory, sleep_seconds=.12):
+    def __init__(self, directory, sleep_seconds=.12, slots=1):
         self.directory = Path(directory)
         problem = dict(accuracy=dict(fixture='ARTIFICIAL'), target=dict(energy_ha=0), rpe=dict(fixture=True))
         rule = dict(kind='artificial', interpreter=sys.executable, configuration_ids='*', view_commit=None,
             artificial=dict(weights=[1]*13,scale='1',tau='7',sleep_seconds=sleep_seconds))
         self.executor = C.DistributedExecutor(ROOT, self.directory/'controller', {'PR_DF':[rule]}, {}, problem,
-            optimizer_source=W.head(ROOT), max_concurrent=1, budgets={'PR_DF':4}, science_approved=True,
+            optimizer_source=W.head(ROOT), max_concurrent=slots, budgets={'PR_DF':max(4, slots)}, science_approved=True,
             wait_for_running=True, distributed=dict(port=0, affinity_wait_seconds=0))
         self.view = self.executor.for_method('PR_DF')
         self.profile = dict(host_id='server1-simulated',root=str(ROOT),work_dir=str(self.directory/'server1-spool'),
-            interpreter=sys.executable,route_views={},prefix_cache_directory=str(self.directory/'prefix'),slots=1)
+            interpreter=sys.executable,route_views={},prefix_cache_directory=str(self.directory/'prefix'),slots=slots)
         profile = self.directory/'profile with spaces.json';write(profile,self.profile)
         fake = self.directory/'fake_ssh.py'
         fake.write_text('''import os, shlex, sys
@@ -117,9 +117,10 @@ class RelayTests(unittest.TestCase):
             write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'),
                 controller=dict(ssh_alias='qg2'), workers=[worker]))
             relay = R.Relay(configuration)
-            challenges = [dict(job_id=name, request=dict(route=dict(kind='preparation')))
+            challenges = [dict(job_id=name, request=dict(route=dict(kind='preparation'),
+                              preparation=dict(input_git_bundles=[dict(sha256=name)])))
                           for name in ('FIRST', 'SECOND')]
-            status = dict(host_id=worker['host_id'], attempts=[], slots=1,
+            status = dict(host_id=worker['host_id'], attempts=[], slots=2,
                 source_sha='ARTIFICIAL', cached_prefixes=[], metadata_only=True)
             calls = []
             def remote(_, action, value=None):
@@ -144,6 +145,33 @@ class RelayTests(unittest.TestCase):
                 self.assertEqual(calls, ['status', 'bundle', 'readiness'])
                 self.assertNotIn('observe_only', post.call_args_list[-1].args[1])
 
+    def test_discovery_reports_shared_preparation_inputs_in_one_batch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            config = Path(temporary)/'relay.json'
+            worker = dict(host_id='ARTIFICIAL')
+            write(config, dict(state_directory=str(Path(temporary)/'state'),
+                               controller=dict(ssh_alias='qg2'), workers=[worker]))
+            relay = R.Relay(config)
+            first, second, unrelated = [
+                dict(job_id=job, request=dict(route=dict(kind='preparation'),
+                    preparation=dict(input_git_bundles=[dict(sha256=bundle)])))
+                for job, bundle in (('first', 'shared'), ('second', 'shared'), ('unrelated', 'other'))
+            ]
+            challenges = [first, unrelated, second]
+            status = dict(host_id=worker['host_id'], slots=2, cached_prefixes=[],
+                          source_sha='ARTIFICIAL', cached_artifact_sha256=[])
+            facts = dict(host_id=worker['host_id'], host_fingerprints={'second': {}},
+                         readiness_errors={'first': 'ARTIFICIAL_HOLD'})
+            with patch.object(relay, 'post', return_value=dict(eligibility_challenges=challenges)) as post, \
+                    patch.object(relay, 'remote', side_effect=[(status, .01), (facts, .01)]) as remote, \
+                    patch.object(relay, '_deliver_challenge_artifacts') as deliver:
+                relay._discover(worker)
+            deliver.assert_called_once_with(worker, [first, second])
+            self.assertEqual(remote.call_args.args[2]['challenges'], [first, second])
+            self.assertEqual(post.call_args.args[1]['host_fingerprints'], {'second': {}})
+            self.assertEqual(post.call_args.args[1]['readiness_errors'], {'first': 'ARTIFICIAL_HOLD'})
+            self.assertEqual(relay._readiness_batch(worker, challenges, slots=2), [unrelated])
+
     def test_readiness_fairness_survives_repeated_holds_and_rotating_batches(self):
         with tempfile.TemporaryDirectory(prefix='relay-readiness-fairness-') as temporary:
             configuration = Path(temporary)/'relay.json'
@@ -153,18 +181,18 @@ class RelayTests(unittest.TestCase):
             first = [dict(job_id=name, request=dict(route=dict(kind='preparation'))) for name in 'ABCD']
             second = [dict(job_id=name, request=dict(route=dict(kind='preparation'))) for name in 'EFGH']
             worker = dict(host_id='ARTIFICIAL_WSL')
-            selected = [relay._readiness_batch(worker, batch)[0]['job_id']
+            selected = [relay._readiness_batch(worker, batch, slots=1)[0]['job_id']
                         for batch in [first, second]*4]
             self.assertEqual(selected, list('AEBFCGDH'))
-            self.assertEqual(relay._readiness_batch(worker, first)[0]['job_id'], 'A')
+            self.assertEqual(relay._readiness_batch(worker, first, slots=1)[0]['job_id'], 'A')
             # Another host's first tie follows its own original batch order.
-            self.assertEqual(relay._readiness_batch(dict(host_id='OTHER'), first)[0]['job_id'], 'A')
+            self.assertEqual(relay._readiness_batch(dict(host_id='OTHER'), first, slots=1)[0]['job_id'], 'A')
             q3 = dict(job_id='Q3', request=dict(route=dict(kind='prdf_d2_split')))
             other = dict(job_id='OTHER_ROUTE')
             mixed = [q3, *first, other]
-            batch = relay._readiness_batch(dict(host_id='MIXED'), mixed)
+            batch = relay._readiness_batch(dict(host_id='MIXED'), mixed, slots=1)
             self.assertEqual(batch, [q3, first[0], other])
-            self.assertEqual(relay._readiness_batch(worker, [q3, other]), [q3, other])
+            self.assertEqual(relay._readiness_batch(worker, [q3, other], slots=1), [q3, other])
 
     def test_wsl_discovery_checks_cached_input_without_delivery_roundtrip(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -184,7 +212,7 @@ class RelayTests(unittest.TestCase):
                 relay._discover(wsl)
             deliver.assert_not_called()
             self.assertEqual(remote.call_args.args[2]['challenges'], [requests[1]])
-            self.assertEqual(relay._readiness_batch(wsl, requests, {'HIT'}), [requests[0]])
+            self.assertEqual(relay._readiness_batch(wsl, requests, {'HIT'}, slots=1), [requests[0]])
 
     def test_mailbox_json_error_is_bounded_and_excludes_unrelated_payload(self):
         with tempfile.TemporaryDirectory(prefix='relay-mailbox-json-error-') as temporary:
@@ -364,6 +392,23 @@ class RelayTests(unittest.TestCase):
                     process.join(timeout=3)
             self.assertFalse(process.is_alive())
             self.assertIs(json.loads((directory/'STATUS.json').read_text())['stopped'], True)
+
+    def test_one_poll_fills_available_slots_and_recovers_each_result(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            slots = 6
+            harness = Harness(temporary, slots=slots)
+            try:
+                tasks = [harness.propose(shot)[1] for shot in range(1, slots+1)]
+                harness.tick()
+                rows = [harness.executor.store.row(task.job.name) for task in tasks]
+                self.assertEqual([row['host_id'] for row in rows], [harness.profile['host_id']]*slots)
+                self.assertEqual(len({row['attempt_id'] for row in rows}), slots)
+                wait_until(lambda: harness.tick() or all(task.event.is_set() for task in tasks))
+                self.assertEqual(
+                    [harness.executor.store.row(row['job_id'])['state'] for row in rows],
+                    ['ACCEPTED']*slots)
+            finally:
+                harness.close()
 
     def test_real_mailbox_rpc_next_assignment_and_lost_ack_duplicate(self):
         with tempfile.TemporaryDirectory(prefix='q3-relay-artificial-') as temporary:
