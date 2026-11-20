@@ -1096,6 +1096,10 @@ def schedule_driver(config, run, selection):
         if (not optimizer.is_file()
                 or hashlib.sha256(optimizer.read_bytes()).hexdigest() != selection['worker_trial']['optimizer_sha256']):
             raise RequestError('schedule_resume', 'Resource trial optimizer differs from its selected deployment')
+    if 'q3_store_sha256' in selection:
+        store = driver.parents[1]/'src/trottertracks/rpe_q3_store.py'
+        if not store.is_file() or hashlib.sha256(store.read_bytes()).hexdigest() != selection['q3_store_sha256']:
+            raise RequestError('schedule_resume', 'Q3 store differs from its selected deployment')
     preparation = selection.get('preparation_sha256')
     if preparation is not None:
         required = set(SCHEDULE_PREPARATION_MODULES)
@@ -1154,6 +1158,9 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         operations = [(name, str(driver.parents[1]/'src/trottertracks'/(name+'.py')))
                       for name in (*SCHEDULE_PREPARATION_MODULES, 'pr_candidate_completion')
                       if name in (preparation or {})]
+        if 'q3_store_sha256' in schedule_resume:
+            operations.insert(0, ('rpe_q3_store', str(driver.parents[1]/'src/trottertracks/rpe_q3_store.py')))
+            implementation['q3_store_sha256'] = schedule_resume['q3_store_sha256']
         bootstrap = ('import importlib.util,json,runpy,sys\n'
                      'root,driver,manager,optimizer,preparation,trial=sys.argv[1:7]\n'
                      'sys.argv=sys.argv[6:]\n'

@@ -24,6 +24,26 @@ class Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
 
+    def test_selected_schedule_checks_queue_store_before_start(self):
+        from hashlib import sha256
+        from trottertracks.rpe_local0_search import schedule_driver
+
+        run = self.home/'run'
+        write(run/'APPLIED_SCOPE.json', dict(run_id=run.name, entry='schedule'))
+        operations = self.home/'operations'
+        driver = operations/'scripts/run_rpe_schedule_search.py'
+        store = operations/'src/trottertracks/rpe_q3_store.py'
+        for part in (driver, store):
+            part.parent.mkdir(parents=True)
+            part.write_text('# Artificial deployment\n')
+        selection = dict(run_id=run.name, base_source=self.config['code_source'], root=str(operations),
+                         driver_sha256=sha256(driver.read_bytes()).hexdigest(),
+                         q3_store_sha256=sha256(store.read_bytes()).hexdigest())
+        self.assertEqual(schedule_driver(self.config, run, selection), driver)
+        store.write_text('# Changed queue store\n')
+        with self.assertRaisesRegex(RequestError, 'Q3 store differs'):
+            schedule_driver(self.config, run, selection)
+
     def test_technical_ast_resume_requires_ended_owners_and_preserves_stop(self):
         import sqlite3
 

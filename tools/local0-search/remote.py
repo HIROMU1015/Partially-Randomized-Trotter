@@ -115,7 +115,7 @@ try:
                         return operations.Gateway(pinned).normal_launch(run, problem, spec, schedule_resume=selection)
             recovery = {key: resume[key] for key in ('resume_ast_failure', 'resume_dispatch_failure')
                         if resume and resume.get(key)}
-            if recovery:
+            if recovery or (resume and resume.get('resume_input_holds') is True):
                 operations.RequestError = RequestError
                 preflight = None
                 if not getattr(Gateway, 'restores_preparation_archives_on_resume', False):
