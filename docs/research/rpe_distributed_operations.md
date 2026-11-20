@@ -125,7 +125,7 @@ PBS枠の起動直後にジョブ履歴や初回の容量計測を待つ間は�
 
 - PFのcompileとholdout compileでは、固定providerの子プロセスが読むorigin config、providerのファイル、保存snapshotとreceiptを事前照合に含める。実機で失敗結果を受領した場合は、回路生成の開始有無と元attemptの終了条件を確認し、固定要求と予算台帳を保全する。
 
-- PBSの100 CPUとserver2の30 CPUはCPUの使用上限。PBSは採用版の工程・ルート別見積りを使い、適格な仕事の数と必要CPU・RAM・残りwalltimeから割当要求を決める。RomuTail・Romulaptopには追加CPU上限を置かず、既存autoと実機条件を使う。Romulaptopは起動中で受付ONのとき参加する。ホストのPauseは新規受付に反映する。server1は復帰後、固定版の配置と対応工程の検査を経て参加する。
+- PBSの100 CPUとserver2の30 CPUはCPUの使用上限。PBSは採用版の工程・ルート別見積りを使い、適格な仕事の数と必要CPU・RAM・残りwalltimeから割当要求を決める。RomuTail・Romulaptopには追加CPU上限を置かず、既存autoと実機条件を使う。Romulaptopは起動中で受付ONのとき参加する。ホストのPauseは新規受付に反映する。server1は2026-11-21に固定版と対応工程の検査を通過し、通常Start／Resumeへ復帰した。[server1の復帰記録](rpe_server1_participation_20261121/HANDOFF.md)
 - 割当が少ないときは、`QUEUE_WAIT_STATE` と工程・ホスト別の台帳で、候補不足、準備待ち、適格なホスト不足、配送・割当待ちをたどる。旧attemptが枠を占めている場合は、元ホストの状態と台帳上の所有を照合する。同時実行数を増やすときは、ホストでの実測、1ジョブあたりのDP並列数、合計CPU・RAM、既存予約を確認する。
 - 空き枠と候補の補充は、worker完了・枠追加・候補の準備完了に合わせて進める。独立した準備は残りの工程別予算と適格な枠に合わせて進める。PBSのCPU要求には予算内で割当可能な仕事を使い、同じ枠に後続タスクが入ったか、入力照合から実行開始までの時間と実使用CPU時間を記録する。
 - PBSの既知の割当は1回の `qstat` でまとめて問い合わせる。gateway接続中は状態 `F` の会計情報を再利用し、元attemptのspoolは引き続き回収する。PBS投入から使用可能までの時間と、割当からworker開始までの時間を分けて記録する。

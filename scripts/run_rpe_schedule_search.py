@@ -54,7 +54,7 @@ def read_loc(loc):
     return x
 
 
-def apply_worker_trial(spec, trial):
+def apply_worker_trial(spec, trial, *, run_dir=None):
     """Install the selected execution policy in memory after fixed-input checks."""
     distributed = spec['executor']['distributed']
     if 'ready_queue_waves' in trial:
@@ -105,6 +105,25 @@ def apply_worker_trial(spec, trial):
         for worker in distributed['relay']['workers']:
             if worker['host_id'] == 'server2':
                 worker['profile'] = trial['server2_profile']
+    if 'server1_worker' in trial:
+        worker = trial['server1_worker']
+        workers = distributed['relay']['workers']
+        previous = [entry for entry in workers if entry['host_id'] == 'server1']
+        if (worker['host_id'] != 'server1' or len(previous) != 1
+                or previous[0].get('enabled') is not False):
+            raise ValueError('Expected one disabled server1 worker in the fixed relay configuration')
+        workers[workers.index(previous[0])] = deepcopy(worker)
+        distributed['preparation_profiles']['server1'] = trial['server1_preparation_profile']
+        # The ordinary Start copies this mutable file into the run. The
+        # release's admission template is covered by fixed_settings.
+        admission = Path(distributed['host_admission']).resolve()
+        if run_dir is None or admission != Path(run_dir).resolve() / 'HOST_ADMISSION.json':
+            raise ValueError('Expected the run-owned HOST_ADMISSION.json')
+        policy = O.load_json(admission)
+        if policy['hosts']['server1'].get('reason') == 'USER_REPORTED_STOPPED':
+            from trottertracks.rpe_q3_coordinator import atomic_json
+            policy['hosts']['server1'] = dict(accepting=True, optional=True, reason='SERVER1_QG1_VALIDATED')
+            atomic_json(admission, policy)
     if 'local_memory_reserve_bytes' in trial:
         distributed['local_calibration_pair'] = dict(
             memory_reserve_bytes=trial['local_memory_reserve_bytes'],
@@ -463,7 +482,7 @@ class WidthDriver:
         self.check_fixed_inputs()
         trial = globals().get('FIXED_RUN_WORKER_TRIAL')
         if trial is not None and not a.plan_only:
-            apply_worker_trial(self.spec, trial)
+            apply_worker_trial(self.spec, trial, run_dir=self.run)
         if not self.state['families']:
             started=time.monotonic();self.log(event='SEED_START')
             self.seed();self.log(event='SEED_END',wall_seconds=time.monotonic()-started,families=len(self.state['families']))
