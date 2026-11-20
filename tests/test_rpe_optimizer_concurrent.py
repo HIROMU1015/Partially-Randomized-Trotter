@@ -102,6 +102,20 @@ class SchedulerTests(unittest.TestCase):
                 with patch.object(Q.subprocess, 'check_output', return_value=b'saved signal bytes') as show:
                     self.assertEqual(Q.input_hashes(ROOT, request), Q.input_hashes(ROOT, original))
                     show.assert_called_with(['git', 'show', locator['commit']+':'+locator['path']], cwd=ROOT)
+                template_route = dict(projected_rule, kind='pf_b_pf6', configurations={}, templates=[locator])
+                template_request = ex.request(dict(configuration_id=projected_id, vector=(1,)*24,
+                                                   cost=Fraction(1), origin={'M': 11}),
+                                              Path('template-prefix'), template_route)
+                self.assertNotIn('configurations', template_request['route'])
+                self.assertEqual(template_route['configurations'], {})
+                with patch.object(Q.subprocess, 'check_output', return_value=b'saved template bytes'):
+                    inputs = Q.input_hashes(ROOT, template_request)
+                self.assertEqual([(item['commit'], item['path']) for item in inputs],
+                                 [(locator['commit'], locator['path'])])
+                missing_source = dict(projected_rule, configurations={})
+                request = ex.request(dict(configuration_id=projected_id, vector=(1,)*24,
+                                          cost=Fraction(1), origin={'M': 11}), Path('missing'), missing_source)
+                self.assertEqual(request['route']['configurations'], {})
             finally:
                 root.finish()
 

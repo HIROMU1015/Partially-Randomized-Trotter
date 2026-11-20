@@ -143,8 +143,14 @@ class ConcurrentExecutor(O.Executor):
         if projection and configurations is not None:
             # Fixed workers look up input hashes by the request ID, then use
             # the original configuration ID to build the projected Q3 case.
-            source = configurations[projection['source_configuration_id']]
-            rule = dict(rule, configurations={**configurations, proposal['configuration_id']: source})
+            source = configurations.get(projection['source_configuration_id'])
+            if source is not None:
+                rule = dict(rule, configurations={**configurations, proposal['configuration_id']: source})
+            elif rule.get('templates') and rule['kind'] in (
+                    'pf_b_pf6', 'pauli_b_ld3', 'pauli_b_ld5', 'prdf_d2_split'):
+                # These adapters resolve their source from a fixed template
+                # when the optional configuration map has no matching entry.
+                rule = {key: value for key, value in rule.items() if key != 'configurations'}
         req=super().request(proposal,job,rule)
         execution = req['execution_profile'] = dict(dp_workers=self.dp_workers)
         artificial = rule['kind'] == 'artificial'

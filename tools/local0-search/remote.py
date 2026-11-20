@@ -113,7 +113,9 @@ try:
                             return Gateway(pinned).normal_launch(run, problem, spec)
                         selection = dict(release_policy, run_id=applied['run_id'])
                         return operations.Gateway(pinned).normal_launch(run, problem, spec, schedule_resume=selection)
-            if resume is not None and resume.get('resume_ast_failure'):
+            recovery = {key: resume[key] for key in ('resume_ast_failure', 'resume_dispatch_failure')
+                        if resume and resume.get(key)}
+            if recovery:
                 operations.RequestError = RequestError
                 preflight = None
                 if not getattr(Gateway, 'restores_preparation_archives_on_resume', False):
@@ -123,8 +125,7 @@ try:
                     archive_spec.loader.exec_module(archives)
                     preflight = archives.preflight_with_archives(
                         config['state_directory'], Gateway(selected).normal_preflight, RequestError)
-                gateway = operations.Gateway(selected, launch=launch, preflight=preflight,
-                                             resume_ast_failure=resume['resume_ast_failure'])
+                gateway = operations.Gateway(selected, launch=launch, preflight=preflight, **recovery)
             else:
                 gateway = Gateway(config, launch=launch)
             result = gateway.handle(request)

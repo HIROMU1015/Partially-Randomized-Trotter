@@ -583,10 +583,12 @@ def local0_progress(applied, spec, run=None):
 class Gateway:
     restores_preparation_archives_on_resume = True
 
-    def __init__(self, config, *, preflight=None, launch=None, resume_ast_failure=None):
+    def __init__(self, config, *, preflight=None, launch=None, resume_ast_failure=None,
+                 resume_dispatch_failure=None):
         self.config = deepcopy(config); self.state = Path(config['state_directory'])
         self.preflight = preflight or self.normal_preflight; self.launch = launch or self.normal_launch
         self.resume_ast_failure = resume_ast_failure
+        self.resume_dispatch_failure = resume_dispatch_failure
 
     def create_run_directory(self, run):
         evidence = self.config.get('run_evidence_root')
@@ -720,12 +722,14 @@ class Gateway:
         user_interrupted = (request.get('action') == 'resume' and completed.get('returncode') == -signal.SIGINT
                             and stop_request.is_file() and load(stop_request).get('reason') == 'USER_REQUESTED_STOP')
         recovered_stop = None
+        recovery_kind, recovery_invocation = (('dispatch', self.resume_dispatch_failure)
+            if self.resume_dispatch_failure else ('ast', self.resume_ast_failure))
         if completed and completed.get('returncode') != 0 and not user_interrupted:
             stop_path = run/'KAPPA_STATE.json'
             stop = (load(stop_path).get('stop') or {}).get('reason') if stop_path.exists() else None
-            if request['action'] != 'resume' or not self.resume_ast_failure:
+            if request['action'] != 'resume' or not recovery_invocation:
                 raise RequestError('run', 'failed invocation requires reconciliation: '+str(stop or completed.get('returncode')))
-            recovered_stop = reconcile_ast_failure(run, state, completed, self.resume_ast_failure)
+            recovered_stop = reconcile_runtime_failure(run, state, completed, recovery_invocation, recovery_kind)
         if (run/'ROUND_RESULT.json').exists():
             outcomes=load(run/'ROUND_RESULT.json')['methods']
             reasons={v['stop_reason'] for v in outcomes.values()}
@@ -765,7 +769,7 @@ class Gateway:
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
         immutable(run/'ROUND.json', spec)
         if recovered_stop:
-            immutable(run/'stop-history'/('ast-'+self.resume_ast_failure+'.json'), recovered_stop)
+            immutable(run/'stop-history'/(recovery_kind+'-'+recovery_invocation+'.json'), recovered_stop)
         write(run/'AUTHORIZATION.json', dict(kind='EXPLICIT_USER_START',instruction=request['instruction'],scope_signature=applied['signature'],authorized_utc=time.time()))
         if (run/'STOP_REQUESTED.json').exists():
             previous=load(run/'STOP_REQUESTED.json')
@@ -992,14 +996,14 @@ SCHEDULE_PREPARATION_MODULES = (
 )
 
 
-def reconcile_ast_failure(run, launch, ended, invocation):
-    """Allow the existing run to continue after its stopped AST reader failed."""
+def reconcile_runtime_failure(run, launch, ended, invocation, kind):
+    """Verify ended ownership after a specifically identified controller error."""
     import fcntl
     import re
     import sqlite3
 
     def hold(reason):
-        raise RequestError('run', 'AST failure reconciliation: ' + reason)
+        raise RequestError('run', kind + ' failure reconciliation: ' + reason)
 
     if (not re.fullmatch(r'[0-9a-f]{32}', invocation) or not launch
             or launch.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
@@ -1016,10 +1020,19 @@ def reconcile_ast_failure(run, launch, ended, invocation):
         with (run/'RUNTIME_ERRORS.jsonl').open() as log:
             fault = next((row for row in reversed([json.loads(line) for line in log])
                           if row.get('phase') == 'DRIVER'), {})
-        if (stop.get('reason') != 'RUNTIME_EXCEPTION' or stop.get('error_type') != 'SystemError'
-                or not stop.get('message', '').startswith('AST constructor recursion depth mismatch')
-                or fault.get('error_type') != 'SystemError' or fault.get('message') != stop['message']
-                or 'pf_optimizer_connection.py' not in fault.get('traceback', '')):
+        message = stop.get('message', '')
+        trace = fault.get('traceback', '')
+        if (stop.get('reason') != 'RUNTIME_EXCEPTION' or stop.get('error_type') != fault.get('error_type')
+                or message != fault.get('message')):
+            hold('the driver failure differs from its saved stop')
+        if kind == 'dispatch':
+            if (stop['error_type'] != 'KeyError' or not re.fullmatch("'[0-9a-f]{64}'", message)
+                    or 'in prefetch_standby' not in trace
+                    or 'source = configurations[projection[\'source_configuration_id\']]' not in trace):
+                hold('the failure is outside the projected Q3 request builder')
+        elif (kind != 'ast' or stop['error_type'] != 'SystemError'
+                or not message.startswith('AST constructor recursion depth mismatch')
+                or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
@@ -1035,7 +1048,16 @@ def reconcile_ast_failure(run, launch, ended, invocation):
             fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
             queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
             with sqlite3.connect(queue, uri=True) as db:
-                rows = db.execute("SELECT state, attempt_id, detail FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED')")
+                excluded = "('ACCEPTED','CANCELLED')"
+                if kind == 'dispatch':
+                    launched = (history/'LAUNCH.json').stat().st_mtime
+                    if db.execute("SELECT 1 FROM jobs WHERE assigned_epoch >= ? OR started_epoch >= ?"
+                                  " OR (state='QUEUED' AND (host_id IS NOT NULL OR attempt_id IS NOT NULL"
+                                  " OR assigned_epoch IS NOT NULL OR started_epoch IS NOT NULL)) LIMIT 1",
+                                  (launched, launched)).fetchone():
+                        hold('the failed dispatch invocation acquired an attempt')
+                    excluded = "('ACCEPTED','CANCELLED','QUEUED')"
+                rows = db.execute("SELECT state, attempt_id, detail FROM jobs WHERE state NOT IN " + excluded)
                 for state, attempt, detail in rows:
                     saved = json.loads(detail)
                     if (state != 'UNKNOWN' or not attempt or saved.get('automatic_retry') is not False
@@ -1116,9 +1138,10 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         optimizer = str(driver.parents[1]/'src/trottertracks/rpe_optimizer_concurrent.py') if trial else ''
         preparation = schedule_resume.get('preparation_sha256')
         runtime_trial = trial
-        resumed_ast = schedule_resume.get('resume_ast_failure')
-        if resumed_ast and load(run/'EXIT.json').get('invocation_id') == resumed_ast:
-            runtime_trial = dict(trial or {}, resumed_ast_failure=resumed_ast)
+        for kind in ('ast', 'dispatch'):
+            recovered = schedule_resume.get('resume_'+kind+'_failure')
+            if recovered and load(run/'EXIT.json').get('invocation_id') == recovered:
+                runtime_trial = dict(trial or {}, recovered_failure=dict(kind=kind, invocation=recovered))
         operations = [(name, str(driver.parents[1]/'src/trottertracks'/(name+'.py')))
                       for name in SCHEDULE_PREPARATION_MODULES] if preparation is not None else []
         bootstrap = ('import importlib.util,json,runpy,sys\n'

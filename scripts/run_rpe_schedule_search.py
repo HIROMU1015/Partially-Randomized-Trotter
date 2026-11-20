@@ -1382,13 +1382,17 @@ class WidthDriver:
         previous=self.state.get('stop',{}).get('reason')
         transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS',
                    'SCOPE_HELD_Q3','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY','DISCRETE_SCHEDULE_PLAN_ONLY'}
-        recovery = (globals().get('FIXED_RUN_WORKER_TRIAL') or {}).get('resumed_ast_failure')
+        trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+        recovery = trial.get('recovered_failure')
+        if recovery is None and trial.get('resumed_ast_failure'):
+            recovery = dict(kind='ast', invocation=trial['resumed_ast_failure'])
         if previous == 'RUNTIME_EXCEPTION' and recovery and not self.a.plan_only:
-            preserved = O.load_json(self.run/'stop-history'/('ast-'+recovery+'.json'))
+            kind, invocation = recovery['kind'], recovery['invocation']
+            preserved = O.load_json(self.run/'stop-history'/(kind+'-'+invocation+'.json'))
             if preserved != self.state['stop']:
-                raise ValueError('Reconciled AST failure differs from its saved stop')
+                raise ValueError('Reconciled controller failure differs from its saved stop')
             self.state.pop('stop')
-            self.log(event='RESUMED_AFTER_AST_FAILURE', invocation_recovered=recovery)
+            self.log(event='RESUMED_AFTER_'+kind.upper()+'_FAILURE', invocation_recovered=invocation)
             previous = None
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return

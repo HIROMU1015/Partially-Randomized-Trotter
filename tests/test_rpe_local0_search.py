@@ -109,6 +109,46 @@ class Tests(unittest.TestCase):
         self.assertEqual(started, [run])
         self.assertEqual(restore_resume_archives(state,run), {'restored':[], 'already_present':[sha]})
 
+    def test_projected_dispatch_resume_preserves_unowned_queue_and_failed_invocation(self):
+        import sqlite3
+
+        started = []
+        invocation = '2'*32
+        gateway = Gateway(self.config, preflight=lambda *args: {'status': 'PASS'},
+                          launch=lambda run, *args: started.append(run), resume_dispatch_failure=invocation)
+        result = gateway.handle(dict(request(4, 6), action='prepare'))
+        run = pathlib.Path(result['run_directory'])
+        launch = dict(invocation_id=invocation, pid=2147483647)
+        ended = dict(invocation_id=invocation, returncode=1)
+        history = run/'invocations'/invocation
+        for p in (run, history):
+            write(p/'LAUNCH.json', launch)
+            write(p/'EXIT.json', ended)
+        write(run/'NORMAL_DRIVER.json', launch)
+        write(run/'distributed/relay/STATUS.json', dict(stopped=True, pid=2147483647))
+        write(run/'distributed/pbs/STATE.json', dict(allocations={}))
+        stop = dict(reason='RUNTIME_EXCEPTION', error_type='KeyError', message=repr('a'*64))
+        write(run/'KAPPA_STATE.json', dict(stop=stop))
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(dict(stop, phase='DRIVER',
+            traceback="in prefetch_standby\nsource = configurations[projection['source_configuration_id']]"))+'\n')
+        (run/'FAST_DRIVER.lock').touch()
+        database = run/'distributed/QUEUE.sqlite3'
+        with sqlite3.connect(database) as db:
+            db.execute('CREATE TABLE jobs (state TEXT, attempt_id TEXT, detail TEXT, host_id TEXT,'
+                       ' assigned_epoch REAL, started_epoch REAL)')
+            db.execute("INSERT INTO jobs VALUES ('QUEUED',NULL,'{}','worker',NULL,NULL)")
+        resume = dict(action='resume', instruction='Artificial technical restart')
+        with self.assertRaisesRegex(RequestError, 'acquired an attempt'):
+            gateway.start(run, resume)
+        with sqlite3.connect(database) as db:
+            db.execute("UPDATE jobs SET host_id=NULL")
+        self.assertEqual(gateway.start(run, resume), 'STARTED')
+        self.assertEqual(started, [run])
+        self.assertEqual(load(history/'EXIT.json'), ended)
+        self.assertEqual(load(run/'stop-history'/('dispatch-'+invocation+'.json')), stop)
+        with sqlite3.connect(database) as db:
+            self.assertEqual(db.execute("SELECT state FROM jobs").fetchone(), ('QUEUED',))
+
     def test_status_observes_local_q3_body_before_the_worker_state_report(self):
         from trottertracks.rpe_local0_search import local0_progress
         from trottertracks.rpe_q3_store import JobStore
