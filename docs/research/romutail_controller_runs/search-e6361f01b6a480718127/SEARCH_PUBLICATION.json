@@ -21,7 +21,7 @@
     },
     "PRICE_MODEL_VALIDATIONS.json": {
       "path": "docs/research/romutail_controller_runs/search-e6361f01b6a480718127/PRICE_MODEL_VALIDATIONS.json",
-      "sha256": "f7d290b802b38826dd1bd39324e59465237777690cf51308cf0c26bdc24f347d"
+      "sha256": "8a799df285c61b06c586c1afd1fbf6000a7d6fa1f621a31f20c516a94adf1d0e"
     }
   },
   "scope": "SAVED_METADATA_ONLY_NO_SCIENTIFIC_EXECUTION",
@@ -29,11 +29,11 @@
   "search_progress": {
     "schema": "H4_SEARCH_PROGRESS_V1",
     "status": "RECORDED",
-    "controller_cycle": 5,
-    "planner_cycle": 5,
+    "controller_cycle": 6,
+    "planner_cycle": 6,
     "controller_stop": {
       "reason": "USER_REQUESTED_STOP",
-      "UTC": "2026-11-20T07:07:59Z"
+      "UTC": "2026-11-20T07:36:40Z"
     },
     "planner_stop": null,
     "families": [
@@ -42,19 +42,29 @@
         "point_status": {
           "EVALUATED": 3,
           "REGISTERED": 1,
-          "HELD": 1
+          "HELD": 1,
+          "COMPLETION": 2
         },
         "next_candidates": [
           {
-            "kappa": "16",
+            "kappa": "32",
             "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "HELD"
+            "status": "COMPLETION"
+          },
+          {
+            "kappa": "64",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "COMPLETION"
           }
         ],
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "16"
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -72,14 +82,19 @@
       {
         "family": "PR_DF|LD5|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "HELD": 1,
+          "HELD": 2,
           "EVALUATED": 2,
-          "REGISTERED": 1,
+          "REGISTERED": 2,
           "COMPLETION": 1
         },
         "next_candidates": [
           {
-            "kappa": "16",
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          },
+          {
+            "kappa": "64",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "COMPLETION"
           }
@@ -87,7 +102,11 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "16"
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -106,10 +125,40 @@
         "family": "PR_DF|LD6|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
           "EVALUATED": 1,
-          "HELD": 3
+          "HELD": 5,
+          "COMPLETION": 1
         },
-        "next_candidates": [],
-        "decisions": [],
+        "next_candidates": [
+          {
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "COMPLETION"
+          },
+          {
+            "kappa": "64",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
+          }
+        ],
         "method": "PR_DF",
         "L_D": 6,
         "formula": "2nd",
@@ -125,10 +174,40 @@
       {
         "family": "PR_DF|LD6|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "HELD": 4
+          "HELD": 4,
+          "COMPLETION": 3
         },
-        "next_candidates": [],
-        "decisions": [],
+        "next_candidates": [
+          {
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "COMPLETION"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "COMPLETION"
+          },
+          {
+            "kappa": "64",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "COMPLETION"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
+          }
+        ],
         "method": "PR_DF",
         "L_D": 6,
         "formula": "2nd",
@@ -145,11 +224,21 @@
         "family": "PR_DF|LD7|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
           "EVALUATED": 3,
-          "REGISTERED": 1
+          "REGISTERED": 4
         },
         "next_candidates": [
           {
-            "kappa": "8",
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "64",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "REGISTERED"
           }
@@ -157,7 +246,15 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "8"
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -176,11 +273,21 @@
         "family": "PR_DF|LD7|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
           "EVALUATED": 3,
-          "REGISTERED": 1
+          "REGISTERED": 4
         },
         "next_candidates": [
           {
-            "kappa": "8",
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "64",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "REGISTERED"
           }
@@ -188,7 +295,15 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "8"
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -208,11 +323,21 @@
         "point_status": {
           "HELD": 1,
           "EVALUATED": 1,
-          "REGISTERED": 2
+          "REGISTERED": 5
         },
         "next_candidates": [
           {
-            "kappa": "8",
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "64",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "REGISTERED"
           }
@@ -220,7 +345,15 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "8"
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -239,11 +372,21 @@
         "family": "PR_DF|LD8|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
           "EVALUATED": 2,
-          "REGISTERED": 2
+          "REGISTERED": 5
         },
         "next_candidates": [
           {
-            "kappa": "8",
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "64",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "REGISTERED"
           }
@@ -251,7 +394,15 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "8"
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -270,11 +421,21 @@
         "family": "PR_DF|LD9|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
           "EVALUATED": 2,
-          "REGISTERED": 2
+          "REGISTERED": 5
         },
         "next_candidates": [
           {
-            "kappa": "8",
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          },
+          {
+            "kappa": "64",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "REGISTERED"
           }
@@ -282,7 +443,15 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "8"
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -300,11 +469,21 @@
       {
         "family": "PR_DF|LD9|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "HELD": 4
+          "HELD": 7
         },
         "next_candidates": [
           {
-            "kappa": "8",
+            "kappa": "16",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          },
+          {
+            "kappa": "32",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          },
+          {
+            "kappa": "64",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "HELD"
           }
@@ -312,7 +491,15 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "8"
+            "kappa": "16"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "32"
+          },
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "64"
           }
         ],
         "method": "PR_DF",
@@ -329,6 +516,6 @@
       }
     ],
     "state_path": "docs/research/romutail_controller_runs/search-e6361f01b6a480718127/KAPPA_STATE.json",
-    "state_sha256": "08144af667bf7e03567c96d74d2fa927977221065ea28969c4f883b82cf2fadd"
+    "state_sha256": "98bd56ab015099796af6d02a804d667d5332d0880800c43816d50dfe188b572d"
   }
 }
