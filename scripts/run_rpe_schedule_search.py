@@ -58,6 +58,8 @@ def apply_worker_trial(spec, trial):
     distributed = spec['executor']['distributed']
     if 'ready_queue_waves' in trial:
         distributed['ready_queue_waves'] = trial['ready_queue_waves']
+    if trial.get('pbs_hold_node') is True and distributed.get('pbs'):
+        distributed['pbs_hold_node'] = True
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
                                ('rpe_method_optimizer', 'method_optimizer_sha256')):
@@ -1258,10 +1260,14 @@ class WidthDriver:
                 work_conserving_search=self.work_conserving_search)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
-        runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
-        if runtime is not None:comp.bind_stage_executor(runtime)
+        manager = getattr(executor, 'pbs_manager', None)
+        if manager is not None and manager.hold_node:
+            manager.retain_between_batches = True
+            self.run_pbs_manager = manager
         preparation_pool=None
         try:
+            runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
+            if runtime is not None:comp.bind_stage_executor(runtime)
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
                 prepare_during = executor.replay_prior_q3() and prepare_during
             interim=None
@@ -1584,6 +1590,10 @@ def main(argv=None, *, driver_factory=None):
         try:d.save();d.log(event='DRIVER_ERROR',stop=d.state['stop'])
         except BaseException as save_error:O.record_runtime_error(a.run_dir,save_error,'FAILED_DRIVER_STATE_SAVE')
         raise
+    finally:
+        manager = getattr(d, 'run_pbs_manager', None)
+        if manager is not None and manager.detached:
+            manager.close()
     if (a.run_dir/'STOP_REQUESTED.json').exists() and d.state.get('stop',{}).get('reason') not in (
             'V2_RESULT_REQUIRES_REVIEW','RUNTIME_EXCEPTION'):
         d.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());d.save()

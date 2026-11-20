@@ -389,6 +389,13 @@ class PbsManager:
         self.configured = {worker['host_id']:worker for worker in settings['workers']}
         if len(self.configured) != len(settings['workers']):
             raise ValueError('PBS host IDs must be distinct')
+        self.hold_node = getattr(executor, 'distributed', {}).get('pbs_hold_node') is True
+        self.retain_between_batches = False
+        self.detached = False
+        if self.hold_node and (len(self.configured) != 1 or not (
+                self.settings.get('allocation_sizing') or {}).get('per_task_resources')):
+            self.lock.close()
+            raise ValueError('PBS node reuse requires one worker with per-task resource accounting')
 
     def log(self, event, **fields):
         append(self.directory/'EVENTS.jsonl', event, **fields)
@@ -645,7 +652,8 @@ class PbsManager:
                     ready.append((task, usable, unchecked, row['request']))
             available = {host:self.executor._offer_free(host,policy,error) for host in self.executor.hosts if host not in self.configured}
             startup = self.startup_jobs()
-            matched = self.executor._match_ready_jobs([task for task, _, _, _ in ready if task.job.name not in startup],
+            matched = set() if self.hold_node else self.executor._match_ready_jobs(
+                [task for task, _, _, _ in ready if task.job.name not in startup],
                 {host:count for host,count in available.items() if count > 0})
             outstanding = [(usable, request) for task, usable, _, request in ready
                            if usable and task.job.name not in matched]
@@ -664,14 +672,20 @@ class PbsManager:
             cpus, gib, capacity = packed_resources(requests, profile, self.settings, host, selected=packed)
             if not capacity:
                 raise ValueError('No PBS task fits the configured CPU and memory pool')
-            resources.update(ncpus=cpus, mem=f'{gib}gb')
+            if self.hold_node:
+                policy = profile.get('slot_policy') or {}
+                capacity = min(resources['ncpus'], policy.get('max_slots') or resources['ncpus'])
+            else:
+                resources.update(ncpus=cpus, mem=f'{gib}gb')
             profile.setdefault('pbs', {})['per_task_resources'] = True
             profile.setdefault('slot_policy', {})['initial_slots'] = capacity
             demand = dict(demand, requested_task_capacity=capacity, per_task_resources=True)
+            if self.hold_node:
+                demand['held_node'] = True
             # Hold only work that passed the PBS-specific input check and fit
             # this actual request. No queue owner, attempt or budget is changed.
             startup_jobs = []
-            for request in packed:
+            for request in (packed if not self.hold_node else ()):
                 job = request.get('request_id')
                 row = self.executor.store.row(job) if job else None
                 if row and row['state'] == 'QUEUED' and host in (row.get('eligibility') or {}).get('eligible_host_ids', ()):
@@ -802,12 +816,16 @@ class PbsManager:
         for token, requests in data['requests'].items():
             self.responses[token] = {request['request_id']:self._dispatch(token, request)
                                      for request in requests if request is not None}
+        user_stop = self.stop.is_set() or self.executor._user_stop_requested()
+        if self.executor.state.closed and self.retain_between_batches and not user_stop:
+            self.save()
+            return
         outstanding, pending, queued, free = self._demand()
         waiting_tasks = outstanding + pending
         shortage = len(waiting_tasks)
         active = [a for a in self.allocations if a['status'] not in TERMINAL]
-        stopping = self.stop.is_set() or self.executor._user_stop_requested() or self.executor.state.closed
-        keep_for_preparation = (not (outstanding or pending) and not stopping and any(
+        stopping = user_stop or self.executor.state.closed
+        keep_for_preparation = (not self.hold_node and not (outstanding or pending) and not stopping and any(
             a['status'] == 'R' and (a.get('worker') or {}).get('accepting') for a in active)
             and self._recent_preparation_completion(self.readiness_wait_seconds()))
         hosts_with_attempts = {row['host_id'] for row in self.executor._owned_attempts()}
@@ -853,7 +871,7 @@ class PbsManager:
                     and latest.get('clock_id') == now['clock_id']
                     and now['monotonic'] - latest['monotonic'] <= self.readiness_wait_seconds() and
                     now['monotonic'] - first['monotonic'] >= self.readiness_wait_seconds())
-                if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'R'
+                if (not stopping and not self.hold_node and self.settings.get('allocation_sizing') and allocation['status'] == 'R'
                         and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')
                         and offered_long_enough
                         and (memory_mismatch or
@@ -863,7 +881,7 @@ class PbsManager:
                     self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
                              previous_cpus=current_cpus, compatible_ready_jobs=requested_slots)
                 resize_reason = None
-                if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'Q'
+                if (not stopping and not self.hold_node and self.settings.get('allocation_sizing') and allocation['status'] == 'Q'
                         and not record.get('resize_requested') and host not in hosts_with_attempts):
                     if 2 * requested_cpus <= current_cpus:
                         resize_reason = 'QUEUED_ALLOCATION_EXCEEDS_COMPATIBLE_DEMAND'
@@ -892,7 +910,8 @@ class PbsManager:
                     self.log('PBS_QUEUED_ALLOCATION_RESIZE', token=token, host_id=host,
                              previous_cpus=current_cpus, requested_cpus=requested_cpus, reason=resize_reason)
                 self.controls[token] = dict(stop=stopping or record.get('resize_requested', False),
-                    release_when_idle=not waiting and not keep_for_preparation and host not in hosts_with_attempts)
+                    release_when_idle=(stopping or not self.hold_node) and not waiting
+                    and not keep_for_preparation and host not in hosts_with_attempts)
                 queued_stop = stopping and allocation['status'] in ('Q', 'H', 'W')
                 queued_resize = record.get('resize_requested') and allocation['status'] == 'Q'
                 if (queued_stop or queued_resize) and allocation.get('job_id') and host not in hosts_with_attempts:
@@ -945,17 +964,31 @@ class PbsManager:
         self.thread = threading.Thread(target=run, name='rpe-pbs-manager', daemon=True)
         self.thread.start()
 
-    def close(self):
+    def close(self, *, retain_allocation=False):
+        if self.lock.closed:
+            if not self.detached:
+                return
+            self.lock = (self.directory/'MANAGER.lock').open('a')
+            fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            self.state = read(self.path)
+        self.detached = retain_allocation
         self.stop.set()
         if self.thread:
             self.thread.join(timeout=self.settings.get('request_timeout_seconds',20)+4)
         if self.thread and self.thread.is_alive():
             self.gateway.close(); self.thread.join(timeout=4)
         try:
+            if retain_allocation:
+                if self.responses:
+                    self.gateway.call(dict(action='exchange', responses=self.responses, controls={}))
+                    self.responses = {}
+                self.log('PBS_ALLOCATION_RETAINED_BETWEEN_BATCHES')
+                return
             controls = {token:dict(stop=True, release_when_idle=True) for token,record in self.state['allocations'].items()
                         if record['status'] not in TERMINAL}
             if controls or self.responses:
-                self.gateway.call(dict(action='exchange', responses=self.responses, controls=controls))
+                snapshot = self.gateway.call(dict(action='exchange', responses=self.responses, controls=controls))
+                self.allocations = snapshot['allocations']
             for allocation in self.allocations:
                 if allocation['status'] in ('Q','H','W') and allocation.get('job_id') and not any(
                         row['host_id'] == allocation['host_id'] for row in self.executor._owned_attempts()):

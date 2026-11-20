@@ -449,6 +449,50 @@ class ManagerTests(unittest.TestCase):
             manager.cycle()
             self.assertTrue(manager.controls[token]['release_when_idle'])
 
+    def test_full_node_keeps_the_same_allocation_until_run_shutdown(self):
+        with tempfile.TemporaryDirectory() as directory:
+            config = settings()
+            config['resources'].update(ncpus=96, mem='350gb')
+            config['allocation_sizing'] = dict(per_task_resources=True, q3_startup_memory_bytes_per_task=8*P.GIB)
+            executor = FakeExecutor(directory)
+            executor.distributed = {'pbs_hold_node': True}
+            gateway = FakeGateway()
+            first = P.PbsManager(executor, config, gateway=gateway)
+            self.addCleanup(first.close)
+            first.retain_between_batches = True
+            request = dict(route=dict(kind='artificial'))
+            spec = first._submit('pbs-0', first.configured['pbs-0'], {}, [request])
+            self.assertEqual(spec['resources'], config['resources'])
+            self.assertEqual(spec['profile']['slot_policy']['initial_slots'], 96)
+            self.assertNotIn('startup_jobs', spec['reason'])
+            token = spec['token']
+            observed = dict(token=token, status='Q', host_id='pbs-0', job_id='test.PBS', worker={})
+            original = gateway.call
+            gateway.call = lambda message: (original(message) or dict()) | (
+                dict(allocations=[observed], requests={}) if message['action'] == 'exchange' else {})
+            first._demand = lambda: ([], [], 0, 0)
+            first.cycle()
+            self.assertEqual(first.controls[token], dict(stop=False, release_when_idle=False))
+            self.assertNotIn('queued_resize_since', first.state['allocations'][token])
+            observed.update(status='R', worker={'accepting': True})
+            first.cycle()
+            self.assertFalse(first.controls[token]['release_when_idle'])
+            executor.state.closed = True
+            first.cycle()
+            first.close(retain_allocation=True)
+            self.assertTrue(first.detached)
+            executor.state.closed = False
+            second = P.PbsManager(executor, config, gateway=gateway)
+            self.addCleanup(second.close)
+            second._demand = lambda: ([(['pbs-0'], request)], [], 1, 0)
+            second.cycle()
+            self.assertTrue(second.accepting_allocation('pbs-0', 'test.PBS'))
+            self.assertEqual(list(second.state['allocations']), [token])
+            self.assertFalse(any(call['action'] == 'delete' for call in gateway.calls))
+            second.close()
+            self.assertEqual(gateway.calls[-1]['controls'][token], dict(stop=True, release_when_idle=True))
+            first.detached = False  # the successor already performed final shutdown
+
     def test_unused_queued_allocation_resizes_for_persistent_checked_demand(self):
         for initial, remaining in ((4, 0), (4, 2), (2, 8)):
             with self.subTest(initial=initial, remaining=remaining), tempfile.TemporaryDirectory() as directory:

@@ -2564,7 +2564,10 @@ class DistributedExecutor(ConcurrentExecutor):
         super().finish()
         if self.live_readiness_pool:
             self.live_readiness_pool.shutdown(wait=False, cancel_futures=True)
-        if self.pbs_manager: self.pbs_manager.close()
+        if self.pbs_manager:
+            retain = (self.pbs_manager.retain_between_batches and not self.state.failure
+                      and not self._user_stop_requested())
+            self.pbs_manager.close(retain_allocation=retain)
         self.stop_controller_relay()
         try:
             self._finish_local_worker()
