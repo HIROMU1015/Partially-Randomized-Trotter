@@ -1101,6 +1101,8 @@ class DistributedPreparationBridge:
             raise hold('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
         try:
             self._import_result(result, request)
+        except FileNotFoundError as error:
+            raise PreparationWait('PREPARATION_RESULT_ARTIFACTS_MISSING:'+stage+':'+job_id+':'+str(error)) from error
         except ValueError as error:
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':'+str(error)) from error
         self.executor.adopt_preparation(job_id)

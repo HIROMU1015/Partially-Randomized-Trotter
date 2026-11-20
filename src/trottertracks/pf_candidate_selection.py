@@ -317,7 +317,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             result=task.result()
             if result is None:continue
             chosen,status,entry=result;cid=chosen['configuration_id']
-            records[cid].update(status=status['status'],reason=status.get('reason'),key=chosen['key'],
+            records[cid].update(status=status['status'],reason=status.get('reason'),key=chosen['key'],method=chosen['method'],
                                 configurations={cid:entry} if entry is not None else {})
             for field in ('request_path', 'differing_fields'):
                 if field in status:

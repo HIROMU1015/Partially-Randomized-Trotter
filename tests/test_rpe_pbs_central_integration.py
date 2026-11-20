@@ -32,7 +32,7 @@ class OwnershipTests(unittest.TestCase):
         shared = root/'shared-central-relay'
         shared.mkdir()
         (shared/'RELAY.json').write_text('SHARED_RELAY_MUST_REMAIN_UNCHANGED\n')
-        manager = Mock()
+        manager = Mock(retain_between_batches=False)
         manager.metrics.return_value = dict(artificial_only=True)
         service = Mock()
         server = SimpleNamespace(server_address=('127.0.0.1',18763),
@@ -101,7 +101,7 @@ class OwnershipTests(unittest.TestCase):
                     self.assertFalse((values['run']/'distributed/relay/STOP').exists())
                 executor.finish()
                 executor.finish()
-                values['manager'].close.assert_called_once_with()
+                values['manager'].close.assert_called_once_with(retain_allocation=False)
                 values['service'].close.assert_called_once_with()
                 values['server'].shutdown.assert_called_once_with()
                 values['server'].server_close.assert_called_once_with()

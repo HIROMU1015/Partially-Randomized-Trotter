@@ -496,6 +496,14 @@ def local0_progress(applied, spec, run=None):
                 status = 'REUSED_SAVED_RESULT'
             if key and status:
                 observations[key] = dict(candidate_id=key, method=point['method'], state=status, reason=point.get('reason'))
+    pf_status = run/'PF_PREPARATION_STATUS.json'
+    if pf_status.is_file():
+        pending = {'PREPARATION_WAITING': 'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE': 'TECHNICAL_FAILURE',
+                   'PRIOR_OWNER_HOLD': 'TECHNICAL_FAILURE', 'PRICE_EVIDENCE_REQUIRED': 'PREPARATION_WAITING'}
+        for key, record in load(pf_status).get('records', {}).items():
+            if record.get('method') in ('FULL_PF', 'TRUNCATED_PF') and record.get('status') in pending:
+                observations[key] = dict(candidate_id=key, method=record['method'], state=pending[record['status']],
+                                         reason=record.get('reason'), differing_fields=record.get('differing_fields'))
     database = run/'distributed/QUEUE.sqlite3'
     if not database.exists():
         progress['candidates'] = list(observations.values())

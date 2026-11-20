@@ -941,6 +941,8 @@ class WidthDriver:
                     self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
                     break
                 elif (record.get('conflicting_signal_rounds') or record['status'].startswith('STOP')
+                      or str(record.get('reason','')).startswith(('PREPARATION_REQUEST_MISMATCH:',
+                                                                 'PREPARATION_RESULT_MISMATCH:'))
                       or 'NUMERICAL_GATE' in str(record.get('reason','')) or
                       getattr(self,'rule_stop',False) and record.get('scientific_failure')):
                     p.update(status='HELD',reason=record.get('reason',record['status']))
@@ -1581,9 +1583,10 @@ class WidthDriver:
                 if next_batch:
                     self.log(event='Q3_BATCH_ADVANCE', methods=next_batch)
                     continue
-            waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
+            waiting_inputs=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
-                     any(r.get('input_requests') or r.get('prior_q3_holds') for r in result.values()))
+                     any(r.get('input_requests') for r in result.values()))
+            waiting = waiting_inputs or any(r.get('prior_q3_holds') for r in result.values())
             pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
             if getattr(self,'rule_stop',False):
                 if any(r['stop_reason']=='STEP_LIMIT' for r in result.values()):
@@ -1595,7 +1598,8 @@ class WidthDriver:
             pf_status_path = self.run/'PF_PREPARATION_STATUS.json'
             pf_status = O.load_json(pf_status_path) if pf_status_path.is_file() else {}
             pf_records = list(pf_status.get('records', {}).values()) or [pf_status]
-            pf_held = any(row.get('status') in ('PREPARATION_INCOMPLETE', 'PREPARATION_WAITING', 'PRIOR_OWNER_HOLD')
+            pf_held = any(row.get('status') in ('PREPARATION_INCOMPLETE', 'PREPARATION_WAITING',
+                                               'PRIOR_OWNER_HOLD', 'PRICE_EVIDENCE_REQUIRED')
                           for row in pf_records)
             if (not proposals and not pending and ready_families ==
                     sum(f['status']=='READY_METADATA' for f in self.state['families'].values())):
@@ -1610,7 +1614,7 @@ class WidthDriver:
                 elif scaled and not blocked and budget_stops:
                     reason = 'Q3_BUDGET_EXHAUSTED'
                 waits = []
-                if waiting or any(row.get('status') == 'PREPARATION_WAITING' for row in pf_records):
+                if waiting_inputs or any(row.get('status') == 'PREPARATION_WAITING' for row in pf_records):
                     waits.append('PREPARATION_OR_INPUT')
                 if unresolved or any(h.get('status') == 'IN_PROGRESS' for r in result.values()
                                      for h in r.get('held', ())):

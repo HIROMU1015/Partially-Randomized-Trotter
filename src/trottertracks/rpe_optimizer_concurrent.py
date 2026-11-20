@@ -1998,7 +1998,11 @@ class DistributedExecutor(ConcurrentExecutor):
             job = self.run_dir/'jobs'/row['method']/job_id
             outcome = json.loads((job/'OUTCOME.json').read_text())
             artifacts = job/'artifacts'
-            self.artifact_cache.materialize(outcome.get('artifacts', {}), artifacts, immutable=True)
+            manifest = outcome.get('artifacts', {})
+            if not adopt and self.artifact_cache.missing(manifest.values()):
+                return dict(status='PREPARATION_RESULT_ARTIFACTS_MISSING', job_id=job_id,
+                            calls=0, preparation_calls=1)
+            self.artifact_cache.materialize(manifest, artifacts, immutable=True)
             if adopt: self.adopt_preparation(job_id)
             return dict(outcome,job_id=job_id,job=str(job),artifact_directory=str(artifacts),calls=0,preparation_calls=1)
         if row['state'] == 'UNKNOWN' or (task and task.error):
@@ -2618,13 +2622,13 @@ class DistributedExecutor(ConcurrentExecutor):
             if preparation:
                 return self._complete_preparation(row, value, transfer, receipt, outcome, task, started)
             if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
-                raise ValueError('Successful outcome without a clean adapter exit')
+                self._hold_result_transfer(row, task, 'Successful outcome without a clean adapter exit')
             proposal = task.proposal if task else dict(configuration_id=row['request']['configuration_id'],
                 vector=O.interleave(row['request']['N_X'], row['request']['N_Y']))
             owner = task.view if task and row['request']['route'].get('horizon_projection') else self.for_method(row['method'])
             validation = owner.ingest(transfer, proposal, calls=0)
             if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and validation['status'] == 'UNKNOWN':
-                raise ValueError('Transferred outcome identity mismatch: '+str(validation.get('reason')))
+                self._hold_result_transfer(row, task, 'Transferred outcome identity mismatch: '+str(validation.get('reason')))
             accepted, duplicate = self.store.complete(host, row['job_id'], row['attempt_id'], value['request_sha256'], value['files'])
             self._publish_transfer(accepted)
             if not duplicate:
@@ -2642,6 +2646,15 @@ class DistributedExecutor(ConcurrentExecutor):
             self._timing_queue()
             s.cv.notify_all()
             return dict(ok=True, duplicate=duplicate)
+
+    def _hold_result_transfer(self, row, task, reason):
+        # Keep the rejected transfer and its durable execution owner for review.
+        if task and task.status == 'RUNNING':
+            task.error = 'WORKER_RESULT_MISMATCH'
+            self._finished(task, None, row['assigned_epoch'])
+        self.for_method(row['method']).log(event='RESULT_TRANSFER_HOLD', job=row['job_id'],
+            attempt_id=row['attempt_id'], host_id=row['host_id'], reason=reason)
+        raise ValueError(reason)
 
     def _publish_transfer(self, row):
         from .rpe_q3_coordinator import publish_staged_files
@@ -2687,14 +2700,15 @@ class DistributedExecutor(ConcurrentExecutor):
             return self._held_answer(proposal)
         if answer:
             current = self.store.row(job.name)
+            task_hold = answer.get('reason') in ('WORKER_CONTACT_LOST', 'WORKER_RESULT_MISMATCH')
             if (answer['status'] == 'UNKNOWN' and current
                     and not self.state.failure and current['attempt_id'] and current['host_id']
-                    and (answer.get('reason') == 'WORKER_CONTACT_LOST' or
+                    and (task_hold or
                          current['state'] == 'UNKNOWN' and current['detail'].get('automatic_retry') is False)):
                 # The durable worker report identifies this unresolved attempt.
                 # Retain its ownership and isolate proposals that depend on it.
                 answer = dict(answer, failure_scope='CONFIGURATION',
-                              reason=(answer['reason'] if answer.get('reason') == 'WORKER_CONTACT_LOST'
+                              reason=(answer['reason'] if task_hold
                                       else current['detail'].get('reason') or 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED'))
         return answer
 

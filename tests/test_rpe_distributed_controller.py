@@ -773,6 +773,12 @@ class ControllerFailures(unittest.TestCase):
             executor.rpc('/v1/complete', payload)
         self.assertNotEqual(executor.store.row(task.job.name)['state'], 'ACCEPTED')
         self.assertFalse((task.job/'OUTCOME.json').exists())
+        held = executor.for_method('PR_PAULI').answer(self.proposal('first'))
+        self.assertTrue(O.is_local_unknown(held))
+        self.assertEqual(held['reason'], 'WORKER_RESULT_MISMATCH')
+        other = self.enqueue(executor, 'independent')
+        assignment, = executor.rpc('/v1/poll', dict(host_id='other', slots=1, source_sha=self.source))['assignments']
+        self.assertEqual(assignment['job_id'], other.job.name)
 
     def test_prior_records_counts_host_reuse_once_and_excludes_transfer_validation(self):
         executor = self.executor()
