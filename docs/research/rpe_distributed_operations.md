@@ -113,3 +113,8 @@ Gitの正式packと参照先は保存対象とし、停止済みの一時packは
 - 価格較正・独立監査は、元のコホート区分、pathと軸ごとのreceipt、seed、event digest、compiler・回路fingerprint、計測値、採択モデルと判定を保存する。同一pathのX/Yは個別receiptを持ち、同じイベント原本はSHA-256が一致する1部を参照する。現行の保存軸の再利用はreceiptを読む。元イベントが科学契約上必要な場合や凍結実装での厳密再現を確認できていない場合は、イベント原本1部も保持する。
 - 準備の中央受領時は、ハッシュ付き原本とjobの読み取り用参照を同じ実体で保持する。計算用の展開入力や、後続処理が書き換える候補作業ファイルには独立したコピーを使う。既存の別コピーを整理するときはSHA-256と利用箇所を照合する。
 - 配送bundleは、固定SOURCE・入力commitとパス・SHA-256、生成した入力の原本、必要なGitオブジェクトと復元手順に分ける。保存済みbundleを短期扱いにする前に、空のキャッシュと固定SOURCEから元のREQUESTが要求するbundleのSHA-256、入力HEAD、各入力のハッシュを照合する。受領済み結果のGit差分の取込みと、後続の保存結果再利用も通す。固定SHAのbundleを復元できない既存REQUESTでは、bundle本体を保持する。
+
+保存済み `search-e6361f01b6a480718127` のPF_COMPILE `prep-80abb4e4c35046236650ffc7` と
+DF_SIGNALS `prep-92c07e13c05743421b2c679c` では、元bundleを再生成に使わず、
+元の入力locator・固定SOURCE・bundleのGit refから再生成し、REQUESTのbundle SHA-256と一致した。
+この確認は2件のbundleバイト列まで。新規workerでの取込みと結果再利用は別途照合する。
