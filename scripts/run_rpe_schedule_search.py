@@ -1618,7 +1618,9 @@ class WidthDriver:
             pf_status = O.load_json(pf_status_path) if pf_status_path.is_file() else {}
             pf_records = list(pf_status.get('records', {}).values()) or [pf_status]
             pf_held = any(row.get('status') in ('PREPARATION_INCOMPLETE', 'PREPARATION_WAITING',
-                                               'PRIOR_OWNER_HOLD', 'PRICE_EVIDENCE_REQUIRED')
+                                               'PRIOR_OWNER_HOLD', 'PRICE_EVIDENCE_REQUIRED',
+                                               'PRICE_ACTION_UNAVAILABLE', 'PRICE_RECHECK_AVAILABLE',
+                                               'PRICE_OWNER_WAITING')
                           for row in pf_records)
             if (not proposals and not pending and ready_families ==
                     sum(f['status']=='READY_METADATA' for f in self.state['families'].values())):
@@ -1635,6 +1637,9 @@ class WidthDriver:
                 waits = []
                 if waiting_inputs or any(row.get('status') == 'PREPARATION_WAITING' for row in pf_records):
                     waits.append('PREPARATION_OR_INPUT')
+                if any(row.get('status') in ('PRICE_RECHECK_AVAILABLE', 'PRICE_OWNER_WAITING')
+                       for row in pf_records):
+                    waits.append('PF_PRICE_RECHECK')
                 if unresolved or any(h.get('status') == 'IN_PROGRESS' for r in result.values()
                                      for h in r.get('held', ())):
                     waits.append('OWNED_ATTEMPT')

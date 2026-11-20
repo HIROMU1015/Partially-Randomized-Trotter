@@ -51,7 +51,7 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
         if found:
             rows.append(dict(configuration_id=cid,status='PRIOR_OWNER_HOLD',
                 reason='Selected original owner has running, UNKNOWN, STOP or unregistered partial scientific artifacts; recover/admit those before another execution',
-                original_paths=sorted(set(found))));continue
+                original_paths=sorted(set(found)), original_owner_directories=sorted(map(str, owners))));continue
         # Preserve D's exact selected-cell duplicate check at the ORIGINAL
         # root, where its live/private owner markers can still be observed.
         from trottertracks import pf_evidence_preparation as E
@@ -70,13 +70,20 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             rows.append(dict(configuration_id=cid,status='PRICE_EVIDENCE_REQUIRED',
                              reason=str(error),signal_deferred_for_price=True))
             continue
+        consumed = {tuple(axis) for axis in request.get('previously_audited_price_axes', ())}
+        admitted = {(p['physical_id'], p['axis']) for p in plan['direct_prices']} if consumed else set()
+        if consumed - admitted:
+            rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
+                             reason='Previously completed PF axes must pass saved-price admission before further work',
+                             missing_audited_axes=sorted(consumed - admitted)))
+            continue
         destination=Path(observations)/cid;destination.mkdir(parents=True,exist_ok=True)
         try:
             deferred = helpers['unresolved_rounds'](root, plan, destination/'DUPLICATE_ROUNDS.json', extra) if helpers else {}
             available = [cell for cell in plan.get('new_compile_cells', ()) if cell['m'] not in deferred
                          and (not deferred or cell['role'] != 'HOLDOUT')]
             if deferred and not available:
-                rows.append(dict(configuration_id=cid, status='PRIOR_OWNER_HOLD',
+                rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
                     reason='No independently clear pair of X/Y wrappers', deferred_price_rounds=deferred))
                 continue
             provider.preflight(helpers['independent_plan'](plan, deferred) if deferred else plan, destination)

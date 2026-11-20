@@ -2,6 +2,7 @@
 from copy import deepcopy
 from pathlib import Path
 import sys
+import json
 import tempfile
 import threading
 import time
@@ -141,8 +142,9 @@ class PreparationRoundTests(unittest.TestCase):
                         completion,executor,result,optimizer=optimizer)
                 self.assertIs(got,result);producer.assert_not_called();optimizer.assert_not_called()
 
-    def test_pf_wave_runs_distinct_families_and_preserves_price_hold(self):
+    def test_pf_wave_resolves_price_when_receipt_arrives_and_replays_no_work(self):
         from trottertracks import pf_candidate_selection as selection
+        from trottertracks.pf_saved_prices import receipt_locators
 
         def point(cid, method, prefix, width):
             return dict(configuration_id=cid,method=method,key=dict(p=prefix,formula='2nd',delta_over_h=width),
@@ -156,14 +158,16 @@ class PreparationRoundTests(unittest.TestCase):
         spec=dict(methods=methods,science_approved=True,pf_completion=dict(mode='complete',max_candidates=2,entry='fixture'))
         entered=threading.Barrier(2)
         calls=[]
+        directory=None
         def complete(root,spec,run,*,stage_executor):
             cfg=spec['pf_completion']['selected'][0]['configuration_body']['id']
             calls.append(cfg)
             self.assertIn(cfg,str(run))
-            if cfg!='same_family':entered.wait(timeout=5)
+            if 'recheck-' not in str(run) and cfg!='same_family':entered.wait(timeout=5)
+            held = cfg=='hold' and not receipt_locators(directory/'pf_auto')
             item=({'status':'PRICE_EVIDENCE_REQUIRED','reason':'fixed price plan has no admissible axes'}
-                  if cfg=='hold' else {'status':'READY_FOR_SAME_OPTIMIZER'})
-            registry=dict(configurations={} if cfg=='hold' else {cfg:dict(artificial=True)})
+                  if held else {'status':'READY_FOR_SAME_OPTIMIZER'})
+            registry=dict(configurations={} if held else {cfg:dict(artificial=True)})
             return dict(registry_file=registry,response=dict(items=[item]))
 
         def refresh(root,problem,context,methods,registry,artificial):
@@ -175,19 +179,33 @@ class PreparationRoundTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch.object(selection.PF,'complete_selected',side_effect=complete), \
              patch.object(selection,'_refresh',side_effect=refresh):
             run=Path(tmp)
+            directory=run
             _,_,yielded=selection.prepare_next(ROOT,{},context,spec,run,{},object(),stop_requested=lambda:True)
             self.assertEqual(yielded['status'],'PREPARATION_WAVE_YIELDED')
             self.assertEqual(calls,[])
             after,_,first=selection.prepare_next(ROOT,{},context,spec,run,{},object())
             self.assertCountEqual(calls,['full','hold'])
-            self.assertEqual(first['records']['hold']['status'],'PRICE_EVIDENCE_REQUIRED')
+            self.assertEqual(first['records']['hold']['status'],'PRICE_ACTION_UNAVAILABLE')
             self.assertEqual(set(after['pf_evidence_registry']['configurations']),{'full'})
             after,_,_=selection.prepare_next(ROOT,{},context,spec,run,{},object())
             self.assertEqual(calls[-1],'same_family')
             self.assertEqual(set(after['pf_evidence_registry']['configurations']),{'full','same_family'})
+            selection.prepare_next(ROOT,{},context,spec,run,{},object())
+            self.assertEqual(calls.count('hold'),2)  # One reconciliation of the legacy decision.
             _,_,done=selection.prepare_next(ROOT,{},context,spec,run,{},object())
             self.assertEqual(done['status'],'NO_INCOMPLETE_PF_CANDIDATE')
-            self.assertEqual(len(calls),3)
+            self.assertEqual(calls.count('hold'),2)
+            leaf=run/'pf_auto/candidates/full/pf_auto/pf_completion/provider_workspace'
+            audit=leaf/'docs/research/distributed_selected_pf/full/PF_AUDIT.RESULT.json'
+            audit.parent.mkdir(parents=True)
+            audit.write_text(json.dumps(dict(status='AUDIT_PASS',prices=[
+                dict(physical_id='circuit', gate='C_IMPLEMENTATION_GUARD_PASS',
+                     price_evidence=dict(source=dict(commit='HEAD',path='PROJECT_MAP.md')))])))
+            after,_,state=selection.prepare_next(ROOT,{},context,spec,run,{},object())
+            self.assertEqual(state['records']['hold']['status'],'READY_RETURNED_TO_SAME_OPTIMIZER')
+            self.assertTrue(all(c['ready'] for c in after['candidates']))
+            selection.prepare_next(ROOT,{},context,spec,run,{},object())
+            self.assertEqual(calls.count('hold'),3)
 
     def test_normal_preparation_resume_reconciles_existing_tasks_before_attempt_limit(self):
         with tempfile.TemporaryDirectory()as tmp:

@@ -126,30 +126,39 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     signal_index=wave_root/'cache'/'pf-saved-signal-index'
     metadata_root = Path(__file__).resolve().parents[2]
     price_args = []
-    if spec['pf_completion'].get('recover_saved_price_rounds'):
-        from .pf_saved_prices import receipt_locators
+    settings = spec['pf_completion']
+    if settings.get('recover_saved_price_rounds', True):
+        from .pf_saved_prices import candidate_roots, completed_partial, price_indexes, prior_waves
         price_index = run/'SAVED_PRICE_INDEX.json'
-        prior_waves = [Path(path).resolve()/'pf_auto' for path in spec['executor'].get('prior_run_dirs', ())
-                       if (Path(path)/'pf_auto'/'WAVES.json').is_file() and Path(path).resolve() != wave_root.parent]
+        earlier_waves = prior_waves(wave_root.parent, spec)
         if not price_index.exists():
-            locators = [loc for waves in [wave_root, *prior_waves] for loc in receipt_locators(waves)]
-            unique = {json.dumps(loc, sort_keys=True): loc for loc in locators}
-            put(price_index, dict(root=str(root), locators=list(unique.values())))
+            put(price_index, dict(root=str(root), locators=price_indexes([wave_root, *earlier_waves], settings)))
         price_args = ['--saved-price-index', str(price_index)]
         if not owner_input.exists():
             owners = set(request.get('prior_owner_directories', ()))
+            consumed = {tuple(axis) for axis in request.get('previously_audited_price_axes', ())}
             for item in request['selected']:
                 cfg = item['configuration_body']['id']
-                for waves in prior_waves:
-                    for base in (waves, waves/'price-recovery'):
-                        leaf = (base/'candidates'/cfg/'pf_auto/pf_completion/provider_workspace'
-                                /'docs/research/distributed_selected_pf'/cfg)
-                        if leaf.is_dir():
-                            owners.add(str(leaf))
+                for waves in earlier_waves:
+                    for base in candidate_roots(waves):
+                        leaf = base/cfg/'pf_auto/pf_completion'
+                        provider = leaf/'provider_workspace/docs/research/distributed_selected_pf'/cfg
+                        if not provider.is_dir():
+                            continue
+                        audited = completed_partial({}, leaf, cfg) if len(request['selected']) == 1 else None
+                        if audited is None:
+                            owners.add(str(provider))
+                        else:
+                            consumed.update(audited)
             request = dict(request, prior_owner_directories=sorted(owners))
+            if consumed:
+                request['previously_audited_price_axes'] = [list(axis) for axis in sorted(consumed)]
         else:
             # Bind the prior scope of this scientific leaf at its first precheck.
-            request = dict(request, prior_owner_directories=read(owner_input).get('prior_owner_directories', []))
+            fixed_owner = read(owner_input)
+            request = dict(request, prior_owner_directories=fixed_owner.get('prior_owner_directories', []))
+            if 'previously_audited_price_axes' in fixed_owner:
+                request['previously_audited_price_axes'] = fixed_owner['previously_audited_price_axes']
     if not owner_input.exists():
         put(owner_input,request)
     elif read(owner_input) != request:
@@ -277,9 +286,11 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
             # acquired and audited without freezing a partial price model.
             rounds = [cell['m'] for cell in value['new_compile_cells']
                       if str(cell['m']) not in deferred and cell['role'] != 'HOLDOUT']
-            compiled = call('compile', 'PF_COMPILE', cohort='calibration', rounds=rounds)
-            track_collected_prices(workspace, compiled)
-            prices = call('audit', 'PF_AUDIT', compiled=compiled)['prices']
+            prices = []
+            if rounds:
+                compiled = call('compile', 'PF_COMPILE', cohort='calibration', rounds=rounds)
+                track_collected_prices(workspace, compiled)
+                prices = call('audit', 'PF_AUDIT', compiled=compiled)['prices']
             commits = sorted({row['price_evidence']['source']['commit'] for row in prices})
             if commits:
                 subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),*commits],

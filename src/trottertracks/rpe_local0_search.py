@@ -499,7 +499,9 @@ def local0_progress(applied, spec, run=None):
     pf_status = run/'PF_PREPARATION_STATUS.json'
     if pf_status.is_file():
         pending = {'PREPARATION_WAITING': 'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE': 'TECHNICAL_FAILURE',
-                   'PRIOR_OWNER_HOLD': 'TECHNICAL_FAILURE', 'PRICE_EVIDENCE_REQUIRED': 'PREPARATION_WAITING'}
+                   'PRIOR_OWNER_HOLD': 'TECHNICAL_FAILURE', 'PRICE_EVIDENCE_REQUIRED': 'PREPARATION_WAITING',
+                   'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE', 'PRICE_RECHECK_AVAILABLE': 'PREPARATION_WAITING',
+                   'PRICE_OWNER_WAITING': 'PREPARATION_WAITING'}
         for key, record in load(pf_status).get('records', {}).items():
             if record.get('method') in ('FULL_PF', 'TRUNCATED_PF') and record.get('status') in pending:
                 observations[key] = dict(candidate_id=key, method=record['method'], state=pending[record['status']],

@@ -21,7 +21,7 @@ class OriginalPFOwner(unittest.TestCase):
             package=root/'src/trottertracks';package.mkdir(parents=True)
             (package/'__init__.py').write_text('')
             plan=('raise ValueError("One saved axis only: resolve per-axis native execution before compiling")'
-                  if mode=='price' else 'return {"ARTIFICIAL":True}')
+                  if mode=='price' else 'return {"ARTIFICIAL":True,"direct_prices":[]}')
             (package/'pf_evidence_preparation.py').write_text('def make_plan(root,cfg,source):'+plan+'\n')
             folder=root/'study/selected/C';folder.mkdir(parents=True)
             original=None
@@ -31,7 +31,11 @@ class OriginalPFOwner(unittest.TestCase):
             if mode=='complete':(folder/'COMPLETION.json').write_text(json.dumps({'configuration_id':'C','registry_entry':entry}))
             before=original.read_bytes()if original else None
             request=Path(temp)/'REQUEST.json';output=Path(temp)/'CHECK.json'
-            request.write_text(json.dumps(dict(selected=[dict(configuration_body=dict(id='C'))],registry_file=str(root/'REGISTRY.json'),output_root=str(root/'other'))))
+            item=dict(selected=[dict(configuration_body=dict(id='C'))],
+                      registry_file=str(root/'REGISTRY.json'),output_root=str(root/'other'))
+            if mode=='prior_axes':
+                item['previously_audited_price_axes']=[['old-circuit','X'],['old-circuit','Y']]
+            request.write_text(json.dumps(item))
             result=subprocess.run([sys.executable,'-B',str(ROOT/'scripts/check_pf_preparation_owner.py'),
                 '--provider-root',str(root),'--request',str(request),'--output',str(output)],capture_output=True,text=True)
             self.assertEqual(result.returncode,0,result.stderr)
@@ -51,6 +55,11 @@ class OriginalPFOwner(unittest.TestCase):
         row=self.check('price')
         self.assertEqual(row['status'],'PRICE_EVIDENCE_REQUIRED')
         self.assertTrue(row['signal_deferred_for_price'])
+
+    def test_replan_cannot_recompile_previously_audited_axes(self):
+        row=self.check('prior_axes')
+        self.assertEqual(row['status'],'PRICE_EVIDENCE_REQUIRED')
+        self.assertEqual(row['missing_audited_axes'],[['old-circuit','X'],['old-circuit','Y']])
 
 
 if __name__=='__main__':unittest.main()

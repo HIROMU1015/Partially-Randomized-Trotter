@@ -15,6 +15,9 @@ from . import pf_optimizer_connection as PF
 
 RULE='UNSEEN_PREFIX_SAVED_EVIDENCE_V1'
 PIECES={'2nd':1,'4th':3,'4th(m5_best)':11}
+PRICE_RECHECK_STATES = frozenset(('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD',
+                                'PRICE_RECHECK_AVAILABLE', 'PRICE_ACTION_UNAVAILABLE',
+                                'PRICE_OWNER_WAITING'))
 
 
 def write(path,value):
@@ -161,9 +164,17 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
             ready=returned['ready'];needs=returned['needs']
         else:ready=True;needs=[]
         status=dict(status='READY_RETURNED_TO_SAME_OPTIMIZER'if ready else'PREPARATION_INCOMPLETE',selection=selection,response=response,artificial_only=artificial,remaining_needs=needs)
-    price_holds=[row for row in response['response'].get('items',[]) if row.get('status')=='PRICE_EVIDENCE_REQUIRED']
+    price_holds = [row for row in response['response'].get('items', [])
+                   if row.get('status') in ('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD')]
     if price_holds and mode!='plan':
-        status.update(status='PRICE_EVIDENCE_REQUIRED',reason=price_holds[0]['reason'])
+        item = price_holds[0]
+        owner_input = folder/'pf_completion/ORIGINAL_OWNER_REQUEST.json'
+        owner = json.loads(owner_input.read_text()) if owner_input.exists() else {}
+        directories = (set(owner.get('prior_owner_directories', ())) |
+                       set(item.get('original_owner_directories', ())))
+        status.update(status=item['status'], reason=item['reason'],
+                      price_reconciliation={**item, 'original_owner_directories':
+                                            sorted(directories)})
     write(status_path,status)
     return context,routes,status
 
@@ -222,6 +233,33 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
             return context, routes, dict(status='PREPARATION_WAVE_YIELDED', records=status['records'])
 
 
+def reconsider_prices(root, run, spec, settings, records):
+    from .pf_saved_prices import completed_partial, prior_waves, reconciliation_snapshot
+
+    waves = [run/'pf_auto', *prior_waves(run, spec)]
+    for cid, row in records.items():
+        if row['status'] not in PRICE_RECHECK_STATES or row.get('configurations'):
+            continue
+        snapshot = reconciliation_snapshot(root, waves, settings, row)
+        if row.get('price_recheck_snapshot') == snapshot:
+            continue
+        previous = run/row.get('price_recheck_directory', (
+            'pf_auto/price-recovery' if row.get('price_receipt_recheck') else 'pf_auto'))
+        leaf = previous/'candidates'/cid/'pf_auto/pf_completion'
+        prior_outputs = row.get('price_prior_owner_directories', [])
+        consumed = completed_partial(row, leaf, cid)
+        if consumed is None and (leaf/'provider_workspace').exists():
+            provider = leaf/'provider_workspace/docs/research/distributed_selected_pf'/cid
+            prior_outputs = sorted(set(prior_outputs) | {str(provider)})
+        generation = int(row.get('price_recheck_generation', 0)) + 1
+        row.update(status='PRICE_RECHECK_AVAILABLE', price_recheck_snapshot=snapshot,
+                   price_recheck_generation=generation,
+                   price_recheck_directory=f'pf_auto/price-recovery/recheck-{generation}',
+                   price_prior_owner_directories=prior_outputs,
+                   previously_audited_price_axes=(consumed if consumed is not None else
+                                                  row.get('previously_audited_price_axes', [])))
+
+
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None,recheck_waiting=True):
     """A durable PF wave, with each candidate and native owner in its own directory."""
     from concurrent.futures import ThreadPoolExecutor,as_completed
@@ -251,7 +289,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 row.update(status='PRIOR_OWNER_HOLD',reason='Reconcile the scheduled wave in its original run',
                            original_wave=previous)
     recovery = run/'pf_auto'/'price-recovery'
-    if settings.get('recover_saved_price_rounds'):
+    distributed_completion = stage_executor is not None and settings.get('mode') == 'complete'
+    if distributed_completion and settings.get('recover_saved_price_rounds', True):
         for cid, row in records.items():
             if (row['status'] != 'PREPARATION_INCOMPLETE' or row.get('configurations')
                     or row.get('price_receipt_recheck')):
@@ -267,18 +306,31 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 atomic_write(recovery/'original'/f'{cid}.json', row)
                 # Recheck only before a producer or scientific attempt existed.
                 row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE', price_receipt_recheck=True)
-                atomic_write(index, records)
+        reconsider_prices(root, run, spec, settings, records)
+        if records:
+            atomic_write(index, records)
     registry=deepcopy(context['pf_evidence_registry'])
     for record in records.values():
         registry['configurations'].update(record.get('configurations',{}))
     if records:
         context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
         routes=PF.registry_routes(routes,registry)
+        newly_ready = False
+        for candidate in context['candidates']:
+            record = records.get(candidate['configuration_id'])
+            if candidate['ready'] and record and record['status'] in PRICE_RECHECK_STATES:
+                record.update(status='READY_RETURNED_TO_SAME_OPTIMIZER', reason=None)
+                record.pop('price_reconciliation', None)
+                newly_ready = True
+        if newly_ready:
+            atomic_write(index, records)
     pending={cid for cid,row in records.items() if row.get('status')=='PREPARATION_SCHEDULED'}
-    revisit = {cid for cid, row in records.items() if row['status'] == 'PRICE_RECEIPT_RECHECK_AVAILABLE'}
+    revisit = {cid for cid, row in records.items() if row['status'] in
+               ('PRICE_RECEIPT_RECHECK_AVAILABLE', 'PRICE_RECHECK_AVAILABLE')}
     waiting = {cid for cid, row in records.items() if row['status'] == 'PREPARATION_WAITING'} if recheck_waiting else set()
     selection=select(context,spec['methods'],records.keys()-pending-revisit-waiting,
-                     include_full=limit>1 or 'TRUNCATED_PF' not in spec['methods'])
+                     include_full=limit>1 or 'TRUNCATED_PF' not in spec['methods']
+                     or any(records[cid].get('method') == 'FULL_PF' for cid in pending | revisit | waiting))
     if selection['selected'] is None and not pending:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
     workers=limit if stage_executor is not None else 1
@@ -290,7 +342,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         wave=[];families=set()
         # Widths of the same prefix/formula can share early physical rounds.
         # New independent work gets a turn even if a saved wait is unchanged.
-        for row in sorted(selection['candidates'], key=lambda row: row['configuration_id'] in waiting):
+        for row in sorted(selection['candidates'],
+                          key=lambda row: (row['configuration_id'] in waiting, row['configuration_id'] in revisit)):
             family=(row['method'],row['key'].get('p'),row['key']['formula'])
             cid=row['configuration_id']
             if row['ready'] or not row['needs'] or (cid in records and cid not in revisit and cid not in waiting) or family in families:
@@ -302,11 +355,19 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
 
     if not wave:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
-    one_spec=dict(spec,pf_completion=dict(settings,max_candidates=1))
     def acquire(chosen):
         if stop_requested is not None and stop_requested():return None
         cid=chosen['configuration_id']
-        base = recovery if records[cid].get('price_receipt_recheck') else run/'pf_auto'
+        record = records[cid]
+        one_settings = dict(settings, max_candidates=1)
+        if record.get('price_recheck_directory'):
+            base = run/record['price_recheck_directory']
+            one_settings['prior_owner_directories'] = sorted(
+                set(settings.get('prior_owner_directories', ())) | set(record['price_prior_owner_directories']))
+            one_settings['previously_audited_price_axes'] = record['previously_audited_price_axes']
+        else:
+            base = recovery if record.get('price_receipt_recheck') else run/'pf_auto'
+        one_spec = dict(spec, pf_completion=one_settings)
         after,_,status=prepare(root,problem,snapshot_context(context),one_spec,base/'candidates'/cid,
                               deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
         return chosen,status,after['pf_evidence_registry']['configurations'].get(cid)
@@ -317,11 +378,19 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             result=task.result()
             if result is None:continue
             chosen,status,entry=result;cid=chosen['configuration_id']
-            records[cid].update(status=status['status'],reason=status.get('reason'),key=chosen['key'],method=chosen['method'],
+            disposition = status['status']
+            if (distributed_completion and settings.get('recover_saved_price_rounds', True) and
+                    disposition in ('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD')):
+                from .pf_saved_prices import live_price_owners
+                disposition = ('PRICE_OWNER_WAITING' if live_price_owners(status['price_reconciliation'])
+                               else 'PRICE_ACTION_UNAVAILABLE')
+            records[cid].update(status=disposition,reason=status.get('reason'),key=chosen['key'],method=chosen['method'],
                                 configurations={cid:entry} if entry is not None else {})
-            for field in ('request_path', 'differing_fields'):
+            for field in ('request_path', 'differing_fields', 'price_reconciliation'):
                 if field in status:
                     records[cid][field] = status[field]
+                else:
+                    records[cid].pop(field, None)
             if entry is not None:
                 registry['configurations'][cid]=entry;updated=True
             processed |= cid not in waiting or status['status'] != 'PREPARATION_WAITING'
