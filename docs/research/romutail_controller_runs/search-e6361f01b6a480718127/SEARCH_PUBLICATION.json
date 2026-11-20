@@ -13,7 +13,7 @@
   "files": {
     "ROUND_RESULT.json": {
       "path": "docs/research/romutail_controller_runs/search-e6361f01b6a480718127/ROUND_RESULT.json",
-      "sha256": "c5e276f3493256c36c4c66aa7daf77fea3efdc36138ff87a2e0ca29d628eaff1"
+      "sha256": "a3ada2eb3ccccaba4ad5068dc3c79d1e3cb5f4dd6695ca69906853f1755a9aab"
     },
     "ROUND.json": {
       "path": "docs/research/romutail_controller_runs/search-e6361f01b6a480718127/ROUND.json",
@@ -21,7 +21,7 @@
     },
     "PRICE_MODEL_VALIDATIONS.json": {
       "path": "docs/research/romutail_controller_runs/search-e6361f01b6a480718127/PRICE_MODEL_VALIDATIONS.json",
-      "sha256": "9f8596a952c13dc62913c64de90718c426c7fd3cae8afe1f16b76534574d0cdf"
+      "sha256": "33df9bedcba1b7730997e469083413f9777714a8b8268e51822b9718803026a9"
     }
   },
   "scope": "SAVED_METADATA_ONLY_NO_SCIENTIFIC_EXECUTION",
@@ -29,40 +29,31 @@
   "search_progress": {
     "schema": "H4_SEARCH_PROGRESS_V1",
     "status": "RECORDED",
-    "controller_cycle": 2,
-    "planner_cycle": 2,
+    "controller_cycle": 4,
+    "planner_cycle": 4,
     "controller_stop": {
       "reason": "USER_REQUESTED_STOP",
-      "UTC": "2026-11-20T05:30:39Z"
+      "UTC": "2026-11-20T06:08:21Z"
     },
     "planner_stop": null,
     "families": [
       {
         "family": "PR_DF|LD5|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
-          "COMPLETION": 1,
-          "WAITING_INPUTS": 1
+          "EVALUATED": 3,
+          "REGISTERED": 1
         },
         "next_candidates": [
           {
-            "kappa": "1",
+            "kappa": "8",
             "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "COMPLETION"
-          },
-          {
-            "kappa": "2",
-            "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "WAITING_INPUTS"
+            "status": "REGISTERED"
           }
         ],
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
-          },
-          {
-            "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "2"
+            "kappa": "8"
           }
         ],
         "method": "PR_DF",
@@ -80,17 +71,13 @@
       {
         "family": "PR_DF|LD5|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "WAITING_INPUTS": 1,
+          "HELD": 1,
+          "EVALUATED": 2,
           "REGISTERED": 1
         },
         "next_candidates": [
           {
-            "kappa": "1",
-            "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "WAITING_INPUTS"
-          },
-          {
-            "kappa": "2",
+            "kappa": "8",
             "reason": "EXPLICIT_KAPPA_GRID",
             "status": "REGISTERED"
           }
@@ -98,11 +85,7 @@
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "1"
-          },
-          {
-            "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "2"
+            "kappa": "8"
           }
         ],
         "method": "PR_DF",
@@ -121,10 +104,21 @@
         "family": "PR_DF|LD6|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
           "EVALUATED": 1,
-          "HELD": 1
+          "HELD": 3
         },
-        "next_candidates": [],
-        "decisions": [],
+        "next_candidates": [
+          {
+            "kappa": "8",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "8"
+          }
+        ],
         "method": "PR_DF",
         "L_D": 6,
         "formula": "2nd",
@@ -140,10 +134,21 @@
       {
         "family": "PR_DF|LD6|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "HELD": 2
+          "HELD": 4
         },
-        "next_candidates": [],
-        "decisions": [],
+        "next_candidates": [
+          {
+            "kappa": "8",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "8"
+          }
+        ],
         "method": "PR_DF",
         "L_D": 6,
         "formula": "2nd",
@@ -159,22 +164,10 @@
       {
         "family": "PR_DF|LD7|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
-          "EVALUATED": 1,
-          "REGISTERED": 1
+          "EVALUATED": 3
         },
-        "next_candidates": [
-          {
-            "kappa": "2",
-            "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "REGISTERED"
-          }
-        ],
-        "decisions": [
-          {
-            "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "2"
-          }
-        ],
+        "next_candidates": [],
+        "decisions": [],
         "method": "PR_DF",
         "L_D": 7,
         "formula": "2nd",
@@ -190,22 +183,10 @@
       {
         "family": "PR_DF|LD7|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "EVALUATED": 1,
-          "REGISTERED": 1
+          "EVALUATED": 3
         },
-        "next_candidates": [
-          {
-            "kappa": "2",
-            "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "REGISTERED"
-          }
-        ],
-        "decisions": [
-          {
-            "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "2"
-          }
-        ],
+        "next_candidates": [],
+        "decisions": [],
         "method": "PR_DF",
         "L_D": 7,
         "formula": "2nd",
@@ -222,19 +203,20 @@
         "family": "PR_DF|LD8|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
           "HELD": 1,
-          "WAITING_INPUTS": 1
+          "EVALUATED": 1,
+          "REGISTERED": 1
         },
         "next_candidates": [
           {
-            "kappa": "2",
+            "kappa": "4",
             "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "WAITING_INPUTS"
+            "status": "REGISTERED"
           }
         ],
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "2"
+            "kappa": "4"
           }
         ],
         "method": "PR_DF",
@@ -252,20 +234,20 @@
       {
         "family": "PR_DF|LD8|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "EVALUATED": 1,
-          "COMPLETION": 1
+          "EVALUATED": 2,
+          "REGISTERED": 1
         },
         "next_candidates": [
           {
-            "kappa": "2",
+            "kappa": "4",
             "reason": "EXPLICIT_KAPPA_GRID",
-            "status": "COMPLETION"
+            "status": "REGISTERED"
           }
         ],
         "decisions": [
           {
             "decision": "EXPLICIT_KAPPA_GRID",
-            "kappa": "2"
+            "kappa": "4"
           }
         ],
         "method": "PR_DF",
@@ -283,10 +265,22 @@
       {
         "family": "PR_DF|LD9|2nd|delta=3602879701896397/36028797018963968|K2",
         "point_status": {
+          "EVALUATED": 2,
           "REGISTERED": 1
         },
-        "next_candidates": [],
-        "decisions": [],
+        "next_candidates": [
+          {
+            "kappa": "4",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "REGISTERED"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "4"
+          }
+        ],
         "method": "PR_DF",
         "L_D": 9,
         "formula": "2nd",
@@ -302,10 +296,21 @@
       {
         "family": "PR_DF|LD9|2nd|delta=3602879701896397/72057594037927936|K2",
         "point_status": {
-          "WAITING_INPUTS": 1
+          "HELD": 3
         },
-        "next_candidates": [],
-        "decisions": [],
+        "next_candidates": [
+          {
+            "kappa": "4",
+            "reason": "EXPLICIT_KAPPA_GRID",
+            "status": "HELD"
+          }
+        ],
+        "decisions": [
+          {
+            "decision": "EXPLICIT_KAPPA_GRID",
+            "kappa": "4"
+          }
+        ],
         "method": "PR_DF",
         "L_D": 9,
         "formula": "2nd",
@@ -320,6 +325,6 @@
       }
     ],
     "state_path": "docs/research/romutail_controller_runs/search-e6361f01b6a480718127/KAPPA_STATE.json",
-    "state_sha256": "8ec3a6b9722bd1d76307d03ce8a0012a09735d45d3a8d37133118f3af949c9e1"
+    "state_sha256": "e43a350b0a55f0c5a4ebd7af4d756ef5c567f0c306c14351e942bc3848681e0d"
   }
 }
