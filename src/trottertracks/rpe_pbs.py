@@ -710,6 +710,9 @@ class PbsManager:
         profile['pbs'] = dict(profile.get('pbs') or {}, worker_source=self.settings['transport_source'],
             worker_root=self.settings['transport_root'], drain_seconds=self.settings.get('drain_seconds', 30))
         profile['pbs'].setdefault('rpc_timeout_seconds', max(15., 2 * self.settings.get('request_timeout_seconds', 20)))
+        collection_workers = getattr(self.executor, 'distributed', {}).get('pbs_collection_workers')
+        if collection_workers is not None:
+            profile['pbs']['collection_workers'] = collection_workers
         deployment=worker.get('deployment')or self.settings.get('deployment')
         if deployment:
             profile['pbs']['deployment']=deepcopy(deployment)
@@ -774,7 +777,8 @@ class PbsManager:
                 profiles[profile['host_id']] = profile
             self.gateway.monitor_storage(profiles)
         for token, requests in data['requests'].items():
-            self.responses[token] = {request['request_id']:self._dispatch(token, request) for request in requests}
+            self.responses[token] = {request['request_id']:self._dispatch(token, request)
+                                     for request in requests if request is not None}
         outstanding, pending, queued, free = self._demand()
         waiting_tasks = outstanding + pending
         shortage = len(waiting_tasks)

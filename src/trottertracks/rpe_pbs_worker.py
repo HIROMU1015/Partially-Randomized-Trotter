@@ -4,6 +4,7 @@ Only the worker runs on a compute node.  The login-node gateway copies durable
 JSON messages; it never executes an assigned scientific task.  Allocation exit
 leaves the ordinary worker spool and per-task receipts on persistent storage.
 """
+from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 import hashlib
 import json
@@ -159,7 +160,10 @@ class SpoolTransport:
     def __call__(self, endpoint, payload):
         matching = []
         for path in self.requests.glob('*.json'):
-            saved = read(path)
+            try:
+                saved = read(path)
+            except FileNotFoundError:
+                continue  # Another attempt consumed its reply.
             if saved['endpoint'] == endpoint and (endpoint == '/v1/poll' or saved['payload'] == payload):
                 matching.append((path, saved))
         # Exactly one unconsumed acquisition may exist across timeouts and
@@ -217,6 +221,62 @@ class AllocationWorker(Worker):
                                    heartbeat=self.heartbeat)
         super().__init__(profile, 'http://127.0.0.1:1',
                          poll_seconds=poll_seconds, transport=transport)
+        count = profile['pbs'].get('collection_workers', 0)
+        if type(count) is not int or count < 0:
+            self.close()
+            raise ValueError('PBS collection_workers must be a nonnegative integer')
+        self.collection = (ThreadPoolExecutor(max_workers=count, thread_name_prefix='pbs-collect')
+                           if count else None)
+        self.collection_workers = count
+        self.collection_inflight = {}
+
+    def tick(self, acquire=True):
+        if getattr(self, 'collection', None) is None:
+            return super().tick(acquire=acquire)
+        for attempt, future in list(self.collection_inflight.items()):
+            if future.done():
+                del self.collection_inflight[attempt]
+                future.result()
+        # Prefer ready receipts. Every attempt still reports state, transfers,
+        # and marks its own ACK in order using the ordinary worker code.
+        available = self.collection_workers-len(self.collection_inflight)
+        if available:
+            candidates = []
+            preparation_busy = any('preparation' in self.records[attempt]['request']
+                                   for attempt in self.collection_inflight)
+            for attempt, assignment in self.records.items():
+                if attempt in self.collection_inflight:
+                    continue
+                state = read(attempt/'WORKER_STATE.json')
+                if state['state'] == 'TRANSFERRED':
+                    continue
+                if (state['state'] == 'RUNNING' and self.reported.get(attempt) == state and
+                        not (attempt/'PROCESS_RETURN.json').exists()):
+                    process = self.processes.get(attempt)
+                    if process is not None and process.poll() is None:
+                        continue
+                candidates.append((state['state'] != 'COMPLETED_PENDING_TRANSFER',
+                                   attempt, assignment))
+            for _, attempt, assignment in sorted(candidates):
+                preparation = 'preparation' in assignment['request']
+                if preparation and preparation_busy:
+                    continue  # Large bundle transfers keep one lane.
+                self.collection_inflight[attempt] = self.collection.submit(
+                    self._service_attempt, attempt, assignment)
+                preparation_busy |= preparation
+                available -= 1
+                if available == 0:
+                    break
+        return self._poll_assignments(acquire)
+
+    def close(self):
+        self._close_collection()
+        super().close()
+
+    def _close_collection(self):
+        if getattr(self, 'collection', None) is not None:
+            self.collection.shutdown(wait=True)
+            self.collection = None
 
     @property
     def capacity_state_dir(self):
@@ -355,6 +415,7 @@ class AllocationWorker(Worker):
                 self.exit_reason = 'ALLOCATION_WALLTIME_END'
         finally:
             self.draining = True
+            self._close_collection()
             self.heartbeat(state='EXITED', force=True)
             # No signal is sent to a scientific child; PBS owns the remaining
             # allocation lifetime. Original receipts/UNKNOWN policy is retained.

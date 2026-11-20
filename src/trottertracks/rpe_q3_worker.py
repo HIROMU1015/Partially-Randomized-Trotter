@@ -664,43 +664,41 @@ class Worker:
     def _receive_assignment(self, assignment):
         self._acquire(assignment)
 
-    def tick(self, acquire=True):
-        active = 0
-        for attempt, assignment in list(self.records.items()):
-            state = self._reconcile(attempt, assignment)
-            if state['state'] == 'ASSIGNED':
-                self._launch(attempt); state = read(attempt / 'WORKER_STATE.json')
-            if state['state'] in Resources.OCCUPIED:
-                active += 1
-            payload = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], state=state['state'], detail=state['detail'])
-            if state['state'] != 'TRANSFERRED' and self.reported.get(attempt) != state:
+    def _service_attempt(self, attempt, assignment):
+        state = self._reconcile(attempt, assignment)
+        if state['state'] == 'ASSIGNED':
+            self._launch(attempt); state = read(attempt / 'WORKER_STATE.json')
+        payload = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], state=state['state'], detail=state['detail'])
+        if state['state'] != 'TRANSFERRED' and self.reported.get(attempt) != state:
+            try:
+                self._post('/v1/state', payload); self.reported[attempt] = state
+            except (OSError, ValueError, urllib.error.URLError) as error:
+                event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(error))
+        if state['state'] == 'COMPLETED_PENDING_TRANSFER':
+            try:
+                started = time.monotonic()
+                self._upload_artifacts(attempt, assignment)
+                files = result_bundle(attempt)
+                response = self._post('/v1/complete', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
+                    request_sha256=assignment['request_sha256'], files=files))
+                if response.get('ok') is not True:
+                    raise ValueError('Controller refused completion')
+                timing = dict(upload_roundtrip_seconds=time.monotonic()-started,
+                              bytes=sum(len(base64.b64decode(v)) for v in files.values()))
+                save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
+                Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
+                event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
+                      seconds=timing['upload_roundtrip_seconds'], bytes=timing['bytes'],
+                      duplicate=response.get('duplicate', False))
                 try:
-                    self._post('/v1/state', payload); self.reported[attempt] = state
+                    self._post('/v1/transfer-metric', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], timing=timing))
                 except (OSError, ValueError, urllib.error.URLError) as error:
-                    event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(error))
-            if state['state'] == 'COMPLETED_PENDING_TRANSFER':
-                try:
-                    started = time.monotonic()
-                    self._upload_artifacts(attempt, assignment)
-                    files = result_bundle(attempt)
-                    response = self._post('/v1/complete', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                        request_sha256=assignment['request_sha256'], files=files))
-                    if response.get('ok') is not True:
-                        raise ValueError('Controller refused completion')
-                    timing = dict(upload_roundtrip_seconds=time.monotonic()-started,
-                                  bytes=sum(len(base64.b64decode(v)) for v in files.values()))
-                    save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
-                    Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
-                    event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                          seconds=timing['upload_roundtrip_seconds'], bytes=timing['bytes'],
-                          duplicate=response.get('duplicate', False))
-                    try:
-                        self._post('/v1/transfer-metric', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], timing=timing))
-                    except (OSError, ValueError, urllib.error.URLError) as error:
-                        # Optional telemetry cannot undo a durable completion acknowledgement.
-                        event(self.profile, 'TRANSFER_METRIC_OFFLINE', job_id=assignment['job_id'], reason=str(error))
-                except (OSError, ValueError, urllib.error.URLError) as error:
-                    event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
+                    # Optional telemetry cannot undo a durable completion acknowledgement.
+                    event(self.profile, 'TRANSFER_METRIC_OFFLINE', job_id=assignment['job_id'], reason=str(error))
+            except (OSError, ValueError, urllib.error.URLError) as error:
+                event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
+
+    def _poll_assignments(self, acquire):
         report = self._resource_offer()
         active = report['occupied']
         if acquire and not self.stop.is_set():
@@ -735,6 +733,11 @@ class Worker:
             except (OSError, ValueError, urllib.error.URLError) as error:
                 event(self.profile, 'POLL_OFFLINE', reason=str(error))
         return active
+
+    def tick(self, acquire=True):
+        for attempt, assignment in list(self.records.items()):
+            self._service_attempt(attempt, assignment)
+        return self._poll_assignments(acquire)
 
     def pending(self):
         return any(read(p / 'WORKER_STATE.json')['state'] not in ('TRANSFERRED', 'UNKNOWN') for p in self.records)

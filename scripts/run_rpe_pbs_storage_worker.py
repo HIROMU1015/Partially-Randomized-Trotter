@@ -37,11 +37,22 @@ class GatewayStorage:
         return unavailable
 
 
-def enable_preparation_memory_sampling():
+def configure_allocation_worker(profile, launcher):
     from trottertracks import rpe_pbs_worker as pbs
     from trottertracks import rpe_q3_worker as worker
 
-    class MeasuredAllocationWorker(pbs.AllocationWorker):
+    transport = pbs
+    cycle = worker
+    if profile['pbs'].get('collection_workers'):
+        if launcher.suffix == '.pyz':
+            # The deployment bundles only the operational implementation.
+            # SOURCE, adapter and result validation still use the fixed checkout.
+            import trottertracks
+            trottertracks.__path__.append(str(launcher)+'/trottertracks')
+            from trottertracks import _collection_pbs_worker as transport
+            from trottertracks import _collection_q3_worker as cycle
+
+    class MeasuredAllocationWorker(transport.AllocationWorker):
         def _resource_offer(self):
             report = super()._resource_offer()
             for attempt, assignment in self.records.items():
@@ -66,6 +77,9 @@ def enable_preparation_memory_sampling():
             return report
 
     pbs.AllocationWorker = MeasuredAllocationWorker
+    if profile['pbs'].get('collection_workers'):
+        MeasuredAllocationWorker._service_attempt = cycle.Worker._service_attempt
+        MeasuredAllocationWorker._poll_assignments = cycle.Worker._poll_assignments
 
 
 def main():
@@ -86,7 +100,7 @@ def main():
     observer = GatewayStorage(directory/'STORAGE_USAGE_GATEWAY.json',
                               max_age=2*storage.SAMPLE_SECONDS)
     storage.report = observer.report
-    enable_preparation_memory_sampling()
+    configure_allocation_worker(profile, Path(sys.argv[0]).resolve())
     sys.argv = [str(script), *args]
     runpy.run_path(str(script), run_name='__main__')
 

@@ -132,6 +132,38 @@ class AdmissionTests(unittest.TestCase):
         worker.profile['work_dir'] = directory
         return worker
 
+    def test_collection_overlaps_distinct_attempts_and_keeps_polling(self):
+        with tempfile.TemporaryDirectory() as directory:
+            worker = self.worker(directory)
+            worker.collection_workers = 2
+            worker.collection = P.ThreadPoolExecutor(max_workers=2)
+            worker.collection_inflight, worker.records = {}, {}
+            for name in ('one', 'two', 'three'):
+                attempt = Path(directory)/name
+                attempt.mkdir()
+                P.save_state(attempt, 'COMPLETED_PENDING_TRANSFER')
+                worker.records[attempt] = dict(request={})
+            entered = {p: threading.Event() for p in worker.records}
+            release = threading.Event()
+
+            def service(attempt, assignment):
+                entered[attempt].set()
+                release.wait(2)
+
+            try:
+                with patch.object(worker, '_service_attempt', side_effect=service) as collect, \
+                        patch.object(worker, '_poll_assignments', return_value=3) as poll:
+                    self.assertEqual(worker.tick(), 3)
+                    self.assertTrue(entered[Path(directory)/'one'].wait(1))
+                    self.assertTrue(entered[Path(directory)/'three'].wait(1))
+                    self.assertFalse(entered[Path(directory)/'two'].is_set())
+                    self.assertEqual(worker.tick(), 3)
+                    self.assertEqual(collect.call_count, 2)
+                    self.assertEqual(poll.call_count, 2)
+            finally:
+                release.set()
+                worker._close_collection()
+
     def test_release_validation_waits_for_assignment_bundles(self):
         from trottertracks import rpe_release_deployment as deployment
         from trottertracks.rpe_q3_worker import digest, worker_cache
