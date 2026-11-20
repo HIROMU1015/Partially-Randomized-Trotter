@@ -357,3 +357,20 @@ UNKNOWN_RESULT時の旧期待値COMPLETEで失敗する。現行実装はRECONCI
 区間追従を含む追加人工検査14件がPASS。親Codexによる通常入口・registry・配送の
 関連34件もPASSした。上記既存テストの期待値をRECONCILIATION_REQUIREDへ修正し、
 UNKNOWN_RESULTの保全・Resume拒否を引き続き検査する。科学判定の実装は変更していない。
+
+実機検収を完了した。通常Stopは旧invocation `ecf4258b51a2487484b37f9372cc95a8` を
+EXIT=0で回収し、専用PBS割当もすべて終了した。通常Resumeは同じrunを新invocation
+`cd6f74384447408ab92e73d5348b37ad` でSTARTEDとし、応答の
+`relay_transport.status=RELAY_TRANSPORT_CONFIRMED`、action=REPLACEDを確認した。
+配置は `relay-resume-fd761eb2b8`、配送PID3070438・追従PID3070579。
+固定controller SOURCE1355ad65faとcomputation SOURCE28d976b99は維持する。
+APPLIED_SCOPE・ROUND.requested・PROBLEM・CONTROLLER_CONFIG・ROUNDの全hashは変更なし。
+UNKNOWNは同じjob・attempt・要求・保留理由で維持し、通常Resumeによるupdated_epochだけが更新された。
+
+新しい配送版からserver2で7件、WSLで1件のQ3結果を中央へ回収した時点を保存した。
+再度の配送選択はrelay・追従ともALREADY_CURRENTを返し、PIDの追加・再起動はなかった。
+区間追従の複数世代とStop終了は人工検査で確認しており、実機の全区間を完走した主張ではない。
+これで現runの通常Stop/Resume後の手動再適用は不要になった。
+公開同期は従来のRESULT_SYNC_PENDINGであり、本件の配送検収成功と分ける。
+原記録は現runの `recovery/relay-normal-resume-20261120/`。
+次段階はCodexが通常探索のPBS・WSLで準備・信号の実実行と回収を確認する。

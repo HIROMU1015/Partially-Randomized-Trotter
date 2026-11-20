@@ -35,6 +35,20 @@ RomuTailの中央担当、Romulaptopの操作担当、各環境のworker担当�
 
 新規run用currentの切替は中央担当が行う。保存入力と変更経路の技術検収を済ませたreleaseを登録し、明示版のPreview、切替直前のcurrent・所有、切替後の版指定なしPreviewを確認する。稼働中runはそのrunの固定版を使い続ける。
 
+## 固定runの配送版を通常再開で引き継ぐ場合
+
+科学controllerを固定した既存runでは、中央SERVICEの `relay_transport_command` が
+通常Start/Resume成功後、公開同期より先に指定runの配送版を選ぶ。
+`ensure_rpe_relay_transport.py` は既存のREGISTRY.lock、run・invocation・CONFIG所有を
+照合し、配送relayのみを切り替える。同じinvocation内の区間切替でrelayが再生成されても
+run専用の補助プロセスが追従し、Stop・driver終了・invocation変更で終了する。
+区間間の空きを科学実行需要とみなしてrelayを起動しない。
+
+通常応答の `relay_transport.status=RELAY_TRANSPORT_CONFIRMED`、保存した
+`distributed/relay/TRANSPORT.json`、`WATCH.json` と新しいheartbeatを確認する。
+`RELAY_TRANSPORT_PENDING` は科学runの起動状態と別の配送保留である。
+固定SOURCE・scope・raw・UNKNOWNは書換えず、通常の所有・STOP照合を維持する。
+
 ## 割当前に確認する入力と実行環境
 
 - 工程・providerごとに、固定SOURCEの依存関係をREQUESTに記載し、実行先でその工程に使う固定Pythonを選ぶ。割当前の適格性照合では、要求したパッケージの版と、必要なimportがそのPythonで成功することを確認する。子プロセスで固定providerを読む経路を変えた場合は、その子プロセスでも確認する。不足時はホスト・工程・依存名を記録し、該当する割当を保留する。対応する別ホストや独立した候補は進める。
