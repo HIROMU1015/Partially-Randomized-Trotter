@@ -571,9 +571,9 @@ class ControllerFailures(unittest.TestCase):
                 def subscribe(*_):
                     def take():
                         if not ready.is_set():
-                            return []
+                            return [], None
                         ready.clear()
-                        return [second]
+                        return [second], None
                     return ready.is_set, take
 
                 source = None
