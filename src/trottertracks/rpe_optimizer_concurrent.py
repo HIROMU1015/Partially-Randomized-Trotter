@@ -880,6 +880,31 @@ class DistributedExecutor(ConcurrentExecutor):
         owned = sum(row['host_id'] == host for row in self._owned_attempts())
         return min(slots, max(0, maximum-owned))
 
+    def _local_calibration_pair_allows(self, host, request):
+        trial = self.distributed.get('local_calibration_pair')
+        if host != 'local' or trial is None:
+            return True
+        owned = [self.store.row(row['job_id'])['request'] for row in self._owned_attempts()
+                 if row['host_id'] == host]
+        if not owned:
+            return True
+        if len(owned) != 1 or any((item.get('preparation') or {}).get('provider') != 'DF_CALIBRATION'
+                                  or (item.get('preparation') or {}).get('parallel_df_price_axes') is not True
+                                  for item in [*owned, request]):
+            return False
+        from .rpe_q3_resources import resource_snapshot
+        profile = self.distributed['local_worker']
+        budget = resource_snapshot(profile)
+        free = [budget[key] for key in ('machine_mem_available_bytes', 'remaining_group_memory_bytes')
+                if budget.get(key) is not None]
+        from .rpe_pbs_worker import request_cpu_footprint
+        try:
+            cpus = sum(request_cpu_footprint(profile, item) for item in [*owned, request])
+        except (KeyError, ValueError):
+            return False
+        return (bool(free) and min(free) >= trial['memory_reserve_bytes']
+                and (budget.get('allowed_cpu_count') or 0) >= cpus)
+
     def _owned_attempts(self):
         with self.store._connection() as database:
             rows = database.execute(
@@ -1073,6 +1098,9 @@ class DistributedExecutor(ConcurrentExecutor):
             compatible[task.job.name] = []
             for h in available:
                 if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
+                    skipped[h] = True
+                    continue
+                if not self._local_calibration_pair_allows(h, row['request']):
                     skipped[h] = True
                     continue
                 if not self.store.eligible(row['request'], row['eligibility'], h,
@@ -2145,6 +2173,8 @@ class DistributedExecutor(ConcurrentExecutor):
                             free_memory -= memory
                 for task in eligible:
                     if remaining <= 0: break
+                    if not self._local_calibration_pair_allows(host, self.store.row(task.job.name)['request']):
+                        continue
                     if resource_pool is not None:
                         try:
                             cpu, memory = resource_need(self.store.row(task.job.name)['request'],

@@ -329,23 +329,28 @@ class Relay:
             value['resource_report'] = status['resource_report']
         return value
 
-    def _deliver_challenge_artifacts(self, worker, challenges):
-        hashes=[]
+    @staticmethod
+    def _readiness_bundle_hashes(challenges):
+        hashes = set()
         for assignment in challenges:
             request=assignment.get('request',{})
             if(request.get('route')or{}).get('kind')!='preparation':continue
-            spec=request['preparation']
-            hashes.extend(row['sha256']for row in spec.get('input_git_bundles',[]))
+            spec=request.get('preparation', {})
+            hashes.update(row['sha256']for row in spec.get('input_git_bundles',[]))
             for workspace in spec.get('workspaces',{}).values():
-                hashes.extend(row['sha256']for row in workspace.get('input_git_bundles',[]))
+                hashes.update(row['sha256']for row in workspace.get('input_git_bundles',[]))
+        return hashes
+
+    def _deliver_challenge_artifacts(self, worker, challenges):
+        hashes = self._readiness_bundle_hashes(challenges)
         if not hashes:return
-        response,_=self.remote(worker,'artifacts-missing',dict(hashes=list(dict.fromkeys(hashes))))
+        response,_=self.remote(worker,'artifacts-missing',dict(hashes=sorted(hashes)))
         for sha in response['missing']:
             result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
             self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
             self.log('METADATA_GIT_BUNDLE_DELIVERED',host_id=worker['host_id'],sha256=sha)
 
-    def _readiness_batch(self, worker, challenges):
+    def _readiness_batch(self, worker, challenges, cached=None):
         # Large input bundles are transferred serially. Report the first ready
         # request before transferring others, while rotating repeated HOLDs even
         # when the controller rotates its own challenge batches.
@@ -354,7 +359,8 @@ class Relay:
         if not preparation:
             return challenges
         counts = self.readiness_probe_counts.setdefault(worker['host_id'], {})
-        chosen = min(preparation, key=lambda item: counts.get(item['job_id'], 0))
+        chosen = min(preparation, key=lambda item: (counts.get(item['job_id'], 0),
+            len(self._readiness_bundle_hashes([item]) - cached) if cached is not None else 0))
         counts[chosen['job_id']] = counts.get(chosen['job_id'], 0) + 1
         return [item for item in challenges if
                 item.get('request', {}).get('route', {}).get('kind') != 'preparation' or item is chosen]
@@ -370,8 +376,13 @@ class Relay:
         observed = self.post('/v1/poll', dict(poll, observe_only=True))
         challenges = observed.get('eligibility_challenges') or []
         if challenges and status['slots']:
-            challenges = self._readiness_batch(worker, challenges)
-            self._deliver_challenge_artifacts(worker,challenges)
+            cached = (set(status.get('cached_artifact_sha256', []))
+                      if worker.get('transport') == 'ssh-wsl' else None)
+            challenges = self._readiness_batch(worker, challenges, cached)
+            # A fresh worker inventory avoids an SSH round trip. The worker
+            # still verifies and binds all metadata in its readiness check.
+            if cached is None or self._readiness_bundle_hashes(challenges) - cached:
+                self._deliver_challenge_artifacts(worker,challenges)
             facts, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
             if facts.get('host_id') != status['host_id']:
                 raise ValueError('Readiness response host differs')

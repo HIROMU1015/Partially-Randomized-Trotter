@@ -40,6 +40,25 @@ class ControllerFailures(unittest.TestCase):
         self.executors.append(result)
         return result
 
+    def test_local_second_slot_only_pairs_sized_price_calibrations(self):
+        from types import SimpleNamespace
+        trial = DistributedExecutor.__new__(DistributedExecutor)
+        profile = {'host_id': 'local', 'preparation_profiles': [dict(stage='compile',
+                   provider='DF_CALIBRATION', profile=dict(host_id='local', task_cpu_count=4))]}
+        trial.distributed = dict(local_worker=profile, local_calibration_pair=dict(memory_reserve_bytes=100))
+        calib = dict(route={'kind': 'preparation'}, preparation=dict(stage='compile', provider='DF_CALIBRATION',
+                     source={}, parallel_df_price_axes=True))
+        trial._owned_attempts = lambda: [dict(host_id='local', job_id='first')]
+        trial.store = SimpleNamespace(row=lambda _: {'request': calib})
+        with patch('trottertracks.rpe_q3_resources.resource_snapshot', return_value={
+                'machine_mem_available_bytes': 200, 'allowed_cpu_count': 8}) as resources:
+            self.assertTrue(trial._local_calibration_pair_allows('local', calib))
+            self.assertFalse(trial._local_calibration_pair_allows('local', {'route': {'kind': 'Q3'}}))
+            resources.return_value['allowed_cpu_count'] = 7
+            self.assertFalse(trial._local_calibration_pair_allows('local', calib))
+            resources.return_value.update(allowed_cpu_count=8, remaining_group_memory_bytes=99)
+            self.assertFalse(trial._local_calibration_pair_allows('local', calib))
+
     def close_one(self, executor):
         # The fixture starts no processes, so release only its synthetic tasks
         # to avoid hanging test teardown when testing a missing _finished call.

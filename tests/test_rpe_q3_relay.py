@@ -166,6 +166,26 @@ class RelayTests(unittest.TestCase):
             self.assertEqual(batch, [q3, first[0], other])
             self.assertEqual(relay._readiness_batch(worker, [q3, other]), [q3, other])
 
+    def test_wsl_discovery_checks_cached_input_without_delivery_roundtrip(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            configuration = Path(temporary)/'relay.json'
+            wsl = dict(host_id='ARTIFICIAL_WSL', transport='ssh-wsl')
+            write(configuration, dict(state_directory=str(Path(temporary)/'state'),
+                                      controller=dict(ssh_alias='qg2'), workers=[wsl]))
+            relay = R.Relay(configuration)
+            requests = [dict(job_id=name, request=dict(route=dict(kind='preparation'),
+                        preparation=dict(input_git_bundles=[dict(sha256=name)]))) for name in ['MISS', 'HIT']]
+            status = dict(host_id=wsl['host_id'], slots=1, source_sha='ARTIFICIAL',
+                          cached_artifact_sha256=['HIT'], cached_prefixes=[])
+            facts = dict(host_id=wsl['host_id'], host_fingerprints={'HIT': {}})
+            with patch.object(relay, 'post', return_value=dict(eligibility_challenges=requests)), \
+                    patch.object(relay, 'remote', side_effect=[(status, .01), (facts, .01)]) as remote, \
+                    patch.object(relay, '_deliver_challenge_artifacts') as deliver:
+                relay._discover(wsl)
+            deliver.assert_not_called()
+            self.assertEqual(remote.call_args.args[2]['challenges'], [requests[1]])
+            self.assertEqual(relay._readiness_batch(wsl, requests, {'HIT'}), [requests[0]])
+
     def test_mailbox_json_error_is_bounded_and_excludes_unrelated_payload(self):
         with tempfile.TemporaryDirectory(prefix='relay-mailbox-json-error-') as temporary:
             configuration = Path(temporary)/'relay.json'

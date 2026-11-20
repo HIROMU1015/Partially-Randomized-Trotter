@@ -421,3 +421,17 @@ PBSの選択版では、workerが受付可能になってから従来のreadines
 PBSの固定設定と元の科学checkoutは引き続き使う。関連人工回帰40件PASS、旧外部配置を要する
 1件skip。別の旧 `test_rpe_pbs_release_binding` 2件は実装が使う `_validate_acquisition` と
 テストが呼ぶ旧 `_acquire` の不一致で失敗し、今回変更していない。実機のCPU時間と回収は別に確認する。
+
+### 価格較正・RomuTailの増枠・WSLキャッシュ照合の試行
+
+利用者は現探索の資源配分の試行を指示した。次の通常Resumeでは既存のPBS管理版も維持し、
+RomuTailの `DF_CALIBRATION` の同時軸数を2→4、server2を3→6にした実行profileを使う。
+既存の科学SOURCE、計算条件、回路・seed・結果の所有と予算は保持する。
+server2は従来の30 CPU上限と自動枠を保持し、コピーしたプロファイルを通常のreadinessで照合する。
+RomuTailの2枠目は、独立軸並列対応の価格較正同士で、既存のCPU枠内かつ前回の計測ピークを
+基にしたメモリ余裕がある場合に限る。Q3と未計測の準備工程には単独枠を維持する。
+
+WSLのrelayは新しい状態応答で入力bundleが揃っている要求を同じ確認回数の候補で先に扱う。
+キャッシュ照会の往復を省き、workerでの既存固定入力照合は実施する。WSLは既存の4枠を使用する。
+76件の人工回帰PASS、旧外部配置を要する1件skip。保存要求でRomuTail4軸、server2 6軸の
+実機metadata照合が両方PASS。稼働中のattemptを中断せず、次の通常Resumeで新しいprofileを選ぶ。

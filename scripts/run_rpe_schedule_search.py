@@ -51,6 +51,25 @@ def read_loc(loc):
     return x
 
 
+def apply_worker_trial(spec, trial):
+    """Install the selected execution policy in memory after fixed-input checks."""
+    distributed = spec['executor']['distributed']
+    for host, workers in trial['calibration_workers'].items():
+        profile = (distributed['local_worker'] if host == 'local' else
+                   json.loads(Path(distributed['preparation_profiles'][host]).read_text()))
+        for rule in profile['preparation_profiles']:
+            if rule['provider'] == 'DF_CALIBRATION' and rule['profile'].get('task_cpu_count'):
+                rule['profile']['task_cpu_count'] = workers
+        if host == 'local':
+            profile['slots'] = 2
+            profile['slot_policy'] = dict(mode='fixed', initial_slots=2)
+        distributed['preparation_profiles'][host] = profile
+    for worker in distributed['relay']['workers']:
+        if worker['host_id'] == 'server2':
+            worker['profile'] = trial['server2_profile']
+    distributed['local_calibration_pair'] = dict(memory_reserve_bytes=trial['local_memory_reserve_bytes'])
+
+
 class WideDriver(K.Driver):
     def __init__(self, a):
         existing = (a.run_dir.resolve() / 'KAPPA_STATE.json').exists()
@@ -339,6 +358,9 @@ class WidthDriver:
         self.wide = self.spec.get('search_overrides', {}).get('schedule_wide', {})
         self.completion = None
         self.check_fixed_inputs()
+        trial = globals().get('FIXED_RUN_WORKER_TRIAL')
+        if trial is not None and not a.plan_only:
+            apply_worker_trial(self.spec, trial)
         if not self.state['families']:
             started=time.monotonic();self.log(event='SEED_START')
             self.seed();self.log(event='SEED_END',wall_seconds=time.monotonic()-started,families=len(self.state['families']))
