@@ -1,7 +1,7 @@
 """Work-conserving execution around the unchanged per-configuration search rule.
 
-Only the search's chosen answer is adopted. Out-of-order completions stay in
-their source-bound job directories. Finite budgets include reservations before
+The search controls adoption, including eligible out-of-order scaled results.
+Finite budgets include reservations before
 launch; running scientific workers are never cancelled to discard lookahead.
 """
 from collections import Counter, defaultdict, deque
@@ -89,6 +89,8 @@ class ConcurrentExecutor(O.Executor):
         self.state=SimpleNamespace(cv=threading.Condition(threading.RLock()),tasks={},active=0,closed=False,
             failure=None,owner_clock={},clock=0,budgets=budgets or {},approved=science_approved,existing=existing,
             reserved=Counter(),metrics=Counter(),by_method={},pids={},driver=driver,peak_RSS_KiB=0,peak_active=0,adopted_jobs=set(),observations=defaultdict(list),external={},monitor_stop=threading.Event())
+        self.state.scaled_completions = defaultdict(dict)
+        self.state.scaled_recovered = set()
         self.invocation=str(os.getpid())+'-'+str(time.time_ns())
         self.log(event='EXECUTOR_START',capacity=self.capacity,dp_workers=dp_workers)
         for method in self.routes:
@@ -417,7 +419,47 @@ class ConcurrentExecutor(O.Executor):
             except OSError as exc:
                 t.error=repr(exc);self._stop_after_failure(exc)
                 O.record_runtime_error(self.run_dir,exc,'Q3_EXIT_RECORD',job=t.job.name)
-            finally:t.event.set();s.cv.notify_all()
+            finally:
+                if code == 0 and not t.error:
+                    self._note_scaled_completion(t.view.method, t.job, t.proposal['origin'])
+                t.event.set()
+                s.cv.notify_all()
+
+    def _note_scaled_completion(self, method, job, origin):
+        from .rpe_scaled_shots import RULE
+        if origin.get('kind') == RULE and job not in self.state.adopted_jobs:
+            self.state.scaled_completions[method][job] = None
+
+    def scaled_completion_pending(self):
+        return bool(self.state.scaled_completions[self.method])
+
+    def read_scaled_completions(self, proposal_for):
+        """Read only published completions for the selector's current allocations."""
+        with self.state.cv:
+            jobs = tuple(self.state.scaled_completions[self.method])
+            self.state.scaled_completions[self.method].clear()
+        for job in jobs:
+            if not (job/'OUTCOME.json').is_file():
+                continue
+            request = O.load_json(job/'REQUEST.json')
+            cid = request['configuration_id']
+            key = cid, O.interleave(request['N_X'], request['N_Y'])
+            proposal = proposal_for(key)
+            if (proposal is None or self.job_dir(proposal) != job or not self.same_route(job, cid)
+                    or request.get('cost') is None or O.frac(request['cost']) != proposal['cost']):
+                continue
+            receipt = O.load_json(job/'PROCESS_RETURN.json')
+            if receipt.get('returncode') != 0 or receipt.get('signal') is not None:
+                continue
+            answer = O.Executor.ingest(self, job, proposal, calls=0)
+            if answer['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
+                continue
+            lower, upper = answer['MSE_lower'], answer['MSE_upper']
+            if lower is None or upper is None or not 0 <= lower <= upper:
+                continue
+            answer['calls'] = self.take_count(job)
+            self._adopt_answer(job, proposal, answer)
+            yield key, answer
 
     def _monitor(self):
         s=self.state
@@ -446,27 +488,36 @@ class ConcurrentExecutor(O.Executor):
         return self.has_spare_slot()
 
     def _wait_for_task(self, task):
-        """Wake the selector for fresh work only when the queue can use it."""
+        """Wake for fresh work when a slot is available, or for completed results."""
         s = self.state
         ready_pending = getattr(self, 'ready_pending', None)
+        completion_pending = getattr(self, 'completion_pending', None)
         self.log(event='DEPENDENCY_WAIT_START', job=task.job.name)
         try:
-            if ready_pending is None and not getattr(self, 'standby', None):
+            if ready_pending is None and completion_pending is None and not getattr(self, 'standby', None):
                 task.event.wait()
                 return True
 
             def fresh_ready():
                 return ready_pending is not None and ready_pending() and self._can_take_ready_candidates()
 
+            def reselect():
+                if completion_pending is not None and completion_pending():
+                    return 'Q3_WAIT_YIELD_FOR_COMPLETION'
+                if fresh_ready():
+                    return 'Q3_WAIT_YIELD_FOR_READY'
+                return None
+
             while True:
                 with s.cv:
-                    s.cv.wait_for(lambda: task.event.is_set() or fresh_ready() or self._standby_can_fill())
+                    s.cv.wait_for(lambda: task.event.is_set() or reselect() or self._standby_can_fill())
                     if task.event.is_set():
                         return True
-                    if fresh_ready():
+                    event = reselect()
+                    if event:
                         break
                 self._fill_standby()
-            self.log(event='Q3_WAIT_YIELD_FOR_READY', job=task.job.name)
+            self.log(event=event, job=task.job.name)
             return False
         finally:
             self.log(event='DEPENDENCY_WAIT_END', job=task.job.name)
@@ -514,20 +565,26 @@ class ConcurrentExecutor(O.Executor):
                     source='NEW_Q3_JOB',calls=self.take_count(job),MSE_lower=None,MSE_upper=None,job=str(job))
         answer=self.scope_unknown(job,proposal,answer)
         if answer is not None and answer['status']not in('IN_PROGRESS','STALE_JOB','NO_ROUTE'):
-            with s.cv:
-                first=job not in s.adopted_jobs
-                if first:
-                    s.adopted_jobs.add(job);s.metrics['adopted']+=1;s.by_method.setdefault(self.method,Counter())['adopted']+=1
-                    if task and getattr(task,'speculative',False):s.metrics['speculative_adopted']+=1
-                    if (getattr(self, 'standby', None) is not None and task and task.status == 'DONE'
-                        and answer['status'] in (O.PASS, O.FAIL) and hasattr(task, 'started_monotonic')):
-                        cid = proposal['configuration_id']
-                        s.observations[self.method].append(dict(
-                            id=job.name, kind='SHOT_Q3', method=self.method, configuration_id=cid,
-                            profile=self.search_profile(cid), status=answer['status'],
-                            finished_at=task.finished_at, seconds=task.finished_at-task.started_monotonic))
-            if first:self.log(event='ADOPT',job=job.name,configuration=proposal['configuration_id'],status=answer['status'])
+            self._adopt_answer(job, proposal, answer)
         return answer
+
+    def _adopt_answer(self, job, proposal, answer):
+        s = self.state
+        with s.cv:
+            s.scaled_completions[self.method].pop(job, None)
+            task = s.tasks.get(job)
+            first=job not in s.adopted_jobs
+            if first:
+                s.adopted_jobs.add(job);s.metrics['adopted']+=1;s.by_method.setdefault(self.method,Counter())['adopted']+=1
+                if task and getattr(task,'speculative',False):s.metrics['speculative_adopted']+=1
+                if (getattr(self, 'standby', None) is not None and task and task.status == 'DONE'
+                    and answer['status'] in (O.PASS, O.FAIL) and hasattr(task, 'started_monotonic')):
+                    cid = proposal['configuration_id']
+                    s.observations[self.method].append(dict(
+                        id=job.name, kind='SHOT_Q3', method=self.method, configuration_id=cid,
+                        profile=self.search_profile(cid), status=answer['status'],
+                        finished_at=task.finished_at, seconds=task.finished_at-task.started_monotonic))
+        if first:self.log(event='ADOPT',job=job.name,configuration=proposal['configuration_id'],status=answer['status'])
 
     def finish(self):
         s=self.state
@@ -2532,6 +2589,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 task.error = None
                 if task.status == 'RUNNING': self._finished(task, receipt.get('returncode'), row['assigned_epoch'])
                 else: task.event.set()
+            if accepted['adopted_epoch'] is None and receipt.get('returncode') == 0:
+                self._note_scaled_completion(row['method'], job, row['request'].get('origin') or {})
             self._timing_queue()
             s.cv.notify_all()
             return dict(ok=True, duplicate=duplicate)
@@ -2545,6 +2604,23 @@ class DistributedExecutor(ConcurrentExecutor):
             if (job/'OUTCOME.json').exists(): return
             raise ValueError('Accepted completion is missing its transfer directory')
         publish_staged_files(stage, job)
+
+    def recover_scaled_completions(self):
+        with self.state.cv:
+            if self.method in self.state.scaled_recovered:
+                return
+            for job_id in self.store.unadopted_results(self.method):
+                self.state.scaled_completions[self.method][self.run_dir/'jobs'/self.method/job_id] = None
+            self.state.scaled_recovered.add(self.method)
+
+    def _adopt_answer(self, job, proposal, answer):
+        current = self.store.row(job.name)
+        if current and current['state'] == 'ACCEPTED':
+            if not self.store.adopt(current['job_id']):
+                with self.state.cv:
+                    self.state.scaled_completions[self.method].pop(job, None)
+                return
+        super()._adopt_answer(job, proposal, answer)
 
     def answer(self, proposal, allow_new=True):
         blocked = self._wait_candidate_preparation(proposal)
@@ -2563,7 +2639,6 @@ class DistributedExecutor(ConcurrentExecutor):
             return self._held_answer(proposal)
         if answer:
             current = self.store.row(job.name)
-            if current and current['state'] == 'ACCEPTED': self.store.adopt(current['job_id'])
             if (answer['status'] == 'UNKNOWN' and current and current['state'] == 'UNKNOWN'
                     and not self.state.failure and current['attempt_id'] and current['host_id']
                     and current['detail'].get('automatic_retry') is False
@@ -2723,6 +2798,7 @@ class DistributedExecutor(ConcurrentExecutor):
 def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     """Parallel methods; each retains O.optimize/run_method's own adoption order."""
     methods=list(methods or problem['methods'])
+    finalizers = {}
     try:
         if kwargs.get('context') is None:kwargs['context']=O.prepare(root,problem,methods=methods)
         with ThreadPoolExecutor(max_workers=max(1,len(methods)))as pool:
@@ -2747,7 +2823,7 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
 
             def submit(method):
                 future = pool.submit(O.optimize, root, problem, executor=executor.for_method(method),
-                                     methods=[method], **kwargs)
+                                     methods=[method], scaled_finalizers=finalizers, **kwargs)
                 future.add_done_callback(lambda done: finished(method, done))
                 return future
 
@@ -2786,6 +2862,8 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
         if close_executor:executor.finish()
         else:
             for method in methods:executor.for_method(method).finish()
+    for method, finalize in finalizers.items():
+        finalize(out[method])
     metrics=executor.metrics()
     for m,result in out.items():
         counts=metrics['by_method'].get(m,{})

@@ -74,6 +74,12 @@ R08で過去に `df-plan` が保留した3件の保存入力を、従来の固�
 
 `rpe_q3_timing`と通常transportの小さいstage/eventを再利用し、`summarize_rpe_q3_timing.py RUN --output FILE`でhost/attempt別の秒数・欠測・異なる時計の包絡を出す。SOURCE19c43576c、集計5897d26ab。旧実3host18人工jobはbody欠測、初回約235秒と後続を分離。新模擬3hostは18/18 body/採用を計測、再開0起動。元native人工DP exact一致・cache HIT。実H4速度とrelay並列化効果は未測定。次の固定SOURCE・新runへ導入し、稼働SOURCEは変更しない。[一元HANDOFF](research/rpe_q3_timing_20261117/HANDOFF.md)／[実測と限界](research/rpe_q3_timing_20261117/REPORT.md)。
 
+## 倍率探索での分散Q3完了結果の取り込み
+
+`RPE_SCALED_SHOTS_V1` は準備完了通知で選び直す間も、実行中のQ3を既存の共通キューで追跡する。完了時に待機中の探索を起こし、受領済みの結果を構成・整数配分・ルート・価格で照合して取り込む。区間の終了待ちで届いた結果も、最安と倍率別の判定を保存する前に取り込む。再開時は同じ中央台帳を読み、採用はjobにつき一度とする。
+
+人工の2ホストで候補準備後の割当、逆順到着、区間終了時の回収、同じ通知の再送、再開時の追加起動0を検査した。同じ構成と最大roundで費用を更新しない点を省く効果は人工例で確認した。実H4の短縮時間は未測定。RomuTailの運用版への登録・切替は既存のPreview・Start・Resumeの手順に従う。[選択器](../src/trottertracks/rpe_scaled_shots.py)・[分散回帰テスト](../tests/test_rpe_distributed_controller.py)・[分散運用ルール](research/rpe_distributed_operations.md#継続run配置を作るとき)。
+
 ## 候補ごとの実入力適合ホストへ割当
 
 通常schedule入口の準備で `HOST_ELIGIBILITY.json` を作り、distributed controllerがREQUEST/SOURCE/入力とhostの現在fingerprintをclaim直前に照合する。先頭jobが非対応でも既存優先順位の独立候補へ進む。全host不足は予算予約前に保留し、busyな適合hostは待機する。方式名やjob IDの固定割当はしない。既存attemptの回収・再開は保持。新transportと固定科学adapter SOURCEを分ける。人工queueの検査であり実H4の速度測定はない。[使い方と根拠](research/rpe_q3_host_eligibility/REPORT.md)。

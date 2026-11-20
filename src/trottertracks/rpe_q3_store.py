@@ -118,6 +118,12 @@ class JobStore:
         with self._connection() as db:
             return [self._decoded(row) for row in db.execute('SELECT * FROM jobs ORDER BY enqueued_epoch,job_id')]
 
+    def unadopted_results(self, method):
+        with self._connection() as db:
+            return [row['job_id'] for row in db.execute(
+                "SELECT job_id FROM jobs WHERE method=? AND state='ACCEPTED' AND adopted_epoch IS NULL "
+                "ORDER BY completed_epoch,job_id", (method,))]
+
     def events(self):
         with self._connection() as db:
             return [dict(row, detail=json.loads(row['detail'])) for row in db.execute('SELECT * FROM events ORDER BY sequence')]

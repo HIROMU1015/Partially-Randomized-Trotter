@@ -1056,9 +1056,9 @@ class WidthDriver:
         if getattr(self, 'scaled_shots', False):
             # Prior/free-vector results cannot update a multiplier-grid minimum.
             for method, r in result.items():
-                r['rule_adopted_best'] = r['best']
+                r.setdefault('rule_adopted_best', r['best'])
                 r['confirmed_all_best'] = r['best']
-                methods[method] = dict(rule_adopted_best=r['best'], confirmed_all_best=r['best'],
+                methods[method] = dict(rule_adopted_best=r['rule_adopted_best'], confirmed_all_best=r['best'],
                                        scaled_shots=r['scaled_shots'])
             self.state['method_minima'] = methods
             K.CLI.write(self.run/'CONFIRMED_MINIMA.json', K.CLI.slim(dict(

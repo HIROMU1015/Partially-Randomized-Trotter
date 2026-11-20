@@ -11,6 +11,8 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -19,6 +21,8 @@ sys.path.insert(0, str(ROOT / 'src'))
 from trottertracks import rpe_method_optimizer as O
 from trottertracks import rpe_q3_coordinator as Q
 from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+from trottertracks import rpe_scaled_shots as S
+from test_rpe_optimizer_concurrent import fixture
 
 
 class ControllerFailures(unittest.TestCase):
@@ -542,6 +546,134 @@ class ControllerFailures(unittest.TestCase):
         self.assertEqual(executor.state.metrics['finished'], 1)
         executor.rpc('/v1/complete', payload)
         self.assertEqual(executor.state.metrics['finished'], 1)
+
+    def test_scaled_adoption_with_two_hosts_and_resume(self):
+        from run_rpe_method_optimizer import make_executor
+
+        method = 'PR_PAULI'
+        tau = Fraction(S.EPSILON)**2
+        for scenario in ('late_ready', 'live_standby', 'drained_standby'):
+            with self.subTest(scenario=scenario):
+                problem, context, routes = fixture([method])
+                problem['rpe']['M'] = 1
+                problem['search'].update(rule=S.RULE, work_conserving_search=True, lookahead=2,
+                                         work_slice_steps=1 if scenario == 'drained_standby' else None,
+                                         scaled_shots=dict(M=[1], grid=dict(min_k=0, max_k=0, divisor=4),
+                                                           compare_paper=False))
+                context['tau'] = tau
+                context['saved'] = O.SavedBackend([], {})
+                first, second = context['candidates']
+                first.update(prices=[Fraction(1)]*4)
+                second.update(prices=[Fraction(2)]*4)
+                ready = threading.Event()
+                draining = threading.Event()
+
+                def subscribe(*_):
+                    def take():
+                        if not ready.is_set():
+                            return []
+                        ready.clear()
+                        return [second]
+                    return ready.is_set, take
+
+                source = None
+                if scenario == 'late_ready':
+                    context['candidates'] = [first]
+                    source = SimpleNamespace(subscribe=subscribe, has_new=lambda _: ready.is_set())
+                run = self.run/scenario
+                spec = dict(methods=[method], science_approved=True, max_new_q3_per_method={method: 2},
+                            executor=dict(scheduler='concurrent', max_concurrent_jobs=2,
+                                          prior_run_dirs=[str(run)],
+                                          distributed=dict(port=0, work_conserving_search=True)))
+                ex, optimize = make_executor(ROOT, run, routes, {}, problem, spec)
+                self.executors.append(ex)
+                answers, errors = [], []
+
+                def finish(view):
+                    if view.run_dir == run and view.method == method:
+                        draining.set()
+                    return original_finish(view)
+
+                original_finish = DistributedExecutor.finish
+
+                def search():
+                    try:
+                        with patch.object(DistributedExecutor, 'finish', finish):
+                            answers.append(optimize(ROOT, problem, context=context, executor=ex, ready_source=source,
+                                                    max_new=spec['max_new_q3_per_method']))
+                    except Exception as exc:
+                        errors.append(exc)
+
+                def poll(executor, host):
+                    return executor.rpc('/v1/poll', dict(host_id=host, slots=1, capacity=1,
+                                                         source_sha=self.source))
+
+                def complete(task, host, passes):
+                    payload = self.completion(task)
+                    out = json.loads(base64.b64decode(payload['files']['OUTCOME.json']))
+                    bound = O.enc(tau/2 if passes else tau*2)
+                    out.update(status=O.PASS if passes else O.FAIL, MSE_lower=bound, MSE_upper=bound)
+                    payload.update(host_id=host)
+                    payload['files']['OUTCOME.json'] = base64.b64encode(json.dumps(out).encode()).decode()
+                    self.assertFalse(ex.rpc('/v1/complete', payload)['duplicate'])
+                    self.assertTrue(ex.rpc('/v1/complete', payload)['duplicate'])
+
+                thread = threading.Thread(target=search, daemon=True)
+                thread.start()
+                try:
+                    with ex.state.cv:
+                        self.assertTrue(ex.state.cv.wait_for(lambda: bool(ex.store.rows()) or errors, timeout=5))
+                    a, = poll(ex, 'server2')['assignments']
+                    self.assertEqual(a['request']['configuration_id'], first['configuration_id'])
+                    if scenario == 'late_ready':
+                        ex.rpc('/v1/poll', dict(host_id='pbs-0', slots=1, capacity=1,
+                                               source_sha=self.source, observe_only=True))
+                        with ex.state.cv:
+                            ready.set()
+                            ex.state.cv.notify_all()
+                    with ex.state.cv:
+                        self.assertTrue(ex.state.cv.wait_for(lambda: len(ex.store.rows()) == 2 or errors, timeout=5))
+                    b, = poll(ex, 'pbs-0')['assignments']
+                    self.assertEqual(b['request']['configuration_id'], second['configuration_id'])
+                    if scenario == 'drained_standby':
+                        complete(a, 'server2', False)
+                        self.assertTrue(draining.wait(timeout=5))
+                        complete(b, 'pbs-0', True)
+                    else:
+                        complete(b, 'pbs-0', True)
+                        deadline = time.monotonic() + 5
+                        while ex.store.row(b['job_id'])['adopted_epoch'] is None and time.monotonic() < deadline:
+                            time.sleep(.01)
+                        self.assertIsNotNone(ex.store.row(b['job_id'])['adopted_epoch'])
+                        self.assertEqual(ex.store.row(a['job_id'])['state'], 'ASSIGNED')
+                        complete(a, 'server2', False)
+                    thread.join(timeout=8)
+                    self.assertFalse(thread.is_alive())
+                    self.assertFalse(errors, errors)
+                    result = answers[0][method]
+                    self.assertEqual(result['best']['configuration_id'], second['configuration_id'])
+                    if scenario == 'drained_standby':
+                        self.assertIsNone(result['rule_adopted_best'])
+                    self.assertEqual(result['held'], [])
+                    self.assertEqual(result['evaluated_count'], 2)
+                    trace = {row['configuration_id']: row for row in result['trace']}
+                    if scenario != 'late_ready':
+                        self.assertFalse(trace[second['configuration_id']]['selected_by_rule'])
+                finally:
+                    self.close_one(ex)
+                    thread.join(timeout=8)
+
+                resumed, optimize = make_executor(ROOT, run, routes, {}, problem, spec)
+                self.executors.append(resumed)
+                context['candidates'] = [first, second]
+                result = optimize(ROOT, problem, context=context, executor=resumed,
+                                  max_new=spec['max_new_q3_per_method'])[method]
+                self.assertEqual(result['best']['configuration_id'], second['configuration_id'])
+                self.assertEqual(result['evaluated_count'], 2)
+                self.assertEqual(resumed.store.counts(method, started_only=True), 2)
+                events = resumed.store.events()
+                self.assertEqual([e['event'] for e in events].count('ACCEPT'), 2)
+                self.assertEqual([e['event'] for e in events].count('ADOPT'), 2)
 
     def test_controller_restart_publishes_accepted_staging_without_new_attempt(self):
         executor = self.executor()
