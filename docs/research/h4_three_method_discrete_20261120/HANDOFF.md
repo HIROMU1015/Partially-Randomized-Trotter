@@ -203,5 +203,17 @@ server2でLD6・幅h・絶対κ=1とLD7・幅h/2・絶対κ=1の信号を各13�
 専用PBS割当267558のFを確認した。次版ではtransport監督にnative Pythonを使用し、
 科学providerの専用Pythonと固定入力は維持する。限定した起動前障害の継続照合を通してから再開する。
 
+直前runの新Q3は4件を回収し、すべて `MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD` だった。
+別の2要求のdry-check保留は `COUNT_ONLY_SCOPE_EXCEEDED` であり、PBSのtransport障害とは区別する。
+これらの数値範囲制限と元の保留は維持する。
+再開用派生bundle一覧は `method=PR_DF` の3件READY・1件WAITINGだけを使用する。
+元STATEに残る旧PR-Pauliの5件READYをDF入力一覧へ追加しない。
+
+保存処理中にRomuTailのファイルシステム空きが0になったため、全run終了と未確定入力の保護、
+中央CAS原本とのSHA・サイズを確認してworker側の重複23件・4,545,400,832 bytesを整理した。
+回収処理には実ファイルシステムの空きも見る条件を加えた。50 GiBの受付上限は変えず、
+既存の所有・ロック・保護・内容照合を満たす複製だけを整理する。
+元のSOURCE、raw、UNKNOWN、失敗記録を削除・書換えしていない。
+
 実装・人工検査は親Codexと委任Codexが担当した。親Codexは4環境への配置、通常入口の操作、
 実処理と中央回収を照合した。独立した重要科学レビューは実施していない。

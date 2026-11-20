@@ -7,6 +7,8 @@ import sqlite3
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'scripts'))
@@ -93,6 +95,60 @@ class RemoteCacheProof(unittest.TestCase):
         sha, n, _ = self.blob(self.owner('prior'), b'input')
         self.job('RUNNING', {}, host='server2')
         self.assertEqual(R.verified_remote_duplicates(self.current, 'server2', {sha: n}, 1000), {})
+
+
+class LocalFilesystemPressure(unittest.TestCase):
+    setUp = RemoteCacheProof.setUp
+    owner = RemoteCacheProof.owner
+    blob = RemoteCacheProof.blob
+
+    def test_pressure_target_preserves_quota_and_unavailable_report_rules(self):
+        policy = dict(limit_bytes=500000)
+        latest = dict(limit_bytes=500000, used_bytes=100000, reason=None)
+        with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=1000)):
+            self.assertEqual(R.local_reclaim_target(policy, latest, self.state), 99000)
+            with patch.object(R, 'local_duplicate_cache', return_value={}) as reclaim, \
+                 patch.object(R, 'report', return_value=latest):
+                profile = dict(storage_limit=policy, artifact_cache_directory=str(self.state),
+                               work_dir=str(self.state/'spool'))
+                self.assertIs(R.local_report(self.current, profile), latest)
+                reclaim.assert_called_once_with(self.current, profile)
+        with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=60000)):
+            self.assertEqual(R.local_reclaim_target(policy, latest, self.state), 0)
+            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=600000,
+                             reason='STORAGE_LIMIT_REACHED'), self.state), 150000)
+        with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=0)):
+            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=None,
+                             reason='STORAGE_USAGE_UNAVAILABLE'), self.state), 0)
+
+    def test_low_free_space_only_removes_verified_idle_duplicates(self):
+        prior = self.owner('prior')
+        sha, size, central = self.blob(prior, b'D'*131072)
+        retained, _, retained_central = self.blob(prior, b'U'*131072)
+        worker = self.state/'worker-cache'
+        for original in (central, retained_central):
+            target = worker/original.parent.name/original.name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(original.read_bytes())
+        unknown = self.state/'spool/old/attempt'
+        put(unknown/'WORKER_STATE.json', dict(state='UNKNOWN'))
+        put(unknown/'ASSIGNMENT.json', dict(input=retained))
+        put(self.state/'CURRENT_TARGET.json', dict(run_directory=str(self.current)))
+        (self.state/'REGISTRY.lock').touch()
+        sample = self.state/'usage.json'
+        sample.with_suffix('.lock').touch()
+        policy = dict(limit_bytes=500000, roots=[str(worker)], sample_path=str(sample))
+        put(sample, dict(policy=dict(limit_bytes=500000, roots=[str(worker)]),
+                         report=dict(limit_bytes=500000, used_bytes=262144, reason=None)))
+        profile = dict(storage_limit=policy, artifact_cache_directory=str(worker),
+                       work_dir=str(self.state/'spool'), host_id='local')
+        with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=1000)):
+            removed = R.local_duplicate_cache(self.current, profile)
+        self.assertEqual(set(removed), {sha})
+        self.assertFalse((worker/sha[:2]/sha).exists())
+        self.assertTrue((worker/retained[:2]/retained).exists())
+        self.assertEqual(central.read_bytes(), b'D'*size)
+        self.assertEqual(json.loads((unknown/'WORKER_STATE.json').read_text()), dict(state='UNKNOWN'))
 
 
 if __name__ == '__main__':

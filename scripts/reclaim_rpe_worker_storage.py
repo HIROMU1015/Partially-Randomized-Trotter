@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import re
 import shlex
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -70,6 +71,17 @@ def central_artifact_caches(run):
     return [(owner/'distributed/artifacts').resolve() for owner in dict.fromkeys(candidates)]
 
 
+def local_reclaim_target(policy, latest, worker):
+    """Recover headroom for an exceeded worker quota or low filesystem space."""
+    if latest['reason'] not in (None, 'STORAGE_LIMIT_REACHED'):
+        return 0
+    quota = latest['used_bytes'] - latest['limit_bytes'] * 9 // 10 if latest['reason'] else 0
+    threshold = policy['limit_bytes'] // 10
+    free = shutil.disk_usage(worker).free
+    pressure = 2 * threshold - free if free < threshold else 0
+    return max(0, quota, pressure)
+
+
 def local_duplicate_cache(run, profile):
     """Drop only idle local cache copies with a byte-verified central copy."""
     policy = profile['storage_limit']
@@ -122,13 +134,14 @@ def local_duplicate_cache(run, profile):
         fcntl.flock(lock, fcntl.LOCK_EX)
         measurement = read(sample)
         latest = measurement['report']
-        if (measurement['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots'])
-                or latest['reason'] != 'STORAGE_LIMIT_REACHED'):
+        if measurement['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots']):
+            return {}
+        target = local_reclaim_target(policy, latest, worker)
+        if target <= 0:
             return {}
         retained = protected()
         if retained is None:
             return {}
-        target = latest['used_bytes'] - latest['limit_bytes'] * 9 // 10
         removed = {}
         for path in sorted(worker.glob('*/*'), key=lambda path: path.stat().st_mtime_ns):
             if (path.name in retained or path.parent.name != path.name[:2]
@@ -164,7 +177,8 @@ def local_report(run, profile):
     policy = profile.get('storage_limit')
     options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), compact_metadata=True)
     result = report(policy, **options)
-    if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and profile.get('artifact_cache_directory'):
+    if (result and profile.get('artifact_cache_directory')
+            and local_reclaim_target(policy, result, profile['artifact_cache_directory']) > 0):
         removed = local_duplicate_cache(run, profile)
         if removed:
             result = report(policy, refresh=True, **options)
