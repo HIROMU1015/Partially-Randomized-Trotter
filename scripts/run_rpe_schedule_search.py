@@ -1167,7 +1167,7 @@ class WidthDriver:
             if prepare_during:
                 # Snapshot/install happens before starting preparation. While
                 # it owns Completion state, Q3 only reads this frozen context.
-                from concurrent.futures import ThreadPoolExecutor,TimeoutError
+                from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
                 import inspect,threading
                 stop_preparation=threading.Event()
 
@@ -1202,6 +1202,16 @@ class WidthDriver:
                     pf_future=preparation_pool.submit(pf_candidate_selection.prepare_next,ROOT,problem,
                         snapshot_context(context),active_spec,self.run,deepcopy(routes),runtime,
                         stop_requested=stop_preparation.is_set)
+
+                def install_pf():
+                    nonlocal context, routes, pf_future
+                    pf_context,pf_routes,pf=pf_future.result()
+                    context,routes=_merge_pf(context,pf_context,routes,pf_routes,self.methods)
+                    executor.routes=routes;executor.expected=context['expected']
+                    O.apply_published(context['candidates'],routes)
+                    self.pf_more=pf['status']=='PREPARATION_WAVE_PROCESSED'
+                    K.CLI.write(self.run/'PF_PREPARATION_STATUS.json',pf)
+                    pf_future=None
                 def ready_keys():
                     return {p['completion']['key'] for p in self.state['points']
                             if p['status'] in ('REGISTERED', 'EVALUATED') and p.get('completion', {}).get('key')}
@@ -1210,6 +1220,10 @@ class WidthDriver:
                 pending=preparation_pool.submit(prepare)
                 can_search=any(c['ready']for c in context['candidates'])
                 while True:
+                    if pf_future is not None and pf_future.done():
+                        install_pf()
+                        can_search=any(c['ready']for c in context['candidates'])
+                        self.log(event='PF_READY_INSTALLED_DURING_PREPARATION',pr_pending=not pending.done())
                     if can_search:
                         with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION',on_error=lambda error:stop_preparing()):
                             interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
@@ -1226,7 +1240,10 @@ class WidthDriver:
                     if interim:
                         for method,r in interim.items():
                             spent=executor.launched(method);maximum=self.spec.get('max_new_q3_per_method',{}).get(method)
-                            if r['stop_reason']=='STEP_LIMIT'and spent<budgets[method]:remaining_ready_work=True
+                            can_continue = (r['stop_reason']=='STEP_LIMIT' or
+                                            (r['stop_reason']=='WORK_SLICE_YIELDED' and r['new_calls']>0))
+                            if can_continue and (budgets[method]=='UNLIMITED' or spent<budgets[method]):
+                                remaining_ready_work=True
                             if isinstance(budgets[method],int) and spent>=budgets[method]and(changed or r['stop_reason']in('Q3_BUDGET_EXHAUSTED','STEP_LIMIT')):
                                 target=spent+self.a.batch
                                 if maximum not in(None,'UNLIMITED'):target=min(target,maximum)
@@ -1237,16 +1254,12 @@ class WidthDriver:
                         self.log(event='LATE_READY_INSTALLED_DURING_PREPARATION',keys=sorted(changed))
                     can_search=bool(changed or replenished or remaining_ready_work)
                     if not can_search:
-                        try:pending.result(timeout=1)
-                        except TimeoutError:pass
+                        producers=(pending,) if pf_future is None else (pending,pf_future)
+                        wait(producers,timeout=1,return_when=FIRST_COMPLETED)
                 # No other thread now changes Completion or its registry.
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
                 if pf_future is not None:
-                    pf_context,pf_routes,pf=pf_future.result()
-                    context,routes=_merge_pf(context,pf_context,routes,pf_routes,self.methods)
-                    executor.routes=routes;executor.expected=context['expected']
-                    self.pf_more=pf['status']=='PREPARATION_WAVE_PROCESSED'
-                    K.CLI.write(self.run/'PF_PREPARATION_STATUS.json',pf)
+                    install_pf()
                 O.apply_published(context['candidates'],routes)
             if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
             else:

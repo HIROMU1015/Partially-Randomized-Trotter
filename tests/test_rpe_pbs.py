@@ -243,10 +243,14 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(spec['reason']['requested_task_capacity'], 2)
             self.assertEqual(manager.startup_jobs(), {'job-0'})
             self.assertFalse(manager.startup_jobs(except_host='pbs-0'))
+            record.update(status='HISTORY_MISSING_RECONCILE_SPOOL',observed=dict(job_id='test.PBS'))
+            self.assertEqual(manager.startup_jobs(), {'job-0'})
             record['worker_storage_hold'] = 'STORAGE_USAGE_UNAVAILABLE'
+            self.assertEqual(manager.startup_jobs(), {'job-0'})
+            record['worker_storage_hold'] = 'STORAGE_LIMIT_REACHED'
             self.assertFalse(manager.startup_jobs())
             record.pop('worker_storage_hold')
-            record['submitted_clock']['monotonic'] -= 121
+            record['submitted_clock']['monotonic'] -= spec['reason']['startup_wait_seconds'] + 1
             self.assertFalse(manager.startup_jobs())
             self.assertTrue(all(r['state']=='QUEUED' for r in executor.rows.values()))
 

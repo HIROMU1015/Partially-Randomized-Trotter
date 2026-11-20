@@ -405,10 +405,16 @@ class PbsManager:
             spec = record['spec']
             submitted = record['submitted_clock']
             reason = spec['reason']
-            if (record['status'] in ('INTENT', 'Q', 'R')
+            status = record['status']
+            # qsub can identify an allocation before qstat has its first
+            # record. A missing initial storage sample is also transitional.
+            starting = status in ('INTENT', 'Q', 'R') or (
+                status == 'HISTORY_MISSING_RECONCILE_SPOOL'
+                and (record.get('observed') or {}).get('job_id') is not None)
+            if (starting
                     and spec['profile']['host_id'] != except_host
                     and not record.get('resize_requested')
-                    and not record.get('worker_storage_hold')
+                    and record.get('worker_storage_hold') in (None, 'STORAGE_USAGE_UNAVAILABLE')
                     and now['clock_id'] == submitted['clock_id']
                     and now['monotonic'] - submitted['monotonic'] < reason.get('startup_wait_seconds', 0)):
                 jobs.update(reason.get('startup_jobs', ()))
@@ -527,6 +533,9 @@ class PbsManager:
                     now = stamp()
                     if previous.get('clock_id') != now['clock_id']:
                         record['first_usable_offer_clock'] = now
+                    submitted = record['submitted_clock']
+                    if now['clock_id'] == submitted['clock_id'] and 'submit_to_usable_seconds' not in record:
+                        record['submit_to_usable_seconds'] = max(0., now['monotonic'] - submitted['monotonic'])
                     record['last_usable_offer_clock'] = now
                 else:
                     record.pop('first_usable_offer_clock', None)
@@ -655,10 +664,11 @@ class PbsManager:
                 if row and row['state'] == 'QUEUED' and host in (row.get('eligibility') or {}).get('eligible_host_ids', ()):
                     startup_jobs.append(job)
             if startup_jobs:
-                samples = [a['submit_to_ready_seconds'] for a in self.state['allocations'].values()
-                           if 'submit_to_ready_seconds' in a]
+                samples = [a.get('submit_to_usable_seconds', a.get('submit_to_ready_seconds'))
+                           for a in self.state['allocations'].values()]
+                measured = [seconds for seconds in samples if seconds is not None]
                 demand.update(startup_jobs=startup_jobs, startup_wait_seconds=min(
-                    120., max(samples[-6:], default=30.) + self.readiness_wait_seconds()))
+                    300., max(measured[-6:], default=30.) + 3 * self.readiness_wait_seconds()))
         elif sizing:
             cost = task_cpu_footprint(profile)
             maximum = int(min(resources['ncpus'], (profile.get('slot_policy') or {}).get(
