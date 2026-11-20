@@ -11,10 +11,12 @@ def main():
     group=parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--request',type=pathlib.Path);group.add_argument('--execute-run',type=pathlib.Path)
     parser.add_argument('--invocation')
+    parser.add_argument('--schedule-resume',type=json.loads)
     args=parser.parse_args();config=load_service(args.config)
     if args.execute_run:
         if not args.invocation:parser.error('--execute-run requires --invocation')
-        execute_run(config,args.execute_run,args.invocation);return
+        execute_run(config,args.execute_run,args.invocation,schedule_resume=args.schedule_resume);return
+    if args.schedule_resume is not None:parser.error('--schedule-resume requires --execute-run')
     try:value=Gateway(config).handle(json.loads(args.request.read_text()))
     except RequestError as error:value=dict(status='NOT_STARTED',started=False,errors=[dict(field=error.field,reason=error.reason)])
     print(json.dumps(value,ensure_ascii=False))

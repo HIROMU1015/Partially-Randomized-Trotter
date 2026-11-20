@@ -31,7 +31,9 @@ from pathlib import Path
 import sys
 import time
 
-ROOT = Path(__file__).resolve().parents[1]
+# The central resume launcher can explicitly keep the original run's source
+# checkout for imports, Git locators and providers when selecting a new planner.
+ROOT = Path(globals().get('FIXED_RUN_CODE_ROOT', Path(__file__).resolve().parents[1])).resolve()
 sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'scripts')]
 from trottertracks import rpe_method_optimizer as O  # noqa: E402
 from trottertracks import rpe_kappa_schedule as KS  # noqa: E402

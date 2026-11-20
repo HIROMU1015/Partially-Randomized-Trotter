@@ -12,7 +12,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
 OLD_CLIENT = Path('/home/AbeHiromu/projects/rpe-local0-search/absolute-kappa-9ad0260777a4/local0-handoff/tools/local0-search/remote.py')
@@ -150,6 +150,42 @@ print(json.dumps(dict(imported_gateway=str(api.__file__),next_child=commands[0],
             (root/'src/extra.py').write_text('# untracked imported code\n')
             with self.assertRaisesRegex(api.RequestError,'fixed implementation/settings changed'):
                 api.fixed_implementation(config)
+
+    def test_same_run_can_select_only_a_bound_operational_schedule_entry(self):
+        from trottertracks import rpe_local0_search as api
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            root, problem, round_spec, config = fixture(directory)
+            run = directory/'search-artificial'
+            run.mkdir()
+            applied = dict(run_id=run.name, entry='schedule', scope={}, signature='ARTIFICIAL',
+                           problem_sha256=api.digest(problem), round_requested_sha256=api.digest(round_spec))
+            dump(run/'APPLIED_SCOPE.json', applied)
+            dump(run/'PROBLEM.json', problem)
+            dump(run/'ROUND.json', round_spec)
+            dump(run/'DUPLICATE_PREFLIGHT.json', dict(status='PASS'))
+            dump(run/'AUTHORIZATION.json', dict(scope_signature='ARTIFICIAL', kind='EXPLICIT_USER_START'))
+            deployment = directory/'new-operations'
+            driver = deployment/'scripts/run_rpe_schedule_search.py'
+            driver.parent.mkdir(parents=True)
+            driver.write_text('# artificial scheduler replacement\n')
+            selection = dict(run_id=run.name, base_source=config['code_source'], source='FIXED_SCHEDULER',
+                             root=str(deployment), driver_sha256=api.hashlib.sha256(driver.read_bytes()).hexdigest())
+            child = Mock(pid=1234)
+            child.wait.return_value = 0
+            config.pop('publication', None)
+            with patch.object(api, 'fixed_implementation', return_value={'source': config['code_source']}) as check, \
+                    patch.object(api.subprocess, 'Popen', return_value=child) as popen:
+                api.execute_run(config, run, 'ARTIFICIAL_RESUME', schedule_resume=selection)
+                command = popen.call_args.args[0]
+                self.assertEqual(command[4:6], [str(root), str(driver)])
+                self.assertEqual(popen.call_args.kwargs['cwd'], str(root))
+                self.assertEqual(api.load(run/'NORMAL_DRIVER.json')['implementation']['schedule_source'], 'FIXED_SCHEDULER')
+                check.assert_called_once_with(config)
+                driver.write_text('# changed after selection\n')
+                with self.assertRaisesRegex(api.RequestError, 'differs from its selected deployment'):
+                    api.execute_run(config, run, 'ARTIFICIAL_CHANGED', schedule_resume=selection)
+                popen.assert_called_once()
 
 
 subprocess_run=subprocess.run

@@ -77,7 +77,29 @@ try:
                 if not spec.get('executor',{}).get('distributed',{}).get('relay'):
                     process=subprocess.run(config['legacy_relay_command'],capture_output=True,text=True,timeout=30)
                     if process.returncode:raise RequestError('relay','legacy relay could not be started: '+process.stderr[-1000:])
-            result = Gateway(config).handle(request)
+            launch = None
+            schedule_resumes = config.get('schedule_resumes', {})
+            if request['action'] == 'resume' and not request.get('scope') and schedule_resumes:
+                state = pathlib.Path(config['state_directory'])
+                target = state / 'CURRENT_TARGET.json'
+                run_id = request.get('run_id')
+                if run_id is None and target.exists():
+                    run_id = json.loads(target.read_text())['run_id']
+                resume = schedule_resumes.get(run_id)
+                if resume is not None:
+                    from functools import partial
+                    from importlib.util import module_from_spec, spec_from_file_location
+
+                    row = json.loads((state / 'RUNS.json').read_text())[run_id]
+                    run = pathlib.Path(row['run_directory'])
+                    deployment = pathlib.Path(resume['root'])
+                    module_path = deployment/'src/trottertracks/rpe_local0_search.py'
+                    module_spec = spec_from_file_location('trottertracks._schedule_resume', module_path)
+                    operations = module_from_spec(module_spec)
+                    module_spec.loader.exec_module(operations)
+                    operations.schedule_driver(selected, run, resume)
+                    launch = partial(operations.Gateway(selected).normal_launch, schedule_resume=resume)
+            result = Gateway(config, launch=launch).handle(request)
             transport_hook=config.get('relay_transport_command')
             if (request['action']in('start','resume')and transport_hook
                     and result.get('status')in('STARTED','ALREADY_RUNNING')):

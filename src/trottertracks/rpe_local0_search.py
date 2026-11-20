@@ -902,10 +902,14 @@ class Gateway:
             checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
             normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
 
-    def normal_launch(self, run, problem, spec):
+    def normal_launch(self, run, problem, spec, *, schedule_resume=None):
         invocation=uuid.uuid4().hex
         command=[self.config['python'],'-B',str(Path(self.config['code_root'])/'scripts/run_rpe_local0_search.py'),
                  '--config',str(run/'CONTROLLER_CONFIG.json') if (run/'CONTROLLER_CONFIG.json').exists() else self.config['config_path'],'--execute-run',str(run),'--invocation',invocation]
+        if schedule_resume is not None:
+            schedule_driver(self.config, run, schedule_resume)
+            command[2] = str(Path(schedule_resume['root'])/'scripts/run_rpe_local0_search.py')
+            command.extend(['--schedule-resume', json.dumps(schedule_resume)])
         with (run/'DRIVER.log').open('a') as log:
             process=subprocess.Popen(command,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
                 env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),start_new_session=True)
@@ -961,7 +965,20 @@ def fixed_implementation(config):
     return dict(source=config['code_source'],head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip())
 
 
-def execute_run(config, run, invocation):
+def schedule_driver(config, run, selection):
+    """Resolve the operator-selected scheduler for this exact pinned run."""
+    scope = load(run/'APPLIED_SCOPE.json')
+    if (selection['run_id'] != scope['run_id'] or selection['base_source'] != config['code_source']
+            or scope['entry'] != 'schedule' or config.get('artificial_controller_directory')):
+        raise RequestError('schedule_resume', 'Scheduler selection does not match the fixed run')
+    driver = Path(selection['root']).resolve()/'scripts/run_rpe_schedule_search.py'
+    if (not driver.is_file()
+            or hashlib.sha256(driver.read_bytes()).hexdigest() != selection['driver_sha256']):
+        raise RequestError('schedule_resume', 'Scheduler differs from its selected deployment')
+    return driver
+
+
+def execute_run(config, run, invocation, *, schedule_resume=None):
     run=Path(run);scope=load(run/'APPLIED_SCOPE.json');spec=load(run/'ROUND.json')
     root=Path(config['code_root'])
     implementation=fixed_implementation(config)
@@ -991,6 +1008,18 @@ def execute_run(config, run, invocation):
             raise RequestError('continuation','prior Q3 holds changed before launch')
     command=[config['python'],'-B',str(Path(config['code_root'])/'scripts'/ENTRIES[scope['entry']]),
         '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),'--run-dir',str(run)]
+    if schedule_resume is not None:
+        driver = schedule_driver(config, run, schedule_resume)
+        # Import dependencies from the fixed checkout. Only the schedule
+        # entry is taken from the selected operational deployment.
+        bootstrap = ('import runpy,sys\n'
+                     'root,driver=sys.argv[1:3]\n'
+                     'sys.argv=sys.argv[2:]\n'
+                     'runpy.run_path(driver,run_name="__main__",init_globals={"FIXED_RUN_CODE_ROOT":root})')
+        command[2:3] = ['-c', bootstrap, str(root), str(driver)]
+        implementation['schedule_source'] = schedule_resume['source']
+        implementation['schedule_entry'] = str(driver)
+        implementation['schedule_sha256'] = schedule_resume['driver_sha256']
     if config.get('artificial_controller_directory'):
         if not str(load(run/'PROBLEM.json').get('problem',{}).get('system','')).startswith('ARTIFICIAL'):
             raise RequestError('fixture','real problem cannot use the artificial controller')

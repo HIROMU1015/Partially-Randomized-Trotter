@@ -394,3 +394,13 @@ UNKNOWNは同じjob・attempt・要求・保留理由で維持し、通常Resume
 `prep-11e8784777b094024911f73d` を `UNKNOWN` として検出するため、新版への切替は保留する。
 元のattemptと結果を保持し、現runを継続する。新版での実割当・回収の検収は、
 既存の継続条件を満たして切り替えられる段階で行う。
+
+### 同じrunでの適用
+
+利用者は現runへの適用を明示した。通常Resumeは、中央SERVICEで対象runに指定された場合に限り、
+別配置したスケジュール入口を選ぶ。既存のGateway、同じ台帳、固定設定照合と§10.5を通り、
+科学provider・Git locators・import先は元のcheckoutを使う。追加の入口はrun ID、元SOURCE、
+対象入口、版のファイルハッシュを照合する。元の固定ファイルは書き換えず、実際のスケジュール版を
+`NORMAL_DRIVER.json` の `implementation` に明記する。元attemptを別runへ移す必要はない。
+
+通常入口・固定版検査・再開時の配送を含む人工回帰は38件PASS。旧環境を要する1件はskip。
