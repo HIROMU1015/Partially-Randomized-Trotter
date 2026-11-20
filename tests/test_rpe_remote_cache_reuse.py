@@ -115,6 +115,8 @@ class LocalFilesystemPressure(unittest.TestCase):
                 reclaim.assert_called_once_with(self.current, profile)
         with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=60000)):
             self.assertEqual(R.local_reclaim_target(policy, latest, self.state), 0)
+            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=474999), self.state), 0)
+            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=475000), self.state), 25000)
             self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=600000,
                              reason='STORAGE_LIMIT_REACHED'), self.state), 150000)
         with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=0)):
