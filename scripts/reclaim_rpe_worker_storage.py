@@ -17,6 +17,7 @@ import sys
 import time
 
 from run_rpe_q3_relay import Relay, acquire_lock
+from trottertracks.rpe_local_pack_maintenance import compact_local_metadata
 from trottertracks.rpe_worker_storage import duplicate_reclaim_target, prefix_caches, report
 
 
@@ -171,14 +172,27 @@ def local_duplicate_cache(run, profile):
 
 def local_report(run, profile):
     policy = profile.get('storage_limit')
-    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), compact_metadata=True, proactive=True)
+    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), proactive=True)
     result = report(policy, **options)
+    compacted = compact_local_metadata(run, profile, result)
+    reclaimed = {key: value for key, value in (result or {}).items()
+                 if key.startswith(('reclaimed_', 'evicted_'))}
+    packed = bool(compacted.get('compacted_metadata_bytes'))
+    if packed:
+        result = report(policy, refresh=True, **options)
+    removed = {}
     if (result and profile.get('artifact_cache_directory')
             and local_reclaim_target(policy, result, profile['artifact_cache_directory']) > 0):
         removed = local_duplicate_cache(run, profile)
         if removed:
             result = report(policy, refresh=True, **options)
             result.update(reclaimed_duplicate_artifacts=len(removed), reclaimed_duplicate_bytes=sum(removed.values()))
+    if result is not None:
+        if packed or removed:
+            result['reclaim_checked'] = True
+            for key, value in reclaimed.items():
+                result[key] = result.get(key, 0) + value
+        result.update(compacted)
     return result
 
 
@@ -300,6 +314,25 @@ def invocation_active(run):
     return not finished.is_file() or read(finished).get('invocation_id') != invocation
 
 
+def cleanup_stopped_local(state):
+    """Use the last selected local profile during a naturally stopped period."""
+    target = state/'CURRENT_TARGET.json'
+    if not target.is_file():
+        return
+    run = Path(read(target)['run_directory']).resolve()
+    profile = run/'distributed/LOCAL_WORKER.json'
+    if not profile.is_file() or invocation_active(run):
+        return
+    with (profile.parent/'STORAGE_RECLAIM.lock').open('a+b') as lock:
+        try:
+            acquire_lock(lock)
+        except BlockingIOError:
+            return
+        result = local_report(run, read(profile))
+        if result and (result.get('reclaim_checked') or result.get('metadata_compaction')):
+            print(json.dumps(dict(epoch=time.time(), host_id='local', storage=result)), flush=True)
+
+
 def watch_active_runs(state, source):
     """Follow normal Start and Resume, including after the active run changes."""
     with closing((state/'STORAGE_RECLAIM.lock').open('a+b')) as lock:
@@ -316,7 +349,8 @@ def watch_active_runs(state, source):
                             except BlockingIOError:
                                 continue
                             cleanup(run, source)
-            except (OSError, KeyError, ValueError) as error:
+                cleanup_stopped_local(state)
+            except (OSError, KeyError, ValueError, sqlite3.Error, subprocess.SubprocessError) as error:
                 print(json.dumps(dict(event='STORAGE_WATCH_WAIT', error_type=type(error).__name__)), flush=True)
             time.sleep(60)
 

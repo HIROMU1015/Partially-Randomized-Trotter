@@ -389,12 +389,18 @@ def _compact_pack_directory(directory, scratch_root):
         after = sum(path.stat().st_blocks * 512 for path in stage.iterdir())
         if after >= before:
             return 0
-        rename = getattr(ctypes.CDLL(None, use_errno=True), 'renameat2', None)
-        if rename is None:
+        if not _exchange_pack_directories(stage, directory):
             return 0
-        if rename(-100, os.fsencode(stage), -100, os.fsencode(directory), 2) != 0:
-            raise OSError(ctypes.get_errno(), 'Cannot atomically exchange metadata packs')
         return before - after
+
+
+def _exchange_pack_directories(left, right):
+    rename = getattr(ctypes.CDLL(None, use_errno=True), 'renameat2', None)
+    if rename is None:
+        return False
+    if rename(-100, os.fsencode(left), -100, os.fsencode(right), 2) != 0:
+        raise OSError(ctypes.get_errno(), 'Cannot atomically exchange metadata packs')
+    return True
 
 
 def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(),

@@ -91,6 +91,22 @@ class ControllerFailures(unittest.TestCase):
         next_assignment = self.poll(executor)['assignments']
         self.assertEqual(next_assignment[0]['job_id'], second_task.job.name)
 
+    def test_romutail_worker_quota_preserves_remote_dispatch_and_adoption(self):
+        executor = self.executor(live_ready_refill=True)
+        proposal = self.proposal('remote-when-local-full')
+        task = self.enqueue(executor, 'remote-when-local-full')
+        storage = dict(limit_bytes=50*1024**3, used_bytes=50*1024**3,
+                       accepting_new_jobs=False, reason='STORAGE_LIMIT_REACHED')
+        paused = executor.rpc('/v1/poll', dict(host_id='local', slots=0,
+            source_sha=self.source, accepting_new_jobs=False, resource_report=dict(storage=storage)))
+        self.assertEqual(paused['assignments'], [])
+        assignment, = self.poll(executor)['assignments']
+        executor.rpc('/v1/complete', self.completion(assignment))
+        self.assertEqual(executor.for_method('PR_PAULI').answer(proposal)['status'], O.PASS)
+        self.assertEqual(executor.store.row(task.job.name)['host_id'], 'server1')
+        self.assertEqual([event['event'] for event in executor.store.events()].count('ADOPT'), 1)
+        self.assertEqual(executor.metrics()['by_host']['server1']['adopted'], 1)
+
     def test_existing_queue_with_explicit_auto_round_keeps_auto_capacity(self):
         from trottertracks.rpe_q3_store import JobStore
 
