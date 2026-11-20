@@ -1,6 +1,10 @@
 """Checks shared by the normal executor and completion-only collection."""
 
 
+class MissingPreparationArtifacts(ValueError):
+    """The completion can be checked again after the declared blobs arrive."""
+
+
 def validate_preparation_result(row, receipt, outcome, artifact_cache):
     if outcome.get('request_id', outcome.get('task_id')) != row['job_id'] or outcome.get('request_sha256') != row['request_sha256']:
         raise ValueError('Preparation result identity differs from its request')
@@ -19,7 +23,8 @@ def validate_preparation_result(row, receipt, outcome, artifact_cache):
         raise ValueError('Preparation result without a clean adapter exit')
     artifacts = outcome.get('artifacts', {})
     if not isinstance(artifacts, dict): raise ValueError('Preparation artifact manifest required')
-    if artifact_cache.missing(artifacts.values()): raise ValueError('Preparation result artifacts were not durably transferred')
+    if artifact_cache.missing(artifacts.values()):
+        raise MissingPreparationArtifacts('Preparation result artifacts were not durably transferred')
     # Resolve path safety before acceptance. Large payloads remain in CAS,
     # outside the small immutable completion bundle, including on replay.
     from .rpe_preparation_artifacts import artifact_path

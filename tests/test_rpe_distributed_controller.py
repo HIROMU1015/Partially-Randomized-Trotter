@@ -228,6 +228,32 @@ class ControllerFailures(unittest.TestCase):
                                   origin=dict(kind='CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES')))
         self.assertEqual([t.job.name for t in executor._ready_queue()], [prepare_id, evaluation.job.name, ahead.job.name])
 
+    def test_preparation_binding_mismatch_does_not_block_reconciliation_or_q3(self):
+        executor = self.executor()
+        prep = dict(route=dict(kind='preparation'), method='ARTIFICIAL',
+                    preparation=dict(stage='compile', provider='ARTIFICIAL_COMPILE', artificial=True,
+                    source=executor.source_manifest, identity='compile', outputs=['products'],
+                    command=['@PYTHON@', '@SOURCE@/scripts/artificial_preparation_leaf.py']))
+        job_id = executor.submit_preparation(prep, budget=1, approved=True)
+        assignment, = self.poll(executor)['assignments']
+        self.assertEqual(assignment['job_id'], job_id)
+        payload = dict(host_id='server1', job_id=job_id, attempt_id=assignment['attempt_id'],
+                       request_sha256=assignment['request_sha256'])
+        outcome = dict(request_id=job_id, request_sha256=assignment['request_sha256'], stage='audit',
+                       source_manifest=executor.source_manifest, status='PREPARATION_COMPLETE', artifacts={})
+        files = {'OUTCOME.json': outcome, 'PROCESS_RETURN.json': dict(returncode=0, signal=None)}
+        payload['files'] = {name:base64.b64encode(json.dumps(value).encode()).decode()
+                            for name,value in files.items()}
+        with self.assertRaisesRegex(ValueError, 'stage/SOURCE differs'):
+            executor.rpc('/v1/complete', payload)
+        result = executor.preparation_result(job_id, wait=True, adopt=False)
+        self.assertEqual(result['reason'], 'WORKER_RESULT_MISMATCH')
+        self.assertIsNone(executor.store.row(job_id)['adopted_epoch'])
+        self.assertEqual(executor.store.row(job_id)['attempt_id'], assignment['attempt_id'])
+        other = self.enqueue(executor, 'independent')
+        assigned, = executor.rpc('/v1/poll', dict(host_id='other', slots=1, source_sha=self.source))['assignments']
+        self.assertEqual(assigned['job_id'], other.job.name)
+
     def test_existing_queue_with_explicit_auto_round_keeps_auto_capacity(self):
         from trottertracks.rpe_q3_store import JobStore
 

@@ -1096,6 +1096,8 @@ class DistributedPreparationBridge:
                 terminal=terminal['predecessor']
             if terminal.get('status') == 'PREPARATION_FAILED':
                 raise Held('STAGE_FAILED:'+stage+':DISTRIBUTED_'+terminal['status']+':NO_AUTOMATIC_RETRY:'+str(result))
+            if terminal.get('reason') == 'WORKER_RESULT_MISMATCH':
+                raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id)
             hold = Held if terminal.get('status') in ('PREPARATION_HOLD', 'PREPARATION_BUDGET_OR_PERMISSION_HOLD',
                                                       'PREPARATION_STOPPED_BEFORE_RESERVATION') else PreparationWait
             raise hold('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))

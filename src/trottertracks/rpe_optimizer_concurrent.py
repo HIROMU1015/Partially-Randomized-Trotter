@@ -2061,8 +2061,13 @@ class DistributedExecutor(ConcurrentExecutor):
         return None
 
     def _complete_preparation(self, row, value, transfer, receipt, outcome, task, started):
-        from .rpe_completion_acceptance import validate_preparation_result
-        validate_preparation_result(row, receipt, outcome, self.artifact_cache)
+        from .rpe_completion_acceptance import MissingPreparationArtifacts, validate_preparation_result
+        try:
+            validate_preparation_result(row, receipt, outcome, self.artifact_cache)
+        except MissingPreparationArtifacts:
+            raise  # The original attempt can still upload the declared blobs.
+        except ValueError as error:
+            self._hold_result_transfer(row, task, str(error))
         accepted, duplicate = self.store.complete(row['host_id'],row['job_id'],row['attempt_id'],value['request_sha256'],value['files'])
         self._publish_transfer(accepted)
         if not duplicate:
