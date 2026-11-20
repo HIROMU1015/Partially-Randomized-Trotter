@@ -847,12 +847,31 @@ class PbsManager:
                     record['resize_requested'] = True
                     self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
                              previous_cpus=current_cpus, compatible_ready_jobs=requested_slots)
+                if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'Q'
+                        and not record.get('resize_requested') and host not in hosts_with_attempts
+                        and 2 * requested_cpus <= current_cpus):
+                    since = record.get('queued_excess_since') or {}
+                    if since.get('clock_id') != now['clock_id']:
+                        record['queued_excess_since'] = now
+                    elif now['monotonic'] - since['monotonic'] >= self.readiness_wait_seconds():
+                        # Mark the submission as draining before contacting PBS
+                        # so a late start cannot claim work during replacement.
+                        record['resize_requested'] = True
+                        self.save()
+                        self.log('PBS_QUEUED_ALLOCATION_RESIZE', token=token, host_id=host,
+                                 previous_cpus=current_cpus, requested_cpus=requested_cpus)
+                else:
+                    record.pop('queued_excess_since', None)
                 self.controls[token] = dict(stop=stopping or record.get('resize_requested', False),
                     release_when_idle=not waiting and not keep_for_preparation and host not in hosts_with_attempts)
-                if stopping and allocation['status'] in ('Q','H','W') and allocation.get('job_id') and host not in hosts_with_attempts:
+                queued_stop = stopping and allocation['status'] in ('Q', 'H', 'W')
+                queued_resize = record.get('resize_requested') and allocation['status'] == 'Q'
+                if (queued_stop or queued_resize) and allocation.get('job_id') and host not in hosts_with_attempts:
                     result = self.gateway.call(dict(action='delete', token=allocation['token']))
                     self.log('PBS_UNUSED_ALLOCATION_CANCELLED', token=allocation['token'],
-                        job_id=allocation['job_id'], result=result, reason='STOP_WITHOUT_OWNED_SCIENTIFIC_ATTEMPTS')
+                        job_id=allocation['job_id'], result=result,
+                        reason=('STOP_WITHOUT_OWNED_SCIENTIFIC_ATTEMPTS' if queued_stop
+                                else 'QUEUED_ALLOCATION_EXCEEDS_COMPATIBLE_DEMAND'))
         if shortage and not stopping:
             owned_hosts = {a['host_id'] for a in active}
             # A lost remote response may leave an intent absent from this

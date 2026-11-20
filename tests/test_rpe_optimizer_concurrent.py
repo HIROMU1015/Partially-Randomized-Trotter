@@ -18,6 +18,8 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from trottertracks import rpe_method_optimizer as O
 from trottertracks import rpe_optimizer_concurrent as C
+from trottertracks import rpe_q3_coordinator as Q
+from trottertracks import rpe_scaled_shots as S
 
 METHODS=['FULL_PF','TRUNCATED_PF','PR_PAULI','PR_DF']
 
@@ -71,6 +73,38 @@ def run_fixture(directory,fast,*,methods=METHODS,configurations=2,budget=None,st
 
 
 class SchedulerTests(unittest.TestCase):
+    def test_projected_q3_request_keeps_the_fixed_source_inputs_addressable(self):
+        problem, context, routes = fixture(['PR_DF'], 1)
+        problem['rpe']['M'] = 12
+        candidate = context['candidates'][0]
+        source_id = candidate['configuration_id']
+        locator = dict(commit='a'*40, path='signals.json')
+        binding = dict(configuration=locator, signal_packet=locator, binding_id='fixed-binding',
+                       total_configuration_id='fixed-total')
+        route = dict(routes['PR_DF'][0], kind='prdf_d2_common_entry',
+                     configurations={source_id: binding}, contract_template=locator)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = C.ConcurrentExecutor(ROOT, tmp, {'PR_DF': [route]}, {}, problem)
+            try:
+                ex = root.for_method('PR_DF')
+                original = ex.request(dict(configuration_id=source_id, vector=(1,)*26,
+                                           cost=Fraction(1), origin={}), Path('source'), route)
+                projected = S.horizon_candidates([candidate], problem, {'M': [11]}, ex)[0]
+                projected_id = projected['configuration_id']
+                projected_rule = ex.route(projected_id)
+                request = ex.request(dict(configuration_id=projected_id, vector=(1,)*24,
+                                          cost=Fraction(1), origin={'M': 11}), Path('prefix'), projected_rule)
+                self.assertEqual(request['configuration_id'], projected_id)
+                self.assertEqual(request['expected']['M'], 11)
+                self.assertEqual(request['expected']['binding_id'], 'fixed-binding')
+                self.assertEqual(projected_rule['configurations'], {source_id: binding})
+                self.assertEqual(request['route']['configurations'], {source_id: binding, projected_id: binding})
+                with patch.object(Q.subprocess, 'check_output', return_value=b'saved signal bytes') as show:
+                    self.assertEqual(Q.input_hashes(ROOT, request), Q.input_hashes(ROOT, original))
+                    show.assert_called_with(['git', 'show', locator['commit']+':'+locator['path']], cwd=ROOT)
+            finally:
+                root.finish()
+
     def test_prior_job_prefers_matching_completed_result_over_first_foreign_route(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)

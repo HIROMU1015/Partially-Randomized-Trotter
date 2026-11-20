@@ -138,6 +138,13 @@ class ConcurrentExecutor(O.Executor):
 
     def request(self,proposal,job,rule):
         from .rpe_host_profiles import PREFIX_PR_Q3_ROUTES, REVIEWED_PR_Q3_ROUTES
+        projection = rule.get('horizon_projection')
+        configurations = rule.get('configurations')
+        if projection and configurations is not None:
+            # Fixed workers look up input hashes by the request ID, then use
+            # the original configuration ID to build the projected Q3 case.
+            source = configurations[projection['source_configuration_id']]
+            rule = dict(rule, configurations={**configurations, proposal['configuration_id']: source})
         req=super().request(proposal,job,rule)
         execution = req['execution_profile'] = dict(dp_workers=self.dp_workers)
         artificial = rule['kind'] == 'artificial'

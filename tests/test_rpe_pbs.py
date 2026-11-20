@@ -448,6 +448,40 @@ class ManagerTests(unittest.TestCase):
             manager.cycle()
             self.assertTrue(manager.controls[token]['release_when_idle'])
 
+    def test_queued_excess_allocation_is_replaced_only_for_remaining_demand(self):
+        for remaining in (0, 2):
+            with self.subTest(remaining=remaining), tempfile.TemporaryDirectory() as directory:
+                manager, _, gateway = self.manager(directory)
+                manager.settings['resources']['ncpus'] = 4
+                manager.settings['allocation_sizing'] = {'q3_startup_memory_bytes_per_task': P.GIB}
+                request = dict(route=dict(kind='artificial'))
+                spec = manager._submit('pbs-0', manager.configured['pbs-0'], {}, [request]*4)
+                token = spec['token']
+                observed = dict(token=token, status='Q', host_id='pbs-0', job_id='test.PBS', worker={})
+                original = gateway.call
+                gateway.call = lambda message: (dict(allocations=[observed], requests={})
+                                                if message['action'] == 'exchange' else original(message))
+                gateway.harvest['host_id'] = 'pbs-0'
+                manager._demand = lambda: ([(['pbs-0'], request)] * remaining, [], remaining, 0)
+                manager._recent_preparation_completion = lambda _: False
+                manager.cycle()
+                self.assertFalse(any(call['action'] == 'delete' for call in gateway.calls))
+                record = manager.state['allocations'][token]
+                record['queued_excess_since']['monotonic'] -= manager.readiness_wait_seconds() + 1
+                manager.cycle()
+                self.assertTrue(manager.controls[token]['stop'])
+                self.assertTrue(P.read(manager.path)['allocations'][token]['resize_requested'])
+                self.assertEqual([call['token'] for call in gateway.calls if call['action'] == 'delete'], [token])
+                observed = dict(observed, status='R', worker={'accepting': True})
+                manager.cycle()
+                self.assertFalse(manager.accepting_allocation('pbs-0', 'test.PBS'))
+                self.assertEqual(len(manager.state['allocations']), 1)
+                observed = dict(observed, status='F')
+                manager.cycle()
+                replacement = [call['spec'] for call in gateway.calls if call['action'] == 'ensure'
+                               and call['spec']['token'] != token]
+                self.assertEqual([spec['resources']['ncpus'] for spec in replacement], [remaining] if remaining else [])
+
     def test_preparation_reserved_with_local_readiness_can_wake_pbs(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, _ = self.manager(directory)
