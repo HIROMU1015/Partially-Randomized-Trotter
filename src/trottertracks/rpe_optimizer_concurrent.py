@@ -1355,7 +1355,12 @@ class DistributedExecutor(ConcurrentExecutor):
         capabilities = (self.distributed.get('host_stage_capabilities') or {}).get(host)
         preparation=request.get('preparation') or {}
         stage = preparation.get('stage', 'q3')
-        providers=(self.distributed.get('preparation_provider_hosts') or {}).get(preparation.get('provider'))
+        provider = preparation.get('provider')
+        providers = (self.distributed.get('preparation_provider_hosts') or {}).get(provider)
+        if provider in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE') and self.distributed.get('pf_legacy_compile_hosts'):
+            adapter = 'private/pf-transport/scripts/run_pf_preparation_stage.py'
+            if adapter not in preparation.get('inputs', {}):
+                providers = self.distributed['pf_legacy_compile_hosts']
         return (capabilities is None or stage in capabilities) and (providers is None or host in providers)
 
     def _fits_host_walltime(self, host, request):

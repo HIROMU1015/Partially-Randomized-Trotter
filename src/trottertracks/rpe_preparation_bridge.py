@@ -14,9 +14,9 @@ from pathlib import Path
 import subprocess
 import tempfile
 import threading
+import runpy
 
 from .rpe_preparation_artifacts import artifact_path
-from .rpe_preparation_paths import PF_NATIVE_H4_INPUTS, PF_NATIVE_ORIGIN_CONFIG, PF_NATIVE_ORIGIN_SHA256
 
 
 _DF_SIGNAL_BOOTSTRAP = """
@@ -441,15 +441,30 @@ class DistributedPreparationBridge:
             bindings[str(original)] = '@WORK@/'+name
             working_hashes.append(dict(path=name, sha256=sha))
 
-    def _pf_native_runtime(self, inputs, bindings, working_hashes):
+    def _pf_native_runtime(self, script, inputs, bindings, working_hashes):
+        # The transport installed on each host can still be the prior worker.
+        # Send the selected compiler wrapper and its path resolver as verified
+        # request inputs, together with the exact native configuration.
+        helper = Path(__file__).resolve().with_name('rpe_preparation_paths.py')
+        adapter = helper.parents[2] / 'scripts/run_pf_preparation_stage.py'
+        constants = runpy.run_path(str(helper))
+        origin = constants['PF_NATIVE_ORIGIN_CONFIG']
+        for file, relative in ((adapter, 'scripts/run_pf_preparation_stage.py'),
+                               (helper, 'src/trottertracks/rpe_preparation_paths.py')):
+            destination = 'private/pf-transport/'+relative
+            sha = self._blob(file.read_bytes())
+            inputs[destination] = sha
+            working_hashes.append(dict(path=destination, sha256=sha))
+        bindings[str(script)] = '@WORK@/private/pf-transport/scripts/run_pf_preparation_stage.py'
+
         controller_paths = self.settings.get('controller_paths') or {}
-        configured = controller_paths.get(PF_NATIVE_ORIGIN_CONFIG, {})
-        config_path = Path(configured.get('path', PF_NATIVE_ORIGIN_CONFIG))
+        configured = controller_paths.get(origin, {})
+        config_path = Path(configured.get('path', origin))
         raw = config_path.read_bytes()
-        if hashlib.sha256(raw).hexdigest() != PF_NATIVE_ORIGIN_SHA256:
+        if hashlib.sha256(raw).hexdigest() != constants['PF_NATIVE_ORIGIN_SHA256']:
             raise ValueError('PF native origin configuration differs from its fixed SHA-256')
         config = json.loads(raw)
-        for name in PF_NATIVE_H4_INPUTS:
+        for name in constants['PF_NATIVE_H4_INPUTS']:
             item = config['systems']['H4']['inputs'][name]
             original = item['path']
             default_path = Path(original)
@@ -465,7 +480,7 @@ class DistributedPreparationBridge:
             inputs[destination] = self._blob(data)
             bindings[original] = '@WORK@/'+destination
             working_hashes.append(dict(path=destination, sha256=sha))
-        return dict(runtime=dict(input_config=PF_NATIVE_ORIGIN_CONFIG,
+        return dict(runtime=dict(input_config=origin,
                                  provider_root=config['provider_root']))
 
     def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False):
@@ -657,7 +672,7 @@ class DistributedPreparationBridge:
         pf_signal = stage == 'PF_SIGNALS' and script.name == 'run_pf_preparation_stage.py'
         pf_compile = stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
         if pf_compile and script.name == 'run_pf_preparation_stage.py':
-            runtime_inputs.append(self._pf_native_runtime(inputs, bindings, df_inputs))
+            runtime_inputs.append(self._pf_native_runtime(script, inputs, bindings, df_inputs))
         if snapshot and (pf_signal or script.name in (
                 'run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py',
                 'derive_pr_df_candidate_descriptor.py')):
@@ -1029,6 +1044,30 @@ class DistributedPreparationBridge:
         if marker.exists():
             submitted = read(marker)
             request = submitted['request']
+            portable = 'private/pf-transport/scripts/run_pf_preparation_stage.py'
+            if (stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
+                    and self.executor.distributed.get('pf_legacy_compile_hosts')
+                    and portable not in request['preparation'].get('inputs', {})):
+                job = submitted['job_id']
+                with self.executor.state.cv:
+                    row = self.executor.store.row(job)
+                    if row is None or (row['state'] == 'CANCELLED' and row['attempt_id'] is None):
+                        try:
+                            replacement = self.build_request(completion, command, directory, stage, output)
+                        except (OSError, ValueError, subprocess.CalledProcessError) as error:
+                            raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+
+                                       ':INPUT_OR_SOURCE_METADATA_UNAVAILABLE:'+str(error)) from error
+                        if portable not in replacement['preparation']['inputs']:
+                            raise ValueError('Replacement PF compile has no fixed portable adapter')
+                        archive = marker.with_name(stage+'.LEGACY_UNSTARTED.json')
+                        if not archive.exists():
+                            put(archive, submitted)
+                        if job in self.executor.preparation_pending:
+                            del self.executor.preparation_pending[job]
+                            self.executor._save_preparation_pending()
+                        request = replacement
+                        submitted = dict(request=request, source=request['preparation']['source']['commit'],
+                                         automatic_retry=False)
         else:
             prior=self.inspect_prior_owner(command,directory,stage)
             put(directory/(stage+'.PRIOR_OWNER.json'),prior)

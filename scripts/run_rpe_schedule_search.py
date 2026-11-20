@@ -117,6 +117,14 @@ def apply_worker_trial(spec, trial):
         if not hosts or not set(hosts) <= configured.keys():
             raise ValueError('PF compile placement requires configured preparation profiles')
         placement = distributed.setdefault('preparation_provider_hosts', {})
+        legacy = trial.get('pf_legacy_compile_hosts')
+        if legacy is not None:
+            if not set(legacy) <= set(hosts):
+                raise ValueError('Legacy PF compile hosts must belong to the selected placement')
+            distributed['pf_legacy_compile_hosts'] = list(legacy)
+            helper = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_preparation_paths.py'
+            if hashlib.sha256(helper.read_bytes()).hexdigest() != trial['pf_native_paths_sha256']:
+                raise ValueError('Selected PF native path resolver differs')
         placement.update(PF_COMPILE=list(hosts), PF_HOLDOUT_COMPILE=list(hosts))
     if trial.get('pbs_storage_launcher'):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']

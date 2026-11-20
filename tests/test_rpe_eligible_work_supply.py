@@ -61,3 +61,45 @@ def test_partial_price_preflight_has_same_roles_and_leaves_blocked_pair_out():
     assert selected['calibration_rounds'] == [1, 2]
     assert selected['holdout_round'] == 5
     assert plan['maximum_new_compile'] == 4
+
+
+def test_four_host_compile_admission_preserves_legacy_request_placement():
+    executor = object.__new__(DistributedExecutor)
+    executor.distributed = dict(pf_legacy_compile_hosts=['server2'],
+        preparation_provider_hosts={'PF_COMPILE': ['local', 'server2', 'local0-wsl', 'pbs-0']})
+    prep = {'stage': 'compile', 'provider': 'PF_COMPILE', 'inputs': {}}
+    request = {'preparation': prep}
+    assert executor._host_supports_stage('server2', request)
+    assert not executor._host_supports_stage('local', request)
+    prep['inputs']['private/pf-transport/scripts/run_pf_preparation_stage.py'] = 'fixed'
+    assert all(executor._host_supports_stage(host, request)
+               for host in ('local', 'server2', 'local0-wsl', 'pbs-0'))
+    assert not executor._host_supports_stage('server1', request)
+
+
+def test_portable_pf_request_ships_verified_wrapper_and_snapshot(tmp_path):
+    import hashlib
+    import json
+    from trottertracks import rpe_preparation_bridge as bridge
+
+    config = tmp_path/'config'
+    snapshot = tmp_path/'snapshot'
+    snapshot.write_bytes(b'saved snapshot')
+    sha = hashlib.sha256(snapshot.read_bytes()).hexdigest()
+    config.write_text(json.dumps(dict(provider_root='/fixed/provider', systems={'H4': {
+        'inputs': {'snapshot': dict(path='/fixed/snapshot', sha256=sha)}}})))
+    source = dict(PF_NATIVE_ORIGIN_CONFIG='/fixed/config',
+                  PF_NATIVE_ORIGIN_SHA256=hashlib.sha256(config.read_bytes()).hexdigest(),
+                  PF_NATIVE_H4_INPUTS=('snapshot',))
+    producer = object.__new__(bridge.DistributedPreparationBridge)
+    producer.settings = dict(controller_paths={'/fixed/config': {'path': str(config)},
+                                               '/fixed/snapshot': {'path': str(snapshot)}})
+    producer._blob = lambda data: hashlib.sha256(data).hexdigest()
+    script = Path('/controller/scripts/run_pf_preparation_stage.py')
+    inputs, bindings, checks = {}, {}, []
+    with patch.object(bridge.runpy, 'run_path', return_value=source):
+        runtime = producer._pf_native_runtime(script, inputs, bindings, checks)
+    assert runtime['runtime'] == dict(input_config='/fixed/config', provider_root='/fixed/provider')
+    assert inputs['private/pf-native/snapshot'] == sha
+    assert bindings[str(script)] == '@WORK@/private/pf-transport/scripts/run_pf_preparation_stage.py'
+    assert {row['path']:row['sha256'] for row in checks} == inputs
