@@ -434,7 +434,8 @@ class WidthDriver:
             if not self.rule_stop or any(m.startswith('PR_') for m in self.spec['methods']):
                 raise ValueError('Explicit requested_widths required')
             self.widths={}
-        self.scaled_shots = self.spec.get('search_overrides', {}).get('rule') == 'RPE_SCALED_SHOTS_V1'
+        self.scaled_shots = (self.spec.get('search_overrides', {}).get('rule', self.problem['search'].get('rule'))
+                             == 'RPE_SCALED_SHOTS_V1')
         self.methods = list(self.spec['methods']) if self.rule_stop or self.scaled_shots else list(self.widths)
         self.live_ready_refill = self.spec.get('live_ready_refill') is True
         if self.live_ready_refill and (
@@ -1489,7 +1490,7 @@ class WidthDriver:
 
     def loop(self):
         previous=self.state.get('stop',{}).get('reason')
-        transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS',
+        transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','SCOPE_HELD_INPUTS',
                    'SCOPE_HELD_Q3','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY','DISCRETE_SCHEDULE_PLAN_ONLY'}
         trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
         recovery = trial.get('recovered_failure')
@@ -1555,6 +1556,9 @@ class WidthDriver:
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
             caps=self.spec.get('max_new_q3_per_method',{})
             launched=self.state.get('q3_launched',{})
+            budget_stops = {m for m, r in result.items() if r['stop_reason'] == 'Q3_BUDGET_EXHAUSTED'}
+            budget_remaining = {m for m in budget_stops
+                                if type(caps.get(m)) is not int or launched.get(m, 0) < caps[m]}
             unresolved = next(iter(result.values()), {}).get('executor_metrics', {}).get('unresolved_q3_attempts', [])
             held_q3 = bool(unresolved) or any(r.get('prior_q3_holds') or
                 any(h['status']=='UNKNOWN' for h in r.get('execution_holds', [])) for r in result.values())
@@ -1563,6 +1567,15 @@ class WidthDriver:
                 self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'Q3_BUDGET_EXHAUSTED',
                     UTC=K.now(),launched=launched,unresolved_q3_attempts=unresolved)
                 self.save();return
+            scaled = getattr(self, 'scaled_shots', False)
+            # The next cycle raises the batch cap, bounded by the same round budget.
+            if scaled:
+                next_batch = [m for m in sorted(budget_remaining)
+                              if type(batch_cap := result[m]['budget']['max_new_q3']) is int
+                              and 0 < batch_cap <= launched.get(m, 0)]
+                if next_batch:
+                    self.log(event='Q3_BATCH_ADVANCE', methods=next_batch)
+                    continue
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
                      any(r.get('input_requests') or r.get('prior_q3_holds') for r in result.values()))
@@ -1580,7 +1593,11 @@ class WidthDriver:
                     p['status']=='HELD' for p in self.state['points']) or any(r.get('not_ready_candidates') for r in result.values())
                 reason=('SCOPE_HELD_INPUTS' if blocked else 'REQUESTED_WIDTH_RULE_EXHAUSTED') if getattr(self,'rule_stop',False) else (
                     'WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED')
-                if held_q3:reason='SCOPE_HELD_Q3'
+                if held_q3 or (scaled and not blocked and (budget_remaining or
+                        any(r['stop_reason'] == 'UNRESOLVED_SCALED_SCOPE' for r in result.values()))):
+                    reason = 'SCOPE_HELD_Q3'
+                elif scaled and not blocked and budget_stops:
+                    reason = 'Q3_BUDGET_EXHAUSTED'
                 self.state['stop']=dict(reason=reason,
                     UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()},
                     unresolved_q3_attempts=unresolved);self.save();return
@@ -1636,9 +1653,9 @@ def main(argv=None, *, driver_factory=None):
             'V2_RESULT_REQUIRES_REVIEW','RUNTIME_EXCEPTION'):
         d.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());d.save()
     d.log(event='DRIVER_END', stop=d.state.get('stop'))
-    if spec.get('search_to_rule_stop') and d.state.get('stop',{}).get('reason') in (
-            'REQUESTED_WIDTH_RULE_EXHAUSTED','SCOPE_HELD_INPUTS','EXPLICIT_STEP_LIMIT','MAX_CYCLES'):
-        K.CLI.write(a.run_dir/'SEARCH_TERMINATION.json',d.state['stop'])
+    termination_reasons = ('REQUESTED_WIDTH_RULE_EXHAUSTED', 'EXPLICIT_STEP_LIMIT', 'Q3_BUDGET_EXHAUSTED')
+    if spec.get('search_to_rule_stop') and d.state.get('stop', {}).get('reason') in termination_reasons:
+        K.CLI.write(a.run_dir/'SEARCH_TERMINATION.json', d.state['stop'])
     print(json.dumps(O.jsonable(d.state.get('stop')), default=str)[:2000])
     return d
 

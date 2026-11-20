@@ -128,16 +128,18 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
     knowledge.clear()
     held_keys = {(r['configuration_id'], O.interleave(r['N_X'], r['N_Y'])): r for r in held}
     trace, holds = [], []
-    used, steps, pending, fatal, requested_stop = 0, 0, None, False, None
-    limits = [v for v in (search.get('max_steps_per_method'), search.get('work_slice_steps')) if v is not None]
-    step_limit = min(limits, default=None)
+    used, steps, completed_steps = 0, 0, 0
+    pending, fatal, requested_stop = None, False, None
+    step_limit = search.get('max_steps_per_method')
+    work_slice = search.get('work_slice_steps')
+    evaluated = (O.PASS, O.FAIL, 'INCONCLUSIVE')
     budget = 0 if not science_approved else max_new
 
     def absorb(c, row, answer):
         status = _classification(answer, threshold)
         row.update(status=status, MSE_lower=answer.get('MSE_lower'), MSE_upper=answer.get('MSE_upper'),
                    evidence=answer.get('source'), job=answer.get('job'), reason=answer.get('reason'))
-        if status in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
+        if status in evaluated:
             key = (c['configuration_id'], row['vector'])
             verified = dict(answer, status=status, cost=row['cost'])
             knowledge[key] = known[key] = verified
@@ -212,7 +214,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         if read_completed is not None:
             for key, answer in read_completed(lambda key: registered[key][1] if key in registered else None):
                 c, row = registered[key]
-                if row['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
+                if row['status'] in evaluated:
                     continue
                 record(c, row, answer, selected=False)
                 changed = True
@@ -238,11 +240,10 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             references = [row for group in groups.values() for row in group['rows']
                           if row['status'] == 'PENDING' and row['smallest_grid_k'] is None and id(row) not in heads]
             references.sort(key=lambda row: (row['cost'], row['M'], row['configuration_id']))
-        explicit_limit = search.get('max_steps_per_method')
-        if explicit_limit is not None and steps >= explicit_limit:
+        if step_limit is not None and steps >= step_limit:
             requested_stop = 'STEP_LIMIT'
             break
-        if step_limit is not None and steps >= step_limit:
+        if work_slice is not None and completed_steps >= work_slice:
             mode = search.get('ready_work_at_slice')
             can_continue = mode == 'refill' and budget is None and submit_standby is not None
             if mode == 'drain' and budget is None and free is not None:
@@ -285,6 +286,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         c = groups[name, choice['configuration_id'], choice['M']]['candidate']
         steps += 1
         record(c, choice, answer, selected=True)
+        if choice['status'] in evaluated:
+            completed_steps += 1
         if fatal:
             break
 
@@ -348,10 +351,12 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                               and (r['cost'] is None or r['cost'] < limit)
                               for g in groups for r in g['allocations'])
             return 'EVALUATED_MINIMUM' if can_improve else 'MINIMUM_WITHIN_REGISTERED_CANDIDATES'
-        budget_exhausted = pending is not None and budget is not None and spent + used >= budget
+        has_pending = any(r['status'] == 'PENDING' for g in rows for r in g['allocations'])
+        budget_exhausted = (pending is not None and has_pending and budget is not None
+                            and spent + used >= budget)
         if fatal:
             stop = 'UNKNOWN_RESULT'
-        elif requested_stop:
+        elif requested_stop and (requested_stop not in ('WORK_SLICE_YIELDED', 'Q3_BUDGET_EXHAUSTED') or has_pending):
             stop = requested_stop
         elif budget_exhausted:
             stop = 'Q3_BUDGET_EXHAUSTED'

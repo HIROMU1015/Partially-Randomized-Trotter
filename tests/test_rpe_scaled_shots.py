@@ -1,8 +1,10 @@
 """Artificial gateway/controller/worker acceptance for the finite multiplier rule."""
 from contextlib import redirect_stdout
+from copy import deepcopy
 from fractions import Fraction as F
 import io
 from pathlib import Path
+from types import SimpleNamespace
 import sys
 import tempfile
 import unittest
@@ -193,6 +195,144 @@ class ScaleTests(unittest.TestCase):
         self.assertEqual(rows['zero']['best']['N_X'],[8])
         self.assertEqual(rows['zero']['allocations'][0]['status'],'TECHNICAL_HOLD')
         self.assertEqual(rows['independent']['minimum_status'],'GRID_MINIMUM_CONFIRMED')
+
+    def test_no_host_does_not_consume_the_work_slice_or_repeat_a_proposal(self):
+        candidates = [self.candidate('a', [1, 1]), self.candidate('b', [3, 3])]
+        asked = []
+
+        class NoHost:
+            def answer(self, row):
+                asked.append((row['configuration_id'], row['vector']))
+                return dict(status='HOST_ELIGIBILITY_HOLD', reason='NO_MATCHING_ELIGIBLE_HOST', calls=0)
+
+        policy = dict(M=[0], grid=dict(min_k=-2, max_k=0, divisor=1), compare_paper=False)
+        result = S.run('PR_PAULI', candidates, {}, NoHost(), dict(scaled_shots=policy, work_slice_steps=1), TAU, 5)
+        self.assertEqual(len(asked), 6)
+        self.assertEqual(len(set(asked)), len(asked))
+        self.assertEqual(result['stop_reason'], 'UNRESOLVED_SCALED_SCOPE')
+        self.assertEqual(result['new_calls'], 0)
+        self.assertTrue(all(row['reason'] == 'NO_MATCHING_ELIGIBLE_HOST' for row in result['held']))
+
+    def test_normal_schedule_batches_and_input_hold_resume(self):
+        method = 'FULL_PF'
+        for case, total_budget in [('batch', 5), ('capped', 2), ('input_hold', 5), ('host_hold', 5)]:
+            with self.subTest(case=case), tempfile.TemporaryDirectory(prefix='artificial-scaled-schedule-') as tmp:
+                staged = Path(tmp)
+                problem, context, routes = fixture([method], configurations=1, lookahead=1)
+                problem.update(problem=dict(system='ARTIFICIAL_SCALED_SHOTS', hamiltonian_data=dict(
+                    expected=dict(fragment_count=10))), rpe=dict(M=1), execution_routes=routes)
+                problem['accuracy']['epsilon_E_decimal'] = S.EPSILON
+                context['tau'] = TAU
+                context['saved'].table.clear()
+                base, = context['candidates']
+                base['prices'] = [F(1)] * 4
+                routes[method][0]['artificial'].update(weights=[1]*3, scale='1', tau=str(TAU))
+                executor = dict(scheduler='concurrent', max_concurrent_jobs=1)
+                if case == 'host_hold':
+                    hosts = staged/'HOST_ELIGIBILITY.json'
+                    write(hosts, dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))
+                    executor['distributed'] = dict(port=0, host_eligibility=str(hosts))
+                spec = dict(round_id='ARTIFICIAL', methods=[method], science_approved=True,
+                            max_new_q3_per_method={method: total_budget}, executor=executor, search_to_rule_stop=True)
+                write(staged/'PROBLEM.json', problem)
+                write(staged/'ROUND.json', spec)
+
+                def driver_factory(args):
+                    # Supply only the candidate discovery and immutable inputs for this fixture.
+                    d = entry.WidthDriver.__new__(entry.WidthDriver)
+                    d.run, d.a = args.run_dir, args
+                    d.state_file = d.run/'KAPPA_STATE.json'
+                    d.state = load(d.state_file) if d.state_file.exists() else dict(cycle=0, families={}, points=[])
+                    d.spec, d.problem = load(args.round), load(args.problem)
+                    d.methods, d.widths = [method], {}
+                    d.rule_stop = d.scaled_shots = True
+                    d.live_ready_refill = False
+                    d.wide = dict(per_decision=1 if case == 'host_hold' else 8)
+                    d.bootstrap_families = d.complete_points = lambda: None
+                    d.plan = lambda: ([], {})
+                    d.context = lambda _: deepcopy(context)
+                    d.completion_api = lambda: SimpleNamespace(state={'records': {}},
+                        install=lambda _, scoped, records: scoped['execution_routes'])
+                    return d
+
+                invocations = []
+                def launch(run, problem, active):
+                    invocations.append(str(len(invocations)))
+                    identity = dict(invocation_id=invocations[-1])
+                    write(run/'LAUNCH.json', identity)
+                    with redirect_stdout(io.StringIO()):
+                        entry.main(['--problem', str(run/'PROBLEM.json'), '--round', str(run/'ROUND.json'),
+                                    '--run-dir', str(run), '--batch', '1', '--max-cycles', '6'],
+                                   driver_factory=driver_factory)
+                    write(run/'EXIT.json', dict(identity, returncode=0))
+
+                config = dict(problem=str(staged/'PROBLEM.json'), round=str(staged/'ROUND.json'), entry='schedule',
+                              state_directory=str(staged/'state'), code_root=str(ROOT), code_source='ARTIFICIAL',
+                              computation_source='ARTIFICIAL_FIXED', python=sys.executable)
+                gateway = Gateway(config, preflight=lambda *args: dict(status='PASS'), launch=launch)
+                policy = dict(M=[1, 2] if case == 'input_hold' else [1],
+                              grid=dict(min_k=0 if case == 'input_hold' else -2, max_k=0, divisor=1),
+                              compare_paper=False)
+                initial = gateway.handle(dict(action='start', instruction='Artificial only',
+                    scope=dict(methods=[method], scaled_shots=policy)))
+                run = Path(initial['run_directory'])
+                final = run/'SEARCH_TERMINATION.json'
+                first_stop = load(run/'KAPPA_STATE.json')['stop']
+                def launches():
+                    return {p: p.read_bytes() for p in run.glob('jobs/*/*/LAUNCH.json')}
+                before = launches()
+                resume = dict(action='resume', instruction='Artificial resume', run_id=initial['run_id'])
+
+                if case == 'host_hold':
+                    self.assertEqual(first_stop['reason'], 'SCOPE_HELD_Q3')
+                    self.assertFalse(final.exists())
+                    self.assertFalse(before)
+                    self.assertEqual(load(run/'KAPPA_STATE.json')['cycle'], 1)
+                    rows = load(run/'ROUND_RESULT.json')['methods'][method]['held']
+                    self.assertEqual(len(rows), 3)
+                    self.assertTrue(all(r['reason'] == 'NO_MATCHING_ELIGIBLE_HOST' for r in rows))
+                    self.assertEqual(gateway.handle(resume)['status'], 'STARTED')
+                    self.assertFalse(launches())
+                    from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+                    from test_rpe_distributed_controller import ControllerFailures
+
+                    enqueue = DistributedExecutor._enqueue
+                    worker = ControllerFailures()
+
+                    def complete_on_available_host(view, proposal, demand=False):
+                        task = enqueue(view, proposal, demand)
+                        if task and task.status == 'QUEUED':
+                            assigned, = view.rpc('/v1/poll', dict(host_id='server1', slots=1, capacity=1,
+                                                                  source_sha=view.optimizer_source))['assignments']
+                            self.assertEqual(assigned['job_id'], task.job.name)
+                            view.rpc('/v1/complete', worker.completion(assigned))
+                        return task
+
+                    with patch.object(DistributedExecutor, '_eligibility_for', return_value=None), \
+                         patch.object(DistributedExecutor, '_enqueue', complete_on_available_host):
+                        self.assertEqual(gateway.handle(resume)['status'], 'STARTED')
+                    self.assertEqual(len(launches()), 3)
+
+                elif case == 'input_hold':
+                    self.assertEqual(first_stop['reason'], 'SCOPE_HELD_INPUTS')
+                    self.assertFalse(final.exists())
+                    self.assertEqual(len(before), 1)
+                    # Resume still works with a suspension marker from the older release.
+                    write(final, first_stop)
+                    context['candidates'].append(dict(base, name='new-inputs', M=2, prices=[F(1)]*6,
+                        configuration_id=base['configuration_id']+'-M2', source_configuration_id=base['configuration_id']))
+                    self.assertEqual(gateway.handle(resume)['status'], 'STARTED')
+                    archived, = (run/'stop-history').glob('legacy-search-termination-*.json')
+                    self.assertEqual(load(archived), first_stop)
+                    self.assertEqual(len(launches()), 2)
+                    self.assertEqual({p: launches()[p] for p in before}, before)
+                else:
+                    self.assertEqual(len(before), 2 if case == 'capped' else 3)
+                self.assertEqual(load(final)['reason'],
+                    'Q3_BUDGET_EXHAUSTED' if case == 'capped' else 'REQUESTED_WIDTH_RULE_EXHAUSTED')
+                before = launches()
+                self.assertEqual(gateway.handle(resume)['status'], 'REUSED_COMPLETED')
+                self.assertEqual(launches(), before)
 
     def test_artificial_normal_start_queue_resume_and_legacy_pin(self):
         with tempfile.TemporaryDirectory(prefix='artificial-scaled-rpe-') as tmp:
