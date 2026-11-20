@@ -2,7 +2,7 @@
 
 [H4の3方式・離散130条件](../docs/research/h4_three_method_discrete_20261120/HANDOFF.md)：通常 `run_rpe_search.py` の `delta_over_h_values` とPR-DF絶対κの `values`、保存候補の厳密な離散制限。
 
-`ensure_rpe_relay_transport.py` は通常Start/Resume後に指定runの配送版を選ぶ中央運用helper。固定科学コードを保ち、既存Stop・所有照合でrelayのみ切り替える。設定と検収は上記H4 HANDOFF、人工検査は `tests/test_rpe_relay_transport_*.py`。
+`ensure_rpe_relay_transport.py` は通常Start/Resume後に指定runの配送版を選ぶ中央運用helper。固定科学コードを保ち、既存Stop・所有照合でrelayのみ切り替え、同じinvocation内の区間切替にも追従する。設定と検収は上記H4 HANDOFF、人工検査は `tests/test_rpe_relay_transport_*.py`。
 
 `prepare_rpe_mixed_df_release.py` は通常releaseを基礎に、PBSで検収済みのDF固定SOURCE・工程別profile・入力配布・資源見積りを新しい混在運用版へ組み込む。設定生成のみで、起動・registry変更は行わない。[手順と検収](../docs/research/rpe_reviewed_fleet_20261118/HANDOFF.md#mixed-df-portable)、人工回帰は `tests/test_rpe_mixed_df_release.py`。
 

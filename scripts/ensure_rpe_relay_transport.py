@@ -6,6 +6,7 @@ fixed controller/source remain owned by their existing execution contracts.
 import argparse
 import fcntl
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -105,12 +106,125 @@ def ensure(config, result):
         return record
 
 
+def write_watch(path, value):
+    temporary = path.with_name(path.name+'.tmp-'+str(os.getpid()))
+    temporary.write_text(json.dumps(value, indent=2)+'\n')
+    temporary.replace(path)
+
+
+def watch_exit_reason(run, invocation):
+    if (run/'STOP_REQUESTED.json').exists():
+        return 'USER_STOP_REQUESTED'
+    if read(run/'LAUNCH.json')['invocation_id'] != invocation:
+        return 'INVOCATION_CHANGED'
+    driver = read(run/'NORMAL_DRIVER.json')
+    if driver.get('invocation_id') != invocation or not process_arguments(driver['pid']):
+        return 'DRIVER_NOT_ACTIVE'
+    return None
+
+
+def watch(configuration, run_id, invocation):
+    config = read(configuration)
+    run = Path(read(Path(config['state_directory'])/'RUNS.json')[run_id]['run_directory']).resolve()
+    directory = run/'distributed/relay'
+    script = str(Path(config['runs'][run_id]['entry']).resolve(strict=True))
+    result = dict(run_id=run_id, run_directory=str(run))
+    record = dict(status='WATCHING', pid=os.getpid(), invocation_id=invocation,
+                  entry=str(Path(__file__).resolve()), started_epoch=time.time())
+    # One watcher owns this lock for its entire lifetime. Normal operations use
+    # REGISTRY.lock independently and never wait for the watcher's lifetime.
+    with (directory/'WATCH.lock').open('a') as lock:
+        # The parent holds this briefly while publishing this child's PID.
+        # Blocking here avoids a child-start race with that publication.
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            while True:
+                reason = watch_exit_reason(run, invocation)
+                if reason:
+                    record.update(status='STOPPED', reason=reason, stopped_epoch=time.time())
+                    break
+                record.update(status='RELAY_TRANSPORT_PENDING' if record.get('error') else 'WATCHING',
+                              heartbeat_epoch=time.time())
+                path = directory/'STATUS.json'
+                if path.exists():
+                    relay = read(path)
+                    args = process_arguments(relay['pid'])
+                    # An inactive relay between optimizer batches is normal.
+                    # Only replace an existing generation; never create demand.
+                    if not relay.get('stopped') and args and script not in args:
+                        record['status'] = 'SELECTING'
+                        write_watch(directory/'WATCH.json', record)
+                        try:
+                            record['last_selection'] = ensure(config, result)
+                            record.pop('error', None)
+                            record['status'] = 'WATCHING'
+                        except Exception as error:
+                            record.update(status='RELAY_TRANSPORT_PENDING', error=str(error)[:1500])
+                write_watch(directory/'WATCH.json', record)
+                time.sleep(1)
+        finally:
+            record.setdefault('stopped_epoch', time.time())
+            if record['status'] not in ('STOPPED', 'RELAY_TRANSPORT_PENDING'):
+                record['status'] = 'STOPPED'
+            write_watch(directory/'WATCH.json', record)
+    return record
+
+
+def ensure_watch(configuration, result, selection):
+    if selection.get('status') != 'RELAY_TRANSPORT_CONFIRMED':
+        return None
+    configuration = Path(configuration).resolve()
+    config = read(configuration)
+    run = Path(result['run_directory']).resolve()
+    invocation = selection['invocation_id']
+    directory = run/'distributed/relay'
+    command = [config['python'], '-B', str(Path(__file__).resolve()), '--config', str(configuration),
+               '--watch', '--run-id', result['run_id'], '--invocation', invocation]
+    deadline = time.monotonic()+3
+    with (directory/'WATCH.lock').open('a') as lock:
+        while True:
+            path = directory/'WATCH.json'
+            existing = read(path) if path.exists() else {}
+            args = process_arguments(existing['pid']) if existing.get('pid') else []
+            if args and args[1:] == command[1:]:
+                return dict(status='ALREADY_CURRENT', pid=existing['pid'], invocation_id=invocation)
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                if time.monotonic() >= deadline:
+                    raise ValueError('Previous relay watcher is still draining')
+                time.sleep(.1)
+        reason = watch_exit_reason(run, invocation)
+        if reason:
+            raise ValueError('Relay watcher will not start: '+reason)
+        with (directory/'WATCH.log').open('a') as log:
+            process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                start_new_session=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+        record = dict(status='STARTING', pid=process.pid, invocation_id=invocation,
+                      entry=str(Path(__file__).resolve()), started_epoch=time.time())
+        write_watch(directory/'WATCH.json', record)
+        return record
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--watch', action='store_true')
+    parser.add_argument('--run-id')
+    parser.add_argument('--invocation')
     args = parser.parse_args()
+    if args.watch and not (args.run_id and args.invocation):
+        parser.error('--watch requires --run-id and --invocation')
     try:
-        answer = ensure(read(args.config), json.load(sys.stdin))
+        if args.watch:
+            answer = watch(args.config, args.run_id, args.invocation)
+        else:
+            result = json.load(sys.stdin)
+            answer = ensure(read(args.config), result)
+            watcher = ensure_watch(args.config, result, answer)
+            if watcher:
+                answer['watcher'] = watcher
         print(json.dumps(answer)); return 0
     except Exception as error:
         print(json.dumps(dict(status='RELAY_TRANSPORT_PENDING', error=str(error)))); return 1

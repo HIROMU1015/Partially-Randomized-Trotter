@@ -338,7 +338,7 @@ Status/Stop、開始拒否、完了済みrunでは呼ばない。切替できな
 配送選択は既存REGISTRY.lockで通常Stopと直列化し、登録runの場所、現在invocation、
 生存controller、relayのCONFIG所有を照合する。旧relayを正常停止して終了を確認し、
 修正版を起動する。すでに修正版なら再起動しない。SOURCE・scope・結果・キューの所有と
-UNKNOWNを変更しない。専用の常駐監視や新しい承認機構は追加しない。
+UNKNOWNを変更しない。共有の常駐サービスや新しい承認機構は追加しない。
 
 追加人工検査9件はPASS。親Codexは配送選択5件と全9件、委任Codexはbootstrap4件と
 component bindingを検査した。広めの既存27件では26件PASS、既存の
@@ -346,3 +346,14 @@ component bindingを検査した。広めの既存27件では26件PASS、既存�
 UNKNOWN_RESULT時の旧期待値COMPLETEで失敗する。現行実装はRECONCILIATION_REQUIREDへ
 保留するため、この無関係な科学STOP判定を弱めてテストを通してはいない。
 通常Stop/Resumeの実機検収と配置記録を本節へ追記する。
+
+実機Stopの回収中、同一driver invocationでも処理区間の切替時にrelayが作り直される
+ことを確認した（06:05:53Z停止、06:06:03Z旧版再起動）。再開直後だけの切替では
+不十分なため、同じrun・invocationに限って配送版へ追従する小さな補助プロセスを
+追加する。通常Stop、controller終了、invocation変更で終了し、区間間にrelayが
+存在しない間は起動しない。すでに修正版なら何もしない。新しい区間で旧版relayが
+実際に起動したときだけ、上記の同じ排他・所有照合で配送版を選ぶ。
+
+区間追従を含む追加人工検査14件がPASS。親Codexによる通常入口・registry・配送の
+関連34件もPASSした。上記既存テストの期待値をRECONCILIATION_REQUIREDへ修正し、
+UNKNOWN_RESULTの保全・Resume拒否を引き続き検査する。科学判定の実装は変更していない。
