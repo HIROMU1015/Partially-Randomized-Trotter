@@ -581,6 +581,8 @@ def local0_progress(applied, spec, run=None):
 
 
 class Gateway:
+    restores_preparation_archives_on_resume = True
+
     def __init__(self, config, *, preflight=None, launch=None):
         self.config = deepcopy(config); self.state = Path(config['state_directory'])
         self.preflight = preflight or self.normal_preflight; self.launch = launch or self.normal_launch
@@ -738,9 +740,18 @@ class Gateway:
         if spec.get('q3_budget_parents'):
             from .rpe_search_continuation import verify_budget_parents
             immutable(run/'Q3_BUDGET_CONTINUATION.json',verify_budget_parents(run,problem,spec))
+        archive_recovery = None
+        if request['action'] == 'resume':
+            from .rpe_preparation_retention import restore_resume_archives
+            try:
+                archive_recovery = restore_resume_archives(self.state, run)
+            except (OSError, ValueError, KeyError) as error:
+                raise RequestError('preparation_archives', str(error)) from error
         preflight_started = time.monotonic()
         report = dict(self.preflight(run, problem, spec),
                       elapsed_seconds=time.monotonic() - preflight_started)
+        if archive_recovery and any(archive_recovery.values()):
+            report['preparation_archive_recovery'] = archive_recovery
         write(run/'DUPLICATE_PREFLIGHT.json', report)
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
         immutable(run/'ROUND.json', spec)

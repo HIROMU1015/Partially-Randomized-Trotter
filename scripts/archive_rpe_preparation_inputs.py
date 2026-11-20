@@ -9,8 +9,10 @@ from pathlib import Path
 import struct
 import subprocess
 import tempfile
+import sys
 
-from restore_rpe_preparation_bundle import ArtifactCache, file_sha256, restore
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
+from trottertracks.rpe_preparation_retention import ArtifactCache, file_sha256, restore
 
 
 def git(repository, *command, **kwargs):

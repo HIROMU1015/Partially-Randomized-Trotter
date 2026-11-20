@@ -24,6 +24,51 @@ class Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
 
+    def test_resume_restores_archived_input_after_ownership_guard_and_before_preflight(self):
+        import gzip
+        from trottertracks.rpe_preparation_retention import file_sha256, restore_resume_archives
+
+        started = []
+        state = pathlib.Path(self.config['state_directory'])
+        archive = state.parent/'archives/preparation-inputs/retained'
+        archive.mkdir(parents=True)
+        source = '1'*40
+        ref = 'refs/rpe-preparation/input-bundles/inputs-' + '2'*40
+        payload = b'artificial encoded pack entry'
+        blob = archive/'pack-entries.bin'
+        blob.write_bytes(payload)
+        sha = file_sha256(blob)
+
+        def preflight(run, problem, spec):
+            self.assertEqual((run/'distributed/artifacts'/sha[:2]/sha).read_bytes(), payload)
+            return {'status':'PASS'}
+
+        gateway = Gateway(self.config, preflight=preflight, launch=lambda run,*args:started.append(run))
+        prepared = gateway.handle(dict(request(4,6),action='prepare'))
+        run = pathlib.Path(prepared['run_directory'])
+        original = run/'jobs/PREPARATION:signal/artificial/REQUEST.json'
+        cache = run/'distributed/artifacts'/sha[:2]/sha
+        write(original, {'preparation':{'source':{'commit':source},'input_hashes':[],
+                                        'input_git_bundles':[{'ref':ref,'sha256':sha}]}})
+        write(archive/'ARCHIVE.json', {'requests':[{'request':str(original), 'request_sha256':file_sha256(original),
+                                                   'artifact_sha256':sha}]})
+        with gzip.open(archive/(sha+'.recipe.json.gz'),'wt') as file:
+            json.dump(dict(sha256=sha,ref=ref,source=source,header='',trailer='',entries=[[0,len(payload)]]),file)
+        write(archive.with_name('retained.reclaimed.json'),
+              {'archive':str(archive),'bundles':{sha:{'run_id':run.name,'request':str(original),'source_path':str(cache)}}})
+        resume = dict(action='resume',run_id=run.name,instruction='Artificial archived input acceptance')
+        write(run/'LAUNCH.json', {'invocation_id':'artificial-invocation'})
+        with self.assertRaisesRegex(RequestError, 'previous launch has no completion receipt'):
+            gateway.handle(resume)
+        self.assertFalse(cache.exists())
+        self.assertEqual(started, [])
+        write(run/'EXIT.json', {'invocation_id':'artificial-invocation','returncode':0})
+        result = gateway.handle(resume)
+        self.assertEqual(result['status'], 'STARTED')
+        self.assertEqual(result['preflight']['preparation_archive_recovery']['restored'], [sha])
+        self.assertEqual(started, [run])
+        self.assertEqual(restore_resume_archives(state,run), {'restored':[], 'already_present':[sha]})
+
     def test_status_observes_local_q3_body_before_the_worker_state_report(self):
         from trottertracks.rpe_local0_search import local0_progress
         from trottertracks.rpe_q3_store import JobStore
