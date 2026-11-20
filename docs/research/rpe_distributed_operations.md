@@ -91,6 +91,8 @@ run専用の補助プロセスが追従し、Stop・driver終了・invocation変
 - RomuTailのユーザーサービス `rpe-storage-recovery.service` が `scripts/reclaim_rpe_worker_storage.py --state-dir STATE_DIR` で稼働中のrunを追跡する。約1分ごとに既存のSSH経路で点検し、点検結果は `journalctl --user -u rpe-storage-recovery.service` に残る。50 GiB上限のworkerは40 GiBに達した時点で、回収済み作業コピー・再計算可能なキャッシュの整理を始める。40 GiBは保守開始の基準で、受付判定には既存の50 GiB上限とファイルシステム空き容量の条件を使う。空きが戻れば既存workerの受付が自動復帰する。ロックとGitオブジェクトの一致を確認できる場合は、旧メタデータpackも容量外の専用一時領域で圧縮する。対になるpack・idxを持ちGit検証を通る `.rev` は整理対象に含め、オブジェクト集合を保つ。個別runを調査するときは、常設サービスと同時に同じrunを操作しない。
 - 先行整理は35 GiBを目安にし、整理できる安全なコピーが少ない場合は実際に空けられた量を記録する。worker使用量が上限未満で、対象の保存先すべての空きが最低値以上になれば、次のworker照会で容量による受付保留が自動で解除される。利用者のPause・受付OFFとWSL停止は各環境の設定に従う。実行可能な仕事が待機中なら、`QUEUE_WAIT_STATE` と台帳で新規割当まで確認する。
 
+2026-11-20に、`rpe-storage-recovery.service` を `.rpe-central/deployment/worker-storage-recovery-6bd2d0f254/` へ切り替えた。40 GiB未満では先行整理せず、40 GiBに達した時点で受付を維持したまま35 GiBを目標に整理することを人工検査した。通常のworker照会には既存の受付判定と緊急時の整理条件を使う。保守サービスの報告には `reclaim_start_bytes`、`reclaim_target_bytes`、`reclaim_checked`、`reclaim_pending` を残す。
+
 ## RomuTail中央の常設保守
 
 - `rpe-central-maintenance.timer` は、登録済みrunの中央台帳と固定版から、依存入力の照合、停止後の回収、待ち理由の集約を行う。優先対象は現在のrunと、稼働中に追跡を開始して所有中attemptが残るrun。常設保守から通常Start・Resume、新規予約、割当、科学計算、再試行は行わない。
