@@ -1129,12 +1129,19 @@ def schedule_driver(config, run, selection):
     preparation = selection.get('preparation_sha256')
     if preparation is not None:
         required = set(SCHEDULE_PREPARATION_MODULES)
-        if not required <= set(preparation) <= required | {'pr_candidate_completion', 'pf_optimizer_connection'}:
+        optional = {'pr_step_price_registry', 'pr_candidate_completion', 'pf_optimizer_connection'}
+        if not required <= set(preparation) <= required | optional:
             raise RequestError('schedule_resume', 'Preparation operations selection is incomplete')
         for name in preparation:
             module = driver.parents[1]/'src/trottertracks'/(name+'.py')
             if not module.is_file() or hashlib.sha256(module.read_bytes()).hexdigest() != preparation[name]:
                 raise RequestError('schedule_resume', 'Preparation operations differ from their selected deployment: '+name)
+    if 'pr_price_service_sha256' in selection:
+        service = driver.with_name('pr_candidate_services.py')
+        if (not preparation or not {'pr_candidate_completion', 'pr_step_price_registry'} <= set(preparation)
+                or not service.is_file()
+                or hashlib.sha256(service.read_bytes()).hexdigest() != selection['pr_price_service_sha256']):
+            raise RequestError('schedule_resume', 'PR price metadata service differs from its selected deployment')
     return driver
 
 
@@ -1208,31 +1215,37 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
             if recovered and load(run/'EXIT.json').get('invocation_id') == recovered:
                 runtime_trial = dict(trial or {}, recovered_failure=dict(kind=kind, invocation=recovered))
         operations = [(name, str(driver.parents[1]/'src/trottertracks'/(name+'.py')))
-                      for name in ('pf_optimizer_connection', *SCHEDULE_PREPARATION_MODULES, 'pr_candidate_completion')
+                      for name in ('pf_optimizer_connection', *SCHEDULE_PREPARATION_MODULES,
+                                   'pr_step_price_registry', 'pr_candidate_completion')
                       if name in (preparation or {})]
         if 'q3_store_sha256' in schedule_resume:
             operations.insert(0, ('rpe_q3_store', str(driver.parents[1]/'src/trottertracks/rpe_q3_store.py')))
             implementation['q3_store_sha256'] = schedule_resume['q3_store_sha256']
         bootstrap = ('import importlib.util,json,runpy,sys\n'
-                     'root,driver,manager,optimizer,preparation,trial=sys.argv[1:7]\n'
-                     'sys.argv=sys.argv[6:]\n'
+                     'root,driver,manager,optimizer,preparation,trial,pr_price_service=sys.argv[1:8]\n'
+                     'sys.argv=sys.argv[7:]\n'
                      'sys.path.insert(0,root+"/src")\n'
                      'for name,path in [*json.loads(preparation),("rpe_pbs",manager),("rpe_optimizer_concurrent",optimizer)]:\n'
                      '    if path:\n'
                      '        spec=importlib.util.spec_from_file_location("trottertracks."+name,path)\n'
                      '        module=importlib.util.module_from_spec(spec)\n'
-                     '        if name=="pr_candidate_completion": module.FIXED_RUN_CODE_ROOT=root\n'
+                     '        if name=="pr_candidate_completion":\n'
+                     '            module.FIXED_RUN_CODE_ROOT=root\n'
+                     '            module.FIXED_RUN_PR_PRICE_SERVICE=pr_price_service\n'
                      '        sys.modules[spec.name]=module\n'
                      '        spec.loader.exec_module(module)\n'
                      'runpy.run_path(driver,run_name="__main__",init_globals={'
                      '"FIXED_RUN_CODE_ROOT":root,"FIXED_RUN_WORKER_TRIAL":json.loads(trial)})')
+        price_service = str(driver.with_name('pr_candidate_services.py')) if 'pr_price_service_sha256' in schedule_resume else ''
         command[2:3] = ['-c', bootstrap, str(root), str(driver), manager, optimizer,
-                        json.dumps(operations), json.dumps(runtime_trial)]
+                        json.dumps(operations), json.dumps(runtime_trial), price_service]
         implementation['schedule_source'] = schedule_resume['source']
         implementation['schedule_entry'] = str(driver)
         implementation['schedule_sha256'] = schedule_resume['driver_sha256']
         if preparation is not None:
             implementation['preparation_sha256'] = preparation
+        if price_service:
+            implementation['pr_price_service_sha256'] = schedule_resume['pr_price_service_sha256']
         if manager:
             implementation['pbs_manager_entry'] = manager
             implementation['pbs_manager_sha256'] = schedule_resume['pbs_manager_sha256']

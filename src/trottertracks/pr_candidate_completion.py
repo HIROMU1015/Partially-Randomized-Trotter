@@ -507,7 +507,16 @@ class Completion:
         if mode in ('df-plan','df-stage','df-bundle'):
             request['saved_index_cache']=str(self.directory/'cache'/'df-saved-index')
         tag=tag or mode;inp=d/(tag+'.INPUT.json');out=d/(tag+'.json');put(inp,request)
-        return self.call([python,'-B',str(ROOT/'scripts/pr_candidate_services.py'),mode,'--input',str(inp),'--output',str(out)],d,tag,out)
+        command = [python, '-B', str(ROOT/'scripts/pr_candidate_services.py')]
+        metadata_entry = globals().get('FIXED_RUN_PR_PRICE_SERVICE')
+        if metadata_entry and mode == 'df-price-design':
+            command = [python, '-B', '-c',
+                       'import runpy,sys\n'
+                       'root,entry=sys.argv[1:3]\n'
+                       'sys.argv=sys.argv[2:]\n'
+                       'runpy.run_path(entry,run_name="__main__",init_globals={"FIXED_RUN_CODE_ROOT":root})',
+                       str(ROOT), metadata_entry]
+        return self.call([*command,mode,'--input',str(inp),'--output',str(out)],d,tag,out)
 
     def saved_df_descriptor(self,request):
         if request.get('tail_descriptor'):return request['tail_descriptor']

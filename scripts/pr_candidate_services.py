@@ -17,7 +17,7 @@ import subprocess
 import sys
 import tempfile
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(globals().get('FIXED_RUN_CODE_ROOT', Path(__file__).resolve().parents[1])).resolve()
 if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)
 DF_VIEW=ROOT.parent/'d2-pr-df-ld1-m3-acquisition-20261115'
 SIGNAL_VIEW=ROOT.parent/'d2-pr-df-ld7-signal-source-fefd-20261116'
