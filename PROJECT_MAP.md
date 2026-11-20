@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 RPE分散探索の運用ルール](docs/research/rpe_distributed_operations.md) — 通常入口、運用版、各環境への配布・回収、PBSと容量の運用。
+
 [H4の3方式・離散130条件](docs/research/h4_three_method_discrete_20261120/HANDOFF.md) — Full PF／B0Iの離散幅、PR-DFの離散κ、通常入口と保存候補の同一scope。
 
 [PBSのPR-DF修正を混在運用へ反映](docs/research/rpe_reviewed_fleet_20261118/HANDOFF.md#mixed-df-portable) — 通常設定の保持、新旧SOURCEの工程別配置、保存要求の非科学dry-check。

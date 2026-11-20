@@ -10,6 +10,19 @@ RomuTailの中央担当、Romulaptopの操作担当、各環境のworker担当�
 
 作業順と残件の経緯は[分散探索HANDOFF](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/codex/rpe-reviewed-fleet-20261118/docs/research/rpe_work_conserving_search_20261118/HANDOFF.md)、旧入力・共有mailbox・PBSの容量と依存関係を修正した経緯と検収範囲は[RomuTail運用版のHANDOFF](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/codex/rpe-reviewed-fleet-20261118/docs/research/rpe_reviewed_fleet_20261118/HANDOFF.md)を参照する。
 
+## 現runの設定と状態を調べる
+
+Codexは、まず通常入口から対象runの `Status` を照会する。設定や記録を直接確認するときは、RomuTailのリポジトリにある `.rpe-central` を使う。run内のファイルは `.rpe-central/state/runs/<run ID>/` から辿れる。
+
+| 知りたいこと | 確認する場所 |
+| --- | --- |
+| 新規runの通常Startで選ばれる版 | `RELEASES.json` の `current` と `SERVICE.json` の `schedule_releases` をrelease IDで照合する。 |
+| 現runが実際に読み込んだ運用版と次のResumeで使う版 | 実際に読み込んだ版はrunの `NORMAL_DRIVER.json` の `implementation.schedule_source` を、再開時の個別指定は `SERVICE.json` の `schedule_resumes` を確認する。固定科学SOURCEはrunの `CONTROLLER_CONFIG.json` を参照する。 |
+| 探索範囲、受付先、CPU・メモリ | runの `APPLIED_SCOPE.json`、`ROUND.json`、`HOST_ADMISSION.json` と、PBSの `distributed/pbs/SETTINGS.json` を照合する。PBSの要求上限と、実際に確保した割当はそれぞれ `SETTINGS.json` と `distributed/pbs/STATE.json` で確認する。 |
+| 空き枠・待ち理由・結果回収・探索マップ | `Status` の `central_maintenance.wait` とrunの `PROGRESS.jsonl` の `QUEUE_WAIT_STATE`、正本の `distributed/QUEUE.sqlite3`、公開同期の `PUBLICATION_STATUS.json` を確認する。 |
+
+対象環境はプロファイル名で識別する。RomuTailのworkerは `local`、サーバー2は `server2`、RomulaptopのWSLは `local0-wsl`、PBSは `pbs-0`。受付と割当可能な工程はホストごとの状態を確認する。
+
 ## 通常入口と役割
 
 - 利用者は方式、探索範囲、要求幅・精度、shot配分、予算、および開始・停止・再開をCodexへ指示する。RomulaptopのCodexはその指示をRomuTailへ渡す。必要な準備タスクと割当はRomuTailが判断する。正本はRomuTailの `.rpe-central/state` にある。
@@ -88,6 +101,7 @@ PBS枠の起動直後にジョブ履歴や初回の容量計測を待つ間は�
 - 工程・providerごとに、固定SOURCEの依存関係をREQUESTに記載し、実行先でその工程に使う固定Pythonを選ぶ。割当前の適格性照合では、要求したパッケージの版と、必要なimportがそのPythonで成功することを確認する。子プロセスで固定providerを読む経路を変えた場合は、その子プロセスでも確認する。不足時はホスト・工程・依存名を記録し、該当する割当を保留する。対応する別ホストや独立した候補は進める。
 - PBSのPR-Pauli信号では、固定SOURCEの `requirements.txt` に従って `openfermion`、`pyscf`、`openfermionpyscf` の版を照合し、専用の信号Pythonで `openfermionpyscf` のimportを確認する。依存関係は対象releaseの専用環境へ配置する。通常回収とPBS終了後の回収は、双方でprofileに指定した専用回収Pythonを使う。回収経路を変更したら、巨大な整数を含む保存OUTCOMEが厳密値のまま回収できることを確認する。
 - 変更したQ3 adapterの固定SHAは、release manifest、ホストの基本・route別profile、ROUNDに埋め込まれたローカル・PBSのprofile、PBS所要時間ルールのすべてで照合する。保存要求のdry-checkは選択されたホストの実パスと固定Pythonで行う。短いMを使う場合は元のsignal/priceから対応範囲を照合し、固定科学Q3の検証域外は候補単位で保留する。
+- 短いホライズンのQ3では、PR-DFの要求が元の構成・信号を参照できることと、B0Iのテンプレートから固定入力を解決できることを確認する。運用版を更新したときは通常Startが選ぶコードで両経路の要求を組み立て、保存入力をworkerでdry-checkする。PR候補の固定照合には受入receiptに記録されたGit locatorを使う。
 - 旧パスの入力receiptが使えない場合は、後続の照合済み保管先も調べる。固定SOURCE、入力ハッシュ、構成、検査完了の記録が一致した成果を再利用する。bundleを変更したら、既存Gitキャッシュに依存しない新規workspaceで固定入力を復元できることを確認する。
 - 中央はworkerから受け取った空き枠に応じて準備の照合対象を送り、適格な仕事を空き枠とCPU・メモリの範囲で割り当てる。遠隔relayは先頭の要求とbundleを共有する仕事や、workerに入力が揃っている仕事をまとめて照合し、その結果を中央へ返して、別のbundleを転送する前に割当照会へ進む。繰り返し保留された要求はホスト別の照合回数に応じて交替させる。workerの受理、失敗、回収は元のjobとattemptごとに記録する。Q3の先行照合では、保存済み・登録済みの要求を飛ばして次の独立候補へ進む。
 
@@ -117,12 +131,14 @@ PBS枠の起動直後にジョブ履歴や初回の容量計測を待つ間は�
 - 割当が少ないときは、`QUEUE_WAIT_STATE` と工程・ホスト別の台帳で、候補不足、準備待ち、適格なホスト不足、配送・割当待ちをたどる。旧attemptが枠を占めている場合は、元ホストの状態と台帳上の所有を照合する。同時実行数を増やすときは、ホストでの実測、1ジョブあたりのDP並列数、合計CPU・RAM、既存予約を確認する。
 - 空き枠と候補の補充は、worker完了・枠追加・候補の準備完了に合わせて進める。独立した準備は残りの工程別予算と適格な枠に合わせて進める。PBSのCPU要求には予算内で割当可能な仕事を使い、同じ枠に後続タスクが入ったか、入力照合から実行開始までの時間と実使用CPU時間を記録する。
 - PBSのタスク別予約では、適格なREQUESTが選ぶ固定profileからCPUを、工程別の所要資源ルールからメモリを求める。準備工程のメモリが未計測なら同時実行から保護するため枠の使用可能メモリ全体を予約する。割当前に台帳の所有中attemptを含めて合計を照合する。新規枠は適格な需要から計算し、実行中の割当は元へ回収してから拡張する。
+- 待機枠の縮小に対応する運用版では、PBSで状態 `Q` の枠に所有中のattemptがなく、適格な残作業に必要なCPUが要求の半分以下の状態が続いた場合、旧枠の終了を確認してから残作業に合う枠を要求する。残作業がゼロなら再投入を見送る。2026-11-20の現runでは、PBSの1割当あたりの要求上限は96 CPU。
+- PBSのgatewayが一括照会に対応する運用版では、既知の割当をまとめて `qstat` で照会する。接続内で状態 `F` の会計情報を再利用し、元attemptのspoolの回収は継続する。
 - 保存済みの実測に基づく準備工程のCPU・メモリ試行は、providerと固定SOURCEを指定し、中央とPBSの両方のprofileに反映する。割当内の較正・独立監査は既存のプロセスツリー計測でRSSの観測最大値を記録し、同じ試行設定の結果回収と照合する。
 - workerの作業領域・未回収結果・キャッシュは、各環境50 GiBの受付制限に従う。`STORAGE_LIMIT_REACHED` が出たら、対象workerの使用量と受付状態を確認する。転送ack済みのdry-check一時領域、正常完了した準備の展開コピー、回収済みbundleの作業コピーを優先して整理する。それでも上限に達していれば、基本profileに加えて経路別profileの保存先も確認し、再生成できるDPチェックポイントを既存の整理処理で削減する。
 - workerの使用量が50 GiB未満でも、保存先のファイルシステムの空きが最低値を下回ると `FILESYSTEM_SPACE_LOW` で新規受付を保留する。現行実装の最低値はworker上限の10%（50 GiBなら5 GiB）。`QUEUE_WAIT_STATE` またはworkerの容量報告で `filesystem_free_bytes`、`filesystem_min_free_bytes`、`filesystem_low_space_roots` を確認し、空きが不足した保存先で既存の安全な回収処理を使う。起動済み処理の回収と他の適格なホストの受付は継続する。
 - RomuTailでさらに整理が必要な場合は、登録上そのrunだけが稼働し、ローカルworkerに割当済み・実行中・回収待ちの作業がないことを確認する。同じrunの中央原本とSHA-256が一致する作業用キャッシュのコピーだけを整理する。待機中、準備中、未確定の要求が参照するデータ、原結果、固定入力、失敗記録は保全する。
 - PBSの信号は、要求登録から割当までの時間をbundle転送、固定入力照合、受付・予算待ちに分けて記録する。大きな既存bundleの先行配置は、対象runの要求、PBSの残容量、転送前後のSHA-256を確認する。保存入力の木（tree）を照合するときは、既存の `git show` 表示に対するハッシュを継承する。
-- PBSの割当サイズの再計算は、workerから受付可能な空き枠が届いてから行う。PBSの枠は稼働中の割当IDに結び付け、spool交換に見合う時間だけ有効とする。計算ノードで容量測定が遅延する場合、設定済みの運用launcherは割当専用のgateway計測を使う。workerは更新を自ホストの単調時計で追い、他ホストの時刻差に依存しない。容量情報と入力照合の保留理由は `PBS_WORKER_ADMISSION` で確認する。Git bundleが存在しても前提コミットを辿れない場合は、対象bundleが参照する既存の前提オブジェクトを専用メタデータキャッシュへ補い、固定profileで照合を再実行する。
+- PBSで稼働中の割当のサイズを見直すときは、workerから受付可能な空き枠が届くのを待つ。PBSの枠は稼働中の割当IDに結び付け、spool交換に見合う時間だけ有効とする。計算ノードで容量測定が遅延する場合、設定済みの運用launcherは割当専用のgateway計測を使う。workerは更新を自ホストの単調時計で追い、他ホストの時刻差に依存しない。容量情報と入力照合の保留理由は `PBS_WORKER_ADMISSION` で確認する。Git bundleが存在しても前提コミットを辿れない場合は、対象bundleが参照する既存の前提オブジェクトを専用メタデータキャッシュへ補い、固定profileで照合を再実行する。
 - 容量整理では回収済み作業領域の同一Git packを内容照合して共有できる。過去のメタデータキャッシュを圧縮する場合は、取込みと同じロックで作業し、Gitオブジェクト一覧と新packの整合を検証する。実行・回収中や終了未確定のattemptは整理対象にしない。
 - WSLやPBSで追加のキャッシュ整理が必要なら、受領済みの中央保存データとのハッシュとサイズの一致、転送ACK、実行中・未回収・未確定attemptから参照されていないことを確認する。共有のGitメタデータを整理する場合は、元bundleで再生成できることを確認し、取込みと同じロックを使う。
 - RomuTailのユーザーサービス `rpe-storage-recovery.service` が `scripts/reclaim_rpe_worker_storage.py --state-dir STATE_DIR` で稼働中のrunを追跡する。約1分ごとに既存のSSH経路で点検し、点検結果は `journalctl --user -u rpe-storage-recovery.service` に残る。50 GiBの95%から、回収済み作業コピー・再計算可能なキャッシュを整理する。空きが戻れば既存workerの受付が自動復帰する。ロックとGitオブジェクトの一致を確認できる場合は、旧メタデータpackも容量外の専用一時領域で圧縮する。対になるpack・idxを持ちGit検証を通る `.rev` は整理対象に含め、オブジェクト集合を保つ。個別runを調査するときは、常設サービスと同時に同じrunを操作しない。
