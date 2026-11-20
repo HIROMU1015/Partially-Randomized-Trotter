@@ -4,6 +4,7 @@ The controller and each worker have their own cache. Only missing hashes cross
 SSH/HTTP; no filesystem or direct host-to-host connection is assumed.
 """
 import base64
+import errno
 import hashlib
 import os
 from pathlib import Path, PurePosixPath
@@ -73,7 +74,8 @@ class ArtifactCache:
         if missing:raise ValueError('Missing cached artifacts: ' + ','.join(missing))
         return {sha:base64.b64encode(self.path(sha).read_bytes()).decode('ascii') for sha in dict.fromkeys(hashes)}
 
-    def materialize(self, manifest, destination):
+    def materialize(self, manifest, destination, *, immutable=False):
+        """Publish verified blobs at their named paths. Workspaces get private copies."""
         destination = Path(destination).resolve()
         if self.missing(manifest.values()):raise ValueError('Required input artifacts are not cached')
         for name, sha in manifest.items():
@@ -82,7 +84,20 @@ class ArtifactCache:
             if not target.resolve().is_relative_to(destination):raise ValueError('Artifact escapes owned workspace')
             if target.is_symlink():raise ValueError('Symlink artifact target')
             target.parent.mkdir(parents=True, exist_ok=True)
-            raw = self.path(sha).read_bytes()
+            source = self.path(sha)
+            if immutable and not target.exists():
+                try:
+                    os.link(source, target)
+                except FileExistsError:
+                    pass  # Another reader materialized the result first.
+                except OSError as error:
+                    if error.errno not in (errno.EXDEV, errno.EOPNOTSUPP, errno.ENOSYS, errno.EMLINK):
+                        raise
+                else:
+                    continue
+            if immutable and target.is_file() and not target.is_symlink() and source.samefile(target):
+                continue
+            raw = source.read_bytes()
             if target.exists():
                 if not target.is_file() or target.read_bytes() != raw:raise ValueError('Changed immutable input artifact: ' + name)
                 continue

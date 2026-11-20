@@ -280,6 +280,34 @@ class WorkerTests(unittest.TestCase):
             self.assertFalse(dry.exists())
             self.assertTrue((attempt/'OUTCOME.json').is_file())
 
+    def test_transferred_preparation_failure_requires_proof_that_body_never_ran(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for state, prelaunch, body_log in [('TRANSFERRED', True, False),
+                                               ('TRANSFERRED', False, False),
+                                               ('TRANSFERRED', True, True),
+                                               ('UNKNOWN', True, False)]:
+                with self.subTest(state=state, prelaunch=prelaunch, body_log=body_log):
+                    attempt = root/f'{state}-{prelaunch}-{body_log}'/'attempt'
+                    workspace = attempt/'workspace'
+                    workspace.mkdir(parents=True)
+                    (workspace/'expanded-input').write_text('working copy')
+                    (attempt/'WORKER_PROCESS.lock').touch()
+                    W.atomic(attempt/'ASSIGNMENT.json', dict(job_id=attempt.parent.name, attempt_id=attempt.name,
+                        request_sha256='fixed', request=dict(route=dict(kind='preparation'))))
+                    W.atomic(attempt/'OUTCOME.json', dict(status='PREPARATION_FAILED', request_id=attempt.parent.name,
+                        request_sha256='fixed', artifacts={}, git_bundles=[],
+                        workspace_error=dict(scientific_body_started=False) if prelaunch else {}))
+                    W.atomic(attempt/'PROCESS_RETURN.json', dict(returncode=2))
+                    if body_log:
+                        (attempt/'PREPARATION_BODY.log').touch()
+                    W.save_state(attempt, state)
+                    W.Storage.reclaim_transferred_attempt(dict(roots=[str(root)]), attempt)
+                    removed = state == 'TRANSFERRED' and prelaunch and not body_log
+                    self.assertEqual(workspace.exists(), not removed)
+                    self.assertTrue((attempt/'OUTCOME.json').is_file())
+                    self.assertTrue((attempt/'PROCESS_RETURN.json').is_file())
+
     def test_storage_reclaims_configured_route_checkpoint_caches(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -363,8 +391,7 @@ class WorkerTests(unittest.TestCase):
             policy = dict(limit_bytes=1024, roots=[str(cache)])
             profile = dict(work_dir=str(spool), artifact_cache_directory=str(cache),
                            storage_limit=dict(policy, sample_path=str(sample)))
-            W.atomic(sample, dict(policy=policy, report=dict(reason='STORAGE_LIMIT_REACHED',
-                                                            limit_bytes=1024, used_bytes=10240)))
+            W.atomic(sample, dict(policy=policy, report=dict(reason=None, limit_bytes=1024, used_bytes=980)))
             sample.with_suffix('.lock').touch()
             files = {}
             for name in ('duplicated', 'unknown', 'local-only'):

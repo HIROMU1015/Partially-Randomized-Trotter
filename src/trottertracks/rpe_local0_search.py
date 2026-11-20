@@ -581,6 +581,8 @@ def local0_progress(applied, spec, run=None):
 
 
 class Gateway:
+    restores_preparation_archives_on_resume = True
+
     def __init__(self, config, *, preflight=None, launch=None):
         self.config = deepcopy(config); self.state = Path(config['state_directory'])
         self.preflight = preflight or self.normal_preflight; self.launch = launch or self.normal_launch
@@ -643,7 +645,12 @@ class Gateway:
                 else:
                     if not current.exists(): raise RequestError('target', 'controller has no confirmed target; provide a scope or register a confirmed run')
                     target = load(current); run = Path(target['run_directory'])
-                if request['action'] == 'status': return self.result(run, 'STATUS')
+                if request['action'] == 'status':
+                    result = self.result(run, 'STATUS')
+                    maintenance = self.state/'maintenance'/(run.name+'.json')
+                    if maintenance.is_file():
+                        result['central_maintenance'] = load(maintenance)
+                    return result
                 if request['action'] == 'stop': return self.result(run, self.stop(run))
                 if request['action'] == 'planonly': return self.result(run, self.plan_only(run))
                 if request['action'] in ('preview','prepare'): return self.result(run, 'CONFIRMED_TARGET')
@@ -738,9 +745,18 @@ class Gateway:
         if spec.get('q3_budget_parents'):
             from .rpe_search_continuation import verify_budget_parents
             immutable(run/'Q3_BUDGET_CONTINUATION.json',verify_budget_parents(run,problem,spec))
+        archive_recovery = None
+        if request['action'] == 'resume':
+            from .rpe_preparation_retention import restore_resume_archives
+            try:
+                archive_recovery = restore_resume_archives(self.state, run)
+            except (OSError, ValueError, KeyError) as error:
+                raise RequestError('preparation_archives', str(error)) from error
         preflight_started = time.monotonic()
         report = dict(self.preflight(run, problem, spec),
                       elapsed_seconds=time.monotonic() - preflight_started)
+        if archive_recovery and any(archive_recovery.values()):
+            report['preparation_archive_recovery'] = archive_recovery
         write(run/'DUPLICATE_PREFLIGHT.json', report)
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
         immutable(run/'ROUND.json', spec)
@@ -965,6 +981,11 @@ def fixed_implementation(config):
     return dict(source=config['code_source'],head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip())
 
 
+SCHEDULE_PREPARATION_MODULES = (
+    'rpe_preparation_artifacts', 'rpe_preparation_bridge', 'rpe_completion_acceptance',
+)
+
+
 def schedule_driver(config, run, selection):
     """Resolve the operator-selected scheduler for this exact pinned run."""
     scope = load(run/'APPLIED_SCOPE.json')
@@ -985,6 +1006,14 @@ def schedule_driver(config, run, selection):
         if (not optimizer.is_file()
                 or hashlib.sha256(optimizer.read_bytes()).hexdigest() != selection['worker_trial']['optimizer_sha256']):
             raise RequestError('schedule_resume', 'Resource trial optimizer differs from its selected deployment')
+    preparation = selection.get('preparation_sha256')
+    if preparation is not None:
+        if set(preparation) != set(SCHEDULE_PREPARATION_MODULES):
+            raise RequestError('schedule_resume', 'Preparation operations selection is incomplete')
+        for name in SCHEDULE_PREPARATION_MODULES:
+            module = driver.parents[1]/'src/trottertracks'/(name+'.py')
+            if not module.is_file() or hashlib.sha256(module.read_bytes()).hexdigest() != preparation[name]:
+                raise RequestError('schedule_resume', 'Preparation operations differ from their selected deployment: '+name)
     return driver
 
 
@@ -1020,16 +1049,19 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),'--run-dir',str(run)]
     if schedule_resume is not None:
         driver = schedule_driver(config, run, schedule_resume)
-        # Import dependencies from the fixed checkout. When selected, load
-        # the PBS allocation controller alongside the operational scheduler.
+        # Load the selected transport and result-acceptance modules before the
+        # optimizer. Scientific providers and all other imports stay pinned.
         manager = str(driver.parents[1]/'src/trottertracks/rpe_pbs.py') if 'pbs_manager_sha256' in schedule_resume else ''
         trial = schedule_resume.get('worker_trial')
         optimizer = str(driver.parents[1]/'src/trottertracks/rpe_optimizer_concurrent.py') if trial else ''
+        preparation = schedule_resume.get('preparation_sha256')
+        operations = [(name, str(driver.parents[1]/'src/trottertracks'/(name+'.py')))
+                      for name in SCHEDULE_PREPARATION_MODULES] if preparation is not None else []
         bootstrap = ('import importlib.util,json,runpy,sys\n'
-                     'root,driver,manager,optimizer,trial=sys.argv[1:6]\n'
-                     'sys.argv=sys.argv[5:]\n'
+                     'root,driver,manager,optimizer,preparation,trial=sys.argv[1:7]\n'
+                     'sys.argv=sys.argv[6:]\n'
                      'sys.path.insert(0,root+"/src")\n'
-                     'for name,path in [("rpe_pbs",manager),("rpe_optimizer_concurrent",optimizer)]:\n'
+                     'for name,path in [*json.loads(preparation),("rpe_pbs",manager),("rpe_optimizer_concurrent",optimizer)]:\n'
                      '    if path:\n'
                      '        spec=importlib.util.spec_from_file_location("trottertracks."+name,path)\n'
                      '        module=importlib.util.module_from_spec(spec)\n'
@@ -1037,10 +1069,13 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
                      '        spec.loader.exec_module(module)\n'
                      'runpy.run_path(driver,run_name="__main__",init_globals={'
                      '"FIXED_RUN_CODE_ROOT":root,"FIXED_RUN_WORKER_TRIAL":json.loads(trial)})')
-        command[2:3] = ['-c', bootstrap, str(root), str(driver), manager, optimizer, json.dumps(trial)]
+        command[2:3] = ['-c', bootstrap, str(root), str(driver), manager, optimizer,
+                        json.dumps(operations), json.dumps(trial)]
         implementation['schedule_source'] = schedule_resume['source']
         implementation['schedule_entry'] = str(driver)
         implementation['schedule_sha256'] = schedule_resume['driver_sha256']
+        if preparation is not None:
+            implementation['preparation_sha256'] = preparation
         if manager:
             implementation['pbs_manager_entry'] = manager
             implementation['pbs_manager_sha256'] = schedule_resume['pbs_manager_sha256']

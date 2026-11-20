@@ -1648,7 +1648,7 @@ class DistributedExecutor(ConcurrentExecutor):
             job = self.run_dir/'jobs'/row['method']/job_id
             outcome = json.loads((job/'OUTCOME.json').read_text())
             artifacts = job/'artifacts'
-            self.artifact_cache.materialize(outcome.get('artifacts', {}), artifacts)
+            self.artifact_cache.materialize(outcome.get('artifacts', {}), artifacts, immutable=True)
             if adopt and self.store.adopt(job_id):
                 self.for_method(row['method']).log(event='ADOPT',job=job_id,configuration=job_id,status=outcome['status'],stage=row['request']['preparation']['stage'])
                 self.state.metrics['preparation_adopted'] += 1
@@ -1698,28 +1698,8 @@ class DistributedExecutor(ConcurrentExecutor):
         return None
 
     def _complete_preparation(self, row, value, transfer, receipt, outcome, task, started):
-        if outcome.get('request_id', outcome.get('task_id')) != row['job_id'] or outcome.get('request_sha256') != row['request_sha256']:
-            raise ValueError('Preparation result identity differs from its request')
-        preparation = row['request']['preparation']
-        if outcome.get('stage') != preparation['stage'] or outcome.get('source_manifest') != preparation['source']:
-            raise ValueError('Preparation result stage/SOURCE differs')
-        expected_profile = ((row.get('eligibility') or {}).get('execution_profiles') or {}).get(row['host_id'])
-        if expected_profile is not None:
-            from .rpe_preparation_worker import preparation_profile_core
-            from .rpe_q3_coordinator import digest
-            if outcome.get('execution_profile_sha256') != digest(preparation_profile_core(expected_profile)):
-                raise ValueError('Preparation result execution profile differs')
-        if outcome.get('status') not in ('PREPARATION_COMPLETE', 'PREPARATION_FAILED'):
-            raise ValueError('Preparation outcome is not a supported terminal result')
-        if outcome['status'] == 'PREPARATION_COMPLETE' and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
-            raise ValueError('Preparation result without a clean adapter exit')
-        artifacts = outcome.get('artifacts', {})
-        if not isinstance(artifacts, dict): raise ValueError('Preparation artifact manifest required')
-        if self.artifact_cache.missing(artifacts.values()): raise ValueError('Preparation result artifacts were not durably transferred')
-        # Resolve path safety before acceptance. Large payloads remain in CAS,
-        # outside the small immutable completion bundle, including on replay.
-        from .rpe_preparation_artifacts import artifact_path
-        for name in artifacts: artifact_path(name)
+        from .rpe_completion_acceptance import validate_preparation_result
+        validate_preparation_result(row, receipt, outcome, self.artifact_cache)
         accepted, duplicate = self.store.complete(row['host_id'],row['job_id'],row['attempt_id'],value['request_sha256'],value['files'])
         self._publish_transfer(accepted)
         if not duplicate:

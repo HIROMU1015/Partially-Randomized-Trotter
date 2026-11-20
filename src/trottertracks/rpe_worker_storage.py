@@ -22,6 +22,19 @@ SAMPLE_SECONDS = 5
 PREPARATION_COPIES = ('inputs', 'workspace', 'workspaces')
 
 
+def duplicate_reclaim_target(usage):
+    """Free only enough verified copies to restore the existing storage headroom."""
+    if usage['reason'] not in (None, 'STORAGE_LIMIT_REACHED', 'FILESYSTEM_SPACE_LOW'):
+        return 0
+    limit, used = usage['limit_bytes'], usage['used_bytes']
+    if used is None:
+        return 0
+    quota = used - limit * 9 // 10 if used >= limit * 95 // 100 else 0
+    free, minimum = usage.get('filesystem_free_bytes'), usage.get('filesystem_min_free_bytes', 0)
+    pressure = 2 * minimum - free if free is not None and free < minimum else 0
+    return max(0, quota, pressure)
+
+
 def duplicate_inventory(profile):
     policy = profile.get('storage_limit') or {}
     cache_path = profile.get('artifact_cache_directory')
@@ -57,8 +70,10 @@ def reclaim_verified_duplicates(profile, proof):
         fcntl.flock(storage_lock, fcntl.LOCK_EX)
         observation = json.loads(sample.read_bytes())
         report = observation['report']
-        if (observation['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots'])
-                or report['reason'] not in ('STORAGE_LIMIT_REACHED','FILESYSTEM_SPACE_LOW')):
+        if observation['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots']):
+            return {}
+        target = duplicate_reclaim_target(report)
+        if target <= 0:
             return {}
         retained = set()
         for marker in spool.glob('*/*/WORKER_STATE.json'):
@@ -73,8 +88,6 @@ def reclaim_verified_duplicates(profile, proof):
                     retained.update(_referenced_hashes(json.loads(path.read_bytes())))
         inventory = duplicate_inventory(profile)
         removed = {}
-        target = max(0, report['used_bytes'] - report['limit_bytes'] * 9 // 10,
-                     2*report.get('filesystem_min_free_bytes',0)-report.get('filesystem_free_bytes',0))
         for sha, size in proof.items():
             if sha in retained or inventory.get(sha) != size:
                 continue
@@ -131,9 +144,9 @@ def _attempt_copies(marker):
         if assignment['request']['route']['kind'] == 'preparation':
             outcome = json.loads((attempt/'OUTCOME.json').read_bytes())
             receipt = json.loads((attempt/'PROCESS_RETURN.json').read_bytes())
-            if (outcome['status'] == 'PREPARATION_COMPLETE'
-                    and outcome['request_id'] == assignment['job_id']
-                    and outcome['request_sha256'] == assignment['request_sha256']
+            matches = (outcome['request_id'] == assignment['job_id']
+                       and outcome['request_sha256'] == assignment['request_sha256'])
+            if (matches and outcome['status'] == 'PREPARATION_COMPLETE'
                     and receipt.get('returncode') == 0 and receipt.get('signal') is None):
                 artifacts = outcome['artifacts']
                 profile = json.loads((attempt/'WORKER_PROFILE.json').read_bytes())
@@ -141,6 +154,12 @@ def _attempt_copies(marker):
                 if all(cache.path(sha).is_file() for sha in set(artifacts.values())):
                     paths += [(1, attempt/name) for name in PREPARATION_COPIES]
                     paths += [(2, path) for path in attempt.glob('*-output.bundle') if path.name in artifacts]
+            elif (matches and outcome['status'] == 'PREPARATION_FAILED'
+                    and outcome.get('workspace_error', {}).get('scientific_body_started') is False
+                    and outcome.get('artifacts') == {} and outcome.get('git_bundles') == []
+                    and type(receipt.get('returncode')) is int and receipt['returncode'] > 0
+                    and receipt.get('signal') is None and not (attempt/'PREPARATION_BODY.log').exists()):
+                paths += [(1, attempt/name) for name in PREPARATION_COPIES]
         for priority, path in paths:
             if path.exists() and not path.is_symlink():
                 yield priority, marker.stat().st_mtime_ns, path

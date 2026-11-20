@@ -359,6 +359,52 @@ def collect_required_paths(documents, controller_paths=None):
     return found
 
 
+def build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects=()):
+    """Write the same Git bundle format used by the preparation transport."""
+    revisions = [ref, *('^' + commit for commit in prerequisites)]
+    # Git's bundle command emits thin packs. Keep the increment, but
+    # require a pack whose deltas never depend on omitted Git objects.
+    subprocess.run(['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false',
+                    '-c', 'pack.reuseObjects=false', 'bundle', 'create', str(path), *revisions], cwd=root,
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+    # Give pack-objects path names so it can compress similar objects
+    # within this pack. Use an explicit object set and no external deltas.
+    changed = subprocess.check_output(['git', 'rev-list', '--objects', *revisions], cwd=root)
+    entries = dict(line.split(b' ', 1) if b' ' in line else (line, b'')
+                   for line in changed.split(b'\n') if line)
+    for oid in workspace_objects:
+        entries.setdefault(oid, b'')
+    # Sparse worker views can lack blobs and trees from earlier commits
+    # even when Git already has their commit objects.
+    expressions = {}
+    for commit, path_name in locators:
+        parts = artifact_path(path_name).parts
+        expressions.update({commit: '', commit + '^{tree}': ''})
+        for depth in range(1, len(parts) + 1):
+            name = '/'.join(parts[:depth])
+            expressions[commit + ':' + name] = name
+    if expressions:
+        objects = subprocess.check_output(['git', 'rev-parse', *expressions], cwd=root).splitlines()
+        for oid, name in zip(objects, expressions.values(), strict=True):
+            entries.setdefault(oid, name.encode())
+    with path.open('rb') as original:
+        header = bytearray()
+        for line in original:
+            header.extend(line)
+            if line == b'\n':
+                break
+    data = b''.join(oid + (b' ' + name if name else b'') + b'\n' for oid, name in sorted(entries.items()))
+    with path.open('wb') as packed:
+        packed.write(header)
+        packed.flush()
+        # Threaded delta search can produce different pack bytes from
+        # the same object list and invalidate worker cache reuse.
+        subprocess.run(
+            ['git', 'pack-objects', '--stdout', '--threads=1', '--no-reuse-delta', '--no-reuse-object'],
+            cwd=root, input=data, stdout=packed, check=True, stderr=subprocess.PIPE,
+        )
+
+
 class DistributedPreparationBridge:
     def __init__(self, executor, root, settings=None, *, approved=False):
         self.executor = executor
@@ -444,50 +490,9 @@ class DistributedPreparationBridge:
             sha = self.bundle_hashes.get(key)
         if sha and self.executor.artifact_cache.path(sha).is_file():
             return dict(sha256=sha, ref=ref, checkout_input_head=checkout)
-        revisions = [ref, *('^' + commit for commit in prerequisites)]
         with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
             path = Path(temporary) / 'input.bundle'
-            # Git's bundle command emits thin packs. Keep the increment, but
-            # require a pack whose deltas never depend on omitted Git objects.
-            subprocess.run(['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false',
-                            '-c', 'pack.reuseObjects=false', 'bundle', 'create', str(path), *revisions], cwd=root,
-                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            # Give pack-objects path names so it can compress similar objects
-            # within this pack. Use an explicit object set and no external deltas.
-            changed = subprocess.check_output(['git', 'rev-list', '--objects', *revisions], cwd=root)
-            entries = dict(line.split(b' ', 1) if b' ' in line else (line, b'')
-                           for line in changed.split(b'\n') if line)
-            for oid in workspace_objects:
-                entries.setdefault(oid, b'')
-            # Sparse worker views can lack blobs and trees from earlier commits
-            # even when Git already has their commit objects.
-            expressions = {}
-            for commit, path_name in locators:
-                parts = artifact_path(path_name).parts
-                expressions.update({commit: '', commit + '^{tree}': ''})
-                for depth in range(1, len(parts) + 1):
-                    name = '/'.join(parts[:depth])
-                    expressions[commit + ':' + name] = name
-            if expressions:
-                objects = subprocess.check_output(['git', 'rev-parse', *expressions], cwd=root).splitlines()
-                for oid, name in zip(objects, expressions.values(), strict=True):
-                    entries.setdefault(oid, name.encode())
-            with path.open('rb') as original:
-                header = bytearray()
-                for line in original:
-                    header.extend(line)
-                    if line == b'\n':
-                        break
-            data = b''.join(oid + (b' ' + name if name else b'') + b'\n' for oid, name in sorted(entries.items()))
-            with path.open('wb') as packed:
-                packed.write(header)
-                packed.flush()
-                # Threaded delta search can produce different pack bytes from
-                # the same object list and invalidate worker cache reuse.
-                subprocess.run(
-                    ['git', 'pack-objects', '--stdout', '--threads=1', '--no-reuse-delta', '--no-reuse-object'],
-                    cwd=root, input=data, stdout=packed, check=True, stderr=subprocess.PIPE,
-                )
+            build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
             sha = self._blob(path.read_bytes())
         with self.lock:
             self.bundle_hashes[key] = sha
