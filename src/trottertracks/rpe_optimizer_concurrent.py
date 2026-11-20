@@ -1033,6 +1033,81 @@ class DistributedExecutor(ConcurrentExecutor):
         cap = self.state.budgets.get(self.method)
         return type(cap) is int and self.store.counts(self.method) >= cap
 
+    def _ready_cpu_supply(self, ready, owned, policy, error):
+        """Measure compatible waiting work against each fresh worker's CPU offer."""
+        from .rpe_pbs import resource_need
+        from .rpe_pbs_worker import runtime_cpu_footprint
+
+        manager = self.pbs_manager
+        rows = [self.store.row(task.job.name) for task in ready]
+        owned_rows = [self.store.row(row['job_id']) for row in owned]
+        supply = {}
+        for host, info in self.hosts.items():
+            slots = self._offer_free(host, policy, error)
+            if not slots:
+                continue
+            report = info.get('resource_report') or {}
+            limit = (report.get('resources') or {}).get('allowed_cpu_count')
+            pool = (report.get('pbs') or {}).get('resource_pool')
+            if pool is not None:
+                limit = pool['cpu_count']
+            profile = (manager.configured[host]['profile'] if manager and host in manager.configured
+                       else self.distributed.get('local_worker') or {} if host == 'local' else {})
+
+            def footprint(row):
+                if pool is not None:
+                    return resource_need(row['request'], profile, manager.settings, host)
+                runtime = ((row['eligibility'] or {}).get('execution_profiles') or {}).get(host)
+                if runtime is None:
+                    return None
+                return runtime_cpu_footprint(profile, runtime), 0
+
+            try:
+                running = [footprint(row) for row in owned_rows if row['host_id'] == host]
+                if None in running:
+                    continue
+                remaining_ram = (pool['memory_bytes'] - (1 << 30) - sum(memory for _, memory in running)
+                                 if pool is not None else None)
+                by_stage = Counter()
+                estimates = []
+                unknown = 0
+                for row in rows:
+                    request = row['request']
+                    if (not self._host_supports_stage(host, request) or not self._fits_host_walltime(host, request)
+                            or not self.store.eligible(request, row['eligibility'], host,
+                                                       info.get('host_fingerprints'), row['job_id'])):
+                        continue
+                    need = footprint(row)
+                    if need is None:
+                        unknown += 1
+                        continue
+                    cpu, memory = need
+                    if (remaining_ram is not None and memory > remaining_ram) or (limit and cpu > limit):
+                        continue
+                    stage = (request.get('preparation') or {}).get('stage', 'q3')
+                    by_stage[stage] += cpu
+                    estimates.append(cpu)
+                known_limit = type(limit) is int and limit > 0
+                if not known_limit and report.get('mode') != 'FIXED':
+                    continue
+                free_cpu = max(0, limit - sum(cpu for cpu, _ in running)) if known_limit else slots * max(estimates, default=0)
+                target = free_cpu * self.ready_queue_waves
+                supply[host] = dict(available_cpu=free_cpu, ready_cpu=sum(by_stage.values()),
+                                    capacity_source='RESOURCE_OFFER' if known_limit else 'FIXED_SLOTS_BY_READY_FOOTPRINT',
+                                    ready_cpu_by_stage=dict(by_stage), unestimated_jobs=unknown,
+                                    target_cpu=target, missing_cpu=max(0, target-sum(by_stage.values())))
+            except (KeyError, ValueError, TypeError):
+                continue
+        return supply
+
+    def preparation_needs_refill(self):
+        """Keep producing while any accepting host lacks ready work."""
+        with self.state.cv:
+            supply = [row for host, row in getattr(self.state, 'ready_cpu_supply', {}).items()
+                      if self._offer_fresh(host)]
+            return not supply or any(not row['ready_cpu'] or row['missing_cpu'] or row['unestimated_jobs']
+                                     for row in supply)
+
     def _standby_capacity(self):
         if not self.state.allocation_auto:
             return self.capacity
@@ -1087,7 +1162,18 @@ class DistributedExecutor(ConcurrentExecutor):
                 if task.status == 'QUEUED' and task.rule['kind'] != 'preparation':
                     allowed = task.supply_hosts
                     covered.update(targets.keys() if allowed is None else targets.keys() & allowed)
-            capacity += sum(max(0, count - covered[host]) for host, count in targets.items())
+            deficits = {host: max(0, count - covered[host]) for host, count in targets.items()}
+            cpu_supply = getattr(self.state, 'ready_cpu_supply', {})
+            for host in targets.keys() & cpu_supply.keys():
+                offer = cpu_supply[host]
+                # CPU deficits supplement the lane allowance when waiting jobs
+                # use fewer cores than the current host profile can allocate.
+                if (self._offer_fresh(host) and not offer['unestimated_jobs']
+                        and offer['ready_cpu_by_stage'].get('q3')):
+                    cpu_per_q3 = max(1, offer['ready_cpu_by_stage']['q3'] // max(1, covered[host]))
+                    deficits[host] = max(deficits[host],
+                        (offer['missing_cpu'] + cpu_per_q3 - 1) // cpu_per_q3)
+            capacity += sum(deficits.values())
         return max(1, capacity)
 
     def _can_take_ready_candidates(self):
@@ -1392,9 +1478,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 fixed_scope_hold = holds and all(h.get('reasons') in (
                     ['COUNT_ONLY_SCOPE_EXCEEDED'], ['OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN'])
                     for h in holds)
-                stale = (not cached or cached[1] != seen or
-                         not fixed_scope_hold and (not eligible['eligible_host_ids'] or missing_host) and
-                         time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS)
+                stale = not cached or (not eligible.get('controller_scope') and (
+                    cached[1] != seen or not fixed_scope_hold
+                    and (not eligible['eligible_host_ids'] or missing_host)
+                    and time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS))
                 if (stale and future is None and not self.state.closed and not self._user_stop_requested()
                         and (blocking or len(self.live_readiness_inflight) < self.live_readiness_workers)):
                     def publish(decision):
@@ -2095,7 +2182,8 @@ class DistributedExecutor(ConcurrentExecutor):
         with self.store._connection() as db:
             snapshot={r['job_id']:dict(r)for r in db.execute(
                 "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
-        owned=Counter(r['host_id'] for r in self._owned_attempts())
+        owned_attempts = self._owned_attempts()
+        owned=Counter(r['host_id'] for r in owned_attempts)
         for task in s.tasks.values():
             if task.status!='QUEUED':continue
             row=snapshot.get(task.job.name)
@@ -2144,7 +2232,12 @@ class DistributedExecutor(ConcurrentExecutor):
             waiting_preparation = (any(task.rule['kind'] == 'preparation' and task.status in ('QUEUED', 'RUNNING')
                                        for task in s.tasks.values()) or checking)
             work_conserving = self.distributed.get('work_conserving_search')
+            if work_conserving:
+                s.ready_cpu_supply = self._ready_cpu_supply(ready, owned_attempts, admission, admission_error)
             for host, observation in payload['hosts'].items():
+                cpu = getattr(s, 'ready_cpu_supply', {}).get(host)
+                if cpu is not None:
+                    observation['cpu_supply'] = cpu
                 free = self._offer_free(host, admission, admission_error)
                 observation.update(owned=owned[host], fresh_free_slots=free)
                 storage = (self.hosts[host].get('resource_report') or {}).get('storage')

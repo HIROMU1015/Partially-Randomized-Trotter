@@ -8,7 +8,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
-from run_pf_preparation_stage import cache_mean_pool
+from run_pf_preparation_stage import cache_mean_pool, saved_price_helpers
 
 
 PRICE_PLAN_HOLDS = {
@@ -17,11 +17,12 @@ PRICE_PLAN_HOLDS = {
 }
 
 
-def inspect(root,request,observations,signal_index=None):
+def inspect(root,request,observations,signal_index=None,saved_price_index=None):
     root=Path(root).resolve();sys.path[:0]=[str(root/'scripts'),str(root/'src')]
     spec=importlib.util.spec_from_file_location('original_pf_provider',root/'scripts/prepare_pf_candidate.py')
     provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
     source=provider.source_gate();rows=[]
+    helpers, extra = None, None
     for item in request['selected']:
         configuration=provider.selected_configuration(item);cid=configuration['id']
         registry=Path(request['registry_file']);entry=None
@@ -57,6 +58,10 @@ def inspect(root,request,observations,signal_index=None):
         if signal_index is not None:
             cache_mean_pool(root,signal_index)
             signal_index=None
+        if saved_price_index is not None:
+            helpers = saved_price_helpers()
+            extra = helpers['use_saved_prices'](saved_price_index)
+            saved_price_index = None
         try:
             plan=E.make_plan(root,configuration,source)
         except ValueError as error:
@@ -67,9 +72,23 @@ def inspect(root,request,observations,signal_index=None):
             continue
         destination=Path(observations)/cid;destination.mkdir(parents=True,exist_ok=True)
         try:
-            provider.preflight(plan,destination)
-            rows.append(dict(configuration_id=cid,status='ORIGINAL_OWNER_PREFLIGHT_PASS'))
-        except Exception as error:
+            deferred = helpers['unresolved_rounds'](root, plan, destination/'DUPLICATE_ROUNDS.json', extra) if helpers else {}
+            available = [cell for cell in plan.get('new_compile_cells', ()) if cell['m'] not in deferred
+                         and (not deferred or cell['role'] != 'HOLDOUT')]
+            if deferred and not available:
+                rows.append(dict(configuration_id=cid, status='PRIOR_OWNER_HOLD',
+                    reason='No independently clear pair of X/Y wrappers', deferred_price_rounds=deferred))
+                continue
+            provider.preflight(helpers['independent_plan'](plan, deferred) if deferred else plan, destination)
+            row = dict(configuration_id=cid,status='ORIGINAL_OWNER_PREFLIGHT_PASS')
+            if helpers:
+                row.update(reused_guarded_axes=sum(price['price_evidence']['admission']['path'].endswith('/GUARD_CHECK.json')
+                                                   for price in plan['direct_prices']),
+                           clear_compile_rounds=[cell['m'] for cell in available])
+            if deferred:
+                row['deferred_price_rounds'] = deferred
+            rows.append(row)
+        except (OSError, KeyError, TypeError, ValueError) as error:
             rows.append(dict(configuration_id=cid,status='PRIOR_OWNER_HOLD',reason=type(error).__name__+': '+str(error)))
     return dict(schema='PF_ORIGINAL_OWNER_METADATA_V1',source=source,rows=rows,scientific_calls=0,compile_calls=0)
 
@@ -78,8 +97,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--provider-root',type=Path,required=True)
     parser.add_argument('--request',type=Path,required=True);parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--signal-index',type=Path)
+    parser.add_argument('--saved-price-index',type=Path)
     args=parser.parse_args();request=json.loads(args.request.read_text())
-    result=inspect(args.provider_root,request,args.output.parent/'original_preflight',args.signal_index)
+    result=inspect(args.provider_root,request,args.output.parent/'original_preflight',args.signal_index,args.saved_price_index)
     args.output.write_text(json.dumps(result,indent=2)+'\n')
 
 

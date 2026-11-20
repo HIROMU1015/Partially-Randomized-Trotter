@@ -176,13 +176,83 @@ def controller_input_hashes(executor, request):
     return observed
 
 
+_SCOPE_CHECK = """
+import json
+from pathlib import Path
+import runpy
+import sys
+
+payload = json.load(sys.stdin)
+adapter = runpy.run_path(payload['entry'])
+request, views = payload['request'], payload['views']
+route = request['route']
+view = Path(views[route['view_commit']])
+horizon = adapter['horizon_of'](request)
+if horizon is not None and horizon > 12:
+    print(json.dumps(dict(reason='OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN', M=horizon)))
+else:
+    case, inputs = adapter['scoped_case'](view, request)
+    implementation = adapter['route'](view, route['kind'], views)
+    bounds = implementation.bounds(case['allocation']['shots'])
+    if not adapter['in_scope'](bounds, inputs['options']):
+        print(json.dumps(dict(reason='COUNT_ONLY_SCOPE_EXCEEDED', bounds=bounds,
+                              limits={key: inputs['options'][key] for key in
+                                      ('maximum_round_outcomes', 'maximum_verification_pairs')},
+                              transition_limit=inputs['options']['total_state_refinement']['maximum_transition_pairs'])))
+    else:
+        print('null')
+"""
+
+
+def controller_scope_hold(request, profile):
+    """Use the fixed route's own count guard without evaluating the case."""
+    if not profile or request['route']['kind'] == 'artificial':
+        return None
+    from .rpe_host_profiles import select_host_profile, validate_adapter_profile
+
+    try:
+        profile = select_host_profile(profile, {'request': request})
+        adapter = validate_adapter_profile(profile)
+        if adapter is None:
+            return None
+        views = profile['route_views']
+        commit = request['route']['view_commit']
+        view = Path(views[commit])
+        if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=view, text=True).strip() != commit:
+            return None
+        if subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'scripts', 'src'], cwd=view).returncode:
+            return None
+        entry = 'scripts/run_rpe_optimizer_q3_job.py'
+        result = json.loads(subprocess.check_output(
+            [profile['interpreter'], '-B', '-c', _SCOPE_CHECK],
+            input=json.dumps(dict(entry=str(Path(adapter['root']) / entry), request=request, views=views)),
+            cwd=adapter['root'], text=True, stderr=subprocess.PIPE, timeout=20))
+        if result is not None:
+            return dict(result, adapter_commit=adapter['commit'], adapter_sha256=adapter['files'][entry],
+                        route_commit=commit, scientific_evaluation_calls=0)
+    except (OSError, KeyError, ValueError, subprocess.SubprocessError):
+        # An unavailable controller view does not establish a route-wide hold.
+        return None
+    return None
+
+
 def probe(executor, request, job_id, decision, *, publish=None):
     """Obtain real-input dry checks for new jobs before reserving a slot."""
     assignment = dict(job_id=job_id, method=request['method'], request=request,
-                      request_sha256=Q.digest(request), source_manifest=executor.source_manifest,
-                      input_hashes=controller_input_hashes(executor,request))
+                      request_sha256=Q.digest(request), source_manifest=executor.source_manifest)
     local = executor.distributed.get('local_worker') or {}
     policy, error = executor._host_admission_policy()
+    hold = controller_scope_hold(request, local)
+    if hold is not None:
+        decision.update(reasons=[hold['reason']], execution_profiles={}, host_decisions={}, controller_scope=hold)
+        record = executor.run_dir/'distributed'/'q3-readiness'/job_id/'READINESS.json'
+        # Keep host observations already saved by an earlier controller version.
+        with executor.state.cv:
+            if not executor.state.closed:
+                record.parent.mkdir(parents=True, exist_ok=True)
+                Q.atomic_json(record.with_name('CONTROLLER_SCOPE.json'), dict(assignment=assignment, scope=hold))
+        return dict(decision, decision_sha256=Q.digest(decision))
+    assignment['input_hashes'] = controller_input_hashes(executor, request)
     participants = []
     pbs = executor.distributed.get('pbs') or {}
     pbs_workers = {worker['host_id']: worker for worker in pbs.get('workers', [])

@@ -70,6 +70,11 @@ def cache_mean_pool(root, directory):
     E.mean_pool=pool
 
 
+def saved_price_helpers():
+    path = Path(__file__).resolve().parents[1]/'src/trottertracks/pf_saved_prices.py'
+    return runpy.run_path(str(path))
+
+
 def load_provider(root):
     root=Path(root).resolve()
     sys.path[:0]=[str(root/'scripts'),str(root/'src')]
@@ -193,7 +198,11 @@ def run(provider,request):
     value=request['value'];out=ROOT/request['relative_output'];phase=request['phase']
     source=request['source']
     if phase=='preflight':
-        provider.source_gate();provider.preflight(value,out)
+        provider.source_gate()
+        if request.get('deferred_price_rounds'):
+            helpers = saved_price_helpers()
+            value = helpers['independent_plan'](value, request['deferred_price_rounds'])
+        provider.preflight(value,out)
         publication=publish([out],'Fix distributed PF input plan and duplicate preflight')
         return dict(status='PREFLIGHT_PASS',source=dict(commit=publication,caller='scripts/prepare_pf_candidate.py',
             input_plan=dict(commit=publication,path=str((out/'PLAN.json').relative_to(ROOT)))))
@@ -227,10 +236,11 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--provider-root',type=Path,required=True);p.add_argument('--input',type=Path)
     p.add_argument('--output',type=Path);p.add_argument('--plan-signal-index',type=Path)
+    p.add_argument('--saved-price-index',type=Path)
     p.add_argument('--native-child',type=Path);a=p.parse_args()
     provider=load_provider(a.provider_root)
     if a.native_child is not None:
-        if any((a.input, a.output, a.plan_signal_index)):
+        if any((a.input, a.output, a.plan_signal_index, a.saved_price_index)):
             p.error('--native-child cannot be combined with planning options')
         bind_native_compile_inputs()
         return provider.native_child(a.native_child)
@@ -238,6 +248,8 @@ def main():
         p.error('--input and --output are required')
     request=load(a.input)
     if a.plan_signal_index is not None:
+        if a.saved_price_index is not None:
+            saved_price_helpers()['use_saved_prices'](a.saved_price_index)
         cache_mean_pool(a.provider_root,a.plan_signal_index)
         sys.argv=[str(a.provider_root/'scripts/prepare_pf_candidate.py'),'--request',str(a.input),
                   '--output',str(a.output),'--mode','plan']

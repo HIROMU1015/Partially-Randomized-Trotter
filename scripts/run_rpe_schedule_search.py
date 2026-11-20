@@ -27,6 +27,7 @@ from contextlib import contextmanager
 from copy import deepcopy
 from fractions import Fraction
 from functools import wraps
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -61,13 +62,14 @@ def apply_worker_trial(spec, trial):
     if trial.get('pbs_hold_node') is True and distributed.get('pbs'):
         distributed['pbs_hold_node'] = True
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
+                               ('pf_saved_prices', 'pf_saved_prices_sha256'),
+                               ('pf_distributed_preparation', 'pf_distributed_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
                                ('pf_candidate_selection', 'pf_selection_sha256'),
                                ('rpe_method_optimizer', 'method_optimizer_sha256')):
         if field not in trial:
             continue
         # A resumed run imports other modules from its fixed base release.
-        import hashlib
         import importlib.util
         path = Path(__file__).resolve().parents[1]/'src/trottertracks'/(module_name+'.py')
         if hashlib.sha256(path.read_bytes()).hexdigest() != trial[field]:
@@ -81,6 +83,14 @@ def apply_worker_trial(spec, trial):
         sys.modules[name] = module
         # The optimizer also imports from the package directly.
         setattr(sys.modules['trottertracks'], module_name, module)
+    if trial.get('recover_saved_price_rounds'):
+        for file, key in (('run_pf_preparation_stage.py', 'pf_stage_sha256'),
+                          ('check_pf_preparation_owner.py', 'pf_owner_sha256')):
+            path = Path(__file__).resolve().with_name(file)
+            if hashlib.sha256(path.read_bytes()).hexdigest() != trial[key]:
+                raise ValueError('Selected PF metadata entry differs: '+file)
+        if isinstance(spec.get('pf_completion'), dict):
+            spec['pf_completion']['recover_saved_price_rounds'] = True
     for host, workers in trial.get('calibration_workers', {}).items():
         profile = (distributed['local_worker'] if host == 'local' else
                    json.loads(Path(distributed['preparation_profiles'][host]).read_text()))
@@ -1111,7 +1121,11 @@ class WidthDriver:
             # A direct preparation still waits before acquiring a slot itself.
             with condition:
                 while not (stop_preparation.is_set() or state.failure or executor._user_stop_requested()):
-                    if continuous or executor.has_spare_slot(allow_queued_speculation=self.work_conserving_search):
+                    if continuous:
+                        refill = getattr(executor, 'preparation_needs_refill', None)
+                        if refill is None or refill():
+                            return True
+                    elif executor.has_spare_slot(allow_queued_speculation=self.work_conserving_search):
                         return True
                     condition.wait(.5)  # also observes STOP written outside the executor
                 return False
@@ -1309,12 +1323,17 @@ class WidthDriver:
                 if pf_enabled:
                     from trottertracks import pf_candidate_selection
                     from trottertracks.rpe_preparation_round import snapshot_context,_merge_pf
+                    trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+                    if trial.get('recover_saved_price_rounds') and not active_spec.get('pf_completion'):
+                        active_spec = dict(active_spec, pf_completion=dict(problem['pf_completion'],
+                                                                           recover_saved_price_rounds=True))
                     args = (ROOT, problem, snapshot_context(context), active_spec, self.run, deepcopy(routes), runtime)
                     def prepare_pf():
                         stopped = lambda: stop_preparation.is_set() or executor._user_stop_requested()
                         if (self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill'):
                             return pf_candidate_selection.prepare_available(*args, stop_requested=stopped,
-                                                                           announce=subscriber.announce_pf)
+                                                                           announce=subscriber.announce_pf,
+                                                                           wait_for_work=wait_for_preparation)
                         result = pf_candidate_selection.prepare_next(*args, stop_requested=stopped)
                         if self.live_ready_refill:
                             subscriber.announce_pf(*result[:2])

@@ -203,7 +203,7 @@ def repair_metadata_waves(records, repairs):
     return records,repaired
 
 
-def prepare_available(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, announce):
+def prepare_available(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, announce, wait_for_work=None):
     """Run the next bounded wave as soon as its predecessor is saved."""
     while True:
         context, routes, status = prepare_next(root, problem, context, spec, run, routes, stage_executor,
@@ -211,6 +211,8 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
         announce(context, routes)
         if status['status'] != 'PREPARATION_WAVE_PROCESSED' or stop_requested():
             return context, routes, status
+        if wait_for_work is not None and not wait_for_work():
+            return context, routes, dict(status='PREPARATION_WAVE_YIELDED', records=status['records'])
 
 
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None):
@@ -241,6 +243,24 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             if row.get('status')=='PREPARATION_SCHEDULED':
                 row.update(status='PRIOR_OWNER_HOLD',reason='Reconcile the scheduled wave in its original run',
                            original_wave=previous)
+    recovery = run/'pf_auto'/'price-recovery'
+    if settings.get('recover_saved_price_rounds'):
+        for cid, row in records.items():
+            if (row['status'] != 'PREPARATION_INCOMPLETE' or row.get('configurations')
+                    or row.get('price_receipt_recheck')):
+                continue
+            prior = run/'pf_auto'/'candidates'/cid/'pf_auto'/'pf_completion'
+            check = prior/'ORIGINAL_OWNER_CHECK.json'
+            if not check.is_file() or (prior/'PROVIDER_SOURCE.json').exists() or (prior/'provider_workspace').exists():
+                continue
+            checked = json.loads(check.read_text())['rows']
+            if (len(checked) == 1 and checked[0].get('configuration_id') == cid
+                    and checked[0].get('status') == 'PRIOR_OWNER_HOLD'
+                    and checked[0].get('reason') == 'ValueError: Review existing receipt/job before new work'):
+                atomic_write(recovery/'original'/f'{cid}.json', row)
+                # Recheck only before a producer or scientific attempt existed.
+                row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE', price_receipt_recheck=True)
+                atomic_write(index, records)
     registry=deepcopy(context['pf_evidence_registry'])
     for record in records.values():
         registry['configurations'].update(record.get('configurations',{}))
@@ -248,7 +268,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
         routes=PF.registry_routes(routes,registry)
     pending={cid for cid,row in records.items() if row.get('status')=='PREPARATION_SCHEDULED'}
-    selection=select(context,spec['methods'],records.keys()-pending,
+    revisit = {cid for cid, row in records.items() if row['status'] == 'PRICE_RECEIPT_RECHECK_AVAILABLE'}
+    selection=select(context,spec['methods'],records.keys()-pending-revisit,
                      include_full=limit>1 or 'TRUNCATED_PF' not in spec['methods'])
     if selection['selected'] is None and not pending:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
@@ -263,18 +284,21 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         for row in selection['candidates']:
             family=(row['method'],row['key'].get('p'),row['key']['formula'])
             cid=row['configuration_id']
-            if row['ready'] or not row['needs'] or cid in records or family in families:
+            if row['ready'] or not row['needs'] or (cid in records and cid not in revisit) or family in families:
                 continue
             wave.append(row);families.add(family)
-            records[cid]=dict(status='PREPARATION_SCHEDULED',key=row['key'],configurations={})
+            records.setdefault(cid, {}).update(status='PREPARATION_SCHEDULED',key=row['key'],configurations={})
             if len(wave)==workers:break
         atomic_write(index,records)
 
+    if not wave:
+        return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
     one_spec=dict(spec,pf_completion=dict(settings,max_candidates=1))
     def acquire(chosen):
         if stop_requested is not None and stop_requested():return None
         cid=chosen['configuration_id']
-        after,_,status=prepare(root,problem,snapshot_context(context),one_spec,run/'pf_auto'/'candidates'/cid,
+        base = recovery if records[cid].get('price_receipt_recheck') else run/'pf_auto'
+        after,_,status=prepare(root,problem,snapshot_context(context),one_spec,base/'candidates'/cid,
                               deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
         return chosen,status,after['pf_evidence_registry']['configurations'].get(cid)
 
@@ -284,8 +308,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             result=task.result()
             if result is None:continue
             chosen,status,entry=result;cid=chosen['configuration_id']
-            records[cid]=dict(status=status['status'],reason=status.get('reason'),key=chosen['key'],
-                              configurations={cid:entry} if entry is not None else {})
+            records[cid].update(status=status['status'],reason=status.get('reason'),key=chosen['key'],
+                                configurations={cid:entry} if entry is not None else {})
             if entry is not None:
                 registry['configurations'][cid]=entry;updated=True
             processed=True

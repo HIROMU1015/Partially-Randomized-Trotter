@@ -122,11 +122,43 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     original=Path(entry).resolve().parents[1];run=Path(run)
     owner_input=run/'ORIGINAL_OWNER_REQUEST.json';owner_output=run/'ORIGINAL_OWNER_CHECK.json'
     outer=next((p for p in run.parents if p.name=='pf_auto'),run)
-    signal_index=outer/'cache'/'pf-saved-signal-index'
-    put(owner_input,request)
-    subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
-        str(Path(root)/'scripts/check_pf_preparation_owner.py'),'--provider-root',str(original),
-        '--request',str(owner_input),'--output',str(owner_output),'--signal-index',str(signal_index)],check=True)
+    wave_root = next((p for p in reversed(run.parents) if p.name == 'pf_auto'), outer)
+    signal_index=wave_root/'cache'/'pf-saved-signal-index'
+    metadata_root = Path(__file__).resolve().parents[2]
+    price_args = []
+    if spec['pf_completion'].get('recover_saved_price_rounds'):
+        from .pf_saved_prices import receipt_locators
+        price_index = run/'SAVED_PRICE_INDEX.json'
+        prior_waves = [Path(path).resolve()/'pf_auto' for path in spec['executor'].get('prior_run_dirs', ())
+                       if (Path(path)/'pf_auto'/'WAVES.json').is_file() and Path(path).resolve() != wave_root.parent]
+        if not price_index.exists():
+            locators = [loc for waves in [wave_root, *prior_waves] for loc in receipt_locators(waves)]
+            unique = {json.dumps(loc, sort_keys=True): loc for loc in locators}
+            put(price_index, dict(root=str(root), locators=list(unique.values())))
+        price_args = ['--saved-price-index', str(price_index)]
+        if not owner_input.exists():
+            owners = set(request.get('prior_owner_directories', ()))
+            for item in request['selected']:
+                cfg = item['configuration_body']['id']
+                for waves in prior_waves:
+                    for base in (waves, waves/'price-recovery'):
+                        leaf = (base/'candidates'/cfg/'pf_auto/pf_completion/provider_workspace'
+                                /'docs/research/distributed_selected_pf'/cfg)
+                        if leaf.is_dir():
+                            owners.add(str(leaf))
+            request = dict(request, prior_owner_directories=sorted(owners))
+        else:
+            # Bind the prior scope of this scientific leaf at its first precheck.
+            request = dict(request, prior_owner_directories=read(owner_input).get('prior_owner_directories', []))
+    if not owner_input.exists():
+        put(owner_input,request)
+    elif read(owner_input) != request:
+        raise ValueError('Original PF owner request changed on resume')
+    if not owner_output.exists() or not (run/'PROVIDER_SOURCE.json').exists():
+        subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
+            str(metadata_root/'scripts/check_pf_preparation_owner.py'),'--provider-root',str(original),
+            '--request',str(owner_input),'--output',str(owner_output),'--signal-index',str(signal_index),
+            *price_args],check=True)
     owner=read(owner_output)
     held=[row for row in owner['rows']if row['status'] in ('PRIOR_OWNER_HOLD','PRICE_EVIDENCE_REQUIRED')]
     if held:
@@ -162,12 +194,22 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     elif read(inp)!=selected:raise ValueError('PF selected contract changed')
     if not plan_output.exists():
         subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
-            str(Path(root)/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
-            '--input',str(inp),'--output',str(plan_output),'--plan-signal-index',str(signal_index)],cwd=workspace,check=True)
+            str(metadata_root/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
+            '--input',str(inp),'--output',str(plan_output),'--plan-signal-index',str(signal_index),*price_args],
+            cwd=workspace,check=True)
     response=read(plan_output);items=[]
+    owner_rows = {row['configuration_id']: row for row in owner['rows']}
     for item in response['items']:
         if item['status']=='REUSED_COMPLETED_REGISTRY':items.append(item);continue
         folder=Path(item['output']);value=read(folder/'PLAN.json')
+        deferred = owner_rows[item['configuration_id']].get('deferred_price_rounds', {})
+        if price_args:
+            # Only the admitted prices actually selected by this plan need
+            # object delivery to tasks running in the owned producer clone.
+            for commit in sorted({row['price_evidence']['source']['commit'] for row in value['direct_prices']
+                                  if row['price_evidence']['admission']['path'].endswith('/GUARD_CHECK.json')}):
+                subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit],
+                               cwd=workspace,check=True,capture_output=True)
         if (folder/'STOP.json').exists():raise ValueError('Preserve consumed PF STOP; no automatic retry')
         source=dict(commit=fixed['source'],caller='scripts/prepare_pf_candidate.py')
         def local(phase,**fields):
@@ -178,10 +220,10 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                 # Fresh interpreter: the D provider's package must not mix
                 # with the controller's already imported trottertracks.
                 subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
-                    str(Path(root)/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
+                    str(metadata_root/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
                     '--input',str(phase_in),'--output',str(phase_out)],cwd=workspace,check=True)
             return read(phase_out)
-        source=local('preflight')['source']
+        source=local('preflight', **({'deferred_price_rounds': deferred} if deferred else {}))['source']
         context=SimpleNamespace(directory=folder,settings=spec.get('pf_completion',{}),
             source=fixed['source'],preparation_root=workspace,log=lambda **row:None,
             preparation_source_manifest=dict(commit=fixed['source'],files={name:__import__('hashlib').sha256(
@@ -230,6 +272,22 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                 track_collected_prices(workspace,compiled)
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
+        if deferred:
+            # Keep calibration/holdout roles frozen. Independent pairs can be
+            # acquired and audited without freezing a partial price model.
+            rounds = [cell['m'] for cell in value['new_compile_cells']
+                      if str(cell['m']) not in deferred and cell['role'] != 'HOLDOUT']
+            compiled = call('compile', 'PF_COMPILE', cohort='calibration', rounds=rounds)
+            track_collected_prices(workspace, compiled)
+            prices = call('audit', 'PF_AUDIT', compiled=compiled)['prices']
+            commits = sorted({row['price_evidence']['source']['commit'] for row in prices})
+            if commits:
+                subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),*commits],
+                               cwd=root,check=True,capture_output=True)
+            items.append(dict(status='PRICE_EVIDENCE_REQUIRED', configuration_id=item['configuration_id'],
+                              reason='Outstanding PF price receipts require reconciliation',
+                              deferred_price_rounds=deferred, audited_independent_prices=prices))
+            continue
         saved_signal=saved_for_configuration(spec['pf_completion'],'saved_signal',value['configuration']['id'])
         if saved_signal:
             reuse_signal(root,workspace,folder,value,saved_signal)
@@ -246,5 +304,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     # the owned clone's objects, without changing the controller's HEAD.
     subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),'HEAD'],cwd=root,check=True,
                    stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
-    put(request['registry_file'],read(selected['registry_file']))
+    registry_path = Path(selected['registry_file'])
+    registry = read(registry_path) if registry_path.exists() else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
+    put(request['registry_file'],registry)
     put(output,dict(response,items=items,registry_file=request['registry_file']))
