@@ -157,6 +157,22 @@ def scp_prefix(worker, ssh):
     return command,alias
 
 
+# Use the existing remote worker validation and durable spool for each request.
+# One SSH call carries the list while each receipt keeps its own job and attempt.
+MAILBOX_SUBMIT_BATCH = """import json, runpy, sys
+worker_script, profile = sys.argv[1:]
+api = runpy.run_path(worker_script)
+selected = api['read'](profile)
+reply = []
+for assignment in json.load(sys.stdin):
+    try:
+        result = api['mailbox'](selected, 'submit', assignment)
+    except Exception as error:
+        result = dict(ok=False, error=type(error).__name__ + ': ' + str(error))
+    reply.append(dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], result=result))
+print(json.dumps(reply, separators=(',', ':'), allow_nan=False))
+"""
+
 class Relay:
     def __init__(self, configuration):
         self.configuration = Path(configuration).resolve()
@@ -230,6 +246,18 @@ class Relay:
         if result.get('status')!='PASS':raise ValueError('Worker release deployment HOLD: '+json.dumps(result))
         self.deployed_workers[host]=dict(declaration)
         return result
+
+    def submit_batch(self, worker, assignments):
+        if worker.get('deployment'):
+            for assignment in assignments:
+                self.ensure_worker_deployment(worker, assignment)
+        command = [worker.get('python', 'python3'), '-B', '-c', MAILBOX_SUBMIT_BATCH,
+                   worker['root'].rstrip('/')+'/scripts/run_rpe_q3_worker.py', worker['profile']]
+        rows, seconds = self.remote_command(worker, command, 'submit-batch', assignments)
+        expected = [(a['job_id'], a['attempt_id']) for a in assignments]
+        if [(r['job_id'], r['attempt_id']) for r in rows] != expected:
+            raise ValueError('Worker batch response differs from the assigned attempts')
+        return [r['result'] for r in rows], seconds
 
     def remote_command(self,worker,command,action,value=None):
         started = time.monotonic()
@@ -569,19 +597,43 @@ class Relay:
             pending = self.directory/'deliveries'/assignment['job_id']
             pending.mkdir(parents=True, exist_ok=True)
             atomic_json(pending/'ASSIGNMENT.json', assignment)
+        batches = []
         for assignment in assignments:
+            preparation = assignment['request'].get('route', {}).get('kind') == 'preparation'
+            grouped = not preparation and worker['host_id'] in self.config.get(
+                'q3_batch_hosts', ('server2', 'local0-wsl'))
+            if grouped and batches and batches[-1][0]:
+                batches[-1][1].append(assignment)
+            else:
+                batches.append((grouped, [assignment]))
+        for grouped, batch in batches:
             info['phase'] = 'MAILBOX_ARTIFACTS'
-            self._deliver_artifacts(worker, assignment)
+            for assignment in batch:
+                self._deliver_artifacts(worker, assignment)
             info['phase'] = 'MAILBOX_SUBMIT'
-            relay_wait=time.monotonic()-response_time
-            self.log('REQUEST_DELIVERY_START',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'])
-            response, seconds = self.remote(worker, 'submit', assignment)
-            if response.get('ok') is not True: raise ValueError('Worker refused assignment')
-            self.log('REQUEST_DELIVERED', host_id=host, job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                     seconds=seconds, duplicate=response.get('duplicate', False))
-            try:self.post('/v1/transfer-metric',dict(host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],
-                timing=dict(ssh_delivery_roundtrip_seconds=seconds,relay_response_to_submit_seconds=relay_wait)))
-            except Exception as error:self.log('TELEMETRY_PENDING',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],error=str(error))
+            relay_wait = time.monotonic() - response_time
+            owners = [dict(host_id=host, job_id=a['job_id'], attempt_id=a['attempt_id']) for a in batch]
+            for owner in owners:
+                self.log('REQUEST_DELIVERY_START', **owner)
+            if grouped and len(batch) > 1:
+                results, seconds = self.submit_batch(worker, batch)
+                self.log('Q3_BATCH_DELIVERED', host_id=host, count=len(batch), seconds=seconds)
+            else:
+                individual, seconds = self.remote(worker, 'submit', batch[0])
+                results = [individual]
+            refused = []
+            for owner, reply in zip(owners, results):
+                if reply.get('ok') is not True:
+                    refused.append(str(reply.get('error', 'Worker refused assignment')))
+                    continue
+                self.log('REQUEST_DELIVERED', **owner, seconds=seconds, duplicate=reply.get('duplicate', False))
+                try:
+                    self.post('/v1/transfer-metric', dict(owner, timing=dict(
+                        ssh_delivery_roundtrip_seconds=seconds, relay_response_to_submit_seconds=relay_wait)))
+                except Exception as error:
+                    self.log('TELEMETRY_PENDING', **owner, error=str(error))
+            if refused:
+                raise ValueError('; '.join(refused))
         if feedback is not None and (status.get('resource_report') or {}).get('mode') == 'AUTO':
             try:
                 self.remote(worker, 'resources', dict(capacity_feedback=feedback))

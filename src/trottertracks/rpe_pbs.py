@@ -306,6 +306,9 @@ def apply_preparation_resources(distributed, overrides):
         worker = next(entry for entry in pbs['workers'] if entry['host_id'] == host)
         source, provider = override['source'], override['provider']
         slots, memory = override['task_cpu_count'], override['memory_bytes']
+        interpreter = override.get('interpreter')
+        if interpreter is not None and not Path(interpreter).is_absolute():
+            raise ValueError('PBS preparation interpreter must be a fixed absolute path')
         if type(slots) is not int or not 0 < slots <= pbs['resources']['ncpus']:
             raise ValueError('PBS preparation CPU reservation is outside the configured pool')
         if type(memory) is not int or not 0 < memory <= usable_memory(worker['profile'], pbs):
@@ -320,6 +323,8 @@ def apply_preparation_resources(distributed, overrides):
             if len(matches) != 1:
                 raise ValueError('PBS preparation profile is missing or ambiguous: '+provider)
             matches[0]['profile']['task_cpu_count'] = slots
+            if interpreter is not None:
+                matches[0]['profile']['interpreter'] = interpreter
         estimates = [rule for rule in pbs['preparation_task_seconds']
                      if (rule['source'], rule['provider']) == (source, provider)]
         if len(estimates) != 1:

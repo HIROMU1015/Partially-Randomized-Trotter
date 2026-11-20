@@ -76,6 +76,13 @@ def apply_worker_trial(spec, trial):
             pf_preparation=trial.get('local_pf_preparation_pair', False))
     if 'preparation_host_preference' in trial:
         distributed['preparation_host_preference'] = trial['preparation_host_preference']
+    if 'pf_compile_hosts' in trial:
+        hosts = trial['pf_compile_hosts']
+        configured = distributed['preparation_profiles']
+        if not hosts or not set(hosts) <= configured.keys():
+            raise ValueError('PF compile placement requires configured preparation profiles')
+        placement = distributed.setdefault('preparation_provider_hosts', {})
+        placement.update(PF_COMPILE=list(hosts), PF_HOLDOUT_COMPILE=list(hosts))
     if trial.get('pbs_storage_launcher'):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:

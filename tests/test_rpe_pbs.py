@@ -182,13 +182,14 @@ class ManagerTests(unittest.TestCase):
             base.close()
             executor.distributed = dict(pbs=deepcopy(fixed), preparation_profiles={'pbs-0': deepcopy(profile)})
             P.apply_preparation_resources(executor.distributed, [dict(host='pbs-0', provider='DF_CALIBRATION',
-                source='PINNED', task_cpu_count=6, memory_bytes=18*P.GIB)])
+                source='PINNED', task_cpu_count=6, memory_bytes=18*P.GIB, interpreter='/fixed/compiler/python')])
             manager = P.PbsManager(executor, executor.distributed['pbs'], gateway=FakeGateway())
             self.addCleanup(manager.close)
             request = dict(route=dict(kind='preparation'), preparation=dict(stage='compile',
                 provider='DF_CALIBRATION', source=dict(commit='PINNED')))
             effective = manager.configured['pbs-0']['profile']
             self.assertEqual(effective['preparation_profiles'][0]['profile']['task_cpu_count'], 6)
+            self.assertEqual(effective['preparation_profiles'][0]['profile']['interpreter'], '/fixed/compiler/python')
             self.assertEqual(executor.distributed['preparation_profiles']['pbs-0']['preparation_profiles'],
                              effective['preparation_profiles'])
             self.assertEqual(P.packed_resources([request]*20, effective, manager.settings, 'pbs-0'), (96, 289, 16))

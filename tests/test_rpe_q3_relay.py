@@ -399,8 +399,17 @@ class RelayTests(unittest.TestCase):
             slots = 6
             harness = Harness(temporary, slots=slots)
             try:
+                harness.relay.config['q3_batch_hosts'] = [harness.profile['host_id']]
                 tasks = [harness.propose(shot)[1] for shot in range(1, slots+1)]
-                harness.tick()
+                submit_batch = harness.relay.submit_batch
+                def delivered_without_reply(worker, assignments):
+                    submit_batch(worker, assignments)
+                    raise OSError('ARTIFICIAL lost batch response')
+                with patch.object(harness.relay, 'submit_batch', side_effect=delivered_without_reply) as batch:
+                    with self.assertRaisesRegex(OSError, 'lost batch response'):
+                        harness.tick()
+                    batch.assert_called_once()
+                    self.assertEqual(len(batch.call_args.args[1]), slots)
                 rows = [harness.executor.store.row(task.job.name) for task in tasks]
                 self.assertEqual([row['host_id'] for row in rows], [harness.profile['host_id']]*slots)
                 self.assertEqual(len({row['attempt_id'] for row in rows}), slots)
@@ -408,6 +417,9 @@ class RelayTests(unittest.TestCase):
                 self.assertEqual(
                     [harness.executor.store.row(row['job_id'])['state'] for row in rows],
                     ['ACCEPTED']*slots)
+                events = harness.executor.store.events()
+                self.assertEqual(sum(e['event'] == 'ASSIGN' for e in events), slots)
+                self.assertEqual(sum(e['event'] == 'ACCEPT' for e in events), slots)
             finally:
                 harness.close()
 
