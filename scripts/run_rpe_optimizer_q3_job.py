@@ -291,10 +291,15 @@ def finite_support_outcome(request, case, inputs, route, out, source, metadata, 
     evidence = out/case['label']/'FINITE_SUPPORT.json'
     if mode == 'execute':
         stage(out, 'SCIENTIFIC_ROUTE_START', evaluator=kernel.SCHEMA)
-        report = kernel.evaluate(rows, h=h, target=target, probability_rule=inputs['options']['probability_rule'],
-                                 threshold=threshold, risk=route.binding.Q.D, total=route.binding.Q)
+        args = dict(h=h, target=target, probability_rule=inputs['options']['probability_rule'],
+                    threshold=threshold, risk=route.binding.Q.D, total=route.binding.Q)
+        report = kernel.evaluate(rows, **args)
+        certificates = [report['certificate']]
+        if (report['status'] == 'INCONCLUSIVE'
+                and max(max(row['N_X'],row['N_Y']) for row in rows) <= kernel.MAX_REFINEMENT_SHOTS_PER_AXIS):
+            certificates.append(kernel.refine(rows, **args)['certificate'])
         evidence.parent.mkdir()
-        write(evidence, dict(input_sha256=fingerprint, certificate=report['certificate']))
+        write(evidence, dict(input_sha256=fingerprint, certificates=certificates))
         stage(out, 'SCIENTIFIC_ROUTE_RETURNED', evaluator=kernel.SCHEMA)
     elif not (evidence.is_file() and (out/'OUTCOME.json').is_file()):
         return dict(status='UNKNOWN', reason='NO_WORKER_ARTIFACT_TO_COLLECT', scientific_evaluation_calls=0,
@@ -304,10 +309,11 @@ def finite_support_outcome(request, case, inputs, route, out, source, metadata, 
     observed = json.loads(evidence.read_text())
     if observed['input_sha256'] != fingerprint:
         raise ValueError('Finite support evidence inputs differ')
-    cert = observed['certificate']
-    if kernel._decode(cert['loss_cap']) != route.binding.Q.loss_range(h, target)[0]:
+    certificates = observed['certificates']
+    cap = route.binding.Q.loss_range(h, target)[0]
+    if any(kernel._decode(cert['loss_cap']) != cap for cert in certificates):
         raise ValueError('Finite support evidence loss cap differs')
-    report = kernel.summarize(cert, threshold, expected_rounds=len(rows))
+    report = kernel.combine(certificates, threshold, expected_rounds=len(rows))
     identity_value = dict(configuration_id=request['configuration_id'], binding_id=binding['id'],
                           total_configuration_id=binding['total_configuration']['id'], M=len(rows)-1,
                           signal_packet=case['signal_packet'], allocation=case['allocation']['shots'],

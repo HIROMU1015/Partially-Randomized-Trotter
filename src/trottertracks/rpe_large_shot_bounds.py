@@ -13,6 +13,7 @@ MAX_AXIS_INTEGER_BITS = 1 << 20
 MAX_ROUND_CELLS = 16384
 MAX_ROUND_PAIRS = 1 << 22
 TAIL_PER_AXIS = Fraction(1, 1 << 48)
+MAX_REFINEMENT_SHOTS_PER_AXIS = 128
 
 
 def _encode(value):
@@ -162,3 +163,69 @@ def evaluate(rows, *, h, target, probability_rule, threshold, risk, total,
         terminal = moment/denominator
     certificate = dict(schema=SCHEMA, rounds=evidence, loss_cap=_encode(cap), terminal_loss=_encode(terminal))
     return dict(summarize(certificate, threshold, expected_rounds=len(rows)), certificate=certificate)
+
+
+def refine(rows, *, h, target, probability_rule, threshold, risk, total,
+           maximum_round_cells=MAX_ROUND_CELLS, maximum_round_pairs=MAX_ROUND_PAIRS):
+    """Propagate the retained states individually when several branches matter."""
+    if (not supports(rows) or not math.isfinite(h) or h <= 0 or not math.isfinite(target)
+            or maximum_round_cells < 1 or maximum_round_pairs < maximum_round_cells):
+        raise ValueError('Invalid finite-support refinement inputs')
+    cap, _ = total.loss_range(h, target)
+    if cap is None:
+        raise ValueError('Fixed decoder energy range is unavailable')
+    decoder = total.T
+    states = {0: 1}
+    terminal = Fraction(0)
+    evidence = []
+    for m, row in enumerate(rows):
+        if row['m'] != m:
+            raise ValueError('Expected consecutive fixed input rounds')
+        before = sum(states.values())
+        if not before:
+            evidence.append(dict(m=m, retained_probability=_encode(Fraction()),
+                                 window_probability=_encode(Fraction()), checked_pairs=0, represented_cells=0))
+            continue
+        phases, zeros, xw, yw, denominator = _count_support(row, risk, probability_rule, maximum_round_cells)
+        weights = [x*y for x, y in product(xw, yw)]
+        selected = sorted(states, key=lambda state: (-states[state], state))[:maximum_round_pairs//len(phases)]
+        next_states = {}
+        for state in selected:
+            if m == 0:
+                values = decoder.initial(phases, zeros)
+            else:
+                previous = np.array([state], dtype=np.uint64).view(np.float64)[0]
+                values, _ = decoder.step(phases, np.full(len(phases), previous), 1 << m, zeros)
+            if not np.all(np.isfinite(values)) or np.any(np.abs(values) > math.pi):
+                raise ValueError('Fixed decoder exceeded its declared phase range')
+            mass = states[state]
+            for bits, weight in zip(values.view(np.uint64).tolist(), weights):
+                next_states[bits] = next_states.get(bits, 0) + mass*weight
+        den = denominator*before
+        if m == len(rows)-1 and next_states:
+            positions = list(next_states)
+            estimates = np.array(positions,dtype=np.uint64).view(np.float64)
+            estimate = Fraction(target)
+            terminal = sum((next_states[bits]*(Fraction(-float(value)/h)-estimate)**2
+                            for bits, value in zip(positions, estimates)), Fraction(0))/den
+        represented = Fraction(sum(weights), denominator)
+        evidence.append(dict(m=m, retained_probability=_encode(Fraction(sum(next_states.values()), den)),
+                             window_probability=_encode(represented),
+                             checked_pairs=len(selected)*len(phases), represented_cells=len(phases)))
+        states = next_states
+    certificate = dict(schema=SCHEMA, rounds=evidence, loss_cap=_encode(cap), terminal_loss=_encode(terminal),
+                       refinement='RETAINED_STATE_DP')
+    return dict(summarize(certificate, threshold, expected_rounds=len(rows)), certificate=certificate)
+
+
+def combine(certificates, threshold, *, expected_rounds):
+    reports = [summarize(certificate, threshold, expected_rounds=expected_rounds)
+               for certificate in certificates]
+    lower = max(_decode(row['MSE_lower']) for row in reports)
+    upper = min(_decode(row['MSE_upper']) for row in reports)
+    if lower > upper:
+        raise ValueError('Finite-support refinement contradicts the previous bounds')
+    status = ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD' if upper <= threshold else
+              'MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD' if lower > threshold else 'INCONCLUSIVE')
+    return dict(status=status,MSE_lower=_encode(lower), MSE_upper=_encode(upper),
+                residual_probability=_encode(min(_decode(r['residual_probability']) for r in reports)))

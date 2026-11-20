@@ -66,6 +66,12 @@ def exercise_fixed_runtime():
             assert lower <= reference <= upper, (raw, cells, float(reference), float(lower), float(upper))
             assert (result['status'] != 'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD' or reference <= threshold)
             assert (result['status'] != 'MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD' or reference > threshold)
+            refined = bounds.refine(rows, h=0.1, target=target, probability_rule=probability_rule,
+                                    threshold=threshold, risk=risk, total=total,
+                                    maximum_round_cells=cells,maximum_round_pairs=max(cells, 70))
+            combined = bounds.combine([result['certificate'], refined['certificate']], threshold, expected_rounds=3)
+            assert lower <= bounds._decode(combined['MSE_lower']) <= reference
+            assert reference <= bounds._decode(combined['MSE_upper']) <= upper
 
     shots = [16*(11+4*(12-m)) for m in range(13)]
     rows = [dict(m=m,N_X=n,N_Y=n,raw=dict(real=1.0,imag=0.0)) for m,n in enumerate(shots)]
