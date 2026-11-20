@@ -14,6 +14,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from .rpe_preparation_artifacts import ArtifactCache, artifact_path, artifact_hash, input_manifest, worker_cache
 from .rpe_q3_timing import append as timing_append
@@ -304,7 +305,7 @@ def _verify_fixed_git_inputs(root, locators):
                 raise ValueError('Preparation fixed Git input differs: ' + path)
 
 
-def current_preparation_fingerprint(assignment, base_profile):
+def current_preparation_fingerprint(assignment, base_profile, *, check_workspace=False):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
     pauli_calibration_manifest(spec)
     if spec.get('stage')not in STAGES:raise ValueError('Unknown preparation stage')
@@ -357,6 +358,8 @@ def current_preparation_fingerprint(assignment, base_profile):
     if not isinstance(command,list)or not command or any(not isinstance(v,str)for v in command):raise ValueError('Preparation command must be explicit argv')
     if not spec.get('outputs'):raise ValueError('Declared preparation outputs required')
     for name in spec['outputs']:artifact_path(name)
+    if check_workspace and (spec.get('source_workspace') or spec.get('workspaces')):
+        _check_owned_workspaces(spec, profile, views)
     facts = dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=source,input_hashes=spec.get('input_hashes',[]),working_input_hashes=spec.get('working_input_hashes',[]),required_views=spec.get('required_views',{}),required_paths=spec.get('required_paths',{}),runtime_paths=path_facts,input_artifacts=inputs,profile=preparation_profile_core(profile),views=views,runtime=runtime,tools=tools)
     if pauli_runtime is not None:
         facts['pauli_calibration_runtime'] = pauli_runtime
@@ -365,7 +368,7 @@ def current_preparation_fingerprint(assignment, base_profile):
 
 def dry_check(request, profile, source_manifest=None):
     assignment=dict(request=request,request_sha256=digest(request),job_id=request['request_id'],source_manifest=source_manifest or request['preparation']['source'])
-    fingerprint=current_preparation_fingerprint(assignment,profile)
+    fingerprint=current_preparation_fingerprint(assignment,profile,check_workspace=True)
     return dict(status='DRY_CHECK_PASS',mode='dry-check',request_id=request['request_id'],route='preparation',stage=request['preparation']['stage'],fingerprint=fingerprint,scientific_calls=0)
 
 
@@ -454,6 +457,42 @@ def _include_declared_outputs(owned, directory, outputs):
                            text=True,cwd=workspace,check=True,capture_output=True)
 
 
+def _clone_owned_workspaces(spec, profile, views, directory, cache):
+    source = Path(views[spec['source']['commit']])
+    metadata = _metadata_repository_path(profile, source) if metadata_bundle_hashes({'preparation': spec}) else None
+    owned = {}
+    if spec.get('source_workspace'):
+        source = _clone(source, directory/'workspace', spec.get('input_git_bundles', []), cache,
+                        source_files=spec['source']['files'], metadata_repository=metadata)
+        owned['source'] = (source, spec['source'])
+    for alias, workspace in spec.get('workspaces', {}).items():
+        if not alias.replace('_', '').replace('-', '').isalnum():
+            raise ValueError('Unsafe preparation workspace alias')
+        manifest = workspace['source']
+        target = _clone(views[alias], directory/'workspaces'/alias, workspace.get('input_git_bundles', []),
+                        cache, workspace.get('checkout_input_head', True), manifest['files'],
+                        metadata_repository=metadata)
+        owned[alias] = (target, manifest)
+    return source, owned
+
+
+def _check_owned_workspaces(spec, profile, views):
+    # Reproduce the worker's Git checkout, including files made visible by
+    # widening a cone for the output paths. Input locator hashes miss those
+    # files on partially populated Git object stores.
+    try:
+        with tempfile.TemporaryDirectory(prefix='rpe-preparation-readiness-') as temporary:
+            directory = Path(temporary)
+            _, owned = _clone_owned_workspaces(spec, profile, views, directory, worker_cache(profile))
+            _include_declared_outputs(owned, directory, list(spec['outputs']) + list(spec.get('optional_outputs', [])))
+    except subprocess.CalledProcessError as error:
+        detail = error.stderr or ''
+        if isinstance(detail, bytes):
+            detail = detail.decode(errors='replace')
+        command = ' '.join(error.cmd[:3])
+        raise ValueError(f'Preparation Git workspace preflight failed at {command}: {detail.strip()[:500]}') from error
+
+
 def _export_bundle(root, source, output, input_head=None):
     base=source['commit']
     result=dict(ref='HEAD',head=_head(root),base=base)
@@ -536,22 +575,13 @@ def execute(assignment, base_profile, directory):
         cache.materialize(artifact_inputs,directory/'inputs')
     elif cache.missing(artifact_inputs.values()):
         raise ValueError('Missing fixed preparation input artifact')
-    source=Path(fingerprint['views'][spec['source']['commit']]);owned={}
-    metadata_repository=_metadata_repository_path(profile,source) if metadata_bundle_hashes(assignment) else None
-    if spec.get('source_workspace'):
-        source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache,
-                      source_files=spec['source']['files'],metadata_repository=metadata_repository)
-        owned['source']=(source,spec['source'])
+    source,owned=_clone_owned_workspaces(spec,profile,fingerprint['views'],directory,cache)
     # Transport releases may change without changing the verified provider
     # wrapper that a preparation command actually imports or executes.
     provider_transport=profile.get('preparation_adapter_root') or Path(__file__).resolve().parents[2]
     replacements={'@PYTHON@':profile['interpreter'],'@SOURCE@':str(source),'@WORK@':str(directory),'@INPUTS@':str(directory/'inputs'),'@TRANSPORT@':str(provider_transport)}
-    for alias,workspace in spec.get('workspaces',{}).items():
-        if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe preparation workspace alias')
-        target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,
-                      workspace.get('checkout_input_head',True),workspace['source']['files'],
-                      metadata_repository=metadata_repository)
-        replacements['@WORKSPACE:'+alias+'@']=str(target);owned[alias]=(target,workspace['source'])
+    for alias in spec.get('workspaces',{}):
+        replacements['@WORKSPACE:'+alias+'@']=str(owned[alias][0])
     materialize_pauli_calibration_view(spec, fingerprint, directory)
     for alias in spec.get('required_views',{}):replacements['@VIEW:'+alias+'@']=fingerprint['views']['view:'+alias]
     for alias,facts in fingerprint.get('runtime_paths',{}).items():replacements['@PATH:'+alias+'@']=facts['path']

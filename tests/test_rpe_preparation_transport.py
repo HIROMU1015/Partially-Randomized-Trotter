@@ -264,6 +264,37 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         self.assertFalse((attempt/'JOB_STAGES.jsonl').exists())
         self.assertEqual(P.collect(task,self.profile('server1'),attempt),outcome)
 
+    def test_worker_readiness_holds_missing_sparse_output_objects(self):
+        source = self.root/'source'
+        sibling = source/'docs/research/sibling.md'
+        sibling.parent.mkdir(parents=True)
+        sibling.write_text('tracked sibling of the audit output')
+        subprocess.run(['git','add','docs'], cwd=source, check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid',
+                        'commit','-qm','fixed output ancestors'], cwd=source, check=True)
+        self.source['commit'] = P._head(source)
+        oid = subprocess.check_output(['git','rev-parse','HEAD:docs/research/sibling.md'],
+                                      cwd=source, text=True).strip()
+        (source/'.git/objects'/oid[:2]/oid[2:]).unlink()
+        profile = self.profile('wsl')
+        task = self.task('audit', "raise AssertionError('preflight must not run the provider')",
+                         source_workspace=True, outputs=['workspace/docs/research/new-audit'])
+
+        held = W.host_fingerprints(profile, [task])
+        self.assertEqual(held['host_fingerprints'], {})
+        self.assertIn('Git workspace preflight failed at git sparse-checkout add',
+                      held['readiness_errors'][task['job_id']])
+        with self.assertRaisesRegex(ValueError, 'Git workspace preflight failed'):
+            P.dry_check(task['request'], profile)
+
+        restored = subprocess.check_output(['git','hash-object','-w','docs/research/sibling.md'],
+                                           cwd=source, text=True).strip()
+        self.assertEqual(restored, oid)
+        checked = W.host_fingerprints(profile, [task])
+        self.assertEqual(checked['readiness_errors'], {})
+        self.assertIn(task['job_id'], checked['host_fingerprints'])
+        self.assertEqual(P.dry_check(task['request'], profile)['scientific_calls'], 0)
+
     def test_sparse_clone_keeps_only_declared_output_cones_for_plain_git_add(self):
         source=self.root/'source';archive=source/'docs/archive/unneeded.json';archive.parent.mkdir(parents=True);archive.write_text('{"historical":true}')
         subprocess.run(['git','add','docs'],cwd=source,check=True)
