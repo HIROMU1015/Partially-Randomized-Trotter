@@ -19,11 +19,26 @@ import uuid
 from .rpe_q3_timing import stamp, append
 from .rpe_q3_worker import atomic, digest, read
 from .rpe_pbs_worker import request_cpu_footprint, task_cpu_footprint
-from .rpe_worker_storage import SAMPLE_SECONDS
+from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED'}
 GIB = 1024**3
+
+# Measure the same shared paths from the gateway, where directory walks do
+# not occupy a PBS compute slot or depend on a compute node's NFS latency.
+_STORAGE_MONITOR = """
+import json, select, sys
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[1])/'src'))
+from trottertracks.rpe_worker_storage import SAMPLE_SECONDS, report
+profile = json.loads(sys.stdin.readline())
+while True:
+    report(profile['policy'], spools=profile['spools'],
+           cache_directories=profile['caches'], refresh=True)
+    if select.select([sys.stdin], [], [], max(1., SAMPLE_SECONDS-2.))[0]:
+        break
+"""
 
 
 class Gateway:
@@ -32,6 +47,8 @@ class Gateway:
         self.settings = settings
         self.process = None
         self.responses = queue.Queue()
+        self.storage_monitors = {}
+        self.storage_monitor_started = {}
 
     def _start(self):
         config = self.settings
@@ -85,7 +102,54 @@ class Gateway:
              config['ssh_alias'], shlex.join(remote)], input=json.dumps(policy), text=True, timeout=15)
         return json.loads(output)
 
+    def monitor_storage(self, profiles):
+        """Keep the shared sample fresh only for running allocations in this run."""
+        for host in self.storage_monitors.keys() - profiles.keys():
+            self._stop_storage_monitor(self.storage_monitors.pop(host))
+            self.storage_monitor_started.pop(host, None)
+        for host, profile in profiles.items():
+            previous = self.storage_monitors.get(host)
+            if previous is not None and previous.poll() is None:
+                continue
+            now = time.monotonic()
+            if now - self.storage_monitor_started.get(host, float('-inf')) < SAMPLE_SECONDS:
+                continue
+            config = self.settings
+            remote = [config.get('gateway_python', '/usr/bin/python3'), '-B', '-c',
+                      _STORAGE_MONITOR, config['transport_root']]
+            process = subprocess.Popen(
+                ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
+                 '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=2',
+                 config['ssh_alias'], shlex.join(remote)], stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
+            self.storage_monitors[host] = process
+            self.storage_monitor_started[host] = now
+            try:
+                process.stdin.write(json.dumps(dict(policy=profile['storage_limit'],
+                    spools=[profile['work_dir']], caches=prefix_caches(profile)))+'\n')
+                process.stdin.flush()
+            except OSError:
+                self._stop_storage_monitor(self.storage_monitors.pop(host))
+                raise
+
+    @staticmethod
+    def _stop_storage_monitor(process):
+        try:
+            process.stdin.close()
+        except OSError:
+            pass
+        try:
+            process.wait(timeout=1)
+        except subprocess.TimeoutExpired:
+            process.terminate()
+            try:
+                process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+
     def close(self):
+        self.monitor_storage({})
         if self.process is not None:
             if self.process.poll() is None:
                 self.process.terminate()
@@ -641,6 +705,12 @@ class PbsManager:
             record.update(status=allocation['status'], observed=allocation, clock=now)
             if allocation['status'] in TERMINAL or allocation['status'] == 'HISTORY_MISSING_RECONCILE_SPOOL':
                 self._harvest(allocation)
+        if isinstance(self.gateway, Gateway):
+            self.gateway.monitor_storage({
+                record['spec']['profile']['host_id']: record['spec']['profile']
+                for record in self.state['allocations'].values()
+                if record['status'] == 'R' and record['spec']['profile'].get('storage_limit')
+            })
         for token, requests in data['requests'].items():
             self.responses[token] = {request['request_id']:self._dispatch(token, request) for request in requests}
         outstanding, pending, queued, free = self._demand()
