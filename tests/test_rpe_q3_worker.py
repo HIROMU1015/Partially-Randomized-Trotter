@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import sqlite3
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -67,6 +68,41 @@ def finish(worker, timeout=8):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_native_supervisor_preserves_a_scoped_provider_launcher(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            calls = root/'provider-calls.jsonl'
+            launcher = root/'provider-python'
+            body = root/'provider-launch.py'
+            body.write_text('import json,os,sys\nfrom pathlib import Path\n'+
+                'args=sys.argv[1:]\n'+
+                'script=next((Path(a).name for a in args if a.endswith(".py")), "")\n'+
+                'if script=="run_rpe_q3_worker.py": raise SystemExit("Provider launcher rejects transport supervisor")\n'+
+                'with open('+repr(str(calls))+',"a") as stream: stream.write(json.dumps(args)+"\\n")\n'+
+                'os.execv('+repr(sys.executable)+',['+repr(sys.executable)+',*args])\n')
+            launcher.write_text('#!/bin/sh\nexec '+shlex.quote(sys.executable)+' '+shlex.quote(str(body))+' \"$@\"\n')
+            launcher.chmod(0o755)
+            profile, assignment = fixture(directory)
+            profile['interpreter'] = str(launcher)
+            controller = FakeController(assignment)
+            worker = W.Worker(profile, 'http://unused', transport=controller)
+            try:
+                worker.tick()
+                finish(worker)
+                attempt = worker.work/assignment['job_id']/assignment['attempt_id']
+                self.assertEqual(W.read(attempt/'WORKER_STATE.json')['state'], 'TRANSFERRED',
+                    {p.name:p.read_text() for p in attempt.glob('WORKER_*') if p.is_file()})
+                self.assertEqual(W.read(attempt/'PROCESS_RETURN.json')['returncode'], 0)
+                self.assertEqual(W.read(attempt/'WORKER_PROFILE.json')['interpreter'], str(launcher))
+                commands = [json.loads(line) for line in calls.read_text().splitlines()]
+                self.assertTrue(any('run_rpe_optimizer_q3_job.py' in str(args) for args in commands))
+                self.assertFalse(any('run_rpe_q3_worker.py' in str(args) for args in commands))
+                self.assertEqual(controller.complete_calls, 1)
+            finally:
+                for process in worker.processes.values():
+                    process.wait(timeout=8)
+                worker.close()
+
     def test_unknown_detached_session_releases_only_after_the_session_exits(self):
         with tempfile.TemporaryDirectory() as directory:
             attempt = Path(directory)

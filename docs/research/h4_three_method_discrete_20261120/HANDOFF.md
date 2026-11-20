@@ -175,3 +175,33 @@ DF専用リストへ絞り、誤方式を明確なエラーで拒否する入力
 実データの読み取り検証では40回収軸と既存LD9の8軸を厳密照合して再利用でき、HOLDは0件だった。
 HASWELLの追加reference確認ではLD5・6も保存λとtail scalarへ厳密一致した。
 新holdoutの独立性は維持し、保存軸を監査済みモデルや科学的成功へ変換しない。
+
+## 2026-11-20：保存prefix信号の修正と実経路の再検収
+
+SOURCE `cac95fd9c4` の `search-eea38701fa5a6a593e9f` では、DF価格較正3件と
+PFモデル固定1件を正常回収した。保存prefixのDF信号は旧context絶対パスの未解決で失敗した。
+正常Stop・EXIT=0・全5タスクACCEPTED・relay終了を確認し、新規DF較正32軸を
+`continuation-inputs/h4-rerun-eea/` に元のバイトで保全した。旧40軸も保持している。
+
+SOURCE `dac4f3c98b` は保存prefixにも既存のパス変換付きcontext loaderを使用する。
+入力ハッシュ、元のlambda/scalarとSOURCEを照合し、固定科学loader・providerは維持する。
+同じ評価の終了済みrunの中央CASとSHA・サイズが一致する重複キャッシュも回収できるようにし、
+server2で約5.89 GB、WSLで約3.64 GBを整理した。未確定attemptの入力・原結果は保護した。
+常設の所有ユーザー回収サービスもこの固定版を使用する。
+
+`romutail-h4-rerun3-dac4f3c98b` は4環境の配置検査、明示版・通常版のPreviewを通過し、
+通常入口から `search-5f6fb3cdbf9ca0b2f8af` を開始した。Start応答は120秒で時間切れになったが、
+指定run IDのStatusで起動済みと照合し、再送していない。
+同じH4 linear 1 Å / STO-3G / tol_only_1e-8・10 DF fragments / binary64 h=0.1の130条件を維持した。
+server2でLD6・幅h・絶対κ=1とLD7・幅h/2・絶対κ=1の信号を各13ラウンド実行・回収し、
+両候補が `READY_FOR_SEARCH` に進んだ。LD7の較正は保存16軸を再利用し、held_axes=0だった。
+独立holdoutと後続Q3も実行・回収した。閾値超過のQ3を成功解や科学的性能改善とは扱わない。
+
+別途PBSのPF_MODEL_FREEZE 1件は、PF専用Pythonが監督用 `run_rpe_q3_worker.py` を拒否し、
+科学adapterの起動前にUNKNOWNとなった。元のUNKNOWN・所有・ログを保全する。
+修正切替のため通常Stopを行い、EXIT=0、ACCEPTED18・UNKNOWN1、relay終了、
+専用PBS割当267558のFを確認した。次版ではtransport監督にnative Pythonを使用し、
+科学providerの専用Pythonと固定入力は維持する。限定した起動前障害の継続照合を通してから再開する。
+
+実装・人工検査は親Codexと委任Codexが担当した。親Codexは4環境への配置、通常入口の操作、
+実処理と中央回収を照合した。独立した重要科学レビューは実施していない。

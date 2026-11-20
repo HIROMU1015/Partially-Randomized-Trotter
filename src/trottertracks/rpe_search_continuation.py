@@ -182,18 +182,26 @@ def preparation_rejected_before_science(job):
                 'ValueError: Pauli publication base ref differs from the fixed provider'))
 
 
-def verify_pbs_prelaunch_rejections(run, prior_dirs):
+def verify_pbs_prelaunch_rejections(run, prior_dirs, *, evidence_entries=None):
     """Recognize one known supervisor rejection using its original attempt."""
     from .rpe_q3_coordinator import digest
 
     file = run/'PBS_PRELAUNCH_REJECTIONS.json'
-    if not file.is_file():
+    if evidence_entries is None:
+        if file.is_file():
+            evidence_entries = load(file)
+        else:
+            requested = run/'ROUND.requested.json'
+            contract = (load(requested).get('continuation') or {}) if requested.is_file() else {}
+            evidence_entries = (contract.get('pbs_prelaunch_rejections')
+                                if contract.get('kind') == 'OPERATIVE_PBS_PRELAUNCH_REPAIR' else None)
+    if evidence_entries is None:
         return set()
     prior = {Path(path).resolve() for path in prior_dirs}
     verified = set()
     execution_files = {'WORKER_LAUNCH.json', 'SCIENTIFIC_STARTING.json', 'SUPERVISOR_STARTED.json',
                        'PROCESS_RETURN.json', 'OUTCOME.json', 'PREPARATION_BODY.log'}
-    for evidence in load(file):
+    for evidence in evidence_entries:
         parent = Path(evidence['prior_run']).resolve()
         assignment = evidence['assignment']
         job, attempt = assignment['job_id'], assignment['attempt_id']
@@ -204,10 +212,15 @@ def verify_pbs_prelaunch_rejections(run, prior_dirs):
                              'FROM jobs WHERE job_id=?', (job,)).fetchone()
         allocations = load(parent/'distributed/pbs/STATE.json')['allocations'].values()
         owner = next((a for a in allocations if (a.get('observed') or {}).get('job_id') == evidence['job_id']), None)
-        if (not row or row[0] != 'PREPARATION:signal'
+        model_freeze = evidence.get('kind') == 'PF_MODEL_FREEZE_WRAPPER_REJECTION'
+        if evidence.get('kind') not in (None, 'PF_MODEL_FREEZE_WRAPPER_REJECTION'):
+            raise ValueError('Unknown PBS prelaunch rejection kind')
+        expected_method = 'PREPARATION:audit' if model_freeze else 'PREPARATION:signal'
+        expected_provider = 'PF_MODEL_FREEZE' if model_freeze else 'PF_SIGNALS'
+        if (not row or row[0] != expected_method
                 or row[1:4] != ('pbs-0', attempt, digest(assignment['request']))
                 or row[3] != assignment['request_sha256'] or json.loads(row[4]) != assignment['request']
-                or assignment['request']['preparation']['provider'] != 'PF_SIGNALS'
+                or assignment['request']['preparation']['provider'] != expected_provider
                 or row[5] != 'UNKNOWN' or row[7] is not None
                 or evidence['worker_state']['state'] != 'UNKNOWN'
                 or evidence['worker_state']['detail'] != json.loads(row[6])
@@ -221,8 +234,29 @@ def verify_pbs_prelaunch_rejections(run, prior_dirs):
                 or load(parent/'LAUNCH.json')['invocation_id'] != load(parent/'EXIT.json')['invocation_id']
                 or load(parent/'distributed/relay/STATUS.json')['stopped'] is not True):
             raise ValueError('PBS prelaunch rejection evidence differs: '+job)
+        if model_freeze:
+            returned = evidence.get('supervisor_return') or {}
+            spec = assignment['request']['preparation']
+            launch, ended = load(parent/'LAUNCH.json'), load(parent/'EXIT.json')
+            if (spec.get('stage') != 'audit'
+                    or assignment['request'].get('original_contract', {}).get('stage') != 'PF_MODEL_FREEZE'
+                    or returned.get('event') != 'SUPERVISOR_RETURN' or returned.get('host_id') != 'pbs-0'
+                    or (returned.get('job_id'), returned.get('attempt_id')) != (job, attempt)
+                    or type(returned.get('returncode')) is not int or returned['returncode'] != 1
+                    or returned.get('signal') is not None
+                    or {'PREPARATION_STARTED.json', 'PREPARATION_RECEIPT.json'}.intersection(evidence['files'])
+                    or type(ended.get('returncode')) is not int or ended['returncode'] not in (0, -2)
+                    or load(parent/'STOP_REQUESTED.json').get('reason') != 'USER_REQUESTED_STOP'
+                    or (load(parent/'KAPPA_STATE.json').get('stop') or {}).get('reason') != 'USER_REQUESTED_STOP'
+                    or _has_local_owner(launch.get('pid'), parent)):
+                raise ValueError('PF model prelaunch rejection lacks an ended transport-only attempt: '+job)
+            for marker in ('NORMAL_DRIVER.json', 'distributed/LOCAL_DAEMON.json', 'distributed/relay/LAUNCH.json'):
+                path = parent/marker
+                if path.is_file() and _has_local_owner(load(path).get('pid'), parent):
+                    raise ValueError('PF model prelaunch parent still has a live owner: '+job)
         directory = parent/'jobs'/row[0]/job
-        if load(directory/'REQUEST.json') != assignment['request'] or (directory/'OUTCOME.json').exists():
+        if (load(directory/'REQUEST.json') != assignment['request'] or (directory/'OUTCOME.json').exists()
+                or (model_freeze and set(p.name for p in directory.iterdir()) != {'REQUEST.json', 'LAUNCH.json'})):
             raise ValueError('PBS prelaunch rejection no longer matches the prior job')
         verified.add(directory.resolve())
     return verified
@@ -460,9 +494,10 @@ def verify(run, problem, spec):
 
     contract = spec['continuation']
     preparation_repair = contract.get('kind') == 'OPERATIVE_PREPARATION_REPAIR'
-    deployment_repair = contract.get('kind') == 'OPERATIVE_DEPLOYMENT_REPAIR' or preparation_repair
+    pbs_prelaunch_repair = contract.get('kind') == 'OPERATIVE_PBS_PRELAUNCH_REPAIR'
+    deployment_repair = contract.get('kind') == 'OPERATIVE_DEPLOYMENT_REPAIR' or preparation_repair or pbs_prelaunch_repair
     repair = contract.get('kind') == 'OPERATIVE_METADATA_REPAIR' or deployment_repair
-    if contract.get('kind') not in (None, 'OPERATIVE_METADATA_REPAIR', 'OPERATIVE_DEPLOYMENT_REPAIR', 'OPERATIVE_PREPARATION_REPAIR'):
+    if contract.get('kind') not in (None, 'OPERATIVE_METADATA_REPAIR', 'OPERATIVE_DEPLOYMENT_REPAIR', 'OPERATIVE_PREPARATION_REPAIR', 'OPERATIVE_PBS_PRELAUNCH_REPAIR'):
         raise ValueError('Unknown continuation kind')
     previous = Path(contract['parent_directory']).resolve()
     if previous == run.resolve() or previous.name != contract['parent_run_id']:
@@ -501,7 +536,7 @@ def verify(run, problem, spec):
                 or json.loads(stop_bytes).get('reason') != 'USER_REQUESTED_STOP'
                 or hashlib.sha256(stop_bytes).hexdigest() != contract.get('parent_stop_sha256')
                 or hashlib.sha256(metadata_bytes).hexdigest() != contract.get('parent_metadata_state_sha256')
-                or not isinstance(hold_keys, list) or (not hold_keys and not preparation_repair)
+                or not isinstance(hold_keys, list) or (not hold_keys and not preparation_repair and not pbs_prelaunch_repair)
                 or len(set(hold_keys)) != len(hold_keys)):
             raise ValueError('Continuation requires the saved normal STOP and deployment metadata hold')
         if preparation_repair:
@@ -585,10 +620,19 @@ def verify(run, problem, spec):
             job = (record.get('observed') or {}).get('job_id')
             if not job or (record.get('status') not in ('F', 'X') and terminal.get(job) not in ('F', 'X')):
                 raise ValueError('Continuation requires a terminal parent PBS allocation')
+    prelaunch_paths = set()
+    if pbs_prelaunch_repair:
+        entries = contract.get('pbs_prelaunch_rejections')
+        if (not isinstance(entries, list) or not entries
+                or any(Path(row['prior_run']).resolve() != previous
+                       or row.get('kind') != 'PF_MODEL_FREEZE_WRAPPER_REJECTION' for row in entries)):
+            raise ValueError('PBS prelaunch continuation must bind the selected parent attempts')
+        prelaunch_paths = verify_pbs_prelaunch_rejections(run, [str(previous)], evidence_entries=entries)
     ledger = previous/'distributed/QUEUE.sqlite3'
     with sqlite3.connect(ledger.as_uri()+'?mode=ro', uri=True) as sql:
         rows = sql.execute('SELECT job_id, method, state, host_id, attempt_id, request_sha256 FROM jobs ORDER BY job_id').fetchall()
-    if any(row[2] not in ('ACCEPTED', 'CANCELLED') for row in rows):
+    if any(row[2] not in ('ACCEPTED', 'CANCELLED')
+           and not (row[2] == 'UNKNOWN' and (previous/'jobs'/row[1]/row[0]).resolve() in prelaunch_paths) for row in rows):
         raise ValueError('Continuation parent has unresolved or unknown attempts')
     if fingerprint(rows) != contract['parent_queue_sha256']:
         raise ValueError('Continuation parent queue changed')

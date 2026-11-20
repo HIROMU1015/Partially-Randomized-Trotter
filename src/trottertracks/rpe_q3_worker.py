@@ -594,7 +594,9 @@ class Worker:
         # Durable before Popen: an interrupted handoff is ambiguous, never retried.
         profile = select_host_profile(read(attempt / 'WORKER_PROFILE.json'), read(attempt / 'ASSIGNMENT.json'))
         save_state(attempt, 'STARTING', automatic_retry=False)
-        command = [profile['interpreter'], '-B', str(Path(__file__).resolve().parents[2] / 'scripts/run_rpe_q3_worker.py'),
+        # Supervising is transport work. A provider's interpreter can be a
+        # narrowly scoped launcher that deliberately rejects worker scripts.
+        command = [sys.executable, '-B', str(Path(__file__).resolve().parents[2] / 'scripts/run_rpe_q3_worker.py'),
                    '--supervise-attempt', str(attempt)]
         with (attempt / 'WORKER_SUPERVISOR.log').open('a') as log:
             process = subprocess.Popen(command, cwd=profile['root'], env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'),
