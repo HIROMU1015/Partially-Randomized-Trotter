@@ -151,5 +151,39 @@
   ],
   "pbs_scheduler_comment": "Not Running: Not enough free nodes available (qstat -f 267668.CPUcluster-PRISM)",
   "guard_ok": true,
-  "unknown_same": true
+  "unknown_same": true,
+  "next_wave": {
+    "sampled_empty_at": "2026-11-21T01:02:44+09:00",
+    "sampled_queued_at_010320": 12,
+    "observation": {
+      "time": "2026-11-21T01:03:35.719050+09:00",
+      "states": {
+        "ASSIGNED": 3,
+        "QUEUED": 19,
+        "RUNNING": 3
+      },
+      "eligible": {
+        "local": 19,
+        "local0-wsl": 15,
+        "pbs-0": 15,
+        "server2": 15
+      },
+      "adopted": {
+        "PREPARATION:audit": 1,
+        "PREPARATION:compile": 1,
+        "PREPARATION:signal": 1,
+        "PR_DF": 54,
+        "TRUNCATED_PF": 1
+      },
+      "cancelled": 0,
+      "distinct_reserves_after_010244": 25,
+      "pbs": [
+        {
+          "job": "267670.CPUcluster-PRISM",
+          "ncpus": 4,
+          "state": "Q"
+        }
+      ]
+    }
+  }
 }
