@@ -316,3 +316,12 @@ workerが受領済みの計算は継続する。中央・科学workerの固定�
 調査・人工検査は委任Codex、適用・実機の回収照合は親Codexが担当する。
 独立した重要科学レビューではない。調査と配置の原記録は
 `.rpe-central/planning/allocation-readiness-20261120/` に保存する。
+
+配置は `relay-readiness-854de00f7c`。旧relay PID2888560の停止・終了を確認して
+PID3016994へ切り替え、server2・WSLの新しい状態照会がともに失敗0で進むことを照合した。
+委任Codexが追加4件を含むrelay人工検査15件を実行しPASS。親CodexはWSLの保存済み
+準備2要求を新経路へ渡す乾式確認を行い、先頭1件だけの固定入力照合成功、
+observe_only 2回、attempt追加0、科学呼出し0を確認した。
+通常Statusは同じinvocationのRUNNING・controller_alive=true。
+元UNKNOWN1件と信号失敗の自動再試行禁止は保持する。PBSの準備・信号の実実行は
+未検収であり、適格な新規要求がない区間の空きと配送不良を混同しない。
