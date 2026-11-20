@@ -78,6 +78,22 @@ try:
                     process=subprocess.run(config['legacy_relay_command'],capture_output=True,text=True,timeout=30)
                     if process.returncode:raise RequestError('relay','legacy relay could not be started: '+process.stderr[-1000:])
             result = Gateway(config).handle(request)
+            transport_hook=config.get('relay_transport_command')
+            if (request['action']in('start','resume')and transport_hook
+                    and result.get('status')in('STARTED','ALREADY_RUNNING')):
+                # This operational hook replaces only the mailbox relay. The
+                # selected controller and scientific run keep their fixed code.
+                try:
+                    observed=subprocess.run(transport_hook,input=json.dumps(result),capture_output=True,text=True,
+                        timeout=config.get('relay_transport_timeout_seconds',90))
+                    transport=json.loads(observed.stdout)
+                    if not isinstance(transport,dict):raise ValueError('Relay transport hook must return a JSON object')
+                    if observed.returncode:
+                        raise RuntimeError(str(transport.get('error')or transport.get('status')or
+                            'Relay transport hook failed')[:1500])
+                    result['relay_transport']=transport
+                except Exception as error:
+                    result['relay_transport']=dict(status='RELAY_TRANSPORT_PENDING',error=str(error)[:1500])
             hook=config.get('confirmed_run_hook')
             if CONFIG.get('invoke_result_sync')and hook and result.get('status')in('STARTED','ALREADY_RUNNING','REUSED_COMPLETED'):
                 problem=(result.get('applied',{}).get('fixed',{}).get('problem')or{})

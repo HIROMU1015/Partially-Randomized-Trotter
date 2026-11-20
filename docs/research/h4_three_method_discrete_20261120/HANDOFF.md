@@ -325,3 +325,24 @@ observe_only 2回、attempt追加0、科学呼出し0を確認した。
 通常Statusは同じinvocationのRUNNING・controller_alive=true。
 元UNKNOWN1件と信号失敗の自動再試行禁止は保持する。PBSの準備・信号の実実行は
 未検収であり、適格な新規要求がない区間の空きと配送不良を混同しない。
+
+## 2026-11-20：通常Resumeへの配送版の統合
+
+前節の手動再適用を通常入口へ統合する。中央bootstrapのSERVICEに
+`relay_transport_command` を設定し、Start/ResumeがSTARTEDまたはALREADY_RUNNINGを
+返した直後、公開同期より先に `ensure_rpe_relay_transport.py` を呼ぶ。
+これは固定runの科学コードを変更せず、指定runの配送プロセスだけを選ぶ運用設定である。
+Status/Stop、開始拒否、完了済みrunでは呼ばない。切替できなければ起動状態とは別に
+`relay_transport.status=RELAY_TRANSPORT_PENDING` を返す。
+
+配送選択は既存REGISTRY.lockで通常Stopと直列化し、登録runの場所、現在invocation、
+生存controller、relayのCONFIG所有を照合する。旧relayを正常停止して終了を確認し、
+修正版を起動する。すでに修正版なら再起動しない。SOURCE・scope・結果・キューの所有と
+UNKNOWNを変更しない。専用の常駐監視や新しい承認機構は追加しない。
+
+追加人工検査9件はPASS。親Codexは配送選択5件と全9件、委任Codexはbootstrap4件と
+component bindingを検査した。広めの既存27件では26件PASS、既存の
+`test_status_reports_completed_exit_and_preserves_scientific_stop_reason` が
+UNKNOWN_RESULT時の旧期待値COMPLETEで失敗する。現行実装はRECONCILIATION_REQUIREDへ
+保留するため、この無関係な科学STOP判定を弱めてテストを通してはいない。
+通常Stop/Resumeの実機検収と配置記録を本節へ追記する。
