@@ -217,3 +217,41 @@ server2でLD6・幅h・絶対κ=1とLD7・幅h/2・絶対κ=1の信号を各13�
 
 実装・人工検査は親Codexと委任Codexが担当した。親Codexは4環境への配置、通常入口の操作、
 実処理と中央回収を照合した。独立した重要科学レビューは実施していない。
+
+## 2026-11-20：最終修正版での実再開
+
+最終SOURCEは `1355ad65faffbfb9a03cff17df4091e7c8f1c93e`、採用releaseは
+`romutail-h4-rerun4-1355ad65fa`。通常入口で
+`search-e6361f01b6a480718127` を開始し、Statusで `started=true` を確認した。
+Startの応答時間切れでは再送していない。指定の130条件、shot規則、工程別設定、
+予算と既消費、旧科学STOP・元UNKNOWNを保全した。新runに追加のStopは発行していない。
+
+RomuTail・server2・PBSで新Q3の実行と中央回収を確認した。
+PBS workerも最終SOURCEで起動し、job `ee22369b2692ebd85b49` / attempt
+`d874ee8153c44d4888628f797fa27c35` のQ3を正常回収した。
+PF_MODEL_FREEZE・PF_HOLDOUT_AUDITはRomuTailで正常回収され、
+PF wave `2b1dbdd20db18e8adf7a3a8c10d39ee9240ab2b839ed377337c5fb540eba86ca` は
+`READY_RETURNED_TO_SAME_OPTIMIZER` に進んだ。
+WSLは配置検査済みであり、この最終runでの新規科学処理成功とは区別する。
+
+検収時点では準備10件・Q3 16件をACCEPTEDで回収し、新runのUNKNOWNは0件だった。
+16件中14件はモデル閾値超過、2件は `MODEL_BOUND_MEETS_ADOPTED_THRESHOLD`。
+後者は上記H4条件でのPR-DF / S2 / LD7 / Δ=h/2 / 絶対κ=1 / M=12、
+`MODEL_MSE_FILTER_ONLY` の固定条件付きproxy判定である。X/Yの各round0..12のshotは、
+PBSの `ee22369b2692ebd85b49` が `[36,33,31,28,26,24,21,19,17,14,12,9,7]`、
+`5841cce04ae322680c85` が `[30,28,26,24,22,20,18,16,14,12,10,8,6]`。
+最終科学結論・全130条件の終了・総cost評価完了を主張しない。
+
+この区間のPBS割当は需要に応じた各2 CPUであり、96 CPUを実使用した検収ではない。
+267559〜267562はFとなり、不要な専用割当が返却されたことを確認した。
+実ファイルシステムの空きが不足すれば新規受付だけを `FILESYSTEM_SPACE_LOW` で保留し、
+既存処理、他host、内容照合済みの重複整理は継続する。50 GiB上限は変更していない。
+容量不足が再発した際は標準 `git prune-packed` で正式packと重複するloose objectのみ整理し、
+22,706,360,320 bytesを回復した。2772個すべてのobject IDが整理後も読めることを確認した。
+固有object、正式pack、科学原本を削除していない。保存失敗した作業用HANDOFFは固定SOURCEから復元した。
+
+人工検査はworker21件・PBS12件、起動前継続22件（別の1件を除外、9 subtests）、
+複製回収6件・ファイルシステム受付2件が通過した。
+Windows側の初回C同期成功と、このrun専用の600秒監視がRUNNINGであることを確認した。
+確認時の公開INDEXには新run IDが含まれておらず、探索マップへの掲載・表示確認は残る。
+次段階はCodexが新runの結果蓄積、保存容量、公開INDEX・探索マップへの掲載を照合する。
