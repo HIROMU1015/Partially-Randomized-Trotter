@@ -62,6 +62,7 @@ def apply_worker_trial(spec, trial):
         distributed['pbs_hold_node'] = True
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
+                               ('pf_candidate_selection', 'pf_selection_sha256'),
                                ('rpe_method_optimizer', 'method_optimizer_sha256')):
         if field not in trial:
             continue
@@ -1100,7 +1101,8 @@ class WidthDriver:
         observed = {method: set() for method in self.methods}
         from trottertracks.rpe_preparation_round import PF_METHODS, _merge_pf, snapshot_context
         pf_snapshot = None
-        pf_observed = set()
+        pf_revision = 0
+        pf_observed = {method: 0 for method in self.methods}
         state = executor.state
         condition = state.cv
 
@@ -1121,29 +1123,29 @@ class WidthDriver:
                 announced[method].add(record['key'])
                 condition.notify_all()
 
-        def announce_pf(future):
-            nonlocal pf_snapshot
-            if not future.cancelled() and future.exception() is None:
-                context, routes, _ = future.result()
-                with condition:
-                    pf_snapshot = (context, routes)
-                    condition.notify_all()
+        def announce_pf(context, routes):
+            nonlocal pf_snapshot, pf_revision
+            with condition:
+                pf_snapshot = (context, routes)
+                pf_revision += 1
+                condition.notify_all()
 
         def has_new(method):
             with condition:
                 return not stop_preparation.is_set() and (
                     bool(announced[method] - observed[method]) or
-                    (method in PF_METHODS and pf_snapshot is not None and method not in pf_observed))
+                    (method in PF_METHODS and pf_revision > pf_observed[method]))
 
         def subscriber(method, context, candidates, view):
             seen = set()
-            pf_seen = False
+            pf_seen = 0
+            delivered = {c['configuration_id'] for c in candidates if c['ready']}
 
             def pending():
                 with condition:
                     return not stop_preparation.is_set() and (
                         bool(announced[method] - seen) or
-                        (method in PF_METHODS and pf_snapshot is not None and not pf_seen))
+                        (method in PF_METHODS and pf_revision > pf_seen))
 
             def take():
                 nonlocal pf_seen
@@ -1151,10 +1153,10 @@ class WidthDriver:
                     keys = announced[method] - seen
                     seen.update(keys)
                     observed[method].update(keys)
-                    pf = pf_snapshot if method in PF_METHODS and not pf_seen else None
+                    pf = pf_snapshot if method in PF_METHODS and pf_revision > pf_seen else None
                     if pf is not None:
-                        pf_seen = True
-                        pf_observed.add(method)
+                        pf_seen = pf_revision
+                        pf_observed[method] = pf_revision
                 if (not keys and pf is None) or stop_preparation.is_set():
                     return [], None
                 scratch = dict(context, candidates=deepcopy(candidates), expected=dict(view.expected))
@@ -1177,14 +1179,13 @@ class WidthDriver:
                 # bindings, including those of jobs already running.
                 trial = view.for_method(method)
                 trial.routes, trial.expected = routes, scratch['expected']
-                existing = {c['configuration_id'] for c in candidates if c['ready']}
                 added = []
                 new_routes = []
                 expected = dict(view.expected)
                 for candidate in scratch['candidates']:
                     cid = candidate['configuration_id']
                     if (candidate['method'] != method or not candidate['ready']
-                        or not cid or cid not in registered or cid in existing):
+                        or not cid or cid not in registered or cid in delivered):
                         continue
                     route = trial.route(cid)
                     if route is None or trial.refresh_execution_hold(cid):
@@ -1192,6 +1193,7 @@ class WidthDriver:
                     candidate['execution_needs'] = []
                     candidate.pop('execution_hold', None)
                     added.append(candidate)
+                    delivered.add(cid)
                     new_routes.append(dict(route, configuration_ids=[cid]))
                     expected[cid] = trial.expected_for(cid, route)
                 view.routes = dict(view.routes, **{method: new_routes + view.routes.get(method, [])})
@@ -1307,11 +1309,17 @@ class WidthDriver:
                 if pf_enabled:
                     from trottertracks import pf_candidate_selection
                     from trottertracks.rpe_preparation_round import snapshot_context,_merge_pf
-                    pf_future=preparation_pool.submit(pf_candidate_selection.prepare_next,ROOT,problem,
-                        snapshot_context(context),active_spec,self.run,deepcopy(routes),runtime,
-                        stop_requested=stop_preparation.is_set)
-                    if self.live_ready_refill:
-                        pf_future.add_done_callback(subscriber.announce_pf)
+                    args = (ROOT, problem, snapshot_context(context), active_spec, self.run, deepcopy(routes), runtime)
+                    def prepare_pf():
+                        stopped = lambda: stop_preparation.is_set() or executor._user_stop_requested()
+                        if (self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill'):
+                            return pf_candidate_selection.prepare_available(*args, stop_requested=stopped,
+                                                                           announce=subscriber.announce_pf)
+                        result = pf_candidate_selection.prepare_next(*args, stop_requested=stopped)
+                        if self.live_ready_refill:
+                            subscriber.announce_pf(*result[:2])
+                        return result
+                    pf_future=preparation_pool.submit(prepare_pf)
 
                 def install_pf():
                     nonlocal context, routes, pf_future
@@ -1341,7 +1349,9 @@ class WidthDriver:
                                 **search_options)
                         if any(r['stop_reason']in fatal for r in interim.values()):
                             stop_preparing();pending.result();break
-                    if pending.done():pending.result();break
+                    if pending.done():
+                        pending.result()
+                        if pf_future is None: break
                     ready=ready_keys()
                     changed=ready-installed
                     # Extend an internal batch only inside the same adopted
@@ -1362,9 +1372,10 @@ class WidthDriver:
                         routes=install_ready(routes,snapshot=True);executor.routes=routes;executor.expected=context['expected']
                         O.apply_published(context['candidates'],routes);installed=ready
                         self.log(event='LATE_READY_INSTALLED_DURING_PREPARATION',keys=sorted(changed))
-                    can_search=bool(changed or replenished or remaining_ready_work)
+                    pf_ready = self.live_ready_refill and any(subscriber.has_new(m) for m in self.methods)
+                    can_search=bool(changed or replenished or remaining_ready_work or pf_ready)
                     if not can_search:
-                        producers=(pending,) if pf_future is None else (pending,pf_future)
+                        producers=[f for f in (pending,pf_future) if f is not None and not f.done()]
                         wait(producers,timeout=1,return_when=FIRST_COMPLETED)
                 # No other thread now changes Completion or its registry.
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']

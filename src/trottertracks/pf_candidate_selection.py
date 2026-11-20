@@ -203,6 +203,16 @@ def repair_metadata_waves(records, repairs):
     return records,repaired
 
 
+def prepare_available(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, announce):
+    """Run the next bounded wave as soon as its predecessor is saved."""
+    while True:
+        context, routes, status = prepare_next(root, problem, context, spec, run, routes, stage_executor,
+                                               stop_requested=stop_requested)
+        announce(context, routes)
+        if status['status'] != 'PREPARATION_WAVE_PROCESSED' or stop_requested():
+            return context, routes, status
+
+
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None):
     """A durable PF wave, with each candidate and native owner in its own directory."""
     from concurrent.futures import ThreadPoolExecutor,as_completed

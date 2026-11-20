@@ -5,7 +5,6 @@ constructor is bypassed only to install synthetic family metadata; its actual
 plan() and the existing wide-schedule planner run unchanged.
 """
 from copy import deepcopy
-from concurrent.futures import Future
 from fractions import Fraction
 import importlib.util
 import json
@@ -309,11 +308,9 @@ class IndependentMethodLaunchContract(unittest.TestCase):
                                 expected_for=lambda identity, _: identity)
         original = dict(candidates=[old], expected={}, saved=SimpleNamespace(table={}))
         pending, take = ready.subscribe(method, original, [old], view)
-        future = Future()
-        future.add_done_callback(ready.announce_pf)
         self.assertFalse(pending())
-        future.set_result((dict(candidates=[pf], expected={cid: cid},
-                                saved=SimpleNamespace(table={(cid, (1, 1)): 'saved'})), {}, {}))
+        snapshot = dict(candidates=[pf], expected={cid: cid}, saved=SimpleNamespace(table={(cid, (1, 1)): 'saved'}))
+        ready.announce_pf(snapshot, {})
         self.assertTrue(ready.has_new(method))
         self.assertFalse(ready.has_new('PR_DF'))
         self.assertTrue(pending())
@@ -325,6 +322,28 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         self.assertEqual(original['saved'].table, {})
         self.assertFalse(ready.has_new(method))
         self.assertEqual(take(), ([], None))
+        newer = dict(pf, configuration_id='pf-next')
+        ready.announce_pf(dict(snapshot, candidates=[pf, newer], expected={cid: cid, 'pf-next': 'pf-next'}), {})
+        self.assertTrue(pending())
+        added, _ = take()
+        self.assertEqual([c['configuration_id'] for c in added], ['pf-next'])
+
+    def test_pf_producer_starts_another_wave_after_publishing_the_first(self):
+        from trottertracks import pf_candidate_selection as PF
+        events = []
+
+        def next_wave(root, problem, context, spec, run, routes, stage_executor, *, stop_requested):
+            events.append(('prepare', context))
+            updated = context + 1
+            status = 'PREPARATION_WAVE_PROCESSED' if updated < 3 else 'NO_INCOMPLETE_PF_CANDIDATE'
+            return updated, routes, {'status': status}
+
+        with patch.object(PF, 'prepare_next', next_wave):
+            answer = PF.prepare_available(None, None, 0, None, None, {}, None, stop_requested=lambda: False,
+                                          announce=lambda snapshot, routes: events.append(('ready', snapshot)))
+        self.assertEqual(answer[2]['status'], 'NO_INCOMPLETE_PF_CANDIDATE')
+        self.assertEqual(events, [('prepare', 0), ('ready', 1), ('prepare', 1), ('ready', 2),
+                                  ('prepare', 2), ('ready', 3)])
 
     def test_joint_method_planning_matches_independent_method_refinements(self):
         methods=('PR_PAULI','PR_DF')
