@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 import resource
 import runpy
 import shutil
@@ -132,8 +133,14 @@ def compile_receipts(value,out,phase,ms,source):
     write(folder/'JOB.json',job);started=time.perf_counter()
     child = [sys.executable, '-B', str(Path(__file__).resolve()), '--provider-root', str(ROOT),
              '--native-child', str(folder/'JOB.json')]
+    # The historical p7/p10 preparations carry exact floating-point hashes.
+    # Match the saved kernel before importing NumPy in the native child.
+    env = dict(os.environ)
+    if p in (7, 10):
+        env.update(OPENBLAS_CORETYPE='HASWELL', OPENBLAS_NUM_THREADS='1',
+                   OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
     with (private/'child.log').open('x') as log:
-        r = subprocess.run(child, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+        r = subprocess.run(child, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, env=env)
     result=load(private/'child.json') if (private/'child.json').exists() else dict(results=[],error='Native child result absent')
     trace=folder/'TRACE';trace.mkdir()
     for name in ['child.log','context_progress.jsonl']+[x.name for x in private.glob('progress_*.jsonl')]:

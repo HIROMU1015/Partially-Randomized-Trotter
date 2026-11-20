@@ -99,6 +99,8 @@ class PFPreparationModuleBinding(unittest.TestCase):
                     self.assertEqual(Path(command[2]), ROOT/'scripts/run_pf_preparation_stage.py')
                     self.assertEqual(command[3:6], ['--provider-root', str(root), '--native-child'])
                     self.assertEqual(Path(kwargs['cwd']), root)
+                    self.assertEqual(kwargs['env']['OPENBLAS_CORETYPE'], 'HASWELL')
+                    self.assertEqual(kwargs['env']['OPENBLAS_NUM_THREADS'], '1')
                     job = provider.load(command[6])
                     provider.write(Path(job['private']) / 'child.json', dict(results=[dict(ok=True,
                         cell=job['cells'][0], trial={'ARTIFICIAL': True}, wrappers={'cosine': {'ARTIFICIAL': 'X'},
