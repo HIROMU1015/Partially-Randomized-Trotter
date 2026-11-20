@@ -1,0 +1,142 @@
+{
+  "run": "search-e6361f01b6a480718127",
+  "source": "af41c76a3faacc9fd20657467fb5ebeeb436100d",
+  "invocation": "58fa8d8ac67d44fc8497cd8d76c5584b",
+  "confirmed_fixed_inputs": 6,
+  "confirmed_unknown_attempts": 1,
+  "adopted": {
+    "PR_DF": 7,
+    "TRUNCATED_PF": 1
+  },
+  "latest": {
+    "time": "2026-11-21T01:19:23.990222+09:00",
+    "qty": {
+      "ASSIGNED": 1,
+      "QUEUED": 17,
+      "RUNNING": 1,
+      "STARTING": 1
+    },
+    "eligible": {
+      "local": 17,
+      "local0-wsl": 17,
+      "pbs-0": 16,
+      "server2": 16
+    },
+    "events": {
+      "ACCEPT": 9,
+      "ADOPT": 8,
+      "ASSIGN": 12,
+      "RESERVE": 29
+    },
+    "accepted": {
+      "local": 3,
+      "local0-wsl": 4,
+      "server2": 2
+    },
+    "pbs": [
+      {
+        "job": "267673.CPUcluster-PRISM",
+        "cpu": 24,
+        "status": "Q",
+        "resize": null
+      }
+    ]
+  },
+  "peak_eligible": {
+    "local": 19,
+    "server2": 17,
+    "local0-wsl": 17,
+    "pbs-0": 16
+  },
+  "pbs_events": [
+    {
+      "event": "PBS_SUBMISSION_INTENT",
+      "resources": {
+        "queue": "workq",
+        "ncpus": 4,
+        "mem": "17gb",
+        "walltime": "24:00:00"
+      },
+      "reason": {
+        "ready_tasks": 3,
+        "existing_host_free_slots": 1,
+        "prospective_pbs_task_slots": 0,
+        "shortage": 2,
+        "requested_task_capacity": 2,
+        "per_task_resources": true,
+        "startup_wait_seconds": 157.1634129351005
+      },
+      "time": "2026-11-21T01:17:27.973325+09:00"
+    },
+    {
+      "event": "PBS_ALLOCATION_STATE",
+      "job_id": "267672.CPUcluster-PRISM",
+      "status": "Q",
+      "time": "2026-11-21T01:17:30.096338+09:00"
+    },
+    {
+      "event": "PBS_QUEUED_ALLOCATION_RESIZE",
+      "previous_cpus": 4,
+      "requested_cpus": 24,
+      "reason": "QUEUED_ALLOCATION_UNDERSIZES_COMPATIBLE_DEMAND",
+      "time": "2026-11-21T01:18:01.061349+09:00"
+    },
+    {
+      "event": "PBS_UNUSED_ALLOCATION_CANCELLED",
+      "job_id": "267672.CPUcluster-PRISM",
+      "reason": "QUEUED_ALLOCATION_UNDERSIZES_COMPATIBLE_DEMAND",
+      "time": "2026-11-21T01:18:01.075115+09:00"
+    },
+    {
+      "event": "PBS_ALLOCATION_STATE",
+      "job_id": "267672.CPUcluster-PRISM",
+      "status": "F",
+      "time": "2026-11-21T01:18:02.746439+09:00"
+    },
+    {
+      "event": "PBS_SUBMISSION_INTENT",
+      "resources": {
+        "queue": "workq",
+        "ncpus": 24,
+        "mem": "97gb",
+        "walltime": "24:00:00"
+      },
+      "reason": {
+        "ready_tasks": 12,
+        "existing_host_free_slots": 0,
+        "prospective_pbs_task_slots": 0,
+        "shortage": 12,
+        "requested_task_capacity": 12,
+        "per_task_resources": true,
+        "startup_wait_seconds": 157.1634129351005
+      },
+      "time": "2026-11-21T01:18:20.656151+09:00"
+    },
+    {
+      "event": "PBS_ALLOCATION_STATE",
+      "job_id": "267673.CPUcluster-PRISM",
+      "status": "Q",
+      "time": "2026-11-21T01:18:22.576555+09:00"
+    }
+  ],
+  "pbs_qstat_24cpu_comment": "Not Running: Not enough free nodes available",
+  "pbs_saved_request_replay": {
+    "saved_requests": 34,
+    "from_resources": {
+      "queue": "workq",
+      "ncpus": 4,
+      "mem": "17gb",
+      "walltime": "24:00:00"
+    },
+    "to_resources": {
+      "queue": "workq",
+      "ncpus": 68,
+      "mem": "273gb",
+      "walltime": "24:00:00"
+    },
+    "growth_trigger": "QUEUED_ALLOCATION_UNDERSIZES_COMPATIBLE_DEMAND",
+    "before_original_termination_resubmits": 0,
+    "scientific_calls": 0,
+    "simulator": true
+  }
+}
