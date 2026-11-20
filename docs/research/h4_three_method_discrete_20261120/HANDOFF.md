@@ -470,3 +470,27 @@ WSLは1.566秒（9回）から1.103秒（29回）だった。
 実機の選択前後と性能照合の保存場所はRomuTailの
 `.rpe-central/planning/rpe-fleet-dispatch-efficiency-20261120/` の `MEASURED.json` を参照。
 共通手順は[分散探索の運用ルール](../rpe_distributed_operations.md#空き枠容量障害の切り分け)を使う。
+
+### 2026-11-20 23:41 JSTのQ3まとめ配送とPF compile配置検収
+
+同じrunのrelayを `5d29988230` に更新した。23:41 JSTまでにWSLへQ3 14件を7回の
+まとめ配送で送り、同じattemptで全件の実行開始・中央回収が確認できた。配送往復を7回削減した。
+同じ人工メッセージ4件の現地試験では、server2の中央値が2.429秒から0.599秒、
+WSLは5.339秒から1.447秒になった。各3回。実runのWSL PR-DF割当から開始の
+中央値は19.827秒（16件）と20.295秒（9件）で、実開始待ちは同程度だった。
+server2では同じ方式別の観測でPR-DFが9.721秒（12件）と6.679秒（5件）、
+TRUNCATED_PFが10.075秒（5件）と5.686秒（5件）だった。各観測の処理内容は異なる。
+人工回帰99件が通り、まとめ配送の応答欠落でも6件の所有と回収は各1回だった。
+
+PF_COMPILEとPF_HOLDOUT_COMPILEは、保存済み要求でRomuTail、WSL、PBSの
+固定SOURCE・Git入力・実Pythonのdry-checkを各2件通過した。
+PBSの作業専用checkoutでは不足する4つの前提コミットと、385個の履歴コミットを
+既存Gitキャッシュへ補い、固定HEADとscienceファイルを照合した。専用Pythonとして
+既存の `venv311rc1-pauli-signal-chem05` を指定した。
+このrunの次回通常Resumeに4ホストの配置を登録した。PBS予約は標準較正で12 CPU・32 GiB、
+独立検証で2 CPU・8 GiBとした。固定providerのround数と既存メモリ見積りを根拠にした初期設定である。
+
+通常Stopの実運用操作は自動承認審査で現在の停止許可が必要とされ、現行controllerはそのまま稼働した。
+compile配置の実運用比較は次の通常Resumeで行う。実機記録は
+`.rpe-central/planning/rpe-fleet-compile-batching-20261120/` の
+`TRANSPORT_MEASURED.json`、`MEASURED.json`、各ホストのmetadataとResume選択記録を使う。
