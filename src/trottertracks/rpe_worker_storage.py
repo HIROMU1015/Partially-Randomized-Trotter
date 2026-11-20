@@ -22,6 +22,12 @@ SAMPLE_SECONDS = 5
 PREPARATION_COPIES = ('inputs', 'workspace', 'workspaces')
 
 
+def reclaim_watermarks(limit, *, proactive):
+    """Use an earlier high-water mark in the independent storage watcher."""
+    high, low = (80, 70) if proactive else (95, 90)
+    return limit * high // 100, limit * low // 100
+
+
 def duplicate_reclaim_target(usage):
     """Free only enough verified copies to restore the existing storage headroom."""
     if usage['reason'] not in (None, 'STORAGE_LIMIT_REACHED', 'FILESYSTEM_SPACE_LOW'):
@@ -29,7 +35,9 @@ def duplicate_reclaim_target(usage):
     limit, used = usage['limit_bytes'], usage['used_bytes']
     if used is None:
         return 0
-    quota = used - limit * 9 // 10 if used >= limit * 95 // 100 else 0
+    high, low = reclaim_watermarks(limit, proactive=True)
+    underway = usage.get('reclaim_start_bytes') == high and usage.get('reclaim_pending') is True
+    quota = used - low if used >= high or underway else 0
     free, minimum = usage.get('filesystem_free_bytes'), usage.get('filesystem_min_free_bytes', 0)
     pressure = 2 * minimum - free if free is not None and free < minimum else 0
     return max(0, quota, pressure)
@@ -389,8 +397,9 @@ def _compact_pack_directory(directory, scratch_root):
         return before - after
 
 
-def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(), refresh=False, compact_metadata=False):
-    """Reclaim acknowledged copies and recoverable cache before reaching the intake limit."""
+def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(),
+           refresh=False, compact_metadata=False, proactive=False):
+    """Report intake state and reclaim copies independently of the hard limit."""
     if policy is None:
         return None
     limit, roots = policy['limit_bytes'], policy['roots']
@@ -400,6 +409,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             or not sample.is_absolute()):
         raise ValueError('Worker storage requires a positive byte limit and absolute paths')
     identity = dict(limit_bytes=limit, roots=roots)
+    start, target = reclaim_watermarks(limit, proactive=proactive)
     caches = list(dict.fromkeys([*([prefix_cache] if prefix_cache else []), *cache_directories]))
     cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_caches=caches)
 
@@ -412,8 +422,13 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 report = saved['report']
                 if 'filesystem_free_bytes' not in report:
                     return None
-                if (report['used_bytes'] is None or report['used_bytes'] < limit * 95 // 100
-                        or saved.get('cleanup') == cleanup):
+                same_watermarks = (
+                    report.get('reclaim_start_bytes'), report.get('reclaim_target_bytes')
+                ) == (start, target)
+                if proactive and not same_watermarks:
+                    return None
+                if (report['used_bytes'] is None or report['used_bytes'] < start
+                        or (same_watermarks and saved.get('cleanup') == cleanup)):
                     return report
         except (OSError, KeyError, TypeError, ValueError):
             pass
@@ -427,8 +442,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
         compacted = 0
         if compact_metadata:
             observation = report(policy, spools=spools, pbs_runs=pbs_runs,
-                                 cache_directories=caches, refresh=refresh)
-            if observation['used_bytes'] is not None and observation['used_bytes'] >= limit * 95 // 100:
+                                 cache_directories=caches, refresh=refresh, proactive=proactive)
+            if observation.get('reclaim_pending'):
                 compacted = _compact_metadata_packs(policy, spools, pbs_runs)
             if not compacted:
                 return observation
@@ -441,8 +456,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             try:
                 used = _used_bytes(roots)
                 before, reclaimed = used, 0
-                target = limit * 9 // 10
-                cleanup_due = used >= limit * 95 // 100
+                cleanup_due = used >= start
                 if cleanup_due and (spools or pbs_runs):
                     candidates = list(spools)
                     if pbs_runs:
@@ -478,7 +492,10 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 measured = dict(limit_bytes=limit, used_bytes=used, accepting_new_jobs=used < limit and not low_roots,
                                 reason='STORAGE_LIMIT_REACHED' if used >= limit else 'FILESYSTEM_SPACE_LOW' if low_roots else None,
                                 filesystem_free_bytes=min(filesystem_free.values()),
-                                filesystem_min_free_bytes=min_free,filesystem_low_space_roots=low_roots)
+                                filesystem_min_free_bytes=min_free,filesystem_low_space_roots=low_roots,
+                                reclaim_start_bytes=start, reclaim_target_bytes=target,
+                                reclaim_checked=cleanup_due or bool(compacted),
+                                reclaim_pending=(cleanup_due or bool(compacted)) and used > target)
                 if used < before:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:

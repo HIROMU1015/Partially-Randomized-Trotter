@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sqlite3
 import shlex
+from types import SimpleNamespace
 import subprocess
 import sys
 import tempfile
@@ -307,6 +308,43 @@ class WorkerTests(unittest.TestCase):
                     self.assertEqual(workspace.exists(), not removed)
                     self.assertTrue((attempt/'OUTCOME.json').is_file())
                     self.assertTrue((attempt/'PROCESS_RETURN.json').is_file())
+
+    def test_proactive_storage_reclaims_at_40_gib_while_still_accepting(self):
+        gib = 2**30
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            spool = root/'spool'
+            spool.mkdir()
+            policy = dict(roots=[str(spool)], limit_bytes=50*gib, sample_path=str(root/'usage.json'))
+            options = dict(spools=(str(spool),))
+            with patch.object(W.Storage, '_used_bytes', return_value=40*gib-1), \
+                 patch.object(W.Storage, '_reclaim') as reclaim, \
+                 patch.object(W.Storage.shutil, 'disk_usage', return_value=SimpleNamespace(free=10*gib)):
+                sample = W.Storage.report(policy, **options, proactive=True)
+                self.assertTrue(sample['accepting_new_jobs'])
+                self.assertFalse(sample['reclaim_checked'])
+                reclaim.assert_not_called()
+
+            with patch.object(W.Storage, '_used_bytes', return_value=40*gib), \
+                 patch.object(W.Storage, '_reclaim', return_value=(35*gib, 1)) as reclaim, \
+                 patch.object(W.Storage.shutil, 'disk_usage', return_value=SimpleNamespace(free=10*gib)):
+                normal = W.Storage.report(policy, **options, refresh=True)
+                self.assertTrue(normal['accepting_new_jobs'])
+                reclaim.assert_not_called()
+                # A fresh sample from the old thresholds must not suppress
+                # the independent watcher's early cleanup at the boundary.
+                sample = W.Storage.report(policy, **options, proactive=True, compact_metadata=True)
+                reclaim.assert_called_once_with([str(spool)], [str(spool)], 40*gib, 35*gib)
+                self.assertEqual(sample['used_bytes'], 35*gib)
+                self.assertEqual(sample['limit_bytes'], 50*gib)
+                self.assertEqual(sample['reclaim_start_bytes'], 40*gib)
+                self.assertEqual(sample['reclaimed_bytes'], 5*gib)
+                self.assertTrue(sample['accepting_new_jobs'])
+
+            self.assertEqual(W.Storage.duplicate_reclaim_target(dict(
+                reason=None, limit_bytes=50*gib, used_bytes=40*gib-1)), 0)
+            self.assertEqual(W.Storage.duplicate_reclaim_target(dict(
+                reason=None, limit_bytes=50*gib, used_bytes=40*gib)), 5*gib)
 
     def test_storage_reclaims_configured_route_checkpoint_caches(self):
         with tempfile.TemporaryDirectory() as temporary:

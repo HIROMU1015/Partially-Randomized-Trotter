@@ -30,7 +30,7 @@ payload = json.load(sys.stdin)
 exec(compile(payload['source'], 'rpe_worker_storage.py', 'exec'), vars(storage))
 profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload['profile']
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
-options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile), compact_metadata=True)
+options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile), compact_metadata=True, proactive=True)
 result = storage.report(profile.get('storage_limit'), **options)
 if result and storage.duplicate_reclaim_target(result) > 0 and payload.get('duplicate_inventory'):
     result['duplicate_inventory'] = storage.duplicate_inventory(profile)
@@ -171,7 +171,7 @@ def local_duplicate_cache(run, profile):
 
 def local_report(run, profile):
     policy = profile.get('storage_limit')
-    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), compact_metadata=True)
+    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), compact_metadata=True, proactive=True)
     result = report(policy, **options)
     if (result and profile.get('artifact_cache_directory')
             and local_reclaim_target(policy, result, profile['artifact_cache_directory']) > 0):
