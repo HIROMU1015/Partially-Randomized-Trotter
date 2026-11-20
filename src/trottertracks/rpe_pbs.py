@@ -49,6 +49,7 @@ class Gateway:
         self.responses = queue.Queue()
         self.storage_monitors = {}
         self.storage_monitor_started = {}
+        self.storage_monitor_sample_paths = {}
 
     def _start(self):
         config = self.settings
@@ -102,15 +103,28 @@ class Gateway:
              config['ssh_alias'], shlex.join(remote)], input=json.dumps(policy), text=True, timeout=15)
         return json.loads(output)
 
+    def verify_storage_launcher(self, launcher):
+        output = subprocess.check_output(
+            ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
+             self.settings['ssh_alias'], shlex.join(['sha256sum', '--', launcher['path']])],
+            text=True, timeout=12)
+        if output.split()[0] != launcher['sha256']:
+            raise ValueError('PBS storage launcher differs from the selected deployment')
+
     def monitor_storage(self, profiles):
         """Keep the shared sample fresh only for running allocations in this run."""
         for host in self.storage_monitors.keys() - profiles.keys():
             self._stop_storage_monitor(self.storage_monitors.pop(host))
             self.storage_monitor_started.pop(host, None)
+            self.storage_monitor_sample_paths.pop(host, None)
         for host, profile in profiles.items():
             previous = self.storage_monitors.get(host)
+            sample_path = profile['storage_limit']['sample_path']
             if previous is not None and previous.poll() is None:
-                continue
+                if self.storage_monitor_sample_paths.get(host) == sample_path:
+                    continue
+                self._stop_storage_monitor(previous)
+                self.storage_monitor_started.pop(host, None)
             now = time.monotonic()
             if now - self.storage_monitor_started.get(host, float('-inf')) < SAMPLE_SECONDS:
                 continue
@@ -124,6 +138,7 @@ class Gateway:
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
             self.storage_monitors[host] = process
             self.storage_monitor_started[host] = now
+            self.storage_monitor_sample_paths[host] = sample_path
             try:
                 process.stdin.write(json.dumps(dict(policy=profile['storage_limit'],
                     spools=[profile['work_dir']], caches=prefix_caches(profile)))+'\n')
@@ -316,6 +331,9 @@ class PbsManager:
         self.path = self.directory/'STATE.json'
         self.state = read(self.path) if self.path.exists() else dict(allocations={}, requests={})
         self.gateway = gateway or Gateway(self.settings)
+        self.storage_launcher = (getattr(executor, 'distributed', {})
+                                 .get('pbs_gateway_storage_launcher'))
+        self.storage_launcher_verified = False
         self.stop = threading.Event()
         self.thread = None
         self.allocations = []
@@ -663,8 +681,14 @@ class PbsManager:
         deployment=worker.get('deployment')or self.settings.get('deployment')
         if deployment:
             profile['pbs']['deployment']=deepcopy(deployment)
+        interpreter = self.settings['python']
+        if self.storage_launcher and profile.get('storage_limit'):
+            if not self.storage_launcher_verified:
+                self.gateway.verify_storage_launcher(self.storage_launcher)
+                self.storage_launcher_verified = True
+            interpreter = self.storage_launcher['path']
         spec = dict(token=token, profile=profile, resources=resources,
-            python=self.settings['python'], transport_root=self.settings['transport_root'],
+            python=interpreter, transport_root=self.settings['transport_root'],
             run_id=str(self.executor.run_dir), reason=demand)
         # Save intent BEFORE making the remote call. On lost qsub/SSH response
         # the same token is reconciled, never replaced with a new submission.
@@ -705,12 +729,18 @@ class PbsManager:
             record.update(status=allocation['status'], observed=allocation, clock=now)
             if allocation['status'] in TERMINAL or allocation['status'] == 'HISTORY_MISSING_RECONCILE_SPOOL':
                 self._harvest(allocation)
-        if isinstance(self.gateway, Gateway):
-            self.gateway.monitor_storage({
-                record['spec']['profile']['host_id']: record['spec']['profile']
-                for record in self.state['allocations'].values()
-                if record['status'] == 'R' and record['spec']['profile'].get('storage_limit')
-            })
+        if self.storage_launcher:
+            profiles = {}
+            for record in self.state['allocations'].values():
+                spec = record['spec']
+                if record['status'] != 'R' or spec['python'] != self.storage_launcher['path']:
+                    continue
+                profile = deepcopy(spec['profile'])
+                sample = (Path(self.settings['remote_root'])/'allocations'/spec['token']/
+                          'STORAGE_USAGE_GATEWAY.json')
+                profile['storage_limit']['sample_path'] = str(sample)
+                profiles[profile['host_id']] = profile
+            self.gateway.monitor_storage(profiles)
         for token, requests in data['requests'].items():
             self.responses[token] = {request['request_id']:self._dispatch(token, request) for request in requests}
         outstanding, pending, queued, free = self._demand()

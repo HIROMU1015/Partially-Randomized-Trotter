@@ -27,6 +27,26 @@ from trottertracks.rpe_preparation_artifacts import ArtifactCache
 spec = importlib.util.spec_from_file_location('pbs_gateway_test', ROOT/'scripts/rpe_pbs_gateway.py')
 G = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(G)
+spec = importlib.util.spec_from_file_location('pbs_storage_worker_test', ROOT/'scripts/run_rpe_pbs_storage_worker.py')
+W = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(W)
+
+
+class StorageSampleTests(unittest.TestCase):
+    def test_refresh_is_measured_on_the_worker_clock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'sample.json'
+            policy = dict(limit_bytes=50*P.GIB, roots=['/shared'])
+            report = dict(limit_bytes=policy['limit_bytes'], used_bytes=P.GIB,
+                          accepting_new_jobs=True, reason=None)
+            observer = W.GatewayStorage(path, max_age=10)
+            with patch.object(W.time, 'monotonic', side_effect=[100., 103., 104., 114.]):
+                P.atomic(path, dict(policy=policy, sampled_epoch=12345., report=report))
+                self.assertFalse(observer.report(policy)['accepting_new_jobs'])
+                P.atomic(path, dict(policy=policy, sampled_epoch=12348., report=report))
+                self.assertEqual(observer.report(policy), report)
+                self.assertEqual(observer.report(policy), report)
+                self.assertFalse(observer.report(policy)['accepting_new_jobs'])
 
 
 def settings():

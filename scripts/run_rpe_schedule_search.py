@@ -68,6 +68,8 @@ def apply_worker_trial(spec, trial):
         if worker['host_id'] == 'server2':
             worker['profile'] = trial['server2_profile']
     distributed['local_calibration_pair'] = dict(memory_reserve_bytes=trial['local_memory_reserve_bytes'])
+    if trial.get('pbs_storage_launcher'):
+        distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
 
 
 class WideDriver(K.Driver):
