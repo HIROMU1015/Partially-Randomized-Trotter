@@ -45,6 +45,27 @@ class DiscreteGrid(unittest.TestCase):
         self.assertEqual(proposals, [])
         self.assertEqual(report['stop'], 'WAIT_FOR_PENDING')
 
+    def test_distributed_driver_supplies_the_discrete_backlog_while_a_split_is_pending(self):
+        grid = ['1', '2', '4']
+        driver = E.WidthDriver.__new__(E.WidthDriver)
+        driver.a = SimpleNamespace(plan_only=False)
+        driver.wide = dict(kappa_values=grid, per_decision=1)
+        driver.spec = dict(science_approved=True, executor=dict(distributed=dict(preparation={'enabled': True})))
+        driver.work_conserving_search = driver.live_ready_refill = True
+        driver.families = lambda: {'a': object(), 'b': object()}
+        driver.state = dict(cycle=1, history=[], families={
+            key: dict(method='PR_DF', L_D=ld, formula='2nd', K=2, requested_delta_pf='1/10')
+            for key, ld in [('a', 5), ('b', 6)]}, points=[
+                dict(family='a', method='PR_DF', kappa='1', status='COMPLETION'),
+                dict(family='b', method='PR_DF', kappa='2', status='HELD', reason='ORIGINAL_STOP')])
+
+        proposals, _ = driver.plan()
+        self.assertEqual([(p['family'], p['kappa']) for p in proposals],
+                         [('b', F(1)), ('a', F(2)), ('a', F(4)), ('b', F(4))])
+        self.assertEqual(driver.state['points'][1]['reason'], 'ORIGINAL_STOP')
+        self.assertEqual(driver.plan()[0], [])
+        self.assertEqual(driver.wide['per_decision'], 1)
+
     def test_exact_fraction_membership_and_domain_validation(self):
         self.assertEqual(W.kappa_values(dict(kappa_values=['2', '1/3', '2'])), [F(1, 3), F(2)])
         self.assertTrue(W.kappa_allowed(dict(kappa_values=['1/3']), F(1, 3)))

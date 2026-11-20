@@ -658,6 +658,15 @@ class WidthDriver:
             selection = self.wide_for(method)
             if scaled:
                 selection = dict(selection, stop_by_observed_trend=False)
+            grid = W.kappa_values(selection)
+            if (grid is not None and not self.a.plan_only and self.spec.get('science_approved') is True
+                    and self.work_conserving_search and self.live_ready_refill
+                    and (self.spec.get('executor', {}).get('distributed') or {}).get('preparation')):
+                # An explicit grid does not need a result to select its next
+                # point. Keep the independent preparation lanes supplied even
+                # when an earlier point (or its split) is still running.
+                # complete_points still limits concurrent work and owns reuse.
+                selection = dict(selection, per_decision=len(scoped) * len(grid))
             chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],selection,
                                           floor,price_floor_best=verified_best)
             proposals.extend(chosen);decisions.extend(why);reports[method]=summary;family_reports.update(summary['families'])
