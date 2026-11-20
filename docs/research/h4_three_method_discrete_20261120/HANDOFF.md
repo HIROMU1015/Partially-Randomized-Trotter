@@ -583,3 +583,5 @@ PFの28候補を固定providerの既存重複照合で再確認した。提案�
 両起動の最初の290秒間では、PFコンパイルの成功回収が旧server2限定の2件から、server2 3件・RomuTail 1件の計4件になった。要求は別の候補を含む。02:32 JST前後の25秒の探索worker平均はRomuTail 0.85 CPU、server2 0.82 CPU、WSL 0 CPUだった。探索全体のCPU使用率の向上は未確認。WSLは現物のコンパイル要求1件で入力照合PASS。PBSの96 CPU予約は空きノード待ちだった。
 
 RomuTailでFull PFの準備ハッシュ不一致を3件回収した。保存snapshotの復元を固定のHASWELL・1スレッドで確認すると、従来p7・p10の準備ハッシュが厳密に一致した。照合中の回路生成・コンパイルは各0件。修正 `a84d23cfc82767a3650686dcce4bf5fad4ed24b5` を通常Startと同じrunのResumeへ配置した。旧失敗と未確定attemptはそのまま保全する。[分散探索の運用ルール](../rpe_distributed_operations.md)
+
+修正版の通常Resume `5c0307e85fcb476c9009288126e3ffe1` で、RomuTailの `prep-c442a4de912d9cf705a8275c` が02:40:20 JSTに採用され、監査がキューに入った。RomuTailの次のコンパイルとserver2のコンパイルも開始を確認した。02:40:36 JSTごろから約25秒の計測で、当該runのworker CPU時間はRomuTail 25.18 CPU秒、server2 25.43 CPU秒、WSL 0 CPU秒だった。PBSの `267681.CPUcluster-PRISM` は96 CPUを要求し、`Not enough free nodes available` で待機中だった。
