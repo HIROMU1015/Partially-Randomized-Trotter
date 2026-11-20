@@ -325,9 +325,16 @@ def _compact_metadata_packs(policy, spools, pbs_runs):
 
 def _compact_pack_directory(directory, scratch_root):
     entries = list(directory.iterdir())
-    if any(path.resolve() != path or not path.is_file() or path.suffix not in ('.pack', '.idx')
+    if any(path.resolve() != path or not path.is_file() or path.suffix not in ('.pack', '.idx', '.rev')
            for path in entries):
         return 0
+    reverse_indexes = [path for path in entries if path.suffix == '.rev']
+    if any(not path.with_suffix('.pack').is_file() or not path.with_suffix('.idx').is_file()
+           for path in reverse_indexes):
+        return 0
+    for path in reverse_indexes:
+        subprocess.run(['git', '-C', str(directory.parent.parent), 'index-pack', '--verify', '--rev-index',
+                        str(path.with_suffix('.pack'))], check=True, capture_output=True, timeout=60)
     if directory.stat().st_dev != scratch_root.stat().st_dev:
         return 0
     before = sum(path.stat().st_blocks * 512 for path in entries)
