@@ -124,7 +124,20 @@ Gitの正式packと参照先は保存対象とし、停止済みの一時packは
 python3 scripts/restore_rpe_preparation_bundle.py --request "$request_file" --sha256 "$bundle_sha"
 ```
 
-別の保管済みGit checkoutを参照するときは `--repository "$source_repository"`、元のSHAの位置へ戻すときは `--restore-into "$artifact_cache"` を加える。復元コマンドは固定SOURCEだけを前提に生成された `inputs-*` を対象とし、SHA-256が一致した場合だけ書き込む。失敗した場合は候補の入力不足として扱い、元bundleか固定オブジェクトを回収する。Gitの版や設定を変えた場合もSHA-256を再確認する。
+別の保管済みGit checkoutを参照するときは `--repository "$source_repository"`、元のSHAの位置へ戻すときは `--restore-into "$artifact_cache"` を加える。checkoutからの再生成は固定SOURCEだけを前提に生成された `inputs-*` を対象とする。SHA-256が一致した場合だけ書き込む。失敗した場合は元bundleか固定オブジェクトを回収する。Gitの版や設定を変えた場合もSHA-256を再確認する。
+
+一時checkoutから独立させる場合は、`archive_rpe_preparation_inputs.py` で元のGit pack内の圧縮済みオブジェクトを一度ずつ保管する。各bundleのヘッダー・部品順序・末尾チェックサムも保持するため、復元時にcheckout、alternates、Gitの再圧縮を使わず、元のバイト列に戻せる。アーカイブ作成時は全件のSHA-256を照合し、元キャッシュを残す。アーカイブの増分も含めて容量が減る対象を選ぶ。
+
+```bash
+python3 scripts/archive_rpe_preparation_inputs.py \
+  --request "$first_request" --request "$second_request" --output "$archive"
+```
+
+配送キャッシュを整理した旧runは、固定版の通常Resumeより前に、中央のCodexが次を実行する。現行controllerに自動復元は組み込んでいない。既存のキャッシュに同じSHAがある場合は再利用する。`ARCHIVE.json` が対象run、元REQUESTのSHA-256、bundleのSHA-256を結び付ける。
+
+```bash
+python3 scripts/restore_rpe_preparation_bundle.py --archived-run "$run_directory" --archive "$archive"
+```
 
 既存runの整理では、起動と終了の記録が同じinvocationであること、未確定attemptや配布・回収待ちの要求が対象を参照していないこと、元の固定版でResumeする前に復元できることを確認する。復元元が候補の作業checkoutや一時的なGit alternatesにしかない場合は、復元元を保全するまで実体を残す。未検査の `workspace-*` やbase bundleも保持する。
 
@@ -136,3 +149,12 @@ python3 scripts/restore_rpe_preparation_bundle.py --request "$request_file" --sh
 | DF_SIGNALS `prep-92c07e13c05743421b2c679c` | 195,064,029 bytes、元SHA一致 | 127／27 | 33成果のhash一致。保存信号を別workspaceへ復元 |
 
 2件で合計241,591,516 bytes（約230 MiB）が短期キャッシュ化の候補となった。検査時の元runは起動と終了のinvocationが一致せず、台帳にも未割当・未確定が残るため、元キャッシュを保全した。2件の検査で確認したのは準備成果を同じSHAで再利用するところまでで、新規科学計算は0件。
+
+2026-11-20の独立アーカイブ検収では、24件すべてを元SHA-256へ復元した。終了記録と台帳が一致する4 runで、workerの空のキャッシュへの取込み、中央の元receiptと保存結果の再読まで通った21件のキャッシュ本体を整理した。元REQUEST、成果、STOP、未確定の試行は保持した。
+
+| RomuTailの保管先（`.rpe-central/archives/preparation-inputs/`配下） | 整理した旧run | 配送キャッシュから除いた件数 | 保管分を差し引いた削減 |
+| --- | --- | ---: | ---: |
+| `pilot-20261120-pack-entries` | `search-51ec4b40deb95d9b8e5b` | 5 | 176,418,816 bytes |
+| `closed-runs-20261120` | `search-9c1865e787c6aab3d251`、`search-2bf68d58d3d7c32243c8`、`search-eea38701fa5a6a593e9f` | 16 | 1,155,612,672 bytes |
+
+実割当容量で合計約1.24 GiBを削減した。整理後に元キャッシュがない状態から21件すべてを、Gitが使えない状態の別キャッシュへ復元し、SHA-256を確認した。現行runの2件と、旧runの保存結果に採用記録がなかった1件は独立アーカイブでSHAを照合したうえで、元キャッシュを残した。新規科学計算は0件。
