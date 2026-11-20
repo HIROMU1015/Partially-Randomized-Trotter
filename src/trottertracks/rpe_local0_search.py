@@ -645,7 +645,12 @@ class Gateway:
                 else:
                     if not current.exists(): raise RequestError('target', 'controller has no confirmed target; provide a scope or register a confirmed run')
                     target = load(current); run = Path(target['run_directory'])
-                if request['action'] == 'status': return self.result(run, 'STATUS')
+                if request['action'] == 'status':
+                    result = self.result(run, 'STATUS')
+                    maintenance = self.state/'maintenance'/(run.name+'.json')
+                    if maintenance.is_file():
+                        result['central_maintenance'] = load(maintenance)
+                    return result
                 if request['action'] == 'stop': return self.result(run, self.stop(run))
                 if request['action'] == 'planonly': return self.result(run, self.plan_only(run))
                 if request['action'] in ('preview','prepare'): return self.result(run, 'CONFIRMED_TARGET')

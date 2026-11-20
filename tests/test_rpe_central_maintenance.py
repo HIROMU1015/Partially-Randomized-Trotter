@@ -1,0 +1,125 @@
+import base64
+import hashlib
+import json
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT/'src'), str(ROOT/'scripts')]
+from recover_stopped_rpe_run import accept, check_assignment, owner, pbs_results, probe_local, publish_received, read_rows, repair_dependencies
+from run_rpe_central_maintenance import archive_candidates, wait_summary
+from trottertracks.rpe_completion_acceptance import validate_preparation_result
+from trottertracks.rpe_preparation_artifacts import ArtifactCache
+from trottertracks.rpe_q3_store import JobStore
+
+
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value))
+
+
+def encoded(value):
+    return base64.b64encode(json.dumps(value).encode()).decode()
+
+
+class CentralMaintenanceTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.run = Path(temp.name)/'search-artificial'
+        self.store = JobStore(self.run/'distributed/QUEUE.sqlite3')
+        self.cache = ArtifactCache(self.run/'distributed/artifacts')
+        self.source = {'commit':'a'*40,'files':{}}
+
+    def reserve(self, job, stage, **settings):
+        request = dict(route={'kind':'preparation'}, preparation=dict(stage=stage,source=self.source,artificial=True,**settings))
+        self.assertTrue(self.store.reserve('PREPARATION:'+stage,job,request,2,True))
+        write(self.run/'jobs'/('PREPARATION:'+stage)/job/'REQUEST.json',request)
+        return request
+
+    def test_receive_existing_attempt_without_new_execution_or_adoption(self):
+        self.reserve('compile','compile')
+        row, = self.store.claim('local',1)
+        check_assignment(row,dict(owner(row),request=row['request']))
+        with self.assertRaisesRegex(ValueError,'different|differs'):
+            check_assignment(row, dict(owner(row), attempt_id='other'))
+        payload = b'previously compiled artificial circuit'
+        sha = hashlib.sha256(payload).hexdigest()
+        self.cache.put({sha:base64.b64encode(payload).decode()})
+        outcome = dict(request_id='compile',request_sha256=row['request_sha256'],stage='compile',
+                       source_manifest=self.source,status='PREPARATION_COMPLETE',artifacts={'circuit':sha})
+        clean = dict(returncode=0,signal=None)
+        files = {'OUTCOME.json':encoded(outcome),'PROCESS_RETURN.json':encoded(clean),
+                 'PREPARATION_RECEIPT.json':encoded(clean),'ARTIFACT_MANIFEST.json':encoded({'circuit':sha})}
+        args = (self.store,self.cache,validate_preparation_result,{'code_root':str(ROOT)})
+        incomplete = dict(files, **{'PROCESS_RETURN.json':encoded({'returncode':None,'signal':9})})
+        self.assertEqual(accept(self.run,row,incomplete,*args), 'HELD_NO_CLEAN_RECEIPT')
+        self.assertEqual(self.store.row('compile')['state'], 'ASSIGNED')
+        self.assertEqual(accept(self.run,row,files,*args), 'RECEIVED')
+        self.assertEqual(accept(self.run,row,files,*args), 'ALREADY_RECEIVED')
+        accepted = self.store.row('compile')
+        self.assertIsNone(accepted['adopted_epoch'])
+        self.assertEqual(accepted['attempt_id'], row['attempt_id'])
+        self.assertEqual([event['event'] for event in self.store.events()].count('ASSIGN'),1)
+
+        result = self.run/'jobs/PREPARATION:compile/compile/OUTCOME.json'
+        result.unlink()  # Interrupt only the test between ACCEPT and publish.
+        self.assertTrue(publish_received(self.run,accepted))
+        self.assertEqual(json.loads(result.read_bytes()),outcome)
+        restored = result.parent/'artifacts/circuit'
+        restored.parent.mkdir()
+        restored.write_bytes(payload)
+        self.cache.path(sha).unlink()
+        self.reserve('audit','audit',dependency_inputs={'compile':{'circuit':'circuit'}})
+        repaired = repair_dependencies(self.run,read_rows(self.run),self.cache)
+        self.assertEqual(repaired,[dict(job_id='audit',predecessor='compile',sha256=sha)])
+        self.assertEqual(self.cache.path(sha).read_bytes(),payload)
+        self.assertEqual(self.store.row('audit')['state'],'QUEUED')
+
+    def test_mailbox_observation_does_not_start_an_assigned_attempt(self):
+        self.reserve('compile','compile')
+        row, = self.store.claim('local',1)
+        profile = self.run/'profile.json'
+        spool = self.run/'spool'
+        write(profile,dict(host_id='local',work_dir=str(spool)))
+        attempt = spool/'compile'/row['attempt_id']
+        write(attempt/'ASSIGNMENT.json',dict(owner(row),request=row['request']))
+        write(attempt/'WORKER_STATE.json',{'state':'ASSIGNED'})
+        before = sorted(p.name for p in attempt.iterdir())
+        self.assertEqual(probe_local(profile,row)['state'],'ASSIGNED')
+        self.assertEqual(sorted(p.name for p in attempt.iterdir()),before)
+        self.assertEqual(self.store.row('compile')['state'],'ASSIGNED')
+
+    def test_pbs_collection_uses_only_snapshot_and_harvest(self):
+        self.reserve('compile','compile')
+        row, = self.store.claim('pbs-0',1)
+        root = self.run/'distributed/pbs'
+        write(root/'SETTINGS.json',{'gateway_command':['artificial']})
+        write(root/'STATE.json',dict(allocations={'allocation':{'spec':{'profile':{'host_id':'pbs-0'}}}}))
+        assignment = dict(owner(row),request=row['request'])
+        files = {'OUTCOME.json':encoded({'artifacts':{}})}
+        with patch('trottertracks.rpe_pbs.Gateway') as gateway:
+            connection = gateway.return_value
+            connection.call.side_effect = [
+                {'allocations':[{'token':'allocation','status':'F'}]},
+                {'host_id':'pbs-0','attempts':[{'assignment':assignment,'files':files}]}]
+            recovered, = pbs_results(self.run,[row],self.cache)
+            self.assertEqual(recovered[2],files)
+            self.assertEqual([call.args[0]['action'] for call in connection.call.call_args_list],['snapshot','harvest'])
+        self.assertEqual(self.store.row('compile')['state'],'ASSIGNED')
+
+    def test_wait_summary_and_archiving_reject_incomplete_invocation(self):
+        self.reserve('signal','signal')
+        write(self.run/'LAUNCH.json',{'invocation_id':'new'})
+        write(self.run/'EXIT.json',{'invocation_id':'old','returncode':0})
+        (self.run/'PROGRESS.jsonl').write_text(json.dumps(dict(event='QUEUE_WAIT_STATE',
+              reasons={'signal':'PREPARATION_BUDGET_HOLD'},hosts={'pbs-0':{'idle_reason':'PREPARATION_BUDGET_HOLD'}}))+'\n')
+        self.assertEqual(wait_summary(self.run,{})['queue_wait_reasons'],{'PREPARATION_BUDGET_HOLD':1})
+        self.assertEqual(archive_candidates([self.run],None,{self.run:read_rows(self.run)})['count'],0)
+
+
+if __name__ == '__main__':
+    unittest.main()

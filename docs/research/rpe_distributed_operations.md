@@ -12,8 +12,8 @@ RomuTailの中央担当、Romulaptopの操作担当、各環境のworker担当�
 
 ## 通常入口と役割
 
-- Romulaptopは方式、探索範囲、要求幅・精度、shot配分、予算、および開始・停止・再開の指示を渡す。必要な準備タスクと割当はRomuTailが判断する。正本はRomuTailの `.rpe-central/state` にある。
-- Windowsの `tools/local0-search/Invoke-RpeSearch.ps1` と共通CLIの `scripts/run_rpe_search.py` が通常入口。新規runは渡されたscopeで `Start`、既存runは指定run IDで `Status`・`Stop`・`Resume` を使う。すでに送信された指示や起動応答の時間切れは、先に指定runの状態と所有を照会する。実行許可と対象が明確な通常操作では既存入口の照合をそのまま使う。
+- 利用者は方式、探索範囲、要求幅・精度、shot配分、予算、および開始・停止・再開をCodexへ指示する。RomulaptopのCodexはその指示をRomuTailへ渡す。必要な準備タスクと割当はRomuTailが判断する。正本はRomuTailの `.rpe-central/state` にある。
+- CodexはWindowsの `tools/local0-search/Invoke-RpeSearch.ps1` または共通CLIの `scripts/run_rpe_search.py` を通常入口として使う。利用者はCodexへ指示し、Start・ResumeはCodexが実行する。新規runは渡されたscopeで `Start`、既存runは指定run IDで `Status`・`Stop`・`Resume` を使う。すでに送信された指示や起動応答の時間切れは、先に指定runの状態と所有を照会する。実行許可と対象が明確な通常操作では既存入口の照合をそのまま使う。
 - RomuTailが保存成果の照合、候補選択、工程別予約、結果採用、checkpointを担当する。ハミルトニアン入力やdescriptorの準備、信号生成、価格用compile・監査、Q3を、工程ごとに適格なworkerへ共通キューから配る。独立した信号と価格準備は並行し、証拠の揃った候補から同じ探索に戻す。次の探索判断に必要なQ3を優先し、余裕枠を独立した準備や先読みに使う。
 - 科学実行は許可された範囲と予算内で行う。信号・compile・auditとQ3の予算を個別に管理し、準備予算の省略と明示的な0を区別する。compile予算のstage taskと実compileやwrapperの件数は別々に記録する。利用者が指定した `UNLIMITED` はQ3累計件数の設定として保持する。科学条件上未対応の候補は理由を記録して保留する。通常探索はほかの実行可能な候補で継続し、任意の価格モデル検証は低優先で進める。
 
@@ -90,6 +90,14 @@ run専用の補助プロセスが追従し、Stop・driver終了・invocation変
 - WSLやPBSで追加のキャッシュ整理が必要なら、受領済みの中央保存データとのハッシュとサイズの一致、転送ACK、実行中・未回収・未確定attemptから参照されていないことを確認する。共有のGitメタデータを整理する場合は、元bundleで再生成できることを確認し、取込みと同じロックを使う。
 - RomuTailのユーザーサービス `rpe-storage-recovery.service` が `scripts/reclaim_rpe_worker_storage.py --state-dir STATE_DIR` で稼働中のrunを追跡する。約1分ごとに既存のSSH経路で点検し、点検結果は `journalctl --user -u rpe-storage-recovery.service` に残る。50 GiBの95%から、回収済み作業コピー・再計算可能なキャッシュを整理する。空きが戻れば既存workerの受付が自動復帰する。ロックとGitオブジェクトの一致を確認できる場合は、旧メタデータpackも容量外の専用一時領域で圧縮する。対になるpack・idxを持ちGit検証を通る `.rev` は整理対象に含め、オブジェクト集合を保つ。個別runを調査するときは、常設サービスと同時に同じrunを操作しない。
 - 整理後は45 GiBを目安に再計測する。worker使用量が上限未満で、対象の保存先すべての空きが最低値以上になれば、次のworker照会で容量による受付保留が自動で解除される。利用者のPause・受付OFFとWSL停止は各環境の設定に従う。実行可能な仕事が待機中なら、`QUEUE_WAIT_STATE` と台帳で新規割当まで確認する。
+
+## RomuTail中央の常設保守
+
+- `rpe-central-maintenance.timer` は、登録済みrunの中央台帳と固定版から、依存入力の照合、停止後の回収、待ち理由の集約を行う。優先対象は現在のrunと、稼働中に追跡を開始して所有中attemptが残るrun。常設保守から通常Start・Resume、新規予約、割当、科学計算、再試行は行わない。
+- 停止後は元のhost、job、attempt、REQUESTのSHAを照合する。PBSでは既存gatewayの `snapshot`、`harvest` を使う。SSH・WSLでは保存状態と特定attemptの `result` を使う。割当済み処理を起動できる一般のmailbox `status` は使わない。元の完了receiptと保存結果が照合を通った分だけ同じJobStoreへ受領し、科学的な採用は通常探索に委ねる。終了証跡が揃わない元attemptの所有・STOP・予算は保持する。
+- 待機中の監査等が参照する中央CASの入力が欠けたときは、元の成功・受理済み準備jobの読み取り用成果から、元manifestのSHAと一致するものだけ戻す。通常relayが不足分を配送する。原結果や固定入力の欠落が残れば該当依存関係を保留する。
+- Statusの `central_maintenance` に最新観測時刻、キューの待ち理由、hostとrelay・PBSの状態、自動回収・復旧の結果を返す。正本のjob状態はJobStoreを使う。保守記録は `.rpe-central/state/maintenance/` に保存する。
+- 終了runの配送bundleは `ARCHIVE_CANDIDATES.json` に候補を記録する。稼働controllerがない間に、終了・採用・参照・所有を照合し、空の作業領域で元SHAの復元、入力照合、保存成果の再読を通す。新しいアーカイブ分を含めて削減できる場合に限り、復元記録を先に固定して配送キャッシュ本体を整理する。現在の対象run、未確定run、受領・採用前の成果、別runから参照中のbundleは対象外とする。
 
 ## 探索データの保存期間と整理
 

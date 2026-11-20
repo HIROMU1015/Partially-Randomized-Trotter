@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""Run collection-only checks and nominate recoverable central archive candidates."""
+import argparse
+from collections import Counter
+import fcntl
+import json
+import os
+from pathlib import Path
+import subprocess
+import sqlite3
+import sys
+import time
+
+from recover_stopped_rpe_run import OWNED, load, live_driver, optional, read_rows, safe_name
+
+
+def save(path, data):
+    temporary = path.with_suffix('.tmp')
+    temporary.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+    temporary.replace(path)
+
+
+def latest_wait(path):
+    if not path.is_file():
+        return {}
+    with path.open('rb') as stream:
+        start = max(0, stream.seek(0,os.SEEK_END)-2*1024**2)
+        stream.seek(start)
+        if start:
+            stream.readline()
+        for line in reversed(stream.readlines()):
+            if b'"QUEUE_WAIT_STATE"' in line:
+                try:
+                    return json.loads(line)
+                except ValueError:
+                    continue
+    return {}
+
+
+def wait_summary(run, recovery):
+    wait = latest_wait(run/'PROGRESS.jsonl')
+    relay = optional(run/'distributed/relay/STATUS.json')
+    pbs = optional(run/'distributed/pbs/STATE.json')
+    allocations = Counter(row.get('status','UNCONFIRMED') for row in pbs.get('allocations', {}).values()
+                          if not row.get('harvested'))
+    return dict(queue_wait_observed_at=wait.get('UTC'),
+                live_controller=live_driver(run),
+                queue_wait_reasons=dict(Counter(wait.get('reasons', {}).values())),
+                hosts=wait.get('hosts', {}), preparation_budget=wait.get('preparation_budget_blocked', {}),
+                relay={host:{key:value[key] for key in ('phase','error','last_error_epoch') if key in value}
+                       for host,value in relay.get('workers', {}).items()},
+                pbs_allocations=dict(allocations), recovery_status=recovery.get('status'),
+                delivery_hold=recovery.get('delivery_hold'))
+
+
+def archive_candidates(runs, current, rows):
+    """Nominate ended, adopted inputs which no other registered run references."""
+    referenced = Counter()
+    proposals = []
+    for run in runs:
+        run_rows = rows.get(run,[])
+        pending = optional(run/'distributed/PREPARATION_PENDING.json').get('tasks', {})
+        requests = [row['request'] for row in run_rows] + [row['request'] for row in pending.values()]
+        referenced.update({bundle['sha256'] for request in requests
+                           for bundle in (request.get('preparation') or {}).get('input_git_bundles', [])})
+        launch = optional(run/'LAUNCH.json'); finished = optional(run/'EXIT.json')
+        if (run == current or not launch.get('invocation_id') or launch['invocation_id'] != finished.get('invocation_id')
+                or finished.get('returncode') != 0 or live_driver(run)
+                or any(row['state'] not in ('ACCEPTED','CANCELLED') for row in run_rows)):
+            continue
+        for row in run_rows:
+            if row['state'] != 'ACCEPTED' or row['adopted_epoch'] is None:
+                continue
+            prep = row['request'].get('preparation') or {}
+            bundles = [bundle for bundle in prep.get('input_git_bundles', []) if '/inputs-' in bundle['ref']
+                       and not bundle.get('workspace_objects')]
+            if not bundles or prep.get('workspaces'):
+                continue
+            job = run/'jobs'/safe_name(row['method'])/safe_name(row['job_id'])
+            outcome = optional(job/'OUTCOME.json')
+            receipt = optional(job/'PREPARATION_RECEIPT.json')
+            if (outcome.get('request_sha256') != row['request_sha256']
+                    or outcome.get('status') != 'PREPARATION_COMPLETE'
+                    or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+                continue
+            if optional(job/'REQUEST.json') != row['request']:
+                continue
+            for bundle in bundles:
+                sha = safe_name(bundle['sha256'])
+                path = run/'distributed/artifacts'/sha[:2]/sha
+                if path.is_file() and not path.is_symlink() and path.stat().st_nlink == 1:
+                    proposals.append(dict(run_id=run.name, job_id=row['job_id'], sha256=sha,
+                                          request=str(job/'REQUEST.json'), allocated_bytes=path.stat().st_blocks*512))
+    unique = {row['sha256']:row for row in proposals if referenced[row['sha256']] == 1}
+    result = sorted(unique.values(), key=lambda x:-x['allocated_bytes'])
+    return dict(status='CANDIDATES_ONLY', candidates=result, count=len(result),
+                allocated_bytes=sum(row['allocated_bytes'] for row in result))
+
+
+def run_pass(state, *, offline=False):
+    report_dir = state/'maintenance'
+    report_dir.mkdir(exist_ok=True)
+    with (report_dir/'LOCK').open('a+b') as lock:
+        try:
+            fcntl.flock(lock,fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return {'status':'ALREADY_RUNNING'}
+        index = load(state/'RUNS.json')
+        current = (state/'CURRENT_TARGET.json')
+        current = optional(current).get('run_id')
+        runs, warnings = {}, []
+        for run_id, item in index.items():
+            try:
+                run = Path(item['run_directory']).resolve(strict=True)
+                if run.name != run_id:
+                    raise ValueError('Registered run path differs')
+                runs[run_id] = run
+            except (OSError,ValueError,KeyError,sqlite3.Error) as error:
+                warnings.append(dict(run_id=run_id,error=str(error)))
+        archive_path = report_dir/'ARCHIVE_CANDIDATES.json'
+        previous = optional(archive_path)
+        if time.time()-previous.get('epoch',0) >= 300:
+            try:
+                candidates = archive_candidates(runs.values(),runs.get(current),{run:read_rows(run) for run in runs.values()})
+                save(archive_path,dict(candidates,epoch=time.time(),warnings=warnings))
+            except (OSError,ValueError,KeyError,sqlite3.Error) as error:
+                warnings.append(dict(archive_candidates_error=str(error)))
+        # Remember runs seen active so a later target change need not orphan a
+        # known outstanding attempt. A fresh deployment leaves historical
+        # non-current terminal attempts available through the one-run utility.
+        monitored = set(optional(report_dir/'WATCH.json').get('runs',[]))
+        for run_id, run in runs.items():
+            if run_id == current or live_driver(run):
+                monitored.add(run_id)
+        selected = [run_id for run_id in sorted(monitored) if run_id in runs]
+        for run_id in selected:
+            run = runs[run_id]
+            report = report_dir/(run_id+'.json')
+            previous = optional(report)
+            source = Path(__file__).with_name('recover_stopped_rpe_run.py')
+            cmd = [sys.executable,'-B',str(source),'--state-directory',str(state),'--run-id',run_id]
+            if offline:
+                cmd.append('--offline')
+            try:
+                completed = subprocess.run(cmd, capture_output=True,check=True,text=True,timeout=110)
+                result = json.loads(completed.stdout)
+            except (OSError,ValueError,subprocess.SubprocessError) as error:
+                result = dict(status='RECOVERY_PENDING',reason=str(error)[:350],jobs=previous.get('jobs', []),
+                              repaired_inputs=[],new_scientific_calls=0)
+            save(report,dict(result,wait=wait_summary(run,result),observed_epoch=time.time()))
+            if (run_id != current and not live_driver(run)
+                    and not any(row['state'] in OWNED for row in read_rows(run))):
+                monitored.discard(run_id)
+        save(report_dir/'WATCH.json',dict(runs=sorted(monitored)))
+        compaction_path = report_dir/'ARCHIVE_COMPACTION.json'
+        previous_compaction = optional(compaction_path)
+        if not offline and time.time()-previous_compaction.get('epoch',0) >= 300:
+            command = [sys.executable,'-B',str(Path(__file__).with_name('compact_rpe_central_archives.py')),
+                       '--state-directory',str(state)]
+            try:
+                completed = subprocess.run(command, capture_output=True,check=True,text=True,timeout=1250)
+                compact = json.loads(completed.stdout)
+            except (OSError,ValueError,subprocess.SubprocessError) as error:
+                compact = dict(status='COMPACTION_PENDING',reason=str(error)[:350])
+            save(compaction_path,dict(compact,epoch=time.time()))
+        return dict(status='CHECKED',runs=selected,warnings=warnings,new_scientific_calls=0)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--state-directory',type=Path,required=True)
+    parser.add_argument('--offline',action='store_true')
+    args = parser.parse_args()
+    print(json.dumps(run_pass(args.state_directory.resolve(strict=True),offline=args.offline),ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    main()
