@@ -188,9 +188,15 @@ class PreparationTransportTests(unittest.TestCase):
         sha=hashlib.sha256(raw).hexdigest();cache.put({sha:base64.b64encode(raw).decode()})
         start=threading.Barrier(10)
         def adopt(_):
-            start.wait();cache.materialize({'shared/raw/circuit.json':sha},self.root/'adoption')
+            start.wait();cache.materialize({'shared/raw/circuit.json':sha},self.root/'adoption',immutable=True)
         with ThreadPoolExecutor(max_workers=10)as pool:list(pool.map(adopt,range(10)))
         self.assertEqual((self.root/'adoption/shared/raw/circuit.json').read_bytes(),raw)
+        self.assertTrue((self.root/'adoption/shared/raw/circuit.json').samefile(cache.path(sha)))
+        cache.materialize({'shared/raw/circuit.json':sha}, self.root/'workspace')
+        private = self.root/'workspace/shared/raw/circuit.json'
+        self.assertFalse(private.samefile(cache.path(sha)))
+        private.write_bytes(b'workspace change')
+        self.assertEqual(cache.path(sha).read_bytes(), raw)
         self.assertEqual(list((self.root/'adoption').rglob('*.materialize-*')),[])
 
     def test_fixed_blas_profile_reaches_the_actual_synthetic_child(self):

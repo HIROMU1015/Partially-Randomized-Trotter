@@ -1612,7 +1612,7 @@ class DistributedExecutor(ConcurrentExecutor):
             job = self.run_dir/'jobs'/row['method']/job_id
             outcome = json.loads((job/'OUTCOME.json').read_text())
             artifacts = job/'artifacts'
-            self.artifact_cache.materialize(outcome.get('artifacts', {}), artifacts)
+            self.artifact_cache.materialize(outcome.get('artifacts', {}), artifacts, immutable=True)
             if adopt and self.store.adopt(job_id):
                 self.for_method(row['method']).log(event='ADOPT',job=job_id,configuration=job_id,status=outcome['status'],stage=row['request']['preparation']['stage'])
                 self.state.metrics['preparation_adopted'] += 1
