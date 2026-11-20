@@ -144,9 +144,10 @@ def ensure(root, spec):
     return dict(token=token, existing=False)
 
 
-def snapshot(root, finished=None):
-    directories = [directory for directory in sorted((root/'allocations').glob('*'))
-                   if (directory/'SPEC.json').exists()]
+def snapshot(root, finished=None, directories=None):
+    if directories is None:
+        directories = [directory for directory in sorted((root/'allocations').glob('*'))
+                       if (directory/'SPEC.json').exists()]
     if not directories:
         return []
     ids = []
@@ -217,7 +218,7 @@ def snapshot(root, finished=None):
     return result
 
 
-def exchange(root, incoming, finished=None):
+def exchange(root, incoming, finished=None, snapshotter=snapshot):
     for token, responses in incoming.get('responses', {}).items():
         directory = root/'allocations'/safe_id(token)
         for request_id, response in responses.items():
@@ -238,7 +239,7 @@ def exchange(root, incoming, finished=None):
                   if not (directory/'responses'/path.name).exists()]
         if values:
             requests[directory.name] = values
-    return dict(requests=requests, allocations=snapshot(root, finished))
+    return dict(requests=requests, allocations=snapshotter(root, finished))
 
 
 def harvest(directory, wanted=None):

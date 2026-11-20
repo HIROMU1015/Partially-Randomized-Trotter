@@ -53,6 +53,21 @@ def configure_allocation_worker(profile, launcher):
             from trottertracks import _collection_q3_worker as cycle
 
     class MeasuredAllocationWorker(transport.AllocationWorker):
+        def pending(self):
+            if (not self.draining or not (self.directory/'PILOT.json').is_file()
+                    or not self.control().get('stop')):
+                return super().pending()
+            # A disconnected controller may be unable to ACK before Stop. Its
+            # normal harvest must still validate these files in the original run.
+            for attempt in self.records:
+                state = worker.read(attempt/'WORKER_STATE.json')['state']
+                if state in ('TRANSFERRED', 'UNKNOWN'):
+                    continue
+                if (state != 'COMPLETED_PENDING_TRANSFER' or
+                        not all((attempt/name).is_file() for name in ('OUTCOME.json', 'PROCESS_RETURN.json'))):
+                    return True
+            return False
+
         def _resource_offer(self):
             report = super()._resource_offer()
             for attempt, assignment in self.records.items():

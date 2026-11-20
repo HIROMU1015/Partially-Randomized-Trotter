@@ -1,0 +1,157 @@
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import time
+import unittest
+from concurrent.futures import ThreadPoolExecutor
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
+import rpe_pbs_pilot as pilot
+import run_rpe_pbs_storage_worker as collector
+
+G = pilot.gateway
+
+
+class PilotTest(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.base = Path(temp.name)
+        self.pool = self.base/pilot.POOL_NAME
+        self.a, self.b = (self.base/(c*20) for c in 'ab')
+        self.jobs = {}
+        self.submissions = []
+        run = subprocess.run
+
+        def scheduler(command, *args, **kwargs):
+            if command[0] == '/opt/pbs/bin/qsub':
+                token = Path(command[1]).parent.name
+                job = str(len(self.submissions)+1)+'.prism'
+                self.submissions.append(token)
+                self.jobs[job] = dict(Job_Name='RPE'+token[:12], job_state='Q',
+                                      Resource_List=dict(pilot.RESOURCES))
+                return subprocess.CompletedProcess(command, 0, job, '')
+            if command[0] == '/opt/pbs/bin/qdel':
+                self.jobs[command[1]]['job_state'] = 'F'
+                return subprocess.CompletedProcess(command, 0, '', '')
+            return run(command, *args, **kwargs)
+
+        for ctx in [patch.object(pilot, 'owned_live_jobs', return_value=self.jobs),
+                    patch.object(G, 'qstat', side_effect=lambda *ids: {
+                        k:v for k,v in self.jobs.items() if not ids or k in ids}),
+                    patch.object(subprocess, 'run', side_effect=scheduler)]:
+            ctx.start()
+            self.addCleanup(ctx.stop)
+
+    def attach(self, root, token):
+        spec = dict(token=token, resources=pilot.RESOURCES, run_id=root.name, reason={},
+                    profile=dict(host_id='pbs-0', work_dir=str(root/'workers'/'pbs-0')),
+                    python=sys.executable, transport_root=str(self.base/'code'))
+        pilot.handle(root, dict(action='ensure', spec=spec), {})
+        return root/'allocations'/token
+
+    def stop(self, root, token):
+        pilot.handle(root, dict(action='exchange', controls={token:dict(stop=True)}), {})
+        pilot.handle(root, dict(action='delete', token=token), {})
+
+    def test_prequeue_stop_switch_lost_reply_and_explicit_release(self):
+        with ThreadPoolExecutor(2) as executor:
+            rows = list(executor.map(lambda _: pilot.admin(self.pool,'reserve'), range(2)))
+        self.assertEqual(rows[0]['job_id'], rows[1]['job_id'])
+        generation = self.pool/'allocations'/rows[0]['token']
+        (generation/'QSUB_RETURN.json').unlink()
+        (generation/'JOB_ID.json').unlink()
+        self.attach(self.a, 'tokenA')
+        self.stop(self.a, 'tokenA')
+        b = self.attach(self.b, 'tokenB')
+        self.attach(self.b, 'tokenB')
+        self.assertEqual(pilot.claim(self.pool,generation,'1.prism'), b)
+        self.assertEqual(pilot.session_snapshot(self.a)[0]['status'], 'F')
+        self.assertEqual(pilot.session_snapshot(self.b)[0]['job_id'], '1.prism')
+        self.assertEqual(self.jobs['1.prism']['job_state'], 'Q')
+        self.assertEqual(len(self.submissions), 1)
+        pilot.admin(self.pool, 'release')
+        self.assertEqual(self.jobs['1.prism']['job_state'], 'F')
+        self.assertEqual(pilot.admin(self.pool, 'reserve')['job_id'], '2.prism')
+
+    def test_compute_handoff_and_saved_results_stay_with_original_run(self):
+        script = self.base/'code/scripts/run_rpe_pbs_worker.py'
+        script.parent.mkdir(parents=True)
+        script.write_text("""import json, pathlib, sys, time
+p=pathlib.Path(sys.argv[-1])
+profile=json.loads(p.read_text())
+d=p.parent
+work=pathlib.Path(profile['work_dir'])/'artificial'/'original-attempt'
+work.mkdir(parents=True)
+for name,data in [('ASSIGNMENT',{'job_id':'artificial','attempt_id':'original-attempt','request':{}}),
+                  ('WORKER_STATE',{'state':'COMPLETED_PENDING_TRANSFER'}),
+                  ('OUTCOME',{'owner':str(d),'artifacts':{}}),('PROCESS_RETURN',{'returncode':0})]:
+    (work/(name+'.json')).write_text(json.dumps(data))
+while not (d/'CONTROL.json').is_file():
+    time.sleep(.02)
+""")
+        row = pilot.admin(self.pool, 'reserve')
+        generation = self.pool/'allocations'/row['token']
+        a = self.attach(self.a, 'a1')
+        self.jobs['1.prism']['job_state'] = 'R'
+        self.jobs['1.prism']['resources_used'] = dict(walltime='01:00:00')
+
+        def wait(path):
+            until = time.monotonic()+10
+            while not path.exists() and time.monotonic() < until:
+                time.sleep(.025)
+            self.assertTrue(path.exists(), str(path))
+
+        with patch.dict(os.environ, PBS_JOBID='1.prism'), ThreadPoolExecutor(1) as executor:
+            server = executor.submit(pilot.serve, generation)
+            try:
+                wait(self.a/'workers/pbs-0/artificial/original-attempt/PROCESS_RETURN.json')
+                b = self.attach(self.b, 'b1')
+                self.assertEqual(pilot.session_snapshot(self.b)[0]['status'], 'Q')
+                self.assertFalse((b/'SESSION_START.json').exists())
+                self.stop(self.a, 'a1')
+                wait(self.b/'workers/pbs-0/artificial/original-attempt/PROCESS_RETURN.json')
+                self.assertTrue((a/'SESSION_END.json').exists())
+                import base64
+                for root, token, directory in [(self.a,'a1',a),(self.b,'b1',b)]:
+                    data = pilot.handle(root, dict(action='harvest', token=token), {})
+                    outcome = json.loads(base64.b64decode(data['attempts'][0]['files']['OUTCOME.json']))
+                    self.assertEqual(outcome['owner'], str(directory))
+                    self.assertEqual(G.read(directory/'ALLOCATION.json')['job_id'], '1.prism')
+                    self.assertLessEqual(G.read(directory/'ALLOCATION.json')['remaining_seconds'], 23*3600)
+                self.assertEqual(len(self.submissions), 1)
+            finally:
+                pilot.admin(self.pool, 'release')
+            server.result(timeout=10)
+
+    def test_unrelated_live_allocation_and_ambiguous_history_do_not_resubmit(self):
+        self.jobs['other'] = dict(job_state='R', Job_Name='RPEunrelated')
+        with self.assertRaises(ValueError):
+            pilot.admin(self.pool, 'reserve')
+        self.jobs.clear()
+        row = pilot.admin(self.pool, 'reserve')
+        self.jobs.clear()
+        self.assertEqual(pilot.admin(self.pool, 'reserve')['status'], 'HISTORY_MISSING_RECONCILE_SPOOL')
+        self.assertEqual(self.submissions, [row['token']])
+
+    def test_offline_drain_requires_both_files_and_leaves_ack_to_controller(self):
+        from trottertracks import rpe_pbs_worker as module
+        with patch.object(module, 'AllocationWorker', module.AllocationWorker):
+            collector.configure_allocation_worker({'pbs':{}}, Path('worker.py'))
+            worker = object.__new__(module.AllocationWorker)
+            worker.directory = self.base
+            worker.draining = True
+            attempt = self.base/'attempt'
+            worker.records = {attempt:{}}
+            G.atomic(self.base/'PILOT.json', {})
+            G.atomic(self.base/'CONTROL.json', dict(stop=True))
+            G.atomic(attempt/'WORKER_STATE.json', dict(state='COMPLETED_PENDING_TRANSFER'))
+            G.atomic(attempt/'OUTCOME.json', {})
+            self.assertTrue(worker.pending())
+            G.atomic(attempt/'PROCESS_RETURN.json', {})
+            self.assertFalse(worker.pending())
+            self.assertEqual(G.read(attempt/'WORKER_STATE.json')['state'], 'COMPLETED_PENDING_TRANSFER')
