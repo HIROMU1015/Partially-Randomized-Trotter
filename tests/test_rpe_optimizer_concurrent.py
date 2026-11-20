@@ -73,6 +73,32 @@ def run_fixture(directory,fast,*,methods=METHODS,configurations=2,budget=None,st
 
 
 class SchedulerTests(unittest.TestCase):
+    def test_native_pf_template_request_accepts_a_partial_registry(self):
+        executor = C.ConcurrentExecutor.__new__(C.ConcurrentExecutor)
+        executor.method = 'TRUNCATED_PF'
+        executor.optimizer_source = 'synthetic-test'
+        executor.expected = {}
+        executor.dp_workers = 1
+        executor.prefix_cache_directory = None
+        executor.compact_q3_evidence = False
+        locator = dict(commit='a'*40, path='saved-cases.json', inputs_selector=['inputs'])
+        registry = {'another-case': dict(configuration=dict(commit='b'*40, path='other.json'))}
+        route = dict(kind='pf_b_pf6', configurations=registry, templates=[locator])
+        proposal = dict(configuration_id='saved-case', vector=(1,)*26, cost=Fraction(1), origin={'M': 12})
+
+        request = executor.request(proposal, Path('native-q3'), route)
+
+        self.assertNotIn('configurations', request['route'])
+        self.assertEqual(route['configurations'], registry)
+        self.assertEqual(request['route']['templates'], [locator])
+        with patch.object(Q.subprocess, 'check_output', return_value=b'saved template bytes') as show:
+            Q.input_hashes(ROOT, request)
+        show.assert_called_once_with(['git', 'show', locator['commit']+':'+locator['path']], cwd=ROOT)
+
+        proposal['configuration_id'] = 'another-case'
+        registered = executor.request(proposal, Path('registered-q3'), route)
+        self.assertEqual(registered['route'], route)
+
     def test_projected_q3_request_keeps_the_fixed_source_inputs_addressable(self):
         problem, context, routes = fixture(['PR_DF'], 1)
         problem['rpe']['M'] = 12

@@ -237,7 +237,7 @@ def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_paralle
     def check(assignment):
         job = assignment['job_id']
         try:
-            fact = (Preparation.current_preparation_fingerprint(assignment, profile)
+            fact = (Preparation.current_preparation_fingerprint(assignment, profile, check_workspace=True)
                     if Preparation.is_preparation(assignment) else current_host_fingerprint(assignment, profile))
             return job, fact, None
         except Exception as error:

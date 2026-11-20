@@ -140,17 +140,20 @@ class ConcurrentExecutor(O.Executor):
         from .rpe_host_profiles import PREFIX_PR_Q3_ROUTES, REVIEWED_PR_Q3_ROUTES
         projection = rule.get('horizon_projection')
         configurations = rule.get('configurations')
-        if projection and configurations is not None:
-            # Fixed workers look up input hashes by the request ID, then use
-            # the original configuration ID to build the projected Q3 case.
-            source = configurations.get(projection['source_configuration_id'])
-            if source is not None:
-                rule = dict(rule, configurations={**configurations, proposal['configuration_id']: source})
-            elif rule.get('templates') and rule['kind'] in (
+        if configurations is not None:
+            request_id = proposal['configuration_id']
+            source_id = projection['source_configuration_id'] if projection else request_id
+            source = configurations.get(source_id)
+            if source is None and rule.get('templates') and rule['kind'] in (
                     'pf_b_pf6', 'pauli_b_ld3', 'pauli_b_ld5', 'prdf_d2_split'):
-                # These adapters resolve their source from a fixed template
-                # when the optional configuration map has no matching entry.
+                # A partial registry must not mask a case selected from the
+                # saved templates. The fixed input hasher indexes this field
+                # by request ID whenever it is present.
                 rule = {key: value for key, value in rule.items() if key != 'configurations'}
+            elif projection and source is not None:
+                # The hasher uses the request ID. The worker uses the original
+                # ID and validates the requested prefix against that source.
+                rule = dict(rule, configurations={**configurations, request_id: source})
         req=super().request(proposal,job,rule)
         execution = req['execution_profile'] = dict(dp_workers=self.dp_workers)
         artificial = rule['kind'] == 'artificial'
