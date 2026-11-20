@@ -169,8 +169,12 @@ print(json.dumps(dict(imported_gateway=str(api.__file__),next_child=commands[0],
             driver = deployment/'scripts/run_rpe_schedule_search.py'
             driver.parent.mkdir(parents=True)
             driver.write_text('# artificial scheduler replacement\n')
+            manager = deployment/'src/trottertracks/rpe_pbs.py'
+            manager.parent.mkdir(parents=True)
+            manager.write_text('# artificial PBS manager replacement\n')
             selection = dict(run_id=run.name, base_source=config['code_source'], source='FIXED_SCHEDULER',
-                             root=str(deployment), driver_sha256=api.hashlib.sha256(driver.read_bytes()).hexdigest())
+                             root=str(deployment), driver_sha256=api.hashlib.sha256(driver.read_bytes()).hexdigest(),
+                             pbs_manager_sha256=api.hashlib.sha256(manager.read_bytes()).hexdigest())
             child = Mock(pid=1234)
             child.wait.return_value = 0
             config.pop('publication', None)
@@ -178,10 +182,13 @@ print(json.dumps(dict(imported_gateway=str(api.__file__),next_child=commands[0],
                     patch.object(api.subprocess, 'Popen', return_value=child) as popen:
                 api.execute_run(config, run, 'ARTIFICIAL_RESUME', schedule_resume=selection)
                 command = popen.call_args.args[0]
-                self.assertEqual(command[4:6], [str(root), str(driver)])
+                self.assertEqual(command[4:7], [str(root), str(driver), str(manager)])
                 self.assertEqual(popen.call_args.kwargs['cwd'], str(root))
                 self.assertEqual(api.load(run/'NORMAL_DRIVER.json')['implementation']['schedule_source'], 'FIXED_SCHEDULER')
                 check.assert_called_once_with(config)
+                manager.write_text('# manager changed after selection\n')
+                with self.assertRaisesRegex(api.RequestError, 'PBS manager differs from its selected deployment'):
+                    api.execute_run(config, run, 'ARTIFICIAL_MANAGER_CHANGED', schedule_resume=selection)
                 driver.write_text('# changed after selection\n')
                 with self.assertRaisesRegex(api.RequestError, 'differs from its selected deployment'):
                     api.execute_run(config, run, 'ARTIFICIAL_CHANGED', schedule_resume=selection)

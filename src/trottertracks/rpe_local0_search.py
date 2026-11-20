@@ -975,6 +975,11 @@ def schedule_driver(config, run, selection):
     if (not driver.is_file()
             or hashlib.sha256(driver.read_bytes()).hexdigest() != selection['driver_sha256']):
         raise RequestError('schedule_resume', 'Scheduler differs from its selected deployment')
+    if 'pbs_manager_sha256' in selection:
+        manager = driver.parents[1]/'src/trottertracks/rpe_pbs.py'
+        if (not manager.is_file()
+                or hashlib.sha256(manager.read_bytes()).hexdigest() != selection['pbs_manager_sha256']):
+            raise RequestError('schedule_resume', 'PBS manager differs from its selected deployment')
     return driver
 
 
@@ -1010,16 +1015,26 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),'--run-dir',str(run)]
     if schedule_resume is not None:
         driver = schedule_driver(config, run, schedule_resume)
-        # Import dependencies from the fixed checkout. Only the schedule
-        # entry is taken from the selected operational deployment.
-        bootstrap = ('import runpy,sys\n'
-                     'root,driver=sys.argv[1:3]\n'
-                     'sys.argv=sys.argv[2:]\n'
+        # Import dependencies from the fixed checkout. When selected, load
+        # the PBS allocation controller alongside the operational scheduler.
+        manager = str(driver.parents[1]/'src/trottertracks/rpe_pbs.py') if 'pbs_manager_sha256' in schedule_resume else ''
+        bootstrap = ('import importlib.util,runpy,sys\n'
+                     'root,driver,manager=sys.argv[1:4]\n'
+                     'sys.argv=sys.argv[3:]\n'
+                     'if manager:\n'
+                     '    sys.path.insert(0,root+"/src")\n'
+                     '    spec=importlib.util.spec_from_file_location("trottertracks.rpe_pbs",manager)\n'
+                     '    module=importlib.util.module_from_spec(spec)\n'
+                     '    sys.modules[spec.name]=module\n'
+                     '    spec.loader.exec_module(module)\n'
                      'runpy.run_path(driver,run_name="__main__",init_globals={"FIXED_RUN_CODE_ROOT":root})')
-        command[2:3] = ['-c', bootstrap, str(root), str(driver)]
+        command[2:3] = ['-c', bootstrap, str(root), str(driver), manager]
         implementation['schedule_source'] = schedule_resume['source']
         implementation['schedule_entry'] = str(driver)
         implementation['schedule_sha256'] = schedule_resume['driver_sha256']
+        if manager:
+            implementation['pbs_manager_entry'] = manager
+            implementation['pbs_manager_sha256'] = schedule_resume['pbs_manager_sha256']
     if config.get('artificial_controller_directory'):
         if not str(load(run/'PROBLEM.json').get('problem',{}).get('system','')).startswith('ARTIFICIAL'):
             raise RequestError('fixture','real problem cannot use the artificial controller')

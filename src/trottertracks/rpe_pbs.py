@@ -193,7 +193,11 @@ def packed_resources(requests, profile, settings, host):
     memory_limit = usable_memory(profile, settings)
     cpus = memory = count = 0
     max_slots = profile.get('slot_policy', {}).get('max_slots') or cpu_limit
-    for request in requests:
+    # A preparation task without a memory estimate needs the whole pool. Give
+    # tasks with a usable estimate a chance to share it before that fallback.
+    ordered = sorted(requests, key=lambda request: bool(request.get('preparation'))
+                     and task_memory_estimate(request, settings, host) is None)
+    for request in ordered:
         if count >= max_slots:
             break
         try:
@@ -557,6 +561,10 @@ class PbsManager:
             if (allocation['status'] == 'R' and worker.get('accepting')
                     and 'submit_to_ready_seconds' not in record and now['clock_id'] == started.get('clock_id')):
                 record['submit_to_ready_seconds'] = max(0., now['monotonic'] - started['monotonic'])
+            if allocation['status'] == 'R' and worker.get('accepting'):
+                first = record.get('first_accepting_clock') or {}
+                if first.get('clock_id') != now['clock_id']:
+                    record['first_accepting_clock'] = now
             record.update(status=allocation['status'], observed=allocation, clock=now)
             if allocation['status'] in TERMINAL or allocation['status'] == 'HISTORY_MISSING_RECONCILE_SPOOL':
                 self._harvest(allocation)
@@ -585,16 +593,32 @@ class PbsManager:
                 memory_mismatch = slot_memory is not None and estimates and all(
                     estimate is None or estimate > slot_memory for estimate in estimates)
                 if spec['profile'].get('pbs', {}).get('per_task_resources'):
-                    target_cpus, target_gib, _ = packed_resources(
-                        waiting, self.configured[host]['profile'], self.settings, host)
-                    memory_mismatch = target_gib > int(spec['resources']['mem'][:-2])
-                    requested_cpus = target_cpus
+                    base = self.configured[host]['profile']
+                    requested_cpus, _, _ = packed_resources(waiting, base, self.settings, host)
+                    ram = (int(spec['resources']['mem'][:-2]) - 1) * GIB
+                    fits_current = False
+                    for request in waiting:
+                        try:
+                            cpu, memory = resource_need(request, base, self.settings, host)
+                        except (KeyError, ValueError):
+                            continue
+                        if cpu <= current_cpus and memory <= ram:
+                            fits_current = True
+                            break
+                    memory_mismatch = requested_cpus > 0 and not fits_current
                 else:
                     requested_cpus = min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task)
                 # Releasing the old idle allocation is required before another
                 # allocation can take ownership under this PBS host identity.
+                # Give a newly ready worker a chance to round-trip its input
+                # checks and claim work before declaring the allocation idle.
+                first = record.get('first_accepting_clock') or {}
+                now = record['clock']
+                offered_long_enough = (first.get('clock_id') == now['clock_id'] and
+                    now['monotonic'] - first['monotonic'] >= self.readiness_wait_seconds())
                 if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'R'
                         and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')
+                        and offered_long_enough
                         and (memory_mismatch or
                              requested_cpus >= 2 * current_cpus)
                         and host not in hosts_with_attempts):

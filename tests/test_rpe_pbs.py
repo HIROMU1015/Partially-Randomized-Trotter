@@ -241,7 +241,8 @@ class ManagerTests(unittest.TestCase):
         config['allocation_sizing']['q3_startup_memory_bytes_per_task'] = 8*P.GIB
         self.assertEqual(P.packed_resources([q3]*48, profile, config, 'pbs-0'), (86, 345, 43))
         config['preparation_task_seconds'][0].pop('memory_bytes')
-        self.assertEqual(P.packed_resources([compile, q3], profile, config, 'pbs-0'), (8, 350, 1))
+        self.assertEqual(P.packed_resources([compile, q3], profile, config, 'pbs-0'), (2, 9, 1))
+        self.assertEqual(P.packed_resources([compile], profile, config, 'pbs-0'), (8, 350, 1))
 
     def test_sizing_only_counts_unmatched_ready_compatible_tasks(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -305,6 +306,10 @@ class ManagerTests(unittest.TestCase):
             manager.cycle()
             self.assertFalse(manager.controls[token]['stop'])
             executor._owned_attempts = lambda: []
+            manager.cycle()
+            self.assertFalse(manager.controls[token]['stop'])
+            self.assertNotIn('resize_requested', manager.state['allocations'][token])
+            manager.state['allocations'][token]['first_accepting_clock']['monotonic'] -= 60
             manager.cycle()
             self.assertTrue(manager.controls[token]['stop'])
             self.assertTrue(manager.state['allocations'][token]['resize_requested'])

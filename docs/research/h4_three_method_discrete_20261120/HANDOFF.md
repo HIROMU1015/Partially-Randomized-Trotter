@@ -404,3 +404,20 @@ UNKNOWNは同じjob・attempt・要求・保留理由で維持し、通常Resume
 `NORMAL_DRIVER.json` の `implementation` に明記する。元attemptを別runへ移す必要はない。
 
 通常入口・固定版検査・再開時の配送を含む人工回帰は38件PASS。旧環境を要する1件はskip。
+
+### PBSの短時間再割当を削減
+
+補充の適用後、PBS割当267589、267590、267591は科学タスクを所有する前に
+`PBS_IDLE_ALLOCATION_RESIZE_DRAIN` で終了した。最初の2割当は確保228 CPU秒に対し
+実使用16 CPU秒だった。準備にメモリ実測がない場合、350 GiBの枠を単独で予約するため、
+先に詰めると同じ割当のQ3が入らない場合がある。
+
+PBSの選択版では、workerが受付可能になってから従来のreadiness待機時間を使って初回の照合と
+取得を待つ。現在の割当に適合する要求がある場合は、要求全体の合計メモリだけで縮退・再投入しない。
+複数の需要があるときは使用量を見積もれるタスクを先に詰め、未計測工程のみの場合は元の
+メモリ全量保護を適用する。施設のCPU・RAM、walltime、適格性、既存attempt所有は維持する。
+
+中央の通常Resumeで対象runだけにPBS管理版を指定し、計算ノードの固定provider・worker、
+PBSの固定設定と元の科学checkoutは引き続き使う。関連人工回帰40件PASS、旧外部配置を要する
+1件skip。別の旧 `test_rpe_pbs_release_binding` 2件は実装が使う `_validate_acquisition` と
+テストが呼ぶ旧 `_acquire` の不一致で失敗し、今回変更していない。実機のCPU時間と回収は別に確認する。
