@@ -723,9 +723,12 @@ class DistributedExecutor(ConcurrentExecutor):
                 if self._local_daemon_alive(previous.get('pid'), profile_path):
                     self.local_worker_pid = previous['pid']
                 else:
+                    command = [sys.executable, '-B', str(self.worker_script), '--profile', str(profile_path),
+                               '--controller', self.controller_url, '--poll-seconds', '.1']
+                    if distributed.get('controller_queue_first'):
+                        command = ['nice', '-n', '10', *command]
                     with (run/'distributed'/'LOCAL_WORKER.log').open('a') as log:
-                        self.local_worker = subprocess.Popen([sys.executable, '-B', str(self.worker_script),
-                            '--profile', str(profile_path), '--controller', self.controller_url, '--poll-seconds', '.1'],
+                        self.local_worker = subprocess.Popen(command,
                             cwd=self.root, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
                             start_new_session=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
                     self.local_worker_pid = self.local_worker.pid
@@ -1080,6 +1083,8 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _host_rank(self, host):
         groups = self.allocation_config['priority_groups']
+        if host == 'local' and self.distributed.get('controller_queue_first'):
+            return len(groups)
         return next((index for index, group in enumerate(groups) if host in group), 0)
 
     def _preferred_ready_jobs(self, host, queue, policy, error=None):
@@ -1175,7 +1180,7 @@ class DistributedExecutor(ConcurrentExecutor):
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
             ready_jobs=ready, capacity=self.capacity)
 
-    def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None):
+    def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None, prefetch=False):
         """Bind a prepared host decision to this exact scientific request."""
         from . import rpe_q3_coordinator as Q
         if request.get('route', {}).get('kind') == 'preparation':
@@ -1238,10 +1243,11 @@ class DistributedExecutor(ConcurrentExecutor):
         if (self.distributed.get('live_q3_readiness') is True and not result['eligible_host_ids']
                 and result['reasons'] in (['NO_REQUEST_SPECIFIC_HOST_EVIDENCE'],
                                           ['HOST_ELIGIBILITY_CHANGED_REQUEST_SHA256'])):
-            return self._live_eligibility(request, job_id, result, blocking=blocking, previous=previous, host=host)
+            return self._live_eligibility(request, job_id, result, blocking=blocking, previous=previous,
+                                          host=host, prefetch=prefetch)
         return result
 
-    def _live_eligibility(self, request, job_id, result, *, blocking, previous, host):
+    def _live_eligibility(self, request, job_id, result, *, blocking, previous, host, prefetch=False):
         """Share a probe per REQUEST and admit hosts as their independent checks pass."""
         from .rpe_live_q3_readiness import probe
         from .rpe_q3_coordinator import digest
@@ -1258,7 +1264,7 @@ class DistributedExecutor(ConcurrentExecutor):
             eligible = self.live_readiness_partial.get(key, eligible)
             future = self.live_readiness_inflight.get(key)
             missing_host = host is not None and host in seen and host not in eligible['eligible_host_ids']
-            if blocking or missing_host:
+            if blocking or missing_host or prefetch:
                 stale = (not cached or cached[1] != seen or
                          (not eligible['eligible_host_ids'] or missing_host) and
                          time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS)
@@ -1308,6 +1314,27 @@ class DistributedExecutor(ConcurrentExecutor):
             if self._user_stop_requested():
                 return deepcopy(result)
         return deepcopy(future.result())
+
+    def prefetch_standby(self, choice, proposals):
+        if self.distributed.get('controller_queue_first') and self.live_readiness_pool:
+            # Start the fixed-input checks for the demand and independent next
+            # candidates together. A check does not create a reservation.
+            proposals = list(proposals)
+            candidates = ([choice] if choice is not None else []) + proposals
+            for proposal in candidates[:self.live_readiness_workers]:
+                with self.state.cv:
+                    if (self.state.closed or self._user_stop_requested() or self._budget_reserved()
+                            or len(self.live_readiness_inflight) >= self.live_readiness_workers):
+                        break
+                if self.has_job(proposal) or not self._candidate_preparation_ready(proposal):
+                    continue
+                route = self.route(proposal['configuration_id'])
+                if route is None:
+                    continue
+                job = self.job_dir(proposal)
+                request = self.request(proposal, job, route)
+                self._eligibility_for(request, job.name, blocking=False, prefetch=True)
+        return super().prefetch_standby(choice, proposals)
 
     @staticmethod
     def _preparation_request(request):
@@ -2151,6 +2178,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 unresolved = len(self._owned_attempts())
                 remaining = max(0, min(slots-len(assignments), new_slots,
                     self.capacity-max(s.active, unresolved)-len(reserved_for_preferred)))
+                if host == 'local' and self.distributed.get('controller_queue_first'):
+                    eligible.sort(key=lambda task: not (
+                        task.rule['kind'] == 'preparation' and task.demand))
                 resource_pool = ((value.get('resource_report') or {}).get('pbs') or {}).get('resource_pool')
                 if resource_pool is not None and remaining:
                     from .rpe_pbs import GIB, resource_need

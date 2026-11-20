@@ -74,6 +74,13 @@ def apply_worker_trial(spec, trial):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:
         distributed['pbs_collection_workers'] = trial['pbs_collection_workers']
+    if trial.get('controller_queue_first'):
+        distributed['controller_queue_first'] = True
+        pf = spec.get('pf_completion') or {}
+        if pf.get('mode') == 'complete' and not pf.get('selected'):
+            # The approved preparation concurrency can feed distinct PF
+            # families as well as the PR lanes. Keep explicit PF limits.
+            pf.setdefault('max_candidates', spec.get('candidate_completion', {}).get('parallel', 1))
     if trial.get('pbs_only'):
         distributed['execution_hosts'] = [worker['host_id'] for worker in distributed['pbs']['workers']]
     if trial.get('pbs_preparation_resources'):

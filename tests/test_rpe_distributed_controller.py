@@ -110,6 +110,44 @@ class ControllerFailures(unittest.TestCase):
         next_assignment = self.poll(executor)['assignments']
         self.assertEqual(next_assignment[0]['job_id'], second_task.job.name)
 
+    def test_coordinator_first_leaves_remote_work_and_runs_local_preparation(self):
+        from trottertracks.rpe_preparation_queue import normalize_preparation_request
+        executor = self.executor(controller_queue_first=True,
+                                 host_stage_capabilities={'local0-wsl': ['q3']})
+
+        def poll(host, observe_only=False):
+            return executor.rpc('/v1/poll', dict(host_id=host, source_sha=self.source, slots=1,
+                                                capacity=1, observe_only=observe_only))['assignments']
+
+        poll('local0-wsl', observe_only=True)
+        evaluation = self.enqueue(executor, 'remote-first')
+        self.enqueue(executor, 'surplus')
+        prep = normalize_preparation_request(dict(route={'kind': 'preparation'}, method='ARTIFICIAL',
+            preparation=dict(stage='signal', provider='ARTIFICIAL_SIGNAL', artificial=True,
+                source=executor.source_manifest, identity='replenish', outputs=['products'],
+                command=['@PYTHON@', '@SOURCE@/scripts/artificial_preparation_leaf.py'])))
+        prep_id = executor.submit_preparation(prep, budget=1, approved=True)
+        self.assertEqual([a['job_id'] for a in poll('local')], [prep_id])
+        self.assertEqual([a['job_id'] for a in poll('local0-wsl')], [evaluation.job.name])
+
+    def test_coordinator_prefetch_starts_checks_before_reserving_jobs(self):
+        executor = self.executor(controller_queue_first=True, live_q3_readiness=True)
+        executor.live_readiness_workers = 2
+        view = executor.for_method('PR_PAULI')
+        first, second = self.proposal('demand'), self.proposal('standby')
+
+        def checked(request, job, *, prefetch=False, **kwargs):
+            if prefetch:
+                self.assertIsNone(executor.store.row(job))
+            return None
+
+        with patch.object(view, '_eligibility_for', side_effect=checked) as check:
+            view.prefetch_standby(first, [second])
+        calls = check.call_args_list
+        self.assertEqual([call.args[1] for call in calls[:2]], [view.job_dir(p).name for p in (first, second)])
+        self.assertTrue(all(call.kwargs.get('prefetch') is True and not call.kwargs['blocking'] for call in calls[:2]))
+        self.assertEqual(len(executor.store.rows()), 2)
+
     def test_existing_queue_with_explicit_auto_round_keeps_auto_capacity(self):
         from trottertracks.rpe_q3_store import JobStore
 
