@@ -592,11 +592,12 @@ class Gateway:
     restores_preparation_archives_on_resume = True
 
     def __init__(self, config, *, preflight=None, launch=None, resume_ast_failure=None,
-                 resume_dispatch_failure=None):
+                 resume_dispatch_failure=None, resume_pf_request_failure=None):
         self.config = deepcopy(config); self.state = Path(config['state_directory'])
         self.preflight = preflight or self.normal_preflight; self.launch = launch or self.normal_launch
         self.resume_ast_failure = resume_ast_failure
         self.resume_dispatch_failure = resume_dispatch_failure
+        self.resume_pf_request_failure = resume_pf_request_failure
 
     def create_run_directory(self, run):
         evidence = self.config.get('run_evidence_root')
@@ -730,8 +731,11 @@ class Gateway:
         user_interrupted = (request.get('action') == 'resume' and completed.get('returncode') == -signal.SIGINT
                             and stop_request.is_file() and load(stop_request).get('reason') == 'USER_REQUESTED_STOP')
         recovered_stop = None
-        recovery_kind, recovery_invocation = (('dispatch', self.resume_dispatch_failure)
-            if self.resume_dispatch_failure else ('ast', self.resume_ast_failure))
+        recovery_kind, recovery_invocation = next(
+            ((kind, invocation) for kind, invocation in (
+                ('pf_request', self.resume_pf_request_failure),
+                ('dispatch', self.resume_dispatch_failure), ('ast', self.resume_ast_failure))
+             if invocation), (None, None))
         if completed and completed.get('returncode') != 0 and not user_interrupted:
             stop_path = run/'KAPPA_STATE.json'
             stop = (load(stop_path).get('stop') or {}).get('reason') if stop_path.exists() else None
@@ -1049,6 +1053,12 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     or 'in prefetch_standby' not in trace
                     or 'source = configurations[projection[\'source_configuration_id\']]' not in trace):
                 hold('the failure is outside the projected Q3 request builder')
+        elif kind == 'pf_request':
+            if (stop['error_type'] != 'ValueError'
+                    or message != 'PF completion directory belongs to another selected request'
+                    or 'pf_optimizer_connection.py' not in trace or 'in complete_selected' not in trace
+                    or 'pf_candidate_selection.py' not in trace):
+                hold('the failure is outside the PF candidate request binding')
         elif (kind != 'ast' or stop['error_type'] != 'SystemError'
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
@@ -1114,7 +1124,7 @@ def schedule_driver(config, run, selection):
     preparation = selection.get('preparation_sha256')
     if preparation is not None:
         required = set(SCHEDULE_PREPARATION_MODULES)
-        if not required <= set(preparation) <= required | {'pr_candidate_completion'}:
+        if not required <= set(preparation) <= required | {'pr_candidate_completion', 'pf_optimizer_connection'}:
             raise RequestError('schedule_resume', 'Preparation operations selection is incomplete')
         for name in preparation:
             module = driver.parents[1]/'src/trottertracks'/(name+'.py')
@@ -1188,12 +1198,12 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         optimizer = str(driver.parents[1]/'src/trottertracks/rpe_optimizer_concurrent.py') if trial else ''
         preparation = schedule_resume.get('preparation_sha256')
         runtime_trial = trial
-        for kind in ('ast', 'dispatch'):
+        for kind in ('ast', 'dispatch', 'pf_request'):
             recovered = schedule_resume.get('resume_'+kind+'_failure')
             if recovered and load(run/'EXIT.json').get('invocation_id') == recovered:
                 runtime_trial = dict(trial or {}, recovered_failure=dict(kind=kind, invocation=recovered))
         operations = [(name, str(driver.parents[1]/'src/trottertracks'/(name+'.py')))
-                      for name in (*SCHEDULE_PREPARATION_MODULES, 'pr_candidate_completion')
+                      for name in ('pf_optimizer_connection', *SCHEDULE_PREPARATION_MODULES, 'pr_candidate_completion')
                       if name in (preparation or {})]
         if 'q3_store_sha256' in schedule_resume:
             operations.insert(0, ('rpe_q3_store', str(driver.parents[1]/'src/trottertracks/rpe_q3_store.py')))

@@ -211,6 +211,48 @@ class Tests(unittest.TestCase):
         with sqlite3.connect(database) as db:
             self.assertEqual(db.execute("SELECT state FROM jobs").fetchone(), ('QUEUED',))
 
+    def test_pf_request_mismatch_resumes_without_retrying_the_failed_invocation_jobs(self):
+        import sqlite3
+
+        started = []
+        invocation = '3' * 32
+        gateway = Gateway(self.config, preflight=lambda *args: {'status': 'PASS'},
+                          launch=lambda run, *args: started.append(run), resume_pf_request_failure=invocation)
+        result = gateway.handle(dict(request(4, 6), action='prepare'))
+        run = pathlib.Path(result['run_directory'])
+        launch = dict(invocation_id=invocation, pid=2147483647)
+        ended = dict(invocation_id=invocation, returncode=1)
+        history = run/'invocations'/invocation
+        for directory in (run, history):
+            write(directory/'LAUNCH.json', launch)
+            write(directory/'EXIT.json', ended)
+        write(run/'NORMAL_DRIVER.json', launch)
+        write(run/'distributed/relay/STATUS.json', dict(stopped=True, pid=2147483647))
+        write(run/'distributed/pbs/STATE.json', dict(allocations={}))
+        stop = dict(reason='RUNTIME_EXCEPTION', error_type='ValueError',
+                    message='PF completion directory belongs to another selected request')
+        write(run/'KAPPA_STATE.json', dict(stop=stop))
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(dict(stop, phase='DRIVER',
+            traceback='pf_candidate_selection.py\npf_optimizer_connection.py, in complete_selected'))+'\n')
+        (run/'FAST_DRIVER.lock').touch()
+        database = run/'distributed/QUEUE.sqlite3'
+        with sqlite3.connect(database) as db:
+            db.execute('CREATE TABLE jobs (state TEXT, attempt_id TEXT, detail TEXT)')
+            db.execute("INSERT INTO jobs VALUES ('ACCEPTED','done','{}'),('RUNNING','original-attempt','{}')")
+        resume = dict(action='resume', instruction='Artificial PF request recovery')
+        with self.assertRaisesRegex(RequestError, 'unresolved execution or recovery'):
+            gateway.start(run, resume)
+        with sqlite3.connect(database) as db:
+            db.execute("UPDATE jobs SET state='UNKNOWN', detail=? WHERE attempt_id='original-attempt'",
+                       (json.dumps(dict(automatic_retry=False, resource_released=True)),))
+        self.assertEqual(gateway.start(run, resume), 'STARTED')
+        self.assertEqual(started, [run])
+        self.assertEqual(load(history/'EXIT.json'), ended)
+        self.assertEqual(load(run/'stop-history'/('pf_request-'+invocation+'.json')), stop)
+        with sqlite3.connect(database) as db:
+            self.assertEqual(db.execute('SELECT state, attempt_id FROM jobs ORDER BY rowid').fetchall(),
+                             [('ACCEPTED', 'done'), ('UNKNOWN', 'original-attempt')])
+
     def test_status_observes_local_q3_body_before_the_worker_state_report(self):
         from trottertracks.rpe_local0_search import local0_progress
         from trottertracks.rpe_q3_store import JobStore
