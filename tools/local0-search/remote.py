@@ -78,6 +78,7 @@ try:
                     process=subprocess.run(config['legacy_relay_command'],capture_output=True,text=True,timeout=30)
                     if process.returncode:raise RequestError('relay','legacy relay could not be started: '+process.stderr[-1000:])
             launch = None
+            resume = None
             schedule_resumes = config.get('schedule_resumes', {})
             if request['action'] == 'resume' and not request.get('scope') and schedule_resumes:
                 state = pathlib.Path(config['state_directory'])
@@ -86,19 +87,32 @@ try:
                 if run_id is None and target.exists():
                     run_id = json.loads(target.read_text())['run_id']
                 resume = schedule_resumes.get(run_id)
+            release_policy = config.get('schedule_releases', {}).get(selected.get('release', {}).get('id'))
+            if request['action'] in ('start', 'resume') and (resume is not None or release_policy is not None):
+                from importlib.util import module_from_spec, spec_from_file_location
+
+                deployment = pathlib.Path((resume if resume is not None else release_policy)['root'])
+                module_path = deployment / 'src/trottertracks/rpe_local0_search.py'
+                module_spec = spec_from_file_location('trottertracks._schedule_resume', module_path)
+                operations = module_from_spec(module_spec)
+                module_spec.loader.exec_module(operations)
                 if resume is not None:
                     from functools import partial
-                    from importlib.util import module_from_spec, spec_from_file_location
 
                     row = json.loads((state / 'RUNS.json').read_text())[run_id]
                     run = pathlib.Path(row['run_directory'])
-                    deployment = pathlib.Path(resume['root'])
-                    module_path = deployment/'src/trottertracks/rpe_local0_search.py'
-                    module_spec = spec_from_file_location('trottertracks._schedule_resume', module_path)
-                    operations = module_from_spec(module_spec)
-                    module_spec.loader.exec_module(operations)
                     operations.schedule_driver(selected, run, resume)
                     launch = partial(operations.Gateway(selected).normal_launch, schedule_resume=resume)
+                else:
+                    def launch(run, problem, spec):
+                        applied = json.loads((run / 'APPLIED_SCOPE.json').read_text())
+                        pinned = json.loads((run / 'CONTROLLER_CONFIG.json').read_text())
+                        distributed = spec.get('executor', {}).get('distributed', {})
+                        if (applied['entry'] != 'schedule' or not distributed.get('pbs')
+                                or pinned.get('artificial_controller_directory')):
+                            return Gateway(pinned).normal_launch(run, problem, spec)
+                        selection = dict(release_policy, run_id=applied['run_id'])
+                        return operations.Gateway(pinned).normal_launch(run, problem, spec, schedule_resume=selection)
             result = Gateway(config, launch=launch).handle(request)
             transport_hook=config.get('relay_transport_command')
             if (request['action']in('start','resume')and transport_hook

@@ -49,6 +49,18 @@ run専用の補助プロセスが追従し、Stop・driver終了・invocation変
 `RELAY_TRANSPORT_PENDING` は科学runの起動状態と別の配送保留である。
 固定SOURCE・scope・raw・UNKNOWNは書換えず、通常の所有・STOP照合を維持する。
 
+## 複数環境でのPBS結果回収
+
+中央SERVICEの `schedule_releases` はrelease IDごとに、通常Start／Resumeで使う
+運用版を指定する。個別runのResume設定がある場合はそちらを使う。探索範囲と
+固定計算SOURCEは通常入口で照合し、運用版の設定は実行時に適用する。
+
+混在運用では `worker_trial.pbs_collection_workers` を24にし、照合済みの
+PBS回収ランチャーを指定する。PBS割当ごとの回収は最大24並列で、空き計算枠への
+割当照会も続ける。準備成果のアップロードは割当ごとに1件ずつ行う。
+計算用のCPU・メモリはPBSの割当と工程別の設定で決まる。
+RomuTail・server2・WSLへの割当には各ホストの受付条件を使う。
+
 ## 割当前に確認する入力と実行環境
 
 - 工程・providerごとに、固定SOURCEの依存関係をREQUESTに記載し、実行先でその工程に使う固定Pythonを選ぶ。割当前の適格性照合では、要求したパッケージの版と、必要なimportがそのPythonで成功することを確認する。子プロセスで固定providerを読む経路を変えた場合は、その子プロセスでも確認する。不足時はホスト・工程・依存名を記録し、該当する割当を保留する。対応する別ホストや独立した候補は進める。

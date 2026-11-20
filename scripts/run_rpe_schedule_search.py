@@ -54,7 +54,7 @@ def read_loc(loc):
 def apply_worker_trial(spec, trial):
     """Install the selected execution policy in memory after fixed-input checks."""
     distributed = spec['executor']['distributed']
-    for host, workers in trial['calibration_workers'].items():
+    for host, workers in trial.get('calibration_workers', {}).items():
         profile = (distributed['local_worker'] if host == 'local' else
                    json.loads(Path(distributed['preparation_profiles'][host]).read_text()))
         for rule in profile['preparation_profiles']:
@@ -64,10 +64,12 @@ def apply_worker_trial(spec, trial):
             profile['slots'] = 2
             profile['slot_policy'] = dict(mode='fixed', initial_slots=2)
         distributed['preparation_profiles'][host] = profile
-    for worker in distributed['relay']['workers']:
-        if worker['host_id'] == 'server2':
-            worker['profile'] = trial['server2_profile']
-    distributed['local_calibration_pair'] = dict(memory_reserve_bytes=trial['local_memory_reserve_bytes'])
+    if 'server2_profile' in trial:
+        for worker in distributed['relay']['workers']:
+            if worker['host_id'] == 'server2':
+                worker['profile'] = trial['server2_profile']
+    if 'local_memory_reserve_bytes' in trial:
+        distributed['local_calibration_pair'] = dict(memory_reserve_bytes=trial['local_memory_reserve_bytes'])
     if trial.get('pbs_storage_launcher'):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:

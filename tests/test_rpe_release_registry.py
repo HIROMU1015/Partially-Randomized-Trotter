@@ -146,6 +146,55 @@ class ReleaseTests(unittest.TestCase):
         self.assertFalse((run/'STOP_REQUESTED.json').exists())
         self.assertEqual(len(list((run/'stop-history').glob('*.json'))),1)
 
+    def test_release_schedule_policy_uses_normal_start_and_pinned_resume(self):
+        from hashlib import sha256
+
+        round_path = self.root / 'schedule-round.json'
+        spec = load(self.a['round'])
+        spec['executor']['distributed'] = dict(pbs=dict(workers=[dict(host_id='pbs-0')]))
+        write(round_path, spec)
+        schedule = dict(self.a, entry='schedule', round=str(round_path))
+        release = self.root / 'schedule-service.json'
+        write(release, schedule)
+        register(self.registry, 'mixed', release, activate=True)
+        digest = lambda path: sha256((ROOT / path).read_bytes()).hexdigest()
+        policy = dict(root=str(ROOT), base_source=schedule['code_source'], source='OPERATIONS_SOURCE',
+                      driver_sha256=digest('scripts/run_rpe_schedule_search.py'),
+                      pbs_manager_sha256=digest('src/trottertracks/rpe_pbs.py'),
+                      worker_trial=dict(pbs_collection_workers=24,
+                                        optimizer_sha256=digest('src/trottertracks/rpe_optimizer_concurrent.py')))
+        service = self.root / 'BOOTSTRAP.json'
+        write(service, dict(self.bootstrap, schedule_releases=dict(mixed=policy)))
+
+        def invoke(query):
+            output = io.StringIO()
+            envelope = dict(server_config=str(service), action=query['action'],
+                            request_base64=base64.b64encode(json.dumps(query).encode()).decode())
+            with contextlib.redirect_stdout(output):
+                runpy.run_path(str(ROOT / 'tools/local0-search/remote.py'), init_globals={'CONFIG': envelope})
+            response = json.loads(output.getvalue())
+            self.assertTrue(response['ok'], response)
+            return response['result']
+
+        with patch.object(Gateway, 'normal_preflight', return_value=dict(status='PASS')), \
+                patch('trottertracks.rpe_local0_search.subprocess.Popen') as process:
+            process.return_value.pid = 0
+            started = invoke(request(4, 6))
+            self.assertEqual(started['status'], 'STARTED')
+            run = Path(started['run_directory'])
+            launch = load(run / 'LAUNCH.json')
+            write(run / 'EXIT.json', dict(invocation_id=launch['invocation_id'], returncode=0))
+            fixed = (run / 'ROUND.json').read_bytes()
+            self.switch()
+            resumed = invoke(dict(action='resume', run_id=started['run_id'], instruction='Artificial resume'))
+            self.assertEqual(resumed['status'], 'STARTED')
+            self.assertEqual(process.call_count, 2)
+            for call in process.call_args_list:
+                command = call.args[0]
+                self.assertEqual(json.loads(command[-1]), dict(policy, run_id=started['run_id']))
+            self.assertEqual(fixed, (run / 'ROUND.json').read_bytes())
+            self.assertEqual(load(run / 'CONTROLLER_CONFIG.json')['computation_source'], 'FROZEN_SCIENCE_A')
+
     def test_unknown_action_is_rejected_before_run_creation(self):
         q=request(4,6);q['action']='launch_everything'
         with self.assertRaisesRegex(RequestError,'preview, planonly'):
