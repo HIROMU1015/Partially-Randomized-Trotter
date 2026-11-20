@@ -8,7 +8,7 @@
 
 ## 検収範囲
 
-- 人工の全履歴列挙で、枝境界・ゼロ観測・未確認質量を含む場合の上下界を照合した。$M=12$、初回X/Y各944ショットの人工入力でPASSとFAILを確認した。通常StartでSQLiteの共通キューからworkerを動かし、大ショット結果を中央で採用した。同じrunのResumeでjob ID・attempt ID・採用済み結果の追加は各0件。回帰試験は62件と13サブテストが通過した。Windowsの通常PowerShellクライアントから隔離された人工サービスへStartし、944ショットを含む2件を採用した。Resumeは `REUSED_COMPLETED`。job ID、attempt ID、結果のhashは一致し、人工結果の本番公開はスキップされた。
+- 人工の全履歴列挙で、枝境界・ゼロ観測・未確認質量を含む場合の上下界を照合した。$M=12$、初回X/Y各944ショットの人工入力でPASSとFAILを確認した。通常StartでSQLiteの共通キューからworkerを動かし、大ショット結果を中央で採用した。同じrunのResumeでjob ID・attempt ID・採用済み結果の追加は各0件。回帰試験は62件と13サブテストが通過した。Windowsの通常PowerShellクライアントから隔離された人工サービスへStartし、944ショットを含む2件を採用した。Resumeは `REUSED_COMPLETED`。job ID、attempt ID、結果のhashは一致し、人工結果の本番公開はスキップされた。944ショットで中継を止め、workerの完了後に復旧する試験も1回実施した。模擬SSH経路で配送・実行・採用は各1件で、回収前後でMSE上界が一致した。
 - RomuTailの固定runtime・adapter・profileで、Full PF、B0I、PR-Pauli、PR-DFの保存H₄入力を各 $M=11,12$ でdry-checkした。8件PASS。各方式の $M=13$ は既存の検証範囲外理由で停止した。
 - 旧規模上限を超えた保存条件を3件選び、元runと設定済みの先行runを合わせた95箇所で同じjob IDの実行記録を照合した。RomuTailの独立した検収領域で3件を評価し、PASS 1、FAIL 2となった。元runの候補結果には混ぜず、固定入出力と判定証跡は検収領域に保管した。3件の証跡のコピーを新形式で回収し、上下界・判定・入力の一致を確認した。科学ルートの再起動は0件。共通の中継切断・復旧、大きな厳密整数の再回収、Cの探索マップ同期の回帰各1件も通過した。大ショットの実H₄を通常Startから分散投入して公開マップへ載せる検収は、今回の独立試行の対象外。
 
@@ -22,12 +22,12 @@ H₄直線1 Å、STO-3G、tol-only $10^{-8}$ のDF10、$h$ は固定入力の0.1
 
 同じ固定デコーダを使った人工の小規模比較では、$M=4$、各軸6ショットの全状態DPで0.129秒・35.2 MiB。第1段で0.0012秒・34.8 MiB、精密化込みで0.095秒・34.7 MiBだった。3回の中央値。第1段の区間は閾値をまたぎ、精密化で参照MSEを含むFAIL区間に絞れた。
 
-固定検収の索引はRomuTailの `.rpe-central/deployment/romutail-large-shots-bb0fd4cd97/TECHNICAL_ACCEPTANCE.json`。CLIとWindowsのPreview、コンポーネント照合、試験ログを同じディレクトリに置いた。人工Windowsの `artificial-windows/ACCEPTANCE.json`、保存回収の `saved-collect/ACCEPTANCE.json`、人工性能比較の `SYNTHETIC_COMPARISON.json` も同じ配置先にある。個別の入力と上下界は `.rpe-central/validation/large-shots-4b61ea0e54/`。初期の精密化を高速版へ切り替えた記録も同じ場所に保存した。
+固定検収の索引はRomuTailの `.rpe-central/deployment/romutail-large-shots-bb0fd4cd97/TECHNICAL_ACCEPTANCE.json`。CLIとWindowsのPreview、コンポーネント照合、試験ログを同じディレクトリに置いた。人工Windowsの `artificial-windows/ACCEPTANCE.json`、保存回収の `saved-collect/ACCEPTANCE.json`、人工性能比較の `SYNTHETIC_COMPARISON.json`、中継復旧の `ARTIFICIAL_RELAY_RECOVERY.json` も同じ配置先にある。個別の入力と上下界は `.rpe-central/validation/large-shots-4b61ea0e54/`。初期の精密化を高速版へ切り替えた記録も同じ場所に保存した。
 
 ## 継続中の探索
 
 対象run `search-29795d0e2e2593819e27` は、小ショットの準備・価格回収を修正した運用上の継続版 `4cf606a0a7` で通常Resumeした。元release `romutail-h4-rerun4-1355ad65fa`、科学SOURCEと固定入力、実行所有・消費済み台帳を継承した。Full PFも1枠の準備waveに入れるようにし、PR-DFの保存holdoutは、元のモデルと価格が同じbyte列であることを照合して元freezeを参照する。旧compileの未確定attemptは既存のno-retry設定で保持した。
 
-再開時の§10.5はPASS。保存照合でFull PF 9、B0I 282、PR-DF 28件を受理した。PR-DFの価格較正と監査はRomuTailの共通キューで実行され、結果を中央が受け取った。候補の価格がそろうと同じ探索器のQ3へ復帰する。旧runのQ3規模上限は記録どおりで、大ショット評価を有効にしたcurrentは新規runに適用する。
+再開時の§10.5はPASS。保存照合でFull PF 9、B0I 282、PR-DF 28件を受理した。PR-DFの価格較正と監査はRomuTailの共通キューで実行され、結果を中央が受け取った。11月21日07:23 JSTの確認では再開後の価格較正3件・監査6件を採用し、価格較正1件が実行中だった。既存runで再開後の新規Q3は0件。候補の価格がそろうと同じ探索器のQ3へ復帰する。旧runのQ3規模上限は記録どおりで、大ショット評価を有効にしたcurrentは新規runに適用する。
 
 PR-DFの一部では、同じ物理条件でも複数の保存モデルが異なる価格を返す。たとえば絶対κ32のm3では、X/Yとも $1317341/36$ と $37218$ が競合する。対応する旧attemptは採用済みの独立holdoutで、既存の較正契約では保留軸の較正データに振り替えられない。絶対κ64では旧runの較正済み原receiptを保存しているが、継続runから監査へ渡す原パスの照合が残っている。Full PFとB0Iの一部には、旧価格索引から採用に必要な軸ごとのreceipt一式を確認できないラウンドがある。既存ルールと旧attemptの記録を保持した。
