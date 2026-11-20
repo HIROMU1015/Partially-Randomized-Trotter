@@ -1,5 +1,6 @@
 """Selection and resume boundaries without scientific providers or numeric H4 calls."""
 from copy import deepcopy
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -54,6 +55,32 @@ class Selection(unittest.TestCase):
             with patch.object(S.PF,'complete_selected',return_value=dict(response=dict(items=[]),registry_file='registry')),patch.object(S,'_refresh',return_value=after):
                 with self.assertRaisesRegex(ValueError,'another p/formula/width'):
                     S.prepare(Path(d),{},ctx,spec,Path(d)/'wrong',{'TRUNCATED_PF':[dict(kind='artificial')]})
+
+    def test_saved_request_mismatch_holds_only_one_candidate_in_the_wave(self):
+        ctx = dict(context(), pf_evidence_registry=dict(configurations={}))
+        routes = {'TRUNCATED_PF': [dict(kind='artificial')]}
+        spec = dict(methods=list(routes), science_approved=True,
+                    pf_completion=dict(mode='complete', entry='fixed_D_entry', max_candidates=2))
+        with tempfile.TemporaryDirectory() as d:
+            run = Path(d)
+            saved = run/'pf_auto/candidates/missing/pf_auto/pf_completion/REQUEST.json'
+            saved.parent.mkdir(parents=True)
+            saved.write_text(json.dumps(dict(output_root='/previous-run', registry_file='/previous-registry')))
+            before = saved.read_bytes()
+            delivered = []
+
+            def prepare(_root, _spec, _run, request, _entry, output, _runtime):
+                delivered.extend(row['configuration_body']['id'] for row in request['selected'])
+                output.write_text('{"items": []}')
+
+            with patch('trottertracks.pf_distributed_preparation.complete_selected', side_effect=prepare), \
+                 patch.object(S, '_refresh', side_effect=lambda root, problem, context, *a: context):
+                _, _, wave = S.prepare_next(run, {}, ctx, spec, run, routes, object())
+            self.assertEqual(delivered, ['saved7'])
+            self.assertEqual(saved.read_bytes(), before)
+            self.assertEqual(wave['records']['missing']['reason'], 'PF_COMPLETION_REQUEST_MISMATCH')
+            self.assertIn('registry_file', wave['records']['missing']['differing_fields'])
+            self.assertEqual(wave['status'], 'PREPARATION_WAVE_PROCESSED')
 
 
 if __name__=='__main__':unittest.main()

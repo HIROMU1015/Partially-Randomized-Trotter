@@ -301,6 +301,16 @@ def registry_routes(routes, registry):
     return routes
 
 
+class CompletionRequestMismatch(ValueError):
+    """The candidate's workspace is already bound to a different request."""
+
+    def __init__(self, path, saved, requested):
+        super().__init__('PF completion directory belongs to another selected request')
+        self.path = path
+        self.fields = sorted(key for key in saved.keys() | requested.keys()
+                             if key not in saved or key not in requested or saved[key] != requested[key])
+
+
 def complete_selected(root, spec, run_dir, *, stage_executor=None):
     """One explicitly selected finite provider call before normal O.prepare.
 
@@ -323,8 +333,10 @@ def complete_selected(root, spec, run_dir, *, stage_executor=None):
     for key in ('registry_file', 'output_root'):
         path = Path(request[key]);request[key] = str(path if path.is_absolute() else root / path)
     req, out = run / 'REQUEST.json', run / 'RESPONSE.json'
-    if req.exists() and json.loads(req.read_text()) != request:
-        raise ValueError('PF completion directory belongs to another selected request')
+    if req.exists():
+        saved = json.loads(req.read_text())
+        if saved != request:
+            raise CompletionRequestMismatch(req, saved, request)
     if not req.exists():
         req.write_text(json.dumps(request, ensure_ascii=False, indent=2) + '\n')
     if not out.exists():

@@ -334,6 +334,37 @@ class ScaleTests(unittest.TestCase):
                 self.assertEqual(gateway.handle(resume)['status'], 'REUSED_COMPLETED')
                 self.assertEqual(launches(), before)
 
+    def test_normal_schedule_rechecks_wait_without_a_second_start(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = Path(directory)
+            driver = entry.WidthDriver.__new__(entry.WidthDriver)
+            driver.run, driver.state_file = run, run/'KAPPA_STATE.json'
+            driver.a = SimpleNamespace(max_cycles=None, plan_only=False)
+            driver.state = dict(cycle=0, points=[], families={})
+            driver.methods, driver.widths = ['FULL_PF', 'PR_DF'], {}
+            driver.rule_stop = driver.scaled_shots = driver.work_conserving_search = True
+            driver.spec = dict(science_approved=True, executor=dict(distributed=dict(port=0)))
+            driver.bootstrap_families = driver.complete_points = lambda: None
+            driver.plan = lambda: ([], {})
+            completed = dict(stop_reason='SCALED_SHOT_GRID_COMPLETE', new_calls=0)
+            held = dict(stop_reason='UNRESOLVED_SCALED_SCOPE', new_calls=0,
+                        held=[dict(status='TECHNICAL_HOLD', reason='NO_MATCHING_ELIGIBLE_HOST')])
+            driver.batch = lambda: dict(FULL_PF=completed, PR_DF=held if driver.state['cycle'] == 1 else completed)
+            real_wait = driver.wait_for_recovery
+
+            def wait(reasons, seconds):
+                self.assertEqual(reasons, ['ELIGIBLE_HOST'])
+                self.assertEqual(seconds, 15)
+                real_wait(reasons, 0)
+                self.assertEqual(load(driver.state_file)['recovery_wait']['reasons'], reasons)
+
+            with patch.object(driver, 'wait_for_recovery', side_effect=wait) as wait_for_recovery:
+                driver.loop()
+            self.assertEqual(wait_for_recovery.call_count, 1)
+            self.assertEqual(driver.state['cycle'], 2)
+            self.assertNotIn('recovery_wait', driver.state)
+            self.assertEqual(driver.state['stop']['reason'], 'REQUESTED_WIDTH_RULE_EXHAUSTED')
+
     def test_artificial_normal_start_queue_resume_and_legacy_pin(self):
         with tempfile.TemporaryDirectory(prefix='artificial-scaled-rpe-') as tmp:
             root=Path(tmp)

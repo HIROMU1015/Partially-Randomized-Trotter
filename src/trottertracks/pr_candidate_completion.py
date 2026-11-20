@@ -127,6 +127,10 @@ def physical_evaluation_contract(config):
 
 class Held(Exception):pass
 
+class PreparationWait(Held):
+    """A stage can be checked again through its original request and owner."""
+
+
 class PreparationYield(Exception):
     """No new stage started; an orchestration failure requested a boundary yield."""
 
@@ -847,7 +851,7 @@ class Completion:
         except Held as exc:
             text=str(exc)
             waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))
-            operational=text.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:')
+            operational=isinstance(exc, PreparationWait)
             rec.update(status='WAITING_DISTRIBUTED_PREPARATION'if operational else'WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
                        recoverable_preparation=operational,
                        scientific_failure=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')))

@@ -830,6 +830,9 @@ class Gateway:
         if width_state.is_file():
             state = load(width_state)
             value['search_stop'] = state.get('stop')
+            if phase == 'RUNNING' and state.get('recovery_wait'):
+                value['phase'] = 'WAITING_FOR_RECOVERY'
+                value['recovery_wait'] = state['recovery_wait']
             if phase == 'COMPLETE' and (state.get('stop') or {}).get('reason') == 'SCOPE_HELD_Q3':
                 value['phase'] = 'RECONCILIATION_REQUIRED'
             value['candidate_holds'] = [
@@ -1112,6 +1115,32 @@ def schedule_driver(config, run, selection):
     return driver
 
 
+def driver_restart_hold(run, spec):
+    """Check whether the same invocation may reattach after its child was killed."""
+    import sqlite3
+
+    if (run/'STOP_REQUESTED.json').exists() or (run/'SEARCH_TERMINATION.json').exists():
+        return 'STOP_OR_SEARCH_TERMINATION'
+    try:
+        checkpoint = load(run/'KAPPA_STATE.json')
+        if (checkpoint['round_id'] != spec['round_id'] or checkpoint.get('stop')
+                or checkpoint.get('schema') != 'RPE_REQUESTED_WIDTH_SCHEDULE_STATE_V1'):
+            return 'CHECKPOINT_NOT_RESUMABLE'
+        with (run/'FAST_DRIVER.lock').open('rb') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            database = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+            with sqlite3.connect(database, uri=True, timeout=1) as db:
+                if db.execute('PRAGMA quick_check').fetchall() != [('ok',)]:
+                    return 'QUEUE_INTEGRITY'
+        if spec['executor']['distributed'].get('port') == 0:
+            for path in ('distributed/LOCAL_DAEMON.json', 'distributed/relay/LAUNCH.json'):
+                if (run/path).is_file() and Path('/proc', str(load(run/path)['pid']), 'cmdline').exists():
+                    return 'DYNAMIC_ENDPOINT_STILL_HAS_LOCAL_OWNER'
+    except (OSError, sqlite3.Error, ValueError, KeyError) as error:
+        return 'RECONCILIATION_REQUIRED: '+str(error)
+    return None
+
+
 def execute_run(config, run, invocation, *, schedule_resume=None):
     run=Path(run);scope=load(run/'APPLIED_SCOPE.json');spec=load(run/'ROUND.json')
     root=Path(config['code_root'])
@@ -1198,10 +1227,29 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
     if not config.get('artificial_controller_directory'):
         for key in ('batch','max_cycles'):
             if key in stop:command+=['--'+key.replace('_','-'),str(stop[key])]
+    restartable = (scope['entry'] == 'schedule'
+                   and (schedule_resume is None or schedule_resume['source'] == config['code_source'])
+                   and not config.get('artificial_controller_directory')
+                   and bool(spec.get('executor', {}).get('distributed'))
+                   and spec.get('search_overrides', {}).get('work_conserving_search') is True
+                   and 'max_cycles' not in stop and spec.get('search_to_rule_stop') is True)
     try:
-        process=subprocess.Popen(command,cwd=config['code_root'],env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
-        write(run/'NORMAL_DRIVER.json',dict(pid=process.pid,command=command,invocation_id=invocation,implementation=implementation))
-        code=process.wait()
+        for generation in range(2):
+            process = subprocess.Popen(command,cwd=config['code_root'],env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+            driver = dict(pid=process.pid, command=command, invocation_id=invocation,
+                          implementation=implementation)
+            write(run/'NORMAL_DRIVER.json', driver)
+            code = process.wait()
+            if not restartable or generation or code != -signal.SIGKILL:
+                break
+            hold = driver_restart_hold(run, spec)
+            write(run/'invocations'/invocation/'DRIVER_INTERRUPTION.json',
+                  dict(driver, returncode=code, observed_epoch=time.time(), recovery_hold=hold))
+            if hold is not None:
+                break
+            fixed_implementation(config)
+            if schedule_resume is not None:
+                schedule_driver(config, run, schedule_resume)
         if config.get('artificial_controller_directory'):
             result_path=Path(config['artificial_controller_directory'])/'run/ROUND_RESULT.json'
             if result_path.exists():

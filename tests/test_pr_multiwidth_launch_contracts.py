@@ -332,8 +332,9 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         from trottertracks import pf_candidate_selection as PF
         events = []
 
-        def next_wave(root, problem, context, spec, run, routes, stage_executor, *, stop_requested):
+        def next_wave(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, recheck_waiting):
             events.append(('prepare', context))
+            self.assertEqual(recheck_waiting, context == 0)
             updated = context + 1
             status = 'PREPARATION_WAVE_PROCESSED' if updated < 3 else 'NO_INCOMPLETE_PF_CANDIDATE'
             return updated, routes, {'status': status}

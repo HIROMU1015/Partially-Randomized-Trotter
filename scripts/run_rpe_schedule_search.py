@@ -1529,11 +1529,16 @@ class WidthDriver:
             self.save()
             return
         end=None if self.a.max_cycles is None else self.state['cycle']+self.a.max_cycles
+        auto_recheck = end is None and self.work_conserving_search and bool(
+            self.spec.get('executor', {}).get('distributed'))
+        recheck_delay = 15
         held_q3, unresolved = False, []
         while end is None or self.state['cycle']<end:
             if (self.run/'STOP_REQUESTED.json').exists():
+                self.state.pop('recovery_wait', None)
                 self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
             self.state['cycle']+=1;started=time.monotonic();self.log(event='PLAN_START')
+            self.state.pop('recovery_wait', None)
             distributed_prep=bool((self.spec.get('executor',{}).get('distributed')or{}).get('preparation'))
             overlap=((self.spec.get('overlap_ready_batch')is True or distributed_prep) and not self.a.plan_only and
                      self.spec.get('science_approved')is True)
@@ -1587,10 +1592,16 @@ class WidthDriver:
                 if getattr(self,'pf_more',False) or any(r['stop_reason']=='WORK_SLICE_YIELDED' for r in result.values()):
                     continue
                 pending=any(p['status'] in ('COMPLETION','REGISTERED') for p in self.state['points'])
+            pf_status_path = self.run/'PF_PREPARATION_STATUS.json'
+            pf_status = O.load_json(pf_status_path) if pf_status_path.is_file() else {}
+            pf_records = list(pf_status.get('records', {}).values()) or [pf_status]
+            pf_held = any(row.get('status') in ('PREPARATION_INCOMPLETE', 'PREPARATION_WAITING', 'PRIOR_OWNER_HOLD')
+                          for row in pf_records)
             if (not proposals and not pending and ready_families ==
                     sum(f['status']=='READY_METADATA' for f in self.state['families'].values())):
                 blocked=waiting or any(f['status']!='READY_METADATA' for f in self.state['families'].values()) or any(
-                    p['status']=='HELD' for p in self.state['points']) or any(r.get('not_ready_candidates') for r in result.values())
+                    p['status']=='HELD' for p in self.state['points']) or pf_held or any(
+                    r.get('not_ready_candidates') for r in result.values())
                 reason=('SCOPE_HELD_INPUTS' if blocked else 'REQUESTED_WIDTH_RULE_EXHAUSTED') if getattr(self,'rule_stop',False) else (
                     'WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED')
                 if held_q3 or (scaled and not blocked and (budget_remaining or
@@ -1598,11 +1609,34 @@ class WidthDriver:
                     reason = 'SCOPE_HELD_Q3'
                 elif scaled and not blocked and budget_stops:
                     reason = 'Q3_BUDGET_EXHAUSTED'
+                waits = []
+                if waiting or any(row.get('status') == 'PREPARATION_WAITING' for row in pf_records):
+                    waits.append('PREPARATION_OR_INPUT')
+                if unresolved or any(h.get('status') == 'IN_PROGRESS' for r in result.values()
+                                     for h in r.get('held', ())):
+                    waits.append('OWNED_ATTEMPT')
+                if any(h.get('reason') == 'NO_MATCHING_ELIGIBLE_HOST' or h.get('status') == 'HOST_ELIGIBILITY_HOLD'
+                       for r in result.values() for h in r.get('held', ())):
+                    waits.append('ELIGIBLE_HOST')
+                if auto_recheck and waits and reason in ('WAITING_FOR_INPUTS', 'SCOPE_HELD_INPUTS', 'SCOPE_HELD_Q3'):
+                    self.wait_for_recovery(waits, recheck_delay)
+                    recheck_delay = min(recheck_delay * 2, 60)
+                    continue
                 self.state['stop']=dict(reason=reason,
                     UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()},
                     unresolved_q3_attempts=unresolved);self.save();return
+            recheck_delay = 15
         self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'MAX_CYCLES',
             UTC=K.now(),unresolved_q3_attempts=unresolved);self.save()
+
+    def wait_for_recovery(self, reasons, seconds):
+        self.state['recovery_wait'] = dict(reasons=reasons, recheck_epoch=time.time()+seconds)
+        self.save()
+        self.log(event='WAITING_FOR_RECOVERY', **self.state['recovery_wait'])
+        deadline = time.monotonic() + seconds
+        stop = self.run/'STOP_REQUESTED.json'
+        while not stop.exists() and (remaining := deadline - time.monotonic()) > 0:
+            time.sleep(min(1, remaining))
 
 
 @serialize_legacy_ast()

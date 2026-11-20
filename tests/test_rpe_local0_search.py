@@ -24,6 +24,48 @@ class Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
 
+    def test_driver_interrupt_reuses_checkpoint_and_never_restarts_after_stop(self):
+        import signal
+        from unittest.mock import Mock, patch
+        from trottertracks.rpe_local0_search import execute_run
+        from trottertracks.rpe_q3_store import JobStore
+
+        for stopped in (False, True):
+            with self.subTest(stopped=stopped):
+                run = self.home/f'driver-{stopped}'
+                problem = dict(problem=dict(system='ARTIFICIAL'))
+                spec = dict(round_id='artificial', search_to_rule_stop=True,
+                            search_overrides=dict(work_conserving_search=True),
+                            executor=dict(distributed=dict(port=0)))
+                write(run/'PROBLEM.json', problem)
+                write(run/'ROUND.json', spec)
+                write(run/'APPLIED_SCOPE.json', dict(entry='schedule', signature='test', scope={},
+                      problem_sha256=digest(problem), round_requested_sha256=digest(spec)))
+                write(run/'AUTHORIZATION.json', dict(kind='EXPLICIT_USER_START', scope_signature='test'))
+                write(run/'DUPLICATE_PREFLIGHT.json', dict(status='PASS'))
+                write(run/'KAPPA_STATE.json', dict(schema='RPE_REQUESTED_WIDTH_SCHEDULE_STATE_V1', round_id='artificial'))
+                (run/'FAST_DRIVER.lock').touch()
+                queue = JobStore(run/'distributed/QUEUE.sqlite3')
+                queue.reserve('FULL_PF', 'artificial-job', dict(route=dict(kind='artificial')), 1, True)
+                owner, = queue.claim('artificial-host', 1)
+                if stopped:
+                    write(run/'STOP_REQUESTED.json', dict(reason='USER_REQUESTED_STOP'))
+                first = Mock(pid=10)
+                first.wait.return_value = -signal.SIGKILL
+                second = Mock(pid=11)
+                second.wait.return_value = 0
+                with patch('trottertracks.rpe_local0_search.fixed_implementation', return_value={}), \
+                     patch('trottertracks.rpe_local0_search.subprocess.Popen', side_effect=[first, second]) as spawn:
+                    execute_run(self.config, run, 'same-invocation')
+                recovery = load(run/'invocations/same-invocation/DRIVER_INTERRUPTION.json')
+                self.assertEqual(recovery['recovery_hold'], 'STOP_OR_SEARCH_TERMINATION' if stopped else None)
+                self.assertEqual(spawn.call_count, 1 if stopped else 2)
+                self.assertEqual(queue.row('artificial-job')['attempt_id'], owner['attempt_id'])
+                self.assertEqual(queue.counts('FULL_PF'), 1)
+                if not stopped:
+                    self.assertEqual(spawn.call_args_list[0], spawn.call_args_list[1])
+                    self.assertEqual(load(run/'EXIT.json')['returncode'], 0)
+
     def test_selected_schedule_checks_queue_store_before_start(self):
         from hashlib import sha256
         from trottertracks.rpe_local0_search import schedule_driver

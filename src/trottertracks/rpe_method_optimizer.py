@@ -651,7 +651,8 @@ class Executor:
         """Release only evidence the existing reuse/identity guards now accept."""
         row=self.execution_holds.get(self.method,{}).get(cid)
         if row is None:return None
-        release=row['status']=='NO_ROUTE'and not row.get('job')and self.route(cid)is not None
+        release=(row['status'] in ('NO_ROUTE', 'HOST_ELIGIBILITY_HOLD') and not row.get('job')
+                 and self.route(cid) is not None)
         if not release and row.get('job'):
             job=Path(row['job']);job=job if job.is_absolute()else self.root/job
             try:

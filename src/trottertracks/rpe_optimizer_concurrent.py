@@ -463,6 +463,8 @@ class ConcurrentExecutor(O.Executor):
 
     def _monitor(self):
         s=self.state
+        check_owners = getattr(self, '_check_worker_contact', None)
+        next_check = 0
         while True:
             with s.cv:
                 pids=list(s.pids.values());closed=s.closed;external=list(s.external.items())
@@ -476,6 +478,9 @@ class ConcurrentExecutor(O.Executor):
                             s.cv.notify_all()
             rss=sum(_tree_rss(p)for p in pids)
             with s.cv:s.peak_RSS_KiB=max(s.peak_RSS_KiB,rss)
+            if check_owners is not None and time.monotonic() >= next_check:
+                check_owners()
+                next_check = time.monotonic() + 5
             s.monitor_stop.wait(.1)
 
     def has_spare_slot(self, *, allow_queued_speculation=False):
@@ -1008,7 +1013,8 @@ class DistributedExecutor(ConcurrentExecutor):
     def _owned_attempts(self):
         with self.store._connection() as database:
             rows = database.execute(
-                "SELECT job_id,host_id,attempt_id,state,method,detail FROM jobs WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
+                "SELECT job_id,host_id,attempt_id,state,method,detail,assigned_epoch FROM jobs "
+                "WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
             # UNKNOWN still owns the request. Release only its capacity when
             # the worker proved it exited or a retired PBS allocation is verified.
             return [dict(row) for row in rows if not (
@@ -1017,6 +1023,34 @@ class DistributedExecutor(ConcurrentExecutor):
                      and (row['job_id'], row['attempt_id']) in self.retired_preparation_attempts)
                     or (json.loads(row['detail']).get('resource_released') is True
                         and json.loads(row['detail']).get('automatic_retry') is False)))]
+
+    def _check_worker_contact(self):
+        """Yield waiters after lost contact while keeping the queue attempt owned."""
+        state = self.state
+        with state.cv:
+            if state.closed or not any(task.status == 'RUNNING' for task in state.tasks.values()):
+                return
+            if not hasattr(state, 'allocation_epoch'):
+                return  # DistributedExecutor startup has not reached the worker setup.
+            now = time.time()
+            relay = self.distributed.get('relay') or {}
+            pbs = self.distributed.get('pbs') or {}
+            grace = 3 * max(30, relay.get('request_timeout_seconds', 30),
+                            pbs.get('request_timeout_seconds', 20),
+                            self.allocation_config.get('remote_offer_ttl_seconds', 0))
+            for row in self._owned_attempts():
+                job = self.run_dir/'jobs'/row['method']/row['job_id']
+                task = state.tasks.get(job)
+                if task is None or task.status != 'RUNNING':
+                    continue
+                observed = self.hosts.get(row['host_id'], {}).get('epoch', state.allocation_epoch)
+                assigned = row['assigned_epoch']
+                if now - max(observed, assigned) <= grace:
+                    continue
+                task.error = 'WORKER_CONTACT_LOST'
+                self._finished(task, None, assigned)
+                task.view.log(event='WORKER_CONTACT_LOST', job=row['job_id'], host_id=row['host_id'],
+                              attempt_id=row['attempt_id'], owner_preserved=True, automatic_retry=False)
 
     def _offer_free(self, host, policy, error=None):
         """Fresh unused capacity, never a lease on an assigned evaluation."""
@@ -1856,7 +1890,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 if hold is not None:self.preparation_holds[job_id]=hold
         self.state.cv.notify_all()
 
-    def submit_preparation(self, request, *, budget='UNLIMITED', approved=False, contract=None, eligibility=None, dependencies=()):
+    def submit_preparation(self, request, *, budget='UNLIMITED', approved=False, contract=None,
+                           eligibility=None, dependencies=(), expected_job_id=None):
         """Reserve one exact preparation, independent of candidate aliases/Q3 budget.
 
         Signal and compile callers may submit together; dependency-bearing work
@@ -1870,6 +1905,9 @@ class DistributedExecutor(ConcurrentExecutor):
         preparation = request['preparation']
         optional = preparation.get('optional_price_validation') is True
         job_id = request['request_id']
+        if expected_job_id is not None and job_id != expected_job_id:
+            from .pr_candidate_completion import Held
+            raise Held('PREPARATION_REQUEST_MISMATCH:'+expected_job_id+':'+job_id)
         method = 'PREPARATION:'+preparation['stage']
         task_contract = dict(evaluation=deepcopy(contract),dependencies=preparation['dependencies'])
         with self.state.cv:
@@ -1881,6 +1919,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
                 return job_id
             row = self.store.row(job_id)
+            if row is not None and (row['request_sha256'] != Q.digest(request) or row['contract'] != task_contract):
+                from .pr_candidate_completion import Held
+                raise Held('PREPARATION_REQUEST_MISMATCH:'+job_id)
             if row is None or row['state'] == 'CANCELLED':
                 if eligibility is None: eligibility = self._preparation_eligibility_for(request, job_id)
                 if not self.store.eligible(request, eligibility):
@@ -1914,8 +1955,6 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.metrics['preparation_submitted'] += 1
                 self.for_method(method).log(event='ENQUEUE',job=job_id,configuration=job_id,stage=preparation['stage'],demand=not optional,
                     optional_price_validation=optional)
-            elif row['request_sha256'] != Q.digest(request) or row['contract'] != task_contract:
-                raise ValueError('Preparation identity/contract changed')
             if row['state'] != 'ACCEPTED': self._restore_task(row, demand=not optional)
             self.state.cv.notify_all()
         return job_id
@@ -1960,13 +1999,22 @@ class DistributedExecutor(ConcurrentExecutor):
             outcome = json.loads((job/'OUTCOME.json').read_text())
             artifacts = job/'artifacts'
             self.artifact_cache.materialize(outcome.get('artifacts', {}), artifacts, immutable=True)
-            if adopt and self.store.adopt(job_id):
-                self.for_method(row['method']).log(event='ADOPT',job=job_id,configuration=job_id,status=outcome['status'],stage=row['request']['preparation']['stage'])
-                self.state.metrics['preparation_adopted'] += 1
+            if adopt: self.adopt_preparation(job_id)
             return dict(outcome,job_id=job_id,job=str(job),artifact_directory=str(artifacts),calls=0,preparation_calls=1)
         if row['state'] == 'UNKNOWN' or (task and task.error):
             return dict(status='UNKNOWN',reason=task.error if task else 'PREPARATION_STATE_UNKNOWN',job_id=job_id,calls=0,preparation_calls=1)
         return None
+
+    def adopt_preparation(self, job_id):
+        row = self.store.row(job_id)
+        if row is None or row['state'] != 'ACCEPTED' or self._preparation_request(row['request']) is None:
+            raise ValueError('Only a received preparation result can be adopted')
+        if self.store.adopt(job_id):
+            job = self.run_dir/'jobs'/row['method']/job_id
+            outcome = json.loads((job/'OUTCOME.json').read_text())
+            self.for_method(row['method']).log(event='ADOPT',job=job_id,configuration=job_id,
+                status=outcome['status'],stage=row['request']['preparation']['stage'])
+            self.state.metrics['preparation_adopted'] += 1
 
     def await_preparation(self, job_id, *, adopt=True):
         return self.preparation_result(job_id,wait=True,adopt=adopt)
@@ -2639,13 +2687,15 @@ class DistributedExecutor(ConcurrentExecutor):
             return self._held_answer(proposal)
         if answer:
             current = self.store.row(job.name)
-            if (answer['status'] == 'UNKNOWN' and current and current['state'] == 'UNKNOWN'
+            if (answer['status'] == 'UNKNOWN' and current
                     and not self.state.failure and current['attempt_id'] and current['host_id']
-                    and current['detail'].get('automatic_retry') is False
-                    and current['detail'].get('reason') == 'LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT'):
+                    and (answer.get('reason') == 'WORKER_CONTACT_LOST' or
+                         current['state'] == 'UNKNOWN' and current['detail'].get('automatic_retry') is False)):
                 # The durable worker report identifies this unresolved attempt.
                 # Retain its ownership and isolate proposals that depend on it.
-                answer = dict(answer, failure_scope='CONFIGURATION', reason=current['detail']['reason'])
+                answer = dict(answer, failure_scope='CONFIGURATION',
+                              reason=(answer['reason'] if answer.get('reason') == 'WORKER_CONTACT_LOST'
+                                      else current['detail'].get('reason') or 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED'))
         return answer
 
     def record_prior_result_reuse(self, job):
@@ -2700,7 +2750,10 @@ class DistributedExecutor(ConcurrentExecutor):
                       unresolved_owned_attempts=len(self._owned_attempts()),
                       unresolved_q3_attempts=[
                           {key: row[key] for key in ('method', 'job_id', 'attempt_id', 'host_id')}
-                          for row in rows if row['state'] == 'UNKNOWN' and not self._preparation_request(row['request'])],
+                          for row in rows if not self._preparation_request(row['request'])
+                          and (row['state'] == 'UNKNOWN' or
+                               getattr(self.state.tasks.get(self.run_dir/'jobs'/row['method']/row['job_id']),
+                                       'error', None) == 'WORKER_CONTACT_LOST')],
                       host_offers={host:dict(capacity=info.get('capacity'),
                           fresh_free_slots=self._offer_free(host, admission_policy, admission_error),
                           reported_free_slots=info['reported_slots'],

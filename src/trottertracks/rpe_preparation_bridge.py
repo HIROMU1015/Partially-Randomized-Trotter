@@ -1038,7 +1038,7 @@ class DistributedPreparationBridge:
                 destination.write_bytes(raw)
 
     def call(self, completion, command, directory, stage, output=None, science=True):
-        from .pr_candidate_completion import Held, put
+        from .pr_candidate_completion import Held, PreparationWait, put
         directory = Path(directory)
         marker = directory / (stage + '.DISTRIBUTED.json')
         if marker.exists():
@@ -1055,7 +1055,7 @@ class DistributedPreparationBridge:
                         try:
                             replacement = self.build_request(completion, command, directory, stage, output)
                         except (OSError, ValueError, subprocess.CalledProcessError) as error:
-                            raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+
+                            raise PreparationWait('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+
                                        ':INPUT_OR_SOURCE_METADATA_UNAVAILABLE:'+str(error)) from error
                         if portable not in replacement['preparation']['inputs']:
                             raise ValueError('Replacement PF compile has no fixed portable adapter')
@@ -1074,10 +1074,10 @@ class DistributedPreparationBridge:
             if prior['failed']:
                 raise Held('STAGE_FAILED:'+stage+':ORIGINAL_OWNER_STOP_OR_FAILURE:NO_AUTOMATIC_RETRY:'+str(prior))
             if prior['pending']:
-                raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':ORIGINAL_OWNER_RUNNING_OR_UNKNOWN:'+str(prior))
+                raise PreparationWait('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':ORIGINAL_OWNER_RUNNING_OR_UNKNOWN:'+str(prior))
             try:request = self.build_request(completion, command, directory, stage, output)
             except (OSError,ValueError,subprocess.CalledProcessError)as error:
-                raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':INPUT_OR_SOURCE_METADATA_UNAVAILABLE:'+str(error))from error
+                raise PreparationWait('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':INPUT_OR_SOURCE_METADATA_UNAVAILABLE:'+str(error))from error
             submitted = dict(request=request, source=request['preparation']['source']['commit'], automatic_retry=False)
         # A Q3 approval/budget does not open signal/compile scope. The round
         # must separately bound preparation tasks and retain leaf input caps.
@@ -1087,19 +1087,23 @@ class DistributedPreparationBridge:
             path=directory/(dependency+'.DISTRIBUTED.json')
             if path.exists():dependencies.append(read(path)['job_id'])
         job_id = self.executor.submit_preparation(request, budget=budget, approved=self.approved,
-            contract=request['original_contract'],dependencies=dependencies)
-        if submitted.get('job_id', job_id) != job_id:
-            raise ValueError('Preparation task identity changed on resume')
+            contract=request['original_contract'], dependencies=dependencies, expected_job_id=submitted.get('job_id'))
         put(marker, dict(submitted, job_id=job_id))
-        result = self.executor.preparation_result(job_id, wait=True, adopt=True)
+        result = self.executor.preparation_result(job_id, wait=True, adopt=False)
         if not result or result.get('status') != 'PREPARATION_COMPLETE':
             terminal=result or{}
             while terminal.get('status')=='PREPARATION_DEPENDENCY_HOLD'and isinstance(terminal.get('predecessor'),dict):
                 terminal=terminal['predecessor']
-            if terminal.get('status')in('PREPARATION_FAILED','UNKNOWN'):
+            if terminal.get('status') == 'PREPARATION_FAILED':
                 raise Held('STAGE_FAILED:'+stage+':DISTRIBUTED_'+terminal['status']+':NO_AUTOMATIC_RETRY:'+str(result))
-            raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
-        self._import_result(result, request)
+            hold = Held if terminal.get('status') in ('PREPARATION_HOLD', 'PREPARATION_BUDGET_OR_PERMISSION_HOLD',
+                                                      'PREPARATION_STOPPED_BEFORE_RESERVATION') else PreparationWait
+            raise hold('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
+        try:
+            self._import_result(result, request)
+        except ValueError as error:
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':'+str(error)) from error
+        self.executor.adopt_preparation(job_id)
         receipt = dict(returncode=0, signal=None, source=request['preparation']['source']['commit'], job_id=job_id,
                        transport='distributed', automatic_retry=False, preparation_calls=result.get('preparation_calls', 0))
         put(directory / (stage + '.RETURN.json'), receipt)

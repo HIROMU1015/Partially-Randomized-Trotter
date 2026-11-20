@@ -126,7 +126,7 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
     completion.setdefault('output_root',str(folder/'provider_output'))
     completion.setdefault('registry_file',str(folder/'REGISTRY.json'))
     helper_spec=dict(spec,methods=sorted({item['configuration_body']['spec']['split'].get('original_PF_method')=='B0I'and'TRUNCATED_PF'or'FULL_PF'for item in selected})if not manual else [m for m in methods if m in PF.METHODS],pf_completion=completion)
-    from .pr_candidate_completion import Held
+    from .pr_candidate_completion import Held, PreparationWait
     try:
         response=PF.complete_selected(root,helper_spec,folder,
             **({'stage_executor':stage_executor}if stage_executor is not None else{}))
@@ -134,7 +134,12 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
         # The fixed selector and stage markers retain the owner and request.
         # A candidate lacking an eligible host/receipt must not cancel PR or
         # already READY PF work using the same distributed executor.
-        return context,routes,dict(status='PREPARATION_INCOMPLETE',selection=selection,reason=str(error))
+        return context,routes,dict(status='PREPARATION_WAITING' if isinstance(error, PreparationWait)
+                                   else 'PREPARATION_INCOMPLETE',selection=selection,reason=str(error))
+    except PF.CompletionRequestMismatch as error:
+        return context,routes,dict(status='PREPARATION_INCOMPLETE',selection=selection,
+                                   reason='PF_COMPLETION_REQUEST_MISMATCH',request_path=str(error.path),
+                                   differing_fields=error.fields)
     # Keep D's original metadata plan reachable from the caller's fixed results,
     # without changing the producer plan or inventing missing scientific values.
     copied=[]
@@ -205,9 +210,11 @@ def repair_metadata_waves(records, repairs):
 
 def prepare_available(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, announce, wait_for_work=None):
     """Run the next bounded wave as soon as its predecessor is saved."""
+    recheck_waiting = True
     while True:
         context, routes, status = prepare_next(root, problem, context, spec, run, routes, stage_executor,
-                                               stop_requested=stop_requested)
+                                               stop_requested=stop_requested, recheck_waiting=recheck_waiting)
+        recheck_waiting = False
         announce(context, routes)
         if status['status'] != 'PREPARATION_WAVE_PROCESSED' or stop_requested():
             return context, routes, status
@@ -215,7 +222,7 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
             return context, routes, dict(status='PREPARATION_WAVE_YIELDED', records=status['records'])
 
 
-def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None):
+def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None,recheck_waiting=True):
     """A durable PF wave, with each candidate and native owner in its own directory."""
     from concurrent.futures import ThreadPoolExecutor,as_completed
     from .rpe_preparation_round import snapshot_context
@@ -269,7 +276,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         routes=PF.registry_routes(routes,registry)
     pending={cid for cid,row in records.items() if row.get('status')=='PREPARATION_SCHEDULED'}
     revisit = {cid for cid, row in records.items() if row['status'] == 'PRICE_RECEIPT_RECHECK_AVAILABLE'}
-    selection=select(context,spec['methods'],records.keys()-pending-revisit,
+    waiting = {cid for cid, row in records.items() if row['status'] == 'PREPARATION_WAITING'} if recheck_waiting else set()
+    selection=select(context,spec['methods'],records.keys()-pending-revisit-waiting,
                      include_full=limit>1 or 'TRUNCATED_PF' not in spec['methods'])
     if selection['selected'] is None and not pending:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
@@ -281,10 +289,11 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
     else:
         wave=[];families=set()
         # Widths of the same prefix/formula can share early physical rounds.
-        for row in selection['candidates']:
+        # New independent work gets a turn even if a saved wait is unchanged.
+        for row in sorted(selection['candidates'], key=lambda row: row['configuration_id'] in waiting):
             family=(row['method'],row['key'].get('p'),row['key']['formula'])
             cid=row['configuration_id']
-            if row['ready'] or not row['needs'] or (cid in records and cid not in revisit) or family in families:
+            if row['ready'] or not row['needs'] or (cid in records and cid not in revisit and cid not in waiting) or family in families:
                 continue
             wave.append(row);families.add(family)
             records.setdefault(cid, {}).update(status='PREPARATION_SCHEDULED',key=row['key'],configurations={})
@@ -310,9 +319,12 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             chosen,status,entry=result;cid=chosen['configuration_id']
             records[cid].update(status=status['status'],reason=status.get('reason'),key=chosen['key'],
                                 configurations={cid:entry} if entry is not None else {})
+            for field in ('request_path', 'differing_fields'):
+                if field in status:
+                    records[cid][field] = status[field]
             if entry is not None:
                 registry['configurations'][cid]=entry;updated=True
-            processed=True
+            processed |= cid not in waiting or status['status'] != 'PREPARATION_WAITING'
             atomic_write(index,records)
     if updated:
         context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))

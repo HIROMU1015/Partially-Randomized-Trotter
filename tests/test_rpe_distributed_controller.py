@@ -132,6 +132,33 @@ class ControllerFailures(unittest.TestCase):
             request_sha256=assignment['request_sha256'],
             files={name: base64.b64encode(json.dumps(value).encode()).decode() for name, value in files.items()})
 
+    def test_lost_worker_contact_yields_only_owned_attempt_and_recovers_after_restart(self):
+        executor = self.executor()
+        first = self.enqueue(executor, 'first')
+        second = self.enqueue(executor, 'independent')
+        assignment, = self.poll(executor)['assignments']
+        self.assertEqual(assignment['job_id'], first.job.name)
+        old_attempt = executor.store.row(first.job.name)['attempt_id']
+        with patch('trottertracks.rpe_optimizer_concurrent.time.time', return_value=time.time()+600):
+            executor._check_worker_contact()
+        held = executor.for_method('PR_PAULI').answer(self.proposal('first'))
+        self.assertTrue(O.is_local_unknown(held))
+        self.assertEqual(held['reason'], 'WORKER_CONTACT_LOST')
+        self.assertEqual(executor.store.row(first.job.name)['state'], 'ASSIGNED')
+        other, = executor.rpc('/v1/poll', dict(host_id='server2', slots=1, source_sha=self.source))['assignments']
+        self.assertEqual(other['job_id'], second.job.name)
+        executor.rpc('/v1/complete', dict(self.completion(other), host_id='server2'))
+        self.assertEqual(executor.for_method('PR_PAULI').answer(self.proposal('independent'))['status'], O.PASS)
+        executor.finish()
+        resumed = self.executor()
+        replay, = self.poll(resumed)['assignments']
+        self.assertEqual(replay['attempt_id'], old_attempt)
+        self.assertEqual(resumed.store.counts('PR_PAULI', started_only=True), 2)
+        resumed.rpc('/v1/complete', self.completion(replay))
+        self.assertEqual(resumed.for_method('PR_PAULI').answer(self.proposal('first'))['status'], O.PASS)
+        self.assertTrue(resumed.rpc('/v1/complete', self.completion(replay))['duplicate'])
+        self.assertEqual(sum(e['event'] == 'ADOPT' for e in resumed.store.events()), 2)
+
     def test_lost_poll_response_replays_same_attempt_without_overfilling(self):
         executor = self.executor(capacity=2)
         first_task = self.enqueue(executor, 'first')

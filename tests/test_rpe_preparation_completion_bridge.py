@@ -149,8 +149,9 @@ class CompletionBridgeTests(unittest.TestCase):
                             if first_status=='UNKNOWN':self.store.update('original-host','job',self.attempt,'UNKNOWN')
                             return {'status':first_status}
                         self.store.complete('original-host','job',self.attempt,W.digest(self.requests[-1]),{})
-                        self.store.adopt('job')
                         return {'status':'PREPARATION_COMPLETE','artifact_directory':str(root),'artifacts':{}}
+                    def adopt_preparation(self, job):
+                        self.store.adopt(job)
                 class Fake(C.Completion):
                     def pauli_configuration(self,request,d,allow_science=True):return request['configuration'],{}
                     def initial_quote(self,*args):return {'complete':True,'rows':[{'unit_price_RZ':1}]}
@@ -176,7 +177,7 @@ class CompletionBridgeTests(unittest.TestCase):
                     second=c.complete(request)
                 self.assertEqual(ex.starts,1);self.assertEqual(ex.store.row('job')['attempt_id'],attempt)
                 self.assertEqual(builder.call_count,1)
-                if first_status=='HOST_ELIGIBILITY_HOLD':
+                if first_status in ('HOST_ELIGIBILITY_HOLD', 'UNKNOWN'):
                     self.assertEqual(first['status'],'WAITING_DISTRIBUTED_PREPARATION')
                     self.assertEqual(second['status'],'READY_FOR_SEARCH')
                     self.assertEqual(len(ex.requests),2);self.assertEqual(ex.requests[0],ex.requests[1])
