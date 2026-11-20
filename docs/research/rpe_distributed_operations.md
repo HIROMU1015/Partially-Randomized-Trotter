@@ -114,7 +114,25 @@ Gitの正式packと参照先は保存対象とし、停止済みの一時packは
 - 準備の中央受領時は、ハッシュ付き原本とjobの読み取り用参照を同じ実体で保持する。計算用の展開入力や、後続処理が書き換える候補作業ファイルには独立したコピーを使う。既存の別コピーを整理するときはSHA-256と利用箇所を照合する。
 - 配送bundleは、固定SOURCE・入力commitとパス・SHA-256、生成した入力の原本、必要なGitオブジェクトと復元手順に分ける。保存済みbundleを短期扱いにする前に、空のキャッシュと固定SOURCEから元のREQUESTが要求するbundleのSHA-256、入力HEAD、各入力のハッシュを照合する。受領済み結果のGit差分の取込みと、後続の保存結果再利用も通す。固定SHAのbundleを復元できない既存REQUESTでは、bundle本体を保持する。
 
-保存済み `search-e6361f01b6a480718127` のPF_COMPILE `prep-80abb4e4c35046236650ffc7` と
-DF_SIGNALS `prep-92c07e13c05743421b2c679c` では、元bundleを再生成に使わず、
-元の入力locator・固定SOURCE・bundleのGit refから再生成し、REQUESTのbundle SHA-256と一致した。
-この確認は2件のbundleバイト列まで。新規workerでの取込みと結果再利用は別途照合する。
+#### 配送bundleの復元と整理
+
+保管する単位は原REQUEST、固定SOURCE、入力のcommit・パス・SHA-256、生成入力の原本、および復元元のGit refとオブジェクトとする。復元元は短期workspaceから独立して保存し、参照先も記録する。確認済みの配送bundle本体は短期キャッシュとし、同じバイト列を長期アーカイブへ重複保存しない。計算で新たに生成したGit差分bundleは結果の原本として扱う。
+
+復元は固定REQUESTを使い、削除や科学計算を伴わない確認から始める。
+
+```bash
+python3 scripts/restore_rpe_preparation_bundle.py --request "$request_file" --sha256 "$bundle_sha"
+```
+
+別の保管済みGit checkoutを参照するときは `--repository "$source_repository"`、元のSHAの位置へ戻すときは `--restore-into "$artifact_cache"` を加える。復元コマンドは固定SOURCEだけを前提に生成された `inputs-*` を対象とし、SHA-256が一致した場合だけ書き込む。失敗した場合は候補の入力不足として扱い、元bundleか固定オブジェクトを回収する。Gitの版や設定を変えた場合もSHA-256を再確認する。
+
+既存runの整理では、起動と終了の記録が同じinvocationであること、未確定attemptや配布・回収待ちの要求が対象を参照していないこと、元の固定版でResumeする前に復元できることを確認する。復元元が候補の作業checkoutや一時的なGit alternatesにしかない場合は、復元元を保全するまで実体を残す。未検査の `workspace-*` やbase bundleも保持する。
+
+2026-11-20に、保存済みrun `search-e6361f01b6a480718127` の次の2件を照合した。元のbundle本体を再生成元に使わず、空のworkerキャッシュと固定SOURCEから新規workspaceを作った。中央では受理済みの台帳・receiptを参照し、保存結果を別領域へ取り込み、出力をハッシュ照合した。
+
+| 工程とjob | 配送bundle | 固定Git入力／作業入力 | 保存結果の再利用 |
+| --- | ---: | ---: | --- |
+| PF_COMPILE `prep-80abb4e4c35046236650ffc7` | 46,527,487 bytes、元SHA一致 | 24／9 | 23成果のhash一致。返却Git差分から元の結果commitを取得 |
+| DF_SIGNALS `prep-92c07e13c05743421b2c679c` | 195,064,029 bytes、元SHA一致 | 127／27 | 33成果のhash一致。保存信号を別workspaceへ復元 |
+
+2件で合計241,591,516 bytes（約230 MiB）が短期キャッシュ化の候補となった。検査時の元runは起動と終了のinvocationが一致せず、台帳にも未割当・未確定が残るため、元キャッシュを保全した。2件の検査で確認したのは準備成果を同じSHAで再利用するところまでで、新規科学計算は0件。
