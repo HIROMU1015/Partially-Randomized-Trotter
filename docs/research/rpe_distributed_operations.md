@@ -133,11 +133,17 @@ python3 scripts/archive_rpe_preparation_inputs.py \
   --request "$first_request" --request "$second_request" --output "$archive"
 ```
 
-配送キャッシュを整理した旧runは、固定版の通常Resumeより前に、中央のCodexが次を実行する。現行controllerに自動復元は組み込んでいない。既存のキャッシュに同じSHAがある場合は再利用する。`ARCHIVE.json` が対象run、元REQUESTのSHA-256、bundleのSHA-256を結び付ける。
+配送キャッシュを整理した旧runは、RomuTailの通常Resumeで、起動・終了記録とSTOPの既存判定を通った後に復元する。対象runの回収記録 `*.reclaimed.json` と `ARCHIVE.json` を照合し、正式に除いたbundleのうち不足する同一SHAを復元する。すでに同一SHAが存在すれば再利用する。復元後に通常の§10.5照合を行い、開始時の固定版に渡す。復元件数は `DUPLICATE_PREFLIGHT.json` の `preparation_archive_recovery` に記録する。復元が失敗した場合はResume応答に `preparation_archives` の理由を返す。
+
+作業領域やアーカイブを単独で点検する際は、次の復元コマンドを使える。
 
 ```bash
 python3 scripts/restore_rpe_preparation_bundle.py --archived-run "$run_directory" --archive "$archive"
 ```
+
+中断でResumeが保留された場合、RomuTailの通常入口は `resume_reconciliation` に対象run、最後のinvocationと対応終了証跡の有無、未回収・実行所有中・未確定のjob、元hostとattempt IDを返す。`RUNNING` は台帳上の記録なので、実機での継続は元workerで確認する。部分書込みだけの準備成果や診断用Q3ファイルは、完了receiptや有効なDPチェックポイントと区別する。
+
+RomuTailの通常入口は `.rpe-central/CLIENT_GATEWAY.py` を使い、復元処理は `.rpe-central/deployment/resume-archives-a1dbe26e87/` に固定した。同ディレクトリに切替前のbootstrapと適用差分を保持する。登録release・実行時の科学SOURCE・固定profileは各runの記録から選ぶ。旧固定版を使う人工Resumeで、終了証跡が欠ける場合の保留と、終了証跡がある場合のSHA一致復元を確認した。
 
 既存runの整理では、起動と終了の記録が同じinvocationであること、未確定attemptや配布・回収待ちの要求が対象を参照していないこと、元の固定版でResumeする前に復元できることを確認する。復元元が候補の作業checkoutや一時的なGit alternatesにしかない場合は、復元元を保全するまで実体を残す。未検査の `workspace-*` やbase bundleも保持する。
 
