@@ -165,6 +165,35 @@ class AdmissionTests(unittest.TestCase):
 
 
 class ManagerTests(unittest.TestCase):
+    def test_preparation_trial_changes_the_live_pool_and_preserves_pinned_settings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixed = settings()
+            fixed['resources'].update(ncpus=96, mem='350gb')
+            profile = fixed['workers'][0]['profile']
+            profile['preparation_profiles'] = [dict(stage='compile', provider='DF_CALIBRATION',
+                source_commit='PINNED', profile=dict(task_cpu_count=2))]
+            fixed['preparation_task_seconds'] = [dict(stage='compile', provider='DF_CALIBRATION',
+                source='PINNED', seconds=3600)]
+            fixed['allocation_sizing'] = dict(per_task_resources=True, q3_startup_memory_bytes_per_task=8*P.GIB)
+            executor = FakeExecutor(directory)
+            base = P.PbsManager(executor, fixed, gateway=FakeGateway())
+            pinned_file = base.directory/'SETTINGS.json'
+            original = pinned_file.read_bytes()
+            base.close()
+            executor.distributed = dict(pbs=deepcopy(fixed), preparation_profiles={'pbs-0': deepcopy(profile)})
+            P.apply_preparation_resources(executor.distributed, [dict(host='pbs-0', provider='DF_CALIBRATION',
+                source='PINNED', task_cpu_count=6, memory_bytes=18*P.GIB)])
+            manager = P.PbsManager(executor, executor.distributed['pbs'], gateway=FakeGateway())
+            self.addCleanup(manager.close)
+            request = dict(route=dict(kind='preparation'), preparation=dict(stage='compile',
+                provider='DF_CALIBRATION', source=dict(commit='PINNED')))
+            effective = manager.configured['pbs-0']['profile']
+            self.assertEqual(effective['preparation_profiles'][0]['profile']['task_cpu_count'], 6)
+            self.assertEqual(executor.distributed['preparation_profiles']['pbs-0']['preparation_profiles'],
+                             effective['preparation_profiles'])
+            self.assertEqual(P.packed_resources([request]*20, effective, manager.settings, 'pbs-0'), (96, 289, 16))
+            self.assertEqual(pinned_file.read_bytes(), original)
+
     def manager(self, directory, gateway=None):
         executor = FakeExecutor(directory)
         gateway = gateway or FakeGateway()

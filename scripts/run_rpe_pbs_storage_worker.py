@@ -37,6 +37,37 @@ class GatewayStorage:
         return unavailable
 
 
+def enable_preparation_memory_sampling():
+    from trottertracks import rpe_pbs_worker as pbs
+    from trottertracks import rpe_q3_worker as worker
+
+    class MeasuredAllocationWorker(pbs.AllocationWorker):
+        def _resource_offer(self):
+            report = super()._resource_offer()
+            for attempt, assignment in self.records.items():
+                spec = assignment['request'].get('preparation', {})
+                if spec.get('provider') not in ('DF_CALIBRATION', 'DF_HOLDOUT'):
+                    continue
+                if worker.read(attempt/'WORKER_STATE.json')['state'] != 'RUNNING':
+                    continue
+                marker = attempt/'SUPERVISOR_STARTED.json'
+                if not marker.is_file():
+                    continue
+                pid = worker.read(marker).get('pid')
+                if not worker.process_alive(pid, attempt):
+                    continue
+                sample = worker.Resources.owned_tree_sample(pid)
+                path = attempt/'OWNED_RESOURCES.json'
+                prior = worker.read(path) if path.is_file() else {}
+                if sample['rss_bytes'] > prior.get('peak_rss_bytes', 0):
+                    profile = worker.read(attempt/'WORKER_PROFILE.json')
+                    worker.atomic(path, dict(worker.stamp(), peak_rss_bytes=sample['rss_bytes'],
+                        task_cpu_count=profile.get('task_cpu_count'), provider=spec['provider']))
+            return report
+
+    pbs.AllocationWorker = MeasuredAllocationWorker
+
+
 def main():
     args = sys.argv[1:]
     if args and args[0] == '-B':
@@ -55,6 +86,7 @@ def main():
     observer = GatewayStorage(directory/'STORAGE_USAGE_GATEWAY.json',
                               max_age=2*storage.SAMPLE_SECONDS)
     storage.report = observer.report
+    enable_preparation_memory_sampling()
     sys.argv = [str(script), *args]
     runpy.run_path(str(script), run_name='__main__')
 

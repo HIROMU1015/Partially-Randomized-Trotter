@@ -70,6 +70,11 @@ def apply_worker_trial(spec, trial):
     distributed['local_calibration_pair'] = dict(memory_reserve_bytes=trial['local_memory_reserve_bytes'])
     if trial.get('pbs_storage_launcher'):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
+    if trial.get('pbs_only'):
+        distributed['execution_hosts'] = [worker['host_id'] for worker in distributed['pbs']['workers']]
+    if trial.get('pbs_preparation_resources'):
+        from trottertracks.rpe_pbs import apply_preparation_resources
+        apply_preparation_resources(distributed, trial['pbs_preparation_resources'])
 
 
 class WideDriver(K.Driver):

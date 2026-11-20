@@ -292,6 +292,36 @@ def packed_resources(requests, profile, settings, host, *, selected=None):
     return cpus, (memory + GIB - 1) // GIB + 1, count
 
 
+def apply_preparation_resources(distributed, overrides):
+    """Set operational CPU and RAM reservations for named fixed preparation sources."""
+    pbs = distributed['pbs']
+    distributed['pbs_pinned_settings'] = deepcopy(pbs)
+    for override in overrides:
+        host = override['host']
+        worker = next(entry for entry in pbs['workers'] if entry['host_id'] == host)
+        source, provider = override['source'], override['provider']
+        slots, memory = override['task_cpu_count'], override['memory_bytes']
+        if type(slots) is not int or not 0 < slots <= pbs['resources']['ncpus']:
+            raise ValueError('PBS preparation CPU reservation is outside the configured pool')
+        if type(memory) is not int or not 0 < memory <= usable_memory(worker['profile'], pbs):
+            raise ValueError('PBS preparation memory reservation is outside the configured pool')
+        configured = distributed['preparation_profiles'][host]
+        if not isinstance(configured, dict):
+            configured = read(Path(configured))
+            distributed['preparation_profiles'][host] = configured
+        for profile in (worker['profile'], configured):
+            matches = [rule for rule in profile['preparation_profiles']
+                       if (rule.get('source_commit'), rule.get('provider')) == (source, provider)]
+            if len(matches) != 1:
+                raise ValueError('PBS preparation profile is missing or ambiguous: '+provider)
+            matches[0]['profile']['task_cpu_count'] = slots
+        estimates = [rule for rule in pbs['preparation_task_seconds']
+                     if (rule['source'], rule['provider']) == (source, provider)]
+        if len(estimates) != 1:
+            raise ValueError('PBS preparation walltime rule is missing or ambiguous: '+provider)
+        estimates[0]['memory_bytes'] = memory
+
+
 def fits_request(request, report, settings, host_id=None):
     """Require a declared conservative runtime before starting scientific work."""
     pbs = (report or {}).get('pbs')
@@ -316,18 +346,20 @@ class PbsManager:
     def __init__(self, executor, settings, *, gateway=None):
         self.executor = executor
         self.settings = deepcopy(settings)
-        if self.settings.get('namespace_by_run', True):
-            self.settings['remote_root'] = self.settings['remote_root'].rstrip('/')+'/'+digest(
-                dict(controller_run=str(executor.run_dir.resolve())))[:20]
+        original = deepcopy(getattr(executor, 'distributed', {}).get('pbs_pinned_settings', settings))
+        namespace = digest(dict(controller_run=str(executor.run_dir.resolve())))[:20]
+        for configuration in (self.settings, original):
+            if configuration.get('namespace_by_run', True):
+                configuration['remote_root'] = configuration['remote_root'].rstrip('/')+'/'+namespace
         self.directory = executor.run_dir/'distributed'/'pbs'
         self.directory.mkdir(parents=True, exist_ok=True)
         self.lock = (self.directory/'MANAGER.lock').open('a')
         fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         fixed = self.directory/'SETTINGS.json'
-        if fixed.exists() and read(fixed) != self.settings:
+        if fixed.exists() and read(fixed) != original:
             self.lock.close()
             raise ValueError('Existing run retains its pinned PBS settings')
-        if not fixed.exists(): atomic(fixed, self.settings)
+        if not fixed.exists(): atomic(fixed, original)
         self.path = self.directory/'STATE.json'
         self.state = read(self.path) if self.path.exists() else dict(allocations={}, requests={})
         self.gateway = gateway or Gateway(self.settings)
