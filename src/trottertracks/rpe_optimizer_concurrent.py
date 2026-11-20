@@ -938,10 +938,18 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _offer_fresh(self, host):
         ttl = self.allocation_config['offer_ttl_seconds']
-        if 'remote_offer_ttl_seconds' in self.allocation_config and any(
+        info = self.hosts.get(host, {})
+        manager = self.pbs_manager
+        if manager is not None and host in manager.configured:
+            pbs = (info.get('resource_report') or {}).get('pbs') or {}
+            if not manager.accepting_allocation(host, pbs.get('job_id')):
+                return False
+            # A PBS poll traverses two shared-spool exchanges, and can carry
+            # several fixed-input checks. Use the gateway's transport window.
+            ttl = max(ttl, manager.settings.get('request_timeout_seconds', 20))
+        elif 'remote_offer_ttl_seconds' in self.allocation_config and any(
                 w['host_id'] == host for w in (self.distributed.get('relay') or {}).get('workers', ())):
             ttl = self.allocation_config['remote_offer_ttl_seconds']
-        info = self.hosts.get(host, {})
         return time.monotonic() - info.get('observed_monotonic', float('-inf')) <= ttl
 
     def _refresh_capacity(self, policy, error=None):

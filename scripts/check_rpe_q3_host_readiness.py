@@ -115,7 +115,8 @@ def main():
         if process.returncode == 0 and result.get('adapter_result', {}).get('status') == 'DRY_CHECK_PASS':
             result['status'] = 'REAL_HOST_DRY_CHECK_PASS'
         else:
-            result['error'] = (output / 'ADAPTER.log').read_text()[-16000:]
+            reason = result.get('adapter_result', {}).get('reason')
+            result['error'] = reason or (output / 'ADAPTER.log').read_text()[-16000:]
     except Exception as exc:
         result.update(error_type=type(exc).__name__, error=str(exc),
                       traceback=traceback.format_exc())

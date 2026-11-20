@@ -274,6 +274,13 @@ class PbsManager:
                    if 'submit_to_ready_seconds' in a]
         return max(15., min(30., median(samples[-10:]) if samples else 20.))
 
+    def accepting_allocation(self, host, job_id):
+        return any(allocation['host_id'] == host and allocation['status'] == 'R'
+                   and allocation['job_id'] == job_id
+                   and (allocation.get('worker') or {}).get('accepting')
+                   and not self.state['allocations'][allocation['token']].get('resize_requested')
+                   for allocation in self.allocations)
+
     def preparation_readiness_wait_seconds(self, host):
         # Queue wait and worker-side preflight have different budgets. A live
         # worker may need several artifact RPCs before it can report readiness.
@@ -311,11 +318,22 @@ class PbsManager:
         if time.monotonic() - sampled >= SAMPLE_SECONDS:
             try:
                 new = self.gateway.storage_report(policy)
+                used = new['used_bytes']
+                free = new.get('filesystem_free_bytes')
+                minimum = new.get('filesystem_min_free_bytes')
+                if used is None:
+                    reason = 'STORAGE_USAGE_UNAVAILABLE'
+                elif type(used) is not int or used < 0:
+                    raise ValueError('Invalid PBS storage usage')
+                elif used >= policy['limit_bytes']:
+                    reason = 'STORAGE_LIMIT_REACHED'
+                elif free is not None and minimum is not None and free < minimum:
+                    reason = 'FILESYSTEM_SPACE_LOW'
+                else:
+                    reason = None
                 if (new['limit_bytes'] != policy['limit_bytes']
-                        or type(new['accepting_new_jobs']) is not bool
-                        or new['accepting_new_jobs'] != (
-                            type(new['used_bytes']) is int and 0 <= new['used_bytes'] < new['limit_bytes'])
-                        or new['reason'] not in (None, 'STORAGE_LIMIT_REACHED', 'STORAGE_USAGE_UNAVAILABLE')):
+                        or new['reason'] != reason
+                        or new['accepting_new_jobs'] is not (reason is None)):
                     raise ValueError('PBS storage report differs from selected limit')
             except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
                 new = dict(limit_bytes=policy['limit_bytes'], used_bytes=None,
@@ -367,6 +385,27 @@ class PbsManager:
                 # constitute a current free-slot offer.
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
             result = self.executor.rpc(request['endpoint'], payload)
+            if request['endpoint'] == '/v1/poll':
+                record = self.state['allocations'][token]
+                storage = (payload.get('resource_report') or {}).get('storage') or {}
+                ready = payload['slots'] > 0 and payload.get('accepting_new_jobs', True)
+                if ready:
+                    previous = record.get('first_usable_offer_clock') or {}
+                    now = stamp()
+                    if previous.get('clock_id') != now['clock_id']:
+                        record['first_usable_offer_clock'] = now
+                    record['last_usable_offer_clock'] = now
+                else:
+                    record.pop('first_usable_offer_clock', None)
+                    record.pop('last_usable_offer_clock', None)
+                errors = payload.get('readiness_errors') or {}
+                error_hash = digest(errors) if errors else None
+                if (error_hash != record.get('worker_readiness_error_sha256') or
+                        storage.get('reason') != record.get('worker_storage_hold')):
+                    self.log('PBS_WORKER_ADMISSION', token=token, host_id=host,
+                             storage_reason=storage.get('reason'), readiness_errors=errors)
+                    record['worker_storage_hold'] = storage.get('reason')
+                    record['worker_readiness_error_sha256'] = error_hash
             response = dict(ok=True, result=result)
         except (OSError, ValueError, KeyError) as error:
             response = dict(ok=False, error=type(error).__name__+': '+str(error))
@@ -612,9 +651,12 @@ class PbsManager:
                 # allocation can take ownership under this PBS host identity.
                 # Give a newly ready worker a chance to round-trip its input
                 # checks and claim work before declaring the allocation idle.
-                first = record.get('first_accepting_clock') or {}
+                first = record.get('first_usable_offer_clock') or {}
+                latest = record.get('last_usable_offer_clock') or {}
                 now = record['clock']
-                offered_long_enough = (first.get('clock_id') == now['clock_id'] and
+                offered_long_enough = (first.get('clock_id') == now['clock_id']
+                    and latest.get('clock_id') == now['clock_id']
+                    and now['monotonic'] - latest['monotonic'] <= self.readiness_wait_seconds() and
                     now['monotonic'] - first['monotonic'] >= self.readiness_wait_seconds())
                 if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'R'
                         and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')

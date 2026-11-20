@@ -191,6 +191,12 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(manager.state['allocations'], {})
             self.assertFalse(any(call['action']=='ensure' for call in gateway.calls))
             gateway.storage_report = lambda p: dict(limit_bytes=p['limit_bytes'], used_bytes=0,
+                accepting_new_jobs=False, reason='FILESYSTEM_SPACE_LOW',
+                filesystem_free_bytes=2**30, filesystem_min_free_bytes=5*2**30)
+            manager.cycle()
+            self.assertEqual(manager.state['allocations'], {})
+            self.assertEqual(manager.state['storage']['pbs-0']['reason'], 'FILESYSTEM_SPACE_LOW')
+            gateway.storage_report = lambda p: dict(limit_bytes=p['limit_bytes'], used_bytes=0,
                                                   accepting_new_jobs=True, reason=None)
             manager.cycle()
             self.assertEqual(len(manager.state['allocations']), 1)
@@ -309,7 +315,18 @@ class ManagerTests(unittest.TestCase):
             manager.cycle()
             self.assertFalse(manager.controls[token]['stop'])
             self.assertNotIn('resize_requested', manager.state['allocations'][token])
+            self.assertTrue(manager.accepting_allocation('pbs-0', 'artificial'))
+            self.assertFalse(manager.accepting_allocation('pbs-0', 'previous-allocation'))
             manager.state['allocations'][token]['first_accepting_clock']['monotonic'] -= 60
+            manager.cycle()
+            self.assertFalse(manager.controls[token]['stop'])
+            for request_id, slots in [('blocked-storage', 0), ('eligible-offer', 1)]:
+                manager._dispatch(token, dict(endpoint='/v1/poll', request_id=request_id,
+                    payload=dict(host_id='pbs-0', slots=slots, capacity=1,
+                                 accepting_new_jobs=bool(slots))))
+            first_offer = manager.state['allocations'][token]['first_usable_offer_clock']
+            manager.state['allocations'][token]['first_usable_offer_clock'] = dict(
+                first_offer, monotonic=first_offer['monotonic']-60)
             manager.cycle()
             self.assertTrue(manager.controls[token]['stop'])
             self.assertTrue(manager.state['allocations'][token]['resize_requested'])
