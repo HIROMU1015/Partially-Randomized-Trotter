@@ -585,3 +585,11 @@ PFの28候補を固定providerの既存重複照合で再確認した。提案�
 RomuTailでFull PFの準備ハッシュ不一致を3件回収した。保存snapshotの復元を固定のHASWELL・1スレッドで確認すると、従来p7・p10の準備ハッシュが厳密に一致した。照合中の回路生成・コンパイルは各0件。修正 `a84d23cfc82767a3650686dcce4bf5fad4ed24b5` を通常Startと同じrunのResumeへ配置した。旧失敗と未確定attemptはそのまま保全する。[分散探索の運用ルール](../rpe_distributed_operations.md)
 
 修正版の通常Resume `5c0307e85fcb476c9009288126e3ffe1` で、RomuTailの `prep-c442a4de912d9cf705a8275c` が02:40:20 JSTに採用され、監査がキューに入った。RomuTailの次のコンパイルとserver2のコンパイルも開始を確認した。02:40:36 JSTごろから約25秒の計測で、当該runのworker CPU時間はRomuTail 25.18 CPU秒、server2 25.43 CPU秒、WSL 0 CPU秒だった。PBSの `267681.CPUcluster-PRISM` は96 CPUを要求し、`Not enough free nodes available` で待機中だった。
+
+### 2026-11-21　倍率探索の継続と分散Q3結果の採用
+
+`344219491e6d868cc69678df40df7cfc7a2daa64` と `e96f6b8ef4c007392baf66321e06cd5d832396f6` を4ホストの運用版に統合した。固定controller SOURCEは `373b52ae1babe8f201ff63d3992c8088720760c1`。`romutail-scaled-fleet-373b52ae1b` を新規run用currentに採用した。PFの準備とコンパイルの配分、PBSの設定、科学Q3 SOURCE `28d976b99cdf8329adcc1b79327e329e947ef774`、工程別provider・runtimeを引き継いだ。
+
+人工回帰136件とsubtest 10件が通過した。通常Start／Resumeで、内部バッチを越える継続、総予算での停止、ホスト・長いMの入力が揃った後の不足分のみの実行を確認した。人工2ホストでは結果の逆順到着、区間終了時の回収、同一通知の再送を検査し、再開時の追加起動と二重採用は各0件だった。RomuTail・server2・Romulaptop WSL・PBSに固定コードを配置した。CLIとWindowsの通常Previewで、明示指定と版指定なしの両方が新releaseを選んだ。
+
+`search-29795d0e2e2593819e27` は、旧release `romutail-h4-rerun4-1355ad65fa` の同じinvocationで稼働を継続した。固定ファイル5件、個別Resume設定、操作対象のrun IDを切替前後で照合した。統合作業による新規の実H4科学実行は0件。実探索での短縮時間は未測定。[共通運用ルール](../rpe_distributed_operations.md)
