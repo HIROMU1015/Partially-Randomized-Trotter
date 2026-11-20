@@ -593,3 +593,7 @@ RomuTailでFull PFの準備ハッシュ不一致を3件回収した。保存snap
 人工回帰136件とsubtest 10件が通過した。通常Start／Resumeで、内部バッチを越える継続、総予算での停止、ホスト・長いMの入力が揃った後の不足分のみの実行を確認した。人工2ホストでは結果の逆順到着、区間終了時の回収、同一通知の再送を検査し、再開時の追加起動と二重採用は各0件だった。RomuTail・server2・Romulaptop WSL・PBSに固定コードを配置した。CLIとWindowsの通常Previewで、明示指定と版指定なしの両方が新releaseを選んだ。
 
 `search-29795d0e2e2593819e27` は、旧release `romutail-h4-rerun4-1355ad65fa` の同じinvocationで稼働を継続した。固定ファイル5件、個別Resume設定、操作対象のrun IDを切替前後で照合した。統合作業による新規の実H4科学実行は0件。実探索での短縮時間は未測定。[共通運用ルール](../rpe_distributed_operations.md)
+
+同日、利用者の再開指示を受け、入力待ちで終了した同runを通常Resumeで再開した。旧PBS予約の終了とrelayの停止を確認した。互換launcher `cc99e8e8746081430cbd747f4438aee01e84f9f7` は、`373b52ae1b` と同じ探索器・分散executor・JobStoreを選び、固定科学SOURCEと入力を引き継ぐ。旧 `SCOPE_HELD_INPUTS` の終了記録は `stop-history` に保全した。関連人工回帰7件とsubtest 7件が通過した。
+
+保存された準備結果と未起動の後続監査を照合したPF候補10件を同じrunの準備に戻した。再開IDは `b68e358e7ecd491e9ac83180ea896bba`。03:17:41 JSTにRomuTailの `PF_AUDIT` 3件が完了・採用、server2の1件が割当済みだった。PBSは新しい96 CPU予約の開始待ちだった。既存208件のREQUEST・attempt・開始時刻と固定ファイル7件は一致し、未確定1件を保全した。確認時点の新規Q3開始は0件。
