@@ -139,7 +139,7 @@ class LocalFilesystemPressure(unittest.TestCase):
         sample.with_suffix('.lock').touch()
         policy = dict(limit_bytes=500000, roots=[str(worker)], sample_path=str(sample))
         put(sample, dict(policy=dict(limit_bytes=500000, roots=[str(worker)]),
-                         report=dict(limit_bytes=500000, used_bytes=262144, reason=None)))
+                         report=dict(limit_bytes=500000, used_bytes=262144, reason='FILESYSTEM_SPACE_LOW')))
         profile = dict(storage_limit=policy, artifact_cache_directory=str(worker),
                        work_dir=str(self.state/'spool'), host_id='local')
         with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=1000)):

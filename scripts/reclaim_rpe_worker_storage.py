@@ -32,9 +32,9 @@ profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
 options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile), compact_metadata=True)
 result = storage.report(profile.get('storage_limit'), **options)
-if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and payload.get('duplicate_inventory'):
+if result and result['reason'] in ('STORAGE_LIMIT_REACHED','FILESYSTEM_SPACE_LOW') and payload.get('duplicate_inventory'):
     result['duplicate_inventory'] = storage.duplicate_inventory(profile)
-if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and payload.get('verified_duplicates'):
+if result and result['reason'] in ('STORAGE_LIMIT_REACHED','FILESYSTEM_SPACE_LOW') and payload.get('verified_duplicates'):
     removed = storage.reclaim_verified_duplicates(profile, payload['verified_duplicates'])
     if removed:
         result = storage.report(profile['storage_limit'], refresh=True, **options)
@@ -73,9 +73,9 @@ def central_artifact_caches(run):
 
 def local_reclaim_target(policy, latest, worker):
     """Recover headroom for an exceeded worker quota or low filesystem space."""
-    if latest['reason'] not in (None, 'STORAGE_LIMIT_REACHED'):
+    if latest['reason'] not in (None, 'STORAGE_LIMIT_REACHED','FILESYSTEM_SPACE_LOW'):
         return 0
-    quota = latest['used_bytes'] - latest['limit_bytes'] * 9 // 10 if latest['reason'] else 0
+    quota = latest['used_bytes'] - latest['limit_bytes'] * 9 // 10 if latest['reason']=='STORAGE_LIMIT_REACHED' else 0
     threshold = policy['limit_bytes'] // 10
     free = shutil.disk_usage(worker).free
     pressure = 2 * threshold - free if free < threshold else 0
@@ -263,7 +263,8 @@ def cleanup(run, source):
                                               dict(source=source, duplicate_inventory=True))[0]
                 inventory = result.pop('duplicate_inventory', {}) if result else {}
                 if inventory:
-                    target = result['used_bytes'] - result['limit_bytes'] * 9 // 10
+                    target = max(0, result['used_bytes'] - result['limit_bytes'] * 9 // 10,
+                                 2*result.get('filesystem_min_free_bytes',0)-result.get('filesystem_free_bytes',0))
                     proof = verified_remote_duplicates(run, w['host_id'], inventory, target)
                     if proof:
                         result = relay.remote_command(w, command, 'storage-reclaim-verified',

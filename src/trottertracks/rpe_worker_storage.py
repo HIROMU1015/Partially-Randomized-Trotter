@@ -58,7 +58,7 @@ def reclaim_verified_duplicates(profile, proof):
         observation = json.loads(sample.read_bytes())
         report = observation['report']
         if (observation['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots'])
-                or report['reason'] != 'STORAGE_LIMIT_REACHED'):
+                or report['reason'] not in ('STORAGE_LIMIT_REACHED','FILESYSTEM_SPACE_LOW')):
             return {}
         retained = set()
         for marker in spool.glob('*/*/WORKER_STATE.json'):
@@ -73,7 +73,8 @@ def reclaim_verified_duplicates(profile, proof):
                     retained.update(_referenced_hashes(json.loads(path.read_bytes())))
         inventory = duplicate_inventory(profile)
         removed = {}
-        target = report['used_bytes'] - report['limit_bytes'] * 9 // 10
+        target = max(0, report['used_bytes'] - report['limit_bytes'] * 9 // 10,
+                     2*report.get('filesystem_min_free_bytes',0)-report.get('filesystem_free_bytes',0))
         for sha, size in proof.items():
             if sha in retained or inventory.get(sha) != size:
                 continue
@@ -383,6 +384,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             saved = json.loads(sample.read_bytes())
             if saved['policy'] == identity and 0 <= time.time() - saved['sampled_epoch'] < SAMPLE_SECONDS:
                 report = saved['report']
+                if 'filesystem_free_bytes' not in report:
+                    return None
                 if (report['used_bytes'] is None or report['used_bytes'] < limit * 95 // 100
                         or saved.get('cleanup') == cleanup):
                     return report
@@ -433,11 +436,23 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                             used = _used_bytes(roots)
                             if used <= target:
                                 break
+                filesystem_free = {}
+                for name in roots:
+                    root = Path(name)
+                    while not root.exists():
+                        root = root.parent
+                    filesystem_free[name] = shutil.disk_usage(root).free
+                min_free = limit // 10
+                low_roots = [name for name,free in filesystem_free.items() if free < min_free]
             except (OSError, ValueError, subprocess.SubprocessError):
-                measured = dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
+                measured = dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False,
+                                reason='STORAGE_USAGE_UNAVAILABLE',filesystem_free_bytes=None,
+                                filesystem_min_free_bytes=limit//10)
             else:
-                measured = dict(limit_bytes=limit, used_bytes=used, accepting_new_jobs=used < limit,
-                                reason='STORAGE_LIMIT_REACHED' if used >= limit else None)
+                measured = dict(limit_bytes=limit, used_bytes=used, accepting_new_jobs=used < limit and not low_roots,
+                                reason='STORAGE_LIMIT_REACHED' if used >= limit else 'FILESYSTEM_SPACE_LOW' if low_roots else None,
+                                filesystem_free_bytes=min(filesystem_free.values()),
+                                filesystem_min_free_bytes=min_free,filesystem_low_space_roots=low_roots)
                 if used < before:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:
