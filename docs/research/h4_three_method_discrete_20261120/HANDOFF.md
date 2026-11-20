@@ -255,3 +255,36 @@ PBSの `ee22369b2692ebd85b49` が `[36,33,31,28,26,24,21,19,17,14,12,9,7]`、
 Windows側の初回C同期成功と、このrun専用の600秒監視がRUNNINGであることを確認した。
 確認時の公開INDEXには新run IDが含まれておらず、探索マップへの掲載・表示確認は残る。
 次段階はCodexが新runの結果蓄積、保存容量、公開INDEX・探索マップへの掲載を照合する。
+
+## 2026-11-20：容量回復後のWSL・PBS復帰
+
+利用者の復帰指示に従い、同じ `search-e6361f01b6a480718127` を通常Stopで回収し、
+EXIT=0とrelay終了を確認して通常Resumeした。新しいinvocationは
+`ecf4258b51a2487484b37f9372cc95a8`。探索の固定SOURCE `1355ad65fa`、130条件、
+予算、既存結果・科学保留は変更していない。
+旧ローカルcompile `prep-11e8784777b094024911f73d` は終了receiptがないためUNKNOWNを保持し、
+再投入していない。
+
+WSLは50 GiB上限に対し約50.2 GiBで受付停止していた。Git標準の `.rev` 補助索引があると
+既存圧縮処理が見送ることを確認した。元の索引214件をSHA付きで別保管し、既存の排他・
+全object照合・原子的置換を使って21,658,415,104 bytesを回収した。
+全26,453 objectとUNKNOWN 20件の内容を保全し、使用量約30.1 GiB、空き4枠・受付trueを確認した。
+現runでQ3 `58038c749175e3a6d2f9`、再開後はDF_CALIBRATION
+`prep-c6f63084d29b397923c65f1e` とDF_MODEL_FREEZE
+`prep-5297bd873f9889442903076a` をWSLで実行・中央回収した。
+
+PBSは容量不足後に止まっていた管理heartbeatが通常Resumeで復帰した。
+旧割当267563の終了Fと、新割当の通常投入・返却を照合した。
+再開後のPBS Q3 `b20683451b06902532f6` / attempt
+`49eb64f9d39b4d33b4c18a534f604cc8` は中央ACCEPTED。
+判定はMODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLDであり、科学的成功解とは扱わない。
+PBSの実使用CPU数はその時点の適格需要に従い、96 CPUの実使用を主張しない。
+
+再発防止として、対応するpack/idxを持ちGit検証を通る `.rev` を既存の損失なし圧縮で扱う
+修正を追加した。合成検査は委任Codexが24件実行しPASSした。親Codexが新しい整理サービス専用
+配置 `worker-storage-recovery-9c7c246657` へ反映した。探索の固定コードは置換していない。
+通常入口の応答が計算開始後も同期hook待ちで120秒を超えるため、既存CLIENT設定の待機を
+300秒にした。科学計算の時間上限・予算とは別であり、時間切れ時にResumeを重ねていない。
+
+実処理・回収・保全の記録は現runの `recovery/wsl-pbs-20261120/RESTORED.json` と関連JSON。
+旧UNKNOWNの保全を続け、以後はCodexが蓄積結果と探索マップの掲載を照合する。
