@@ -194,7 +194,8 @@ else:
     case, inputs = adapter['scoped_case'](view, request)
     implementation = adapter['route'](view, route['kind'], views)
     bounds = implementation.bounds(case['allocation']['shots'])
-    if not adapter['in_scope'](bounds, inputs['options']):
+    supported = adapter.get('finite_support_requested')
+    if not adapter['in_scope'](bounds, inputs['options']) and not (supported and supported(request, case)):
         print(json.dumps(dict(reason='COUNT_ONLY_SCOPE_EXCEEDED', bounds=bounds,
                               limits={key: inputs['options'][key] for key in
                                       ('maximum_round_outcomes', 'maximum_verification_pairs')},

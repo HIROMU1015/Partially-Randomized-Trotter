@@ -203,6 +203,7 @@ def make_executor(root, run, routes, expected, problem, spec):
             prefix_selective_checkpoint_rounds=options.get('prefix_selective_checkpoint_rounds',()),
             prefix_selective_window_seconds=options.get('prefix_selective_window_seconds'),
             compact_q3_evidence=options.get('compact_q3_evidence',False),
+            large_shot_bounds=options.get('large_shot_bounds',False),
             parallel_dp_residual=options.get('parallel_dp_residual',False),
             profile_dp_residual=options.get('profile_dp_residual',False))
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)

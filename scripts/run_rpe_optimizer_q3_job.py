@@ -213,6 +213,115 @@ def in_scope(bounds, options):
             and bounds['transition_pairs_upper'] <= options['total_state_refinement']['maximum_transition_pairs'])
 
 
+def finite_support_kernel():
+    spec = importlib.util.spec_from_file_location(
+        '_rpe_large_shot_bounds', Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_large_shot_bounds.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def finite_support_requested(request, case):
+    return (request.get('execution_profile', {}).get('large_shot_bounds') is True
+            and request.get('origin', {}).get('kind') == 'RPE_SCALED_SHOTS_V1'
+            and finite_support_kernel().supports(case['allocation']['shots']))
+
+
+def finite_support_input(case, inputs, route, binding, packet_view, source):
+    """Use the route's original canonical intake and fixed preparation checks."""
+    bridge = route.binding
+    total = bridge.Q
+    risk = total.D
+    packet = packet_view['signal_packet']
+    options = inputs['options']
+    contract = deepcopy(inputs['statistical_contract'])
+    contract['source'] = source
+    contract['simulation_policy']['source'] = source
+    contract['summary_options']['unresolved_loss']['source'] = source
+    allocation = dict(case['allocation'], source=source)
+    limit = inputs['adopted_evaluation']
+    model = options.get('model_loss_contract') or {}
+    if (options['estimator'] != total.T.ESTIMATOR or not inputs.get('template_source')
+            or model.get('adopted') is not True or not model.get('scope')
+            or limit.get('estimator') != total.T.ESTIMATOR
+            or limit.get('target') != 'SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY'
+            or limit.get('loss') != 'ALL_EVENT_SQUARED_ENERGY_ERROR'
+            or limit.get('scope') != 'MODEL_MSE_FILTER_ONLY'
+            or options['probability_rule'] != risk.EXACT_AFFINE):
+        raise ValueError('Finite support requires the fixed all-event total-estimator MSE contract')
+    threshold = Fraction('0.00159360010199040')**2
+    if risk.a.exact_scalar(limit['MSE_upper']) != threshold:
+        raise ValueError('Fixed H4 MSE threshold differs')
+    api = bridge.C.interfaces(str(route.binding_root)).pipeline
+    with horizon_inputs(case.get('horizon_projection')):
+        original = packet['origin_signal_packet']
+        [entry] = total.K.prepare(binding['original_configuration'], packet.get('kernel_signal_packet', original),
+                                  [allocation], evaluation_target=case['evaluation_target'],
+                                  statistical_contract=contract, integration=api)
+    prepared = entry['prepared']
+    policy = entry['statistical_contract']['simulation_policy']
+    risk.S.iid_policy(policy)
+    if (not prepared['input_complete'] or prepared['M'] >= 13
+            or (not prepared['physical_qualification_complete'] and not contract.get('allow_conditional_unqualified'))
+            or prepared['decoder'] != risk.S.DECODER
+            or any(row['law_binding']['definition']['model'] != policy['target_law'] for row in prepared['rows'])):
+        raise ValueError('Finite support fixed decoder, signal or measurement input differs')
+    allocation = [{key: row['shots'][key] for key in ('N_X', 'N_Y')} for row in prepared['rows']]
+    rows = [dict(counts, raw=row['mean']['raw'], m=row['m'])
+            for row, counts in zip(prepared['rows'], allocation)]
+    shots = [dict(m=row['m'], N_X=row['N_X'], N_Y=row['N_Y']) for row in rows]
+    if shots != case['allocation']['shots']:
+        raise ValueError('Finite support shot vector differs from the fixed intake')
+    return rows, float(risk.a.exact_scalar(prepared['h'])), entry['evaluation_target']['energy_ha'], threshold
+
+
+def finite_support_outcome(request, case, inputs, route, out, source, metadata, mode):
+    binding, packet = metadata
+    rows, h, target, threshold = finite_support_input(case, inputs, route, binding, packet, source)
+    kernel = finite_support_kernel()
+    numerical_input = dict(rows=rows, h=h.hex(), target=float(target).hex(), source=source,
+                           fixed_contract={key: inputs[key] for key in CONTRACT},
+                           template=inputs['template_source'],
+                           configuration_id=case.get('effective_configuration_id', request['configuration_id']),
+                           total_configuration_id=binding['total_configuration']['id'],
+                           canonical_binding=binding['id'])
+    fingerprint = hashlib.sha256(json.dumps(numerical_input, sort_keys=True, allow_nan=False).encode()).hexdigest()
+    if mode == 'dry-check':
+        return dict(status='DRY_CHECK_PASS', metadata='PASS', evaluator=kernel.SCHEMA)
+    evidence = out/case['label']/'FINITE_SUPPORT.json'
+    if mode == 'execute':
+        stage(out, 'SCIENTIFIC_ROUTE_START', evaluator=kernel.SCHEMA)
+        report = kernel.evaluate(rows, h=h, target=target, probability_rule=inputs['options']['probability_rule'],
+                                 threshold=threshold, risk=route.binding.Q.D, total=route.binding.Q)
+        evidence.parent.mkdir()
+        write(evidence, dict(input_sha256=fingerprint, certificate=report['certificate']))
+        stage(out, 'SCIENTIFIC_ROUTE_RETURNED', evaluator=kernel.SCHEMA)
+    elif not (evidence.is_file() and (out/'OUTCOME.json').is_file()):
+        return dict(status='UNKNOWN', reason='NO_WORKER_ARTIFACT_TO_COLLECT', scientific_evaluation_calls=0,
+                    MSE_lower=None, MSE_upper=None, identity=None)
+    elif json.loads((out/'CASE_INPUTS.json').read_text()) != inputs:
+        raise ValueError('Collected finite support case inputs differ')
+    observed = json.loads(evidence.read_text())
+    if observed['input_sha256'] != fingerprint:
+        raise ValueError('Finite support evidence inputs differ')
+    cert = observed['certificate']
+    if kernel._decode(cert['loss_cap']) != route.binding.Q.loss_range(h, target)[0]:
+        raise ValueError('Finite support evidence loss cap differs')
+    report = kernel.summarize(cert, threshold, expected_rounds=len(rows))
+    identity_value = dict(configuration_id=request['configuration_id'], binding_id=binding['id'],
+                          total_configuration_id=binding['total_configuration']['id'], M=len(rows)-1,
+                          signal_packet=case['signal_packet'], allocation=case['allocation']['shots'],
+                          evaluation_target=case['evaluation_target'], contract_matches=True)
+    outcome = dict(report, evaluator=kernel.SCHEMA, identity=identity_value, scientific_evaluation_calls=1,
+                   evidence_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest())
+    if mode == 'collect':
+        original = json.loads((out/'OUTCOME.json').read_text())
+        if any(original.get(key) != value for key, value in outcome.items()):
+            raise ValueError('Collected finite support evidence differs from the execution receipt')
+        outcome['original_outcome_sha256'] = hashlib.sha256((out/'OUTCOME.json').read_bytes()).hexdigest()
+    return outcome
+
+
 def load(view, name, rel):
     sys.path[:0] = [str(view / 'scripts'), str(view / 'src')]
     spec = importlib.util.spec_from_file_location(name, view / rel)
@@ -325,7 +434,8 @@ def route(view, kind, route_views=None):
     if kind == 'pf_b_pf6':
         F = load(view, '_rpe_opt_pf6', 'scripts/run_pf6_cost_budget_q3_fixed.py');F.check_source()
         return NS(metadata=F.metadata, installed=F.installed_workers, supervise=F.M.supervise,
-                  validate=pinned_validator(view, F.H, F.T.B.a.exact_scalar), bounds=F.count_bounds, runtime=None)
+                  validate=pinned_validator(view, F.H, F.T.B.a.exact_scalar), bounds=F.count_bounds, runtime=None,
+                  binding=F.T, binding_root=F.ROOT)
     if kind in ('pauli_b_ld3', 'pauli_b_ld5'):
         if kind == 'pauli_b_ld3':
             C = load(view, '_rpe_opt_ld3', 'scripts/run_pauli_ld3_pf_budget_q3_fixed.py');C.check_source()
@@ -335,18 +445,19 @@ def route(view, kind, route_views=None):
             L, meta, inst = X.L, X.metadata, X.installed
         return NS(metadata=meta, installed=inst, supervise=L.M.supervise,
                   validate=pinned_validator(view, L.H, L.T.Q.a.exact_scalar), bounds=lambda s: L.H.finite_bounds([r['N_X'] for r in s]),
-                  runtime=None)
+                  runtime=None, binding=L.T, binding_root=L.ROOT)
     if kind == 'pauli_b_common_entry':
         X = load(view, '_rpe_opt_common', 'scripts/run_pauli_ld5_two_vectors_q3_fixed.py');X.check_source()
         COMMON.update(view=view, X=X)
         return NS(metadata=common_metadata, installed=common_installed, supervise=X.L.M.supervise,
                   evidence_writer=X.R, validate=pinned_validator(view, X.L.H, X.L.T.Q.a.exact_scalar),
-                  bounds=lambda s: X.L.H.finite_bounds([r['N_X'] for r in s]), runtime=None)
+                  bounds=lambda s: X.L.H.finite_bounds([r['N_X'] for r in s]), runtime=None,
+                  binding=X.T, binding_root=view)
     if kind in ('prdf_d2_split','prdf_d2_common_entry'):
         W, resolution = load_prdf_route(view, route_views or {})
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
                   evidence_writer=W.U.R if kind=='prdf_d2_common_entry' else None, validate=pinned_validator(view, W.U.H, W.U.T.Q.a.exact_scalar), bounds=lambda s: W.Q.bounds(dict(allocation=dict(shots=s))),
-                  runtime=W.runtime_check, source_resolution=resolution)
+                  runtime=W.runtime_check, source_resolution=resolution, binding=W.U.T, binding_root=W.U.ROOT)
     raise ValueError('Unknown route kind: ' + kind)
 
 
@@ -452,6 +563,21 @@ def artificial(request, out, mode):
     time.sleep(spec.get('sleep_by_first_shot', {}).get(str(request['N_X'][0]), 0))
     if spec.get('force_unknown'):
         value = dict(status='UNKNOWN', reason='ARTIFICIAL_GATE_FAILURE', MSE_lower=None, MSE_upper=None, scientific_evaluation_calls=1)
+    elif spec.get('finite_support_fixture'):
+        fixture = spec['finite_support_fixture']
+        if request.get('execution_profile', {}).get('large_shot_bounds') is not True:
+            raise ValueError('Artificial finite support must be enabled by the executor')
+        fixed = Path(fixture['view']).resolve()
+        if (subprocess.check_output(['git','rev-parse','HEAD'],cwd=fixed,text=True).strip() != fixture['commit']
+                or subprocess.run(['git','diff','--quiet','HEAD','--','src','scripts'],cwd=fixed).returncode):
+            raise ValueError('Artificial decoder fixture SOURCE differs')
+        sys.path.insert(0, str(fixed/'src'))
+        from trottertracks import rpe_total_risk as total
+        kernel = finite_support_kernel()
+        rows = [dict(row, raw=dict(real=1.,imag=0.)) for row in shots]
+        report = kernel.evaluate(rows, h=0.1, target=float(fixture['target']), threshold=Fraction(spec['tau']),
+                                 probability_rule=total.D.EXACT_AFFINE, risk=total.D, total=total)
+        value = dict(report, evaluator=kernel.SCHEMA, scientific_evaluation_calls=0)
     else:
         w = [Fraction(v) for v in spec['weights']];scale = Fraction(spec['scale'])
         mse = scale * sum(wm * (Fraction(1, x) + Fraction(1, y)) / 2 for wm, x, y in zip(w, request['N_X'], request['N_Y']))
@@ -576,15 +702,30 @@ def main():
         case, inputs = scoped_case(view, request);inputs = execution_profile(inputs, request);r = route(view, kind, route_views)
         stage(out, 'CASE_BUILT', template=inputs['template_source'])
         bounds = r.bounds(case['allocation']['shots'])
-        if not in_scope(bounds, inputs['options']):
+        old_scope = in_scope(bounds, inputs['options'])
+        finite_support = not old_scope and finite_support_requested(request, case)
+        if not (old_scope or finite_support):
             outcome = dict(status='UNKNOWN', reason='COUNT_ONLY_SCOPE_EXCEEDED', bounds=bounds, MSE_lower=None, MSE_upper=None,
                            scientific_evaluation_calls=0, identity=None)
         else:
             runtime = r.runtime() if r.runtime is not None else None
-            r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)
+            metadata = r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)
             source = dict(request_id=request['request_id'], route=kind, view_commit=request['route']['view_commit'],
                           adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=request.get('optimizer_source'), runtime=runtime, execution_profile=request.get('execution_profile'))
-            if a.mode == 'dry-check':
+            if finite_support:
+                if a.mode == 'execute':
+                    write(out/'SOURCE.json', source)
+                    write(out/'CASE_INPUTS.json', inputs)
+                elif a.mode == 'collect' and (out/'SOURCE.json').is_file():
+                    source = json.loads((out/'SOURCE.json').read_text())
+                outcome = finite_support_outcome(request, case, inputs, r, out, source, metadata, a.mode)
+                if a.mode == 'collect' and 'original_outcome_sha256' in outcome:
+                    name = 'COLLECTED_OUTCOME.json'
+                if a.mode == 'dry-check':
+                    outcome.update(bounds=bounds, runtime=runtime)
+                    if getattr(r, 'source_resolution', None) is not None:
+                        outcome['source_resolution'] = r.source_resolution
+            elif a.mode == 'dry-check':
                 outcome = dict(status='DRY_CHECK_PASS', bounds=bounds, case_label=case['label'], template=inputs['template_source'],
                                metadata='PASS', runtime=runtime)
                 profile = request.get('execution_profile', {})

@@ -18,6 +18,7 @@ from trottertracks.rpe_release_registry import register
 
 import run_rpe_schedule_search as entry
 from test_rpe_optimizer_concurrent import fixture
+from test_rpe_large_shot_bounds import FIXED as DECODER_SOURCE, FIXTURE as DECODER_VIEW
 
 TAU = F(S.EPSILON)**2
 METHODS = ['FULL_PF', 'TRUNCATED_PF', 'PR_PAULI', 'PR_DF']
@@ -28,6 +29,55 @@ def small_policy(horizons=(11,12,13)):
 
 
 class ScaleTests(unittest.TestCase):
+    @unittest.skipUnless((DECODER_VIEW/'src/trottertracks/rpe_total_risk.py').is_file(),
+                         'requires the fixed Z1+T1 source view')
+    def test_normal_start_and_resume_with_large_shot_evidence(self):
+        method = 'FULL_PF'
+        with tempfile.TemporaryDirectory(prefix='artificial-large-shots-') as tmp:
+            root = Path(tmp)
+            problem, context, routes = fixture([method], configurations=1, steps=100)
+            problem.update(problem=dict(system='ARTIFICIAL_SCALED_SHOTS',
+                                        hamiltonian_data=dict(expected=dict(fragment_count=10))),
+                           rpe=dict(M=12), execution_routes=routes)
+            problem['accuracy']['epsilon_E_decimal'] = S.EPSILON
+            context['saved'].table.clear()
+            context['tau'] = TAU
+            context['candidates'][0]['prices'] = [1]*26
+            routes[method][0]['artificial'].update(tau=str(TAU), finite_support_fixture=dict(
+                view=str(DECODER_VIEW), commit=DECODER_SOURCE, target=0.0))
+            spec = dict(round_id='TEMPLATE',methods=[method],science_approved=False,
+                        max_new_q3_per_method={method:2},
+                        executor=dict(scheduler='concurrent',max_concurrent_jobs=1,large_shot_bounds=True))
+            write(root/'PROBLEM.json',problem)
+            write(root/'ROUND.json',spec)
+            config = dict(problem=str(root/'PROBLEM.json'), round=str(root/'ROUND.json'),
+                          entry='schedule',state_directory=str(root/'state'),code_root=str(ROOT),
+                          code_source='ARTIFICIAL_TEST',computation_source='ARTIFICIAL_FIXED',
+                          python=sys.executable)
+
+            def launch(run, problem, selected):
+                launch_receipt = dict(invocation_id='artificial-large-shot')
+                write(run/'LAUNCH.json', launch_receipt)
+                with redirect_stdout(io.StringIO()):
+                    entry.main(['--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),
+                                '--run-dir',str(run)])
+                write(run/'EXIT.json',dict(launch_receipt,returncode=0))
+
+            gateway=Gateway(config,preflight=lambda *a:dict(status='PASS',artificial=True),launch=launch)
+            scope = dict(methods=[method],scaled_shots=dict(M=[12],grid=dict(min_k=16,max_k=16,divisor=4),
+                                                           compare_paper=False))
+            with patch.object(O,'prepare',return_value=context):
+                result = gateway.handle(dict(action='start',instruction='Artificial finite support',scope=scope))
+                run = Path(result['run_directory'])
+                outcomes = {p: p.read_bytes() for p in run.glob('jobs/*/*/OUTCOME.json')}
+                self.assertTrue(outcomes)
+                large = [load(p) for p in outcomes if load(p)['identity']['allocation'][0]['N_X'] == 944]
+                self.assertEqual(len(large), 1)
+                self.assertEqual(large[0]['status'], O.PASS)
+                self.assertEqual(large[0]['evaluator'], 'RPE_FINITE_SUPPORT_MSE_V1')
+                gateway.handle(dict(action='resume', run_id=result['run_id'], instruction='Artificial finite support'))
+                self.assertEqual(outcomes, {p:p.read_bytes() for p in run.glob('jobs/*/*/OUTCOME.json')})
+
     def test_ceil_exact_even_around_integer_and_aliases(self):
         self.assertEqual(S.base_shots(11), list(range(55, 10, -4)))
         self.assertEqual(S.base_shots(12), list(range(59, 10, -4)))

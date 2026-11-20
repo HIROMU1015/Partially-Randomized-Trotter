@@ -42,6 +42,8 @@ def source_manifest(root, commit):
         paths += ('src/trottertracks/rpe_q3_evidence.py',)
     if (Path(root)/'src/trottertracks/rpe_q3_timing.py').exists():
         paths += ('src/trottertracks/rpe_q3_timing.py',)
+    if (Path(root)/'src/trottertracks/rpe_large_shot_bounds.py').exists():
+        paths += ('src/trottertracks/rpe_large_shot_bounds.py',)
     if (Path(root)/'src/trottertracks/rpe_q3_resources.py').exists():
         paths += ('src/trottertracks/rpe_q3_resources.py',)
     if (Path(root)/'src/trottertracks/rpe_worker_storage.py').exists():

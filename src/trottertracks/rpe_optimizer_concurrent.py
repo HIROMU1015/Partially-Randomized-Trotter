@@ -49,7 +49,7 @@ class ConcurrentExecutor(O.Executor):
     def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,
                  prefix_checkpoint_rounds=None,prefix_cache_max_bytes=None,prefix_selective_checkpoint_rounds=(),
                  prefix_selective_window_seconds=None,compact_q3_evidence=False,parallel_dp_residual=False,
-                 profile_dp_residual=False,**kwargs):
+                 profile_dp_residual=False,large_shot_bounds=False,**kwargs):
         super().__init__(*args,**kwargs)
         if dp_workers is not None and (type(dp_workers)is not int or dp_workers<1):
             raise ValueError('Positive integer dp_workers required')
@@ -57,6 +57,8 @@ class ConcurrentExecutor(O.Executor):
             raise ValueError('Positive integer prefix_cache_max_bytes required')
         if type(compact_q3_evidence) is not bool:
             raise ValueError('compact_q3_evidence must be a boolean')
+        if type(large_shot_bounds) is not bool:
+            raise ValueError('large_shot_bounds must be a boolean')
         if type(parallel_dp_residual) is not bool:
             raise ValueError('parallel_dp_residual must be a boolean')
         if type(profile_dp_residual) is not bool or (profile_dp_residual and not parallel_dp_residual):
@@ -80,6 +82,7 @@ class ConcurrentExecutor(O.Executor):
         self.prefix_selective_checkpoint_rounds=list(prefix_selective_checkpoint_rounds)
         self.prefix_selective_window_seconds=prefix_selective_window_seconds
         self.compact_q3_evidence=compact_q3_evidence
+        self.large_shot_bounds=large_shot_bounds
         self.parallel_dp_residual=parallel_dp_residual
         self.profile_dp_residual=profile_dp_residual
         existing={}
@@ -181,6 +184,8 @@ class ConcurrentExecutor(O.Executor):
                 execution['profile_dp_residual'] = True
         if self.compact_q3_evidence and (artificial or route in REVIEWED_PR_Q3_ROUTES):
             execution['compact_q3_evidence'] = True
+        if self.large_shot_bounds and req.get('origin', {}).get('kind') == 'RPE_SCALED_SHOTS_V1':
+            execution['large_shot_bounds'] = True
         return req
 
     def prefetch_state(self):
