@@ -99,6 +99,8 @@ run専用の補助プロセスが追従し、Stop・driver終了・invocation変
 - Statusの `central_maintenance` に最新観測時刻、キューの待ち理由、hostとrelay・PBSの状態、自動回収・復旧の結果を返す。正本のjob状態はJobStoreを使う。保守記録は `.rpe-central/state/maintenance/` に保存する。
 - 終了runの配送bundleは `ARCHIVE_CANDIDATES.json` に候補を記録する。稼働controllerがない間に、終了・採用・参照・所有を照合し、空の作業領域で元SHAの復元、入力照合、保存成果の再読を通す。新しいアーカイブ分を含めて削減できる場合に限り、復元記録を先に固定して配送キャッシュ本体を整理する。現在の対象run、未確定run、受領・採用前の成果、別runから参照中のbundleは対象外とする。
 
+RomuTailには `.rpe-central/deployment/central-maintenance-2c68c0544b/` の固定ツールとユーザータイマーを配置した。タイマーは約1分ごとに起動し、重い容量整理の判定は約5分ごとに行う。定期処理で既存runの起動・停止・再開は行わない。通常Statusに保守記録が出ることと、ホスト側で稼働中のcontrollerがある間は容量整理を延期することを確認した。保存済み旧runの2件で配送bundleのSHA、空の作業領域への入力、保存成果の再読を照合した。人工ジョブでは同じattemptからの受領を一度だけ行い、欠けた監査入力を元の成果から戻した。今回の新規科学実行は0件。
+
 ## 探索データの保存期間と整理
 
 | 区分 | 対象と扱い |

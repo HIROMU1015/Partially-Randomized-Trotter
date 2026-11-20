@@ -1,5 +1,10 @@
 # Repository guidance for Codex
 
+## RomuTailのH4 RPE探索
+
+- 利用者は探索の範囲や開始・停止・再開をCodexへ指示する。通常入口のStart・Resumeを実行する担当はCodexとする。利用者にコマンドやスクリプトの直接実行を依頼しない。回収・照合・容量整理の常設処理は新規計算の投入や再試行を行わない。
+- 詳細は[H4 RPE分散探索の運用ルール](docs/research/rpe_distributed_operations.md)を参照する。
+
 ## Repository entry point
 
 Before interpreting files by name, read `PROJECT_MAP.md`. It classifies the
