@@ -110,6 +110,95 @@ os.execv(command[0], command)
 
 
 class RelayTests(unittest.TestCase):
+    def test_discovery_returns_one_ready_request_before_other_bundle_delivery(self):
+        with tempfile.TemporaryDirectory(prefix='relay-single-readiness-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            worker = dict(host_id='ARTIFICIAL_WSL')
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'),
+                controller=dict(ssh_alias='qg2'), workers=[worker]))
+            relay = R.Relay(configuration)
+            challenges = [dict(job_id=name, request=dict(route=dict(kind='preparation')))
+                          for name in ('FIRST', 'SECOND')]
+            status = dict(host_id=worker['host_id'], attempts=[], slots=1,
+                source_sha='ARTIFICIAL', cached_prefixes=[], metadata_only=True)
+            calls = []
+            def remote(_, action, value=None):
+                calls.append(action)
+                if action == 'status': return status, .01
+                self.assertEqual(action, 'readiness')
+                self.assertEqual(value['challenges'], challenges[:1])
+                return dict(host_id=worker['host_id'], host_fingerprints={'FIRST':{}}, readiness_errors={}), .01
+            def deliver(_, assignments):
+                calls.append('bundle')
+                self.assertEqual(assignments, challenges[:1])
+            with patch.object(relay, 'remote', side_effect=remote), \
+                    patch.object(relay, '_deliver_challenge_artifacts', side_effect=deliver), \
+                    patch.object(relay, 'post', return_value=dict(assignments=[], eligibility_challenges=challenges)) as post:
+                observed = relay._discover(worker)
+                self.assertEqual(calls, ['status', 'bundle', 'readiness'])
+                self.assertTrue(all(call.args[1]['observe_only'] for call in post.call_args_list))
+                self.assertEqual(observed[3]['host_fingerprints'], {'FIRST':{}})
+                # Even when the first probe HOLDs and the claim still has no
+                # assignment, cycle's delivery step must not start a second one.
+                relay.tick(worker, observed)
+                self.assertEqual(calls, ['status', 'bundle', 'readiness'])
+                self.assertNotIn('observe_only', post.call_args_list[-1].args[1])
+
+    def test_readiness_fairness_survives_repeated_holds_and_rotating_batches(self):
+        with tempfile.TemporaryDirectory(prefix='relay-readiness-fairness-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'),
+                controller=dict(ssh_alias='qg2'), workers=[]))
+            relay = R.Relay(configuration)
+            first = [dict(job_id=name, request=dict(route=dict(kind='preparation'))) for name in 'ABCD']
+            second = [dict(job_id=name, request=dict(route=dict(kind='preparation'))) for name in 'EFGH']
+            worker = dict(host_id='ARTIFICIAL_WSL')
+            selected = [relay._readiness_batch(worker, batch)[0]['job_id']
+                        for batch in [first, second]*4]
+            self.assertEqual(selected, list('AEBFCGDH'))
+            self.assertEqual(relay._readiness_batch(worker, first)[0]['job_id'], 'A')
+            # Another host's first tie follows its own original batch order.
+            self.assertEqual(relay._readiness_batch(dict(host_id='OTHER'), first)[0]['job_id'], 'A')
+            q3 = dict(job_id='Q3', request=dict(route=dict(kind='prdf_d2_split')))
+            other = dict(job_id='OTHER_ROUTE')
+            mixed = [q3, *first, other]
+            batch = relay._readiness_batch(dict(host_id='MIXED'), mixed)
+            self.assertEqual(batch, [q3, first[0], other])
+            self.assertEqual(relay._readiness_batch(worker, [q3, other]), [q3, other])
+
+    def test_mailbox_json_error_is_bounded_and_excludes_unrelated_payload(self):
+        with tempfile.TemporaryDirectory(prefix='relay-mailbox-json-error-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'),
+                controller=dict(ssh_alias='qg2'), workers=[]))
+            relay = R.Relay(configuration)
+            worker = dict(ssh_alias='ARTIFICIAL_HOST')
+            for error in ['BlockingIOError: worker lock\n\x00'+'x'*2000, {'unexpected':'PAYLOAD'}]:
+                with self.subTest(error_type=type(error).__name__):
+                    response = SimpleNamespace(returncode=2, stderr='',
+                        stdout=json.dumps(dict(error=error, payload='DO_NOT_LOG')))
+                    with patch.object(R.subprocess, 'run', return_value=response), \
+                            self.assertRaises(RuntimeError) as raised:
+                        relay.remote_command(worker, ['ARTIFICIAL_COMMAND'], 'status')
+                    detail = str(raised.exception).split('failed (2): ', 1)[1]
+                    self.assertLessEqual(len(detail), 1500)
+                    self.assertNotIn('DO_NOT_LOG', detail)
+                    self.assertNotIn('\n', detail)
+                    self.assertNotIn('\x00', detail)
+                    self.assertEqual(detail.startswith('BlockingIOError:'), isinstance(error, str))
+
+    def test_mailbox_stderr_remains_primary_error(self):
+        with tempfile.TemporaryDirectory(prefix='relay-mailbox-stderr-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'),
+                controller=dict(ssh_alias='qg2'), workers=[]))
+            relay = R.Relay(configuration)
+            response = SimpleNamespace(returncode=255, stderr='ARTIFICIAL SSH failure',
+                stdout=json.dumps(dict(error='SECONDARY_ERROR')))
+            with patch.object(R.subprocess, 'run', return_value=response), \
+                    self.assertRaisesRegex(RuntimeError, r'failed \(255\): ARTIFICIAL SSH failure$'):
+                relay.remote_command(dict(ssh_alias='ARTIFICIAL_HOST'), ['ARTIFICIAL_COMMAND'], 'status')
+
     def test_worker_connection_failures_back_off_without_slowing_other_workers(self):
         with tempfile.TemporaryDirectory(prefix='relay-backoff-clock-') as temporary:
             configuration = Path(temporary)/'relay.json'

@@ -173,6 +173,7 @@ class Relay:
         self.log_lock = threading.Lock()
         self.deployed_workers={}
         self.reported_unowned = set()
+        self.readiness_probe_counts = {}
         started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
                           started_epoch=started, heartbeat_epoch=started, stopped=False,
@@ -245,7 +246,19 @@ class Relay:
                 encoding='utf-8', errors='replace',
                 timeout=self.config.get('request_timeout_seconds', 60), **child_options())
         if process.returncode:
-            raise RuntimeError('Worker mailbox '+action+' failed ('+str(process.returncode)+'): '+process.stderr[-1500:])
+            detail = process.stderr.strip()
+            if not detail:
+                try:
+                    response = json.loads(process.stdout)
+                    detail = response.get('error', '') if isinstance(response, dict) else ''
+                except (ValueError, TypeError):
+                    detail = ''
+                if not isinstance(detail, str):
+                    detail = ''
+                # Mailboxes report their exception as JSON on stdout. Include
+                # only that field, never an arbitrary payload or terminal codes.
+                detail = ''.join(c if c.isprintable() else ' ' for c in detail)[:1500]
+            raise RuntimeError('Worker mailbox '+action+' failed ('+str(process.returncode)+'): '+detail[-1500:])
         result = json.loads(process.stdout)
         if action == 'status' and worker.get('participation_file') and worker.get('transport') != 'ssh-wsl':
             participation = Path(worker['participation_file'])
@@ -332,6 +345,20 @@ class Relay:
             self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
             self.log('METADATA_GIT_BUNDLE_DELIVERED',host_id=worker['host_id'],sha256=sha)
 
+    def _readiness_batch(self, worker, challenges):
+        # Large input bundles are transferred serially. Report the first ready
+        # request before transferring others, while rotating repeated HOLDs even
+        # when the controller rotates its own challenge batches.
+        preparation = [item for item in challenges
+                       if item.get('request', {}).get('route', {}).get('kind') == 'preparation']
+        if not preparation:
+            return challenges
+        counts = self.readiness_probe_counts.setdefault(worker['host_id'], {})
+        chosen = min(preparation, key=lambda item: counts.get(item['job_id'], 0))
+        counts[chosen['job_id']] = counts.get(chosen['job_id'], 0) + 1
+        return [item for item in challenges if
+                item.get('request', {}).get('route', {}).get('kind') != 'preparation' or item is chosen]
+
     def _discover(self, worker):
         # Status and current-request checks may run concurrently for independent
         # hosts; no thread claims a job or delivers an assignment here.
@@ -343,6 +370,7 @@ class Relay:
         observed = self.post('/v1/poll', dict(poll, observe_only=True))
         challenges = observed.get('eligibility_challenges') or []
         if challenges and status['slots']:
+            challenges = self._readiness_batch(worker, challenges)
             self._deliver_challenge_artifacts(worker,challenges)
             facts, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
             if facts.get('host_id') != status['host_id']:
@@ -479,13 +507,22 @@ class Relay:
         # Recovery above always precedes new claims, including while paused.
         response = self.post('/v1/poll', poll)
         if not response['assignments'] and response.get('eligibility_challenges'):
-            self._deliver_challenge_artifacts(worker,response['eligibility_challenges'])
-            current, _ = self.remote(worker, 'readiness', dict(challenges=response['eligibility_challenges']))
-            if current.get('host_id') != host:
-                raise ValueError('Readiness response host differs')
-            poll.update(host_fingerprints=current.get('host_fingerprints', {}),
-                        readiness_errors=current.get('readiness_errors', {}))
-            response = self.post('/v1/poll', poll)
+            challenges = response['eligibility_challenges']
+            if observed is not None:
+                # cycle() already gave preparation one discovery opportunity.
+                # Preserve the existing inexpensive Q3 checks on this fallback.
+                challenges = [item for item in challenges if
+                              item.get('request', {}).get('route', {}).get('kind') != 'preparation']
+            else:
+                challenges = self._readiness_batch(worker, challenges)
+            if challenges:
+                self._deliver_challenge_artifacts(worker,challenges)
+                current, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
+                if current.get('host_id') != host:
+                    raise ValueError('Readiness response host differs')
+                poll.update(host_fingerprints=current.get('host_fingerprints', {}),
+                            readiness_errors=current.get('readiness_errors', {}))
+                response = self.post('/v1/poll', poll)
         feedback = response.get('capacity_feedback')
         assignments = response['assignments']
         response_time=time.monotonic()
