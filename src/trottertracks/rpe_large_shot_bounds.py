@@ -13,7 +13,7 @@ MAX_AXIS_INTEGER_BITS = 1 << 20
 MAX_ROUND_CELLS = 16384
 MAX_ROUND_PAIRS = 1 << 22
 TAIL_PER_AXIS = Fraction(1, 1 << 48)
-MAX_REFINEMENT_SHOTS_PER_AXIS = 128
+REFINEMENT_MASS_BITS = 80
 
 
 def _encode(value):
@@ -167,7 +167,11 @@ def evaluate(rows, *, h, target, probability_rule, threshold, risk, total,
 
 def refine(rows, *, h, target, probability_rule, threshold, risk, total,
            maximum_round_cells=MAX_ROUND_CELLS, maximum_round_pairs=MAX_ROUND_PAIRS):
-    """Propagate the retained states individually when several branches matter."""
+    """Propagate lower masses through exact evidence from the fixed decoder.
+
+    Each mass is rounded down to a multiple of 2**-80. Loss of mass from
+    rounding, windows and the transition budget enters the same residual.
+    """
     if (not supports(rows) or not math.isfinite(h) or h <= 0 or not math.isfinite(target)
             or maximum_round_cells < 1 or maximum_round_pairs < maximum_round_cells):
         raise ValueError('Invalid finite-support refinement inputs')
@@ -175,7 +179,8 @@ def refine(rows, *, h, target, probability_rule, threshold, risk, total,
     if cap is None:
         raise ValueError('Fixed decoder energy range is unavailable')
     decoder = total.T
-    states = {0: 1}
+    unit = 1 << REFINEMENT_MASS_BITS
+    states = {0: unit}
     terminal = Fraction(0)
     evidence = []
     for m, row in enumerate(rows):
@@ -187,7 +192,7 @@ def refine(rows, *, h, target, probability_rule, threshold, risk, total,
                                  window_probability=_encode(Fraction()), checked_pairs=0, represented_cells=0))
             continue
         phases, zeros, xw, yw, denominator = _count_support(row, risk, probability_rule, maximum_round_cells)
-        weights = [x*y for x, y in product(xw, yw)]
+        weights = [(x*y << REFINEMENT_MASS_BITS)//denominator for x, y in product(xw, yw)]
         selected = sorted(states, key=lambda state: (-states[state], state))[:maximum_round_pairs//len(phases)]
         next_states = {}
         for state in selected:
@@ -200,21 +205,22 @@ def refine(rows, *, h, target, probability_rule, threshold, risk, total,
                 raise ValueError('Fixed decoder exceeded its declared phase range')
             mass = states[state]
             for bits, weight in zip(values.view(np.uint64).tolist(), weights):
-                next_states[bits] = next_states.get(bits, 0) + mass*weight
-        den = denominator*before
+                contribution = (mass*weight) >> REFINEMENT_MASS_BITS
+                if contribution:
+                    next_states[bits] = next_states.get(bits, 0) + contribution
         if m == len(rows)-1 and next_states:
             positions = list(next_states)
             estimates = np.array(positions,dtype=np.uint64).view(np.float64)
             estimate = Fraction(target)
             terminal = sum((next_states[bits]*(Fraction(-float(value)/h)-estimate)**2
-                            for bits, value in zip(positions, estimates)), Fraction(0))/den
-        represented = Fraction(sum(weights), denominator)
-        evidence.append(dict(m=m, retained_probability=_encode(Fraction(sum(next_states.values()), den)),
+                            for bits, value in zip(positions, estimates)), Fraction(0))/before
+        represented = Fraction(sum(xw)*sum(yw), denominator)
+        evidence.append(dict(m=m, retained_probability=_encode(Fraction(sum(next_states.values()), before)),
                              window_probability=_encode(represented),
                              checked_pairs=len(selected)*len(phases), represented_cells=len(phases)))
         states = next_states
     certificate = dict(schema=SCHEMA, rounds=evidence, loss_cap=_encode(cap), terminal_loss=_encode(terminal),
-                       refinement='RETAINED_STATE_DP')
+                       refinement='RETAINED_STATE_DP', mass_grid_bits=REFINEMENT_MASS_BITS)
     return dict(summarize(certificate, threshold, expected_rounds=len(rows)), certificate=certificate)
 
 

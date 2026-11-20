@@ -4,6 +4,7 @@ from copy import deepcopy
 from fractions import Fraction as F
 import io
 from pathlib import Path
+import sqlite3
 from types import SimpleNamespace
 import sys
 import tempfile
@@ -45,9 +46,12 @@ class ScaleTests(unittest.TestCase):
             context['candidates'][0]['prices'] = [1]*26
             routes[method][0]['artificial'].update(tau=str(TAU), finite_support_fixture=dict(
                 view=str(DECODER_VIEW), commit=DECODER_SOURCE, target=0.0))
+            profile = dict(host_id='local',root=str(ROOT),interpreter=sys.executable,
+                           slots=1,route_views={},work_dir=str(root/'worker'))
             spec = dict(round_id='TEMPLATE',methods=[method],science_approved=False,
                         max_new_q3_per_method={method:2},
-                        executor=dict(scheduler='concurrent',max_concurrent_jobs=1,large_shot_bounds=True))
+                        executor=dict(scheduler='concurrent',max_concurrent_jobs=1,large_shot_bounds=True,
+                                      distributed=dict(port=0,local_worker=profile)))
             write(root/'PROBLEM.json',problem)
             write(root/'ROUND.json',spec)
             config = dict(problem=str(root/'PROBLEM.json'), round=str(root/'ROUND.json'),
@@ -75,8 +79,14 @@ class ScaleTests(unittest.TestCase):
                 self.assertEqual(len(large), 1)
                 self.assertEqual(large[0]['status'], O.PASS)
                 self.assertEqual(large[0]['evaluator'], 'RPE_FINITE_SUPPORT_MSE_V1')
+                with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as store:
+                    before = store.execute('select job_id,attempt_id,state from jobs order by job_id').fetchall()
+                self.assertTrue(all(state == 'ACCEPTED' for _, _, state in before))
                 gateway.handle(dict(action='resume', run_id=result['run_id'], instruction='Artificial finite support'))
                 self.assertEqual(outcomes, {p:p.read_bytes() for p in run.glob('jobs/*/*/OUTCOME.json')})
+                with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as store:
+                    after = store.execute('select job_id,attempt_id,state from jobs order by job_id').fetchall()
+                self.assertEqual(before,after)
 
     def test_ceil_exact_even_around_integer_and_aliases(self):
         self.assertEqual(S.base_shots(11), list(range(55, 10, -4)))

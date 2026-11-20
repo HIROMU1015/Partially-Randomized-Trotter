@@ -224,6 +224,7 @@ def finite_support_kernel():
 def finite_support_requested(request, case):
     return (request.get('execution_profile', {}).get('large_shot_bounds') is True
             and request.get('origin', {}).get('kind') == 'RPE_SCALED_SHOTS_V1'
+            and request['origin'].get('M') in (11, 12)
             and finite_support_kernel().supports(case['allocation']['shots']))
 
 
@@ -295,8 +296,7 @@ def finite_support_outcome(request, case, inputs, route, out, source, metadata, 
                     threshold=threshold, risk=route.binding.Q.D, total=route.binding.Q)
         report = kernel.evaluate(rows, **args)
         certificates = [report['certificate']]
-        if (report['status'] == 'INCONCLUSIVE'
-                and max(max(row['N_X'],row['N_Y']) for row in rows) <= kernel.MAX_REFINEMENT_SHOTS_PER_AXIS):
+        if report['status'] == 'INCONCLUSIVE':
             certificates.append(kernel.refine(rows, **args)['certificate'])
         evidence.parent.mkdir()
         write(evidence, dict(input_sha256=fingerprint, certificates=certificates))
