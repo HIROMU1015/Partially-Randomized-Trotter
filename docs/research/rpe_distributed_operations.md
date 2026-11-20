@@ -93,6 +93,8 @@ run専用の補助プロセスが追従し、Stop・driver終了・invocation変
 
 2026-11-20に、`rpe-storage-recovery.service` を `.rpe-central/deployment/worker-storage-recovery-6bd2d0f254/` へ切り替えた。40 GiB未満では先行整理せず、40 GiBに達した時点で受付を維持したまま35 GiBを目標に整理することを人工検査した。通常のworker照会には既存の受付判定と緊急時の整理条件を使う。保守サービスの報告には `reclaim_start_bytes`、`reclaim_target_bytes`、`reclaim_checked`、`reclaim_pending` を残す。
 
+2026-11-20のRomuTailでは、準備メタデータ用Gitキャッシュ3組を別領域で再圧縮し、全Gitオブジェクトの集合と参照の解決結果が一致することを前後で照合した。ローカルworkerが容量保留中で実行中のattemptがないことを台帳・実機から確認し、容量測定ロックと各キャッシュの取込みロックを確保して切り替えた。元の一時pack、科学結果、未確定attemptは保全した。worker容量は50.011 GiBから39.313 GiBとなり、同じworkerの受付ONと空き2枠を中央で確認した。切替記録は `.rpe-central/storage-maintenance/local-pack-20261120/APPLIED.json` に保存した。
+
 ## RomuTail中央の常設保守
 
 - `rpe-central-maintenance.timer` は、登録済みrunの中央台帳と固定版から、依存入力の照合、停止後の回収、待ち理由の集約を行う。優先対象は現在のrunと、稼働中に追跡を開始して所有中attemptが残るrun。常設保守から通常Start・Resume、新規予約、割当、科学計算、再試行は行わない。
