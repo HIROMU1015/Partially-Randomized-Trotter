@@ -730,6 +730,7 @@ class Gateway:
             if request['action'] != 'resume' or not recovery_invocation:
                 raise RequestError('run', 'failed invocation requires reconciliation: '+str(stop or completed.get('returncode')))
             recovered_stop = reconcile_runtime_failure(run, state, completed, recovery_invocation, recovery_kind)
+        suspended_marker = None
         if (run/'ROUND_RESULT.json').exists():
             outcomes=load(run/'ROUND_RESULT.json')['methods']
             reasons={v['stop_reason'] for v in outcomes.values()}
@@ -739,7 +740,10 @@ class Gateway:
             if settings.get('search_to_rule_stop'):
                 final=run/'SEARCH_TERMINATION.json'
                 if final.exists() and not user_interrupted:
-                    return 'REUSED_COMPLETED'
+                    # Older schedule drivers wrote this marker even for a suspended run.
+                    if request['action'] != 'resume' or load(final).get('reason') not in ('SCOPE_HELD_INPUTS', 'MAX_CYCLES'):
+                        return 'REUSED_COMPLETED'
+                    suspended_marker = final
             elif not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED','SCALED_SHOT_GRID_COMPLETE'}:
                 return 'REUSED_COMPLETED'
         spec = load(run/'ROUND.requested.json'); problem = load(run/'PROBLEM.json')
@@ -770,6 +774,10 @@ class Gateway:
         immutable(run/'ROUND.json', spec)
         if recovered_stop:
             immutable(run/'stop-history'/(recovery_kind+'-'+recovery_invocation+'.json'), recovered_stop)
+        if suspended_marker is not None:
+            history = run/'stop-history'
+            history.mkdir(exist_ok=True)
+            suspended_marker.replace(history/('legacy-search-termination-'+str(time.time_ns())+'.json'))
         write(run/'AUTHORIZATION.json', dict(kind='EXPLICIT_USER_START',instruction=request['instruction'],scope_signature=applied['signature'],authorized_utc=time.time()))
         if (run/'STOP_REQUESTED.json').exists():
             previous=load(run/'STOP_REQUESTED.json')

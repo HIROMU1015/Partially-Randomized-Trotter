@@ -80,6 +80,8 @@ R08で過去に `df-plan` が保留した3件の保存入力を、従来の固�
 
 人工の2ホストで候補準備後の割当、逆順到着、区間終了時の回収、同じ通知の再送、再開時の追加起動0を検査した。同じ構成と最大roundで費用を更新しない点を省く効果は人工例で確認した。実H4の短縮時間は未測定。RomuTailの運用版への登録・切替は既存のPreview・Start・Resumeの手順に従う。[選択器](../src/trottertracks/rpe_scaled_shots.py)・[分散回帰テスト](../tests/test_rpe_distributed_controller.py)・[分散運用ルール](research/rpe_distributed_operations.md#継続run配置を作るとき)。
 
+有限予算の倍率探索は、1バッチの上限に達した時点で累計予算に余裕があれば次のバッチへ進む。ホスト適格性の保留は内部の計算区間を消費せず、入力・ホスト待ちが残るrunは通常Resumeで再確認できる。人工の通常入口で、バッチ継続・予算上限・ホスト不足・後着入力からの再開を検証した。[探索ドライバー](../scripts/run_rpe_schedule_search.py)・[人工回帰テスト](../tests/test_rpe_scaled_shots.py)。
+
 ## 候補ごとの実入力適合ホストへ割当
 
 通常schedule入口の準備で `HOST_ELIGIBILITY.json` を作り、distributed controllerがREQUEST/SOURCE/入力とhostの現在fingerprintをclaim直前に照合する。先頭jobが非対応でも既存優先順位の独立候補へ進む。全host不足は予算予約前に保留し、busyな適合hostは待機する。方式名やjob IDの固定割当はしない。既存attemptの回収・再開は保持。新transportと固定科学adapter SOURCEを分ける。人工queueの検査であり実H4の速度測定はない。[使い方と根拠](research/rpe_q3_host_eligibility/REPORT.md)。
