@@ -5,6 +5,7 @@ is a separate phase; neither phase chooses a candidate, shots or a new scope.
 This adapter runs only in the task-owned provider workspace.
 """
 import argparse
+import hashlib
 import importlib.util
 import json
 import resource
@@ -75,9 +76,32 @@ def load_provider(root):
     spec=importlib.util.spec_from_file_location('fixed_pf_provider',root/'scripts/prepare_pf_candidate.py')
     provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
     # Function globals resolve to the same fixed provider modules and helpers.
-    globals().update(ROOT=root,MODULE=provider.MODULE,native_row=provider.native_row,comparison_method=provider.comparison_method,
+    globals().update(ROOT=root,native_row=provider.native_row,comparison_method=provider.comparison_method,
         write=provider.write,load=provider.load,publish=provider.publish,head=provider.head)
     return provider
+
+
+def bind_native_compile_inputs():
+    """Resolve the saved native config before the pinned provider installs."""
+    import h46_long_time_signal as signal
+    helper = Path(__file__).resolve().parents[1] / 'src/trottertracks/rpe_preparation_paths.py'
+    paths = runpy.run_path(str(helper))
+    resolve = paths['resolve']
+    original = paths['PF_NATIVE_ORIGIN_CONFIG']
+    config_path = Path(resolve(original))
+    config_raw = config_path.read_bytes()
+    if hashlib.sha256(config_raw).hexdigest() != paths['PF_NATIVE_ORIGIN_SHA256']:
+        raise ValueError('PF native origin configuration differs from its fixed SHA-256')
+    config = json.loads(config_raw)
+    config['provider_root'] = resolve(config['provider_root'])
+    for name in paths['PF_NATIVE_H4_INPUTS']:
+        item = config['systems']['H4']['inputs'][name]
+        item['path'] = resolve(item['path'])
+        if hashlib.sha256(Path(item['path']).read_bytes()).hexdigest() != item['sha256']:
+            raise ValueError('PF native H4 input differs from its fixed SHA-256: '+name)
+    # The original install() and native_context() see the same mapped input.
+    # They retain their provider byte checks and scientific guards.
+    signal.origin_config = lambda: config
 
 
 def compile_receipts(value,out,phase,ms,source):
@@ -101,7 +125,10 @@ def compile_receipts(value,out,phase,ms,source):
     # native preparation hash is recorded for their own request, never borrowed.
     if p not in (7,10):job['prefix_specific_preparation']=True
     write(folder/'JOB.json',job);started=time.perf_counter()
-    with (private/'child.log').open('x') as log:r=subprocess.run([sys.executable,'-B',str(ROOT/MODULE),'--native-child',str(folder/'JOB.json')],cwd=ROOT,stdout=log,stderr=subprocess.STDOUT)
+    child = [sys.executable, '-B', str(Path(__file__).resolve()), '--provider-root', str(ROOT),
+             '--native-child', str(folder/'JOB.json')]
+    with (private/'child.log').open('x') as log:
+        r = subprocess.run(child, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
     result=load(private/'child.json') if (private/'child.json').exists() else dict(results=[],error='Native child result absent')
     trace=folder/'TRACE';trace.mkdir()
     for name in ['child.log','context_progress.jsonl']+[x.name for x in private.glob('progress_*.jsonl')]:
@@ -198,9 +225,18 @@ def run(provider,request):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--provider-root',type=Path,required=True);p.add_argument('--input',type=Path,required=True)
-    p.add_argument('--output',type=Path,required=True);p.add_argument('--plan-signal-index',type=Path);a=p.parse_args()
-    provider=load_provider(a.provider_root);request=load(a.input)
+    p.add_argument('--provider-root',type=Path,required=True);p.add_argument('--input',type=Path)
+    p.add_argument('--output',type=Path);p.add_argument('--plan-signal-index',type=Path)
+    p.add_argument('--native-child',type=Path);a=p.parse_args()
+    provider=load_provider(a.provider_root)
+    if a.native_child is not None:
+        if any((a.input, a.output, a.plan_signal_index)):
+            p.error('--native-child cannot be combined with planning options')
+        bind_native_compile_inputs()
+        return provider.native_child(a.native_child)
+    if a.input is None or a.output is None:
+        p.error('--input and --output are required')
+    request=load(a.input)
     if a.plan_signal_index is not None:
         cache_mean_pool(a.provider_root,a.plan_signal_index)
         sys.argv=[str(a.provider_root/'scripts/prepare_pf_candidate.py'),'--request',str(a.input),

@@ -1,9 +1,10 @@
 """Exercise the PF wrapper's actual child launch assembly with synthetic leaves.
 
-A fake provider supplies MODULE; subprocess.run is intercepted before it can
-start any numerical worker. No H4 inputs, signal, circuit or compiler is used.
+The provider and child process are synthetic. No H4 inputs, signal, circuit
+or compiler is used.
 """
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
@@ -27,11 +28,9 @@ def load_wrapper():
 def fake_provider(root):
     scripts = root / 'scripts'
     scripts.mkdir()
-    (scripts / 'native_fixture_entry.py').write_text("raise AssertionError('Synthetic child must be intercepted')\n")
     (scripts / 'prepare_pf_candidate.py').write_text('''
 from pathlib import Path
 import json
-MODULE = 'scripts/native_fixture_entry.py'
 def native_row(configuration, physical): return {'formula': physical['formula'], 'ARTIFICIAL': True}
 def comparison_method(configuration): return 'FULL_PF' if configuration['spec']['L_D'] == 10 else 'TRUNCATED_PF'
 def write(path, value):
@@ -97,10 +96,10 @@ class PFPreparationModuleBinding(unittest.TestCase):
                 child_calls = []
                 def child(command, **kwargs):
                     child_calls.append(command)
-                    self.assertEqual(Path(command[2]), root / provider.MODULE)
-                    self.assertEqual(command[3], '--native-child')
+                    self.assertEqual(Path(command[2]), ROOT/'scripts/run_pf_preparation_stage.py')
+                    self.assertEqual(command[3:6], ['--provider-root', str(root), '--native-child'])
                     self.assertEqual(Path(kwargs['cwd']), root)
-                    job = provider.load(command[4])
+                    job = provider.load(command[6])
                     provider.write(Path(job['private']) / 'child.json', dict(results=[dict(ok=True,
                         cell=job['cells'][0], trial={'ARTIFICIAL': True}, wrappers={'cosine': {'ARTIFICIAL': 'X'},
                                                                                'sine': {'ARTIFICIAL': 'Y'}})]))
@@ -117,7 +116,32 @@ class PFPreparationModuleBinding(unittest.TestCase):
                 self.assertEqual(provider.load(raw / 'RESULT.json')['child_exit_code'], 0)
                 self.assertEqual(provider.load(raw / 'JOB.json')['driver_source'], source)
                 self.assertTrue((raw / 'TRACE' / 'child.log').is_file())
-                self.assertEqual(wrapper.MODULE, provider.MODULE)
+
+    def test_native_child_uses_relocated_fixed_inputs_and_rejects_changes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            snapshot = root/'snapshot'
+            snapshot.write_bytes(b'fixed snapshot')
+            config = root/'config.json'
+            sha = hashlib.sha256(snapshot.read_bytes()).hexdigest()
+            config.write_text(json.dumps(dict(provider_root='/original/provider',
+                systems={'H4': {'inputs': {'snapshot': dict(path='/original/snapshot', sha256=sha)}}})))
+            paths = {'PF_NATIVE_ORIGIN_CONFIG': '/original/config',
+                     'PF_NATIVE_ORIGIN_SHA256': hashlib.sha256(config.read_bytes()).hexdigest(),
+                     'PF_NATIVE_H4_INPUTS': ('snapshot',),
+                     'resolve': {'/original/config': str(config), '/original/snapshot': str(snapshot),
+                                 '/original/provider': str(root)}.__getitem__}
+            legacy = ModuleType('h46_long_time_signal')
+            wrapper = load_wrapper()
+            with patch.dict(sys.modules, {legacy.__name__: legacy}), \
+                 patch.object(wrapper.runpy, 'run_path', return_value=paths):
+                wrapper.bind_native_compile_inputs()
+                self.assertEqual(legacy.origin_config()['provider_root'], str(root))
+                self.assertEqual(legacy.origin_config()['systems']['H4']['inputs']['snapshot']['path'],
+                                 str(snapshot))
+                snapshot.write_bytes(b'different snapshot')
+                with self.assertRaisesRegex(ValueError, 'fixed SHA-256'):
+                    wrapper.bind_native_compile_inputs()
 
 
 if __name__ == '__main__':

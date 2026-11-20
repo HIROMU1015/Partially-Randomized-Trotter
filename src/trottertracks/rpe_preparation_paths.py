@@ -6,6 +6,13 @@ Only explicitly named runtime/output paths are resolved by their caller.
 import json
 import os
 
+PF_NATIVE_ORIGIN_CONFIG = (
+    '/home/AbeHiromu/projects/h46-pr-exploration-execution/20261021/'
+    'private/authorization_run01/H4_PR_EXPLORATION/config_APPROVED_PRIVATE.json'
+)
+PF_NATIVE_ORIGIN_SHA256 = '52e221c7e3d56dc8c75f5df0b208c60bb0c3d3c8885c14a331e7cdc86c4e24c4'
+PF_NATIVE_H4_INPUTS = ('H4_tol_snapshot.npz', 'H4_tol_receipt.json')
+
 # The legacy price adapter requires this checked-out view next to its provider
 # workspace. Keep the original adapter and all of its SOURCE checks unchanged.
 PAULI_CALIBRATION_VIEW = 'a-pauli-ld3-cal-source-13ab'

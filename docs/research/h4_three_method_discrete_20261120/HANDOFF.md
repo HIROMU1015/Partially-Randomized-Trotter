@@ -490,7 +490,25 @@ PBSの作業専用checkoutでは不足する4つの前提コミットと、385�
 このrunの次回通常Resumeに4ホストの配置を登録した。PBS予約は標準較正で12 CPU・32 GiB、
 独立検証で2 CPU・8 GiBとした。固定providerのround数と既存メモリ見積りを根拠にした初期設定である。
 
-通常Stopの実運用操作は自動承認審査で現在の停止許可が必要とされ、現行controllerはそのまま稼働した。
-compile配置の実運用比較は次の通常Resumeで行う。実機記録は
+23:41 JST時点では、現行controllerが稼働中で、compile配置の実運用比較を通常Resumeへ残した。実機記録は
 `.rpe-central/planning/rpe-fleet-compile-batching-20261120/` の
 `TRANSPORT_MEASURED.json`、`MEASURED.json`、各ホストのmetadataとResume選択記録を使う。
+
+### 2026-11-20 23:46 JSTの通常Resumeと実行確認
+
+通常Stopは23:44 JSTに終了コード0で完了した。旧PBS割当 `267659.CPUcluster-PRISM`
+の終了と、旧invocationの実行中・転送待ちが0件であることを照合した。通常Resumeで同じrun
+`search-e6361f01b6a480718127` を `5d29988230` で再開した。固定入力と既存の未確定
+attemptを保全した。23:51 JSTにこのinvocationの中継を復旧し、4ホストのQ3の中央回収を確認した。
+
+通常キューがRomuTailへ割り当てた `PF_COMPILE` 2件は、固定providerの子がサーバー2の
+絶対パスからorigin configを読んだため、回路生成前に終了した。中央は失敗結果を回収した。
+2件のattemptと予算消費を保持し、自動再試行は行わない。旧版のdry-checkでは子の起動時に
+必要な設定が要求へ宣言されていなかった。修正版では、origin config、固定provider、
+保存H₄ snapshotとreceiptを要求へ含める。子プロセスは照合済みのホスト別パスを使って
+従来の科学providerに委譲する。保存入力と固定providerの照合および人工回帰を実施した。
+
+再開後、PBSは2 CPU割当でQ3を回収し、その後、適格な待機Q3 3件に合わせて6 CPUを
+確保した。途中時点の計時は `LIVE_RESUME_MEASURED.json` を参照する。
+compileの実完了および6 CPUに増枠した後の定常利用率はこの時点では判定できない。
+修正版のcompile adapterは次の配置用で、現在のinvocationは再起動していない。

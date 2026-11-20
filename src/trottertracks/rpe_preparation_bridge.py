@@ -16,6 +16,7 @@ import tempfile
 import threading
 
 from .rpe_preparation_artifacts import artifact_path
+from .rpe_preparation_paths import PF_NATIVE_H4_INPUTS, PF_NATIVE_ORIGIN_CONFIG, PF_NATIVE_ORIGIN_SHA256
 
 
 _DF_SIGNAL_BOOTSTRAP = """
@@ -440,6 +441,33 @@ class DistributedPreparationBridge:
             bindings[str(original)] = '@WORK@/'+name
             working_hashes.append(dict(path=name, sha256=sha))
 
+    def _pf_native_runtime(self, inputs, bindings, working_hashes):
+        controller_paths = self.settings.get('controller_paths') or {}
+        configured = controller_paths.get(PF_NATIVE_ORIGIN_CONFIG, {})
+        config_path = Path(configured.get('path', PF_NATIVE_ORIGIN_CONFIG))
+        raw = config_path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != PF_NATIVE_ORIGIN_SHA256:
+            raise ValueError('PF native origin configuration differs from its fixed SHA-256')
+        config = json.loads(raw)
+        for name in PF_NATIVE_H4_INPUTS:
+            item = config['systems']['H4']['inputs'][name]
+            original = item['path']
+            default_path = Path(original)
+            snapshot = self.settings.get('df_snapshot_directory')
+            if snapshot:
+                default_path = Path(snapshot)/default_path.name
+            path = Path(controller_paths.get(original, {}).get('path', default_path))
+            data = path.read_bytes()
+            sha = hashlib.sha256(data).hexdigest()
+            if sha != item['sha256']:
+                raise ValueError('PF native H4 input differs from its fixed SHA-256: '+name)
+            destination = 'private/pf-native/'+name
+            inputs[destination] = self._blob(data)
+            bindings[original] = '@WORK@/'+destination
+            working_hashes.append(dict(path=destination, sha256=sha))
+        return dict(runtime=dict(input_config=PF_NATIVE_ORIGIN_CONFIG,
+                                 provider_root=config['provider_root']))
+
     def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         bundles = []
@@ -627,6 +655,9 @@ class DistributedPreparationBridge:
         df_locators = []
         snapshot = self.settings.get('df_snapshot_directory')
         pf_signal = stage == 'PF_SIGNALS' and script.name == 'run_pf_preparation_stage.py'
+        pf_compile = stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
+        if pf_compile and script.name == 'run_pf_preparation_stage.py':
+            runtime_inputs.append(self._pf_native_runtime(inputs, bindings, df_inputs))
         if snapshot and (pf_signal or script.name in (
                 'run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py',
                 'derive_pr_df_candidate_descriptor.py')):
@@ -800,7 +831,6 @@ class DistributedPreparationBridge:
                                (getattr(completion, 'settings', {}) or {}).get('pauli_price_wrapper_source') == source)
         if binding_publication:
             prep['publish_pauli_binding'] = True
-        pf_compile = stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
         if stage == 'PAULI_SIGNALS' or binding_publication or pf_compile:
             declared = [*prep['outputs'], *prep.get('optional_outputs', [])]
             # The PF workspace also expands the index containing fixed
