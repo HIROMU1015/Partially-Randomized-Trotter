@@ -71,7 +71,11 @@ def apply_worker_trial(spec, trial):
             if worker['host_id'] == 'server2':
                 worker['profile'] = trial['server2_profile']
     if 'local_memory_reserve_bytes' in trial:
-        distributed['local_calibration_pair'] = dict(memory_reserve_bytes=trial['local_memory_reserve_bytes'])
+        distributed['local_calibration_pair'] = dict(
+            memory_reserve_bytes=trial['local_memory_reserve_bytes'],
+            pf_preparation=trial.get('local_pf_preparation_pair', False))
+    if 'preparation_host_preference' in trial:
+        distributed['preparation_host_preference'] = trial['preparation_host_preference']
     if trial.get('pbs_storage_launcher'):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:

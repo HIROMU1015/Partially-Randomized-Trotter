@@ -58,6 +58,39 @@ class ControllerFailures(unittest.TestCase):
             self.assertFalse(trial._local_calibration_pair_allows('local', calib))
             resources.return_value.update(allowed_cpu_count=8, remaining_group_memory_bytes=99)
             self.assertFalse(trial._local_calibration_pair_allows('local', calib))
+            trial.distributed['local_calibration_pair']['pf_preparation'] = True
+            profile['preparation_profiles'].append(dict(stage='audit', provider='PF_AUDIT',
+                profile=dict(host_id='local', task_cpu_count=1)))
+            audit = dict(route={'kind': 'preparation'},
+                         preparation=dict(stage='audit', provider='PF_AUDIT', source={}))
+            trial.store.row = lambda _: {'request': audit}
+            resources.return_value.update(remaining_group_memory_bytes=100)
+            self.assertTrue(trial._local_calibration_pair_allows('local', audit))
+
+    def test_preparation_preference_yields_only_while_worker_can_take_the_task(self):
+        import time
+        ex = self.executor(preparation_host_preference=dict(
+            providers=['PF_AUDIT'], host='local0-wsl', seconds=12))
+        row = dict(job_id='fixture', enqueued_epoch=time.time(),
+                   request=dict(preparation=dict(provider='PF_AUDIT')))
+        ex.rpc('/v1/poll', dict(host_id='local0-wsl', slots=1, capacity=1,
+                               source_sha=self.source, observe_only=True))
+        policy, error = ex._host_admission_policy()
+        self.assertTrue(ex._wait_for_preparation_preference('local', row, policy, error))
+        self.assertFalse(ex._wait_for_preparation_preference('local0-wsl', row, policy, error))
+        ex.preparation_pending['fixture'] = dict(failures={'local0-wsl': 'HOLD'})
+        self.assertFalse(ex._wait_for_preparation_preference('local', row, policy, error))
+        ex.preparation_pending.clear()
+        row['enqueued_epoch'] -= 13
+        self.assertFalse(ex._wait_for_preparation_preference('local', row, policy, error))
+        prep = dict(method='ARTIFICIAL', route=dict(kind='preparation'),
+                    preparation=dict(stage='audit', provider='PF_AUDIT', artificial=True,
+                                     command=['ARTIFICIAL_ONLY'], outputs=['receipt.json']))
+        job = ex.submit_preparation(prep, approved=True, budget=1)
+        poll = dict(slots=1, capacity=1, source_sha=self.source)
+        self.assertEqual(ex.rpc('/v1/poll', dict(poll, host_id='local'))['assignments'], [])
+        assignments = ex.rpc('/v1/poll', dict(poll, host_id='local0-wsl'))['assignments']
+        self.assertEqual([item['job_id'] for item in assignments], [job])
 
     def close_one(self, executor):
         # The fixture starts no processes, so release only its synthetic tasks

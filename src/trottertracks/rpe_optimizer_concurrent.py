@@ -890,9 +890,14 @@ class DistributedExecutor(ConcurrentExecutor):
                  if row['host_id'] == host]
         if not owned:
             return True
-        if len(owned) != 1 or any((item.get('preparation') or {}).get('provider') != 'DF_CALIBRATION'
-                                  or (item.get('preparation') or {}).get('parallel_df_price_axes') is not True
-                                  for item in [*owned, request]):
+        if len(owned) != 1:
+            return False
+        preparations = [(item.get('preparation') or {}) for item in [*owned, request]]
+        pf_providers = {'PF_SIGNALS', 'PF_AUDIT', 'PF_HOLDOUT_AUDIT', 'PF_MODEL_FREEZE', 'PF_FINISH'}
+        pf_pair = trial.get('pf_preparation') and all(p.get('provider') in pf_providers for p in preparations)
+        calibration_pair = all(p.get('provider') == 'DF_CALIBRATION' and p.get('parallel_df_price_axes') is True
+                               for p in preparations)
+        if not (pf_pair or calibration_pair):
             return False
         from .rpe_q3_resources import resource_snapshot
         profile = self.distributed['local_worker']
@@ -906,6 +911,19 @@ class DistributedExecutor(ConcurrentExecutor):
             return False
         return (bool(free) and min(free) >= trial['memory_reserve_bytes']
                 and (budget.get('allowed_cpu_count') or 0) >= cpus)
+
+    def _wait_for_preparation_preference(self, host, row, policy, error):
+        preference = self.distributed.get('preparation_host_preference')
+        prep = row['request'].get('preparation') or {}
+        if not preference or prep.get('provider') not in preference['providers']:
+            return False
+        preferred = preference['host']
+        if (host == preferred or time.time() - row['enqueued_epoch'] >= preference['seconds']
+                or not self._host_supports_stage(preferred, row['request'])
+                or not self._offer_free(preferred, policy, error)):
+            return False
+        record = self.preparation_pending.get(row['job_id'], {})
+        return preferred not in record.get('failures', {})
 
     def _owned_attempts(self):
         with self.store._connection() as database:
@@ -1111,6 +1129,8 @@ class DistributedExecutor(ConcurrentExecutor):
         """One request per usable host slot, preserving candidate order."""
         owners = {h:[] for h in available}
         compatible = {};skipped = {h:False for h in available}
+        policy, error = (self._host_admission_policy() if self.distributed.get('preparation_host_preference')
+                         else (None, None))
         for task in queue:
             row = self.store.row(task.job.name)
             compatible[task.job.name] = []
@@ -1118,7 +1138,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
                     skipped[h] = True
                     continue
-                if not self._local_calibration_pair_allows(h, row['request']):
+                if (self._wait_for_preparation_preference(h, row, policy, error)
+                        or not self._local_calibration_pair_allows(h, row['request'])):
                     skipped[h] = True
                     continue
                 if not self.store.eligible(row['request'], row['eligibility'], h,
@@ -2206,7 +2227,10 @@ class DistributedExecutor(ConcurrentExecutor):
                             free_memory -= memory
                 for task in eligible:
                     if remaining <= 0: break
-                    if not self._local_calibration_pair_allows(host, self.store.row(task.job.name)['request']):
+                    row = self.store.row(task.job.name)
+                    if self._wait_for_preparation_preference(host, row, admission_policy, admission_error):
+                        continue
+                    if not self._local_calibration_pair_allows(host, row['request']):
                         continue
                     if resource_pool is not None:
                         try:
