@@ -435,3 +435,37 @@ WSLのrelayは新しい状態応答で入力bundleが揃っている要求を同
 キャッシュ照会の往復を省き、workerでの既存固定入力照合は実施する。WSLは既存の4枠を使用する。
 76件の人工回帰PASS、旧外部配置を要する1件skip。保存要求でRomuTail4軸、server2 6軸の
 実機metadata照合が両方PASS。稼働中のattemptを中断せず、次の通常Resumeで新しいprofileを選ぶ。
+
+### 2026-11-20 23時台の候補復帰と配送の短縮
+
+対象は `search-e6361f01b6a480718127`。運用版 `9cd4b4729f` でPR-DFの受入済み構成・
+信号locatorをQ3配送に渡し、PBSのgatewayで既知の割当の照会をまとめた。保留済み3要求の
+新旧locatorはGit blobのバイトが同一だった。各要求で旧参照の `Canonical bridge mismatch` と、
+受入receiptの参照を使った `DRY_CHECK_PASS` を再現した。固定計算は既存の通常runから実行した。
+
+同じrunを通常Stopで排出してから通常Resumeで継続した。元の `APPLIED_SCOPE.json`、
+`CONTROLLER_CONFIG.json`、`PROBLEM.json`、`ROUND.json`、`ROUND.requested.json`、
+PBSの固定設定、および既存のUNKNOWNのjob・attempt・要求SHA・detailを照合した。
+元の科学controller SOURCEは1355ad65fa、科学Q3 SOURCEは28d976b99。中央選択と
+受入・配送の実使用版は `NORMAL_DRIVER.json` と `distributed/relay/TRANSPORT.json` に残る。
+停止・再開には通常入口と同じrun IDを使う。
+
+PBSの既存5割当の照会は同一内容で、個別照会の中央値1.051秒から一括照会の0.223秒へ短縮した。
+実探索でPBS投入から使用可能になるまでの時間は、対照267651・267652の102.4～102.6秒から、
+変更後267653・267654の67.3～71.5秒となった。267653では2 CPUを220秒確保し、
+実CPU時間44秒で10.0%。対照267651は4 CPUを342秒確保し、実CPU時間48秒で3.5%だった。
+タスク数とCPU数が異なる実測である。次の割当267654は16 CPUで8件のQ3が同じ割当に入り、
+全件を中央で回収した。
+
+server2とWSLの中継は `fd853684d9` を同一invocationへ適用した。既存経路の人工通信で、
+server2のSSHは中央値0.402秒から0.013秒、WSLの小さいJSON往復は2.251秒から1.899秒になった。
+23:20の通常中継計時では、server2の状態照会中央値は0.965秒（21回）から0.586秒（46回）、
+WSLは1.566秒（9回）から1.103秒（29回）だった。
+通常Resume後、22件をRomuTail、15件をserver2、15件をWSL、9件をPBSから回収した。
+旧入力参照で保留されたPR-DF 7件を4環境で回収し、同じjobの重複割当・受領・採用は0件だった。
+固定科学条件と容量上限を保持し、PBSは準備済み需要に従って資源を決める。
+候補・PBS管理・通常入口の人工回帰133件と中継の人工回帰19件が通過した。
+
+実機の選択前後と性能照合の保存場所はRomuTailの
+`.rpe-central/planning/rpe-fleet-dispatch-efficiency-20261120/` の `MEASURED.json` を参照。
+共通手順は[分散探索の運用ルール](../rpe_distributed_operations.md#空き枠容量障害の切り分け)を使う。
