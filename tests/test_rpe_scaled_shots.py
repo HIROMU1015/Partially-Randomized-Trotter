@@ -123,6 +123,26 @@ class ScaleTests(unittest.TestCase):
         self.assertEqual(result['new_calls'], 2)
         self.assertTrue(all(r['minimum_status'] == 'GRID_MINIMUM_CONFIRMED' for r in result['by_configuration']))
 
+    def test_work_slice_keeps_due_jobs_but_explicit_limit_still_stops(self):
+        policy = S.settings(dict(M=[0], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
+        candidates = [self.candidate(k, [1, 1]) for k in 'abcd']
+        for mode, hard_limit, expected in [('drain', None, 'abc'), ('refill', None, 'abcd'), ('refill', 2, 'ab')]:
+            owned = set()
+            choices = []
+            def supply(first, rest):
+                choices.append(first['configuration_id'])
+                # Two more jobs already passed input checks at the first yield.
+                if len(choices) == 1:
+                    owned.update('bc')
+                elif mode == 'refill' and rest:
+                    owned.add(rest[-1]['configuration_id'])
+            search = dict(scaled_shots=policy, work_slice_steps=1, max_steps_per_method=hard_limit,
+                          prefetch_independent_references=True, ready_work_at_slice=mode)
+            answer = O.FixtureBackend(lambda cid, vector: self.bounds(True), TAU)
+            S.run('PR_PAULI', candidates, {}, answer, search, TAU, None,
+                  submit_standby=supply, free=lambda row: row['configuration_id'] in owned)
+            self.assertEqual(''.join(choices), expected)
+
     def test_off_grid_reference_costs_less_without_becoming_grid_best(self):
         p = S.settings(dict(M=[0], grid=dict(min_k=2, max_k=2, divisor=1)))
         c = self.candidate('c', [2, 2], kappa='2')

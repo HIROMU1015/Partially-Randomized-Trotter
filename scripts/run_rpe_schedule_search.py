@@ -1222,6 +1222,7 @@ class WidthDriver:
         if self.live_ready_refill and active_spec['executor'].get('distributed'):
             if self.work_conserving_search and (active_spec['executor']['distributed'].get('ready_queue_waves', 2) > 1):
                 search['prefetch_independent_references'] = True
+                search['ready_work_at_slice'] = 'drain'
             active_spec['executor']['distributed'] = dict(active_spec['executor']['distributed'], live_ready_refill=True,
                 work_conserving_search=self.work_conserving_search)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
@@ -1333,6 +1334,12 @@ class WidthDriver:
                 O.apply_published(context['candidates'],routes)
             if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
             else:
+                if (search.get('ready_work_at_slice') == 'drain' and not getattr(self, 'pf_more', False)
+                        and all(W.kappa_values(self.wide_for(method)) is not None for method in self.widths)):
+                    # The discrete outer design is enumerated and the preparation
+                    # pass has finished. Keep replenishing the same queue while
+                    # a valid allocation is still due in this search.
+                    search['ready_work_at_slice'] = 'refill'
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
                     result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
                         initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,

@@ -202,9 +202,32 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         proposals = [r for g in groups.values() if (r := compile_next(g)) is not None]
         if not proposals:
             break
-        if step_limit is not None and steps >= step_limit:
-            requested_stop = 'STEP_LIMIT' if search.get('max_steps_per_method') == step_limit else 'WORK_SLICE_YIELDED'
+        references = []
+        if submit_standby is not None and search.get('prefetch_independent_references') and budget is None:
+            heads = {id(row) for row in proposals}
+            references = [row for group in groups.values() for row in group['rows']
+                          if row['status'] == 'PENDING' and row['smallest_grid_k'] is None and id(row) not in heads]
+            references.sort(key=lambda row: (row['cost'], row['M'], row['configuration_id']))
+        explicit_limit = search.get('max_steps_per_method')
+        if explicit_limit is not None and steps >= explicit_limit:
+            requested_stop = 'STEP_LIMIT'
             break
+        if step_limit is not None and steps >= step_limit:
+            mode = search.get('ready_work_at_slice')
+            can_continue = mode in ('drain', 'refill') and budget is None and free is not None
+            if can_continue:
+                from itertools import chain
+                due = (row for row in chain(proposals, references) if free(row))
+                if mode == 'drain':
+                    # Another producer can expose new designs at the outer boundary.
+                    # Finish currently due work before the method closes its queue.
+                    proposals, references = list(due), []
+                    can_continue = bool(proposals)
+                else:
+                    can_continue = next(due, None) is not None
+            if not can_continue:
+                requested_stop = 'WORK_SLICE_YIELDED'
+                break
         proposals.sort(key=lambda r: (free is None or not free(r), r['smallest_grid_k'] is None,
                                       r['cost'], r['M'], r['configuration_id']))
         choice = proposals[0]
@@ -217,17 +240,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             pending = choice
             break
         if submit_standby is not None and science_approved and (budget is None or spent + used < budget):
-            standby = proposals[1:]
-            if search.get('prefetch_independent_references') and budget is None:
-                # An off-grid comparison remains due whichever grid point
-                # passes. A later grid point can still be pruned by that pass.
-                # Keep the selected lead and every other group's lead first.
-                heads = {id(row) for row in proposals}
-                references = [row for group in groups.values() for row in group['rows']
-                              if row['status'] == 'PENDING' and row['smallest_grid_k'] is None
-                              and id(row) not in heads]
-                standby.extend(sorted(references, key=lambda row: (row['cost'], row['M'], row['configuration_id'])))
-            submit_standby(choice, standby)
+            # Off-grid comparisons remain due whichever grid point passes.
+            submit_standby(choice, proposals[1:] + references)
         answer = backend.answer(choice) if backend is not None else None
         if answer is not None and answer.get('status') == 'RESELECT_READY':
             # The original job still has an owner. Refresh the candidate set
