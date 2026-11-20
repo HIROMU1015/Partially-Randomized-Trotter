@@ -686,6 +686,31 @@ class GatewayTests(unittest.TestCase):
             self.assertEqual(missing[0]['status'], 'HISTORY_MISSING_RECONCILE_SPOOL')
             self.assertEqual(missing[0]['job_id'], job_id)
 
+    def test_batches_known_job_queries_and_keeps_finished_accounting(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            jobs = {}
+            for index, state in enumerate(('F', 'R')):
+                token = 'artificial-{}'.format(index)
+                allocation = root/'allocations'/token
+                job_id = '{}.prism'.format(index)
+                G.atomic(allocation/'SPEC.json', dict(token=token, profile=dict(host_id='pbs-0')))
+                G.atomic(allocation/'JOB_ID.json', dict(job_id=job_id))
+                jobs[job_id] = dict(Job_Name='RPE'+token[:12], job_state=state)
+            cache = {}
+            with patch.object(G, 'qstat', side_effect=[jobs, {'1.prism': jobs['1.prism']}]) as query:
+                first = G.snapshot(root, cache)
+                second = G.snapshot(root, cache)
+            self.assertEqual(first, second)
+            self.assertEqual([call.args for call in query.call_args_list], [('0.prism', '1.prism'), ('1.prism',)])
+
+    def test_missing_history_in_batch_preserves_other_job_results(self):
+        details = dict(Job_Owner=getpass.getuser()+'@prism', job_state='R')
+        reply = SimpleNamespace(returncode=1, stdout=json.dumps(dict(Jobs={'1.prism': details})),
+                                stderr='qstat: Unknown Job Id 0.prism\n')
+        with patch.object(G.subprocess, 'run', return_value=reply):
+            self.assertEqual(G.qstat('0.prism','1.prism'), {'1.prism': details})
+
     def test_saved_artifact_harvest_never_calls_a_worker_or_subprocess(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); allocation = root/'allocation'; work = root/'worker'

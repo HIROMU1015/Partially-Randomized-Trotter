@@ -16,6 +16,21 @@ from trottertracks import pr_candidate_completion as C,rpe_method_optimizer as O
 
 
 class CompletionTests(unittest.TestCase):
+    def test_restored_intake_uses_checked_locators_and_preserves_typed_inputs(self):
+        config = dict(commit='prepared-config', path='config.json')
+        packet = dict(commit='prepared-packet', path='packet.json')
+        checked_config = dict(config, commit='intake-config')
+        checked_packet = dict(packet, commit='intake-packet')
+        record = dict(configuration=config, signal=dict(packet_source=packet),
+                      intake=dict(configuration=checked_config, signal_packet=checked_packet))
+        objects = {'prepared-config': {'x': 1}, 'prepared-packet': {'signal': [1]},
+                   'intake-config': {'x': 1}, 'intake-packet': {'signal': [1]}}
+        with patch.object(C, 'value', side_effect=lambda ref: objects[ref['commit']]):
+            self.assertEqual(C.intake_locators(record), (checked_config, checked_packet))
+            objects['intake-packet'] = {'signal': [True]}
+            with self.assertRaisesRegex(ValueError, 'canonical intake receipt'):
+                C.intake_locators(record)
+
     @unittest.skipUnless(sys.platform.startswith('linux'), 'DF price worker uses Linux fork')
     def test_df_price_bootstrap_keeps_the_worker_importable_for_fork_pool(self):
         with tempfile.TemporaryDirectory() as tmp:

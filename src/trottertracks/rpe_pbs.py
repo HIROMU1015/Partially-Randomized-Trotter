@@ -53,6 +53,8 @@ class Gateway:
 
     def _start(self):
         config = self.settings
+        if config.get('gateway_sha256'):
+            self.verify_gateway_file(config['gateway_script'], config['gateway_sha256'])
         remote = [config.get('gateway_python', '/usr/bin/python3'), '-B',
                   config['gateway_script'], '--root', config['remote_root']]
         command = config.get('gateway_command') or [
@@ -103,13 +105,16 @@ class Gateway:
              config['ssh_alias'], shlex.join(remote)], input=json.dumps(policy), text=True, timeout=15)
         return json.loads(output)
 
-    def verify_storage_launcher(self, launcher):
+    def verify_gateway_file(self, path, expected):
         output = subprocess.check_output(
             ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
-             self.settings['ssh_alias'], shlex.join(['sha256sum', '--', launcher['path']])],
+             self.settings['ssh_alias'], shlex.join(['sha256sum', '--', path])],
             text=True, timeout=12)
-        if output.split()[0] != launcher['sha256']:
-            raise ValueError('PBS storage launcher differs from the selected deployment')
+        if not output.split() or output.split()[0] != expected:
+            raise ValueError('PBS gateway file differs from the selected deployment')
+
+    def verify_storage_launcher(self, launcher):
+        self.verify_gateway_file(launcher['path'], launcher['sha256'])
 
     def monitor_storage(self, profiles):
         """Keep the shared sample fresh only for running allocations in this run."""
@@ -362,6 +367,9 @@ class PbsManager:
         if not fixed.exists(): atomic(fixed, original)
         self.path = self.directory/'STATE.json'
         self.state = read(self.path) if self.path.exists() else dict(allocations={}, requests={})
+        dispatch = getattr(executor, 'distributed', {}).get('pbs_dispatch_gateway')
+        if dispatch:
+            self.settings.update(gateway_script=dispatch['path'], gateway_sha256=dispatch['sha256'])
         self.gateway = gateway or Gateway(self.settings)
         self.storage_launcher = (getattr(executor, 'distributed', {})
                                  .get('pbs_gateway_storage_launcher'))

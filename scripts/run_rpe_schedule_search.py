@@ -80,6 +80,8 @@ def apply_worker_trial(spec, trial):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:
         distributed['pbs_collection_workers'] = trial['pbs_collection_workers']
+    if trial.get('pbs_dispatch_gateway'):
+        distributed['pbs_dispatch_gateway'] = trial['pbs_dispatch_gateway']
     if trial.get('controller_queue_first'):
         distributed['controller_queue_first'] = True
         pf = spec.get('pf_completion') or {}

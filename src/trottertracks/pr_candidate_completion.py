@@ -19,7 +19,7 @@ import time
 from . import pr_candidate_selection as Selection
 from .pr_step_price_registry import PRICE_SOURCE_CONFLICT, PRICE_EXTRAPOLATION_HOLD, QUOTE_POLICY_REVISION
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=Path(globals().get('FIXED_RUN_CODE_ROOT', Path(__file__).resolve().parents[2]))
 NATIVE='/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python'
 PRICE='/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python'
 D2_VIEW=ROOT.parent/'b2-route-view-d2-c1f95e080'
@@ -62,6 +62,23 @@ def value(loc):
     x=json.loads(subprocess.check_output(['git','show',loc['commit']+':'+loc['path']],cwd=ROOT))
     for k in loc.get('selector',[]):x=x[k]
     return x
+
+def intake_locators(record):
+    """Keep the locators covered by the binding receipt after an input relocation."""
+    intake = record['intake']
+    signal = record['signal']
+    configuration = intake['configuration']
+    packet = intake['signal_packet']
+    for supplied, checked in (
+            (signal.get('configuration_source') or record['configuration'], configuration),
+            (signal['packet_source'], packet)):
+        if supplied == checked:
+            continue
+        expected = json.dumps(value(supplied), sort_keys=True, allow_nan=False)
+        observed = json.dumps(value(checked), sort_keys=True, allow_nan=False)
+        if observed != expected:
+            raise ValueError('Prepared input differs from its canonical intake receipt')
+    return configuration, packet
 
 def dec(v):return Fraction(int(v['numerator']),int(v['denominator']))if isinstance(v,dict)else Fraction(v)
 def enc(v):v=Fraction(v);return dict(numerator=v.numerator,denominator=v.denominator)
@@ -490,11 +507,10 @@ class Completion:
         directory = self.directory/'continuation-inputs'/record['key']
         directory.mkdir(parents=True, exist_ok=True)
         config = value(record['configuration'])
-        signal = record['signal']
+        configuration, packet = intake_locators(record)
         method = record['method']
         intake = self.service('intake', dict(
-            method=method, configuration=signal.get('configuration_source', record['configuration']),
-            packet=signal['packet_source'],
+            method=method, configuration=configuration, packet=packet,
             view=str(self.path('B_VIEW') if method == 'PR_PAULI' else self.path('DF_Q3_VIEW'))), directory)
         if intake != record['intake']:
             raise ValueError('CONTINUATION_INTAKE_BINDING_DIFFERS')
@@ -1259,10 +1275,16 @@ class Completion:
         routes=deepcopy(problem['execution_routes'])
         for rec in records:
             if rec['status']!='READY_FOR_SEARCH':continue
-            config=value(rec['configuration']);method=rec['method'];binding=rec['intake'];signal=rec['signal'];cid=config['id']
+            config=value(rec['configuration']);method=rec['method'];binding=rec['intake'];cid=config['id']
             requested=(problem.get('methods',{}).get(method,{})or{}).get('requested_delta_pf_values')
             if requested is not None and dec(config['spec']['delta_pf'])not in{dec(v)for v in requested}:
                 continue
+            try:
+                configuration, packet = intake_locators(rec)
+            except (KeyError, ValueError, subprocess.CalledProcessError) as error:
+                rec['installation_hold'] = str(error)
+                continue
+            rec.pop('installation_hold', None)
             # Populate original B2 physical keys from saved metadata only. R.register
             # owns the equivalence/alias decision; no new schedule rule is defined.
             for candidate in context['candidates']:
@@ -1314,11 +1336,11 @@ class Completion:
             cand=next(c for c in context['candidates']if c['method']==method and c.get('configuration_id')==installed)
             cand.update(kappa_value=str(dec(config['spec']['kappa']['value'])),ready=True,needs=[],
                 generated=True,generated_configuration=config,configuration_source=rec['configuration'],
-                signal_source=signal['packet_source'],prices=[dec(x)for x in rec['prices']],
+                signal_source=packet,prices=[dec(x)for x in rec['prices']],
                 price_status='MODEL_REFERENCE',price_quote=value(rec['quote']),
                 schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
-            rule=self.common_route(method,cid,signal.get('configuration_source',rec['configuration']),signal['packet_source'],binding)
+            rule=self.common_route(method,cid,configuration,packet,binding)
             routes[method]=[rule]+[old for old in routes.get(method,[])if old!=rule]
         routes=self.install_saved_routes(context,routes)
         self.save()

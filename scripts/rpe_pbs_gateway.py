@@ -53,15 +53,15 @@ def memory_bytes(value):
     return int(match.group(1))*{'b':1,'kb':1024,'mb':1024**2,'gb':1024**3,'tb':1024**4}[match.group(2) or 'b']
 
 
-def qstat(job_id=None):
+def qstat(*job_ids):
     command = ['/opt/pbs/bin/qstat', '-x', '-f', '-F', 'json']
     # PBS20's -u adds a text summary ahead of JSON, so filter Job_Owner here.
-    command += [job_id] if job_id else []
+    command.extend(job_ids)
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     if process.returncode:
-        if 'Unknown Job Id' in process.stderr or 'Job has finished' in process.stderr:
-            return {}
-        raise RuntimeError('qstat failed: ' + process.stderr.strip())
+        errors = process.stderr.strip().splitlines()
+        if not errors or not all('Unknown Job Id' in error or 'Job has finished' in error for error in errors):
+            raise RuntimeError('qstat failed: ' + process.stderr.strip())
     # PBS20 returns a blank successful response when this user has no jobs.
     if not process.stdout.strip():
         return {}
@@ -144,7 +144,7 @@ def ensure(root, spec):
     return dict(token=token, existing=False)
 
 
-def snapshot(root):
+def snapshot(root, finished=None):
     directories = [directory for directory in sorted((root/'allocations').glob('*'))
                    if (directory/'SPEC.json').exists()]
     if not directories:
@@ -160,10 +160,17 @@ def snapshot(root):
             ids.append(receipt['stdout'].split()[0])
         elif (directory/'QSUB_STARTED.json').exists() and not receipt:
             discovery = True
-    jobs = qstat() if discovery else {}
-    if not discovery:
-        for job_id in dict.fromkeys(ids):
-            jobs.update(qstat(job_id))
+    finished = {} if finished is None else finished
+    jobs = {job_id: finished[job_id] for job_id in ids if job_id in finished}
+    query = tuple(job_id for job_id in dict.fromkeys(ids) if job_id not in finished)
+    if discovery or query:
+        fresh = qstat(*(() if discovery else query))
+        jobs.update(fresh)
+        # Finished accounting records cannot make a worker eligible. Keep
+        # their scheduler evidence in this gateway connection and still read
+        # the worker spool each time so late completion remains recoverable.
+        finished.update((job_id, job) for job_id, job in fresh.items()
+                        if job.get('job_state') == 'F' and job_id in ids)
     result = []
     for directory in directories:
         spec = read(directory/'SPEC.json')
@@ -210,7 +217,7 @@ def snapshot(root):
     return result
 
 
-def exchange(root, incoming):
+def exchange(root, incoming, finished=None):
     for token, responses in incoming.get('responses', {}).items():
         directory = root/'allocations'/safe_id(token)
         for request_id, response in responses.items():
@@ -231,7 +238,7 @@ def exchange(root, incoming):
                   if not (directory/'responses'/path.name).exists()]
         if values:
             requests[directory.name] = values
-    return dict(requests=requests, allocations=snapshot(root))
+    return dict(requests=requests, allocations=snapshot(root, finished))
 
 
 def harvest(directory, wanted=None):
@@ -273,14 +280,14 @@ def harvest(directory, wanted=None):
                 host_id=spec['profile']['host_id'])
 
 
-def handle(root, value):
+def handle(root, value, finished=None):
     action = value['action']
     if action == 'ensure':
         return ensure(root, value['spec'])
     if action == 'exchange':
-        return exchange(root, value)
+        return exchange(root, value, finished)
     if action == 'snapshot':
-        return dict(allocations=snapshot(root))
+        return dict(allocations=snapshot(root, finished))
     if action == 'harvest':
         return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'))
     if action == 'delete':
@@ -306,9 +313,10 @@ def main():
     if args.record_allocation:
         record_allocation(args.record_allocation); return
     root = args.root.resolve(); root.mkdir(parents=True, exist_ok=True)
+    finished = {}
     for line in sys.stdin:
         try:
-            answer = dict(ok=True, result=handle(root, json.loads(line)))
+            answer = dict(ok=True, result=handle(root, json.loads(line), finished))
         except Exception as error:
             answer = dict(ok=False, error=type(error).__name__ + ': ' + str(error))
         print(json.dumps(answer, separators=(',', ':')), flush=True)

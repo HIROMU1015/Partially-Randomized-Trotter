@@ -1090,9 +1090,10 @@ def schedule_driver(config, run, selection):
             raise RequestError('schedule_resume', 'Resource trial optimizer differs from its selected deployment')
     preparation = selection.get('preparation_sha256')
     if preparation is not None:
-        if set(preparation) != set(SCHEDULE_PREPARATION_MODULES):
+        required = set(SCHEDULE_PREPARATION_MODULES)
+        if not required <= set(preparation) <= required | {'pr_candidate_completion'}:
             raise RequestError('schedule_resume', 'Preparation operations selection is incomplete')
-        for name in SCHEDULE_PREPARATION_MODULES:
+        for name in preparation:
             module = driver.parents[1]/'src/trottertracks'/(name+'.py')
             if not module.is_file() or hashlib.sha256(module.read_bytes()).hexdigest() != preparation[name]:
                 raise RequestError('schedule_resume', 'Preparation operations differ from their selected deployment: '+name)
@@ -1143,7 +1144,8 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
             if recovered and load(run/'EXIT.json').get('invocation_id') == recovered:
                 runtime_trial = dict(trial or {}, recovered_failure=dict(kind=kind, invocation=recovered))
         operations = [(name, str(driver.parents[1]/'src/trottertracks'/(name+'.py')))
-                      for name in SCHEDULE_PREPARATION_MODULES] if preparation is not None else []
+                      for name in (*SCHEDULE_PREPARATION_MODULES, 'pr_candidate_completion')
+                      if name in (preparation or {})]
         bootstrap = ('import importlib.util,json,runpy,sys\n'
                      'root,driver,manager,optimizer,preparation,trial=sys.argv[1:7]\n'
                      'sys.argv=sys.argv[6:]\n'
@@ -1152,6 +1154,7 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
                      '    if path:\n'
                      '        spec=importlib.util.spec_from_file_location("trottertracks."+name,path)\n'
                      '        module=importlib.util.module_from_spec(spec)\n'
+                     '        if name=="pr_candidate_completion": module.FIXED_RUN_CODE_ROOT=root\n'
                      '        sys.modules[spec.name]=module\n'
                      '        spec.loader.exec_module(module)\n'
                      'runpy.run_path(driver,run_name="__main__",init_globals={'
