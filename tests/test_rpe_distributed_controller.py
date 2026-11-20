@@ -604,9 +604,16 @@ class ControllerFailures(unittest.TestCase):
                     except Exception as exc:
                         errors.append(exc)
 
-                def poll(executor, host):
-                    return executor.rpc('/v1/poll', dict(host_id=host, slots=1, capacity=1,
-                                                         source_sha=self.source))
+                def claim(host):
+                    deadline = time.monotonic() + 5
+                    while time.monotonic() < deadline:
+                        assignments = ex.rpc('/v1/poll', dict(host_id=host, slots=1, capacity=1,
+                                                             source_sha=self.source))['assignments']
+                        if assignments:
+                            assigned, = assignments
+                            return assigned
+                        time.sleep(.01)
+                    self.fail(f'{host} did not claim an eligible artificial job: {errors}')
 
                 def complete(task, host, passes):
                     payload = self.completion(task)
@@ -623,7 +630,7 @@ class ControllerFailures(unittest.TestCase):
                 try:
                     with ex.state.cv:
                         self.assertTrue(ex.state.cv.wait_for(lambda: bool(ex.store.rows()) or errors, timeout=5))
-                    a, = poll(ex, 'server2')['assignments']
+                    a = claim('server2')
                     self.assertEqual(a['request']['configuration_id'], first['configuration_id'])
                     if scenario == 'late_ready':
                         ex.rpc('/v1/poll', dict(host_id='pbs-0', slots=1, capacity=1,
@@ -633,7 +640,7 @@ class ControllerFailures(unittest.TestCase):
                             ex.state.cv.notify_all()
                     with ex.state.cv:
                         self.assertTrue(ex.state.cv.wait_for(lambda: len(ex.store.rows()) == 2 or errors, timeout=5))
-                    b, = poll(ex, 'pbs-0')['assignments']
+                    b = claim('pbs-0')
                     self.assertEqual(b['request']['configuration_id'], second['configuration_id'])
                     if scenario == 'drained_standby':
                         complete(a, 'server2', False)
