@@ -110,7 +110,8 @@ def _classification(answer, threshold):
 
 
 def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spent=0, free=None,
-        science_approved=True, refresh_ready=None, submit_standby=None, held=(), flagged_stop=None):
+        science_approved=True, refresh_ready=None, submit_standby=None, held=(), flagged_stop=None,
+        read_completed=None, after_drain=None):
     """Prove local grid minima by exact price order, with no MSE monotonicity."""
     from decimal import DecimalException
     from . import rpe_method_optimizer as O
@@ -119,6 +120,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         raise ValueError('Scaled search must use the exact saved R08 MSE threshold')
     policy = settings(search['scaled_shots'])
     groups = {}
+    registered = {}
+    yielded = set()
     legacy = O.method_state(candidates, {key: row for key, row in knowledge.items()
                                          if row.get('allocation_rule') != RULE}, threshold)[1]
     known = dict(knowledge)
@@ -168,6 +171,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             elif (cid, vector) in held_keys:
                 row.update(status='TECHNICAL_HOLD', reason='INHERITED_Q3_HOLD')
             group['rows'].append(row)
+            if ready and (cid, vector) not in held_keys:
+                registered[cid, vector] = (c, row)
 
     def best_for(group, grid):
         return min((row for row in group['rows'] if row['status'] == O.PASS and
@@ -191,6 +196,28 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         return (min(grid, key=lambda r: (r['cost'], r['smallest_grid_k'])) if grid else
                 min(reference, key=lambda r: (r['cost'], r['vector']), default=None))
 
+    def record(c, row, answer, *, selected):
+        nonlocal used, fatal
+        used += answer.get('calls', 0)
+        absorb(c, row, answer)
+        trace.append(dict(row, calls=answer.get('calls', 0), answer_source=answer.get('source'),
+                          cls='SCALED_SHOTS', selected_by_rule=selected))
+        if row['status'] in ('TECHNICAL_HOLD', 'IN_PROGRESS', 'UNKNOWN'):
+            holds.append(dict(row))
+        if row['status'] == 'UNKNOWN' and answer.get('failure_scope') == 'GLOBAL':
+            fatal = True
+
+    def collect_completed():
+        changed = False
+        if read_completed is not None:
+            for key, answer in read_completed(lambda key: registered[key][1] if key in registered else None):
+                c, row = registered[key]
+                if row['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
+                    continue
+                record(c, row, answer, selected=False)
+                changed = True
+        return changed
+
     for c in candidates:
         register(c)
     while True:
@@ -199,15 +226,22 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             known.update(values)
             for c in added:
                 register(c)
+        collect_completed()
+        if fatal:
+            break
         proposals = [r for g in groups.values() if (r := compile_next(g)) is not None]
         if not proposals:
             break
         if step_limit is not None and steps >= step_limit:
             requested_stop = 'STEP_LIMIT' if search.get('max_steps_per_method') == step_limit else 'WORK_SLICE_YIELDED'
             break
-        proposals.sort(key=lambda r: (free is None or not free(r), r['smallest_grid_k'] is None,
+        proposals.sort(key=lambda r: ((r['configuration_id'], r['vector']) in yielded,
+                                      free is None or not free(r), r['smallest_grid_k'] is None,
                                       r['cost'], r['M'], r['configuration_id']))
-        choice = proposals[0]
+        # A yielded job still owns its allocation and counts against the queue
+        # budget. At the cap, keep collecting existing jobs ahead of new work.
+        capped = budget is not None and spent + used >= budget
+        choice = next((r for r in proposals if not capped or (free is not None and free(r))), proposals[0])
         is_free = free is not None and free(choice)
         if flagged_stop is not None and flagged_stop():
             pending = choice
@@ -216,9 +250,12 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         if not is_free and budget is not None and spent + used >= budget:
             pending = choice
             break
-        if submit_standby is not None and science_approved and (budget is None or spent + used < budget):
-            submit_standby(choice, proposals[1:])
+        if submit_standby is not None and science_approved and not capped:
+            submit_standby(choice, [r for r in proposals if r is not choice])
         answer = backend.answer(choice) if backend is not None else None
+        if answer is not None and answer['status'] == 'RESELECT_READY':
+            yielded.add((choice['configuration_id'], choice['vector']))
+            continue
         if answer is None or answer.get('status') in ('BUDGET_EXHAUSTED', 'STOP_REQUESTED'):
             pending = choice
             if answer is not None:
@@ -226,105 +263,107 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                                   else 'Q3_BUDGET_EXHAUSTED')
             break
         c = groups[name, choice['configuration_id'], choice['M']]['candidate']
-        used += answer.get('calls', 0)
         steps += 1
-        absorb(c, choice, answer)
-        nx, ny = O.split(choice['vector'])
-        trace.append(dict(choice, N_X=nx, N_Y=ny, calls=answer.get('calls', 0),
-                          answer_source=answer.get('source'), cls='SCALED_SHOTS'))
-        if choice['status'] in ('TECHNICAL_HOLD', 'IN_PROGRESS', 'UNKNOWN'):
-            holds.append(dict(choice))
-        if choice['status'] == 'UNKNOWN' and answer.get('failure_scope') == 'GLOBAL':
-            fatal = True
+        record(c, choice, answer, selected=True)
+        if fatal:
             break
 
-    rows = []
-    winners = []
-    unresolved = {'PENDING', 'INPUT_WAITING', 'TECHNICAL_HOLD', 'IN_PROGRESS', 'UNKNOWN', 'INCONCLUSIVE'}
-    for group in groups.values():
-        c = group['candidate']
-        compile_next(group)
-        best = best_for(group, True)
-        compare = best_for(group, False)
-        blockers = [r for r in group['rows'] if r['smallest_grid_k'] is not None and r['status'] in unresolved
-                    and (best is None or r['cost'] is None
-                         or (r['cost'], r['smallest_grid_k']) < (best['cost'], best['smallest_grid_k']))]
-        verdict = ('EVALUATED_MINIMUM' if blockers else 'GRID_MINIMUM_CONFIRMED') if best is not None else (
-            'NO_CONFIRMED_GRID_POINT' if blockers else 'NO_GRID_POINT_MEETS_LIMIT')
-        key = dict(c.get('key', {}), M=c['M'])
-        spec = (c.get('generated_configuration') or {}).get('spec', {})
-        for field in ('formula', 'delta_pf', 'h'):
-            if spec.get(field) is not None:
-                key[field] = spec[field]
-        if c.get('kappa_value') is not None:
-            key['absolute_kappa'] = str(c['kappa_value'])
-        row = dict(configuration_id=c['configuration_id'], source_configuration_id=c.get('source_configuration_id'),
-                   method=name, M=c['M'], configuration=key, configuration_source=c.get('configuration_source'),
-                   needs=c['needs'] + c.get('execution_needs', []),
-                   price_status=c.get('price_status'), prices=c.get('prices'),
-                   price_evidence=c.get('price_evidence'), price_quote=c.get('price_quote'),
-                   signal_source=c.get('signal_source'),
-                   best=best, minimum_status=verdict, unresolved_competitors=len(blockers), comparison_best=compare,
-                   comparison_delta_RZ=None if best is None or compare is None else compare['cost']-best['cost'],
-                   paper_comparison_pending=group.get('paper_comparison_pending'),
-                   allocations=group['rows'], promising=len(blockers), required_rounds=c.get('required_rounds'))
-        rows.append(row)
-        if best is not None:
-            winners.append((best['cost'], c['M'], c['configuration_id'], best, c))
+    def summarize():
+        rows = []
+        winners = []
+        unresolved = {'PENDING', 'INPUT_WAITING', 'TECHNICAL_HOLD', 'IN_PROGRESS', 'UNKNOWN', 'INCONCLUSIVE'}
+        for group in groups.values():
+            c = group['candidate']
+            compile_next(group)
+            best = best_for(group, True)
+            compare = best_for(group, False)
+            blockers = [r for r in group['rows'] if r['smallest_grid_k'] is not None and r['status'] in unresolved
+                        and (best is None or r['cost'] is None
+                             or (r['cost'], r['smallest_grid_k']) < (best['cost'], best['smallest_grid_k']))]
+            verdict = ('EVALUATED_MINIMUM' if blockers else 'GRID_MINIMUM_CONFIRMED') if best is not None else (
+                'NO_CONFIRMED_GRID_POINT' if blockers else 'NO_GRID_POINT_MEETS_LIMIT')
+            key = dict(c.get('key', {}), M=c['M'])
+            spec = (c.get('generated_configuration') or {}).get('spec', {})
+            for field in ('formula', 'delta_pf', 'h'):
+                if spec.get(field) is not None:
+                    key[field] = spec[field]
+            if c.get('kappa_value') is not None:
+                key['absolute_kappa'] = str(c['kappa_value'])
+            row = dict(configuration_id=c['configuration_id'], source_configuration_id=c.get('source_configuration_id'),
+                       method=name, M=c['M'], configuration=key, configuration_source=c.get('configuration_source'),
+                       needs=c['needs'] + c.get('execution_needs', []),
+                       price_status=c.get('price_status'), prices=c.get('prices'),
+                       price_evidence=c.get('price_evidence'), price_quote=c.get('price_quote'),
+                       signal_source=c.get('signal_source'),
+                       best=best, minimum_status=verdict, unresolved_competitors=len(blockers), comparison_best=compare,
+                       comparison_delta_RZ=None if best is None or compare is None else compare['cost']-best['cost'],
+                       paper_comparison_pending=group.get('paper_comparison_pending'),
+                       allocations=group['rows'], promising=len(blockers), required_rounds=c.get('required_rounds'))
+            rows.append(row)
+            if best is not None:
+                winners.append((best['cost'], c['M'], c['configuration_id'], best, c))
 
-    def overall(winners):
-        if winners:
-            cost, _, _, row, c = min(winners, key=lambda w: w[:3])
-            return dict(cost=cost, vector=row['vector'], candidate=c, record=knowledge[c['configuration_id'], row['vector']])
+        def overall(winners):
+            if winners:
+                cost, _, _, row, c = min(winners, key=lambda w: w[:3])
+                return dict(cost=cost, vector=row['vector'], candidate=c, record=knowledge[c['configuration_id'], row['vector']])
 
-    winning = overall(winners)
-    baseline = overall([w for w in winners if w[1] == 12])
-    def external(value):
-        if value is None:
-            return None
-        c, record = value['candidate'], value['record']
-        vector = value['vector']
-        row = next((r for r in rows if r['configuration_id'] == c['configuration_id'] and r['M'] == c['M']), None)
-        return dict(configuration_id=c['configuration_id'], M=c['M'], configuration=c['key'],
-            N_X=O.split(vector)[0], N_Y=O.split(vector)[1], cost=value['cost'],
-            MSE_lower=record['MSE_lower'], MSE_upper=record['MSE_upper'], evidence=record['source'],
-            aliases=None if row is None or row['best'] is None or row['best']['vector'] != vector else row['best']['aliases'])
-    def scope_status(best, groups):
-        if best is None:
-            return 'NO_CONFIRMED_GRID_POINT'
-        limit = best['cost']
-        can_improve = any(r['smallest_grid_k'] is not None and r['status'] in unresolved
-                          and (r['cost'] is None or r['cost'] < limit)
-                          for g in groups for r in g['allocations'])
-        return 'EVALUATED_MINIMUM' if can_improve else 'MINIMUM_WITHIN_REGISTERED_CANDIDATES'
-    budget_exhausted = pending is not None and budget is not None and spent + used >= budget
-    if fatal:
-        stop = 'UNKNOWN_RESULT'
-    elif requested_stop:
-        stop = requested_stop
-    elif budget_exhausted:
-        stop = 'Q3_BUDGET_EXHAUSTED'
-    elif any(r['status'] in unresolved for g in rows for r in g['allocations']):
-        stop = 'UNRESOLVED_SCALED_SCOPE'
-    else:
-        stop = 'SCALED_SHOT_GRID_COMPLETE'
-    input_requests = [dict(kind='HORIZON_INPUTS_MISSING', method=name, M=r['M'],
-        configuration_id=r['configuration_id'], source_configuration_id=r['source_configuration_id'],
-        configuration=r['configuration'], signal_rounds=r['required_rounds'],
-        price_round_axes=[dict(m=m, axis=axis) for m in r['required_rounds'] for axis in ('X','Y')])
-        for r in rows if r.get('required_rounds')]
-    compared = [(r['comparison_best']['cost'], r['M'], r['configuration_id'], r['comparison_best'])
-                for r in rows if r['comparison_best'] is not None]
-    reference = min(compared, key=lambda r:r[:3])[3] if compared else None
-    return dict(rule=RULE, incumbent_scope='CONFIGURATION_AND_HORIZON', incumbent=winning,
-                input_requests=input_requests,
-                trace=trace, held=holds, pending_request=pending, new_calls=used, stop_reason=stop,
-                by_configuration=rows, scaled_shots=dict(policy=policy, M12_best=external(baseline),
-                    M12_minimum_status=scope_status(baseline, [r for r in rows if r['M'] == 12]),
-                    all_M_best=external(winning), all_M_minimum_status=scope_status(winning, rows),
-                    comparison_only_best=reference,
-                    comparison_only_delta_RZ=None if reference is None or winning is None else reference['cost']-winning['cost'],
-                    legacy_free_allocation_reference=external(legacy)))
+        winning = overall(winners)
+        baseline = overall([w for w in winners if w[1] == 12])
+        def external(value):
+            if value is None:
+                return None
+            c, record = value['candidate'], value['record']
+            vector = value['vector']
+            row = next((r for r in rows if r['configuration_id'] == c['configuration_id'] and r['M'] == c['M']), None)
+            return dict(configuration_id=c['configuration_id'], M=c['M'], configuration=c['key'],
+                N_X=O.split(vector)[0], N_Y=O.split(vector)[1], cost=value['cost'],
+                MSE_lower=record['MSE_lower'], MSE_upper=record['MSE_upper'], evidence=record['source'],
+                aliases=None if row is None or row['best'] is None or row['best']['vector'] != vector else row['best']['aliases'])
+        def scope_status(best, groups):
+            if best is None:
+                return 'NO_CONFIRMED_GRID_POINT'
+            limit = best['cost']
+            can_improve = any(r['smallest_grid_k'] is not None and r['status'] in unresolved
+                              and (r['cost'] is None or r['cost'] < limit)
+                              for g in groups for r in g['allocations'])
+            return 'EVALUATED_MINIMUM' if can_improve else 'MINIMUM_WITHIN_REGISTERED_CANDIDATES'
+        budget_exhausted = pending is not None and budget is not None and spent + used >= budget
+        if fatal:
+            stop = 'UNKNOWN_RESULT'
+        elif requested_stop:
+            stop = requested_stop
+        elif budget_exhausted:
+            stop = 'Q3_BUDGET_EXHAUSTED'
+        elif any(r['status'] in unresolved for g in rows for r in g['allocations']):
+            stop = 'UNRESOLVED_SCALED_SCOPE'
+        else:
+            stop = 'SCALED_SHOT_GRID_COMPLETE'
+        input_requests = [dict(kind='HORIZON_INPUTS_MISSING', method=name, M=r['M'],
+            configuration_id=r['configuration_id'], source_configuration_id=r['source_configuration_id'],
+            configuration=r['configuration'], signal_rounds=r['required_rounds'],
+            price_round_axes=[dict(m=m, axis=axis) for m in r['required_rounds'] for axis in ('X','Y')])
+            for r in rows if r.get('required_rounds')]
+        compared = [(r['comparison_best']['cost'], r['M'], r['configuration_id'], r['comparison_best'])
+                    for r in rows if r['comparison_best'] is not None]
+        reference = min(compared, key=lambda r:r[:3])[3] if compared else None
+        return dict(rule=RULE, incumbent_scope='CONFIGURATION_AND_HORIZON', incumbent=winning,
+                    input_requests=input_requests,
+                    trace=trace, held=holds, pending_request=pending if pending is None or pending['status'] == 'PENDING' else None, new_calls=used, stop_reason=stop,
+                    by_configuration=rows, scaled_shots=dict(policy=policy, M12_best=external(baseline),
+                        M12_minimum_status=scope_status(baseline, [r for r in rows if r['M'] == 12]),
+                        all_M_best=external(winning), all_M_minimum_status=scope_status(winning, rows),
+                        comparison_only_best=reference,
+                        comparison_only_delta_RZ=None if reference is None or winning is None else reference['cost']-winning['cost'],
+                        legacy_free_allocation_reference=external(legacy)))
+
+    if after_drain is not None:
+        def finalize():
+            if collect_completed():
+                return summarize()
+
+        after_drain(finalize)
+    return summarize()
 
 
 def horizon_candidates(candidates, problem, policy, executor=None, catalog=None):

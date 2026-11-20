@@ -1457,7 +1457,7 @@ def scope_absolute_kappa(context, problem):
 
 
 def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None,
-             executor=None, saved_is_free=True, science_approved=True, ready_source=None):
+             executor=None, saved_is_free=True, science_approved=True, ready_source=None, scaled_finalizers=None):
     """Run the per-method search.
 
     initial: 'all' saved results, 'none', or {method: [saved labels]} (replay from seeds).
@@ -1561,6 +1561,23 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                         return (p['configuration_id'], p['vector']) in table
                     ex.prefetch_standby(None if choice is None or saved(choice) else choice, [p for p in proposals if not saved(p)])
             if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+                read_completed = None
+                if executor is not None and hasattr(ex, 'read_scaled_completions'):
+                    if hasattr(ex, 'recover_scaled_completions'):
+                        ex.recover_scaled_completions()
+                    ex.completion_pending = ex.scaled_completion_pending
+                    read_completed = ex.read_scaled_completions
+
+                def after_drain(finalize):
+                    def update(summary):
+                        resolved = finalize()
+                        if resolved is not None:
+                            summary['rule_adopted_best'] = summary['best']
+                            summary.update(summarize_method(name, cands, resolved, knowledge, threshold))
+                            summary['input_requests'] = resolved['input_requests']
+                            summary['scaled_shots'] = resolved['scaled_shots']
+                    scaled_finalizers[name] = update
+
                 def submit_standby(choice, proposals):
                     if standby is not None:
                         standby(choice, proposals)
@@ -1569,6 +1586,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
                                     spent=spent, free=free, science_approved=science_approved,
                                     refresh_ready=refresh_ready, submit_standby=submit_standby,
+                                    read_completed=read_completed,
+                                    after_drain=after_drain if scaled_finalizers is not None else None,
                                     held=prior_q3_holds,
                                     flagged_stop=(lambda: (ex.run_dir/'STOP_REQUESTED.json').exists()) if executor is not None else None)
             else:

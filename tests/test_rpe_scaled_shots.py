@@ -88,6 +88,31 @@ class ScaleTests(unittest.TestCase):
         self.assertEqual(result['pending_request']['status'], 'PENDING')
         self.assertEqual(result['new_calls'], 0)
 
+    def test_received_point_prunes_only_costlier_allocations_of_its_own_configuration(self):
+        policy = S.settings(dict(M=[0], grid=dict(min_k=-2, max_k=0, divisor=2), compare_paper=False))
+        first = self.candidate('a', [1, 1])
+        second = self.candidate('b', [4, 4])
+        pending = {('a', (8, 8)): dict(status=O.PASS, MSE_lower=TAU/2, MSE_upper=TAU/2,
+                                     source='accepted', calls=0)}
+
+        def completed(proposal_for):
+            for key in tuple(pending):
+                self.assertIsNotNone(proposal_for(key))
+                yield key, pending.pop(key)
+
+        asked = []
+
+        def answer(cid, vector):
+            asked.append((cid, vector))
+            return self.bounds(cid == 'b')
+
+        result = S.run('PR_PAULI', [first, second], {}, O.FixtureBackend(answer, TAU),
+                       dict(scaled_shots=policy), TAU, None, read_completed=completed)
+        self.assertEqual(asked, [('a', (6, 6)), ('b', (6, 6))])
+        self.assertEqual(result['by_configuration'][0]['best']['N_X'], [8])
+        self.assertEqual(result['by_configuration'][0]['minimum_status'], 'GRID_MINIMUM_CONFIRMED')
+        self.assertEqual(result['by_configuration'][1]['best']['N_X'], [6])
+
     def test_off_grid_reference_costs_less_without_becoming_grid_best(self):
         p = S.settings(dict(M=[0], grid=dict(min_k=2, max_k=2, divisor=1)))
         c = self.candidate('c', [2, 2], kappa='2')
