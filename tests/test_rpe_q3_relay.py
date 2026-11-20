@@ -4,6 +4,7 @@ The fake qg1 SSH command executes locally. external_tunnel=True substitutes an
 already-reachable loopback endpoint; these tests establish no actual host link.
 Windows branches below use stubs on Linux; no native Windows machine was tested.
 """
+import base64
 from contextlib import redirect_stdout
 from fractions import Fraction
 import importlib.util
@@ -531,6 +532,27 @@ class RelayTests(unittest.TestCase):
 
 class PortableRelayBranches(unittest.TestCase):
     """Artificial Windows decisions on Linux, not native Windows validation."""
+
+    def test_wsl_small_receipt_uses_one_ssh_and_large_payload_uses_scp(self):
+        relay = R.Relay.__new__(R.Relay)
+        relay.ssh = ['ssh']
+        relay.config = {}
+        worker = dict(ssh_alias='synthetic-windows', distribution='synthetic-wsl')
+        payload = dict(job_id='receipt', attempt_id='日本語')
+        result = SimpleNamespace(returncode=0)
+        with patch.object(R.subprocess, 'run', return_value=result) as execute:
+            self.assertIs(relay._remote_wsl_file(worker, ['python'], 'ack', payload), result)
+            execute.assert_called_once()
+            command = execute.call_args.args[0]
+            self.assertEqual(command[0], 'ssh')
+            encoded = command[-1].rsplit(' ', 1)[-1]
+            script = base64.b64decode(encoded).decode('utf-16-le')
+            payload_encoded = base64.b64encode(json.dumps(payload).encode()).decode()
+            self.assertIn("FromBase64String('"+payload_encoded+"')", script)
+            self.assertIn('finally{Remove-Item', script)
+            execute.reset_mock()
+            relay._remote_wsl_file(worker, ['python'], 'ack', dict(payload, padding='a'*5000))
+            self.assertEqual([row.args[0][0] for row in execute.call_args_list], ['scp', 'ssh'])
 
     def test_background_platform_options_and_windows_start_arguments(self):
         self.assertEqual(R.background_options('posix'), dict(start_new_session=True))

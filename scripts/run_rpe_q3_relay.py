@@ -61,7 +61,7 @@ def child_options(platform_name=None):
     return {}
 
 
-def ssh_wsl_command(worker, command, action, *, input_file=None):
+def ssh_wsl_command(worker, command, action, *, input_file=None, inline_input=None):
     """Windows SSH -> existing WSL mailbox, preserving JSON stdin/stdout.
 
     Encoded PowerShell avoids CMD quoting Linux paths or the Japanese Windows
@@ -91,8 +91,13 @@ def ssh_wsl_command(worker, command, action, *, input_file=None):
         launch=['/bin/sh','-c','path=$(wslpath -u "$0") || exit; exec "$@" < "$path"',
                 '__RPE_INPUT_FILE__',*command]
         arguments="'"+subprocess.list2cmdline(argv[1:4]+launch).replace("'","''")+"'"
+        write_input = ""
+        if inline_input is not None:
+            payload = base64.b64encode(inline_input).decode('ascii')
+            write_input = "[IO.File]::WriteAllBytes($inputPath,[Convert]::FromBase64String('" + payload + "'));"
         script += (
             "$inputPath=Join-Path $env:USERPROFILE "+filename+";try{"
+            + write_input +
             "$si=New-Object Diagnostics.ProcessStartInfo;"
             "$si.FileName="+executable+";$si.Arguments=("+arguments+").Replace('__RPE_INPUT_FILE__',('\"'+$inputPath+'\"'));"
             "$si.UseShellExecute=$false;$si.CreateNoWindow=$true;"
@@ -159,6 +164,7 @@ class Relay:
         self.directory = Path(self.config['state_directory']).expanduser().resolve()
         self.directory.mkdir(parents=True, exist_ok=True)
         self.ssh = self.config.get('ssh_command', ['ssh'])
+        self.ssh_socket_directory = None
         self.controller = self.config['controller']
         self.poll_seconds = float(self.config.get('poll_seconds', 1))
         maximum = float(self.config.get('retry_backoff_max_seconds', 30))
@@ -238,8 +244,12 @@ class Relay:
             alias = worker['ssh_alias']
             if not alias or alias.startswith('-'): raise ValueError('Invalid existing SSH alias')
             remote_command = shlex.join(command)
-            command = worker.get('ssh_command', self.ssh)+[
-                '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, remote_command]
+            ssh = worker.get('ssh_command', self.ssh)
+            reuse = []
+            if self.ssh_socket_directory is not None and Path(ssh[0]).name == 'ssh':
+                reuse = ['-o', 'ControlMaster=auto', '-o', 'ControlPersist=15',
+                         '-o', 'ControlPath='+self.ssh_socket_directory.name+'/%C']
+            command = [*ssh, *reuse, '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, remote_command]
         if command is not None:
             process = subprocess.run(command,
                 input=json.dumps(value or {}), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
@@ -276,15 +286,25 @@ class Relay:
         scp,target=scp_prefix(worker,ssh)
         name='.rpe-mailbox-'+uuid.uuid4().hex+'.json'
         timeout=self.config.get('request_timeout_seconds',60)
+        payload_bytes = json.dumps(value).encode('utf-8')
+        ssh += ['-n','-o','BatchMode=yes','-o','ConnectTimeout=10',alias]
+        # Small poll and receipt messages fit in a single Windows SSH call.
+        # Keep larger requests below the Windows command-line length limit
+        # by using the existing file transfer.
+        if action in ('status', 'result', 'ack', 'resources') and len(payload_bytes) <= 600:
+            remote = ssh_wsl_command(worker, command, action, input_file=name, inline_input=payload_bytes)
+            if len(remote) < 7000:
+                return subprocess.run(ssh+[remote], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE, encoding='utf-8', errors='replace', timeout=timeout, **child_options())
         with tempfile.TemporaryDirectory(prefix='rpe-mailbox-')as temporary:
             payload=Path(temporary)/'request.json'
-            payload.write_text(json.dumps(value),encoding='utf-8')
+            payload.write_bytes(payload_bytes)
             transfer=subprocess.run(scp+['-q','-o','BatchMode=yes','-o','ConnectTimeout=10',str(payload),target+':'+name],
                 stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,
                 encoding='utf-8',errors='replace',timeout=timeout,**child_options())
             if transfer.returncode:raise RuntimeError('WSL mailbox input transfer failed: '+transfer.stderr[-1500:])
             remote=ssh_wsl_command(worker,command,action,input_file=name)
-            return subprocess.run(ssh+['-n','-o','BatchMode=yes','-o','ConnectTimeout=10',alias,remote],
+            return subprocess.run(ssh+[remote],
                 stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,
                 encoding='utf-8',errors='replace',timeout=timeout,**child_options())
 
@@ -641,6 +661,8 @@ class Relay:
         try: acquire_lock(lock)
         except BlockingIOError: raise ValueError('This relay is already running')
         self.log('RELAY_START', pid=os.getpid())
+        if os.name == 'posix':
+            self.ssh_socket_directory = tempfile.TemporaryDirectory(prefix='rpe-ssh-', dir='/tmp')
         # Reuse RomuTail's startup-state fix (4058b48d5): a previous daemon's
         # stopped=True must not satisfy this new daemon's status/stop checks.
         atomic_json(self.directory/'STATUS.json', self._state_snapshot())
@@ -656,6 +678,8 @@ class Relay:
             self.log('RELAY_STOP')
             if self.discovery_pool is not None:
                 self.discovery_pool.shutdown(wait=False, cancel_futures=True)
+            if self.ssh_socket_directory is not None:
+                self.ssh_socket_directory.cleanup()
             lock.close()
 
 
