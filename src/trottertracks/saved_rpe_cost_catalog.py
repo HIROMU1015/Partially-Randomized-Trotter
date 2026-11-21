@@ -65,12 +65,14 @@ class Reader:
     """Reuse the existing Git-blob reader; cache each published document once."""
     def __init__(self, root):
         self.root = root
+        # Each batch owns its reader. A class-level cache keeps every reader
+        # and all its parsed Git documents alive across the entire search.
+        self.commit = cache(self.commit)
+        self.document = cache(self.document)
 
-    @cache
     def commit(self, value):
         return subprocess.check_output(['git', 'rev-parse', value+'^{commit}'], cwd=self.root, text=True).strip()
 
-    @cache
     def document(self, commit, path):
         return json.loads(blob(self.root, self.commit(commit), path))
 

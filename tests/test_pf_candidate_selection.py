@@ -23,6 +23,31 @@ def context():
 
 
 class Selection(unittest.TestCase):
+    def test_legacy_price_summary_only_restores_matching_preflight(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            wave = Path(tmp)
+            selected = candidate('missing', 7)
+            folder = wave/'candidates/missing/pf_auto'
+            leaf = folder/'pf_completion'
+            leaf.mkdir(parents=True)
+            held = dict(status='PRIOR_OWNER_HOLD', configuration_id='missing', reason='original receipt')
+            for path, obj in (
+                (folder/'SELECTION.json', dict(selected=selected)),
+                (leaf/'RESPONSE.json', dict(items=[held])),
+                (leaf/'ORIGINAL_OWNER_CHECK.json', dict(rows=[held])),
+                (leaf/'ORIGINAL_OWNER_REQUEST.json', dict(selected=[selected], output_root=tmp)),
+            ):
+                path.write_text(json.dumps(obj))
+            record = dict(status='PREPARATION_INCOMPLETE', reason='PF_EVIDENCE_INCOMPLETE',
+                          key=selected['key'], configurations={})
+            rows = {'missing': dict(record, key={'p': 8})}
+            S.restore_price_checks([wave], rows)
+            self.assertEqual(rows['missing']['status'], 'PREPARATION_INCOMPLETE')
+            rows['missing'] = record.copy()
+            S.restore_price_checks([wave], rows)
+            self.assertEqual(rows['missing']['price_reconciliation']['reason'], held['reason'])
+            self.assertEqual(rows['missing']['price_prior_owner_directories'], [str(Path(tmp)/'missing')])
+
     def test_large_shift_is_priority_only_and_p_is_not_supplied(self):
         d=S.select(context(),['TRUNCATED_PF'])
         self.assertEqual(d['selected']['configuration_id'],'missing')

@@ -95,6 +95,8 @@ class ConcurrentExecutor(O.Executor):
         self.state.scaled_completions = defaultdict(dict)
         self.state.scaled_recovered = set()
         self.invocation=str(os.getpid())+'-'+str(time.time_ns())
+        progress = self.run_dir/'PROGRESS.jsonl'
+        self.progress_start = progress.stat().st_size if progress.exists() else 0
         self.log(event='EXECUTOR_START',capacity=self.capacity,dp_workers=dp_workers)
         for method in self.routes:
             base=self.run_dir/'jobs'/method
@@ -617,31 +619,33 @@ class ConcurrentExecutor(O.Executor):
         s=self.state
         with s.cv:
             launched={str(t.job)for t in s.tasks.values()if t.started}
-            adopted=set();events=[]
-            for line in (self.run_dir/'PROGRESS.jsonl').read_text().splitlines()if(self.run_dir/'PROGRESS.jsonl').exists()else []:
-                e=json.loads(line)
-                if e.get('invocation')!=self.invocation:continue
-                events.append(e)
-                if e['event']=='ADOPT':adopted.add(e['job'])
-            active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.;last=events[0]['monotonic']
+            adopted=set()
+            active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.
+            first=last=None
             interval_capacity=self.capacity
-            for e in events:
-                dt=max(0,e['monotonic']-last);last=e['monotonic'];busy+=len(active)*dt
-                available+=interval_capacity*dt
-                idle=max(0,interval_capacity-len(active))*dt
-                if queued:idle_ready+=idle
-                elif sum(waiting.values()):idle_dependency+=idle
-                else:idle_empty+=idle
-                event=e['event'];job=e.get('job')
-                if event in ('EXECUTOR_START','AUTO_CAPACITY'):interval_capacity=e['capacity']
-                elif event=='DEPENDENCY_WAIT_START':waiting[job]+=1
-                elif event=='DEPENDENCY_WAIT_END':waiting[job]-=1
-                elif event=='ENQUEUE':queued.add(job)
-                elif event=='LAUNCH':queued.discard(job);active.add(job)
-                elif event=='CANCEL_QUEUED':queued.discard(job)
-                elif event in('EXIT','RESUME_EXIT'):active.discard(job)
-                elif event=='RESUME_RUNNING':active.add(job)
-            elapsed=events[-1]['monotonic']-events[0]['monotonic']
+            with self.lock, (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
+                progress.seek(self.progress_start)
+                for line in progress:
+                    e=json.loads(line)
+                    if e.get('invocation')!=self.invocation:continue
+                    if first is None:first=last=e['monotonic']
+                    if e['event']=='ADOPT':adopted.add(e['job'])
+                    dt=max(0,e['monotonic']-last);last=e['monotonic'];busy+=len(active)*dt
+                    available+=interval_capacity*dt
+                    idle=max(0,interval_capacity-len(active))*dt
+                    if queued:idle_ready+=idle
+                    elif sum(waiting.values()):idle_dependency+=idle
+                    else:idle_empty+=idle
+                    event=e['event'];job=e.get('job')
+                    if event in ('EXECUTOR_START','AUTO_CAPACITY'):interval_capacity=e['capacity']
+                    elif event=='DEPENDENCY_WAIT_START':waiting[job]+=1
+                    elif event=='DEPENDENCY_WAIT_END':waiting[job]-=1
+                    elif event=='ENQUEUE':queued.add(job)
+                    elif event=='LAUNCH':queued.discard(job);active.add(job)
+                    elif event=='CANCEL_QUEUED':queued.discard(job)
+                    elif event in('EXIT','RESUME_EXIT'):active.discard(job)
+                    elif event=='RESUME_RUNNING':active.add(job)
+            elapsed=last-first if first is not None else 0.
             real=sum(t.rule['kind'] not in ('artificial','preparation') and t.started for t in s.tasks.values())
             counts={k:s.metrics[k]for k in ('submitted','queued_cancelled','launched','finished','adopted','speculative_launched','speculative_adopted')}
             return dict(**counts,peak_active=s.peak_active,sampled_owned_tree_peak_RSS_KiB=s.peak_RSS_KiB,
@@ -2879,12 +2883,13 @@ class DistributedExecutor(ConcurrentExecutor):
             counts['launched'] += row['started_epoch'] is not None
             counts['completed'] += row['state'] == 'ACCEPTED'
             counts['adopted'] += row['adopted_epoch'] is not None
-        with self.lock:
-            progress_lines=(self.run_dir/'PROGRESS.jsonl').read_text().splitlines()
-        for line in progress_lines:
-            event = json.loads(line)
-            if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
-                by_host[event['host_id']]['reused'] += 1
+        with self.lock, (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
+            # Historical per-host reuse counts include earlier invocations.
+            for line in progress:
+                if b'RESULT_REUSE' in line:
+                    event = json.loads(line)
+                    if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
+                        by_host[event['host_id']]['reused'] += 1
         admission_policy, admission_error = self._host_admission_policy()
         admissions = {host:self._host_admission(host, admission_policy, admission_error)
                       for host in sorted(set(self.hosts) | set(admission_policy['hosts']))}

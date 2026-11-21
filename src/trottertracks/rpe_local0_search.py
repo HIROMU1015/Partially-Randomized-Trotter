@@ -1197,7 +1197,7 @@ def schedule_driver(config, run, selection):
     preparation = selection.get('preparation_sha256')
     if preparation is not None:
         required = set(SCHEDULE_PREPARATION_MODULES)
-        optional = {'pr_step_price_registry', 'pr_candidate_completion', 'pf_optimizer_connection'}
+        optional = {'saved_rpe_cost_catalog', 'pr_step_price_registry', 'pr_candidate_completion', 'pf_optimizer_connection'}
         if not required <= set(preparation) <= required | optional:
             raise RequestError('schedule_resume', 'Preparation operations selection is incomplete')
         for name in preparation:
@@ -1294,6 +1294,10 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
             # loading any helper or executor that imports it.
             operations.insert(0, ('rpe_method_optimizer',
                                   str(driver.parents[1]/'src/trottertracks/rpe_method_optimizer.py')))
+        if 'saved_rpe_cost_catalog' in (preparation or {}):
+            # Optimizer and provider imports bind Reader at module load time.
+            operations.insert(0, ('saved_rpe_cost_catalog',
+                                  str(driver.parents[1]/'src/trottertracks/saved_rpe_cost_catalog.py')))
         bootstrap = ('import importlib.util,json,runpy,sys\n'
                      'root,driver,manager,optimizer,preparation,trial,pr_price_service=sys.argv[1:8]\n'
                      'sys.argv=sys.argv[7:]\n'

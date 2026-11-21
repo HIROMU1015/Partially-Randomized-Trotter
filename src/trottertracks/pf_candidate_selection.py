@@ -243,12 +243,51 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
             return context, routes, dict(status='PREPARATION_WAVE_YIELDED', records=status['records'])
 
 
+def restore_price_checks(waves, records):
+    """Recover legacy summary rows from provider checks, before normal duplicate checks."""
+    from .pf_saved_prices import candidate_roots
+
+    roots = [base for wave in waves for base in reversed(candidate_roots(wave))]
+    for cid, row in records.items():
+        if (row.get('status') != 'PREPARATION_INCOMPLETE' or row.get('configurations')
+                or row.get('reason') != 'PF_EVIDENCE_INCOMPLETE'):
+            continue
+        # Prefer the current run's detailed receipt, then its older inputs.
+        for base in roots:
+            folder = base/cid/'pf_auto'
+            leaf = folder/'pf_completion'
+            if (leaf/'PROVIDER_SOURCE.json').exists() or (leaf/'provider_workspace').exists():
+                continue
+            if not (leaf/'RESPONSE.json').is_file():
+                continue
+            try:
+                selected = json.loads((folder/'SELECTION.json').read_bytes())['selected']
+                check = json.loads((leaf/'ORIGINAL_OWNER_CHECK.json').read_bytes())
+                items = json.loads((leaf/'RESPONSE.json').read_bytes())['items']
+                owner = json.loads((leaf/'ORIGINAL_OWNER_REQUEST.json').read_bytes())
+                if (selected['configuration_id'] != cid or selected['key'] != row['key']
+                        or [i['configuration_body']['id'] for i in owner['selected']] != [cid]
+                        or check['rows'] != items or len(items) != 1 or items[0]['configuration_id'] != cid
+                        or items[0]['status'] not in ('PRIOR_OWNER_HOLD', 'PRICE_EVIDENCE_REQUIRED')):
+                    continue
+            except (OSError, KeyError, TypeError, ValueError):
+                continue
+            item = items[0]
+            directories = set(owner.get('prior_owner_directories', ())) | set(item.get('original_owner_directories', ()))
+            directories.add(str(Path(owner['output_root'])/cid))
+            row.update(status=item['status'], reason=item['reason'], method=selected['method'],
+                       price_reconciliation=dict(item, original_owner_directories=sorted(directories)),
+                       price_prior_owner_directories=sorted(directories), prior_price_check=str(leaf/'ORIGINAL_OWNER_CHECK.json'))
+            break
+
+
 def reconsider_prices(root, run, spec, settings, records):
     from concurrent.futures import ThreadPoolExecutor
     from .pf_saved_prices import (completed_partial, prior_waves, receipt_locators, receipt_objects,
                                   reconciliation_locators, reconciliation_snapshot)
 
     waves = [run/'pf_auto', *prior_waves(run, spec)]
+    restore_price_checks(waves, records)
     pending = [(cid, row) for cid, row in records.items()
                if row['status'] in PRICE_RECHECK_STATES and not row.get('configurations')]
     if not pending:
