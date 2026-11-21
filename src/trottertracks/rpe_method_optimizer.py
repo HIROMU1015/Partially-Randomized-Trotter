@@ -728,19 +728,26 @@ class Executor:
                 return source
         raise ValueError('No effective PF template for prior candidate')
 
-    def same_route(self, job, cid):
+    def prior_route_fields(self, rule, cid):
+        """Compare only the route fields and immutable inputs used by this job."""
+        omitted = {'configurations', 'configuration_ids', 'existing_caller', 'configurations_file'}
+        if rule.get('kind') == 'pf_b_pf6':
+            omitted.add('templates')
+        source_cid = (rule.get('horizon_projection') or {}).get('source_configuration_id', cid)
+        return dict(route={k: v for k, v in rule.items() if k not in omitted},
+                    entry=(rule.get('configurations') or {}).get(source_cid))
+
+    def same_route(self, job, cid, *, request=None):
         """A prior job is reusable only if it ran the same route (kind, worker view, contract, signal packet, binding)."""
         try:
-            old = json.loads((job / 'REQUEST.json').read_text())
-            now = self.route(cid) or {};before=old.get('route')or{}
-            pf=before.get('kind')==now.get('kind')=='pf_b_pf6'
-            omitted=('configurations','configuration_ids','existing_caller','configurations_file')+(('templates',)if pf else())
-            fixed=lambda r:{k:v for k,v in r.items()if k not in omitted}
-            entry=lambda r:(r.get('configurations')or{}).get((r.get('horizon_projection')or{}).get('source_configuration_id',cid))
-            if not (old.get('configuration_id')==cid and fixed(before)==fixed(now) and entry(before)==entry(now)
-                    and old.get('expected')==json.loads(json.dumps(self.expected_for(cid,now),default=str))):
-                return False
-            return not pf or self.pf_template_source(before,cid)==self.pf_template_source(now,cid)
+            old = json.loads((job / 'REQUEST.json').read_text()) if request is None else request
+            now = self.route(cid) or {}
+            before = old.get('route') or {}
+            return (old.get('configuration_id') == cid and before.get('kind') == now.get('kind')
+                    and old.get('expected') == json.loads(json.dumps(self.expected_for(cid, now), default=str))
+                    and self.prior_route_fields(before, cid) == self.prior_route_fields(now, cid)
+                    and (now.get('kind') != 'pf_b_pf6'
+                         or self.pf_template_source(before, cid) == self.pf_template_source(now, cid)))
         except (OSError,ValueError,KeyError,TypeError,subprocess.CalledProcessError):
             return False
 
@@ -779,6 +786,8 @@ class Executor:
                     known, refused, stats = history.prior_records(self, candidates, details=False)
                 self.log(event='PRIOR_HISTORY_CACHE', hits=stats['cache_hits'],
                          scanned=stats['scanned_jobs'], validated=stats['validated_jobs'],
+                         unrelated_request_hits=stats['unrelated_request_hits'],
+                         context_changes=stats['context_changes'],
                          seconds=stats['wall_seconds'])
                 return known, refused
             except (OSError, sqlite3.Error) as exc:
@@ -1527,24 +1536,59 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         if search.get('rule') in ('METHOD_MINIMUM_PRIORITY_V2', 'RPE_SCALED_SHOTS_V1'):
             from trottertracks import rpe_priority_search as P
             refresh_ready = None
+            history_pool = None
+            ready_history = None
             if ready_source is not None:
                 pending_ready, take_ready = ready_source.subscribe(name, context, base_candidates, ex)
-                ex.ready_pending = pending_ready
+
+                def validate_ready(view, added, saved_snapshot):
+                    saved = ingest(initial_knowledge(saved_snapshot or context['saved'], added, start), added, extra_results)
+                    began = time.perf_counter()
+                    prior_saved, _ = view.prior_records(added)
+                    view.log(event='PRIOR_READY_INGEST_END', seconds=time.perf_counter()-began,
+                             configurations=len(added), reused=len(prior_saved))
+                    saved.update((key, value) for key, value in prior_saved.items() if key not in saved)
+                    return added, saved
+
+                def ready_pending():
+                    return ready_history.done() if ready_history is not None else pending_ready()
+
+                def wake_selector(_):
+                    with ex.state.cv:
+                        ex.state.cv.notify_all()
+
+                def await_ready():
+                    if ready_history is None:
+                        return False
+                    # A failing validation propagates through the normal
+                    # selector fault handling. Nothing is dispatched for it.
+                    ready_history.result()
+                    return True
+
+                ex.ready_pending = ready_pending
 
                 def refresh_ready():
-                    added, saved_snapshot = take_ready()
-                    if not added:
-                        return [], {}
-                    if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
-                        added = scaled.horizon_candidates(added, problem, policy, ex, context.get('catalog'))
+                    nonlocal ready_history
+                    if ready_history is not None:
+                        if not ready_history.done():
+                            return [], {}
+                        added, saved = ready_history.result()
+                        ready_history = None
+                    else:
+                        added, saved_snapshot = take_ready()
+                        if not added:
+                            return [], {}
+                        if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+                            added = scaled.horizon_candidates(added, problem, policy, ex, context.get('catalog'))
+                        if history_pool is not None:
+                            view = ex.for_method(name)
+                            view.routes, view.expected = dict(ex.routes), dict(ex.expected)
+                            ready_history = history_pool.submit(validate_ready, view, added, saved_snapshot)
+                            ready_history.add_done_callback(wake_selector)
+                            return [], {}
+                        added, saved = validate_ready(ex, added, saved_snapshot)
                     ids = {c['configuration_id'] for c in added}
                     cands[:] = [c for c in cands if c['configuration_id'] not in ids] + added
-                    saved = ingest(initial_knowledge(saved_snapshot or context['saved'], added, start), added, extra_results)
-                    ingest_start = time.perf_counter()
-                    prior_saved, _ = ex.prior_records(added)
-                    ex.log(event='PRIOR_READY_INGEST_END', seconds=time.perf_counter()-ingest_start,
-                           configurations=len(ids), reused=len(prior_saved))
-                    saved.update((key, value) for key, value in prior_saved.items() if key not in saved)
                     return added, saved
             log = None
             if executor is not None:
@@ -1584,13 +1628,23 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                         standby(choice, proposals)
                     elif prefetch is not None:
                         prefetch(proposals[:max(0, search.get('lookahead', 1)-1)])
-                result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
-                                    spent=spent, free=free, science_approved=science_approved,
-                                    refresh_ready=refresh_ready, submit_standby=submit_standby,
-                                    read_completed=read_completed,
-                                    after_drain=after_drain if scaled_finalizers is not None else None,
-                                    held=prior_q3_holds,
-                                    flagged_stop=(lambda: (ex.run_dir/'STOP_REQUESTED.json').exists()) if executor is not None else None)
+                from contextlib import nullcontext
+                from concurrent.futures import ThreadPoolExecutor
+                parallel_history = (ready_source is not None and getattr(ex, 'optimizer_history_directory', None) is not None
+                                    and getattr(ex, 'preparation_history_cache', None) is None
+                                    and getattr(ex, 'supports_nonblocking_prefetch', False))
+                with (ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-ready-history')
+                      if parallel_history else nullcontext()) as history_pool:
+                    result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
+                                        spent=spent, free=free, science_approved=science_approved,
+                                        refresh_ready=refresh_ready, submit_standby=submit_standby,
+                                        await_ready=await_ready if parallel_history else None,
+                                        read_completed=read_completed,
+                                        after_drain=after_drain if scaled_finalizers is not None else None,
+                                        held=prior_q3_holds,
+                                        flagged_stop=(lambda: (ex.run_dir/'STOP_REQUESTED.json').exists()) if executor is not None else None)
+                    if ready_history is not None:
+                        ready_history.result()
             else:
                 result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                         baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),

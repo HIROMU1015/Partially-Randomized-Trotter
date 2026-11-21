@@ -617,19 +617,22 @@ class ControllerFailures(unittest.TestCase):
 
         method = 'PR_PAULI'
         tau = Fraction(S.EPSILON)**2
-        for scenario in ('late_ready', 'live_standby', 'drained_standby'):
+        for scenario in ('late_ready', 'live_standby', 'drained_standby', 'same_series'):
             with self.subTest(scenario=scenario):
+                same_series = scenario == 'same_series'
                 problem, context, routes = fixture([method])
                 problem['rpe']['M'] = 1
                 problem['search'].update(rule=S.RULE, work_conserving_search=True, lookahead=2,
                                          work_slice_steps=1 if scenario == 'drained_standby' else None,
-                                         scaled_shots=dict(M=[1], grid=dict(min_k=0, max_k=0, divisor=4),
+                                         scaled_shots=dict(M=[1], grid=dict(min_k=-1 if same_series else 0,
+                                                                            max_k=0, divisor=1),
                                                            compare_paper=False))
                 context['tau'] = tau
                 context['saved'] = O.SavedBackend([], {})
                 first, second = context['candidates']
                 first.update(prices=[Fraction(1)]*4)
                 second.update(prices=[Fraction(2)]*4)
+                winner = first if same_series else second
                 ready = threading.Event()
                 draining = threading.Event()
 
@@ -645,8 +648,12 @@ class ControllerFailures(unittest.TestCase):
                 if scenario == 'late_ready':
                     context['candidates'] = [first]
                     source = SimpleNamespace(subscribe=subscribe, has_new=lambda _: ready.is_set())
+                if same_series:
+                    context['candidates'] = [first]
+                    problem['search']['max_steps_per_method'] = None
                 run = self.run/scenario
-                spec = dict(methods=[method], science_approved=True, max_new_q3_per_method={method: 2},
+                spec = dict(methods=[method], science_approved=True,
+                            max_new_q3_per_method={method: 'UNLIMITED' if same_series else 2},
                             executor=dict(scheduler='concurrent', max_concurrent_jobs=2,
                                           prior_run_dirs=[str(run)],
                                           distributed=dict(port=0, work_conserving_search=True)))
@@ -706,7 +713,10 @@ class ControllerFailures(unittest.TestCase):
                     with ex.state.cv:
                         self.assertTrue(ex.state.cv.wait_for(lambda: len(ex.store.rows()) == 2 or errors, timeout=5))
                     b = claim('pbs-0')
-                    self.assertEqual(b['request']['configuration_id'], second['configuration_id'])
+                    self.assertEqual(b['request']['configuration_id'], winner['configuration_id'])
+                    if same_series:
+                        self.assertEqual(a['request']['N_X'], [8, 6])
+                        self.assertEqual(b['request']['N_X'], [15, 11])
                     if scenario == 'drained_standby':
                         complete(a, 'server2', False)
                         self.assertTrue(draining.wait(timeout=5))
@@ -723,24 +733,24 @@ class ControllerFailures(unittest.TestCase):
                     self.assertFalse(thread.is_alive())
                     self.assertFalse(errors, errors)
                     result = answers[0][method]
-                    self.assertEqual(result['best']['configuration_id'], second['configuration_id'])
+                    self.assertEqual(result['best']['configuration_id'], winner['configuration_id'])
                     if scenario == 'drained_standby':
                         self.assertIsNone(result['rule_adopted_best'])
                     self.assertEqual(result['held'], [])
                     self.assertEqual(result['evaluated_count'], 2)
-                    trace = {row['configuration_id']: row for row in result['trace']}
                     if scenario != 'late_ready':
-                        self.assertFalse(trace[second['configuration_id']]['selected_by_rule'])
+                        adopted = next(row for row in result['trace'] if row['job'] and row['job'].endswith(b['job_id']))
+                        self.assertFalse(adopted['selected_by_rule'])
                 finally:
                     self.close_one(ex)
                     thread.join(timeout=8)
 
                 resumed, optimize = make_executor(ROOT, run, routes, {}, problem, spec)
                 self.executors.append(resumed)
-                context['candidates'] = [first, second]
+                context['candidates'] = [first] if same_series else [first, second]
                 result = optimize(ROOT, problem, context=context, executor=resumed,
                                   max_new=spec['max_new_q3_per_method'])[method]
-                self.assertEqual(result['best']['configuration_id'], second['configuration_id'])
+                self.assertEqual(result['best']['configuration_id'], winner['configuration_id'])
                 self.assertEqual(result['evaluated_count'], 2)
                 self.assertEqual(resumed.store.counts(method, started_only=True), 2)
                 events = resumed.store.events()

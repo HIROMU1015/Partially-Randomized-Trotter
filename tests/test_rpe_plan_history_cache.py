@@ -72,6 +72,39 @@ class SavedHistoryDeltas(unittest.TestCase):
         self.assertEqual(repriced[0][('cfg', (4, 4))]['cost'], 20)
         self.assertEqual(repriced[2]['validated_jobs'], 0)
 
+    def test_projected_route_cache_tracks_only_its_actual_source_binding(self):
+        self.rule['horizon_projection'] = dict(source_configuration_id='source', source_M=1, M=0)
+        self.rule['configurations'] = {'source': {'signal_packet': 'fixed'}, 'other': {'signal_packet': 'unrelated'}}
+        self.evidence(4)
+        first = self.cache.prior_records(self.executor, self.candidates)
+        self.assertEqual(first[2]['validated_jobs'], 1)
+        self.rule['configurations']['other']['signal_packet'] = 'replaced unrelated'
+        self.assertEqual(self.cache.prior_records(self.executor, self.candidates)[2]['cache_hits'], 1)
+        self.rule['configurations']['source']['signal_packet'] = 'replaced actual input'
+        known, refused, stats = self.cache.prior_records(self.executor, self.candidates)
+        self.assertFalse(known)
+        self.assertEqual(refused[0]['reason'], 'DIFFERENT_JOB_KEY_OR_ROUTE')
+        self.assertEqual(stats['context_changes'], {'entry': 1})
+
+    def test_late_ready_subset_skips_unrelated_exact_payloads_until_request_changes(self):
+        job = self.evidence(4)
+        self.cache.prior_records(self.executor, self.candidates, details=False)
+        late = [dict(self.candidates[0], configuration_id='late')]
+        with patch('trottertracks.rpe_plan_history_cache._unpack',
+                   side_effect=AssertionError('unrelated exact record was decoded')):
+            known, refused, stats = self.cache.prior_records(self.executor, late, details=False)
+        self.assertFalse(known)
+        self.assertEqual(stats['unrelated_request_hits'], 1)
+        self.assertEqual(refused[0]['reason'], 'CONFIGURATION_NOT_IN_THIS_ROUND')
+        path = job/'REQUEST.json'
+        request = json.loads(path.read_bytes())
+        request['configuration_id'] = 'late'
+        path.write_text(json.dumps(request))
+        known, refused, stats = self.cache.prior_records(self.executor, late, details=False)
+        self.assertFalse(known)
+        self.assertEqual(stats['unrelated_request_hits'], 0)
+        self.assertEqual(refused[0]['reason'], 'DIFFERENT_JOB_KEY_OR_ROUTE')
+
     def test_only_new_changed_and_identity_invalidated_evidence_is_revalidated(self):
         job = self.evidence(4)
         self.cache.prior_records(self.executor, self.candidates)

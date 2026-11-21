@@ -111,7 +111,7 @@ def _classification(answer, threshold):
 
 def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spent=0, free=None,
         science_approved=True, refresh_ready=None, submit_standby=None, held=(), flagged_stop=None,
-        read_completed=None, after_drain=None):
+        read_completed=None, after_drain=None, await_ready=None):
     """Prove local grid minima by exact price order, with no MSE monotonicity."""
     from decimal import DecimalException
     from . import rpe_method_optimizer as O
@@ -134,6 +134,13 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
     work_slice = search.get('work_slice_steps')
     evaluated = (O.PASS, O.FAIL, 'INCONCLUSIVE')
     budget = 0 if not science_approved else max_new
+    # The queue spends no finite budget on optional points within a series.
+    # For an unlimited run, preflight/dispatch can fill spare capacity ahead
+    # of the next decision. Selection still takes one head per series.
+    configured_depth = search.get('lookahead', 1)
+    depth = (configured_depth if search.get('work_conserving_search') is True and budget is None
+             and type(configured_depth) is int and configured_depth > 1 and step_limit is None
+             and submit_standby is not None else 1)
 
     def absorb(c, row, answer):
         status = _classification(answer, threshold)
@@ -181,7 +188,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                     (row['smallest_grid_k'] is not None) == grid),
                    key=lambda r: (r['cost'], r['smallest_grid_k'] or 0, r['vector']), default=None)
 
-    def compile_next(group):
+    def pending_allocations(group, limit=1):
         best = best_for(group, True)
         grid = []
         reference = []
@@ -195,8 +202,10 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                 row.update(status='COST_PRUNED', reason='OWN_GRID_PASS_COST_OR_TIE')
             else:
                 grid.append(row)
-        return (min(grid, key=lambda r: (r['cost'], r['smallest_grid_k'])) if grid else
-                min(reference, key=lambda r: (r['cost'], r['vector']), default=None))
+        if grid:
+            order = lambda r: (r['cost'], r['smallest_grid_k'])
+            return [min(grid, key=order)] if limit == 1 else sorted(grid, key=order)[:limit]
+        return [min(reference, key=lambda r: (r['cost'], r['vector']))] if reference else []
 
     def record(c, row, answer, *, selected):
         nonlocal used, fatal
@@ -231,8 +240,13 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         collect_completed()
         if fatal:
             break
-        proposals = [r for g in groups.values() if (r := compile_next(g)) is not None]
+        series = [rows for group in groups.values() if (rows := pending_allocations(group, depth))]
+        proposals = [rows[0] for rows in series]
         if not proposals:
+            if depth > 1:
+                submit_standby(None, [])
+            if await_ready is not None and not (flagged_stop is not None and flagged_stop()) and await_ready():
+                continue
             break
         references = []
         if submit_standby is not None and search.get('prefetch_independent_references') and budget is None:
@@ -243,6 +257,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         if step_limit is not None and steps >= step_limit:
             requested_stop = 'STEP_LIMIT'
             break
+        draining = False
         if work_slice is not None and completed_steps >= work_slice:
             mode = search.get('ready_work_at_slice')
             can_continue = mode == 'refill' and budget is None and submit_standby is not None
@@ -252,6 +267,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                 proposals = [row for row in chain(proposals, references) if free(row)]
                 references = []
                 can_continue = bool(proposals)
+                draining = True
             if not can_continue:
                 requested_stop = 'WORK_SLICE_YIELDED'
                 break
@@ -271,8 +287,15 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             pending = choice
             break
         if submit_standby is not None and science_approved and not capped:
-            # Off-grid comparisons remain due whichever grid point passes.
-            submit_standby(choice, [r for r in proposals if r is not choice] + references)
+            standby = [r for r in proposals if r is not choice] + references
+            if depth > 1 and not draining:
+                # Give every series its next point before opening a deeper
+                # layer. Within a series the cheapest unresolved points lead.
+                from itertools import zip_longest
+                for layer in zip_longest(*(rows[1:] for rows in series)):
+                    standby.extend(sorted((r for r in layer if r is not None),
+                                          key=lambda r: (r['cost'], r['M'], r['configuration_id'])))
+            submit_standby(choice, standby)
         answer = backend.answer(choice) if backend is not None else None
         if answer is not None and answer.get('status') == 'RESELECT_READY':
             yielded.add((choice['configuration_id'], choice['vector']))
@@ -297,7 +320,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         unresolved = {'PENDING', 'INPUT_WAITING', 'TECHNICAL_HOLD', 'IN_PROGRESS', 'UNKNOWN', 'INCONCLUSIVE'}
         for group in groups.values():
             c = group['candidate']
-            compile_next(group)
+            pending_allocations(group)
             best = best_for(group, True)
             compare = best_for(group, False)
             blockers = [r for r in group['rows'] if r['smallest_grid_k'] is not None and r['status'] in unresolved

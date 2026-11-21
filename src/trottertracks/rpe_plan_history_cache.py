@@ -94,12 +94,7 @@ def _validator(executor):
 
 def _context(executor, cid):
     route = executor.route(cid) or {}
-    omitted = {'configurations', 'configuration_ids', 'existing_caller', 'configurations_file'}
-    if route.get('kind') == 'pf_b_pf6':
-        omitted.add('templates')
-    current = {k: v for k, v in route.items() if k not in omitted}
-    result = dict(executor_root=str(Path(executor.root).resolve()),
-                  route=current, entry=(route.get('configurations') or {}).get(cid),
+    result = dict(executor.prior_route_fields(route, cid), executor_root=str(Path(executor.root).resolve()),
                   expected=executor.expected_for(cid, route), contract=executor.contract)
     if route.get('kind') == 'pf_b_pf6':
         result['pf_template_source'] = executor.pf_template_source(route, cid)
@@ -168,12 +163,14 @@ class HistoryCache:
         held = {(Path(row['parent_directory'])/'jobs'/row['method']/row['job_id']).resolve()
                 for row in getattr(executor, 'prior_q3_holds', ())}
         record_reuse = None if details else getattr(executor, 'record_prior_result_reuse', None)
+        request_configurations = executor.prior_request_configurations
         validator = _validator(executor)
-        contexts = {}
+        contexts, comparisons = {}, {}
         known, refused = {}, []
         stats = dict(cache_schema=SCHEMA, cache_path=str(self.path), scanned_jobs=0,
-                     cache_hits=0, request_cache_hits=0, parsed_jobs=0, validated_jobs=0, invalidated_jobs=0,
-                     current_unresolved=[], evidence=[], scientific_calls=0, collection_calls=0)
+                     cache_hits=0, request_cache_hits=0, unrelated_request_hits=0,
+                     parsed_jobs=0, validated_jobs=0, invalidated_jobs=0,
+                     context_changes={}, current_unresolved=[], evidence=[], scientific_calls=0, collection_calls=0)
         for base in executor.prior_run_dirs:
             directory = Path(base) / 'jobs' / executor.method
             if not directory.exists():
@@ -192,6 +189,15 @@ class HistoryCache:
                 if held and job.resolve() in held:
                     refused.append(dict(job=str(job), reason='PRIOR_Q3_PERSISTENCE_HOLD'))
                     continue
+                request_path = job / 'REQUEST.json'
+                request_signature = tuple(signature[0][1] or ())  # REQUEST.json is the first marker
+                previous = request_configurations.get(request_path)
+                if not details and previous is not None and previous[0] == request_signature and previous[1] not in ready:
+                    # Unrelated candidates do not need their exact bounds
+                    # decoded simply because a different candidate became ready.
+                    stats['unrelated_request_hits'] += 1
+                    refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
+                    continue
                 key = str(job.resolve())
                 saved = self.db.execute('SELECT signature, context, payload FROM evidence WHERE job=?', (key,)).fetchone()
                 cached = None
@@ -206,7 +212,7 @@ class HistoryCache:
                 else:
                     stats['parsed_jobs'] += 1
                     try:
-                        request = json.loads((job / 'REQUEST.json').read_text())
+                        request = json.loads(request_path.read_text())
                     except (OSError, ValueError):
                         refused.append(dict(job=str(job), reason='NO_REQUEST'))
                         continue
@@ -217,6 +223,8 @@ class HistoryCache:
                     self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
                                     (key, _json(signature), '', _pack(cached)))
                 cid = request.get('configuration_id')
+                if request_signature:
+                    request_configurations[request_path] = request_signature, cid
                 candidate = ready.get(cid)
                 if candidate is None:
                     # Even a currently unavailable configuration may have an
@@ -240,7 +248,8 @@ class HistoryCache:
                         contexts[cid] = _json(dict(schema=SCHEMA, validator=validator,
                                                   context=_context(executor, cid)))
                     context = contexts[cid]
-                    proposal = dict(configuration_id=cid, vector=O.interleave(request['N_X'], request['N_Y']))
+                    proposal = dict(configuration_id=cid, vector=O.interleave(request['N_X'], request['N_Y']),
+                                    origin=request.get('origin', {}))
                     hit = cached.get('record') is not None and saved is not None and saved[1] == context
                     if hit:
                         record = cached['record']
@@ -248,7 +257,17 @@ class HistoryCache:
                     else:
                         if saved is not None:
                             stats['invalidated_jobs'] += 1
-                        if executor.job_dir(proposal).name != job.name or not executor.same_route(job, cid):
+                        if saved is not None and cached.get('record') is not None and saved[1] and saved[1] != context:
+                            pair = cid, saved[1]
+                            if pair not in comparisons:
+                                old, new = json.loads(saved[1]), json.loads(context)
+                                comparisons[pair] = [
+                                    field for field in old['context'].keys() | new['context'].keys()
+                                    if old['context'].get(field) != new['context'].get(field)
+                                ] + [field for field in ('schema', 'validator') if old[field] != new[field]]
+                            for field in comparisons[pair]:
+                                stats['context_changes'][field] = stats['context_changes'].get(field, 0) + 1
+                        if executor.job_dir(proposal).name != job.name or not executor.same_route(job, cid, request=request):
                             refused.append(dict(job=str(job), reason='DIFFERENT_JOB_KEY_OR_ROUTE'))
                             continue
                         record = executor.ingest(job, proposal, calls=0)
@@ -259,25 +278,23 @@ class HistoryCache:
                                 stats['current_unresolved'].append(_current_unresolved(job, record['status']))
                             continue
                         cached.update(record=record, outcome_status=record['status'])
-                        if signature != _signature(job):
-                            refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
-                            continue
-                        self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
-                                        (key, _json(signature), context, _pack(cached)))
                     if signature != _signature(job):
                         refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
                         continue
+                    updated = not hit
                     if details:
                         if 'provenance' not in cached:
                             cached['provenance'] = dict(job=key, sha256=_hashes(job, signature))
                             if signature != _signature(job):
                                 refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
                                 continue
-                            self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
-                                            (key, _json(signature), context, _pack(cached)))
+                            updated = True
                         stats['evidence'].append(cached['provenance'])
                     if hit and record_reuse is not None:
                         record_reuse(job)
+                    if updated:
+                        self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
+                                        (key, _json(signature), context, _pack(cached)))
                     known[(cid, proposal['vector'])] = dict(record, source='PRIOR_ROUND_JOB',
                                                           cost=O.cost(proposal['vector'], candidate['prices']))
                 except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:

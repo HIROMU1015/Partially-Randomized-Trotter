@@ -81,6 +81,7 @@ class SchedulerTests(unittest.TestCase):
         executor.dp_workers = 1
         executor.prefix_cache_directory = None
         executor.compact_q3_evidence = False
+        executor.large_shot_bounds = False
         locator = dict(commit='a'*40, path='saved-cases.json', inputs_selector=['inputs'])
         registry = {'another-case': dict(configuration=dict(commit='b'*40, path='other.json'))}
         route = dict(kind='pf_b_pf6', configurations=registry, templates=[locator])
