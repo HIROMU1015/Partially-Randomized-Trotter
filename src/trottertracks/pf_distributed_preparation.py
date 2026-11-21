@@ -9,6 +9,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from copy import deepcopy
 import json
+import os
 import subprocess
 import sys
 
@@ -140,6 +141,10 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     wave_root = next((p for p in reversed(run.parents) if p.name == 'pf_auto'), outer)
     signal_index=wave_root/'cache'/'pf-saved-signal-index'
     metadata_root = Path(__file__).resolve().parents[2]
+    metadata_env = os.environ.copy()
+    snapshot = getattr(runtime, 'settings', {}).get('df_snapshot_directory')
+    if snapshot:
+        metadata_env['RPE_PF_PREFLIGHT_SNAPSHOT'] = str(snapshot)
     price_args = []
     settings = spec['pf_completion']
     saved_signals = {}
@@ -196,7 +201,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
             str(metadata_root/'scripts/check_pf_preparation_owner.py'),'--provider-root',str(original),
             '--request',str(owner_input),'--output',str(owner_output),'--signal-index',str(signal_index),
-            *price_args],check=True)
+            *price_args],check=True,env=metadata_env)
     owner=read(owner_output)
     discovered = [ref for row in owner['rows'] for ref in row.get('discovered_price_receipts', ())]
     if discovered and price_args:
@@ -276,7 +281,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 # with the controller's already imported trottertracks.
                 subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
                     str(metadata_root/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
-                    '--input',str(phase_in),'--output',str(phase_out)],cwd=workspace,check=True)
+                    '--input',str(phase_in),'--output',str(phase_out)],cwd=workspace,check=True,env=metadata_env)
             return read(phase_out)
         source=local('preflight', **({'deferred_price_rounds': deferred} if deferred else {}))['source']
         provider_files = ['scripts/prepare_pf_candidate.py','src/trottertracks/pf_evidence_preparation.py',

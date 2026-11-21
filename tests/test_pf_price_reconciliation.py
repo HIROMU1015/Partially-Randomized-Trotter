@@ -22,6 +22,54 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_selected_provider_dispatches_signal_with_owned_price_and_replays_response(self):
+        from trottertracks import pf_distributed_preparation as distributed
+        from trottertracks.pf_optimizer_connection import complete_selected
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            original = root/'fixed'
+            run = root/'run'
+            leaf = run/'pf_completion'
+            workspace = leaf/'provider_workspace'
+            folder = workspace/'docs/research/distributed_selected_pf/cfg'
+            entry = original/'scripts/prepare_pf_candidate.py'
+            request = dict(mode='complete', selected=[{'configuration_body': {'id': 'cfg'}}],
+                           output_root=str(run/'output'), registry_file=str(run/'registry.json'))
+            spec = dict(methods=['TRUNCATED_PF'], science_approved=True,
+                        pf_completion=dict(request, entry=str(entry)))
+            write(leaf/'ORIGINAL_OWNER_REQUEST.json', dict(request, prior_owner_directories=[]))
+            owned_axis = dict(m=3, axis='X', action='HELD', findings=[{'running_job': {'pid': 4321}}])
+            write(leaf/'ORIGINAL_OWNER_CHECK.json', dict(rows=[dict(
+                configuration_id='cfg', status='ORIGINAL_OWNER_PREFLIGHT_PASS',
+                deferred_price_rounds={3: [owned_axis]})]))
+            write(leaf/'PROVIDER_SOURCE.json', dict(root=str(original), source='artificial'))
+            write(leaf/'PLAN_RESPONSE.json', dict(items=[dict(status='PLANNED',
+                  configuration_id='cfg', output=str(folder))]))
+            write(folder/'PLAN.json', dict(configuration={'id': 'cfg'}, new_signal_means=1,
+                  direct_prices=[], selected_axis_compile=True,
+                  new_compile_cells=[dict(m=3, axes=['X'], role='CALIBRATION')]))
+            write(folder/'preflight.METADATA_RESULT.json', dict(source={'commit': 'artificial'}))
+            calls = []
+
+            def invoke(context, command, directory, stage, output, *, science):
+                calls.append(stage)
+                self.assertEqual(stage, 'PF_SIGNALS')
+                result = dict(status='SIGNALS_READY', publication='signal-artificial')
+                write(output, result)
+                return result
+
+            runtime = SimpleNamespace(call=invoke)
+            with patch.object(distributed.subprocess, 'check_output', return_value=b'artificial'), \
+                 patch.object(distributed.subprocess, 'run'):
+                first = complete_selected(root, spec, run, stage_executor=runtime)
+                second = complete_selected(root, spec, run, stage_executor=runtime)
+            self.assertEqual(calls, ['PF_SIGNALS'])
+            self.assertEqual(first, second)
+            row, = first['response']['items']
+            self.assertEqual(row['independent_signal']['publication'], 'signal-artificial')
+            self.assertEqual(row['audited_independent_prices'], [])
+
     def test_catalog_follows_committed_axis_receipts_once_and_preserves_unknown(self):
         carrier = {'commit': 'a'*40, 'path': 'catalog.json.gz'}
         receipt = {'commit': 'b'*40, 'path': 'batch/PRICES.json', 'selector': [0]}
@@ -72,6 +120,45 @@ class PFPriceReconciliationTests(unittest.TestCase):
             result['child_exit_code'] = 0
             del records[raw/'IMPLEMENTATION_EVIDENCE.json']
             self.assertIsNone(prices.original_calibration(ROOT, plan, references, relative))
+
+    def test_catalog_recovery_requires_c_guard_and_populates_price_pool(self):
+        physical = {'id': 'p'}
+        profile = {'compiler': 'fixed'}
+        request = dict(m=3, axis='X', physical_context=dict(physical_candidate=physical, profile=profile),
+            measurement_axis='X', observable='X', outcome_convention='fixed',
+            quantity='wrapper_cost', units='RZ', P=0)
+        origin = dict(commit='b'*40, path='native/RESULT.json')
+        value = dict(request, source=origin, identity={'fixed': True}, law_binding={'fixed': True},
+            cohort='DIRECT', mean={'rz_count': 17}, classification='DIRECT_COMPILED_DETERMINISTIC',
+            expectation='DETERMINISTIC', price_profile=dict(profile, lowering_id='H46_LONG_TIME_NATIVE_COMPOSE'))
+        receipt = dict(commit='a'*40, path='native/PRICES.json', selector=[0])
+        side = dict(value, price_source=origin)
+        guard = dict(status='IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION',
+                     policy={'id': 'PF_SELECTED_SAME_PHYSICAL_WRAPPER_V1'},
+                     checked=[dict(m=3, axis='X', evidence=dict(receipt, path='native/SIDE.json', selector=[]))])
+        documents = {'native/PRICES.json': [value], 'native/GUARD_CHECK.json': guard, 'native/SIDE.json': side}
+        def read(command, **kwargs):
+            return json.dumps(documents[command[-1].split(':', 1)[1]]).encode()
+        native = SimpleNamespace(duplicate_check=lambda _, selected: dict(
+            rows=[dict(row, action='HELD', findings=[dict(receipts=[receipt])]) for row in selected]))
+        evidence = SimpleNamespace(physical_key=lambda candidate: candidate['id'],
+                                   ref=lambda commit, path: dict(commit=commit, path=path),
+                                   I=SimpleNamespace(price_requests=lambda *_: [request]))
+        plan = dict(configuration={'id': 'cfg'}, new_compile_cells=[dict(m=3, axes=['X'])],
+                    prepared=dict(pending=dict(requests=[dict(m=3, physical_candidate=physical)])))
+        with tempfile.TemporaryDirectory() as tmp, patch.dict('sys.modules', {
+                'run_pf_m0_prices': native, 'trottertracks.pf_evidence_preparation': evidence}), \
+                patch.object(prices.subprocess, 'check_output', side_effect=read), \
+                patch.object(prices.subprocess, 'run', side_effect=lambda command, **kw:
+                             SimpleNamespace(stdout=read(command))):
+            extra = {}
+            report = Path(tmp)/'DUPLICATES.json'
+            prices.unresolved_rounds(ROOT, plan, report, extra, discover=True)
+            self.assertEqual(json.loads(report.read_bytes())['discovered_admitted_receipts'], [receipt])
+            self.assertEqual(extra['p', 'X'][0]['value']['mean'], {'rz_count': 17})
+            side['law_binding'] = {'fixed': False}
+            prices.unresolved_rounds(ROOT, plan, report, {}, discover=True)
+            self.assertEqual(json.loads(report.read_bytes())['discovered_admitted_receipts'], [])
 
     def test_axis_recovery_uses_only_clear_unmeasured_wrappers(self):
         original = dict(selected_axis_compile=True, maximum_new_compile=4, new_compile_cells=[

@@ -151,7 +151,7 @@ class PreparationRoundTests(unittest.TestCase):
                         ready=False,needs=['PRICE_26AXIS','SIGNAL_13ROUND_PACKET'],
                         configuration_body=dict(id=cid,spec=dict(split=dict(original_PF_method='B0I' if prefix!=10 else 'FULL'))))
 
-        points=[point('full','FULL_PF',10,'2'),point('hold','TRUNCATED_PF',7,'2'),
+        points=[point('full','FULL_PF',10,'4'),point('hold','TRUNCATED_PF',7,'2'),
                 point('same_family','TRUNCATED_PF',7,'1')]
         methods=['FULL_PF','TRUNCATED_PF']
         context=dict(candidates=points,catalog=dict(candidates=[]),pf_evidence_registry=dict(configurations={}))

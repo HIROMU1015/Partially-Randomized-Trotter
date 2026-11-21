@@ -76,6 +76,30 @@ def saved_price_helpers():
     return runpy.run_path(str(path))
 
 
+def bind_preflight_snapshot():
+    """Resolve only the frozen inputs read by the native duplicate check."""
+    directory = os.environ.get('RPE_PF_PREFLIGHT_SNAPSHOT')
+    if not directory:
+        return
+    import run_pf_m0_prices as native
+    original = native.duplicate_check
+    baseline = native.read(dict(commit=native.BASELINE,
+        path='docs/research/d_pf_stage2_holdout_20261115/DUPLICATE_AND_INPUT_PREFLIGHT.json'))
+    mapping = {item['path']: str(Path(directory)/Path(item['path']).name)
+               for item in baseline['input_bytes_rechecked'].values()}
+    scope = dict(original.__globals__)
+    original_path = scope['Path']
+
+    def mapped_path(value, *parts):
+        path = original_path(value, *parts)
+        return original_path(mapping.get(str(path), path))
+
+    scope['Path'] = mapped_path
+    native.duplicate_check = FunctionType(original.__code__, scope, original.__name__,
+                                         original.__defaults__, original.__closure__)
+    native.duplicate_check.__kwdefaults__ = original.__kwdefaults__
+
+
 def load_provider(root):
     root=Path(root).resolve()
     sys.path[:0]=[str(root/'scripts'),str(root/'src')]
@@ -232,6 +256,7 @@ def run(provider,request):
     source=request['source']
     if phase=='preflight':
         provider.source_gate()
+        bind_preflight_snapshot()
         if request.get('deferred_price_rounds'):
             helpers = saved_price_helpers()
             value = helpers['independent_plan'](value, request['deferred_price_rounds'])

@@ -8,7 +8,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
-from run_pf_preparation_stage import cache_mean_pool, saved_price_helpers
+from run_pf_preparation_stage import bind_preflight_snapshot, cache_mean_pool, saved_price_helpers
 
 
 PRICE_PLAN_HOLDS = {
@@ -22,6 +22,7 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
     spec=importlib.util.spec_from_file_location('original_pf_provider',root/'scripts/prepare_pf_candidate.py')
     provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
     source=provider.source_gate();rows=[]
+    bind_preflight_snapshot()
     helpers, extra = None, None
     for item in request['selected']:
         configuration=provider.selected_configuration(item);cid=configuration['id']
