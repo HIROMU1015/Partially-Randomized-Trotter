@@ -31,3 +31,11 @@ H₄直線1 Å、STO-3G、tol-only $10^{-8}$ のDF10、$h$ は固定入力の0.1
 再開時の§10.5はPASS。保存照合でFull PF 9、B0I 282、PR-DF 28件を受理した。PR-DFの価格較正と監査はRomuTailの共通キューで実行され、結果を中央が受け取った。11月21日07:23 JSTの確認では再開後の価格較正3件・監査6件を採用し、価格較正1件が実行中だった。既存runで再開後の新規Q3は0件。候補の価格がそろうと同じ探索器のQ3へ復帰する。旧runのQ3規模上限は記録どおりで、大ショット評価を有効にしたcurrentは新規runに適用する。
 
 PR-DFの一部では、同じ物理条件でも複数の保存モデルが異なる価格を返す。たとえば絶対κ32のm3では、X/Yとも $1317341/36$ と $37218$ が競合する。対応する旧attemptは採用済みの独立holdoutで、既存の較正契約では保留軸の較正データに振り替えられない。絶対κ64では旧runの較正済み原receiptを保存しているが、継続runから監査へ渡す原パスの照合が残っている。Full PFとB0Iの一部には、旧価格索引から採用に必要な軸ごとのreceipt一式を確認できないラウンドがある。既存ルールと旧attemptの記録を保持した。
+
+## 11月21日の既存runへの適用
+
+対象は同じ `search-29795d0e2e2593819e27`。旧controllerは12:51 JSTにOSのメモリ不足で終了した。同じinvocationの終了記録、旧relayとlocal workerの終了、run所有のPBS割当の終端、SQLiteの整合性を照合した。未確定の準備4件は元のjob・attempt IDと再試行禁止を保持した。
+
+通常Resumeでスケジューラ `99c023a1faea5ef24baa33d64540af9a2bbb1c6c` とRomuTailの大ショットadapter `bb0fd4cd975a7705995edbd07618c0dfc17aff11` を適用した。元runの固定release、科学SOURCE、scope、入力と予算台帳は継承し、元の固定ファイル8件のhashを再照合した。§10.5はPASS。旧STOPの保護、未確定attemptの保護、通常再開と大ショット経路の試験44件と6サブテストが通過した。
+
+16:02 JST時点で、通常探索の共通キューからRomuTailが実行した大ショットQ3を3件受領・採用した。いずれもPR-DF、$M=11$ の論文比較点で、固定モデル内の閾値に適合した。結果と採用時刻の照合は `.rpe-central/deployment/large-shot-resume-99c023a1fa/LIVE_ADOPTION.json` に保存した。残る候補は同じ中央controllerが継続する。
