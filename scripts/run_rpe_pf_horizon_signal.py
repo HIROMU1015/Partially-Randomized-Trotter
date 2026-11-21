@@ -64,6 +64,11 @@ def signal(root, plan, prefix, source):
     pair = reference_pair(root, saved, request['physical_candidate']['T'])
     reference = dict(pair, source=descriptor['source'], binding=binding, T=descriptor['T'])
     ctx = evidence.N.Context(root, saved, snapshot_binding, context)
+    prefix_index = request['physical_candidate']['prefix']
+    if request['comparison_method'] == 'TRUNCATED_PF':
+        scalar_source = evidence.scalar_source(prefix_index)
+        ctx.tail_scalars[prefix_index] = float(evidence.read(root, scalar_source))
+        ctx.metadata['prefix_scalar_source'] = scalar_source
     raw = evidence.N.evaluate(ctx, request, reference, source=source)
     if raw['status'] != 'NUMERICAL_MEAN_AVAILABLE':
         raise ValueError('Terminal PF numerical gate: ' + str(raw.get('reason')))

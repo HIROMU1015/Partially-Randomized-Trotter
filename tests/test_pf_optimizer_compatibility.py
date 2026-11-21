@@ -60,6 +60,48 @@ def metadata_fixture():
 
 
 class MetadataCompatibility(unittest.TestCase):
+    def test_extended_registry_requires_both_terminal_prices_and_its_own_route(self):
+        parent, physical, docs, problem = metadata_fixture()
+        base = docs['CONFIGURATION']
+        base['spec']['M'] = 12
+        cid = 'EXTENDED_P0'
+        config = dict(base, id=cid, spec=dict(base['spec'], M=13))
+        [*prefix, last] = config['rounds']
+        config['rounds'] = [*prefix, last, dict(last, m=13, identity={'m': 13, 'p': 0})]
+        physical[13] = 'TERMINAL_PHYSICAL_ROUND'
+        entry = deepcopy(problem['pf_evidence_registry']['configurations'][parent])
+        entry.update(configuration=loc('EXTENDED_CONFIG'), signal_packet=loc('EXTENDED_SIGNAL'),
+                     prices=loc('EXTENDED_PRICES'), q3_inputs=loc('EXTENDED_Q3'),
+                     horizon_source_configuration_id=parent, horizon_risk_source={'commit': 'FIXED_EXTENSION'},
+                     horizon_parent=dict(configuration=loc('CONFIGURATION'), signal_packet=loc('SIGNAL')))
+        last_mean = dict(docs['SIGNAL']['means'][-1], m=13, identity=config['rounds'][-1]['identity'],
+                         physical_candidate={'id': physical[13]})
+        terminal_prices = [dict(row, m=13, physical_id=physical[13]) for row in docs['PRICES']['axes'][-2:]]
+        docs.update(EXTENDED_CONFIG=config, EXTENDED_SIGNAL=dict(configuration_id=cid,
+            means=[*docs['SIGNAL']['means'], last_mean]), EXTENDED_PRICES=dict(
+                axes=[*docs['PRICES']['axes'], terminal_prices[0]], coverage='PARTIAL_DIRECT_PRICE_EVIDENCE'),
+            EXTENDED_Q3=dict(options={'phase_radii': [1.0]*14}, cases=[dict(docs['Q3']['cases'][0],
+                configuration_id=cid, configuration=entry['configuration'], signal_packet=entry['signal_packet'])]))
+        registry = dict(schema=PF.SCHEMA, configurations={cid: entry})
+        problem['search'] = {'rule': 'RPE_SCALED_SHOTS_V1'}
+        problem['methods']['TRUNCATED_PF']['configuration_ids'] = [parent]
+        with patch.object(PF, 'physical_ids', return_value=physical):
+            candidates = []
+            PF.hydrate(ROOT, FixtureReader(docs), problem, candidates, registry)
+            self.assertEqual(candidates[0]['price_needs'], [{'m': 13, 'axis': 'Y'}])
+            self.assertFalse(candidates[0]['ready'])
+            docs['EXTENDED_PRICES']['axes'].append(terminal_prices[1])
+            candidates = []
+            expected = PF.hydrate(ROOT, FixtureReader(docs), problem, candidates, registry)
+        self.assertTrue(candidates[0]['ready'])
+        self.assertEqual(candidates[0]['source_configuration_id'], parent)
+        self.assertEqual(len(candidates[0]['prices']), 28)
+        self.assertEqual(expected[cid]['M'], 13)
+        routes = {'TRUNCATED_PF': [{'kind': 'pf_b_pf6', 'configuration_ids': [parent]}]}
+        extended, original = PF.registry_routes(routes, registry)['TRUNCATED_PF']
+        self.assertEqual(extended['configuration_ids'], [cid])
+        self.assertEqual(original, routes['TRUNCATED_PF'][0])
+
     def test_normal_prepare_joins_own_zero_prefix_inputs_without_changing_seed_rule(self):
         cid,physical,docs,problem=metadata_fixture();reader=FixtureReader(docs)
         facts=dict(fragment_count=10,snapshot_sha256='SNAPSHOT',hamiltonian_hash='H',state_hash='STATE')

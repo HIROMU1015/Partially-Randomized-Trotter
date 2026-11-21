@@ -366,6 +366,15 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if not isinstance(receipts, dict):
             raise ValueError('Recovered PF receipts must map physical IDs to guarded locators')
         spec['pf_completion']['recovered_price_receipts_by_physical_id'] = receipts
+    if 'horizon_preparation_catalog' in trial:
+        catalog = trial['horizon_preparation_catalog']
+        raw = Path(catalog['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != catalog['sha256']:
+            raise ValueError('Fixed horizon preparation catalog changed')
+        fixed = json.loads(raw)
+        if set(fixed) != {'bindings', 'tasks'} or any(not isinstance(value, dict) for value in fixed.values()):
+            raise ValueError('Horizon preparation catalog needs fixed bindings and tasks')
+        distributed['preparation']['horizon_extensions'] = fixed
     if 'pf_price_recheck_provider' in trial:
         provider = trial['pf_price_recheck_provider']
         root = Path(provider['root']).resolve(strict=True)

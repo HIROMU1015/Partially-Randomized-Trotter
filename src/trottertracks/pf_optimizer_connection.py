@@ -152,7 +152,7 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
 
 
 def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_artificial=False):
-    """Join only each configuration's own saved 13-round signal and 26 prices.
+    """Join only each configuration's own saved signal and axis prices.
 
     Partial entries stay explicit missing inputs.  A different prefix, physical
     schedule, axis, or canonical configuration cannot borrow another price.
@@ -174,7 +174,7 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
         if spec['family'] != 'PF' or not _inside(entry, spec):
             continue
         allowed = spec.get('configuration_ids')
-        if allowed is not None and cid not in allowed:
+        if allowed is not None and cid not in allowed and entry.get('horizon_source_configuration_id') not in allowed:
             continue
         config = read_source(root, reader, entry['configuration'])
         if (config.get('id') or config.get('configuration_id')) != cid:
@@ -182,9 +182,27 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
         meta = configuration_metadata(config)
         if any(meta[k] != (frac(entry[k]) if k == 'delta_over_h' else entry[k]) for k in meta):
             raise ValueError('PF registry prefix/formula/width differs from configuration')
+        horizon = config['spec'].get('M', 12)
+        extension = entry.get('horizon_risk_source')
+        parent_id = entry.get('horizon_source_configuration_id')
+        if horizon == 13:
+            if problem.get('search', {}).get('rule') != 'RPE_SCALED_SHOTS_V1':
+                continue
+            parent = entry.get('horizon_parent') or {}
+            if not extension or not parent_id or set(parent) != {'configuration', 'signal_packet'}:
+                raise ValueError('Extended PF needs its fixed evaluation SOURCE and saved parent')
+            original = read_source(root, reader, parent['configuration'])
+            old_packet = read_source(root, reader, parent['signal_packet'])
+            if (original['id'] != parent_id or old_packet['configuration_id'] != parent_id
+                    or dict(config['spec'], M=12) != original['spec']):
+                raise ValueError('Extended PF changes the scoped parent configuration')
+        elif horizon != 12 or parent_id is not None or extension is not None:
+            raise ValueError('PF registry requires a fixed M=12 or M=13 configuration')
+        count = horizon + 1
         rounds = {r['m']: r for r in config['rounds']}
-        if len(config['rounds']) != 13 or set(rounds) != set(range(13)):
-            raise ValueError('PF registry needs the canonical 13-round schedule')
+        if len(config['rounds']) != count or set(rounds) != set(range(count)):
+            raise ValueError('PF registry needs the complete canonical schedule')
+        signal_need, price_need = f'SIGNAL_{count}ROUND_PACKET', f'PRICE_{2*count}AXIS'
         if facts:
             for key, fk in [('snapshot', 'snapshot_sha256'), ('hamiltonian', 'hamiltonian_hash'), ('state', 'state_hash')]:
                 if config['spec']['binding'][key] != facts[fk]:
@@ -196,18 +214,20 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
             c = hits[0]
         else:
             c = dict(method=method, family='PF', configuration_id=cid, caps=spec['caps'], labels=[], saved_points=[],
-                     prices=None, signal_source=None, needs=['SIGNAL_13ROUND_PACKET', 'PRICE_26AXIS'],
-                     price_status='NO_SAVED_26_AXIS_PRICE', outside_index=True)
+                     prices=None, signal_source=None, needs=[signal_need, price_need],
+                     price_status=f'NO_SAVED_{2*count}_AXIS_PRICE', outside_index=True)
             candidates.append(c)
         c['key'] = dict(p=entry['p'], formula=entry['formula'], delta_over_h=str(frac(entry['delta_over_h'])))
         c['name'] = method + ':' + ','.join('%s=%s' % kv for kv in c['key'].items()) + ':' + cid[:8]
         c['pf_evidence'] = deepcopy(entry)
         c['configuration_source'] = deepcopy(entry['configuration'])
+        if horizon == 13:
+            c.update(M=horizon, source_configuration_id=parent_id)
         ids = None
         if entry.get('signal_packet'):
             packet = read_source(root, reader, entry['signal_packet'])
             means = packet.get('means') or []
-            if packet.get('configuration_id') != cid or len(means) != 13 or {m['m'] for m in means} != set(rounds):
+            if packet.get('configuration_id') != cid or len(means) != count or {m['m'] for m in means} != set(rounds):
                 raise ValueError('PF registry signal packet/configuration/round mismatch')
             ids = physical_ids(root, config)
             for row in means:
@@ -219,7 +239,7 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
                 if row.get('status') != 'SIGNAL_AVAILABLE_NOT_RMSE_QUALIFIED':
                     raise ValueError('PF registry signal is not an available saved mean')
             c['signal_source'] = deepcopy(entry['signal_packet'])
-            c['needs'] = [n for n in c['needs'] if n != 'SIGNAL_13ROUND_PACKET']
+            c['needs'] = [n for n in c['needs'] if n != signal_need]
         if entry.get('prices'):
             table = read_source(root, reader, entry['prices']);rows = table['axes']
             ids = ids or physical_ids(root, config)
@@ -244,12 +264,12 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
             if partial and missing and c['prices'] is None:
                 c.update(price_status='SOURCE_BOUND_PF_PARTIAL_AXIS_PRICES', price_axes=deepcopy(rows),
                          price_source=deepcopy(entry['prices']), price_needs=missing)
-                c['needs'] = list(dict.fromkeys([*c['needs'], 'PRICE_26AXIS']))
+                c['needs'] = list(dict.fromkeys([*c['needs'], price_need]))
             elif not missing:
-                c.update(prices=[units[key] for key in keys], price_status='SOURCE_BOUND_PF_26_AXIS_PRICES',
+                c.update(prices=[units[key] for key in keys], price_status=f'SOURCE_BOUND_PF_{2*count}_AXIS_PRICES',
                          price_scope=entry.get('price_scope'), price_axes=deepcopy(rows),
                          price_source=deepcopy(entry['prices']))
-                c['needs'] = [n for n in c['needs'] if n != 'PRICE_26AXIS']
+                c['needs'] = [n for n in c['needs'] if n != price_need]
                 c.pop('price_needs', None)
         if entry.get('q3_inputs'):
             inputs = read_source(root, reader, entry['q3_inputs'])
@@ -257,6 +277,8 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
             if len(cases) != 1:
                 raise ValueError('PF registry needs one matching Q3 template case')
             case = cases[0]
+            if horizon == 13 and len(inputs['options']['phase_radii']) != count:
+                raise ValueError('Extended PF Q3 template needs 14 fixed phase radii')
             for key in ('total_configuration_id', 'binding_id'):
                 # Existing PF cases call the same canonical total ID
                 # ``total_view_id``; the executor uses total_configuration_id.
@@ -271,6 +293,8 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
         c['ready'] = not c['needs'] and c['prices'] is not None and c['signal_source'] is not None
         expected[cid] = {k: entry.get(k) for k in ('total_configuration_id', 'binding_id')}
         expected[cid]['signal_source'] = c['signal_source']
+        if horizon == 13:
+            expected[cid]['M'] = horizon
     return expected
 
 
@@ -288,10 +312,20 @@ def registry_routes(routes, registry):
         rules = [r for r in method_rules if r.get('kind') == 'pf_b_pf6']
         if not rules:
             raise ValueError('Published PF candidate has no existing pf_b_pf6 route')
-        rule = next((r for r in rules if r.get('configuration_ids') in (None, '*') or cid in r['configuration_ids']), rules[0])
+        base_rules = [rule for rule in rules if not rule.get('horizon_risk_source')]
+        if not base_rules:
+            raise ValueError('Published PF candidate has no base route')
+        rule = next((r for r in base_rules if r.get('configuration_ids') in (None, '*')
+                     or cid in r['configuration_ids']), base_rules[0])
         loc = deepcopy(entry['q3_inputs'])
         if loc.get('selector'):
             loc['inputs_selector'] = loc.pop('selector')
+        if entry.get('horizon_risk_source'):
+            if any(r.get('horizon_risk_source') and r.get('configuration_ids') == [cid] for r in rules):
+                continue
+            method_rules.insert(0, dict(rule, templates=[loc], configurations={}, configuration_ids=[cid],
+                horizon_risk_source=deepcopy(entry['horizon_risk_source']), horizon_parent=deepcopy(entry['horizon_parent'])))
+            rule = method_rules[0]
         if loc not in rule.setdefault('templates', []):
             rule['templates'].append(loc)
         rule.setdefault('configurations', {})[cid] = {k: deepcopy(entry[k]) for k in

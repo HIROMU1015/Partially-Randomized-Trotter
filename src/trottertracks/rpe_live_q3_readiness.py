@@ -219,6 +219,9 @@ def controller_scope_hold(request, profile):
         if adapter is None:
             return None
         views = profile['route_views']
+        risk = request['route'].get('horizon_risk_source')
+        if risk is not None and risk['commit'] not in views:
+            return None  # A legacy local profile cannot disqualify a remote extension.
         commit = request['route']['view_commit']
         view = Path(views[commit])
         if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=view, text=True).strip() != commit:

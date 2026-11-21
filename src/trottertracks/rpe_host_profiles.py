@@ -30,8 +30,10 @@ def profile_core(profile):
 
 def route_matches(rule, assignment):
     route = assignment['request']['route']
+    risk = route.get('horizon_risk_source') or {}
     return (rule.get('route_kind') == route.get('kind')
-            and rule.get('view_commit') == route.get('view_commit'))
+            and rule.get('view_commit') == route.get('view_commit')
+            and rule.get('horizon_risk_commit') == risk.get('commit'))
 
 
 def validate_adapter_profile(profile):

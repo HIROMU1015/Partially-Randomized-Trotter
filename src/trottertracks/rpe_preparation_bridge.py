@@ -1002,6 +1002,16 @@ class DistributedPreparationBridge:
             original_documents.extend(_DF_PRICE_BACKEND)
         if pf_terminal_signal:
             original_documents.extend(_PF_SIGNAL_KERNEL_INPUTS)
+            frozen = read(Path(command[command.index('--request')+1]))
+            locator = frozen['configuration']
+            config = json.loads(subprocess.check_output(
+                ['git', 'show', locator['commit'] + ':' + locator['path']], cwd=root))
+            for key in locator.get('selector', []):
+                config = config[key]
+            prefix = config['spec']['L_D']
+            if prefix < 10:
+                original_documents.append(dict(commit='5e6f9fd214631f7ce92fad0e9c0d273dfb479533',
+                    path=f'docs/research/truncated_pf_t1_results_20261114/run01/prefix_{prefix}.json'))
         if script.name == 'run_pf_preparation_stage.py':
             if stage == 'PF_SIGNALS':
                 original_documents.extend(_PF_SIGNAL_KERNEL_INPUTS)
