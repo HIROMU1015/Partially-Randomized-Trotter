@@ -33,11 +33,33 @@ class OriginalPFOwner(unittest.TestCase):
             request=Path(temp)/'REQUEST.json';output=Path(temp)/'CHECK.json'
             item=dict(selected=[dict(configuration_body=dict(id='C'))],
                       registry_file=str(root/'REGISTRY.json'),output_root=str(root/'other'))
+            options = []
+            if mode == 'price_independent':
+                (package/'pf_evidence_preparation.py').write_text(
+                    "from types import SimpleNamespace\n"
+                    "physical={'id':'circuit'}\n"
+                    "def price_pool(root):return {}\n"
+                    "def accepted_direct(root,prepared):return []\n"
+                    "def physical_key(value):return value['id']\n"
+                    "I=SimpleNamespace(price_requests=lambda root,prepared:[{'m':3,'axis':'X',"
+                    "'physical_context':{'profile':{}}}])\n"
+                    "def make_plan(root,cfg,source):\n"
+                    " return dict(configuration=cfg,direct_prices=[],new_signal_means=1,"
+                    "selected_axis_compile=True,new_compile_cells=[dict(m=3,axes=['X'],role='CALIBRATION')],"
+                    "prepared={'pending':{'requests':[dict(m=3,physical_candidate=physical)]}})\n")
+                (root/'scripts/run_pf_m0_prices.py').write_text(
+                    "def duplicate_check(rounds,selected):\n"
+                    " return {'rows':[dict(row,action='HELD',findings=[{'running_job':{'pid':123}}]) "
+                    "for row in selected]}\n")
+                index = Path(temp)/'SAVED_PRICE_INDEX.json'
+                index.write_text(json.dumps(dict(root=str(root),locators=[])))
+                options = ['--saved-price-index', str(index)]
             if mode=='prior_axes':
                 item['previously_audited_price_axes']=[['old-circuit','X'],['old-circuit','Y']]
             request.write_text(json.dumps(item))
             result=subprocess.run([sys.executable,'-B',str(ROOT/'scripts/check_pf_preparation_owner.py'),
-                '--provider-root',str(root),'--request',str(request),'--output',str(output)],capture_output=True,text=True)
+                '--provider-root',str(root),'--request',str(request),'--output',str(output),*options],
+                capture_output=True,text=True)
             self.assertEqual(result.returncode,0,result.stderr)
             row=json.loads(output.read_text())['rows'][0]
             if original:self.assertEqual(before,original.read_bytes())
@@ -60,6 +82,12 @@ class OriginalPFOwner(unittest.TestCase):
         row=self.check('prior_axes')
         self.assertEqual(row['status'],'PRICE_EVIDENCE_REQUIRED')
         self.assertEqual(row['missing_audited_axes'],[['old-circuit','X'],['old-circuit','Y']])
+
+    def test_pending_price_owner_still_allows_independent_signal_plan(self):
+        row = self.check('price_independent')
+        self.assertEqual(row['status'], 'ORIGINAL_OWNER_PREFLIGHT_PASS')
+        self.assertEqual(row['clear_compile_rounds'], [])
+        self.assertFalse(row['deferred_price_rounds']['3'][0]['new_calculation'])
 
 
 if __name__=='__main__':unittest.main()

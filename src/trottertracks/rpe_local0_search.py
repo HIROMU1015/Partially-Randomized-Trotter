@@ -504,11 +504,13 @@ def local0_progress(applied, spec, run=None):
         pending = {'PREPARATION_WAITING': 'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE': 'TECHNICAL_FAILURE',
                    'PRIOR_OWNER_HOLD': 'TECHNICAL_FAILURE', 'PRICE_EVIDENCE_REQUIRED': 'PREPARATION_WAITING',
                    'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE', 'PRICE_RECHECK_AVAILABLE': 'PREPARATION_WAITING',
-                   'PRICE_OWNER_WAITING': 'PREPARATION_WAITING'}
+                   'PRICE_OWNER_WAITING': 'PREPARATION_WAITING', 'PRICE_NOT_EVALUATED': 'NOT_EVALUATED'}
         for key, record in load(pf_status).get('records', {}).items():
             if record.get('method') in ('FULL_PF', 'TRUNCATED_PF') and record.get('status') in pending:
                 observations[key] = dict(candidate_id=key, method=record['method'], state=pending[record['status']],
                                          reason=record.get('reason'), differing_fields=record.get('differing_fields'))
+                if record.get('price_axis_actions'):
+                    observations[key]['price_actions'] = record['price_axis_actions']
     database = run/'distributed/QUEUE.sqlite3'
     if not database.exists():
         progress['candidates'] = list(observations.values())

@@ -1,6 +1,8 @@
 """PF price decisions reopen for new evidence while preserving prior attempts."""
 import json
 from pathlib import Path
+import gzip
+import subprocess
 import tempfile
 import threading
 from types import SimpleNamespace
@@ -20,6 +22,57 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_catalog_follows_committed_axis_receipts_once_and_preserves_unknown(self):
+        carrier = {'commit': 'a'*40, 'path': 'catalog.json.gz'}
+        receipt = {'commit': 'b'*40, 'path': 'batch/PRICES.json', 'selector': [0]}
+        missing = {'commit': 'c'*40, 'path': 'missing/PRICES.json'}
+        records = {carrier['commit']+':'+carrier['path']: gzip.compress(json.dumps(
+            {'p': {'proof': [{'receipt': receipt}, {'receipt': missing}]}}).encode()),
+            receipt['commit']+':'+receipt['path']: b'[{"axis":"X"}]'}
+        def blob(command, **kwargs):
+            if command[-1] not in records:
+                raise subprocess.CalledProcessError(128, command)
+            return records[command[-1]]
+        rows = [dict(physical_id='p', m=1, axis=axis, action='HELD',
+                     findings=[dict(source=carrier, key='p')]) for axis in ('X', 'Y')]
+        with patch.object(prices.subprocess, 'check_output', side_effect=blob) as reads:
+            located = prices.catalog_receipt_locators(ROOT, rows)
+        self.assertEqual(reads.call_count, 3)
+        self.assertEqual(located['p', 'X'], ([receipt], [missing]))
+        self.assertEqual(located['p', 'X'], located['p', 'Y'])
+        rows[0].update(checked_receipts=[receipt], unavailable_receipts=[missing])
+        rows[1]['findings'].append({'running_job': {'pid': 234}})
+        actions = prices.price_axis_actions({'deferred_price_rounds': {1: rows}})
+        self.assertEqual([row['action'] for row in actions],
+                         ['NO_NEW_CALCULATION_UNEVALUATED', 'RECONCILE_ORIGINAL_ATTEMPT'])
+        self.assertTrue(all(not row['new_calculation'] for row in actions))
+
+    def test_original_calibration_requires_exact_plan_completed_compile_and_all_raw_files(self):
+        relative = Path('docs/research/distributed_selected_pf/cfg')
+        raw = relative/'calibration/run01'
+        plan = dict(configuration={'id': 'cfg', 'spec': {'split': {'original_PF_method': 'B0I'}}},
+                    prepared={'pending': {'requests': [{'m': 1, 'T': '0.8'}]}},
+                    new_compile_cells=[dict(m=1, axes=['Y'], role='EARLY_DIRECT')])
+        result = dict(child_exit_code=0, results=[
+            dict(ok=True, cell={'m': 1}, wrappers={'sine': {}})])
+        records = {relative/'PLAN.json': plan, raw/'RESULT.json': result,
+                   raw/'PRICES.json': [{'m': 1, 'axis': 'Y'}],
+                   raw/'SIDECARS_UNBOUND.json': [{}], raw/'IMPLEMENTATION_EVIDENCE.json': {}}
+        references = {1: [dict(checked_receipts=[dict(commit='a'*40, path=(raw/'PRICES.json').as_posix())])]}
+        def blob(command, **kwargs):
+            path = Path(command[-1].split(':', 1)[1])
+            if path not in records:
+                raise subprocess.CalledProcessError(128, command)
+            return json.dumps(records[path]).encode()
+        with patch.object(prices.subprocess, 'check_output', side_effect=blob):
+            compile_receipt = prices.original_calibration(ROOT, plan, references, relative)
+            self.assertEqual(compile_receipt['axes_by_round'], {'1': ['Y']})
+            result['child_exit_code'] = 1
+            self.assertIsNone(prices.original_calibration(ROOT, plan, references, relative))
+            result['child_exit_code'] = 0
+            del records[raw/'IMPLEMENTATION_EVIDENCE.json']
+            self.assertIsNone(prices.original_calibration(ROOT, plan, references, relative))
+
     def test_axis_recovery_uses_only_clear_unmeasured_wrappers(self):
         original = dict(selected_axis_compile=True, maximum_new_compile=4, new_compile_cells=[
             dict(m=2, axes=['X', 'Y'], role='CALIBRATION'), dict(m=4, axes=['X', 'Y'], role='HOLDOUT')])

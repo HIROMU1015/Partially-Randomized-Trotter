@@ -1889,7 +1889,7 @@ class WidthDriver:
             pf_records = list(pf_status.get('records', {}).values()) or [pf_status]
             pf_held = any(row.get('status') in ('PREPARATION_INCOMPLETE', 'PREPARATION_WAITING',
                                                'PRIOR_OWNER_HOLD', 'PRICE_EVIDENCE_REQUIRED',
-                                               'PRICE_ACTION_UNAVAILABLE', 'PRICE_RECHECK_AVAILABLE',
+                                               'PRICE_ACTION_UNAVAILABLE', 'PRICE_NOT_EVALUATED', 'PRICE_RECHECK_AVAILABLE',
                                                'PRICE_OWNER_WAITING')
                           for row in pf_records)
             if (not proposals and not pending and ready_families ==

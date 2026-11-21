@@ -84,14 +84,28 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             continue
         destination=Path(observations)/cid;destination.mkdir(parents=True,exist_ok=True)
         try:
-            deferred = helpers['unresolved_rounds'](root, plan, destination/'DUPLICATE_ROUNDS.json', extra) if helpers else {}
+            discovered = []
+            deferred = {}
+            if helpers:
+                report = destination/'DUPLICATE_ROUNDS.json'
+                deferred = helpers['unresolved_rounds'](root, plan, report, extra, discover=True)
+                if report.exists():
+                    discovered = json.loads(report.read_bytes())['discovered_admitted_receipts']
+                if discovered:
+                    plan = E.make_plan(root, configuration, source, **options)
+                    deferred = helpers['unresolved_rounds'](
+                        root, plan, destination/'REMAINING_DUPLICATES.json', extra, discover=True)
             cleared = helpers['independent_plan'](plan, deferred) if deferred else plan
             available = [cell for cell in cleared.get('new_compile_cells', ())
                          if not deferred or cell['role'] != 'HOLDOUT']
-            if deferred and not available:
+            raw_calibration = helpers['original_calibration'](
+                root, plan, deferred, Path('docs/research/distributed_selected_pf')/cid) if deferred else None
+            needs_signal = plan.get('new_signal_means', 0) and cid not in request.get('independent_saved_signals', {})
+            if deferred and not available and not needs_signal and not raw_calibration:
                 rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
                     reason=('No independently clear wrapper axis' if plan.get('selected_axis_compile')
-                            else 'No independently clear pair of X/Y wrappers'), deferred_price_rounds=deferred))
+                            else 'No independently clear pair of X/Y wrappers'), deferred_price_rounds=deferred,
+                    discovered_price_receipts=discovered))
                 continue
             provider.preflight(cleared, destination)
             row = dict(configuration_id=cid,status='ORIGINAL_OWNER_PREFLIGHT_PASS')
@@ -101,6 +115,10 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
                            clear_compile_rounds=[cell['m'] for cell in available])
             if deferred:
                 row['deferred_price_rounds'] = deferred
+            if raw_calibration:
+                row['original_calibration'] = raw_calibration
+            if discovered:
+                row['discovered_price_receipts'] = discovered
             rows.append(row)
         except (OSError, KeyError, TypeError, ValueError) as error:
             rows.append(dict(configuration_id=cid,status='PRIOR_OWNER_HOLD',reason=type(error).__name__+': '+str(error)))

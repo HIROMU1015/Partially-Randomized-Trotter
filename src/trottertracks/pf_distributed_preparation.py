@@ -142,6 +142,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     metadata_root = Path(__file__).resolve().parents[2]
     price_args = []
     settings = spec['pf_completion']
+    saved_signals = {}
     if inherited_registry is not None:
         # Resume the exact owner check and plan already bound to this workspace.
         request = read(owner_input)
@@ -157,9 +158,11 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             consumed = {tuple(axis) for axis in request.get('previously_audited_price_axes', ())}
             for item in request['selected']:
                 cfg = item['configuration_body']['id']
-                for waves in earlier_waves:
+                for waves in (wave_root, *earlier_waves):
                     for base in candidate_roots(waves):
                         leaf = base/cfg/'pf_auto/pf_completion'
+                        if leaf == run:
+                            continue
                         provider = leaf/'provider_workspace/docs/research/distributed_selected_pf'/cfg
                         if not provider.is_dir():
                             continue
@@ -168,15 +171,22 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                             owners.add(str(provider))
                         else:
                             consumed.update(audited)
+                            result = provider/'PF_SIGNALS.RESULT.json'
+                            if result.is_file():
+                                saved_signals[cfg] = dict(commit=read(result)['publication'])
             request = dict(request, prior_owner_directories=sorted(owners))
             if consumed:
                 request['previously_audited_price_axes'] = [list(axis) for axis in sorted(consumed)]
+            if saved_signals:
+                request['independent_saved_signals'] = saved_signals
         else:
             # Bind the prior scope of this scientific leaf at its first precheck.
             fixed_owner = read(owner_input)
             request = dict(request, prior_owner_directories=fixed_owner.get('prior_owner_directories', []))
             if 'previously_audited_price_axes' in fixed_owner:
                 request['previously_audited_price_axes'] = fixed_owner['previously_audited_price_axes']
+            if 'independent_saved_signals' in fixed_owner:
+                request['independent_saved_signals'] = fixed_owner['independent_saved_signals']
     if not owner_input.exists():
         put(owner_input,request)
     elif read(owner_input) != request:
@@ -188,6 +198,15 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             '--request',str(owner_input),'--output',str(owner_output),'--signal-index',str(signal_index),
             *price_args],check=True)
     owner=read(owner_output)
+    discovered = [ref for row in owner['rows'] for ref in row.get('discovered_price_receipts', ())]
+    if discovered and price_args:
+        from .pf_saved_prices import unique_locators
+        resolved_index = run/'RESOLVED_PRICE_INDEX.json'
+        if not resolved_index.exists():
+            index_data = read(price_index)
+            index_data['locators'] = unique_locators([*index_data['locators'], *discovered])
+            put(resolved_index, index_data)
+        price_args = ['--saved-price-index', str(resolved_index)]
     held=[row for row in owner['rows']if row['status'] in ('PRIOR_OWNER_HOLD','PRICE_EVIDENCE_REQUIRED')]
     if held:
         if not Path(registry_output).exists():put(registry_output,dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={}))
@@ -238,6 +257,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 if inherited_registry is not None else original_folder)
         value=read(folder/'PLAN.json')
         deferred = owner_rows[item['configuration_id']].get('deferred_price_rounds', {})
+        original_calibration = owner_rows[item['configuration_id']].get('original_calibration')
         if price_args:
             # Only the admitted prices actually selected by this plan need
             # object delivery to tasks running in the owned producer clone.
@@ -326,32 +346,52 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 track_collected_prices(workspace,compiled)
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
+        saved_signal = (saved_for_configuration(settings, 'saved_signal', value['configuration']['id'])
+                        or request.get('independent_saved_signals', {}).get(value['configuration']['id']))
+
+        def signals():
+            if saved_signal:
+                reuse_signal(root,workspace,folder,value,saved_signal)
+                return None
+            return call('signal','PF_SIGNALS')
+
         if deferred:
             from .pf_saved_prices import independent_plan
             # Preserve calibration/holdout roles while admitting independently clear work.
             cells = [cell for cell in independent_plan(value,deferred)['new_compile_cells']
                      if cell['role'] != 'HOLDOUT']
-            prices = []
-            if cells:
-                compiled = compile_stage('PF_COMPILE', 'calibration', cells)
-                track_collected_prices(workspace, compiled)
-                prices = call('audit', 'PF_AUDIT', compiled=compiled)['prices']
-            commits = sorted({row['price_evidence']['source']['commit'] for row in prices})
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                signal = pool.submit(signals) if value.get('new_signal_means', 0) and not saved_signal else None
+                audited = []
+                if cells or original_calibration:
+                    if original_calibration:
+                        compiled = reuse_calibration(root, workspace, folder, value,
+                            original_calibration['rounds'], original_calibration)
+                        put(folder/'SAVED_CALIBRATION_REUSE.json', original_calibration)
+                    else:
+                        compiled = compile_stage('PF_COMPILE', 'calibration', cells)
+                    track_collected_prices(workspace, compiled)
+                    audited = call('audit', 'PF_AUDIT', compiled=compiled)['prices']
+                saved_signal_result = signal.result() if signal is not None else None
+            commits = {row['price_evidence']['source']['commit'] for row in audited}
+            if saved_signal_result:
+                commits.add(saved_signal_result['publication'])
             if commits:
-                subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),*commits],
+                subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),*sorted(commits)],
                                cwd=root,check=True,capture_output=True)
             items.append(dict(status='PRICE_EVIDENCE_REQUIRED', configuration_id=item['configuration_id'],
                               reason='Outstanding PF price receipts require reconciliation',
-                              deferred_price_rounds=deferred, audited_independent_prices=prices))
+                              deferred_price_rounds=deferred, audited_independent_prices=audited,
+                              original_calibration=original_calibration,
+                              independent_signal=saved_signal_result or saved_signal))
             continue
-        saved_signal=saved_for_configuration(spec['pf_completion'],'saved_signal',value['configuration']['id'])
         if saved_signal:
-            reuse_signal(root,workspace,folder,value,saved_signal)
+            signals()
             price_source=prices()
         else:
             # The native PF contract has no signal -> calibration dependency.
             with ThreadPoolExecutor(max_workers=2)as pool:
-                signal=pool.submit(call,'signal','PF_SIGNALS');price=pool.submit(prices)
+                signal=pool.submit(signals);price=pool.submit(prices)
                 signal.result();price_source=price.result()
         items.append(local('register',prices=price_source,
             registry=str(Path(selected['registry_file']).relative_to(workspace)),

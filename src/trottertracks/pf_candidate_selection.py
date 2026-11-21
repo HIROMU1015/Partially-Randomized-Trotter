@@ -17,7 +17,7 @@ RULE='UNSEEN_PREFIX_SAVED_EVIDENCE_V1'
 PIECES={'2nd':1,'4th':3,'4th(m5_best)':11}
 PRICE_RECHECK_STATES = frozenset(('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD',
                                 'PRICE_RECHECK_AVAILABLE', 'PRICE_ACTION_UNAVAILABLE',
-                                'PRICE_OWNER_WAITING'))
+                                'PRICE_OWNER_WAITING', 'PRICE_NOT_EVALUATED'))
 
 
 def write(path,value):
@@ -299,7 +299,7 @@ def reconsider_prices(root, run, spec, settings, records):
 
     def inspect(item):
         cid, row = item
-        fingerprint = reconciliation_snapshot(root, row, locators[cid], objects=objects)
+        fingerprint = 'RECEIPT_RECOVERY_V1:' + reconciliation_snapshot(root, row, locators[cid], objects=objects)
         provider = spec.get('pf_price_recheck_provider')
         if provider:
             fingerprint = provider['source'] + ':' + fingerprint
@@ -538,11 +538,16 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             if result is None:continue
             chosen,status,entry=result;cid=chosen['configuration_id']
             disposition = status['status']
+            price_actions = price_axis_actions(status['price_reconciliation']) if 'price_reconciliation' in status else []
             if (distributed_completion and settings.get('recover_saved_price_rounds', True) and
                     disposition in ('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD')):
                 from .pf_saved_prices import live_price_owners
-                disposition = ('PRICE_OWNER_WAITING' if live_price_owners(status['price_reconciliation'])
-                               else 'PRICE_ACTION_UNAVAILABLE')
+                if live_price_owners(status['price_reconciliation']):
+                    disposition = 'PRICE_OWNER_WAITING'
+                elif any(action['action'] == 'NO_NEW_CALCULATION_UNEVALUATED' for action in price_actions):
+                    disposition = 'PRICE_NOT_EVALUATED'
+                else:
+                    disposition = 'PRICE_ACTION_UNAVAILABLE'
             reason = status.get('reason')
             if reason is None and status.get('remaining_needs'):
                 reason = 'PF_EVIDENCE_INCOMPLETE'
@@ -556,7 +561,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             if disposition == 'READY_RETURNED_TO_SAME_OPTIMIZER':
                 records[cid].pop('previous_preparation_hold', None)
             if 'price_reconciliation' in status:
-                records[cid]['price_axis_actions'] = price_axis_actions(status['price_reconciliation'])
+                records[cid]['price_axis_actions'] = price_actions
             else:
                 records[cid].pop('price_axis_actions', None)
             if entry is not None:
