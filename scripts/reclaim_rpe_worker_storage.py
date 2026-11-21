@@ -82,6 +82,23 @@ def local_reclaim_target(policy, latest, worker):
     return duplicate_reclaim_target(usage)
 
 
+def retained_artifact_hashes(run, db):
+    requests = db.execute("SELECT request FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED')").fetchall()
+    retained = {sha for (request,) in requests for sha in _hashes(json.loads(request))}
+    pending = run/'distributed/PREPARATION_PENDING.json'
+    if pending.is_file():
+        record = read(pending)
+        if isinstance(record.get('tasks'), dict):
+            finished = {row[0] for row in db.execute(
+                "SELECT job_id FROM jobs WHERE state IN ('ACCEPTED','CANCELLED')")}
+            for job_id, task in record['tasks'].items():
+                if job_id not in finished:
+                    retained.update(_hashes(task))
+        else:
+            retained.update(_hashes(record))
+    return retained
+
+
 def local_duplicate_cache(run, profile):
     """Drop only idle local cache copies with a byte-verified central copy."""
     policy = profile['storage_limit']
@@ -109,11 +126,7 @@ def local_duplicate_cache(run, profile):
                             ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""",
                           (profile['host_id'],)).fetchone():
                 return None
-            queued = [r[0] for r in db.execute("SELECT request FROM jobs WHERE state='QUEUED'")]
-        retained = {sha for request in queued for sha in _hashes(json.loads(request))}
-        pending = run/'distributed/PREPARATION_PENDING.json'
-        if pending.is_file():
-            retained.update(_hashes(read(pending)))
+            retained = retained_artifact_hashes(run, db)
         for marker in spool.glob('*/*/WORKER_STATE.json'):
             status = read(marker)['state']
             if status == 'TRANSFERRED':
@@ -143,7 +156,8 @@ def local_duplicate_cache(run, profile):
         if retained is None:
             return {}
         removed = {}
-        for path in sorted(worker.glob('*/*'), key=lambda path: path.stat().st_mtime_ns):
+        # Large duplicates restore intake with fewer registry checks.
+        for path in sorted(worker.glob('*/*'), key=lambda path: -path.stat().st_size):
             if (path.name in retained or path.parent.name != path.name[:2]
                     or not re.fullmatch('[a-f0-9]{64}', path.name) or path.is_symlink() or not path.is_file()):
                 continue
@@ -219,19 +233,7 @@ def verified_remote_duplicates(run, host, inventory, target):
         if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
                       ('STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""", (host,)).fetchone():
             return {}
-        requests = db.execute("SELECT request FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED')").fetchall()
-        retained = {sha for (request,) in requests for sha in _hashes(json.loads(request))}
-        pending = run/'distributed/PREPARATION_PENDING.json'
-        if pending.is_file():
-            record = read(pending)
-            if isinstance(record.get('tasks'), dict):
-                finished = {row[0] for row in db.execute(
-                    "SELECT job_id FROM jobs WHERE state IN ('ACCEPTED','CANCELLED')")}
-                for job_id, task in record['tasks'].items():
-                    if job_id not in finished:
-                        retained.update(_hashes(task))
-            else:
-                retained.update(_hashes(record))
+        retained = retained_artifact_hashes(run, db)
     proof = {}
     size_verified = 0
     canonical = central_artifact_caches(run)
