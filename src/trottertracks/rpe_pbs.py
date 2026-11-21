@@ -352,6 +352,29 @@ def fits_request(request, report, settings, host_id=None):
             pbs.get('remaining_seconds', 0) >= estimate + settings.get('drain_seconds', 30))
 
 
+def apply_q3_adapter(distributed, selection):
+    """Switch the declared Q3 routes on one PBS worker, preserving the pinned settings."""
+    pbs = distributed['pbs']
+    distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
+    worker = next(entry for entry in pbs['workers'] if entry['host_id'] == selection['host_id'])
+    root, manifest = selection['root'], selection['manifest']
+    if not Path(root).is_absolute() or not manifest.get('files'):
+        raise ValueError('PBS Q3 adapter must have an absolute root and fixed files')
+    rules = {rule['id']: rule for rule in pbs['q3_task_seconds']}
+    for identity in selection['rule_ids']:
+        rule = rules[identity]
+        if selection['host_id'] not in rule['hosts'] or rule['hosts'] != [selection['host_id']]:
+            raise ValueError('PBS Q3 rule must belong to the selected worker')
+        matches = [route['profile'] for route in worker['profile'].get('route_profiles', [])
+                   if (route['route_kind'], route['view_commit']) == (rule['route_kind'], rule['view_commit'])
+                   and route['profile'].get('adapter_manifest', {}).get('commit')
+                   in (rule['adapter_source'], manifest['commit'])]
+        if len(matches) != 1:
+            raise ValueError('PBS Q3 profile is missing or ambiguous: '+identity)
+        matches[0].update(adapter_root=root, adapter_manifest=deepcopy(manifest))
+        rule['adapter_source'] = manifest['commit']
+
+
 class PbsManager:
     def __init__(self, executor, settings, *, gateway=None):
         self.executor = executor

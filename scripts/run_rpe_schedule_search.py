@@ -187,6 +187,9 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     if trial.get('pbs_preparation_resources'):
         from trottertracks.rpe_pbs import apply_preparation_resources
         apply_preparation_resources(distributed, trial['pbs_preparation_resources'])
+    if trial.get('pbs_q3_adapter'):
+        from trottertracks.rpe_pbs import apply_q3_adapter
+        apply_q3_adapter(distributed, trial['pbs_q3_adapter'])
 
 
 @contextmanager

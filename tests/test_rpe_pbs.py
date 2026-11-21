@@ -102,6 +102,24 @@ class FakeExecutor:
 
 
 class AdmissionTests(unittest.TestCase):
+    def test_q3_adapter_selection_preserves_pinned_pbs_and_preparation_profiles(self):
+        routes = [dict(route_kind='pf_b_pf6', view_commit='pf-view',
+                       profile=dict(adapter_manifest=dict(commit='old'), dp_workers=2)),
+                  dict(route_kind='prdf_d2_common_entry', view_commit='df-view',
+                       profile=dict(adapter_manifest=dict(commit='old'), dp_workers=2))]
+        pbs = dict(workers=[dict(host_id='pbs-0', profile=dict(route_profiles=routes, preparation_profiles=[{'input':'fixed'}]))],
+                   q3_task_seconds=[dict(id='pf', route_kind='pf_b_pf6', view_commit='pf-view', hosts=['pbs-0'],
+                                         adapter_source='old', seconds=14400, memory_bytes=8192)])
+        original = deepcopy(pbs)
+        distributed = dict(pbs=pbs, pbs_pinned_settings=deepcopy(pbs))
+        new = dict(commit='new', files={'scripts/run_rpe_optimizer_q3_job.py':'hash'})
+        P.apply_q3_adapter(distributed, dict(host_id='pbs-0', rule_ids=['pf'], root='/fixed/adapter', manifest=new))
+        self.assertEqual(distributed['pbs_pinned_settings'], original)
+        self.assertEqual(routes[0]['profile'], dict(adapter_root='/fixed/adapter', adapter_manifest=new, dp_workers=2))
+        self.assertEqual(routes[1], original['workers'][0]['profile']['route_profiles'][1])
+        self.assertEqual(pbs['workers'][0]['profile']['preparation_profiles'], [{'input':'fixed'}])
+        self.assertEqual(pbs['q3_task_seconds'][0], dict(original['q3_task_seconds'][0], adapter_source='new'))
+
     def test_release_q3_estimate_binds_the_route_and_worker_and_can_be_disabled(self):
         route = dict(route_kind='pauli', view_commit='view', adapter_source='new-adapter')
         policy = dict(schema='RPE_PBS_WALLTIME_POLICY_V1', id='walltime-v1',
