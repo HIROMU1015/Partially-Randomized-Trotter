@@ -141,3 +141,5 @@
 11月22日00時58分、B0Iの価格較正（p=9、4th(m5_best)、要求幅16h）の本体開始をRomuTailのworkerで確認した。新しい制御器は旧制御器で配送に至らなかった予約 `prep-5a165f226b2a9b8f67449210` とattempt `a8234c47aff045eca6136de6d2ddea9a` を継承した。台帳の予約・割当は各1回。連続する2区間で、このrunの科学workerに帰属するCPU時間は45.32秒中80.66 CPU秒、45.31秒中81.58 CPU秒だった。server1、server2、WSLでは同時期の各約45秒間に0 CPU秒。PBSへのこのrunの新規割当は0件。PBSノード全体の負荷は集計に含めていない。準備開始時点でQ3の新規開始は0件であり、全ホストの利用率改善は未確認。
 
 科学呼出しなしの検証では、保存された同じ要求を旧構成表が拒否し、親release・固定SOURCE・workerの実行条件を照合した新構成表が受理した。分散配送・再開・候補準備の回帰テストは61件と2サブテストが通過した。RomuTail上の証跡は `.rpe-central/deployment/fleet-component-b900a924a1/` の `PF_ASSIGNMENT_VALIDATION.json`、`UNDISPATCHED_OWNER.json`、`START_CHECK.json`、`LOCAL_CPU.jsonl`、`REMOTE_CPU.json`、`LIVE_SAMPLES.jsonl` にある。
+
+同日01時01分に、上記の実compileと後続の監査 `prep-107fbcb5a6b224d49bf8b14d` の本体実行・回収・採用を確認した。両jobの予約・割当・採用はそれぞれ1回。m=5,6のX/Y計4軸が `C_IMPLEMENTATION_GUARD_PASS` を通過した。候補には別ラウンドの価格照合が残っている。3区間を合計すると135.91秒間に204.66 CPU秒（平均1.51 CPU）。個別の採用時刻とイベント回数は同じ証跡ディレクトリの `ADOPTION_CHECK.json` に記録した。
