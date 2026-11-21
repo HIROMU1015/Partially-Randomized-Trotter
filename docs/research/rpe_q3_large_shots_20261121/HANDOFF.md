@@ -39,3 +39,11 @@ PR-DFの一部では、同じ物理条件でも複数の保存モデルが異な
 通常Resumeでスケジューラ `99c023a1faea5ef24baa33d64540af9a2bbb1c6c` とRomuTailの大ショットadapter `bb0fd4cd975a7705995edbd07618c0dfc17aff11` を適用した。元runの固定release、科学SOURCE、scope、入力と予算台帳は継承し、元の固定ファイル8件のhashを再照合した。§10.5はPASS。旧STOPの保護、未確定attemptの保護、通常再開と大ショット経路の試験44件と6サブテストが通過した。
 
 16:02 JST時点で、通常探索の共通キューからRomuTailが実行した大ショットQ3を3件受領・採用した。いずれもPR-DF、$M=11$ の論文比較点で、固定モデル内の閾値に適合した。結果と採用時刻の照合は `.rpe-central/deployment/large-shot-resume-99c023a1fa/LIVE_ADOPTION.json` に保存した。残る候補は同じ中央controllerが継続する。
+
+## 同じrunでの共有PBSノード利用
+
+別枠で確保済みだった物理PBSジョブ `267684.CPUcluster-PRISM` の `CPUcluster035`（96 CPU、350 GiB、24時間枠）を再利用した。現runで `pbs-0` の受付を有効にし、PBSの固定PythonでB0IとPR-DFの各 $M=11,12$ の保存要求をdry-checkした。旧adapterの規模上限で保留されていた4件が新版 `bb0fd4cd97` でPASSした。
+
+同じrunを通常Stopでドレインし、スケジューラ `3199dc7c9e26359369fe5f2490465faca8f9cc42` で通常Resumeした。該当するQ3のadapterを選択し、既存のwalltime・CPU・RAMの会計、準備profile、固定PBS設定は継承した。元の設定・入力8件のhashを照合した。PBS適格性と再開の回帰7件が通過した。既存の物理PBSジョブIDでworkerが起動した。
+
+11月21日16:15 JSTの時点で、PBSが実行した新版Q3をPR-DF 12件、B0I 2件、合計14件採用した。元attemptの終了receiptと中央採用を確認した。照合記録は `.rpe-central/deployment/pbs-large-shot-resume-3199dc7c9e/LIVE_PBS_ADOPTION.json`。
