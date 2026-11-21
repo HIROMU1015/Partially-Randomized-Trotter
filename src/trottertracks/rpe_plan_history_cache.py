@@ -178,6 +178,20 @@ class HistoryCache:
             jobs = (sorted(p for p in directory.iterdir() if p.is_dir()) if details else
                     [outcome.parent for outcome in sorted(directory.glob('*/OUTCOME.json'))])
             for job in jobs:
+                request_path = job / 'REQUEST.json'
+                previous = request_configurations.get(request_path)
+                if not details and previous is not None and previous[1] not in ready and (not held or job.resolve() not in held):
+                    try:
+                        info = request_path.stat()
+                    except FileNotFoundError:
+                        pass
+                    else:
+                        identity = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+                        if identity == previous[0]:
+                            stats['scanned_jobs'] += 1
+                            stats['unrelated_request_hits'] += 1
+                            refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
+                            continue
                 signature = _signature(job)
                 present = {name for name, value in signature if value is not None}
                 if not present.intersection(('REQUEST.json', 'LAUNCH.json', 'OUTCOME.json')):
@@ -189,15 +203,7 @@ class HistoryCache:
                 if held and job.resolve() in held:
                     refused.append(dict(job=str(job), reason='PRIOR_Q3_PERSISTENCE_HOLD'))
                     continue
-                request_path = job / 'REQUEST.json'
-                request_signature = tuple(signature[0][1] or ())  # REQUEST.json is the first marker
-                previous = request_configurations.get(request_path)
-                if not details and previous is not None and previous[0] == request_signature and previous[1] not in ready:
-                    # Unrelated candidates do not need their exact bounds
-                    # decoded simply because a different candidate became ready.
-                    stats['unrelated_request_hits'] += 1
-                    refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
-                    continue
+                request_signature = tuple(signature[0][1] or ())
                 key = str(job.resolve())
                 saved = self.db.execute('SELECT signature, context, payload FROM evidence WHERE job=?', (key,)).fetchone()
                 cached = None

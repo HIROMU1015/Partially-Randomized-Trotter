@@ -423,17 +423,24 @@ def outward(x, digits=30, up=False):
 
 
 def _decimal_parts(numerator, denominator, digits):
-    exponent = len(str(numerator)) - len(str(denominator))
-    if (numerator < denominator * 10**exponent if exponent >= 0
-            else numerator * 10**-exponent < denominator):
-        exponent -= 1
-    exponent -= digits - 1
+    # Estimate the decade from bit lengths, then correct against the exact
+    # ratio. Converting both full integers to decimal dominated report time.
+    if numerator <= 0 or denominator <= 0 or digits <= 0:
+        raise ValueError('Positive fraction parts and significant digits required')
+    bits = numerator.bit_length() - denominator.bit_length()
+    exponent = bits * 301029995663981195 // 10**18
     if exponent >= 0:
         denominator *= 10**exponent
     else:
         numerator *= 10**-exponent
-    quotient, remainder = divmod(numerator, denominator)
-    return exponent, quotient, bool(remainder)
+    while numerator < denominator:
+        numerator *= 10
+        exponent -= 1
+    while numerator >= 10 * denominator:
+        denominator *= 10
+        exponent += 1
+    quotient, remainder = divmod(numerator * 10**(digits - 1), denominator)
+    return exponent - digits + 1, quotient, bool(remainder)
 
 
 def _decimal_text(negative, exponent, quotient, inexact, up):

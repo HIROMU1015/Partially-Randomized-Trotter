@@ -256,6 +256,36 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             # The approved preparation concurrency can feed distinct PF
             # families as well as the PR lanes. Keep explicit PF limits.
             pf.setdefault('max_candidates', spec.get('candidate_completion', {}).get('parallel', 1))
+    if 'pf_price_recheck_provider' in trial:
+        provider = trial['pf_price_recheck_provider']
+        root = Path(provider['root']).resolve(strict=True)
+        base = Path(spec['pf_completion']['entry']).resolve().parents[1]
+        def revision(path):
+            return subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=path, text=True).strip()
+        if revision(root) != provider['source'] or revision(base) != provider['base_source']:
+            raise ValueError('PF price continuation requires its pinned producer and original source')
+        subprocess.run(['git', 'merge-base', '--is-ancestor', provider['base_source'], provider['source']],
+                       cwd=root, check=True)
+        # Remote mailboxes keep their deployed profiles. Only the verified
+        # local profile advertises this additional producer on this Resume.
+        local = distributed['local_worker']
+        configured = distributed['preparation_profiles']['local']
+        if not isinstance(configured, dict):
+            configured = O.load_json(Path(configured))
+        distributed['preparation_profiles']['local'] = configured
+        for host_profile in (local, configured):
+            rules = host_profile['preparation_profiles']
+            for rule in list(rules):
+                if rule.get('source_commit') != provider['base_source'] or not rule['provider'].startswith('PF_'):
+                    continue
+                if any(other.get('source_commit') == provider['source'] and other['provider'] == rule['provider']
+                       and other['stage'] == rule['stage'] for other in rules):
+                    continue
+                copied = deepcopy(rule)
+                copied['source_commit'] = provider['source']
+                copied['profile']['preparation_sources'][provider['source']] = str(root)
+                rules.append(copied)
+        spec['pf_price_recheck_provider'] = deepcopy(provider)
     if trial.get('pbs_only'):
         distributed['execution_hosts'] = [worker['host_id'] for worker in distributed['pbs']['workers']]
     if trial.get('pbs_preparation_resources'):

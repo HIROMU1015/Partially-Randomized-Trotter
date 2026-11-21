@@ -261,7 +261,10 @@ def reconsider_prices(root, run, spec, settings, records):
     def inspect(item):
         cid, row = item
         fingerprint = reconciliation_snapshot(root, row, locators[cid], objects=objects)
-        if settings.get('selected_axis_compile') is True:
+        provider = spec.get('pf_price_recheck_provider')
+        if provider:
+            fingerprint = provider['source'] + ':' + fingerprint
+        elif settings.get('selected_axis_compile') is True:
             fingerprint = 'SELECTED_AXIS_V1:'+fingerprint
         return cid, row, fingerprint
 
@@ -274,6 +277,15 @@ def reconsider_prices(root, run, spec, settings, records):
             'pf_auto/price-recovery' if row.get('price_receipt_recheck') else 'pf_auto'))
         leaf = previous/'candidates'/cid/'pf_auto/pf_completion'
         prior_outputs = row.get('price_prior_owner_directories', [])
+        provider = spec.get('pf_price_recheck_provider')
+        if provider:
+            # The new provider's default owner paths differ from those of
+            # the original D checkout. Retain both duplicate checks.
+            original = (Path(root) / settings['entry']).resolve().parents[1]
+            prior_outputs = sorted(set(prior_outputs) | {
+                str(original / '.pf_evidence_private' / cid),
+                str(original / 'docs/research/d_pf_on_demand_evidence_20261116/selected' / cid)})
+            row['price_recheck_provider_source'] = provider['source']
         consumed = completed_partial(row, leaf, cid)
         if consumed is None and (leaf/'provider_workspace').exists():
             provider = leaf/'provider_workspace/docs/research/distributed_selected_pf'/cid
@@ -463,6 +475,12 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         one_settings = dict(settings, max_candidates=1)
         if record.get('price_recheck_directory'):
             base = run/record['price_recheck_directory']
+            if record.get('price_recheck_provider_source'):
+                provider = spec.get('pf_price_recheck_provider') or {}
+                if provider.get('source') != record['price_recheck_provider_source']:
+                    raise ValueError('PF price recheck provider changed on resume')
+                one_settings.update(entry=str(Path(provider['root'])/'scripts/prepare_pf_candidate.py'),
+                                    selected_axis_compile=True)
             one_settings['prior_owner_directories'] = sorted(
                 set(settings.get('prior_owner_directories', ())) | set(record['price_prior_owner_directories']))
             one_settings['previously_audited_price_axes'] = record['previously_audited_price_axes']

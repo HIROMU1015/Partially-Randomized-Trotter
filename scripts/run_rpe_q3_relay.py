@@ -427,10 +427,13 @@ class Relay:
         poll = self._poll_value(status)
         observed = self.post('/v1/poll', dict(poll, observe_only=True))
         challenges = observed.get('eligibility_challenges') or []
-        if challenges and status['slots']:
+        # The controller may offer one preparation input check while this
+        # mailbox is busy. The real slot count still governs every claim.
+        if (challenges and status.get('accepting_new_jobs', True)
+                and (observed.get('host_admission') or {}).get('accepting', True)):
             cached = status.get('cached_artifact_sha256')
             cached = set(cached) if cached is not None else None
-            challenges = self._readiness_batch(worker, challenges, cached, slots=status['slots'])
+            challenges = self._readiness_batch(worker, challenges, cached, slots=max(1, status['slots']))
             # A fresh worker inventory avoids an SSH round trip. The worker
             # still verifies and binds all metadata in its readiness check.
             if cached is None or self._readiness_bundle_hashes(challenges) - cached:

@@ -1537,7 +1537,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             from trottertracks import rpe_priority_search as P
             refresh_ready = None
             history_pool = None
-            ready_history = None
+            ready_history = []
             if ready_source is not None:
                 pending_ready, take_ready = ready_source.subscribe(name, context, base_candidates, ex)
 
@@ -1551,29 +1551,27 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     return added, saved
 
                 def ready_pending():
-                    return ready_history.done() if ready_history is not None else pending_ready()
+                    return ready_history[0].done() if ready_history else pending_ready()
 
                 def wake_selector(_):
                     with ex.state.cv:
                         ex.state.cv.notify_all()
 
                 def await_ready():
-                    if ready_history is None:
+                    if not ready_history:
                         return False
                     # A failing validation propagates through the normal
                     # selector fault handling. Nothing is dispatched for it.
-                    ready_history.result()
+                    ready_history[0].result()
                     return True
 
                 ex.ready_pending = ready_pending
 
                 def refresh_ready():
-                    nonlocal ready_history
-                    if ready_history is not None:
-                        if not ready_history.done():
+                    if ready_history:
+                        if not ready_history[0].done():
                             return [], {}
-                        added, saved = ready_history.result()
-                        ready_history = None
+                        added, saved = ready_history.pop(0).result()
                     else:
                         added, saved_snapshot = take_ready()
                         if not added:
@@ -1583,8 +1581,17 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                         if history_pool is not None:
                             view = ex.for_method(name)
                             view.routes, view.expected = dict(ex.routes), dict(ex.expected)
-                            ready_history = history_pool.submit(validate_ready, view, added, saved_snapshot)
-                            ready_history.add_done_callback(wake_selector)
+                            # Release the first host wave while the single history reader
+                            # checks the rest. Geometric batches bound repeat directory scans.
+                            offset = 0
+                            count = 1
+                            while offset < len(added):
+                                batch = added[offset:offset + count]
+                                future = history_pool.submit(validate_ready, view, batch, saved_snapshot)
+                                ready_history.append(future)
+                                future.add_done_callback(wake_selector)
+                                offset += len(batch)
+                                count = max(2 * count, getattr(ex, 'capacity', 1))
                             return [], {}
                         added, saved = validate_ready(ex, added, saved_snapshot)
                     ids = {c['configuration_id'] for c in added}
@@ -1643,8 +1650,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                         after_drain=after_drain if scaled_finalizers is not None else None,
                                         held=prior_q3_holds,
                                         flagged_stop=(lambda: (ex.run_dir/'STOP_REQUESTED.json').exists()) if executor is not None else None)
-                    if ready_history is not None:
-                        ready_history.result()
+                    for future in ready_history:
+                        future.result()
             else:
                 result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                         baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),

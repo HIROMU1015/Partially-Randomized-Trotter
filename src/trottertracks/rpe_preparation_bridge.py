@@ -840,6 +840,16 @@ class DistributedPreparationBridge:
         pf_compile = stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
         if pf_compile and script.name == 'run_pf_preparation_stage.py':
             runtime_inputs.append(self._pf_native_runtime(script, inputs, bindings, df_inputs))
+        if (stage in ('PF_AUDIT', 'PF_HOLDOUT_AUDIT') and script.name == 'run_pf_preparation_stage.py'
+                and getattr(completion, 'settings', {}).get('selected_axis_compile')):
+            # Use the same selected-axis audit as the controller. Older
+            # host transports predate the per-axis raw-receipt check.
+            adapter = Path(__file__).resolve().parents[2] / 'scripts/run_pf_preparation_stage.py'
+            destination = 'private/pf-transport/scripts/run_pf_preparation_stage.py'
+            sha = self._blob(adapter.read_bytes())
+            inputs[destination] = sha
+            df_inputs.append(dict(path=destination, sha256=sha))
+            bindings[str(script)] = '@WORK@/' + destination
         if snapshot and (pf_signal or script.name in (
                 'run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py',
                 'derive_pr_df_candidate_descriptor.py')):

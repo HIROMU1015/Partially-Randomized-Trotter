@@ -127,6 +127,19 @@ class PFPriceReconciliationTests(unittest.TestCase):
             write(provider/'STOP.json', dict(reason='mandatory'))
             self.assertIsNone(prices.completed_partial({}, leaf, 'cfg'))
 
+    def test_new_axis_provider_retains_original_owner_paths_and_stable_generation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            original = run/'original'
+            settings = dict(entry=str(original/'scripts/prepare_pf_candidate.py'))
+            spec = dict(pf_price_recheck_provider=dict(source='fixed-axis-source'))
+            row = dict(status='PRICE_EVIDENCE_REQUIRED', price_reconciliation={})
+            for _ in range(2):
+                selection.reconsider_prices(ROOT, run, spec, settings, {'cfg': row})
+            self.assertEqual(row['price_recheck_generation'], 1)
+            self.assertEqual(row['price_recheck_provider_source'], 'fixed-axis-source')
+            self.assertIn(str(original/'.pf_evidence_private/cfg'), row['price_prior_owner_directories'])
+
     def test_rechecks_when_original_owner_publishes_completion(self):
         with tempfile.TemporaryDirectory() as tmp:
             run = Path(tmp)

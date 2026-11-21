@@ -2539,7 +2539,11 @@ class DistributedExecutor(ConcurrentExecutor):
                 self._refresh_capacity(admission_policy, admission_error)
                 s.cv.notify_all()
                 new_slots = self._offer_free(host, admission_policy, admission_error)
-                pending_challenges = self._pending_preparation_challenges(host, new_slots)
+                may_probe = (not stopping and not s.failure and not s.closed and admission['accepting']
+                             and admission['max_slots'] != 0 and value.get('accepting_new_jobs', True)
+                             and self._offer_fresh(host)
+                             and ((value.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs', True))
+                pending_challenges = self._pending_preparation_challenges(host, new_slots) if may_probe else []
                 def reply(**fields):
                     existing=fields.get('eligibility_challenges',[])
                     fields['eligibility_challenges']=list({item['job_id']:item for item in existing+pending_challenges}.values())

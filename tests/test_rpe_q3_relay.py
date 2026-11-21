@@ -173,6 +173,25 @@ class RelayTests(unittest.TestCase):
             self.assertEqual(post.call_args.args[1]['readiness_errors'], {'first': 'ARTIFICIAL_HOLD'})
             self.assertEqual(relay._readiness_batch(worker, challenges, slots=2), [unrelated])
 
+    def test_busy_mailbox_stages_one_input_without_offering_a_slot(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            configuration = Path(temporary)/'relay.json'
+            write(configuration, dict(state_directory=temporary, controller=dict(ssh_alias='qg2'), workers=[]))
+            relay = R.Relay(configuration)
+            worker = dict(host_id='ARTIFICIAL_WSL')
+            status = dict(worker, slots=0, source_sha='ARTIFICIAL', cached_prefixes=[], cached_artifact_sha256=[])
+            checks = [dict(job_id=i, request=dict(route=dict(kind='preparation'))) for i in ('a','b')]
+            for accepting in (True, False):
+                answer = dict(eligibility_challenges=checks, host_admission=dict(accepting=accepting))
+                with patch.object(relay, 'post', return_value=answer) as post, patch.object(
+                        relay, 'remote', side_effect=[(status, 0), (worker, 0)]) as remote:
+                    relay._discover(worker)
+                self.assertTrue(all(call.args[1]['slots'] == 0 and call.args[1]['observe_only']
+                                    for call in post.call_args_list))
+                self.assertEqual(remote.call_count, 2 if accepting else 1)
+                if accepting:
+                    self.assertEqual(len(remote.call_args.args[2]['challenges']), 1)
+
     def test_readiness_fairness_survives_repeated_holds_and_rotating_batches(self):
         with tempfile.TemporaryDirectory(prefix='relay-readiness-fairness-') as temporary:
             configuration = Path(temporary)/'relay.json'

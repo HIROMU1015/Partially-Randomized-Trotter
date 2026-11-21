@@ -45,6 +45,17 @@ def fixture():
 
 
 class CompactPlanTests(unittest.TestCase):
+    def test_large_outward_intervals_on_both_sides_of_decade(self):
+        for exponent in (-4000, -1, 0, 1, 4000):
+            scale = Fraction(10)**exponent
+            for offset in (-1, 0, 1):
+                for sign in (-1, 1):
+                    value = sign * scale * (10**80 + offset) / 10**80
+                    lo, hi = (Fraction(CLI.outward(value, up=up)) for up in (False, True))
+                    self.assertLessEqual(lo, value)
+                    self.assertLessEqual(value, hi)
+                    self.assertEqual(hi - lo, Fraction(10)**(exponent - 29 - (offset < 0)) if offset else 0)
+
     def test_projection_preserves_selection_and_counts_infeasible_without_adopting_it(self):
         method, result, _, payload = fixture()
         original = deepcopy(payload)

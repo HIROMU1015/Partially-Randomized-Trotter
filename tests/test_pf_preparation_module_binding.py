@@ -57,7 +57,7 @@ def fake_modules():
     def bindings(*args, **kwargs):
         prices = []; sidecars = []
         for axis in ('X', 'Y'):
-            prices.append({'axis': axis, 'diagnostic': {}, 'mean': {'rz_count': 123}})
+            prices.append({'m': args[2]['m'], 'axis': axis, 'diagnostic': {}, 'mean': {'rz_count': 123}})
             sidecars.append(dict(axis=axis, implementation_evidence={'selector': ['fixture_' + axis]},
                 price_source=kwargs['price_source'], identity={'ARTIFICIAL': True}, law_binding={'ARTIFICIAL': True},
                 cohort='ARTIFICIAL', physical_context={'ARTIFICIAL': True}, profile_extension={'ARTIFICIAL': True},
