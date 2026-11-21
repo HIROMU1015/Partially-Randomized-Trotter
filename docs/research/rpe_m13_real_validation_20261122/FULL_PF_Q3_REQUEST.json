@@ -1,0 +1,93 @@
+{
+  "request_id": "m13-real-full_pf",
+  "method": "FULL_PF",
+  "configuration_id": "79e3256e75c9499dbaf7428a47bebd921ea9e035b82bad181a7070a38d07fe2d",
+  "N_X": [
+    32,
+    30,
+    28,
+    26,
+    24,
+    22,
+    20,
+    18,
+    16,
+    14,
+    12,
+    10,
+    8,
+    6
+  ],
+  "N_Y": [
+    32,
+    30,
+    28,
+    26,
+    24,
+    22,
+    20,
+    18,
+    16,
+    14,
+    12,
+    10,
+    8,
+    6
+  ],
+  "cost": {
+    "numerator": 545495300,
+    "denominator": 1
+  },
+  "origin": {
+    "kind": "RPE_SCALED_SHOTS_V1",
+    "M": 13
+  },
+  "route": {
+    "kind": "pf_b_pf6",
+    "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+    "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+    "templates": [
+      {
+        "commit": "69cd4b2a2499f62c41da690c61372f73feb7ce5c",
+        "path": "docs/research/rpe_m13_real_validation_20261122/FULL_PF_Q3_TEMPLATE.json"
+      }
+    ],
+    "configuration_ids": "*",
+    "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91",
+    "horizon_risk_source": {
+      "commit": "89fcde14f6ac5f4b97be234f9b0822091e7d9ac7",
+      "path": "src/trottertracks/rpe_deterministic_risk.py",
+      "sha256": "153f131b76aed35a0043eb60825b89fb62b6fcc616254d56b7a817712a376df3"
+    },
+    "horizon_parent": {
+      "configuration": {
+        "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+        "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/PLAN.json",
+        "selector": [
+          "configuration"
+        ]
+      },
+      "signal_packet": {
+        "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+        "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/B_SIGNAL_INPUT.json"
+      }
+    },
+    "route_views": {
+      "89fcde14f6ac5f4b97be234f9b0822091e7d9ac7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-m13-risk-89fcde14f"
+    }
+  },
+  "expected": {
+    "total_configuration_id": "af18d37da2ffa763739fe6f01631c85516c210b8ce8e30fd949fbfaabf4755f5",
+    "binding_id": "69cc82b4dfc0d3f35020e5678f8202da2e5fcbb628a52646a0271c4fbe00dca0",
+    "signal_source": {
+      "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+      "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/B_SIGNAL_INPUT.json"
+    },
+    "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d"
+  },
+  "optimizer_source": "7d3d1c2ba6145363f6d61b5eadc8163313f77a46",
+  "execution_profile": {
+    "dp_workers": 8
+  }
+}
