@@ -35,7 +35,8 @@ class PreparationQueue(Base.ControllerFailures):
             files={name:base64.b64encode(json.dumps(value).encode()).decode() for name,value in files.items()})
 
     def test_horizon_round_shares_existing_queue_and_stage_budgets(self):
-        from trottertracks.rpe_preparation_queue import submit_horizon_preparation
+        from trottertracks.rpe_preparation_queue import submit_horizon_preparation, submit_registered_horizons
+        from trottertracks.rpe_scaled_shots import projection_id
 
         executor = self.executor(capacity=3)
         tasks = {}
@@ -49,9 +50,10 @@ class PreparationQueue(Base.ControllerFailures):
                     for cid in ('run-candidate-a', 'run-candidate-b')}
         spec = {'horizon_extensions': {'tasks': tasks, 'bindings': bindings}, 'budgets': {'signal': 1, 'compile': 1}}
         runtime = SimpleNamespace(settings=spec, executor=executor, approved=True)
-        requests = [dict(source_configuration_id=cid, configuration_id=cid+'-extended', M=13,
+        requests = [dict(source_configuration_id=cid, configuration_id=projection_id(cid, 12, 13), M=13,
                          source_M=12, extension_rounds=[13]) for cid in bindings]
-        reports = submit_horizon_preparation(runtime, requests)
+        candidates = [dict(configuration_id=cid) for cid in bindings]
+        reports = submit_registered_horizons(runtime, candidates, {'M': [11, 12, 13]}, 12)
         self.assertEqual(reports[0]['jobs'], reports[1]['jobs'])
         jobs = reports[0]['jobs']['13']
         self.assertEqual(jobs['X'], jobs['Y'])

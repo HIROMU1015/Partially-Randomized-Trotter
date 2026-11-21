@@ -1048,7 +1048,7 @@ class DistributedPreparationBridge:
         bindings.update(used_path_aliases(aliases, bindings, original_documents, command))
         root_bundles=self._bundle(root,source,input_hashes,
                                  tracked_workspace=not script.is_relative_to(root))
-        if script.is_relative_to(root):
+        if script.is_relative_to(root) or pf_terminal_signal:
             # This bundle supplies locators for frozen inputs. Checking out
             # its HEAD would substitute controller code for the provider.
             root_bundles=[dict(bundle,checkout_input_head=False)for bundle in root_bundles]

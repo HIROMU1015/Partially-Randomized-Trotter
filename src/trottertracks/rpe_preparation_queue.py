@@ -37,6 +37,26 @@ def preparation_job_id(request, *, source_manifest=None, dependencies=()):
     return normalize_preparation_request(request,source_manifest=source_manifest,dependencies=dependencies)['request_id']
 
 
+def submit_registered_horizons(runtime, candidates, policy, source_M):
+    """Start fixed, scoped extension work while the shorter horizon is running."""
+    from .rpe_scaled_shots import projection_id
+
+    bindings = (runtime.settings.get('horizon_extensions') or {}).get('bindings', {})
+    requests = []
+    for candidate in candidates:
+        cid = candidate.get('configuration_id')
+        binding = bindings.get(cid)
+        if not binding or candidate.get('M', source_M) != binding['source_M']:
+            continue
+        for horizon in policy['M']:
+            rounds = list(range(binding['source_M'] + 1, horizon + 1))
+            if rounds:
+                requests.append(dict(source_configuration_id=cid, source_M=binding['source_M'],
+                    configuration_id=projection_id(cid, binding['source_M'], horizon), M=horizon,
+                    extension_rounds=rounds))
+    return submit_horizon_preparation(runtime, requests)
+
+
 def submit_horizon_preparation(runtime, requests):
     """Resolve only the requested extension rounds against a fixed provider catalog.
 

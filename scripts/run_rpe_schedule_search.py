@@ -1589,6 +1589,13 @@ class WidthDriver:
         try:
             runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
             if runtime is not None:comp.bind_stage_executor(runtime)
+            if runtime is not None and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+                from trottertracks.rpe_preparation_queue import submit_registered_horizons
+                from trottertracks.rpe_scaled_shots import settings as scaled_settings
+                early = submit_registered_horizons(runtime, context['candidates'],
+                    scaled_settings(search['scaled_shots']), problem['rpe']['M'])
+                if early:
+                    K.CLI.write(self.run/'HORIZON_PREPARATION.json', early)
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
                 prepare_during = executor.replay_prior_q3() and prepare_during
             interim=None
