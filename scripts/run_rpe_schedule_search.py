@@ -165,6 +165,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         # The executor and CLI may already hold the base optimizer module.
         # Update that module before starting selectors so both use the handoff.
         module = O if module_name == 'rpe_method_optimizer' else importlib.util.module_from_spec(helper)
+        if module is O:
+            module.__file__ = str(path)
         if module_name == 'pr_candidate_completion':
             module.FIXED_RUN_CODE_ROOT = ROOT
         helper.loader.exec_module(module)
