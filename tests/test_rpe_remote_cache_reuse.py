@@ -91,6 +91,18 @@ class RemoteCacheProof(unittest.TestCase):
         put(self.current/'distributed/PREPARATION_PENDING.json', {'inputs': [sha]})
         self.assertEqual(R.verified_remote_duplicates(self.current, 'server2', inventory, 1000), {})
 
+    def test_closed_preparation_reference_can_be_reclaimed_but_unknown_is_retained(self):
+        closed, size, _ = self.blob(self.current, b'closed input')
+        pending, n, _ = self.blob(self.current, b'unresolved')
+        with sqlite3.connect(self.current/'distributed/QUEUE.sqlite3') as db:
+            db.execute('ALTER TABLE jobs ADD COLUMN job_id TEXT')
+            db.execute("INSERT INTO jobs VALUES ('pbs-0','ACCEPTED','{}','done')")
+            db.execute("INSERT INTO jobs VALUES ('pbs-0','UNKNOWN','{}','unresolved')")
+        put(self.current/'distributed/PREPARATION_PENDING.json',
+            {'tasks': {'done': {'input': closed}, 'unresolved': {'input': pending}}})
+        self.assertEqual(R.verified_remote_duplicates(self.current, 'pbs-0',
+                                                      {closed: size, pending: n}, 1000), {closed: size})
+
     def test_active_remote_execution_disables_proofs(self):
         sha, n, _ = self.blob(self.owner('prior'), b'input')
         self.job('RUNNING', {}, host='server2')
@@ -115,10 +127,10 @@ class LocalFilesystemPressure(unittest.TestCase):
                 reclaim.assert_called_once_with(self.current, profile)
         with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=60000)):
             self.assertEqual(R.local_reclaim_target(policy, latest, self.state), 0)
-            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=474999), self.state), 0)
-            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=475000), self.state), 25000)
+            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=399999), self.state), 0)
+            self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=400000), self.state), 50000)
             self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=600000,
-                             reason='STORAGE_LIMIT_REACHED'), self.state), 150000)
+                             reason='STORAGE_LIMIT_REACHED'), self.state), 250000)
         with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=0)):
             self.assertEqual(R.local_reclaim_target(policy, dict(latest, used_bytes=None,
                              reason='STORAGE_USAGE_UNAVAILABLE'), self.state), 0)

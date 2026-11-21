@@ -69,7 +69,7 @@ def select_preparation_profile(base, assignment):
     else:raise ValueError('No verified preparation profile for stage/provider')
     if selected.get('host_id')!=base.get('host_id'):raise ValueError('Preparation profile belongs to another host')
     for name in ('work_dir','slots','slot_policy','artifact_cache_directory',
-                 'preparation_metadata_cache_directory'):
+                 'preparation_metadata_cache_directory','pbs'):
         if name in base:selected[name]=deepcopy(base[name])
     selected.pop('route_profiles',None);selected.pop('preparation_profiles',None)
     selected['preparation_stage']=spec.get('stage');selected['preparation_provider']=spec.get('provider')

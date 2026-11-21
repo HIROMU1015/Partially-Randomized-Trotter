@@ -22,6 +22,12 @@ SAMPLE_SECONDS = 5
 PREPARATION_COPIES = ('inputs', 'workspace', 'workspaces')
 
 
+def reclaim_watermarks(limit, *, proactive):
+    """Use an earlier high-water mark in the independent storage watcher."""
+    high, low = (80, 70) if proactive else (95, 90)
+    return limit * high // 100, limit * low // 100
+
+
 def duplicate_reclaim_target(usage):
     """Free only enough verified copies to restore the existing storage headroom."""
     if usage['reason'] not in (None, 'STORAGE_LIMIT_REACHED', 'FILESYSTEM_SPACE_LOW'):
@@ -29,7 +35,9 @@ def duplicate_reclaim_target(usage):
     limit, used = usage['limit_bytes'], usage['used_bytes']
     if used is None:
         return 0
-    quota = used - limit * 9 // 10 if used >= limit * 95 // 100 else 0
+    high, low = reclaim_watermarks(limit, proactive=True)
+    underway = usage.get('reclaim_start_bytes') == high and usage.get('reclaim_pending') is True
+    quota = used - low if used >= high or underway else 0
     free, minimum = usage.get('filesystem_free_bytes'), usage.get('filesystem_min_free_bytes', 0)
     pressure = 2 * minimum - free if free is not None and free < minimum else 0
     return max(0, quota, pressure)
@@ -54,19 +62,24 @@ def _referenced_hashes(value):
             yield from _referenced_hashes(item)
 
 
-def reclaim_verified_duplicates(profile, proof):
+def reclaim_verified_duplicates(profile, proof, *, spools=None):
     """Reclaim transport cache copies verified from the central CAS."""
     policy = profile['storage_limit']
     sample = Path(policy['sample_path'])
-    spool = Path(profile['work_dir'])
+    spools = sorted(set(map(Path, spools or [profile['work_dir']])))
     cache = Path(profile.get('artifact_cache_directory') or '.')
-    if str(cache) not in policy['roots'] or not spool.is_dir():
+    if str(cache) not in policy['roots'] or not spools:
         return {}
-    with (spool/'WORKER.lock').open('a+b') as worker_lock, sample.with_suffix('.lock').open('r+b') as storage_lock:
-        try:
-            fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            return {}
+    with ExitStack() as locks:
+        for spool in spools:
+            if spool.resolve() != spool or not spool.is_dir() or spool.stat().st_uid != os.getuid():
+                return {}
+            worker_lock = locks.enter_context((spool/'WORKER.lock').open('a+b'))
+            try:
+                fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                return {}
+        storage_lock = locks.enter_context(sample.with_suffix('.lock').open('r+b'))
         fcntl.flock(storage_lock, fcntl.LOCK_EX)
         observation = json.loads(sample.read_bytes())
         report = observation['report']
@@ -76,7 +89,7 @@ def reclaim_verified_duplicates(profile, proof):
         if target <= 0:
             return {}
         retained = set()
-        for marker in spool.glob('*/*/WORKER_STATE.json'):
+        for marker in (marker for spool in spools for marker in spool.glob('*/*/WORKER_STATE.json')):
             status = json.loads(marker.read_bytes())['state']
             if status == 'TRANSFERRED':
                 continue
@@ -381,16 +394,23 @@ def _compact_pack_directory(directory, scratch_root):
         after = sum(path.stat().st_blocks * 512 for path in stage.iterdir())
         if after >= before:
             return 0
-        rename = getattr(ctypes.CDLL(None, use_errno=True), 'renameat2', None)
-        if rename is None:
+        if not _exchange_pack_directories(stage, directory):
             return 0
-        if rename(-100, os.fsencode(stage), -100, os.fsencode(directory), 2) != 0:
-            raise OSError(ctypes.get_errno(), 'Cannot atomically exchange metadata packs')
         return before - after
 
 
-def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(), refresh=False, compact_metadata=False):
-    """Reclaim acknowledged copies and recoverable cache before reaching the intake limit."""
+def _exchange_pack_directories(left, right):
+    rename = getattr(ctypes.CDLL(None, use_errno=True), 'renameat2', None)
+    if rename is None:
+        return False
+    if rename(-100, os.fsencode(left), -100, os.fsencode(right), 2) != 0:
+        raise OSError(ctypes.get_errno(), 'Cannot atomically exchange metadata packs')
+    return True
+
+
+def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(),
+           refresh=False, compact_metadata=False, proactive=False):
+    """Report intake state and reclaim copies independently of the hard limit."""
     if policy is None:
         return None
     limit, roots = policy['limit_bytes'], policy['roots']
@@ -400,6 +420,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             or not sample.is_absolute()):
         raise ValueError('Worker storage requires a positive byte limit and absolute paths')
     identity = dict(limit_bytes=limit, roots=roots)
+    start, target = reclaim_watermarks(limit, proactive=proactive)
     caches = list(dict.fromkeys([*([prefix_cache] if prefix_cache else []), *cache_directories]))
     cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_caches=caches)
 
@@ -412,8 +433,13 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 report = saved['report']
                 if 'filesystem_free_bytes' not in report:
                     return None
-                if (report['used_bytes'] is None or report['used_bytes'] < limit * 95 // 100
-                        or saved.get('cleanup') == cleanup):
+                same_watermarks = (
+                    report.get('reclaim_start_bytes'), report.get('reclaim_target_bytes')
+                ) == (start, target)
+                if proactive and not same_watermarks:
+                    return None
+                if (report['used_bytes'] is None or report['used_bytes'] < start
+                        or (same_watermarks and saved.get('cleanup') == cleanup)):
                     return report
         except (OSError, KeyError, TypeError, ValueError):
             pass
@@ -427,8 +453,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
         compacted = 0
         if compact_metadata:
             observation = report(policy, spools=spools, pbs_runs=pbs_runs,
-                                 cache_directories=caches, refresh=refresh)
-            if observation['used_bytes'] is not None and observation['used_bytes'] >= limit * 95 // 100:
+                                 cache_directories=caches, refresh=refresh, proactive=proactive)
+            if observation.get('reclaim_pending'):
                 compacted = _compact_metadata_packs(policy, spools, pbs_runs)
             if not compacted:
                 return observation
@@ -441,8 +467,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             try:
                 used = _used_bytes(roots)
                 before, reclaimed = used, 0
-                target = limit * 9 // 10
-                cleanup_due = used >= limit * 95 // 100
+                cleanup_due = used >= start
                 if cleanup_due and (spools or pbs_runs):
                     candidates = list(spools)
                     if pbs_runs:
@@ -478,7 +503,10 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 measured = dict(limit_bytes=limit, used_bytes=used, accepting_new_jobs=used < limit and not low_roots,
                                 reason='STORAGE_LIMIT_REACHED' if used >= limit else 'FILESYSTEM_SPACE_LOW' if low_roots else None,
                                 filesystem_free_bytes=min(filesystem_free.values()),
-                                filesystem_min_free_bytes=min_free,filesystem_low_space_roots=low_roots)
+                                filesystem_min_free_bytes=min_free,filesystem_low_space_roots=low_roots,
+                                reclaim_start_bytes=start, reclaim_target_bytes=target,
+                                reclaim_checked=cleanup_due or bool(compacted),
+                                reclaim_pending=(cleanup_due or bool(compacted)) and used > target)
                 if used < before:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:

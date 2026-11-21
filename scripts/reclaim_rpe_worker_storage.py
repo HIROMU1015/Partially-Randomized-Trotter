@@ -17,6 +17,7 @@ import sys
 import time
 
 from run_rpe_q3_relay import Relay, acquire_lock
+from trottertracks.rpe_local_pack_maintenance import compact_local_metadata
 from trottertracks.rpe_worker_storage import duplicate_reclaim_target, prefix_caches, report
 
 
@@ -30,12 +31,15 @@ payload = json.load(sys.stdin)
 exec(compile(payload['source'], 'rpe_worker_storage.py', 'exec'), vars(storage))
 profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload['profile']
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
-options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile), compact_metadata=True)
+options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile), compact_metadata=True, proactive=True)
 result = storage.report(profile.get('storage_limit'), **options)
 if result and storage.duplicate_reclaim_target(result) > 0 and payload.get('duplicate_inventory'):
     result['duplicate_inventory'] = storage.duplicate_inventory(profile)
 if result and storage.duplicate_reclaim_target(result) > 0 and payload.get('verified_duplicates'):
-    removed = storage.reclaim_verified_duplicates(profile, payload['verified_duplicates'])
+    guarded_spools = set(spools)
+    if payload.get('pbs_runs'):
+        guarded_spools.update(Path(payload['pbs_runs']).glob('*/workers/*'))
+    removed = storage.reclaim_verified_duplicates(profile, payload['verified_duplicates'], spools=guarded_spools)
     if removed:
         result = storage.report(profile['storage_limit'], refresh=True, **options)
         result.update(reclaimed_duplicate_artifacts=len(removed), reclaimed_duplicate_bytes=sum(removed.values()))
@@ -171,14 +175,27 @@ def local_duplicate_cache(run, profile):
 
 def local_report(run, profile):
     policy = profile.get('storage_limit')
-    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), compact_metadata=True)
+    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), proactive=True)
     result = report(policy, **options)
+    compacted = compact_local_metadata(run, profile, result)
+    reclaimed = {key: value for key, value in (result or {}).items()
+                 if key.startswith(('reclaimed_', 'evicted_'))}
+    packed = bool(compacted.get('compacted_metadata_bytes'))
+    if packed:
+        result = report(policy, refresh=True, **options)
+    removed = {}
     if (result and profile.get('artifact_cache_directory')
             and local_reclaim_target(policy, result, profile['artifact_cache_directory']) > 0):
         removed = local_duplicate_cache(run, profile)
         if removed:
             result = report(policy, refresh=True, **options)
             result.update(reclaimed_duplicate_artifacts=len(removed), reclaimed_duplicate_bytes=sum(removed.values()))
+    if result is not None:
+        if packed or removed:
+            result['reclaim_checked'] = True
+            for key, value in reclaimed.items():
+                result[key] = result.get(key, 0) + value
+        result.update(compacted)
     return result
 
 
@@ -202,11 +219,19 @@ def verified_remote_duplicates(run, host, inventory, target):
         if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
                       ('STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""", (host,)).fetchone():
             return {}
-        requests = db.execute("SELECT request FROM jobs WHERE state IN ('QUEUED','ASSIGNED')").fetchall()
-    retained = {sha for (request,) in requests for sha in _hashes(json.loads(request))}
-    pending = run/'distributed/PREPARATION_PENDING.json'
-    if pending.exists():
-        retained.update(_hashes(read(pending)))
+        requests = db.execute("SELECT request FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED')").fetchall()
+        retained = {sha for (request,) in requests for sha in _hashes(json.loads(request))}
+        pending = run/'distributed/PREPARATION_PENDING.json'
+        if pending.is_file():
+            record = read(pending)
+            if isinstance(record.get('tasks'), dict):
+                finished = {row[0] for row in db.execute(
+                    "SELECT job_id FROM jobs WHERE state IN ('ACCEPTED','CANCELLED')")}
+                for job_id, task in record['tasks'].items():
+                    if job_id not in finished:
+                        retained.update(_hashes(task))
+            else:
+                retained.update(_hashes(record))
     proof = {}
     size_verified = 0
     canonical = central_artifact_caches(run)
@@ -276,11 +301,19 @@ def cleanup(run, source):
                            settings['transport_root'], '']
                 payload = dict(source=source, profile=w['profile'],
                                spools=[str(namespace/'workers'/w['host_id'])], pbs_runs=runs)
-                output = subprocess.check_output(
-                    ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
-                     settings['ssh_alias'], shlex.join(command)],
-                    input=json.dumps(payload), text=True, stderr=subprocess.PIPE, timeout=300)
-                return json.loads(output)
+                def check(**options):
+                    output = subprocess.check_output(
+                        ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
+                         settings['ssh_alias'], shlex.join(command)],
+                        input=json.dumps(dict(payload, **options)), text=True, stderr=subprocess.PIPE, timeout=300)
+                    return json.loads(output)
+                result = check(duplicate_inventory=True)
+                inventory = result.pop('duplicate_inventory', {}) if result else {}
+                if inventory:
+                    proof = verified_remote_duplicates(run, w['host_id'], inventory, duplicate_reclaim_target(result))
+                    if proof:
+                        result = check(verified_duplicates=proof)
+                return result
             work.append((worker['host_id'], gateway))
     with ThreadPoolExecutor(max_workers=max(1, len(work))) as pool:
         for host, future in [(host, pool.submit(check)) for host, check in work]:
@@ -300,6 +333,25 @@ def invocation_active(run):
     return not finished.is_file() or read(finished).get('invocation_id') != invocation
 
 
+def cleanup_stopped_local(state):
+    """Use the last selected local profile during a naturally stopped period."""
+    target = state/'CURRENT_TARGET.json'
+    if not target.is_file():
+        return
+    run = Path(read(target)['run_directory']).resolve()
+    profile = run/'distributed/LOCAL_WORKER.json'
+    if not profile.is_file() or invocation_active(run):
+        return
+    with (profile.parent/'STORAGE_RECLAIM.lock').open('a+b') as lock:
+        try:
+            acquire_lock(lock)
+        except BlockingIOError:
+            return
+        result = local_report(run, read(profile))
+        if result and (result.get('reclaim_checked') or result.get('metadata_compaction')):
+            print(json.dumps(dict(epoch=time.time(), host_id='local', storage=result)), flush=True)
+
+
 def watch_active_runs(state, source):
     """Follow normal Start and Resume, including after the active run changes."""
     with closing((state/'STORAGE_RECLAIM.lock').open('a+b')) as lock:
@@ -316,7 +368,8 @@ def watch_active_runs(state, source):
                             except BlockingIOError:
                                 continue
                             cleanup(run, source)
-            except (OSError, KeyError, ValueError) as error:
+                cleanup_stopped_local(state)
+            except (OSError, KeyError, ValueError, sqlite3.Error, subprocess.SubprocessError) as error:
                 print(json.dumps(dict(event='STORAGE_WATCH_WAIT', error_type=type(error).__name__)), flush=True)
             time.sleep(60)
 

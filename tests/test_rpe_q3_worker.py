@@ -68,6 +68,22 @@ def finish(worker, timeout=8):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_prelaunch_failure_releases_only_after_supervisor_unlocks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory)
+            W.atomic(attempt/'WORKER_STATE.json', dict(state='UNKNOWN', detail=dict(
+                automatic_retry=False, reason='ValueError: Existing adapter dry-check failed')))
+            W.atomic(attempt/'WORKER_DRY-CHECK_RETURN.json', dict(returncode=1))
+            W.atomic(attempt/'SUPERVISOR_STARTED.json', dict(pid=143))
+            W.atomic(attempt/'SUPERVISOR_LAUNCH.json', dict(pid=143))
+            with (attempt/'WORKER_PROCESS.lock').open('wb') as lock:
+                W.fcntl.flock(lock, W.fcntl.LOCK_EX)
+                self.assertFalse(W.failed_dry_check_released(attempt))
+            self.assertTrue(W.failed_dry_check_released(attempt))
+            (attempt/'SCIENTIFIC_STARTING.json').touch()
+            self.assertFalse(W.failed_dry_check_released(attempt))
+            self.assertEqual(W.read(attempt/'WORKER_STATE.json')['state'], 'UNKNOWN')
+
     def test_native_supervisor_preserves_a_scoped_provider_launcher(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -406,6 +422,12 @@ class WorkerTests(unittest.TestCase):
             W.atomic(attempt/'WORKER_STATE.json', {'state': 'RUNNING'})
             self.assertEqual(reclaim_verified_duplicates(profile, proof), {})
             W.atomic(attempt/'WORKER_STATE.json', {'state': 'UNKNOWN'})
+            second = root/'older-pbs-run'/'workers'/'pbs-0'
+            other = second/'old-job'/'attempt'
+            other.mkdir(parents=True)
+            W.atomic(other/'WORKER_STATE.json', {'state': 'UNKNOWN'})
+            W.atomic(other/'ASSIGNMENT.json', {'input': files['duplicated'].name})
+            self.assertEqual(reclaim_verified_duplicates(profile, proof, spools=[second, spool]), {})
             self.assertEqual(set(reclaim_verified_duplicates(profile, proof)), {files['duplicated'].name})
             self.assertTrue(files['unknown'].is_file())
             self.assertTrue(files['local-only'].is_file())

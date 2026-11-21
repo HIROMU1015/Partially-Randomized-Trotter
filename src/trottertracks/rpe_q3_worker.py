@@ -129,6 +129,27 @@ def supervisor_session_ended(attempt):
         return False
 
 
+def failed_dry_check_released(attempt):
+    """Check the supervisor's original files, including from a shared PBS spool."""
+    try:
+        with (attempt / 'WORKER_PROCESS.lock').open('rb') as lock:
+            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            state = read(attempt / 'WORKER_STATE.json')
+            detail = state['detail']
+            receipt = read(attempt / 'WORKER_DRY-CHECK_RETURN.json')
+            pid = read(attempt / 'SUPERVISOR_STARTED.json')['pid']
+            launch_pid = read(attempt / 'SUPERVISOR_LAUNCH.json')['pid']
+            return (state['state'] == 'UNKNOWN' and detail.get('automatic_retry') is False
+                    and detail.get('reason') == 'ValueError: Existing adapter dry-check failed'
+                    and type(receipt['returncode']) is int and receipt['returncode'] != 0
+                    and type(pid) is int and pid > 0 and launch_pid == pid
+                    and not any((attempt / name).exists() for name in (
+                        'SCIENTIFIC_STARTING.json', 'WORKER_EXECUTE.log', 'WORKER_EXECUTE_RETURN.json',
+                        'PROCESS_RETURN.json', 'OUTCOME.json')))
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return False
+
+
 def resource_state(attempt, state):
     """Keep recovery ownership separate from CPU occupancy with exit evidence."""
     if state != 'UNKNOWN':
@@ -137,6 +158,8 @@ def resource_state(attempt, state):
         marker = attempt / name
         if marker.is_file() and process_alive(read(marker).get('pid'), attempt):
             return state
+    if failed_dry_check_released(attempt):
+        return 'EXITED'
     exit_receipt = attempt / 'PROCESS_RETURN.json'
     if exit_receipt.is_file():
         try:
