@@ -74,6 +74,12 @@ PBS枠の起動直後にジョブ履歴や初回の容量計測を待つ間は�
 空きのある遠隔workerへの割当を優先する。RomuTailのworkerは受け持てる
 必要な準備を先に処理し、余力でQ3にも参加する。RomuTailのworkerプロセス
 には中央ドライバーより低いCPUスケジューリング優先度を使う。
+RomuTailでは、候補・入力照合、配送、回収、採用などの中央処理を自runの
+ローカル計算より優先する。中央処理は利用可能な全32論理CPUを使用できる。
+並列化できる中央処理にCPUを割り当て、ローカルの信号・compile・監査・Q3は
+余力で進める。現行の通常入口はローカルworkerを `nice -n 10` で起動する。
+worker側の `controller_cpu_reserve` はworkerの容量見積りから引く値で、
+中央が使用できるCPU数はドライバーの実際のaffinityで確認する。
 旧CPython 3.11を使う固定controllerでは、並行準備中のASTパースを
 直列化する。準備タスク本体とworkerの計算は並行して進める。
 このAST例外から同じrunを再開するときは、停止したinvocationとその
