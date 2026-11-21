@@ -116,8 +116,7 @@ def duplicate_check(rounds=(0,), *, selected=None):
             hits.append(hit); found[ident].append(hit)
     scans.append(dict(source=S.CATALOG, entries=len(catalog), hits=hits))
     exact = []
-    for r in selected[::2]:
-        ident = r['physical_id']
+    for ident, r in {row['physical_id']: row for row in selected}.items():
         roots = [Path('/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost') / c / ident / '0/result.json' for c in ('EXPLORATION', 'CONFIRMATION')]
         for route, module in ROUTES.items():
             for suffix in ('calibration/run01', 'holdout/run01', 'm9_holdout/run01', 'm0_direct/run01', 'm1_m2_direct/run01'):
@@ -263,9 +262,10 @@ def child(job_path, *, validate_rounds=scope):
             check_preparation(prep, job, prefix)
             native.CONTEXT['H4'] = ctx
         original = F.full_trial if route == 'FULL_PF' else T.checked_trial
-        def checked(native, ctx, row, cohort, **kw):
-            trial, facts, ok = original(native, ctx, row, cohort, **kw)
-            required = {'low_control', 'high_control_leakage', 'independent_occupation_vector', 'Hadamard_cosine', 'Hadamard_sine', 'compiled_vector_cosine', 'compiled_vector_sine'}
+        def checked(native, ctx, row, cohort, *, axes=('cosine', 'sine'), **kw):
+            trial, facts, ok = original(native, ctx, row, cohort, axes=axes, **kw)
+            required = {'low_control', 'high_control_leakage', 'independent_occupation_vector'}
+            required |= {gate+axis for axis in axes for gate in ('Hadamard_', 'compiled_vector_')}
             return trial, facts, ok and required <= {c['check'] for c in trial['checks']} and trial['cache_hits'] == 0
         S._RUN.update(native=native, ctx=ctx, trial=checked, cohort=job.get('cohort',module.COHORT),
                       compile=native.compile_cached, kw=dict(expected_tail_scalar=job['tail_scalar']) if route == 'TRUNCATED_PF' else {})

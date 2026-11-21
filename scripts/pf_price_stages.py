@@ -562,13 +562,17 @@ def _cell(cell):
     native.compile_cached = recording
     started = time.monotonic()
     try:
-        trial, facts, ok = _RUN['trial'](native, _RUN['ctx'], cell['row'], _RUN['cohort'], **_RUN['kw'])
+        axes = tuple({'X': 'cosine', 'Y': 'sine'}[axis] for axis in cell.get('axes', ('X', 'Y')))
+        options = dict(_RUN['kw'])
+        if 'axes' in cell:
+            options['axes'] = axes
+        trial, facts, ok = _RUN['trial'](native, _RUN['ctx'], cell['row'], _RUN['cohort'], **options)
     except BaseException as exc:  # partial save; never retried
         return dict(cell=cell, ok=False, error='%s: %s' % (type(exc).__name__, exc), wall_seconds=time.monotonic() - started)
     finally:
         native.compile_cached = original
-    ok = ok and len(calls) == 2
-    return dict(cell=cell, trial=trial, facts=facts, ok=ok, wrappers=dict(zip(('cosine', 'sine'), calls)),
+    ok = ok and len(calls) == len(axes)
+    return dict(cell=cell, trial=trial, facts=facts, ok=ok, wrappers=dict(zip(axes, calls)),
                 wall_seconds=time.monotonic() - started)
 
 

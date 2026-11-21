@@ -56,8 +56,8 @@ A_MENU = dict(commit='a9abf8de75bf3432fcd714e868e5c14c8884b8f8',
               path='docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json')
 MANIFEST = dict(commit='c5466946ab0ef9b50511210ca1e58fb7147bb0f0',
                 path='docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json')
-NATIVE = dict(commit='af284d853890155bacd19e61850c196bd1d5c660', path='scripts/h46_long_time_native.py')
-WRAPPER = dict(commit=NATIVE['commit'], path='src/trottertracks/resource_applicability/ax2b_native_df_v5.py')
+NATIVE = dict(commit='70a6649a6005aa661a1141de0bc640f513f4b600', path='scripts/h46_long_time_native.py')
+WRAPPER = dict(commit='af284d853890155bacd19e61850c196bd1d5c660', path='src/trottertracks/resource_applicability/ax2b_native_df_v5.py')
 SCALAR_SOURCE = dict(commit='5cc7c07e112ce97205948465c94441cba0042416', path='src/trottertracks/baseline_signal_numerics.py',
                      selector='Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)')
 COHORT = 'D_TRUNCATED_P7_DETERMINISTIC_T3_V1'
@@ -138,7 +138,7 @@ def provider_checks():
     return True
 
 
-def checked_trial(native, ctx, row, cohort, *, expected_tail_scalar=None):
+def checked_trial(native, ctx, row, cohort, *, expected_tail_scalar=None, axes=('cosine', 'sine')):
     """cost_trial index0 plus explicit block/scalar/piece facts."""
     from h46_m5_contract import core
     prep = ctx.preparations[row['prefix']]
@@ -149,14 +149,14 @@ def checked_trial(native, ctx, row, cohort, *, expected_tail_scalar=None):
     if expected_tail_scalar is not None and prep.extracted_identity_coefficient != expected_tail_scalar:
         raise ValueError('B0I tail identity differs from the saved signal scalar')
     steps = core.schedule(row['formula'], row['q'], 'PER_PIECE', 1, T=row['T'])
-    trial = native.cost_trial((row, cohort, 0))
+    trial = native.cost_trial((row, cohort, 0), axes=axes)
     facts = dict(retained_blocks=blocks, fragment_order=list(prep.deterministic_fragment_indices),
                  scalar=scalar, tail_identity=prep.extracted_identity_coefficient, signed_pieces=len(steps),
                  negative_pieces=sum(s['signed_time'] < 0 for s in steps),
                  gates=[c['check'] for c in trial['checks']])
-    ok = (trial['status'] == 'PASS' and trial['scalar'] == scalar and set(trial['prices']) == {'cosine', 'sine'}
-          and set(facts['gates']) >= {'low_control', 'high_control_leakage', 'independent_occupation_vector',
-                                     'Hadamard_cosine', 'Hadamard_sine'})
+    ok = (trial['status'] == 'PASS' and trial['scalar'] == scalar and set(trial['prices']) == set(axes)
+          and set(facts['gates']) >= {'low_control', 'high_control_leakage', 'independent_occupation_vector'} |
+              {'Hadamard_'+axis for axis in axes})
     return trial, facts, ok
 
 
@@ -180,7 +180,7 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
     profile = plan['configuration']['spec']['profile']; m = cell['m']
     row = plan['configuration']['rounds'][m]
     prices, sides, proofs = [], [], {}
-    for req in [r for r in I.price_requests(root, plan) if r['m'] == m]:
+    for req in [r for r in I.price_requests(root, plan) if r['m'] == m and r['axis'] in cell.get('axes', ('X','Y'))]:
         axis = req['axis']; metrics = trial['prices']['cosine' if axis == 'X' else 'sine']
         price = deepcopy(req)
         price.update(cohort=COHORT, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),

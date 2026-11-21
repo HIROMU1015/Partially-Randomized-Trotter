@@ -94,12 +94,12 @@ def native_row(c):
                 delta=c['delta'], R_outer=None, K=None, id=c['id'])
 
 
-def full_trial(native, ctx, row, cohort):
+def full_trial(native, ctx, row, cohort, *, axes=('cosine', 'sine')):
     """T3's checked trial plus the Full PF facts: all blocks, no tail identity correction."""
     prep = ctx.preparations[row['prefix']]
     if row['method'] != 'FULL' or row['prefix'] != ctx.ham.n_blocks or prep.extracted_identity_coefficient != 0.:
         raise ValueError('Full PF keeps every block and has no tail identity correction')
-    trial, facts, ok = T3.checked_trial(native, ctx, row, cohort)
+    trial, facts, ok = T3.checked_trial(native, ctx, row, cohort, axes=axes)
     ok = ok and trial['scalar'] == ctx.ham.constant and facts['retained_blocks'] == ctx.ham.n_blocks + 1
     return trial, facts, ok
 
@@ -123,7 +123,7 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
     C, I = T3._meta()
     profile = plan['configuration']['spec']['profile']; m = cell['m']; row = plan['configuration']['rounds'][m]
     prices, sides, proofs = [], [], {}
-    for req in [r for r in I.price_requests(root, plan) if r['m'] == m]:
+    for req in [r for r in I.price_requests(root, plan) if r['m'] == m and r['axis'] in cell.get('axes', ('X','Y'))]:
         axis = req['axis']; metrics = trial['prices']['cosine' if axis == 'X' else 'sine']
         price = deepcopy(req)
         price.update(cohort=COHORT, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),

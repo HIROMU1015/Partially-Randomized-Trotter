@@ -60,9 +60,9 @@ def accelerated_native(native):
         finally:
             timings.append(dict(compose_seconds=time.monotonic()-started, **stats))
 
-    def trial(job):
+    def trial(job, **options):
         start = len(timings)
-        result = old_trial(job)
+        result = old_trial(job, **options)
         # Return-only technical annotation; original private raw result stays unchanged.
         return dict(result, technical_acceleration=timings[start:])
 

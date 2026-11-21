@@ -19,6 +19,7 @@ import time
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts')]
 MODULE='scripts/prepare_pf_candidate.py'
+SELECTED_AXIS_COMPILE = True
 STUDY='docs/research/d_pf_on_demand_evidence_20261116'
 SOURCES=(MODULE,'src/trottertracks/pf_evidence_preparation.py','src/trottertracks/pf_candidate_space.py',
  'scripts/run_pf_m0_prices.py','scripts/run_pf_p7_h_prices.py','scripts/run_truncated_p7_prices.py')
@@ -74,10 +75,10 @@ def selected_configuration(item):
     return cfg
 
 
-def plan_one(cfg,out):
+def plan_one(cfg,out,*,allow_single_axis=False):
     from trottertracks import pf_evidence_preparation as E
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
-    source=source_gate();value=E.make_plan(ROOT,cfg,source)
+    source=source_gate();value=E.make_plan(ROOT,cfg,source,allow_single_axis=allow_single_axis)
     write(out/'CONFIGURATION.json',cfg);write(out/'PLAN.json',value)
     return value
 
@@ -90,6 +91,24 @@ def native_child(path):
     if route!=job['route'] or prefix!=job['prefix']:raise ValueError('Native prefix/route binding differs')
     requests={r['m']:r['physical_candidate'] for r in allowed['prepared']['pending']['requests']}
     if any(c['row']!=native_row(cfg,requests[c['m']]) for c in job['cells']):raise ValueError('Native schedule differs')
+    if any('axes' in c for c in job['cells']):
+        planned = {c['m']: set(c['axes']) for c in allowed['new_compile_cells']}
+        plan_path = Path(job['fixed_plan'])
+        preflight_path = plan_path.with_name('PREFLIGHT_EXECUTION.json')
+        if not preflight_path.is_file():
+            preflight_path = plan_path.with_name('PREFLIGHT.json')
+        for evidence in (plan_path, preflight_path):
+            fixed = job['driver_source']['commit']+':'+str(evidence.relative_to(ROOT))
+            if evidence.read_bytes() != subprocess.check_output(['git', 'show', fixed], cwd=ROOT):
+                raise ValueError('Native axis plan or duplicate check differs from committed bytes')
+        preflight = load(preflight_path)
+        cleared = {(r['m'], r['axis']) for r in preflight['rows'] if r['action'] == 'NEW_COMPILE_MISSING_CONFIRMED'}
+        if not allowed.get('selected_axis_compile') or any(
+                tuple(c.get('axes', ())) not in (('X',), ('Y',), ('X','Y'))
+                or not set(c['axes']) <= planned.get(c['m'], set())
+                or any((c['m'], axis) not in cleared for axis in c['axes'])
+                for c in job['cells']):
+            raise ValueError('Native axes differ from the fixed plan or duplicate check')
     for file in SOURCES:
         if (ROOT/file).read_bytes()!=subprocess.check_output(['git','show',job['driver_source']['commit']+':'+file],cwd=ROOT):raise ValueError('Native source changed')
     return M.child(path,validate_rounds=lambda rounds: M.check(list(rounds)==[c['m'] for c in job['cells']],'Wrong selected native rounds'))
@@ -99,9 +118,9 @@ def preflight(value,out):
     import run_pf_m0_prices as M
     from trottertracks import pf_evidence_preparation as E
     existing={(r['m'],r['axis']) for r in value['direct_prices']}
-    acquired={r['m'] for r in value['new_compile_cells']}
+    acquired={(r['m'],axis) for r in value['new_compile_cells'] for axis in r['axes']}
     targets=[dict(configuration_id=value['configuration']['id'],physical_id=r['physical_candidate']['id'],m=r['m'],axis=a,physical_candidate=r['physical_candidate'])
-       for r in value['prepared']['pending']['requests'] for a in ('X','Y') if r['m'] in acquired and (r['m'],a) not in existing]
+       for r in value['prepared']['pending']['requests'] for a in ('X','Y') if (r['m'],a) in acquired and (r['m'],a) not in existing]
     audit=M.duplicate_check((1,2),selected=targets)
     E.check(all(r['action']=='NEW_COMPILE_MISSING_CONFIRMED' for r in audit['rows']),'Review existing receipt/job before new work')
     # Fixed import-time metadata dependency; no restore/prepare/compile here.
@@ -348,8 +367,10 @@ def main():
             for name in ('CONFIGURATION.json','PLAN.json'):
                 raw=subprocess.check_output(['git','show',head()+':'+str((out/name).relative_to(ROOT))],cwd=ROOT)
                 if (out/name).read_bytes()!=raw:raise ValueError('Commit metadata plan before execution')
-        else:value=plan_one(cfg,out)
+        else:value=plan_one(cfg,out,allow_single_axis=args.mode=='plan' and request.get('selected_axis_compile') is True)
         if args.mode=='complete':
+            if value.get('selected_axis_compile'):
+                raise ValueError('Selected axes require the distributed PF preparation entry')
             try:response['items'].append(complete(value,out,registry))
             except Exception as exc:
                 failure=dict(status='UNKNOWN_PRESERVED_NO_AUTOMATIC_RETRY',configuration_id=cfg['id'],reason=type(exc).__name__+': '+str(exc),output=str(out))

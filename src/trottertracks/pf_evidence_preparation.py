@@ -163,7 +163,7 @@ def accepted_direct(root,prepared):
     return output
 
 
-def make_plan(root,cfg,source):
+def make_plan(root,cfg,source,*,allow_single_axis=False):
     prepared=plan(root,cfg,source);direct=accepted_direct(root,prepared);requests=prepared['pending']['requests']
     means=[]
     for req in requests:
@@ -188,13 +188,16 @@ def make_plan(root,cfg,source):
     for m in needed:
         axes=[a for a in ('X','Y') if (m,a) not in existing]
         if axes:
-            check(axes==['X','Y'],'One saved axis only: resolve per-axis native execution before compiling')
+            check(allow_single_axis or axes==['X','Y'],'One saved axis only: resolve per-axis native execution before compiling')
             new.append(dict(m=m,axes=axes,role='CALIBRATION' if m in calibration_ms else 'HOLDOUT' if m==hm else 'EARLY_DIRECT'))
-    return dict(schema='D_PF_SELECTED_EVIDENCE_PLAN_V1',configuration=cfg,prepared=prepared,signal_rounds=means,direct_prices=direct,
+    result = dict(schema='D_PF_SELECTED_EVIDENCE_PLAN_V1',configuration=cfg,prepared=prepared,signal_rounds=means,direct_prices=direct,
         calibration_rounds=calibration_ms,holdout_round=hm,actual_width=enc(width),new_compile_cells=new,
-        maximum_new_compile=2*len(new),new_signal_means=sum(r['saved_source'] is None for r in means),
+        maximum_new_compile=sum(len(cell['axes']) for cell in new),new_signal_means=sum(r['saved_source'] is None for r in means),
         model_formula='C_axis(q)=alpha_axis+beta_axis*q',model_features=['one','q'],tolerance=None,
         extrapolation_error_bound=None,refit_holdout=False,price_scope='CONDITIONAL_COMPARISON_MODEL_WITH_EXPLICIT_LONG_Q_UNKNOWN',new_Q3=0)
+    if allow_single_axis:
+        result['selected_axis_compile'] = True
+    return result
 
 
 def saved_record(root,prepared,req,origin,source):
