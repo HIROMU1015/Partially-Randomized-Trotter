@@ -8,8 +8,10 @@ import hashlib
 from itertools import product
 import json
 import math
+import os
 from pathlib import Path
 import runpy
+import shutil
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -212,6 +214,30 @@ def check_large(toys, adapter):
     return dict(M13=cases, regression_M=[11, 12], terminal_histories=len(histories))
 
 
+def check_refinement(toys, kernel):
+    rows = [dict(m=m, N_X=1, N_Y=1, raw=dict(real=-1., imag=float(m != 10))) for m in range(M)]
+    rows.append(dict(m=M, N_X=128, N_Y=128, raw=dict(real=1., imag=0.)))
+    history = exact_histories(rows, H)
+    assert len(history) == 258
+    assert len({item[0][10] for item in history}) == 2
+    kwargs = dict(h=H, target=0., threshold=TAU, risk=toys.D, total=toys.R,
+                  probability_rule=toys.D.EXACT_AFFINE)
+    with proposed_limit(kernel, 'len(shots) <= 13', 'len(shots) <= 14', 'supports'), \
+         proposed_limit(kernel, 'expected_rounds <= 13', 'expected_rounds <= 14', 'summarize'):
+        first = kernel.evaluate(rows, **kwargs)
+        refined = kernel.refine(rows, **kwargs)
+        combined = kernel.combine([first['certificate'], refined['certificate']], TAU, expected_rounds=14)
+    detect_ambiguity = first['certificate']['rounds'][11]
+    resolved = refined['certificate']['rounds'][11]
+    assert kernel._decode(detect_ambiguity['retained_probability']) == 0
+    assert kernel._decode(resolved['retained_probability']) == 1
+    reference = mse(history, 0.)
+    checks = {step: interval(kernel._decode(result['MSE_lower']), kernel._decode(result['MSE_upper']), reference)
+              for step, result in (('first', first), ('refined', refined), ('combined', combined))}
+    assert checks['first']['verdict'] == 'INCONCLUSIVE' and checks['combined']['verdict'] == 'FAIL'
+    return dict(histories=len(history), ambiguous_round=11, **checks)
+
+
 def check_adapter(toys, adapter):
     # Use the ordinary CLI and real fixed intake. Replace the locator resolution
     # with artificial packets because production route locators require H4 evidence.
@@ -254,12 +280,18 @@ def check_adapter(toys, adapter):
             for method, kind in (('FULL_PF', 'pf_b_pf6'), ('TRUNCATED_PF', 'pf_b_pf6'),
                                  ('PR_DF', 'prdf_d2_common_entry')):
                 checks[method] = {}
-                for n, final_y, mode in ((2, 1., 'dry-check'), (128, 1., 'execute'), (128, -1., 'execute')):
-                    target = 0.0001
+                variants = [(2, 1., 'dry-check'), (128, 1., 'execute'), (128, -1., 'execute')]
+                if method == 'FULL_PF':
+                    variants.append((128, 0., 'execute'))
+                for n, final_y, mode in variants:
+                    target = 0. if final_y == 0. else 0.0001
                     args, rows = normal_case(toys, M, final_y, target)
                     args['allocations'][0]['shots'][-1].update(N_X=n, N_Y=n)
                     rows[-1].update(N_X=n, N_Y=n)
                     cfg, packet, allocation = (args[k] for k in ('config', 'signal_packet', 'allocations'))
+                    if final_y == 0.:
+                        for m, (mean, row) in enumerate(zip(packet['means'][:-1], rows[:-1])):
+                            mean['raw'] = row['raw'] = dict(real=-1., imag=float(m != 10))
                     cfg_id = cfg['id']
                     request = dict(job(method, kind, n), configuration_id=cfg_id)
                     binding = dict(id='artificial', original_configuration=cfg,
@@ -290,8 +322,25 @@ def check_adapter(toys, adapter):
                     reference = mse(exact_histories(rows, float(toys.X(cfg['spec']['h']))), target)
                     checks[method][f'large_final_y={final_y}'] = interval(
                         kernel._decode(result['MSE_lower']), kernel._decode(result['MSE_upper']), reference)
+                    if final_y == 0.:
+                        evidence = json.loads((out/case['label']/'FINITE_SUPPORT.json').read_text())
+                        certificates = evidence['certificates']
+                        assert len(certificates) == 2
+                        assert kernel.summarize(certificates[0], TAU, expected_rounds=14)['status'] == 'INCONCLUSIVE'
+                        assert checks[method]['large_final_y=0.0']['verdict'] == 'PASS'
+                        checks[method]['refinement_certificates'] = len(certificates)
                 assert checks[method]['large_final_y=1.0']['reference'] != checks[method]['large_final_y=-1.0']['reference']
-    return dict(original_M13=held['reason'], artificial_locators=True, methods=checks)
+            request = job('FULL_PF', 'pf_b_pf6', 2049)
+            shots = [dict(m=m, N_X=x, N_Y=y) for m, (x, y) in enumerate(zip(request['N_X'], request['N_Y']))]
+            with patch.dict(candidate, build=lambda *a: (dict(allocation=dict(shots=shots)), dict(
+                template_source='ARTIFICIAL', options=dict(maximum_round_outcomes=4225,
+                    maximum_verification_pairs=55043173, total_state_refinement=dict(maximum_transition_pairs=141559036)))),
+                route=lambda *a: SimpleNamespace(bounds=candidate['count_bounds'])):
+                oversized = launch(candidate['main'], request, root/'oversized', 'dry-check')
+            assert oversized['status'] == 'UNKNOWN' and oversized['reason'] == 'COUNT_ONLY_SCOPE_EXCEEDED'
+            assert oversized['scientific_evaluation_calls'] == 0
+    return dict(original_M13=held['reason'], artificial_locators=True, methods=checks,
+                above_shot_limit=dict(N_X=2049, N_Y=2049, reason=oversized['reason'], calls=0))
 
 
 def check_saved(adapter):
@@ -332,11 +381,40 @@ def check_saved(adapter):
         return dict(pool.map(check, ('FULL_PF', 'TRUNCATED_PF', 'PR_DF')))
 
 
+def check_queue(fixed):
+    """Measure the existing artificial worker through its real queue and Resume."""
+    with TemporaryDirectory(prefix='rpe-q3-m13-queue-source-') as tmp:
+        root = Path(tmp)
+        for part in ('src', 'scripts', 'tests'):
+            shutil.copytree(ROOT/part, root/part, ignore=shutil.ignore_patterns('__pycache__', '.pytest_cache'))
+        kernel = root/'src/trottertracks/rpe_large_shot_bounds.py'
+        source = kernel.read_text()
+        for old, new in (('len(shots) <= 13', 'len(shots) <= 14'),
+                         ('expected_rounds <= 13', 'expected_rounds <= 14')):
+            assert source.count(old) == 1
+            source = source.replace(old, new)
+        kernel.write_text(source)
+        subprocess.run(['git', 'init', '-q', str(root)], check=True)
+        subprocess.run(['git', 'add', str(kernel.relative_to(root))], cwd=root, check=True)
+        subprocess.run(['git', '-c', 'user.name=RPE test', '-c', 'user.email=rpe-test@example.invalid',
+                        'commit', '-qm', 'Test the artificial queue with the candidate horizon'], cwd=root, check=True)
+        cmd = ('import json; from test_rpe_scaled_shots import ScaleTests; '
+               'print(json.dumps(ScaleTests().normal_start_and_resume_with_large_shot_evidence(13)))')
+        env = dict(os.environ, PYTHONPATH=os.pathsep.join(str(root/part) for part in ('src','scripts','tests')),
+                   RPE_LARGE_SHOT_FIXED_VIEW=str(fixed))
+        run = subprocess.run([sys.executable, '-B', '-c', cmd], cwd=root, env=env,
+                             text=True, capture_output=True)
+        if run.returncode:
+            raise RuntimeError(run.stderr + run.stdout)
+        return json.loads(run.stdout.strip().splitlines()[-1])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--fixed-view', required=True, type=Path)
     parser.add_argument('--report', required=True, type=Path)
     parser.add_argument('--check-saved', action='store_true', help='Dry-check the archived server2 route locators')
+    parser.add_argument('--check-queue', action='store_true', help='Run the 1008-shot artificial Start and Resume')
     args = parser.parse_args()
     fixed = args.fixed_view.resolve()
     assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=fixed, text=True).strip() == FIXED
@@ -348,9 +426,12 @@ def main():
     report = dict(fixed_reference=FIXED, threshold=str(TAU))
     stages = [('decoder', lambda: compare_terminal_branch(toys.T)),
               ('normal', lambda: check_normal(toys)), ('large', lambda: check_large(toys, adapter)),
+              ('refinement', lambda: check_refinement(toys, adapter['finite_support_kernel']())),
               ('adapter', lambda: check_adapter(toys, adapter))]
     if args.check_saved:
         stages.append(('saved', lambda: check_saved(adapter)))
+    if args.check_queue:
+        stages.append(('queue', lambda: check_queue(fixed)))
     for name, action in stages:
         print(f'{name}: start', flush=True)
         report[name] = action()

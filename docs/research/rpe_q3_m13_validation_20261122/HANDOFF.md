@@ -45,3 +45,13 @@ Python 3.11.0rc1、NumPy 1.26.4。既存の枝選択12件、total Q3 11件、大
 | 中央の `rpe_live_q3_readiness` と `rpe_scaled_shots` | 受付の変更は、対応科学view・adapter・実信号の揃った候補に適用する。信号・14 roundの設定はQ3入力、終端X/Y価格は総RZ比較の入力。先頭13行の再利用可否はround identityとlawを照合する。 |
 
 保存H₄では、[公開要求](../rpe_distributed_h4_plan_20261117/requests/)のFull PF S2・B0I p7 S2・PR-DF LD7を確認した。各方式の固定パケットは $m=12$ まで。$M=12$ の原要求と、同じパケットを使う $M=11$ の既存prefix経路で計6 dry-checkがPASSだった。実入力の旧MSEは[保存結果](../rpe_distributed_h4_plan_20261117/RESULT.json)の範囲で参照し、今回の数値回帰は人工入力で行った。実H₄の14ラウンド・通常経路の本番固定worker・中央配送が対象となる次の統合検収は未実施。中央担当が固定版と実入力をそろえた上で受付を判断する。
+
+## 追加の3点の検証
+
+1. **実H₄入力は確認した公開範囲で不足。** 公開探索マップ `5cba7efd4307ca0edaf576998b6f7d22c566f1f6` の対象3方式は1,553点で、全点の配分が13ラウンドだった。公開run `search-e6361f01b6a480718127` の `ROUND_RESULT.json` でも、3方式とも $M=13$ は `HORIZON_INPUTS_MISSING` で、評価済みは0件だった。配布branch `f8e67d806fb845f5985a9c39638f36cae0b74029` の公開設計では、m13用の実信号providerと14ラウンドQ3の科学検証が残っている。前回の代表3件の13行を再読し、各 $M=11,12$ の実adapter dry-checkが計6件通過した。代表候補は上記のFull PF S2、B0I p7 S2、PR-DF LD7で、正本locatorは `EVIDENCE.json` の `saved` にある。残る実入力の最小範囲は、各候補の同一物理条件の $m=13$ 信号を1 complex meanずつ、計3件。その信号と14行の固定設定を使って実adapterで照合する。価格は総RZ比較へ進む段階で必要になる。 [公開マップ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5cba7efd4307ca0edaf576998b6f7d22c566f1f6/docs/research/h4_search_map_20261117/INDEX.json) · [公開run](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d846b4d8c1fbaf7e9bea3e194299f67a2c764cfa/docs/research/romutail_controller_runs/search-e6361f01b6a480718127/ROUND_RESULT.json) · [providerの条件](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f8e67d806fb845f5985a9c39638f36cae0b74029/docs/research/rpe_fleet_efficiency_plan.md)
+2. **精密化で判定が確定。** 人工入力の $m=10$ で二つの位相履歴が分岐し、$m=11$ で第1段が閉包を確認できなかった。最終128 shotを含む258履歴を独立に列挙した。$h=0.1$ の参照MSEは約 $7.6476800944\times10^{-4}$ Ha²。第1段の区間は $[0,986.96044]$ Ha²で未確定、精密化後は $[7.6476800944,7.6476801207]\times10^{-4}$ Ha²で下界が閾値を超えFAILになった。固定の人工入力経路が使う $h=10$ でも同じ位相分岐をCLIへ与え、第1段が未確定、精密化の証拠が自動で追加され、PASSとして回収されることを確認した。各区間にそれぞれの参照MSEが入った。
+3. **1,008 shotの通常Start・回収・Resumeが通過。** $M=13, s=16$ の人工配分を既存Gateway・探索CLI・分散キュー・workerで処理した。候補の14個の配分は各軸1,008から176 shot。初回に $s=16$ と $s=1$ の2件を起動して中央で採用した。Resumeでworkerの追加起動は0件。job ID、attempt ID、保存済みOUTCOMEのバイト列が一致した。別の人工要求でX/Y各2,049 shotを指定したときは規模上限による技術保留となり、評価呼出しは0件だった。workerごとの実時間・RSSと上下界のexact値は[追加検証結果](FOLLOWUP.json)に保存した。1,008 shotの資源値は計測用人工信号の値。
+
+1,008 shotの人工workerは評価・結果保存まで0.371秒、worker自身のピークRSSは53,632 KiBだった。公開runの旧判定は $M=11$ の10点（PASS 1、FAIL 9）と $M=12$ の147点（PASS 17、FAIL 130）を、公表端点と厳密な閾値に照合し、157点全て一致した。公表元のworker回収は原結果へのアクセス待ち。
+
+同じ検証コマンドに `--check-queue` を加えると、追加の精密化・保存照合とともに通常Start・Resumeを再現できる。14ラウンドを許す一時コピーを使う。実H₄の14ラウンド信号の新規取得・評価は0件。既存の倍率・大ショット・保存回収の回帰試験は25件PASS。

@@ -3,6 +3,7 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 from fractions import Fraction as F
 import io
+import json
 import os
 from pathlib import Path
 import sqlite3
@@ -93,17 +94,20 @@ class ScaleTests(unittest.TestCase):
     @unittest.skipUnless((DECODER_VIEW/'src/trottertracks/rpe_total_risk.py').is_file(),
                          'requires the fixed Z1+T1 source view')
     def test_normal_start_and_resume_with_large_shot_evidence(self):
+        self.normal_start_and_resume_with_large_shot_evidence(12)
+
+    def normal_start_and_resume_with_large_shot_evidence(self, horizon):
         method = 'FULL_PF'
         with tempfile.TemporaryDirectory(prefix='artificial-large-shots-') as tmp:
             root = Path(tmp)
             problem, context, routes = fixture([method], configurations=1, steps=100)
             problem.update(problem=dict(system='ARTIFICIAL_SCALED_SHOTS',
                                         hamiltonian_data=dict(expected=dict(fragment_count=10))),
-                           rpe=dict(M=12), execution_routes=routes)
+                           rpe=dict(M=horizon), execution_routes=routes)
             problem['accuracy']['epsilon_E_decimal'] = S.EPSILON
             context['saved'].table.clear()
             context['tau'] = TAU
-            context['candidates'][0]['prices'] = [1]*26
+            context['candidates'][0].update(M=horizon, prices=[1]*(2*(horizon+1)))
             routes[method][0]['artificial'].update(tau=str(TAU), finite_support_fixture=dict(
                 view=str(DECODER_VIEW), commit=DECODER_SOURCE, target=0.0))
             profile = dict(host_id='local',root=str(ROOT),interpreter=sys.executable,
@@ -128,25 +132,48 @@ class ScaleTests(unittest.TestCase):
                 write(run/'EXIT.json',dict(launch_receipt,returncode=0))
 
             gateway=Gateway(config,preflight=lambda *a:dict(status='PASS',artificial=True),launch=launch)
-            scope = dict(methods=[method],scaled_shots=dict(M=[12],grid=dict(min_k=16,max_k=16,divisor=4),
+            scope = dict(methods=[method],scaled_shots=dict(M=[horizon],grid=dict(min_k=16,max_k=16,divisor=4),
                                                            compare_paper=False))
             with patch.object(O,'prepare',return_value=context):
                 result = gateway.handle(dict(action='start',instruction='Artificial finite support',scope=scope))
                 run = Path(result['run_directory'])
                 outcomes = {p: p.read_bytes() for p in run.glob('jobs/*/*/OUTCOME.json')}
                 self.assertTrue(outcomes)
-                large = [load(p) for p in outcomes if load(p)['identity']['allocation'][0]['N_X'] == 944]
+                expected = [16*n for n in S.base_shots(horizon)]
+                large = [load(p) for p in outcomes if load(p)['identity']['allocation'][0]['N_X'] == expected[0]]
                 self.assertEqual(len(large), 1)
                 self.assertEqual(large[0]['status'], O.PASS)
                 self.assertEqual(large[0]['evaluator'], 'RPE_FINITE_SUPPORT_MSE_V1')
+                self.assertEqual(large[0]['identity']['M'], horizon)
+                for axis in ('N_X', 'N_Y'):
+                    self.assertEqual([row[axis] for row in large[0]['identity']['allocation']], expected)
                 with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as store:
                     before = store.execute('select job_id,attempt_id,state from jobs order by job_id').fetchall()
                 self.assertTrue(all(state == 'ACCEPTED' for _, _, state in before))
+                events = root/'worker'/'WORKER_EVENTS.jsonl'
+
+                def worker_launches():
+                    return [row for row in map(json.loads, events.read_text().splitlines()) if row['event'] == 'LAUNCH']
+
+                started = worker_launches()
+                self.assertCountEqual([(row['job_id'], row['attempt_id']) for row in started],
+                                      [(job, attempt) for job, attempt, _ in before])
                 gateway.handle(dict(action='resume', run_id=result['run_id'], instruction='Artificial finite support'))
                 self.assertEqual(outcomes, {p:p.read_bytes() for p in run.glob('jobs/*/*/OUTCOME.json')})
                 with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as store:
                     after = store.execute('select job_id,attempt_id,state from jobs order by job_id').fetchall()
                 self.assertEqual(before,after)
+                resumed = worker_launches()
+                self.assertEqual(started, resumed)
+                resources = []
+                for path in (root/'worker').rglob('ARTIFICIAL_RESOURCE.json'):
+                    outcome = load(path.with_name('OUTCOME.json'))
+                    first_shot = outcome['identity']['allocation'][0]['N_X']
+                    resources.append(dict(load(path), first_axis_shots=first_shot))
+                self.assertEqual(len(resources), len(before))
+                return dict(M=horizon, shots=expected, launches=len(started), launches_on_resume=len(resumed)-len(started),
+                            status=large[0]['status'], upper=large[0]['MSE_upper'],
+                            worker_resources=sorted(resources, key=lambda row: row['first_axis_shots']))
 
     def test_ceil_exact_even_around_integer_and_aliases(self):
         self.assertEqual(S.base_shots(11), list(range(55, 10, -4)))
