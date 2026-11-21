@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -32,6 +33,37 @@ class PreparationQueue(Base.ControllerFailures):
         row=executor.store.row(assignment['job_id'])
         return dict(host_id=row['host_id'],job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],request_sha256=assignment['request_sha256'],
             files={name:base64.b64encode(json.dumps(value).encode()).decode() for name,value in files.items()})
+
+    def test_horizon_round_shares_existing_queue_and_stage_budgets(self):
+        from trottertracks.rpe_preparation_queue import submit_horizon_preparation
+
+        executor = self.executor(capacity=3)
+        tasks = {}
+        for name, stage, axes in (('signal', 'signal', []), ('pair', 'compile', ['X','Y'])):
+            request = self.request(stage, name)
+            request['original_contract'] = dict(round=13, physical_id='one-fixed-round')
+            request['preparation'].update(horizon_round={'m': 13, 'physical_id': 'one-fixed-round'}, price_axes=axes)
+            tasks[name] = {'request': request}
+        bindings = {cid: {'source_M': 12, 'rounds': {'13': {
+            'physical_id': 'one-fixed-round', 'signal': 'signal', 'X': 'pair', 'Y': 'pair'}}}
+                    for cid in ('run-candidate-a', 'run-candidate-b')}
+        spec = {'horizon_extensions': {'tasks': tasks, 'bindings': bindings}, 'budgets': {'signal': 1, 'compile': 1}}
+        runtime = SimpleNamespace(settings=spec, executor=executor, approved=True)
+        requests = [dict(source_configuration_id=cid, configuration_id=cid+'-extended', M=13,
+                         source_M=12, extension_rounds=[13]) for cid in bindings]
+        reports = submit_horizon_preparation(runtime, requests)
+        self.assertEqual(reports[0]['jobs'], reports[1]['jobs'])
+        jobs = reports[0]['jobs']['13']
+        self.assertEqual(jobs['X'], jobs['Y'])
+        self.assertEqual(executor.store.preparation_reservations(), {'signal': 1, 'compile': 1})
+        for assignment in self.poll_host(executor, 'server1', 2)['assignments']:
+            executor.rpc('/v1/complete', self.prep_complete(executor, assignment))
+        self.close_one(executor)
+        runtime.executor = restarted = self.executor(capacity=3)
+        self.assertEqual(submit_horizon_preparation(runtime, requests), reports)
+        self.assertEqual(self.poll_host(restarted, 'server1', 2)['assignments'], [])
+        self.assertEqual(sum(row['event'] == 'ASSIGN' for row in restarted.store.events()), 2)
+        self.assertTrue(all(restarted.store.row(job)['state'] == 'ACCEPTED' for job in set(jobs.values())))
 
     def test_shared_q3_and_preparation_slot_cannot_be_claimed_twice(self):
         ex=self.executor(capacity=1)
@@ -67,7 +99,11 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(cell,duplicate)
         auditreq=self.request('audit','audit')
         auditreq['preparation']['dependency_inputs']={cell:{'receipt.json':'compiled/receipt.json'}}
+        auditreq['preparation']['provider'] = 'PF_AUDIT'
+        self.assertFalse(ex.store.has_preparation_successor(cell, 'PF_AUDIT'))
         audit=ex.submit_preparation(auditreq,approved=True,budget=8,dependencies=[cell])
+        self.assertTrue(ex.store.has_preparation_successor(cell, 'PF_AUDIT'))
+        self.assertFalse(ex.store.has_preparation_successor(cell, 'PF_HOLDOUT_AUDIT'))
         assignment=self.poll_host(ex,'local')['assignments'][0]
         self.assertEqual(assignment['job_id'],cell)
         self.assertEqual(self.poll_host(ex,'server1')['assignments'],[])

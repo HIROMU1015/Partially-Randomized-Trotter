@@ -259,7 +259,10 @@ def reconsider_prices(root, run, spec, settings, records):
 
     def inspect(item):
         cid, row = item
-        return cid, row, reconciliation_snapshot(root, row, locators[cid], objects=objects)
+        fingerprint = reconciliation_snapshot(root, row, locators[cid], objects=objects)
+        if settings.get('selected_axis_compile') is True:
+            fingerprint = 'SELECTED_AXIS_V1:'+fingerprint
+        return cid, row, fingerprint
 
     with ThreadPoolExecutor(max_workers=settings.get('max_candidates', 1)) as pool:
         decisions = list(pool.map(inspect, pending))
@@ -284,21 +287,44 @@ def reconsider_prices(root, run, spec, settings, records):
 
 
 def reconcile_received_preparation(run, records, stage_executor):
-    """Revisit the same PF leaf when its original stage finished after STOP."""
+    """Continue the same PF leaf from a verified compile or received stage."""
     reconcile = getattr(stage_executor, 'received_after_reservation_stop', None)
     if reconcile is None:
         return
     for cid, row in records.items():
         reason = row.get('reason') or ''
         if (row['status'] != 'PREPARATION_INCOMPLETE' or row.get('configurations')
-                or not reason.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:')):
+                or reason.startswith('PREPARATION_RESULT_MISMATCH:')):
             continue
         base = run/row.get('price_recheck_directory', (
             'pf_auto/price-recovery' if row.get('price_receipt_recheck') else 'pf_auto'))
         leaf = base/'candidates'/cid/'pf_auto/pf_completion'
         folder = leaf/'provider_workspace/docs/research/distributed_selected_pf'/cid
-        if not (leaf/'RESPONSE.json').exists() and reconcile(folder, reason):
+        inspect = getattr(stage_executor, 'hold_evidence', None)
+        if inspect is not None and (evidence := inspect(folder, reason)) is not None:
+            row['preparation_recovery'] = evidence
+        if reason.startswith('STAGE_FAILED:'):
+            continue
+        if (leaf/'RESPONSE.json').exists() or (folder/'STOP.json').exists():
+            continue
+        if reconcile(folder, reason):
             row.update(status='PREPARATION_WAITING', previous_preparation_hold=reason)
+            continue
+        needs_audit = getattr(stage_executor, 'needs_original_compile_audit', None)
+        for compile_stage, audit in (('PF_COMPILE', 'PF_AUDIT'), ('PF_HOLDOUT_COMPILE', 'PF_HOLDOUT_AUDIT')):
+            marker = folder/(compile_stage+'.DISTRIBUTED.json')
+            if (needs_audit is None or not marker.is_file()
+                    or any((folder/(audit+suffix)).exists() for suffix in (
+                        '.INPUT.json', '.DISTRIBUTED.json', '.STARTED.json', '.RETURN.json'))):
+                continue
+            try:
+                job = json.loads(marker.read_bytes())['job_id']
+            except (OSError, KeyError, ValueError):
+                continue
+            if needs_audit(folder, compile_stage, job, audit):
+                row.update(status='PREPARATION_WAITING', previous_preparation_hold=reason,
+                           preparation_recovery=dict(action='AUDIT_ORIGINAL_COMPILE', job_id=job, next_stage=audit))
+                break
 
 
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None,recheck_waiting=True,

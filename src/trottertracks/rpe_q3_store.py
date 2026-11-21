@@ -124,6 +124,21 @@ class JobStore:
                 "SELECT job_id FROM jobs WHERE method=? AND state='ACCEPTED' AND adopted_epoch IS NULL "
                 "ORDER BY completed_epoch,job_id", (method,))]
 
+    def has_preparation_successor(self, job_id, provider):
+        """Check for a durable audit owner even if a workspace marker was lost."""
+        with self._connection() as db:
+            return db.execute("""
+                SELECT 1 FROM jobs
+                WHERE method LIKE 'PREPARATION:%'
+                  AND json_extract(request, '$.preparation.provider') = ?
+                  AND (state != 'CANCELLED' OR attempt_id IS NOT NULL)
+                  AND EXISTS (
+                      SELECT 1 FROM json_each(request, '$.preparation.dependencies')
+                      WHERE value = ?
+                  )
+                LIMIT 1
+            """, (provider, job_id)).fetchone() is not None
+
     def events(self):
         with self._connection() as db:
             return [dict(row, detail=json.loads(row['detail'])) for row in db.execute('SELECT * FROM events ORDER BY sequence')]

@@ -20,6 +20,16 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_axis_recovery_uses_only_clear_unmeasured_wrappers(self):
+        original = dict(selected_axis_compile=True, maximum_new_compile=4, new_compile_cells=[
+            dict(m=2, axes=['X', 'Y'], role='CALIBRATION'), dict(m=4, axes=['X', 'Y'], role='HOLDOUT')])
+        overlap = {'2': [dict(axis='X', action='HELD'), dict(axis='Y', action='NEW_COMPILE_MISSING_CONFIRMED')],
+                   '4': [dict(axis='X', action='HELD'), dict(axis='Y', action='HELD')]}
+        reduced = prices.independent_plan(original, overlap)
+        self.assertEqual(reduced['new_compile_cells'], [dict(m=2, axes=['Y'], role='CALIBRATION')])
+        self.assertEqual(reduced['maximum_new_compile'], 1)
+        self.assertEqual(original['new_compile_cells'][0]['axes'], ['X', 'Y'])
+
     def test_received_stage_reopens_the_exact_pf_leaf(self):
         with tempfile.TemporaryDirectory() as tmp:
             run = Path(tmp)

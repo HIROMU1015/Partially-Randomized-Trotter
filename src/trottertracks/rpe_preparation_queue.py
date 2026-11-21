@@ -35,3 +35,89 @@ def normalize_preparation_request(request, *, source_manifest=None, dependencies
 
 def preparation_job_id(request, *, source_manifest=None, dependencies=()):
     return normalize_preparation_request(request,source_manifest=source_manifest,dependencies=dependencies)['request_id']
+
+
+def submit_horizon_preparation(runtime, requests):
+    """Resolve only the requested extension rounds against a fixed provider catalog.
+
+    The catalog belongs to the release's preparation settings. Candidate aliases
+    can point to the same physical round and task name. The normal ledger derives
+    the final job identity from the same fixed request with its dependencies.
+    """
+    catalog = runtime.settings.get('horizon_extensions') or {}
+    bindings, tasks = catalog.get('bindings', {}), catalog.get('tasks', {})
+    submitted = {}
+    budgets = runtime.settings.get('budgets', {})
+
+    def validate(name, order, visiting=()):
+        if name in order:
+            return
+        if name in visiting:
+            raise ValueError('Cyclic horizon preparation dependencies')
+        task = tasks[name]
+        request = task['request']
+        stage = request['preparation']['stage']
+        if stage not in ('signal', 'compile', 'audit') or request['route']['kind'] != 'preparation':
+            raise ValueError('Horizon task requires a fixed preparation provider')
+        if not isinstance(request['original_contract'], dict):
+            raise ValueError('Horizon task requires a fixed preparation contract')
+        parents = task.get('dependencies', ())
+        if set(request['preparation'].get('dependency_inputs', {})) - set(parents):
+            raise ValueError('Horizon dependency input has no declared producer')
+        for dep in parents:
+            validate(dep, order, (*visiting, name))
+        order[name] = task
+
+    def submit(name, task):
+        if name in submitted:
+            return
+        request = deepcopy(task['request'])
+        stage = request['preparation']['stage']
+        dependencies = {dep: submitted[dep] for dep in task.get('dependencies', ())}
+        if request['preparation'].get('dependency_inputs'):
+            request['preparation']['dependency_inputs'] = {
+                dependencies[dep]: paths for dep, paths in request['preparation']['dependency_inputs'].items()}
+        job = runtime.executor.submit_preparation(request, budget=budgets.get(stage, 0),
+            approved=runtime.approved, contract=request['original_contract'], dependencies=dependencies.values())
+        submitted[name] = job
+
+    reports = []
+    for request in requests:
+        rounds = request.get('extension_rounds', ())
+        if not rounds:
+            continue
+        configuration = request.get('source_configuration_id')
+        binding = bindings.get(configuration)
+        report = dict(configuration_id=request['configuration_id'], source_configuration_id=configuration,
+                      M=request['M'], status='HORIZON_PROVIDER_NOT_CONFIGURED', jobs={})
+        reports.append(report)
+        if binding is None or binding.get('source_M') != request.get('source_M'):
+            continue
+        for m in rounds:
+            entry = binding.get('rounds', {}).get(str(m))
+            if not entry:
+                continue
+            selected, ordered = {}, {}
+            try:
+                for role, allowed in (('signal', ('signal',)), ('X', ('compile', 'audit')), ('Y', ('compile', 'audit'))):
+                    name = entry[role]
+                    preparation = tasks[name]['request']['preparation']
+                    if (preparation['stage'] not in allowed or
+                            preparation['horizon_round'] != {'m': m, 'physical_id': entry['physical_id']} or
+                            (role != 'signal' and role not in preparation.get('price_axes', ()))):
+                        raise ValueError('Horizon task does not bind the selected physical round and axis')
+                    selected[role] = name
+                for name in selected.values():
+                    validate(name, ordered)
+            except (KeyError, TypeError, ValueError) as error:
+                report.update(status='HORIZON_PROVIDER_CONTRACT_HOLD', reason=str(error))
+                continue
+            try:
+                for name, task in ordered.items():
+                    submit(name, task)
+                report['jobs'][str(m)] = {role: submitted[name] for role, name in selected.items()}
+            except (KeyError, TypeError, ValueError) as error:
+                report.update(status='HORIZON_PROVIDER_CONTRACT_HOLD', reason=str(error))
+        if len(report['jobs']) == len(rounds):
+            report['status'] = 'HORIZON_PREPARATION_REQUESTED'
+    return reports

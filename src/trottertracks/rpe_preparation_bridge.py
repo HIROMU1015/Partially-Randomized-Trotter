@@ -464,32 +464,82 @@ class DistributedPreparationBridge:
         paths = (directory/(name+'.DISTRIBUTED.json') for name in DEPENDENCIES.get(stage, ()))
         return [read(path)['job_id'] for path in paths if path.exists()]
 
-    def received_stage(self, directory, stage, job_id):
-        """Match one original marker and its normalized request to a received result."""
+    def recovery_evidence(self, directory, stage, job_id):
+        """Classify an exact owned attempt without starting or mutating it."""
         from .rpe_preparation_queue import normalize_preparation_request
         from .rpe_q3_coordinator import digest
+        unmatched = dict(action='CHECK_ORIGINAL_REQUEST', job_id=job_id)
         if stage not in STAGES or not isinstance(job_id, str) or re.fullmatch(r'prep-[0-9a-f]{24}', job_id) is None:
-            return False
+            return unmatched
         try:
             row = self.executor.store.row(job_id)
-            if not row or row['state'] != 'ACCEPTED' or not row['attempt_id'] or not row['completion_sha256']:
-                return False
-            if row['detail'].get('outcome_status') != 'PREPARATION_COMPLETE':
-                return False
+            if not row:
+                return unmatched
             matching = []
             for path in directory.rglob(stage+'.DISTRIBUTED.json'):
                 marker = read(path)
                 if marker.get('job_id') == job_id:
                     matching.append((path, marker))
             if len(matching) != 1:
-                return False
+                return unmatched
             path, marker = matching[0]
             request = normalize_preparation_request(marker['request'], dependencies=self._dependencies(path.parent, stage))
-            return (request['request_id'] == job_id and request == row['request']
-                    and digest(request) == row['request_sha256']
-                    and request['preparation']['provider'] == stage
-                    and request['preparation']['source']['commit'] == marker['source'])
+            if (request['request_id'] != job_id or request != row['request']
+                    or digest(request) != row['request_sha256']
+                    or request['preparation']['provider'] != stage
+                    or request['preparation']['source']['commit'] != marker['source']):
+                return unmatched
+            state = row['state']
+            status = row['detail'].get('outcome_status')
+            result = dict(job_id=job_id, attempt_id=row['attempt_id'], state=state, outcome_status=status)
+            if state == 'ACCEPTED' and row['attempt_id'] and row['completion_sha256']:
+                action = 'CHECK_ORIGINAL_RECEIPT'
+                if status == 'PREPARATION_COMPLETE':
+                    action = 'IMPORT_SUCCESSFUL_STAGE'
+                elif status == 'PREPARATION_FAILED':
+                    job = self.executor.run_dir/'jobs'/row['method']/job_id
+                    outcome = read(job/'OUTCOME.json')
+                    receipt = read(job/'PROCESS_RETURN.json')
+                    artifacts = outcome.get('artifacts') or {}
+                    if (outcome.get('request_sha256') != row['request_sha256']
+                            or outcome.get('status') != status):
+                        return unmatched
+                    result.update(returncode=receipt.get('returncode'), signal=receipt.get('signal'),
+                                  partial_artifacts=len(artifacts))
+                    action = ('CHECK_FAILED_ATTEMPT_ARTIFACTS' if artifacts else 'PRESERVE_FAILED_ATTEMPT')
+            elif row['attempt_id']:
+                action = 'RECOVER_ORIGINAL_ATTEMPT'
+            else:
+                action = 'RECHECK_RESERVATION'
+            return dict(result, action=action)
         except (OSError, KeyError, TypeError, ValueError, sqlite3.Error):
+            return unmatched
+
+    def hold_evidence(self, directory, reason):
+        prefix, _, payload = reason.partition(':')
+        stage, _, detail = payload.partition(':')
+        if prefix == 'STAGE_FAILED':
+            _, _, detail = detail.partition(':NO_AUTOMATIC_RETRY:')
+        elif prefix != 'DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD':
+            return None
+        try:
+            result = ast.literal_eval(detail)
+        except (SyntaxError, ValueError):
+            return None
+        if not isinstance(result, dict):
+            return None
+        job_id = result.get('job_id') or result.get('request_id')
+        return self.recovery_evidence(directory, stage, job_id) if job_id else None
+
+    def received_stage(self, directory, stage, job_id):
+        return self.recovery_evidence(directory, stage, job_id)['action'] == 'IMPORT_SUCCESSFUL_STAGE'
+
+    def needs_original_compile_audit(self, directory, stage, job_id, audit):
+        if not self.received_stage(directory, stage, job_id):
+            return False
+        try:
+            return not self.executor.store.has_preparation_successor(job_id, audit)
+        except sqlite3.Error:
             return False
 
     def received_after_reservation_stop(self, directory, reason):
@@ -497,13 +547,15 @@ class DistributedPreparationBridge:
         stage, _, detail = payload.partition(':')
         if prefix != 'DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD' or stage not in STAGES:
             return False
-        if not detail.startswith("{'status': 'PREPARATION_STOPPED_BEFORE_RESERVATION',"):
+        if not detail.startswith("{'status':"):
             return False
         try:
             result = ast.literal_eval(detail)
         except (SyntaxError, ValueError):
             return False
-        return (isinstance(result, dict) and result.get('status') == 'PREPARATION_STOPPED_BEFORE_RESERVATION'
+        return (isinstance(result, dict) and result.get('status') in (
+                    'PREPARATION_STOPPED_BEFORE_RESERVATION', 'PREPARATION_RESULT_ARTIFACTS_MISSING',
+                    'UNKNOWN', 'HOST_ELIGIBILITY_HOLD', 'PREPARATION_DEPENDENCY_HOLD')
                 and self.received_stage(directory, stage, result.get('job_id')))
 
     def _blob(self, raw):

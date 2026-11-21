@@ -68,17 +68,27 @@ def reuse_calibration(root, workspace, folder, plan, rounds, receipt, *, phase='
     relative=(folder/phase/'run01').relative_to(workspace).as_posix()
     commit=receipt['raw_commit']
     try:
+        selected_axes = plan.get('selected_axis_compile') is True
+        expected = ({str(cell['m']): cell['axes'] for cell in plan['new_compile_cells'] if cell['m'] in rounds}
+                    if selected_axes else {str(m): ['X','Y'] for m in rounds})
+        received = receipt.get('axes_by_round', {str(m): ['X','Y'] for m in rounds})
         if (receipt['status']!='COMPILE_RECEIPTS_READY' or receipt['phase']!=phase or
-                receipt['relative']!=relative or receipt['rounds']!=rounds):
+                receipt['relative']!=relative or receipt['rounds']!=rounds or expected != received):
             raise ValueError('Collected calibration differs from the selected PF leaf')
         def blob(path):
             return subprocess.check_output(['git','show',commit+':'+path],cwd=root)
         origin=json.loads(blob(folder.relative_to(workspace).as_posix()+'/PLAN.json'))
         result=json.loads(blob(relative+'/RESULT.json'))
+        wrappers = result['results']
+        axes_match = (all(len(row['wrappers']) == 2 for row in wrappers) if not selected_axes else
+                      {row['cell']['m'] for row in wrappers} == set(rounds)
+                      and all(set(row['wrappers']) == {
+                          {'X': 'cosine', 'Y': 'sine'}[axis] for axis in expected[str(row['cell']['m'])]
+                      } for row in wrappers))
         if (origin['configuration']!=plan['configuration'] or
                 origin['prepared']['pending']['requests']!=plan['prepared']['pending']['requests'] or
-                result['child_exit_code']!=0 or len(result['results'])!=len(rounds) or
-                any(not row['ok'] or len(row['wrappers'])!=2 for row in result['results'])):
+                result['child_exit_code']!=0 or len(wrappers)!=len(rounds)
+                or not axes_match or not all(row['ok'] for row in wrappers)):
             raise ValueError('Collected native calibration does not match the selected PF plan')
         names=git(root,'ls-tree','-r','--name-only',commit,'--',relative).splitlines()
         subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit],cwd=workspace,check=True,
@@ -249,12 +259,16 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                     '--input',str(phase_in),'--output',str(phase_out)],cwd=workspace,check=True)
             return read(phase_out)
         source=local('preflight', **({'deferred_price_rounds': deferred} if deferred else {}))['source']
+        provider_files = ['scripts/prepare_pf_candidate.py','src/trottertracks/pf_evidence_preparation.py',
+                          'scripts/run_pf_m0_prices.py','scripts/run_pf_p7_h_prices.py','scripts/run_truncated_p7_prices.py']
+        if value.get('selected_axis_compile'):
+            provider_files += ['scripts/h46_long_time_native.py','scripts/pf_price_stages.py',
+                               'scripts/pf_native_price_fast.py','scripts/run_full_pf_shortlist_prices.py']
         context=SimpleNamespace(directory=folder,settings=spec.get('pf_completion',{}),
             source=fixed['source'],preparation_root=workspace,log=lambda **row:None,
             preparation_source_manifest=dict(commit=fixed['source'],files={name:__import__('hashlib').sha256(
                 subprocess.check_output(['git','show',fixed['source']+':'+name],cwd=workspace)).hexdigest()
-                for name in ['scripts/prepare_pf_candidate.py','src/trottertracks/pf_evidence_preparation.py',
-                    'scripts/run_pf_m0_prices.py','scripts/run_pf_p7_h_prices.py','scripts/run_truncated_p7_prices.py']}))
+                for name in provider_files}))
         if inherited_registry is not None:
             context.inherited_preparation_root = original_folder.parents[3]
         def call(phase,tag,**fields):
@@ -270,18 +284,25 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 str(Path(root)/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
                 '--input',str(stage_in),'--output',str(stage_out)]
             return runtime.call(context,cmd,folder,tag,stage_out,science=True)
+        def compile_stage(tag, cohort, cells):
+            options = {}
+            if value.get('selected_axis_compile'):
+                options['axes_by_round'] = {str(cell['m']): cell['axes'] for cell in cells}
+            return call('compile', tag, cohort=cohort, rounds=[cell['m'] for cell in cells], **options)
+
         def prices():
             values=deepcopy(value['direct_prices'])
-            calibration=[r['m']for r in value['new_compile_cells']if r['role']!='HOLDOUT']
+            cells=[r for r in value['new_compile_cells']if r['role']!='HOLDOUT']
+            calibration=[r['m'] for r in cells]
             if calibration:
                 saved=saved_for_configuration(spec['pf_completion'],'saved_calibration',value['configuration']['id'])
                 compiled=(reuse_calibration(root,workspace,folder,value,calibration,saved) if saved else
-                          call('compile','PF_COMPILE',cohort='calibration',rounds=calibration))
+                          compile_stage('PF_COMPILE','calibration',cells))
                 track_collected_prices(workspace,compiled)
                 saved_audit=saved_for_configuration(spec['pf_completion'],'saved_calibration_audit',value['configuration']['id'])
                 if saved_audit:
                     prices=saved_audit['prices']
-                    expected={(m,axis) for m in calibration for axis in ('X','Y')}
+                    expected={(cell['m'],axis) for cell in cells for axis in cell.get('axes',('X','Y'))}
                     if (saved_audit['status']!='AUDIT_PASS' or len(prices)!=len(expected) or
                             {(p['m'],p['axis']) for p in prices}!=expected or
                             any(p['gate']!='C_IMPLEMENTATION_GUARD_PASS' or
@@ -296,22 +317,23 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                     prices=call('audit','PF_AUDIT',compiled=compiled)['prices']
                 values+=prices
             frozen=call('freeze','PF_MODEL_FREEZE',prices=values)['model']
-            holdout=[r['m']for r in value['new_compile_cells']if r['role']=='HOLDOUT']
+            holdout_cells=[r for r in value['new_compile_cells']if r['role']=='HOLDOUT']
+            holdout=[r['m'] for r in holdout_cells]
             if holdout:
                 saved=saved_for_configuration(spec['pf_completion'],'saved_holdout_compile',value['configuration']['id'])
                 compiled=(reuse_calibration(root,workspace,folder,value,holdout,saved,phase='holdout') if saved else
-                          call('compile','PF_HOLDOUT_COMPILE',cohort='holdout',rounds=holdout))
+                          compile_stage('PF_HOLDOUT_COMPILE','holdout',holdout_cells))
                 track_collected_prices(workspace,compiled)
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
         if deferred:
-            # Keep calibration/holdout roles frozen. Independent pairs can be
-            # acquired and audited without freezing a partial price model.
-            rounds = [cell['m'] for cell in value['new_compile_cells']
-                      if str(cell['m']) not in deferred and cell['role'] != 'HOLDOUT']
+            from .pf_saved_prices import independent_plan
+            # Preserve calibration/holdout roles while admitting independently clear work.
+            cells = [cell for cell in independent_plan(value,deferred)['new_compile_cells']
+                     if cell['role'] != 'HOLDOUT']
             prices = []
-            if rounds:
-                compiled = call('compile', 'PF_COMPILE', cohort='calibration', rounds=rounds)
+            if cells:
+                compiled = compile_stage('PF_COMPILE', 'calibration', cells)
                 track_collected_prices(workspace, compiled)
                 prices = call('audit', 'PF_AUDIT', compiled=compiled)['prices']
             commits = sorted({row['price_evidence']['source']['commit'] for row in prices})

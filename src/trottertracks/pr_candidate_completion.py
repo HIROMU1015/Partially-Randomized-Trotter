@@ -942,6 +942,9 @@ class Completion:
                 interrupted_before_stage=str(exc),scientific_failure=False)
         except Held as exc:
             text=str(exc)
+            inspect = getattr(getattr(self, 'stage_executor', None), 'hold_evidence', None)
+            if inspect is not None and (evidence := inspect(d, text)) is not None:
+                rec['preparation_recovery'] = evidence
             waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))
             operational=isinstance(exc, PreparationWait)
             unavailable = request['method']=='PR_DF' and text.startswith(DF_PRICE_UNAVAILABLE)

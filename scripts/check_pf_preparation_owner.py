@@ -63,7 +63,12 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             extra = helpers['use_saved_prices'](saved_price_index)
             saved_price_index = None
         try:
-            plan=E.make_plan(root,configuration,source)
+            if request.get('selected_axis_compile') is True and not getattr(provider, 'SELECTED_AXIS_COMPILE', False):
+                rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
+                                 reason='Selected axis compile requires a compatible fixed PF provider'))
+                continue
+            options = {'allow_single_axis': True} if request.get('selected_axis_compile') is True else {}
+            plan=E.make_plan(root,configuration,source,**options)
         except ValueError as error:
             if str(error) not in PRICE_PLAN_HOLDS:
                 raise
@@ -80,13 +85,15 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
         destination=Path(observations)/cid;destination.mkdir(parents=True,exist_ok=True)
         try:
             deferred = helpers['unresolved_rounds'](root, plan, destination/'DUPLICATE_ROUNDS.json', extra) if helpers else {}
-            available = [cell for cell in plan.get('new_compile_cells', ()) if cell['m'] not in deferred
-                         and (not deferred or cell['role'] != 'HOLDOUT')]
+            cleared = helpers['independent_plan'](plan, deferred) if deferred else plan
+            available = [cell for cell in cleared.get('new_compile_cells', ())
+                         if not deferred or cell['role'] != 'HOLDOUT']
             if deferred and not available:
                 rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
-                    reason='No independently clear pair of X/Y wrappers', deferred_price_rounds=deferred))
+                    reason=('No independently clear wrapper axis' if plan.get('selected_axis_compile')
+                            else 'No independently clear pair of X/Y wrappers'), deferred_price_rounds=deferred))
                 continue
-            provider.preflight(helpers['independent_plan'](plan, deferred) if deferred else plan, destination)
+            provider.preflight(cleared, destination)
             row = dict(configuration_id=cid,status='ORIGINAL_OWNER_PREFLIGHT_PASS')
             if helpers:
                 row.update(reused_guarded_axes=sum(price['price_evidence']['admission']['path'].endswith('/GUARD_CHECK.json')

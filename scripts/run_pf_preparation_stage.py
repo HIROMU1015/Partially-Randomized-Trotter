@@ -110,14 +110,25 @@ def bind_native_compile_inputs():
     signal.origin_config = lambda: config
 
 
-def compile_receipts(value,out,phase,ms,source):
+def compile_receipts(value,out,phase,ms,source,*,axes_by_round=None):
     from trottertracks import pf_evidence_preparation as E
     import run_pf_m0_prices as M
     import run_pf_p7_h_prices as P
-    folder=out/phase/'run01';private=ROOT/'.pf_evidence_private'/value['configuration']['id']/phase/'run01'
-    folder.mkdir(parents=True);private.mkdir(parents=True,exist_ok=False)
     cfg=value['configuration'];p=cfg['spec']['L_D'];route=comparison_method(cfg)
     cells=[dict(m=r['m'],formula=r['physical_candidate']['formula'],row=native_row(cfg,r['physical_candidate']),role=phase.upper()) for r in value['prepared']['pending']['requests'] if r['m'] in ms]
+    if (value.get('selected_axis_compile') is True) != (axes_by_round is not None):
+        raise ValueError('Selected-axis plan requires explicit compiled axes')
+    if axes_by_round is not None:
+        if (set(axes_by_round) != {str(m) for m in ms}
+                or any(tuple(axes) not in (('X',), ('Y',), ('X','Y')) for axes in axes_by_round.values())):
+            raise ValueError('Selected compile axes differ from the fixed PF request')
+        for cell in cells:
+            cell['axes'] = axes_by_round[str(cell['m'])]
+    if [cell['m'] for cell in cells] != ms or not cells:
+        raise ValueError('Selected compile rounds differ from the fixed PF plan')
+    expected = {(cell['m'], axis) for cell in cells for axis in cell.get('axes', ('X','Y'))}
+    folder=out/phase/'run01';private=ROOT/'.pf_evidence_private'/cfg['id']/phase/'run01'
+    folder.mkdir(parents=True);private.mkdir(parents=True,exist_ok=False)
     saved=M.read(dict(commit=M.BASELINE,path=(M.F if route=='FULL_PF' else M.T).OUTPUT_ROOT+'/holdout/run01/RESULT.json'))['results'][0]
     constant=saved['facts']['scalar'] if route=='FULL_PF' else saved['facts']['scalar']-saved['facts']['tail_identity']
     # Use the original saved H constant, not subtraction, for binary64 order.
@@ -157,9 +168,14 @@ def compile_receipts(value,out,phase,ms,source):
     for name,data in [('PRICES.json',prices),('SIDECARS_UNBOUND.json',sides),('IMPLEMENTATION_EVIDENCE.json',proofs)]:write(folder/name,data)
     result.update(source=source,child_exit_code=r.returncode,child_signal=-r.returncode if r.returncode<0 else None,wall_seconds=time.perf_counter()-started)
     write(folder/'RESULT.json',result)
-    E.check(r.returncode==0 and len(prices)==2*len(ms) and all(x['ok'] for x in result['results']),'Native STOP; preserve partial results, no retry')
+    E.check(r.returncode==0 and len(prices)==len(expected)
+            and {(row['m'], row['axis']) for row in prices}==expected
+            and all(x['ok'] for x in result['results']),'Native STOP; preserve partial results, no retry')
     pub=publish([out],'Preserve unadmitted PF compile receipts for separate audit')
-    return dict(status='COMPILE_RECEIPTS_READY',phase=phase,rounds=ms,raw_commit=pub,relative=str(folder.relative_to(ROOT)),route=route)
+    receipt = dict(status='COMPILE_RECEIPTS_READY',phase=phase,rounds=ms,raw_commit=pub,relative=str(folder.relative_to(ROOT)),route=route)
+    if axes_by_round is not None:
+        receipt['axes_by_round'] = axes_by_round
+    return receipt
 
 
 def audit_receipts(provider,value,out,compiled):
@@ -167,12 +183,22 @@ def audit_receipts(provider,value,out,compiled):
     import run_pf_p7_h_prices as P
     from trottertracks import pf_evidence_preparation as E
     folder=ROOT/compiled['relative']
+    prices=load(folder/'PRICES.json')
+    axes = compiled.get('axes_by_round')
+    if axes is not None or value.get('selected_axis_compile'):
+        if axes is None:  # A retained pair predates explicit axis metadata.
+            axes = {str(m): ['X','Y'] for m in compiled['rounds']}
+        expected = {(int(m), axis) for m, selected in axes.items() for axis in selected}
+        planned = {(cell['m'], axis) for cell in value['new_compile_cells'] for axis in cell['axes']}
+        if not expected <= planned:
+            raise ValueError('Raw receipt axes do not belong to the selected PF plan')
+        if len(prices) != len(expected) or {(price['m'], price['axis']) for price in prices} != expected:
+            raise ValueError('Raw receipts do not match the original selected axes')
     # The original C implementation guard reads committed raw receipts and
     # matching implementation evidence. It never recompiles a circuit.
     P.bind_records(value['prepared'],compiled['relative'],compiled['raw_commit'],names=M.RAW,
         policy_id='PF_SELECTED_SAME_PHYSICAL_WRAPPER_V1',route=compiled['route'])
     bound=publish([out],'Admit transferred PF receipts through original C implementation guard')
-    prices=load(folder/'PRICES.json')
     return [dict(m=x['m'],axis=x['axis'],physical_id=x['physical_context']['physical_candidate']['id'],
         unit_price_RZ=E.enc(x['mean']['rz_count']),kind='DIRECT_COMPILED_DETERMINISTIC',
         price_evidence=dict(source=E.ref(bound,str((folder/'PRICES.json').relative_to(ROOT)),i)),
@@ -218,7 +244,11 @@ def run(provider,request):
         provider.signals(value,out,source)
         publication=publish([out],'Preserve PF signal task for central adoption')
         return dict(status='SIGNALS_READY',publication=publication)
-    if phase=='compile':return compile_receipts(value,out,request['cohort'],request['rounds'],source)
+    if phase=='compile':
+        axes = request.get('axes_by_round')
+        if axes is not None and not getattr(provider, 'SELECTED_AXIS_COMPILE', False):
+            raise ValueError('Fixed PF provider does not support selected axes')
+        return compile_receipts(value,out,request['cohort'],request['rounds'],source,axes_by_round=axes)
     if phase=='audit':return dict(status='AUDIT_PASS',prices=audit_receipts(provider,value,out,request['compiled']))
     if phase=='freeze':return dict(status='MODEL_FROZEN',model=provider.freeze(value,request['prices'],out,source))
     if phase=='finish':return dict(status='PRICES_READY',prices=provider.finish(value,request['prices'],out,request['model'],source))

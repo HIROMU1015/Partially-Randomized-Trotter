@@ -1549,6 +1549,14 @@ class WidthDriver:
                 with K.CLI.round_phase(self.run,'WIDTH_PREPARATION_CONTINUATION'):
                     result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
                         active_spec,self.run,comp,executor,result,optimizer=optimize)
+            if getattr(runtime, 'settings', {}).get('horizon_extensions') and not any(
+                    r['stop_reason'] in fatal for r in result.values()):
+                from trottertracks.rpe_preparation_queue import submit_horizon_preparation
+                requests = [req for r in result.values() for req in r.get('input_requests', [])
+                            if req['kind'] == 'HORIZON_INPUTS_MISSING']
+                if requests:
+                    reports = submit_horizon_preparation(runtime, requests)
+                    K.CLI.write(self.run/'HORIZON_PREPARATION.json', reports)
         except BaseException as error:
             if preparation_pool is not None:stop_preparing()
             O.record_runtime_error(self.run,error,'WIDTH_BATCH')

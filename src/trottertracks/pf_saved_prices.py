@@ -174,7 +174,7 @@ def price_axis_actions(item):
             elif any(hit.get('prior_admitted_sources') for hit in findings):
                 action, reason = 'CHECK_ADMITTED_RECEIPT', 'Exact receipt is available to the fixed price planner'
             elif axis['action'] == 'NEW_COMPILE_MISSING_CONFIRMED':
-                action, reason = 'MISSING_AXIS', 'This axis is clear but the fixed native worker requires a pair'
+                action, reason = 'MISSING_AXIS', 'Duplicate check cleared this axis for the selected provider'
             elif any(hit.get('trial_files') or hit.get('existing_route_result') or hit.get('trial')
                      for hit in findings):
                 action, reason = 'CHECK_ORIGINAL_COMPILE', 'Check the raw compile and bind it with the existing C guard'
@@ -205,22 +205,27 @@ def audited_prices(root, locators, evidence):
         try:
             row = read(loc)
             guard_loc = evidence.ref(loc['commit'], str(Path(loc['path']).with_name('GUARD_CHECK.json')))
-            guard = read(guard_loc)['guard']
+            guard_document = read(guard_loc)
+            guards = (guard_document if isinstance(guard_document, list)
+                      else [guard_document.get('guard', guard_document)])
             axis, physical = row['axis'], row['physical_context']['physical_candidate']
-            if (guard['status'] != 'IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION'
-                    or guard['policy']['id'] != 'PF_SELECTED_SAME_PHYSICAL_WRAPPER_V1'):
-                continue
-            check = next((item for item in guard['checked']
-                          if item['m'] == row['m'] and item['axis'] == axis), None)
-            if check is None:
-                continue
-            side = read(check['evidence'])
-            if (side['physical_context'] != row['physical_context'] or side['axis'] != axis
-                    or side['cohort'] != row['cohort'] or side['price_source'] != row['source']
-                    or side['identity'] != row['identity'] or side['law_binding'] != row['law_binding']):
-                continue
-            receipts[evidence.physical_key(physical), axis].append(
-                dict(value=row, source=loc, admission=guard_loc))
+            matches = []
+            for n, guard in enumerate(guards):
+                if (guard['status'] != 'IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION'
+                        or guard['policy']['id'] not in ('PF_SELECTED_SAME_PHYSICAL_WRAPPER_V1',
+                                                        'C_SAVED_M3_METADATA_COMPATIBILITY_ONLY')):
+                    continue
+                for check in guard['checked']:
+                    if check['m'] != row['m'] or check['axis'] != axis:
+                        continue
+                    side = read(check['evidence'])
+                    if (side['physical_context'] == row['physical_context'] and side['axis'] == axis
+                            and side['cohort'] == row['cohort'] and side['price_source'] == row['source']
+                            and side['identity'] == row['identity'] and side['law_binding'] == row['law_binding']):
+                        matches.append(n)
+            if len(matches) == 1:
+                admission = dict(guard_loc, selector=[matches[0]]) if isinstance(guard_document, list) else guard_loc
+                receipts[evidence.physical_key(physical), axis].append(dict(value=row, source=loc, admission=admission))
         except (OSError, KeyError, IndexError, TypeError, ValueError, subprocess.CalledProcessError):
             continue
     return receipts
@@ -271,10 +276,10 @@ def unresolved_rounds(root, plan, output, extra):
     import run_pf_m0_prices as native
     from trottertracks import pf_evidence_preparation as evidence
 
-    rounds = {row['m'] for row in plan['new_compile_cells']}
+    rounds = {row['m']: row.get('axes', ('X', 'Y')) for row in plan['new_compile_cells']}
     targets = [dict(configuration_id=plan['configuration']['id'], physical_id=job['physical_candidate']['id'],
                     m=job['m'], axis=axis, physical_candidate=job['physical_candidate'])
-               for job in plan['prepared']['pending']['requests'] for axis in ('X', 'Y') if job['m'] in rounds]
+               for job in plan['prepared']['pending']['requests'] for axis in rounds.get(job['m'], ())]
     if not targets:
         return {}
     audit = native.duplicate_check((1, 2), selected=targets)
@@ -293,6 +298,13 @@ def unresolved_rounds(root, plan, output, extra):
 def independent_plan(plan, deferred):
     selected = deepcopy(plan)
     blocked = {int(m) for m in deferred}
-    selected['new_compile_cells'] = [row for row in plan['new_compile_cells'] if row['m'] not in blocked]
-    selected['maximum_new_compile'] = 2*len(selected['new_compile_cells'])
+    if plan.get('selected_axis_compile'):
+        held_axes = {(int(m), row['axis']) for m, rows in deferred.items() for row in rows
+                     if row['action'] != 'NEW_COMPILE_MISSING_CONFIRMED'}
+        for row in selected['new_compile_cells']:
+            row['axes'] = [axis for axis in row['axes'] if (row['m'], axis) not in held_axes]
+        selected['new_compile_cells'] = [row for row in selected['new_compile_cells'] if row['axes']]
+    else:
+        selected['new_compile_cells'] = [row for row in selected['new_compile_cells'] if row['m'] not in blocked]
+    selected['maximum_new_compile'] = sum(len(row.get('axes', ('X', 'Y'))) for row in selected['new_compile_cells'])
     return selected
