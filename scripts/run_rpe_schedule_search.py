@@ -148,6 +148,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                                ('pf_saved_prices', 'pf_saved_prices_sha256'),
                                ('pf_distributed_preparation', 'pf_distributed_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
+                               ('rpe_plan_history_cache', 'plan_history_cache_sha256'),
+                               ('rpe_preparation_queue', 'preparation_queue_sha256'),
                                ('pf_candidate_selection', 'pf_selection_sha256'),
                                ('pr_candidate_completion', 'candidate_completion_sha256'),
                                ('rpe_preparation_bridge', 'preparation_bridge_sha256'),
