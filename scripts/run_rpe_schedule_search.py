@@ -164,6 +164,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         helper = importlib.util.spec_from_file_location(name, path)
         # The executor and CLI may already hold the base optimizer module.
         # Update that module before starting selectors so both use the handoff.
+        if module_name == 'rpe_method_optimizer' and Path(O.__file__).resolve() == path.resolve():
+            continue  # The pinned bootstrap installed this before importing the executor.
         module = O if module_name == 'rpe_method_optimizer' else importlib.util.module_from_spec(helper)
         if module is O:
             module.__file__ = str(path)

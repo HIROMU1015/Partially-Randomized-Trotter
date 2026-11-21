@@ -86,6 +86,29 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(RequestError, 'Q3 store differs'):
             schedule_driver(self.config, run, selection)
 
+    def test_selected_schedule_checks_pinned_optimizer_binding_before_start(self):
+        from hashlib import sha256
+        from trottertracks.rpe_local0_search import schedule_driver
+
+        run = self.home/'run'
+        write(run/'APPLIED_SCOPE.json', dict(run_id=run.name, entry='schedule'))
+        operations = self.home/'operations'
+        driver = operations/'scripts/run_rpe_schedule_search.py'
+        concurrent = operations/'src/trottertracks/rpe_optimizer_concurrent.py'
+        method = concurrent.with_name('rpe_method_optimizer.py')
+        digest = {}
+        for path in (driver, concurrent, method):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('# Artificial deployment\n')
+            digest[path] = sha256(path.read_bytes()).hexdigest()
+        selection = dict(run_id=run.name, base_source=self.config['code_source'], root=str(operations),
+                         driver_sha256=digest[driver],
+                         worker_trial=dict(optimizer_sha256=digest[concurrent], method_optimizer_sha256=digest[method]))
+        self.assertEqual(schedule_driver(self.config, run, selection), driver)
+        method.write_text('# Changed method optimizer\n')
+        with self.assertRaisesRegex(RequestError, 'rpe_method_optimizer'):
+            schedule_driver(self.config, run, selection)
+
     def test_explicit_resume_preserves_killed_controller_attempts_and_stop(self):
         import signal
         from trottertracks.rpe_q3_store import JobStore

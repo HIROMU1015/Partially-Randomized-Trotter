@@ -1060,10 +1060,16 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                 or message != fault.get('message')):
             hold('the driver failure differs from its saved stop')
         if kind == 'dispatch':
-            if (stop['error_type'] != 'KeyError' or not re.fullmatch("'[0-9a-f]{64}'", message)
-                    or 'in prefetch_standby' not in trace
-                    or 'source = configurations[projection[\'source_configuration_id\']]' not in trace):
-                hold('the failure is outside the projected Q3 request builder')
+            projected_request = (
+                stop['error_type'] == 'KeyError' and re.fullmatch("'[0-9a-f]{64}'", message)
+                and 'in prefetch_standby' in trace
+                and 'source = configurations[projection[\'source_configuration_id\']]' in trace)
+            pinned_history_binding = (
+                stop['error_type'] == 'AttributeError'
+                and message == "'DistributedExecutor' object has no attribute 'prior_route_fields'"
+                and 'rpe_plan_history_cache.py' in trace and 'in _context' in trace)
+            if not (projected_request or pinned_history_binding):
+                hold('the failure is outside the projected Q3 request builder or pinned history binding')
         elif kind == 'pf_request':
             old_mismatch = (message == 'PF completion directory belongs to another selected request'
                             and 'pf_optimizer_connection.py' in trace)
@@ -1176,10 +1182,14 @@ def schedule_driver(config, run, selection):
                 or hashlib.sha256(manager.read_bytes()).hexdigest() != selection['pbs_manager_sha256']):
             raise RequestError('schedule_resume', 'PBS manager differs from its selected deployment')
     if 'worker_trial' in selection:
-        optimizer = driver.parents[1]/'src/trottertracks/rpe_optimizer_concurrent.py'
-        if (not optimizer.is_file()
-                or hashlib.sha256(optimizer.read_bytes()).hexdigest() != selection['worker_trial']['optimizer_sha256']):
-            raise RequestError('schedule_resume', 'Resource trial optimizer differs from its selected deployment')
+        trial = selection['worker_trial']
+        for name, field in (('rpe_optimizer_concurrent', 'optimizer_sha256'),
+                            ('rpe_method_optimizer', 'method_optimizer_sha256')):
+            if field != 'optimizer_sha256' and field not in trial:
+                continue
+            path = driver.parents[1]/'src/trottertracks'/(name+'.py')
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != trial[field]:
+                raise RequestError('schedule_resume', 'Selected optimizer differs from deployment: '+name)
     if 'q3_store_sha256' in selection:
         store = driver.parents[1]/'src/trottertracks/rpe_q3_store.py'
         if not store.is_file() or hashlib.sha256(store.read_bytes()).hexdigest() != selection['q3_store_sha256']:
@@ -1279,10 +1289,16 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         if 'q3_store_sha256' in schedule_resume:
             operations.insert(0, ('rpe_q3_store', str(driver.parents[1]/'src/trottertracks/rpe_q3_store.py')))
             implementation['q3_store_sha256'] = schedule_resume['q3_store_sha256']
+        if trial and 'method_optimizer_sha256' in trial:
+            # Executors subclass this module. Bind the selected class before
+            # loading any helper or executor that imports it.
+            operations.insert(0, ('rpe_method_optimizer',
+                                  str(driver.parents[1]/'src/trottertracks/rpe_method_optimizer.py')))
         bootstrap = ('import importlib.util,json,runpy,sys\n'
                      'root,driver,manager,optimizer,preparation,trial,pr_price_service=sys.argv[1:8]\n'
                      'sys.argv=sys.argv[7:]\n'
                      'sys.path.insert(0,root+"/src")\n'
+                     'import trottertracks\n'
                      'for name,path in [*json.loads(preparation),("rpe_pbs",manager),("rpe_optimizer_concurrent",optimizer)]:\n'
                      '    if path:\n'
                      '        spec=importlib.util.spec_from_file_location("trottertracks."+name,path)\n'
@@ -1292,6 +1308,7 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
                      '            module.FIXED_RUN_PR_PRICE_SERVICE=pr_price_service\n'
                      '        sys.modules[spec.name]=module\n'
                      '        spec.loader.exec_module(module)\n'
+                     '        setattr(trottertracks,name,module)\n'
                      'runpy.run_path(driver,run_name="__main__",init_globals={'
                      '"FIXED_RUN_CODE_ROOT":root,"FIXED_RUN_WORKER_TRIAL":json.loads(trial)})')
         price_service = str(driver.with_name('pr_candidate_services.py')) if 'pr_price_service_sha256' in schedule_resume else ''
