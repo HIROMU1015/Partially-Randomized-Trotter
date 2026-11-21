@@ -1,0 +1,90 @@
+{
+  "request_id": "m13-real-pr_df",
+  "method": "PR_DF",
+  "configuration_id": "23793113f968f7119ceb42f85d3ea9fb3435aa48d5b21d4f0d3acd830d36dbd5",
+  "N_X": [
+    32,
+    30,
+    28,
+    26,
+    24,
+    22,
+    20,
+    18,
+    16,
+    14,
+    12,
+    10,
+    8,
+    6
+  ],
+  "N_Y": [
+    32,
+    30,
+    28,
+    26,
+    24,
+    22,
+    20,
+    18,
+    16,
+    14,
+    12,
+    10,
+    8,
+    6
+  ],
+  "cost": {
+    "numerator": 111229232165,
+    "denominator": 126
+  },
+  "origin": {
+    "kind": "RPE_SCALED_SHOTS_V1",
+    "M": 13
+  },
+  "route": {
+    "kind": "prdf_d2_split",
+    "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+    "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+    "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+    "configuration_ids": "*",
+    "templates": [
+      {
+        "commit": "37df0fa73c95a0404c5eefb79e77aa15327bb717",
+        "path": "docs/research/rpe_m13_real_validation_20261122/PR_DF_Q3_TEMPLATE_V2.json"
+      }
+    ],
+    "existing_caller": "D2 005dc8c01 scripts/run_pr_df_ld_split_q3_resume.py (W.supervise) as used by B2 cf19fc36f",
+    "horizon_risk_source": {
+      "commit": "89fcde14f6ac5f4b97be234f9b0822091e7d9ac7",
+      "path": "src/trottertracks/rpe_deterministic_risk.py",
+      "sha256": "153f131b76aed35a0043eb60825b89fb62b6fcc616254d56b7a817712a376df3"
+    },
+    "horizon_parent": {
+      "configuration": {
+        "commit": "12efc9dca2737c5d930877050817f3aae8186742",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json"
+      },
+      "signal_packet": {
+        "commit": "1cbc24cfc0fb0972f75cdef81db6bf62c51141e4",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/B_MEANS_LD7.json"
+      }
+    },
+    "route_views": {
+      "89fcde14f6ac5f4b97be234f9b0822091e7d9ac7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-m13-risk-89fcde14f"
+    }
+  },
+  "expected": {
+    "total_configuration_id": "f00769918f264994d62080929bced34a3ac576e2aa47a1d783abd32360a7a9f4",
+    "binding_id": "a122e536aabe6f84b8d6e2eac6e342051676477e7a4f26d743582c540adcb9b8",
+    "signal_source": {
+      "commit": "1cbc24cfc0fb0972f75cdef81db6bf62c51141e4",
+      "path": "docs/research/d_pr_df_ld7_v0_results_20261116/B_MEANS_LD7.json"
+    },
+    "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1"
+  },
+  "optimizer_source": "37df0fa73c95a0404c5eefb79e77aa15327bb717",
+  "execution_profile": {
+    "dp_workers": 8
+  }
+}
