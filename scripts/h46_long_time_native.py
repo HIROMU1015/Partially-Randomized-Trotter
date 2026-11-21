@@ -183,7 +183,12 @@ def compile_cached(wrapper,fingerprint,representative):
         return result,cost.transpiled_circuit,False
 
 
-def cost_trial(job):
+def cost_trial(job, *, axes=('cosine', 'sine')):
+    axes = tuple(axes)
+    if axes not in (('cosine',), ('sine',), ('cosine', 'sine')):
+        raise ValueError('Specify the exact measured wrapper axes')
+    if len(axes) != 2 and (job[0]['method'] not in ('FULL', 'B0I') or job[2] != 0):
+        raise ValueError('A single wrapper requires a deterministic representative PF trial')
     import numpy as np
     from qiskit import QuantumCircuit
     from trottertracks.resource_applicability import ax2b_native_df_v5 as native
@@ -223,7 +228,7 @@ def cost_trial(job):
                 checks.append(gate('high_control_leakage',np.linalg.norm(hi[:len(expected)])))
                 checks.append(gate('independent_occupation_vector',np.linalg.norm(hi[len(expected):]-expected)))
                 z=complex(np.vdot(ctx.qstate,expected))
-            for axis in ('cosine','sine'):
+            for axis in axes:
                 wrapper=native.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,
                                                            max_instructions=len(evolution.circuit.data)+4)
                 fingerprint=fp.fingerprint(wrapper)
