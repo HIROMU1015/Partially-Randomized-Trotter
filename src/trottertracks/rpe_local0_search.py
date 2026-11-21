@@ -1077,7 +1077,11 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                             and 'pf_optimizer_connection.py' in trace)
             inherited_paths = (message == 'PF selected contract changed'
                                and 'pf_distributed_preparation.py' in trace)
-            if (stop['error_type'] != 'ValueError' or not (old_mismatch or inherited_paths)
+            saved_axis_encoding = (stop['error_type'] == 'TypeError' and message == "unhashable type: 'list'"
+                                   and 'pf_distributed_preparation.py' in trace
+                                   and 'consumed.update(audited)' in trace)
+            if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
+                     or saved_axis_encoding)
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
@@ -1100,7 +1104,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
             with sqlite3.connect(queue, uri=True) as db:
                 excluded = "('ACCEPTED','CANCELLED')"
-                if kind == 'dispatch' or (kind == 'pf_request' and inherited_paths):
+                if kind == 'dispatch' or (kind == 'pf_request' and (inherited_paths or saved_axis_encoding)):
                     launched = (history/'LAUNCH.json').stat().st_mtime
                     if db.execute("SELECT 1 FROM jobs WHERE assigned_epoch >= ? OR started_epoch >= ?"
                                   " OR (state='QUEUED' AND (host_id IS NOT NULL OR attempt_id IS NOT NULL"

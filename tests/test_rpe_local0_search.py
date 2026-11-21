@@ -309,14 +309,33 @@ class Tests(unittest.TestCase):
         (run/'FAST_DRIVER.lock').touch()
         database = run/'distributed/QUEUE.sqlite3'
         with sqlite3.connect(database) as db:
-            db.execute('CREATE TABLE jobs (state TEXT, attempt_id TEXT, detail TEXT)')
-            db.execute("INSERT INTO jobs VALUES ('ACCEPTED','done','{}'),('RUNNING','original-attempt','{}')")
+            db.execute('CREATE TABLE jobs (state TEXT, attempt_id TEXT, detail TEXT, host_id TEXT,'
+                       ' assigned_epoch REAL, started_epoch REAL)')
+            db.execute("INSERT INTO jobs(state,attempt_id,detail) VALUES "
+                       "('ACCEPTED','done','{}'),('RUNNING','original-attempt','{}')")
         resume = dict(action='resume', instruction='Artificial PF request recovery')
         with self.assertRaisesRegex(RequestError, 'unresolved execution or recovery'):
             gateway.start(run, resume)
         with sqlite3.connect(database) as db:
             db.execute("UPDATE jobs SET state='UNKNOWN', detail=? WHERE attempt_id='original-attempt'",
                        (json.dumps(dict(automatic_retry=False, resource_released=True)),))
+        from trottertracks.rpe_local0_search import reconcile_runtime_failure
+        encoding = dict(stop, error_type='TypeError', message="unhashable type: 'list'")
+        fault = dict(encoding, phase='DRIVER', traceback=(
+            'pf_candidate_selection.py\npf_distributed_preparation.py, in complete_selected\n'
+            '    consumed.update(audited)'))
+        write(run/'KAPPA_STATE.json', dict(stop=encoding))
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(fault)+'\n')
+        self.assertEqual(reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request'), encoding)
+        with sqlite3.connect(database) as db:
+            db.execute("UPDATE jobs SET assigned_epoch=? WHERE state='UNKNOWN'", ((history/'LAUNCH.json').stat().st_mtime,))
+        with self.assertRaisesRegex(RequestError, 'acquired an attempt'):
+            reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request')
+        with sqlite3.connect(database) as db:
+            db.execute("UPDATE jobs SET assigned_epoch=NULL")
+        write(run/'KAPPA_STATE.json', dict(stop=stop))
+        fault.update(stop, traceback='pf_candidate_selection.py\npf_optimizer_connection.py, in complete_selected')
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(fault)+'\n')
         self.assertEqual(gateway.start(run, resume), 'STARTED')
         self.assertEqual(started, [run])
         self.assertEqual(load(history/'EXIT.json'), ended)

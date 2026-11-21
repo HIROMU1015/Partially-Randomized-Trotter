@@ -175,7 +175,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                         if audited is None:
                             owners.add(str(provider))
                         else:
-                            consumed.update(audited)
+                            consumed.update(tuple(axis) for axis in audited)
                             result = provider/'PF_SIGNALS.RESULT.json'
                             if result.is_file():
                                 saved_signals[cfg] = dict(commit=read(result)['publication'])
