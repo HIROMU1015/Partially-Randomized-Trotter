@@ -283,7 +283,7 @@ def _bound(entry, options):
         probability_rule=options['probability_rule'], MC_calls=0)
     if not prepared['input_complete']:
         out['reason'] = 'MISSING_STATISTICAL_INPUT'; return out
-    if prepared['M'] > 12:
+    if prepared['M'] > 13:
         out['reason'] = 'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN'; return out
     contract = entry['statistical_contract']; S.iid_policy(contract['simulation_policy'])
     if prepared['decoder'] != S.DECODER or any(r['law_binding']['definition']['model'] !=
