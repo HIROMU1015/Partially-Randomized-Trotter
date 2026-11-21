@@ -81,10 +81,12 @@ def execute(data, provider, worker, destination, reference_location):
     reused_records(data, read(data['parent']['signal_packet']), destination)
 
 
-def bundle(data, destination, carrier_commit, plan_location):
+def bundle(data, destination, carrier_commit, configuration_location):
     original = read(data['parent']['signal_packet'])
     config = data['configuration']
-    result = dict(original, configuration_source=dict(plan_location, selector=['configuration']),
+    if read(configuration_location) != config:
+        raise ValueError('Standalone configuration differs from the fixed plan')
+    result = dict(original, configuration_source=configuration_location,
                   configuration_id=config['id'], raw_result_carrier=carrier_commit, means=[])
     for row in config['rounds']:
         m = row['m']
@@ -128,7 +130,7 @@ def main():
         provider, _, _ = worker['fixed_runtime'](args.view)
         execute(data, provider, worker, args.output.resolve(), fixed['reference'])
     else:
-        write(args.output, bundle(data, (ROOT/fixed['raw_directory']).resolve(), fixed['carrier'], fixed['plan']))
+        write(args.output, bundle(data, (ROOT/fixed['raw_directory']).resolve(), fixed['carrier'], fixed['configuration']))
 
 
 if __name__ == '__main__':
