@@ -2405,9 +2405,17 @@ class DistributedExecutor(ConcurrentExecutor):
             value['required_release']=deepcopy(self.distributed['required_release'])
             local=self.distributed.get('local_worker')or{}
             if host==local.get('host_id')and self.distributed.get('local_deployment_layout'):
-                from .rpe_release_deployment import read,validate_assignment_release
-                validate_assignment_release(self.release_manifest,
-                    read(self.distributed['local_deployment_layout']),value,local)
+                from .rpe_release_deployment import manifest_reference,read,validate_assignment_release
+                continuation = self.distributed.get('local_pf_continuation')
+                if (continuation and preparation and preparation['provider'].startswith('PF_')
+                        and preparation['source']['commit'] == continuation['source']):
+                    manifest, layout = continuation['manifest'], continuation['layout']
+                    if manifest['parent_release'] != value['required_release']:
+                        raise ValueError('PF continuation parent release differs')
+                    value['required_release'] = manifest_reference(manifest)
+                else:
+                    manifest, layout = self.release_manifest, read(self.distributed['local_deployment_layout'])
+                validate_assignment_release(manifest,layout,value,local)
         return value
 
     def _timing_queue(self):
@@ -2700,6 +2708,18 @@ class DistributedExecutor(ConcurrentExecutor):
                             continue
                         if cpu > free_cpu or memory > free_memory:
                             continue
+                    prepared_assignment = None
+                    if (row['request'].get('preparation') and self.distributed.get('required_release')
+                            and host == (self.distributed.get('local_worker') or {}).get('host_id')
+                            and self.distributed.get('local_deployment_layout')):
+                        try:
+                            prepared_assignment = self._assignment(row, host_id=host)
+                        except (ValueError, OSError, subprocess.CalledProcessError) as error:
+                            reason = 'PREPARATION_RELEASE_HOLD:' + str(error)
+                            if task.error != reason:
+                                task.error = reason
+                                self.log(event='PREPARATION_RELEASE_HOLD', job=row['job_id'], host=host, reason=reason)
+                            continue
                     rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
                                             host_fingerprints=fingerprints)
                     if not rows: continue
@@ -2723,7 +2743,10 @@ class DistributedExecutor(ConcurrentExecutor):
                         active=s.active, demand=task.demand,
                         provider=(row['request'].get('preparation') or {}).get('provider'),
                         eligible_hosts=(row['eligibility'] or {}).get('eligible_host_ids'))
-                    assignments.append(self._assignment(row))
+                    if prepared_assignment is None:
+                        assignments.append(self._assignment(row))
+                    else:
+                        assignments.append(dict(prepared_assignment, attempt_id=row['attempt_id']))
                     remaining -= 1
                 self._timing_queue()
                 self._refresh_capacity(admission_policy, admission_error)

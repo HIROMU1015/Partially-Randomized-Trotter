@@ -82,6 +82,38 @@ def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
             staging.replace(path)
 
 
+def bind_pf_continuation_release(distributed, provider, root):
+    """Extend the local PF producer envelope while keeping the run's parent release pinned."""
+    from trottertracks.rpe_release_deployment import manifest_reference, read
+    if not distributed.get('required_release'):
+        return
+    manifest = read(distributed['release_manifest'])
+    parent = manifest_reference(manifest)
+    if parent != distributed['required_release']:
+        raise ValueError('PF continuation parent release differs')
+    layout = read(distributed['local_deployment_layout'])
+    host = distributed['local_worker']['host_id']
+    if layout['host_id'] != host:
+        raise ValueError('PF continuation local layout differs')
+    [base] = [name for name, component in manifest['components'].items()
+              if component['source'] == provider['base_source'] and
+              name in manifest['stage_components']['compile']]
+    component = 'pf_price_recheck_' + provider['source']
+    manifest.update(parent_release=parent, release_id=parent['id'] + '-' + component)
+    manifest['components'][component] = dict(manifest['components'][base],
+                                             source=provider['source'], hosts=[host])
+    layout['component_roots'][component] = str(root)
+    for stage in ('signal', 'compile', 'audit'):
+        allowed = manifest['stage_components'][stage]
+        if base in allowed:
+            allowed.append(component)
+    for section in ('runtimes', 'input_files'):
+        for rule in layout.get(section, {}).values():
+            if base in rule.get('components', []):
+                rule['components'].append(component)
+    distributed['local_pf_continuation'] = dict(source=provider['source'], manifest=manifest, layout=layout)
+
+
 def apply_worker_trial(spec, trial, *, run_dir=None):
     """Install the selected execution policy in memory after fixed-input checks."""
     import importlib.util
@@ -269,6 +301,7 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         validation_sources = distributed['preparation'].get('bundle_validation_sources')
         if validation_sources:
             validation_sources.setdefault(provider['source'], str(root))
+        bind_pf_continuation_release(distributed, provider, root)
         # Remote mailboxes keep their deployed profiles. Only the verified
         # local profile advertises this additional producer on this Resume.
         local = distributed['local_worker']
