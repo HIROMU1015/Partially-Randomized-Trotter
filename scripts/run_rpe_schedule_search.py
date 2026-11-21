@@ -56,10 +56,10 @@ def read_loc(loc):
 
 def apply_worker_trial(spec, trial, *, run_dir=None):
     """Install the selected execution policy in memory after fixed-input checks."""
+    import importlib.util
+
     distributed = spec['executor']['distributed']
     if 'large_shot_adapter' in trial:
-        import importlib.util
-
         selected = trial['large_shot_adapter']
         path = Path(__file__).resolve().with_name('run_rpe_method_optimizer.py')
         if hashlib.sha256(path.read_bytes()).hexdigest() != selected['optimizer_entry_sha256']:
@@ -92,6 +92,16 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                 raise ValueError('Selected local worker implementation differs: '+file)
         distributed['worker_script'] = str(root/'scripts/run_rpe_q3_worker.py')
         distributed['local_worker'].setdefault('slot_policy', {}).update(selected['slot_policy'])
+        # The resumed controller starts with the frozen release on sys.path.
+        name = 'trottertracks.rpe_q3_resources'
+        path = root/'src/trottertracks/rpe_q3_resources.py'
+        if 'src/trottertracks/rpe_q3_resources.py' not in selected['files']:
+            raise ValueError('Selected local worker requires fixed resource logic')
+        helper = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(helper)
+        helper.loader.exec_module(module)
+        sys.modules[name] = module
+        setattr(sys.modules['trottertracks'], 'rpe_q3_resources', module)
     if trial.get('pbs_hold_node') is True and distributed.get('pbs'):
         distributed['pbs_hold_node'] = True
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
@@ -103,7 +113,6 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if field not in trial:
             continue
         # A resumed run imports other modules from its fixed base release.
-        import importlib.util
         path = Path(__file__).resolve().parents[1]/'src/trottertracks'/(module_name+'.py')
         if hashlib.sha256(path.read_bytes()).hexdigest() != trial[field]:
             raise ValueError('Selected scheduler helper differs: '+module_name)

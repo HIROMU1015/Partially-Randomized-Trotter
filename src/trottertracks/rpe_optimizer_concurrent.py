@@ -1503,7 +1503,9 @@ class DistributedExecutor(ConcurrentExecutor):
             for job, starts in self.state.allocation_waits.items():
                 if starts: totals[job] = totals.get(job, 0)+sum(now-start for start in starts)
         selected = [totals[row['job_id']] for row in own if row['job_id'] in totals]
-        from .rpe_q3_resources import resource_class
+        classify = self.distributed.get('live_readiness_max_workers') is not None
+        if classify:
+            from .rpe_q3_resources import resource_class
         ready = 0
         ready_classes = set()
         for task in self.state.tasks.values():
@@ -1512,8 +1514,9 @@ class DistributedExecutor(ConcurrentExecutor):
             if row is not None and self._host_supports_stage(host, row['request']) and self.store.eligible(row['request'], row['eligibility'], host,
                     self.hosts.get(host, {}).get('host_fingerprints'), row['job_id']):
                 ready += 1
-                decision = ((row['eligibility'] or {}).get('host_decisions') or {}).get(host, {})
-                ready_classes.add(resource_class(row['request'], decision.get('evaluator')))
+                if classify:
+                    decision = ((row['eligibility'] or {}).get('host_decisions') or {}).get(host, {})
+                    ready_classes.add(resource_class(row['request'], decision.get('evaluator')))
         return dict(controller_invocation=self.invocation, measurement_seconds=now-self.state.allocation_start,
             controller_clock_id=stamp()['clock_id'],
             usable_results=sum(row['state'] == 'ACCEPTED' and (row['completed_epoch'] or 0) >= epoch for row in own),
