@@ -91,7 +91,7 @@ def native_child(path):
     if route!=job['route'] or prefix!=job['prefix']:raise ValueError('Native prefix/route binding differs')
     requests={r['m']:r['physical_candidate'] for r in allowed['prepared']['pending']['requests']}
     if any(c['row']!=native_row(cfg,requests[c['m']]) for c in job['cells']):raise ValueError('Native schedule differs')
-    if any('axes' in c for c in job['cells']):
+    if allowed.get('selected_axis_compile') or any('axes' in c for c in job['cells']):
         planned = {c['m']: set(c['axes']) for c in allowed['new_compile_cells']}
         plan_path = Path(job['fixed_plan'])
         preflight_path = plan_path.with_name('PREFLIGHT_EXECUTION.json')
