@@ -881,7 +881,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.controller_relay_directory=directory
                 self.log(event='CONTROLLER_RELAY_REUSED',configuration=str(path));return
             atomic_json(path,config);(directory/'STOP').unlink(missing_ok=True)
-        command=[sys.executable,'-B',str(self.root/'scripts/run_rpe_q3_relay.py'),'--config',str(path),'--run']
+        relay = self.distributed.get('relay_script', str(self.root/'scripts/run_rpe_q3_relay.py'))
+        command = [sys.executable, '-B', relay, '--config', str(path), '--run']
         with (directory/'RELAY.log').open('a')as log:
             process=subprocess.Popen(command,cwd=self.root,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
                 start_new_session=True,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
@@ -1145,10 +1146,12 @@ class DistributedExecutor(ConcurrentExecutor):
         rows = [self.store.row(task.job.name) for task in ready]
         owned_rows = [self.store.row(row['job_id']) for row in owned]
         supply = {}
+        eligible = {}
         for host, info in self.hosts.items():
-            slots = self._offer_free(host, policy, error)
-            if not slots:
+            if (not self._offer_fresh(host) or info.get('accepting_new_jobs') is False
+                    or not self._host_admission(host, policy, error)['accepting']):
                 continue
+            slots = self._offer_free(host, policy, error)
             report = info.get('resource_report') or {}
             limit = (report.get('resources') or {}).get('allowed_cpu_count')
             pool = (report.get('pbs') or {}).get('resource_pool')
@@ -1171,10 +1174,10 @@ class DistributedExecutor(ConcurrentExecutor):
                     continue
                 remaining_ram = (pool['memory_bytes'] - (1 << 30) - sum(memory for _, memory in running)
                                  if pool is not None else None)
-                by_stage = Counter()
                 estimates = []
                 q3_estimates = []
                 unknown = 0
+                host_jobs = {}
                 for row in rows:
                     request = row['request']
                     if (not self._host_supports_stage(host, request) or not self._fits_host_walltime(host, request)
@@ -1189,22 +1192,43 @@ class DistributedExecutor(ConcurrentExecutor):
                     if (remaining_ram is not None and memory > remaining_ram) or (limit and cpu > limit):
                         continue
                     stage = (request.get('preparation') or {}).get('stage', 'q3')
-                    by_stage[stage] += cpu
+                    host_jobs[row['job_id']] = (cpu, stage)
                     estimates.append(cpu)
                     if stage == 'q3':
                         q3_estimates.append(cpu)
                 known_limit = type(limit) is int and limit > 0
                 if not known_limit and report.get('mode') != 'FIXED':
                     continue
-                free_cpu = max(0, limit - sum(cpu for cpu, _ in running)) if known_limit else slots * max(estimates, default=0)
-                target = free_cpu * self.ready_queue_waves
-                supply[host] = dict(available_cpu=free_cpu, ready_cpu=sum(by_stage.values()),
+                # Maintain a replacement wave even with zero free slots. A
+                # current completion is too late to begin a remote preflight.
+                spare = max(0, limit - sum(cpu for cpu, _ in running)) if known_limit else slots * max(estimates, default=0)
+                footprint_hint = min(estimates, default=max(1, profile.get('dp_workers') or 1))
+                lanes = max(1, info.get('capacity') or slots)
+                next_wave = lanes * footprint_hint
+                if known_limit:
+                    next_wave = min(limit, next_wave)
+                target = max(spare, next_wave) * self.ready_queue_waves
+                supply[host] = dict(available_cpu=spare, ready_cpu=0,
                                     capacity_source='RESOURCE_OFFER' if known_limit else 'FIXED_SLOTS_BY_READY_FOOTPRINT',
-                                    ready_cpu_by_stage=dict(by_stage), unestimated_jobs=unknown,
-                                    q3_cpus_per_job=min(q3_estimates, default=1),
-                                    target_cpu=target, missing_cpu=max(0, target-sum(by_stage.values())))
+                                    ready_cpu_by_stage={}, unestimated_jobs=unknown,
+                                    q3_cpus_per_job=min(q3_estimates, default=footprint_hint),
+                                    target_cpu=target, missing_cpu=target)
+                for job, estimate in host_jobs.items():
+                    eligible.setdefault(job, {})[host] = estimate
             except (KeyError, ValueError, TypeError):
                 continue
+        # Supply is a forecast, independent of actual assignment. Allocate
+        # inflexible jobs first and count a flexible job only once.
+        for options in sorted(eligible.values(), key=len):
+            host = max(options, key=lambda h: (
+                supply[h]['missing_cpu'] / max(1, supply[h]['target_cpu']),
+                supply[h]['available_cpu'] > 0, -self._host_rank(h)))
+            cpu, stage = options[host]
+            row = supply[host]
+            row['ready_cpu'] += cpu
+            stages = row['ready_cpu_by_stage']
+            stages[stage] = stages.get(stage, 0) + cpu
+            row['missing_cpu'] = max(0, row['target_cpu'] - row['ready_cpu'])
         return supply
 
     def preparation_needs_refill(self):
@@ -1275,9 +1299,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 offer = cpu_supply[host]
                 # CPU deficits supplement the lane allowance when waiting jobs
                 # use fewer cores than the current host profile can allocate.
-                if (self._offer_fresh(host) and not offer['unestimated_jobs']
-                        and offer['ready_cpu_by_stage'].get('q3')):
-                    cpu_per_q3 = max(1, offer['ready_cpu_by_stage']['q3'] // max(1, covered[host]))
+                if self._offer_fresh(host) and not offer['unestimated_jobs']:
+                    cpu_per_q3 = offer['q3_cpus_per_job']
                     deficits[host] = max(deficits[host],
                         (offer['missing_cpu'] + cpu_per_q3 - 1) // cpu_per_q3)
             capacity += sum(deficits.values())
@@ -1505,7 +1528,7 @@ class DistributedExecutor(ConcurrentExecutor):
         selected = [totals[row['job_id']] for row in own if row['job_id'] in totals]
         classify = self.distributed.get('live_readiness_max_workers') is not None
         if classify:
-            from .rpe_q3_resources import resource_class
+            from .rpe_q3_resources import measured_resource_class, resource_class
         ready = 0
         ready_classes = set()
         for task in self.state.tasks.values():
@@ -1516,14 +1539,31 @@ class DistributedExecutor(ConcurrentExecutor):
                 ready += 1
                 if classify:
                     decision = ((row['eligibility'] or {}).get('host_decisions') or {}).get(host, {})
-                    ready_classes.add(resource_class(row['request'], decision.get('evaluator')))
+                    runtime = ((row['eligibility'] or {}).get('execution_profiles') or {}).get(host)
+                    if host == 'local' and self.distributed.get('worker_script'):
+                        ready_classes.add(measured_resource_class(row['request'], decision.get('evaluator'), runtime))
+                    else:
+                        ready_classes.add(resource_class(row['request'], decision.get('evaluator')))
+        ready_now = ready
+        if self.distributed.get('work_conserving_search'):
+            recent = getattr(self.state, 'host_ready_backlog', {})
+            self.state.host_ready_backlog = recent
+            # Use the same horizon that determines how much readiness work
+            # should already be in flight. Polling at a completion must not
+            # discard demand that was observed just before it.
+            horizon = self.live_readiness_refill_seconds
+            observations = {count: at for count, at in recent.get(host, {}).items() if now - at <= horizon}
+            if ready:
+                observations[ready] = now
+            recent[host] = observations
+            ready = max(observations, default=0)
         return dict(controller_invocation=self.invocation, measurement_seconds=now-self.state.allocation_start,
             controller_clock_id=stamp()['clock_id'],
             usable_results=sum(row['state'] == 'ACCEPTED' and (row['completed_epoch'] or 0) >= epoch for row in own),
             adopted_results=sum((row['adopted_epoch'] or 0) >= epoch for row in own),
             decision_wait_seconds=sum(selected) if selected else None,
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
-            ready_jobs=ready, ready_task_classes=sorted(ready_classes), capacity=self.capacity)
+            ready_jobs=ready, ready_jobs_now=ready_now, ready_task_classes=sorted(ready_classes), capacity=self.capacity)
 
     def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None, prefetch=False):
         """Bind a prepared host decision to this exact scientific request."""

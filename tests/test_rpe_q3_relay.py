@@ -362,6 +362,33 @@ class RelayTests(unittest.TestCase):
                 self.assertEqual(next(e for e in events if e['event']=='RESULT_RECOVERED')['job_id'], 'ARTIFICIAL_JOB')
                 self.assertEqual(relay.state['workers'][worker['host_id']]['failure_count'], 1)
 
+    def test_wsl_claim_can_proceed_during_result_download(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            worker = dict(host_id='local0-wsl', transport='ssh-wsl')
+            config = directory/'relay.json'
+            write(config, dict(state_directory=str(directory/'state'), external_tunnel=True,
+                               controller={}, workers=[worker]))
+            relay = R.Relay(config)
+            entered, claimed = threading.Event(), threading.Event()
+            attempt = dict(state='COMPLETED_PENDING_TRANSFER')
+            status = dict(host_id=worker['host_id'], slots=1, attempts=[attempt])
+            def recover(_worker, _info, _status, _owned, attempts, _seconds):
+                if attempts:
+                    entered.set()
+                    self.assertTrue(claimed.wait(2))
+                return False
+
+            def deliver(*args):
+                self.assertTrue(entered.wait(2))
+                claimed.set()
+
+            with patch.object(relay, '_recover_attempts', side_effect=recover), \
+                 patch.object(relay, '_claim_and_deliver', side_effect=deliver), \
+                 patch.object(relay, '_owned_attempts', return_value=set()):
+                relay.tick(worker, observed=(status, 0, {}, {}, {}))
+            self.assertTrue(claimed.is_set())
+
     def test_startup_status_replaces_old_stopped_state_before_first_blocked_tick(self):
         with tempfile.TemporaryDirectory(prefix='relay-startup-status-') as temporary:
             directory = Path(temporary)/'relay-state'; directory.mkdir()

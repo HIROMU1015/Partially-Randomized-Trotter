@@ -223,6 +223,21 @@ def resource_class(request, evaluator=None):
     return 'q3:' + ('finite_support' if evaluator == 'RPE_FINITE_SUPPORT_MSE_V1' else 'count_dp')
 
 
+def measured_resource_class(request, evaluator=None, runtime=None):
+    """Group comparable requests for capacity estimates, not result identity."""
+    category = resource_class(request, evaluator)
+    if request.get('preparation'):
+        return category
+    runtime = runtime or {}
+    shots = tuple(request.get('N_X', ())) + tuple(request.get('N_Y', ()))
+    if not shots or any(type(value) is not int or value < 1 for value in shots):
+        return category
+    adapter = (runtime.get('adapter_manifest') or {}).get('commit', '')
+    view = request.get('route', {}).get('view_commit', '')
+    return ':'.join(map(str, (category, request.get('method', ''), view, adapter,
+                              runtime.get('dp_workers', ''), len(shots), max(shots).bit_length())))
+
+
 def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None):
     """Pure bounded one-slot trials; reductions drain, and never signal a job."""
     now = time.monotonic() if now is None else float(now)

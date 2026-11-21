@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import time
 import unittest
+from unittest.mock import Mock
 from collections import Counter
 from types import SimpleNamespace
 import tempfile
@@ -51,6 +52,41 @@ class CapacityIntegralTests(unittest.TestCase):
             result=ex.metrics()
             self.assertEqual(result['integrated_available_slot_seconds'],30)
             self.assertEqual(result['slot_utilization'],9/(10*3))
+
+
+class ReadySupplyTests(unittest.TestCase):
+    def test_busy_workers_are_refilled_and_shared_jobs_are_counted_once(self):
+        executor = DistributedExecutor.__new__(DistributedExecutor)
+        executor.distributed = {}
+        executor.pbs_manager = None
+        executor.ready_queue_waves = 2
+        executor.hosts = {
+            host: dict(capacity=1, resource_report=dict(mode='AUTO', resources=dict(allowed_cpu_count=4)))
+            for host in ('host-a', 'host-b')}
+        executor._host_admission = Mock(return_value=dict(accepting=True))
+        executor._offer_fresh = Mock(return_value=True)
+        executor._offer_free = Mock(return_value=0)
+        executor._host_supports_stage = Mock(return_value=True)
+        executor._fits_host_walltime = Mock(return_value=True)
+        executor._host_rank = Mock(return_value=0)
+
+        def job(name, options):
+            return dict(job_id=name, request={}, eligibility=dict(execution_profiles={
+                host: dict(dp_workers=4) for host in options}))
+
+        rows = {'shared': job('shared', executor.hosts),
+                'a': job('a', ['host-a']), 'b': job('b', ['host-b'])}
+        executor.store = SimpleNamespace(
+            row=rows.__getitem__, eligible=lambda request, eligibility, host, *_: host in eligibility['execution_profiles'])
+        rows['a']['host_id'] = 'host-a'
+        rows['b']['host_id'] = 'host-b'
+        queued = [SimpleNamespace(job=SimpleNamespace(name='shared'))]
+        owned = [dict(job_id=name, host_id='host-'+name) for name in ('a', 'b')]
+        offers = executor._ready_cpu_supply(queued, owned, {}, None)
+        self.assertEqual([row['available_cpu'] for row in offers.values()], [0, 0])
+        self.assertEqual([row['target_cpu'] for row in offers.values()], [8, 8])
+        self.assertEqual(sum(row['ready_cpu'] for row in offers.values()), 4)
+        self.assertEqual(sum(row['missing_cpu'] for row in offers.values()), 12)
 
 
 class AutoAllocationTests(unittest.TestCase):

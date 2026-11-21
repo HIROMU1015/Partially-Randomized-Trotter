@@ -3,6 +3,7 @@
 PBS submission is not a scientific task. Only an allocated worker's live pull
 offer participates in matching; queued/held PBS jobs contribute no free slots.
 """
+from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 import fcntl
 import json
@@ -80,7 +81,10 @@ class Gateway:
         try:
             self.process.stdin.write(json.dumps(payload, separators=(',', ':'))+'\n')
             self.process.stdin.flush()
-            line = self.responses.get(timeout=self.settings.get('request_timeout_seconds', 20))
+            try:
+                line = self.responses.get(timeout=self.settings.get('request_timeout_seconds', 20))
+            except queue.Empty as error:
+                raise TimeoutError(f"PBS gateway {payload['action']} response timed out") from error
             if line is None:
                 raise OSError('PBS gateway SSH connection closed')
             value = json.loads(line)
@@ -399,6 +403,13 @@ class PbsManager:
         if dispatch:
             self.settings.update(gateway_script=dispatch['path'], gateway_sha256=dispatch['sha256'])
         self.gateway = gateway or Gateway(self.settings)
+        # Only gateways deployed with the selected-attempt harvest protocol
+        # may receive an owners filter.
+        self.selective_harvest = bool(dispatch and dispatch.get('selective_harvest'))
+        self.harvest_gateway = Gateway(self.settings) if self.selective_harvest else None
+        self.harvest_pool = None
+        self.harvest_pending = None
+        self.harvest_retry_after = {}
         self.storage_launcher = (getattr(executor, 'distributed', {})
                                  .get('pbs_gateway_storage_launcher'))
         self.storage_launcher_verified = False
@@ -597,18 +608,29 @@ class PbsManager:
         atomic(saved, dict(request_sha256=identity, response=response, clock=stamp()))
         return response
 
-    def _harvest(self, allocation):
+    def _fetch_harvest(self, gateway, token, owners=None):
+        request = dict(action='harvest', token=token)
+        if owners is not None:
+            request['owners'] = [dict(job_id=job, attempt_id=attempt) for job, attempt in sorted(owners)]
+        data = gateway.call(request)
+        missing = self.executor.artifact_cache.missing(data.get('artifact_hashes', []))
+        blobs = gateway.call(dict(request, hashes=missing))['blobs'] if missing else {}
+        return data, blobs
+
+    def _harvest(self, allocation, *, fetched=None, owners=None):
         token = allocation['token']
         if self.state['allocations'][token].get('harvested'):
             return
-        data = self.gateway.call(dict(action='harvest', token=token))
-        missing = self.executor.artifact_cache.missing(data.get('artifact_hashes', []))
-        if missing:
-            recovered = self.gateway.call(dict(action='harvest', token=token, hashes=missing))
-            self.executor.artifact_cache.put(recovered['blobs'])
+        data, blobs = fetched if fetched is not None else self._fetch_harvest(self.gateway, token)
+        if owners is not None and data['host_id'] != allocation['host_id']:
+            raise ValueError('PBS harvest belongs to a different worker')
+        if blobs:
+            self.executor.artifact_cache.put(blobs)
         for item in data['attempts']:
             assignment = item['assignment']
             row = self.executor.store.row(assignment['job_id'])
+            if owners is not None and (assignment['job_id'], assignment['attempt_id']) not in owners:
+                raise ValueError('Unrequested PBS attempt returned by harvest')
             if row is not None and row['state'] == 'ACCEPTED':
                 continue
             # The original durable task/owner/attempt must exist; the normal
@@ -619,11 +641,15 @@ class PbsManager:
         ended = allocation['status'] in TERMINAL or (allocation.get('worker') or {}).get('state') == 'EXITED'
         for item in data.get('incomplete', []) if ended else []:
             assignment = item['assignment']; row = self.executor.store.row(assignment['job_id'])
+            if (owners is not None and (assignment['job_id'], assignment['attempt_id']) not in owners):
+                raise ValueError('Unrequested incomplete PBS attempt returned by harvest')
             if row is not None and row['state'] not in ('ACCEPTED','UNKNOWN','CANCELLED'):
                 self.executor.rpc('/v1/state', dict(host_id=data['host_id'], job_id=assignment['job_id'],
                     attempt_id=assignment['attempt_id'], state='UNKNOWN',
                     detail=dict(reason='PBS_ENDED_WITHOUT_TASK_EXIT_RECEIPT', automatic_retry=False)))
-        if ended:
+        if ended and owners is None:
+            # A shared pilot can expose several historical sessions with the
+            # same host ID. An old session cannot declare a newer attempt lost.
             for row in self.executor._owned_attempts():
                 if row['host_id'] == data['host_id'] and row['state'] != 'UNKNOWN':
                     self.executor.rpc('/v1/state',dict(host_id=row['host_id'], job_id=row['job_id'],
@@ -631,6 +657,48 @@ class PbsManager:
                             reason='PBS_ENDED_WITHOUT_COMPLETE_ORIGINAL_ATTEMPT',automatic_retry=False)))
         self.state['allocations'][token]['harvested'] = ended
         self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=len(data['attempts']))
+
+    def _advance_harvest(self):
+        """Keep remote archive reads out of the live worker exchange."""
+        if self.harvest_pending is not None:
+            allocation, owners, future = self.harvest_pending
+            if not future.done():
+                return
+            self.harvest_pending = None
+            try:
+                self._harvest(allocation, fetched=future.result(), owners=owners)
+            except Exception as error:
+                token = allocation['token']
+                self.harvest_retry_after[token] = time.monotonic() + self.settings.get('request_timeout_seconds', 20)
+                self.log('PBS_HARVEST_PENDING', token=token, error=f'{type(error).__name__}: {error}')
+            self.save()
+        if self.stop.is_set():
+            return
+        # Capacity released for an UNKNOWN attempt is unrelated to its
+        # recoverability. Read ownership from the ledger independently.
+        with self.executor.store._connection() as db:
+            owned = [dict(row) for row in db.execute(
+                "SELECT job_id, host_id, attempt_id FROM jobs WHERE host_id IS NOT NULL "
+                "AND attempt_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")]
+        for allocation in self.allocations:
+            token = allocation['token']
+            record = self.state['allocations'][token]
+            if (record.get('harvested') or allocation['status'] not in TERMINAL | {'HISTORY_MISSING_RECONCILE_SPOOL'}
+                    or time.monotonic() < self.harvest_retry_after.get(token, 0)):
+                continue
+            owners = {(row['job_id'], row['attempt_id']) for row in owned
+                      if row['host_id'] == allocation['host_id']}
+            if not owners:
+                ended = allocation['status'] in TERMINAL or (allocation.get('worker') or {}).get('state') == 'EXITED'
+                if ended:
+                    record['harvested'] = True
+                    self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=0, source='central ownership ledger')
+                continue
+            if self.harvest_pool is None:
+                self.harvest_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-pbs-harvest')
+            future = self.harvest_pool.submit(self._fetch_harvest, self.harvest_gateway, token, owners)
+            self.harvest_pending = (allocation, owners, future)
+            break
 
     def _demand(self):
         with self.executor.state.cv:
@@ -822,7 +890,8 @@ class PbsManager:
                 if first.get('clock_id') != now['clock_id']:
                     record['first_accepting_clock'] = now
             record.update(status=allocation['status'], observed=allocation, clock=now)
-            if allocation['status'] in TERMINAL or allocation['status'] == 'HISTORY_MISSING_RECONCILE_SPOOL':
+            if not self.selective_harvest and (
+                    allocation['status'] in TERMINAL or allocation['status'] == 'HISTORY_MISSING_RECONCILE_SPOOL'):
                 self._harvest(allocation)
         if self.storage_launcher:
             profiles = {}
@@ -839,6 +908,8 @@ class PbsManager:
         for token, requests in data['requests'].items():
             self.responses[token] = {request['request_id']:self._dispatch(token, request)
                                      for request in requests if request is not None}
+        if self.selective_harvest:
+            self._advance_harvest()
         user_stop = self.stop.is_set() or self.executor._user_stop_requested()
         if self.executor.state.closed and self.retain_between_batches and not user_stop:
             self.save()
@@ -1000,6 +1071,13 @@ class PbsManager:
             self.thread.join(timeout=self.settings.get('request_timeout_seconds',20)+4)
         if self.thread and self.thread.is_alive():
             self.gateway.close(); self.thread.join(timeout=4)
+        if self.harvest_pool is not None:
+            # A read in flight may finish, but only a live manager applies its
+            # result to the central ledger. Resume will recover the same owner.
+            self.harvest_gateway.close()
+            self.harvest_pool.shutdown(wait=True, cancel_futures=True)
+            self.harvest_gateway.close()
+            self.harvest_pool = self.harvest_pending = None
         try:
             if retain_allocation:
                 if self.responses:

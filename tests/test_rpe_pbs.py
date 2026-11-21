@@ -785,6 +785,32 @@ class GatewayTests(unittest.TestCase):
         with patch.object(G.subprocess, 'run', return_value=reply):
             self.assertEqual(G.qstat('0.prism','1.prism'), {'1.prism': details})
 
+    def test_harvest_reads_only_the_requested_original_attempt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            allocation = root/'allocation'
+            work = root/'worker'
+            G.atomic(allocation/'SPEC.json', dict(profile=dict(host_id='pbs-0')))
+            G.atomic(allocation/'PROFILE.json', dict(work_dir=str(work)))
+            for job in ('already-transferred', 'needs-recovery'):
+                attempt = work/job/'attempt'
+                G.atomic(attempt/'ASSIGNMENT.json', dict(job_id=job, attempt_id='attempt'))
+                G.atomic(attempt/'PROCESS_RETURN.json', dict(returncode=0))
+                G.atomic(attempt/'OUTCOME.json', dict(status='ARTIFICIAL', numerator=10**7167))
+            # Traversing this unrelated directory would reject its symlink.
+            (work/'already-transferred'/'attempt'/'unrelated').symlink_to(root)
+            recovered = G.harvest(allocation, owners=[dict(job_id='needs-recovery', attempt_id='attempt')])
+            self.assertEqual([item['assignment']['job_id'] for item in recovered['attempts']], ['needs-recovery'])
+            saved = work/'needs-recovery'/'attempt'/'OUTCOME.json'
+            self.assertEqual(base64.b64decode(recovered['attempts'][0]['files']['OUTCOME.json']), saved.read_bytes())
+
+            later = work/'new-session'/'attempt'
+            G.atomic(later/'ASSIGNMENT.json', dict(job_id='new-session', attempt_id='attempt'))
+            G.atomic(later/'WORKER_STATE.json', dict(state='RUNNING'))
+            G.atomic(later/'WORKER_PROFILE.json', dict(pbs=dict(allocation_dir=str(root/'active-allocation'))))
+            result = G.harvest(allocation, owners=[dict(job_id='new-session', attempt_id='attempt')])
+            self.assertEqual(result['incomplete'], [])
+
     def test_saved_artifact_harvest_never_calls_a_worker_or_subprocess(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); allocation = root/'allocation'; work = root/'worker'

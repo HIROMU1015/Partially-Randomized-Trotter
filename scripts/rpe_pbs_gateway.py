@@ -242,15 +242,27 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
     return dict(requests=requests, allocations=snapshotter(root, finished))
 
 
-def harvest(directory, wanted=None):
+def harvest(directory, wanted=None, owners=None):
     """Return saved bytes after PBS exits; never reconcile by launching work."""
     spec = read(directory/'SPEC.json'); profile = read(directory/'PROFILE.json')
     attempts = []; hashes = set(); incomplete = []
-    for path in Path(profile['work_dir']).glob('*/*/ASSIGNMENT.json'):
+    work = Path(profile['work_dir'])
+    paths = work.glob('*/*/ASSIGNMENT.json') if owners is None else (
+        work/safe_id(owner['job_id'])/safe_id(owner['attempt_id'])/'ASSIGNMENT.json'
+        for owner in owners)
+    for path in paths:
+        if not path.is_file():
+            continue
         assignment = read(path)
         state = read(path.parent/'WORKER_STATE.json', {})
         if not (path.parent/'PROCESS_RETURN.json').exists():
-            if state.get('state') != 'TRANSFERRED':
+            # The same host directory can contain attempts from several
+            # shared-pilot sessions. Only this session's own worker can prove
+            # that an incomplete attempt lost its execution owner.
+            saved_profile = read(path.parent/'WORKER_PROFILE.json', {}) if owners is not None else {}
+            allocation_directory = (saved_profile.get('pbs') or {}).get('allocation_dir')
+            same_session = allocation_directory and Path(allocation_directory).resolve() == directory.resolve()
+            if state.get('state') != 'TRANSFERRED' and (owners is None or same_session):
                 incomplete.append(dict(assignment=assignment, state=state))
             continue
         names = ('OUTCOME.json','PROCESS_RETURN.json','ARTIFACT_MANIFEST.json','PREPARATION_RECEIPT.json',
@@ -290,7 +302,7 @@ def handle(root, value, finished=None):
     if action == 'snapshot':
         return dict(allocations=snapshot(root, finished))
     if action == 'harvest':
-        return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'))
+        return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'), value.get('owners'))
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
         receipt = read(directory/'JOB_ID.json')

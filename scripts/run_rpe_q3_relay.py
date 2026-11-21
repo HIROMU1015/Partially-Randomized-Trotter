@@ -504,23 +504,10 @@ class Relay:
             return False
         return True
 
-    def tick(self, worker, observed=None):
-        info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
-        info['phase'] = 'MAILBOX_STATUS'
-        if observed is None:
-            status_start=stamp()
-            status, download_seconds = self.remote(worker, 'status', dict(metadata_only=True))
-            poll = self._poll_value(status)
-            if status.get('metadata_only') is True:
-                self.post('/v1/poll', dict(poll, observe_only=True))
-        else:
-            status, download_seconds, status_start, poll, _ = observed
-        self.log('MAILBOX_STATUS_RETURN',host_id=worker['host_id'],started=status_start,seconds=download_seconds)
+    def _recover_attempts(self, worker, info, status, owned, attempts, download_seconds):
         host = status['host_id']
-        if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
-        owned = self._owned_attempts(host) if any(a['state'] != 'TRANSFERRED' for a in status['attempts']) else None
         recovered = False
-        for attempt in status['attempts']:
+        for attempt in attempts:
             state = attempt['state']
             if state == 'TRANSFERRED': continue
             owner = dict(host_id=host, job_id=attempt['job_id'], attempt_id=attempt['attempt_id'])
@@ -556,6 +543,45 @@ class Relay:
                 self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
                 try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
                 except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
+        return recovered
+
+    def tick(self, worker, observed=None):
+        info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
+        info['phase'] = 'MAILBOX_STATUS'
+        if observed is None:
+            status_start=stamp()
+            status, download_seconds = self.remote(worker, 'status', dict(metadata_only=True))
+            poll = self._poll_value(status)
+            if status.get('metadata_only') is True:
+                self.post('/v1/poll', dict(poll, observe_only=True))
+        else:
+            status, download_seconds, status_start, poll, _ = observed
+        self.log('MAILBOX_STATUS_RETURN',host_id=worker['host_id'],started=status_start,seconds=download_seconds)
+        host = status['host_id']
+        if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
+        owned = self._owned_attempts(host) if any(a['state'] != 'TRANSFERRED' for a in status['attempts']) else None
+        pending = []
+        # WSL result retrieval goes through Windows and can take several
+        # seconds. Use the already observed free slots before downloading it.
+        # No credit is taken for a slot that still requires acknowledgement.
+        if worker.get('transport') == 'ssh-wsl' and status['slots']:
+            pending = [attempt for attempt in status['attempts']
+                       if attempt['state'] == 'COMPLETED_PENDING_TRANSFER']
+        immediate = [attempt for attempt in status['attempts'] if attempt not in pending]
+        recovered = self._recover_attempts(worker, info, status, owned, immediate, download_seconds)
+        if pending:
+            result_info = info.copy()
+            with ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-wsl-recovery') as pool:
+                result = pool.submit(self._recover_attempts, worker, result_info, status, owned, pending, download_seconds)
+                self._claim_and_deliver(worker, info, observed, status, poll, recovered)
+                result.result()
+        else:
+            self._claim_and_deliver(worker, info, observed, status, poll, recovered)
+        info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
+            states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
+
+    def _claim_and_deliver(self, worker, info, observed, status, poll, recovered):
+        host = status['host_id']
         if (self.directory/'STOP').exists():
             return
         if recovered and status.get('metadata_only') is True:
@@ -567,7 +593,7 @@ class Relay:
             poll = self._poll_value(status)
             self.post('/v1/poll', dict(poll, observe_only=True))
         info['phase'] = 'CONTROLLER_POLL'
-        # Recovery above always precedes new claims, including while paused.
+        # The worker's fresh offer still governs every claim, including Pause.
         response = self.post('/v1/poll', poll)
         if not response['assignments'] and response.get('eligibility_challenges'):
             challenges = response['eligibility_challenges']
@@ -601,7 +627,7 @@ class Relay:
         for assignment in assignments:
             preparation = assignment['request'].get('route', {}).get('kind') == 'preparation'
             grouped = not preparation and worker['host_id'] in self.config.get(
-                'q3_batch_hosts', ('server2', 'local0-wsl'))
+                'q3_batch_hosts', ('server1', 'server2', 'local0-wsl'))
             if grouped and batches and batches[-1][0]:
                 batches[-1][1].append(assignment)
             else:
@@ -639,8 +665,6 @@ class Relay:
                 self.remote(worker, 'resources', dict(capacity_feedback=feedback))
             except Exception as error:
                 self.log('RESOURCE_FEEDBACK_PENDING', host_id=host, error=str(error))
-        info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
-            states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
 
     def _collect_ticks(self):
         for host,(worker,future) in list(self.pending_ticks.items()):

@@ -116,6 +116,11 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     for field in ('ready_queue_waves', 'live_readiness_max_workers', 'live_readiness_refill_seconds'):
         if field in trial:
             distributed[field] = trial[field]
+    if 'relay_sha256' in trial:
+        relay = Path(__file__).resolve().with_name('run_rpe_q3_relay.py')
+        if hashlib.sha256(relay.read_bytes()).hexdigest() != trial['relay_sha256']:
+            raise ValueError('Selected relay implementation differs')
+        distributed['relay_script'] = str(relay)
     if 'local_resource_worker' in trial:
         selected = trial['local_resource_worker']
         root = Path(__file__).resolve().parents[1]
