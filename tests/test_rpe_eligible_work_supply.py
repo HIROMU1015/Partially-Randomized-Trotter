@@ -29,9 +29,12 @@ def test_ready_cpu_counts_only_work_that_can_be_sent_to_the_worker():
     executor = object.__new__(DistributedExecutor)
     executor.hosts = {'worker': {'resource_report': {'resources': {'allowed_cpu_count': 8}}}}
     executor.distributed = {}
+    executor.allocation_config = {'priority_groups': []}
     executor.pbs_manager = None
     executor.ready_queue_waves = 2
     executor._offer_free = Mock(return_value=1)
+    executor._offer_fresh = Mock(return_value=True)
+    executor._host_admission = Mock(return_value={'accepting': True})
     executor._host_supports_stage = Mock(return_value=True)
     executor._fits_host_walltime = Mock(return_value=True)
 
@@ -50,6 +53,40 @@ def test_ready_cpu_counts_only_work_that_can_be_sent_to_the_worker():
     assert supply['available_cpu'] == 5
     assert supply['ready_cpu_by_stage'] == {'q3': 2, 'audit': 1}
     assert supply['missing_cpu'] == 7
+
+
+def test_pbs_keeps_replacement_work_that_fits_after_a_running_job_finishes():
+    from trottertracks import rpe_pbs
+
+    executor = object.__new__(DistributedExecutor)
+    executor.hosts = {'pbs-0': {'resource_report': {'pbs': {'resource_pool': {
+        'cpu_count': 8, 'memory_bytes': 13 * rpe_pbs.GIB}}}}}
+    executor.pbs_manager = SimpleNamespace(configured={'pbs-0': {'profile': {}}}, settings={})
+    executor.distributed = {}
+    executor.allocation_config = {'priority_groups': []}
+    executor.ready_queue_waves = 2
+    executor.live_readiness_refill_seconds = 5
+    executor._offer_free = Mock(return_value=1)
+    executor._host_supports_stage = Mock(return_value=True)
+    executor._fits_host_walltime = Mock(return_value=True)
+    executor._offer_fresh = Mock(return_value=True)
+    executor._host_admission = Mock(return_value={'accepting': True})
+    jobs = {
+        'running': dict(cpus=2, gib=8),
+        'next': dict(cpus=4, gib=6, preparation={'stage': 'compile'}),
+        'too_large': dict(cpus=1, gib=13),
+    }
+    rows = {name: dict(job_id=name, host_id='pbs-0', request=request, eligibility={})
+            for name, request in jobs.items()}
+    executor.store = SimpleNamespace(row=rows.__getitem__, eligible=lambda *_: True)
+    with patch.object(rpe_pbs, 'resource_need',
+                      side_effect=lambda request, *_: (request['cpus'], request['gib'] * rpe_pbs.GIB)), \
+         patch.object(rpe_pbs, 'task_estimate', return_value=20):
+        ready = [SimpleNamespace(job=Path(name)) for name in ('next', 'too_large')]
+        supply = executor._ready_cpu_supply(ready, [rows['running']], {}, None)['pbs-0']
+    assert supply['compatible_ready_jobs'] == 1
+    assert supply['ready_jobs_fitting_free_resources'] == 0
+    assert supply['ready_cpu_seconds_by_stage'] == {'compile': 80}
 
 
 def test_partial_price_preflight_has_same_roles_and_leaves_blocked_pair_out():

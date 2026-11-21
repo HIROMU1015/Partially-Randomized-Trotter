@@ -1139,7 +1139,7 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _ready_cpu_supply(self, ready, owned, policy, error):
         """Measure compatible waiting work against each fresh worker's CPU offer."""
-        from .rpe_pbs import resource_need
+        from .rpe_pbs import GIB, resource_need, task_estimate
         from .rpe_pbs_worker import runtime_cpu_footprint
 
         manager = self.pbs_manager
@@ -1172,8 +1172,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 running = [footprint(row) for row in owned_rows if row['host_id'] == host]
                 if None in running:
                     continue
-                remaining_ram = (pool['memory_bytes'] - (1 << 30) - sum(memory for _, memory in running)
-                                 if pool is not None else None)
+                # A job that fits after a running task completes is useful
+                # replacement work. Live claims still use the remaining RAM.
+                memory_limit = pool['memory_bytes'] - GIB if pool is not None else None
+                free_memory = memory_limit - sum(memory for _, memory in running) if pool is not None else None
+                free_cpu = max(0, limit - sum(cpu for cpu, _ in running)) if limit else None
+                compatible_jobs = 0
+                fits_now = 0
                 estimates = []
                 q3_estimates = []
                 unknown = 0
@@ -1189,10 +1194,15 @@ class DistributedExecutor(ConcurrentExecutor):
                         unknown += 1
                         continue
                     cpu, memory = need
-                    if (remaining_ram is not None and memory > remaining_ram) or (limit and cpu > limit):
+                    if (memory_limit is not None and memory > memory_limit) or (limit and cpu > limit):
                         continue
+                    compatible_jobs += 1
+                    if ((free_cpu is None or cpu <= free_cpu)
+                            and (free_memory is None or memory <= free_memory)):
+                        fits_now += 1
                     stage = (request.get('preparation') or {}).get('stage', 'q3')
-                    host_jobs[row['job_id']] = (cpu, stage)
+                    seconds = task_estimate(request, manager.settings, host) if pool is not None else None
+                    host_jobs[row['job_id']] = (cpu, stage, cpu * seconds if seconds else None)
                     estimates.append(cpu)
                     if stage == 'q3':
                         q3_estimates.append(cpu)
@@ -1211,6 +1221,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 supply[host] = dict(available_cpu=spare, ready_cpu=0,
                                     capacity_source='RESOURCE_OFFER' if known_limit else 'FIXED_SLOTS_BY_READY_FOOTPRINT',
                                     ready_cpu_by_stage={}, unestimated_jobs=unknown,
+                                    compatible_ready_jobs=compatible_jobs, ready_jobs_fitting_free_resources=fits_now,
+                                    ready_cpu_seconds_by_stage={}, unknown_duration_jobs=0,
+                                    ready_cpu_seconds=0, target_cpu_seconds=(
+                                        target * self.live_readiness_refill_seconds if pool is not None else None),
                                     q3_cpus_per_job=min(q3_estimates, default=footprint_hint),
                                     target_cpu=target, missing_cpu=target)
                 for job, estimate in host_jobs.items():
@@ -1223,12 +1237,18 @@ class DistributedExecutor(ConcurrentExecutor):
             host = max(options, key=lambda h: (
                 supply[h]['missing_cpu'] / max(1, supply[h]['target_cpu']),
                 supply[h]['available_cpu'] > 0, -self._host_rank(h)))
-            cpu, stage = options[host]
+            cpu, stage, cpu_seconds = options[host]
             row = supply[host]
             row['ready_cpu'] += cpu
             stages = row['ready_cpu_by_stage']
             stages[stage] = stages.get(stage, 0) + cpu
             row['missing_cpu'] = max(0, row['target_cpu'] - row['ready_cpu'])
+            if cpu_seconds is None:
+                row['unknown_duration_jobs'] += 1
+            else:
+                seconds_by_stage = row['ready_cpu_seconds_by_stage']
+                seconds_by_stage[stage] = seconds_by_stage.get(stage, 0) + cpu_seconds
+                row['ready_cpu_seconds'] += cpu_seconds
         return supply
 
     def preparation_needs_refill(self):
@@ -1236,8 +1256,12 @@ class DistributedExecutor(ConcurrentExecutor):
         with self.state.cv:
             supply = [row for host, row in getattr(self.state, 'ready_cpu_supply', {}).items()
                       if self._offer_fresh(host)]
-            return not supply or any(not row['ready_cpu'] or row['missing_cpu'] or row['unestimated_jobs']
-                                     for row in supply)
+            return not supply or any(
+                not row['ready_cpu'] or row['missing_cpu'] or row['unestimated_jobs']
+                or (row.get('target_cpu_seconds') is not None and not row['unknown_duration_jobs']
+                    and row['ready_cpu_seconds'] < row['target_cpu_seconds'])
+                for row in supply
+            )
 
     def _standby_capacity(self):
         if not self.state.allocation_auto:
@@ -1959,7 +1983,12 @@ class DistributedExecutor(ConcurrentExecutor):
                     self.submit_preparation(record['request'],budget=record['budget'],approved=record['approved'],
                         contract=record['contract'],eligibility=decision)
                 elif old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
-                if changed:self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='PASS',stage=record['request']['preparation']['stage'])
+                if changed:
+                    preparation = record['request']['preparation']
+                    started = record.get('probe_started_epoch')
+                    self.log(event='PREPARATION_HOST_READINESS', job=job_id, host_id=host,
+                        status='PASS', stage=preparation['stage'], provider=preparation.get('provider'),
+                        seconds_since_probe_requested=max(0, time.time()-started) if started else None)
             except (OSError,KeyError,ValueError,TypeError)as exc:
                 failure=str(exc);failures=record.setdefault('failures',{})
                 changed=failures.get(host)!=failure;failures[host]=failure
@@ -2456,7 +2485,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 if free:
                     compatible = self._match_ready_jobs(ready, {host: free})
                     if work_conserving:
-                        observation['idle_reason'] = ('ASSIGNMENT_WAIT' if compatible else
+                        blocked_by_resources = (cpu is not None and cpu['compatible_ready_jobs']
+                                                and not cpu['ready_jobs_fitting_free_resources'])
+                        observation['idle_reason'] = ('TASK_RESOURCE_WAIT' if blocked_by_resources else
+                            'ASSIGNMENT_WAIT' if compatible else
                             'ELIGIBLE_HOST_SHORTAGE' if ready else
                             'PREPARATION_WAIT' if waiting_preparation else
                             'PREPARATION_BUDGET_HOLD' if budget_blocked else 'CANDIDATE_SHORTAGE')
@@ -2680,7 +2712,9 @@ class DistributedExecutor(ConcurrentExecutor):
                     if task.speculative: s.metrics['speculative_launched'] += 1
                     task.view.log(event='LAUNCH', job=row['job_id'], host_id=host, attempt_id=row['attempt_id'],
                         configuration=task.proposal['configuration_id'], queue_wait_seconds=time.monotonic()-task.enqueue,
-                        active=s.active, demand=task.demand)
+                        active=s.active, demand=task.demand,
+                        provider=(row['request'].get('preparation') or {}).get('provider'),
+                        eligible_hosts=(row['eligibility'] or {}).get('eligible_host_ids'))
                     assignments.append(self._assignment(row))
                     remaining -= 1
                 self._timing_queue()

@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import tempfile
+import threading
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -19,6 +20,59 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_received_stage_reopens_the_exact_pf_leaf(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            base = run/'pf_auto/price-recovery'
+            records = {
+                'finished': dict(status='PREPARATION_INCOMPLETE', price_receipt_recheck=True,
+                                 reason='DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:PF_COMPILE:received'),
+                'failed': dict(status='PREPARATION_INCOMPLETE', reason='STAGE_FAILED:PF_AUDIT:NO_AUTOMATIC_RETRY'),
+            }
+            runtime = SimpleNamespace(received_after_reservation_stop=lambda path, reason: (
+                path == base/'candidates/finished/pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf/finished'
+                and reason.endswith(':received')))
+            selection.reconcile_received_preparation(run, records, runtime)
+            self.assertEqual(records['finished']['status'], 'PREPARATION_WAITING')
+            self.assertEqual(records['failed']['status'], 'PREPARATION_INCOMPLETE')
+
+    def test_pf_wave_announces_first_ready_while_other_candidate_prepares(self):
+        from copy import deepcopy
+        first = dict(configuration_id='first', key={'formula': '2nd', 'p': 6, 'delta_over_h': '1'},
+                     method='TRUNCATED_PF', ready=False, needs=['PRICE'])
+        second = dict(first, configuration_id='second', key=dict(first['key'], p=7))
+        context = dict(pf_evidence_registry={'configurations': {}}, candidates=[first, second],
+                       catalog={'candidates': []})
+        spec = dict(methods=['TRUNCATED_PF'], pf_completion={'mode': 'complete', 'max_candidates': 2})
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            announced = []
+            ready = threading.Event()
+
+            def prepare(*args, selection, **kwargs):
+                cid = selection['selected']['configuration_id']
+                if cid == 'second':
+                    self.assertTrue(ready.wait(timeout=3))
+                return {'pf_evidence_registry': {'configurations': {cid: {'id': cid}}}}, {}, {
+                    'status': 'READY_RETURNED_TO_SAME_OPTIMIZER'}
+
+            def announce(updated, routes):
+                saved = json.loads((run/'pf_auto/WAVES.json').read_bytes())
+                announced.append(updated['pf_evidence_registry']['configurations'])
+                if list(announced[-1]) == ['first']:
+                    self.assertEqual(saved['first']['status'], 'READY_RETURNED_TO_SAME_OPTIMIZER')
+                    self.assertEqual(saved['second']['status'], 'PREPARATION_SCHEDULED')
+                    ready.set()
+
+            def refresh(root, problem, old, methods, registry, artificial):
+                return dict(old, pf_evidence_registry=deepcopy(registry))
+
+            with patch.object(selection, 'prepare', side_effect=prepare), \
+                 patch.object(selection, '_refresh', side_effect=refresh), \
+                 patch.object(selection.PF, 'registry_routes', return_value={}):
+                selection.prepare_next(run, {}, context, spec, run, {}, object(), announce=announce)
+            self.assertEqual([list(snapshot) for snapshot in announced], [['first'], ['first', 'second']])
+
     def test_completed_subset_requires_original_stage_end_and_audit(self):
         with tempfile.TemporaryDirectory() as tmp:
             leaf = Path(tmp)

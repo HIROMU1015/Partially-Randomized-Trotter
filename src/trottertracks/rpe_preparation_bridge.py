@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import re
+import sqlite3
 import subprocess
 import tempfile
 import threading
@@ -457,6 +458,53 @@ class DistributedPreparationBridge:
     @staticmethod
     def handles(stage):
         return stage in STAGES
+
+    @staticmethod
+    def _dependencies(directory, stage):
+        paths = (directory/(name+'.DISTRIBUTED.json') for name in DEPENDENCIES.get(stage, ()))
+        return [read(path)['job_id'] for path in paths if path.exists()]
+
+    def received_stage(self, directory, stage, job_id):
+        """Match one original marker and its normalized request to a received result."""
+        from .rpe_preparation_queue import normalize_preparation_request
+        from .rpe_q3_coordinator import digest
+        if stage not in STAGES or not isinstance(job_id, str) or re.fullmatch(r'prep-[0-9a-f]{24}', job_id) is None:
+            return False
+        try:
+            row = self.executor.store.row(job_id)
+            if not row or row['state'] != 'ACCEPTED' or not row['attempt_id'] or not row['completion_sha256']:
+                return False
+            if row['detail'].get('outcome_status') != 'PREPARATION_COMPLETE':
+                return False
+            matching = []
+            for path in directory.rglob(stage+'.DISTRIBUTED.json'):
+                marker = read(path)
+                if marker.get('job_id') == job_id:
+                    matching.append((path, marker))
+            if len(matching) != 1:
+                return False
+            path, marker = matching[0]
+            request = normalize_preparation_request(marker['request'], dependencies=self._dependencies(path.parent, stage))
+            return (request['request_id'] == job_id and request == row['request']
+                    and digest(request) == row['request_sha256']
+                    and request['preparation']['provider'] == stage
+                    and request['preparation']['source']['commit'] == marker['source'])
+        except (OSError, KeyError, TypeError, ValueError, sqlite3.Error):
+            return False
+
+    def received_after_reservation_stop(self, directory, reason):
+        prefix, _, payload = reason.partition(':')
+        stage, _, detail = payload.partition(':')
+        if prefix != 'DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD' or stage not in STAGES:
+            return False
+        if not detail.startswith("{'status': 'PREPARATION_STOPPED_BEFORE_RESERVATION',"):
+            return False
+        try:
+            result = ast.literal_eval(detail)
+        except (SyntaxError, ValueError):
+            return False
+        return (isinstance(result, dict) and result.get('status') == 'PREPARATION_STOPPED_BEFORE_RESERVATION'
+                and self.received_stage(directory, stage, result.get('job_id')))
 
     def _blob(self, raw):
         sha = hashlib.sha256(raw).hexdigest()
@@ -1135,10 +1183,7 @@ class DistributedPreparationBridge:
         # A Q3 approval/budget does not open signal/compile scope. The round
         # must separately bound preparation tasks and retain leaf input caps.
         budget = self.settings.get('budgets', {}).get(STAGES[stage], 0)
-        dependencies=[]
-        for dependency in DEPENDENCIES.get(stage,()):
-            path=directory/(dependency+'.DISTRIBUTED.json')
-            if path.exists():dependencies.append(read(path)['job_id'])
+        dependencies = self._dependencies(directory, stage)
         job_id = self.executor.submit_preparation(request, budget=budget, approved=self.approved,
             contract=request['original_contract'], dependencies=dependencies, expected_job_id=submitted.get('job_id'))
         put(marker, dict(submitted, job_id=job_id))

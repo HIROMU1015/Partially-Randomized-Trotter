@@ -21,6 +21,7 @@ sys.path.insert(0,str(ROOT/'src'))
 from trottertracks import pr_candidate_completion as C
 from trottertracks import rpe_preparation_bridge as B
 from trottertracks.rpe_preparation_artifacts import ArtifactCache
+from trottertracks.rpe_preparation_queue import normalize_preparation_request
 from trottertracks import rpe_preparation_worker as W
 from trottertracks.rpe_q3_store import JobStore
 
@@ -159,25 +160,27 @@ class CompletionBridgeTests(unittest.TestCase):
             self.assertTrue(marker.is_file());self.assertEqual(json.loads(input_file.read_text())['workspace'],str(owner))
 
     def test_operational_hold_reconciles_same_attempt_but_failed_science_does_not_retry(self):
-        for first_status in ('HOST_ELIGIBILITY_HOLD','PREPARATION_FAILED','UNKNOWN'):
+        for first_status in ('HOST_ELIGIBILITY_HOLD', 'PREPARATION_FAILED', 'UNKNOWN', 'PREPARATION_STOPPED_BEFORE_RESERVATION'):
             with self.subTest(first_status=first_status),tempfile.TemporaryDirectory()as tmp:
                 root=Path(tmp)
                 class Engine:
                     run_dir=root/'run'
                     def __init__(self):self.store=JobStore(root/'store.sqlite3');self.requests=[];self.result_calls=0;self.starts=0
                     def submit_preparation(self,request,**kwargs):
-                        self.requests.append(deepcopy(request))
-                        self.store.reserve('PREPARATION:signal','job',request,1,True)
-                        if self.store.row('job')['state']=='QUEUED':
+                        request = normalize_preparation_request(request)
+                        self.requests.append(request)
+                        job = request['request_id']
+                        self.store.reserve('PREPARATION:signal',job,request,1,True)
+                        if self.store.row(job)['state']=='QUEUED':
                             row=self.store.claim('original-host',1)[0];self.attempt=row['attempt_id'];self.starts+=1
-                            self.store.update('original-host','job',self.attempt,'RUNNING')
-                        return 'job'
-                    def preparation_result(self,*args,**kwargs):
+                            self.store.update('original-host',job,self.attempt,'RUNNING')
+                        return job
+                    def preparation_result(self,job,**kwargs):
                         self.result_calls+=1
                         if self.result_calls==1:
-                            if first_status=='UNKNOWN':self.store.update('original-host','job',self.attempt,'UNKNOWN')
-                            return {'status':first_status}
-                        self.store.complete('original-host','job',self.attempt,W.digest(self.requests[-1]),{})
+                            if first_status=='UNKNOWN':self.store.update('original-host',job,self.attempt,'UNKNOWN')
+                            return {'status':first_status, 'job_id':job}
+                        self.store.complete('original-host',job,self.attempt,W.digest(self.requests[-1]),{})
                         return {'status':'PREPARATION_COMPLETE','artifact_directory':str(root),'artifacts':{}}
                     def adopt_preparation(self, job):
                         self.store.adopt(job)
@@ -194,7 +197,8 @@ class CompletionBridgeTests(unittest.TestCase):
                 c.shared_preparation_locks={};c.state={'records':{}};c.state_path=root/'STATE.json';c.registry=root/'REGISTRY.json'
                 C.put(c.registry,{'entries':[]})
                 ex=Engine();bridge=B.DistributedPreparationBridge(ex,root,{'budgets':{'signal':1}},approved=True);c.bind_stage_executor(bridge)
-                frozen={'route':{'kind':'preparation'},'preparation':{'artificial':True,'source':{'commit':'fixed'}},
+                frozen={'route':{'kind':'preparation'},'preparation':{'artificial':True,'stage':'signal',
+                        'provider':'PAULI_SIGNALS','source':{'commit':'fixed','files':{}}},
                         'original_contract':{'source':'fixed'}}
                 request={'method':'PR_PAULI','configuration':{'id':'a','spec':{'L_D':4,'formula':'2nd','kappa':{'value':'2'},'delta_pf':'1'},'rounds':[]}}
                 with patch.object(C,'ROOT',root),patch.object(C,'publish',return_value='saved'),\
@@ -202,12 +206,29 @@ class CompletionBridgeTests(unittest.TestCase):
                      patch.object(bridge,'build_request',return_value=frozen)as builder,\
                      patch.object(bridge,'_import_result'):
                     first=c.complete(request)
-                    attempt=ex.store.row('job')['attempt_id']
+                    job=ex.requests[0]['request_id']
+                    attempt=ex.store.row(job)['attempt_id']
+                    if first_status == 'PREPARATION_STOPPED_BEFORE_RESERVATION':
+                        self.assertEqual(first['status'], 'HELD_WITH_REASON')
+                        self.assertEqual(c.complete(request)['status'], 'HELD_WITH_REASON')
+                        self.assertEqual(len(ex.requests), 1)
+                        ex.store.update('original-host',job,attempt,'COMPLETED_PENDING_TRANSFER',
+                                        {'outcome_status':'PREPARATION_COMPLETE'})
+                        ex.store.complete('original-host', job, attempt, W.digest(ex.requests[0]), {})
+                        directory = root/'candidates'/first['key']
+                        marker = directory/'PAULI_SIGNALS.DISTRIBUTED.json'
+                        saved = C.read(marker)
+                        changed = deepcopy(saved)
+                        changed['request']['original_contract']['source'] = 'changed'
+                        C.put(marker, changed)
+                        self.assertFalse(bridge.received_after_reservation_stop(directory, first['reason']))
+                        C.put(marker, saved)
                     second=c.complete(request)
-                self.assertEqual(ex.starts,1);self.assertEqual(ex.store.row('job')['attempt_id'],attempt)
+                self.assertEqual(ex.starts,1);self.assertEqual(ex.store.row(job)['attempt_id'],attempt)
                 self.assertEqual(builder.call_count,1)
-                if first_status in ('HOST_ELIGIBILITY_HOLD', 'UNKNOWN'):
-                    self.assertEqual(first['status'],'WAITING_DISTRIBUTED_PREPARATION')
+                if first_status != 'PREPARATION_FAILED':
+                    if first_status != 'PREPARATION_STOPPED_BEFORE_RESERVATION':
+                        self.assertEqual(first['status'],'WAITING_DISTRIBUTED_PREPARATION')
                     self.assertEqual(second['status'],'READY_FOR_SEARCH')
                     self.assertEqual(len(ex.requests),2);self.assertEqual(ex.requests[0],ex.requests[1])
                     self.assertEqual(len([e for e in ex.store.events()if e['event']=='ADOPT']),1)

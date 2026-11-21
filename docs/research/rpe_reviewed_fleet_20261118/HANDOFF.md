@@ -1,5 +1,7 @@
 # PRレビュー・容量対策を統合したRomuTail版
 
+中央の候補供給と各環境のCPU利用については[改善計画・検収状況](../rpe_fleet_efficiency_plan.md)を参照する。
+
 配置・継続・障害復旧の作業前に、[H4 RPE分散探索の共通運用ルール](../rpe_distributed_operations.md)を参照する。PBSの割当前依存関係照合、旧attemptの扱い、容量からの受付復旧、各工程の検収をまとめている。
 
 新規runの倍率・M探索の指定方法、採用releaseと検収は[共通ショット倍率・M探索HANDOFF](../r08_scaled_shots_horizon_20261119/HANDOFF.md)を参照する。

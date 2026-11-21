@@ -141,11 +141,16 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         setattr(sys.modules['trottertracks'], 'rpe_q3_resources', module)
     if trial.get('pbs_hold_node') is True and distributed.get('pbs'):
         distributed['pbs_hold_node'] = True
+    preparation_helpers = ('candidate_completion_sha256', 'preparation_bridge_sha256')
+    if any(field in trial for field in preparation_helpers) and not all(field in trial for field in preparation_helpers):
+        raise ValueError('Preparation recovery requires both fixed controller helpers')
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
                                ('pf_saved_prices', 'pf_saved_prices_sha256'),
                                ('pf_distributed_preparation', 'pf_distributed_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
                                ('pf_candidate_selection', 'pf_selection_sha256'),
+                               ('pr_candidate_completion', 'candidate_completion_sha256'),
+                               ('rpe_preparation_bridge', 'preparation_bridge_sha256'),
                                ('rpe_method_optimizer', 'method_optimizer_sha256')):
         if field not in trial:
             continue
@@ -158,6 +163,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         # The executor and CLI may already hold the base optimizer module.
         # Update that module before starting selectors so both use the handoff.
         module = O if module_name == 'rpe_method_optimizer' else importlib.util.module_from_spec(helper)
+        if module_name == 'pr_candidate_completion':
+            module.FIXED_RUN_CODE_ROOT = ROOT
         helper.loader.exec_module(module)
         sys.modules[name] = module
         # The optimizer also imports from the package directly.

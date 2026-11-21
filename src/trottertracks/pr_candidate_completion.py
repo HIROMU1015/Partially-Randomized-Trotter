@@ -759,10 +759,17 @@ class Completion:
             elif recovered_input:
                 d = d/'saved-input-recheck'
             df_recheck = False
+            received_preparation = False
             if old and (old['status'].startswith(('HELD','STOP','WAITING')) or
                         old['status']=='PRICE_ACTION_UNAVAILABLE') and not (recovered_input or recheck):
                 if old.get('scientific_failure'):return dict(old,resumed=True)
                 if not old.get('recoverable_preparation'):
+                    bridge = getattr(self, 'stage_executor', None)
+                    reconcile = getattr(bridge, 'received_after_reservation_stop', None)
+                    if (old['status'] == 'HELD_WITH_REASON' and reconcile
+                            and not getattr(self, 'stop_requested', lambda: False)()):
+                        received_preparation = reconcile(d, old.get('reason') or '')
+                if not (old.get('recoverable_preparation') or received_preparation):
                     self.ingest_price_results()
                     price_unresolved = str(old.get('reason','')).startswith(
                         ('PRICE_EVIDENCE_REQUIRED:', 'PRICE_RULE_INCOMPLETE:', DF_PRICE_UNAVAILABLE))
@@ -783,7 +790,7 @@ class Completion:
                     else:
                         return dict(self.refresh_price_hold(old)or old,resumed=True)
             rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
-                      reason=None,recoverable_preparation=False)if old and (old.get('recoverable_preparation') or df_recheck) else
+                      reason=None,recoverable_preparation=False)if old and (old.get('recoverable_preparation') or received_preparation or df_recheck) else
                  dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
             if df_recheck:
                 rec.update(directory=rel(d), signal_deferred_for_price=False,

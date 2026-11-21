@@ -118,20 +118,32 @@ def live_price_owners(item):
     return sorted(pending.items())
 
 
-def reconciliation_snapshot(root, waves, settings, row, *, audits=None):
-    """Revisit final decisions when an applicable receipt or owner changes."""
+def reconciliation_locators(waves, settings, row, *, audits=None):
     item = row.get('price_reconciliation', {})
     deferred = item.get('deferred_price_rounds', {})
     physical_ids = {axis['physical_id'] for axes in deferred.values() for axis in axes}
     physical_ids.update(axis[0] for axis in row.get('previously_audited_price_axes', ()))
     physical_ids.update(axis[0] for axis in item.get('missing_audited_axes', ()))
-    locators = price_indexes(waves, settings, physical_ids or None, audits=audits)
-    paths = [loc['commit']+':'+loc['path'] for loc in locators]
+    return price_indexes(waves, settings, physical_ids or None, audits=audits)
+
+
+def receipt_objects(root, paths):
     # An existing locator may become readable when the original object arrives.
-    objects = subprocess.run(['git', 'cat-file', '--batch-check'], cwd=root,
-                             env=dict(os.environ, GIT_NO_LAZY_FETCH='1'),
-                             input=''.join(p+'\n' for p in paths), text=True,
-                             capture_output=True, check=True).stdout if paths else ''
+    paths = list(dict.fromkeys(paths))
+    if not paths:
+        return {}
+    result = subprocess.run(['git', 'cat-file', '--batch-check'], cwd=root,
+                            env=dict(os.environ, GIT_NO_LAZY_FETCH='1'),
+                            input=''.join(p+'\n' for p in paths), text=True,
+                            capture_output=True, check=True).stdout
+    return dict(zip(paths, result.splitlines(keepends=True), strict=True))
+
+
+def reconciliation_snapshot(root, row, locators, *, objects=None):
+    """Revisit final decisions when an applicable receipt or owner changes."""
+    paths = [loc['commit']+':'+loc['path'] for loc in locators]
+    objects = receipt_objects(root, paths) if objects is None else objects
+    item = row.get('price_reconciliation', {})
     owner_paths = set(item.get('original_paths', ()))
     for directory in item.get('original_owner_directories', ()):
         base = Path(directory)
@@ -146,8 +158,31 @@ def reconciliation_snapshot(root, waves, settings, row, *, audits=None):
             owner.append((raw, stat.st_size, stat.st_mtime_ns))
         except OSError:
             owner.append((raw, None, None))
-    return hashlib.sha256(json.dumps([locators, objects, owner, live_price_owners(item)],
+    return hashlib.sha256(json.dumps([locators, ''.join(objects[path] for path in paths),
+                                     owner, live_price_owners(item)],
                                      sort_keys=True).encode()).hexdigest()
+
+
+def price_axis_actions(item):
+    """Describe the next action using the fixed owner's duplicate evidence."""
+    actions = []
+    for axes in item.get('deferred_price_rounds', {}).values():
+        for axis in axes:
+            findings = axis.get('findings', ())
+            if any(hit.get('running_job') for hit in findings):
+                action, reason = 'RECONCILE_ORIGINAL_ATTEMPT', 'Original owner appeared in the duplicate check'
+            elif any(hit.get('prior_admitted_sources') for hit in findings):
+                action, reason = 'CHECK_ADMITTED_RECEIPT', 'Exact receipt is available to the fixed price planner'
+            elif axis['action'] == 'NEW_COMPILE_MISSING_CONFIRMED':
+                action, reason = 'MISSING_AXIS', 'This axis is clear but the fixed native worker requires a pair'
+            elif any(hit.get('trial_files') or hit.get('existing_route_result') or hit.get('trial')
+                     for hit in findings):
+                action, reason = 'CHECK_ORIGINAL_COMPILE', 'Check the raw compile and bind it with the existing C guard'
+            else:
+                action, reason = 'LOCATE_ORIGINAL_RECEIPT', 'Catalog or aggregate evidence requires the original axis receipt'
+            actions.append(dict(m=axis['m'], axis=axis['axis'], physical_id=axis['physical_id'],
+                                action=action, reason=reason))
+    return actions
 
 
 def audited_prices(root, locators, evidence):
