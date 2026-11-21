@@ -26,6 +26,35 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_df_audit_requires_the_relocated_receipt_to_match_the_raw_commit(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            old = 'search-evidence/old/completion/candidate/price/axes_X/cosine.json'
+            current = 'workspace/search-evidence/new/completion/candidate/price/'
+            path = root/old
+            path.parent.mkdir(parents=True)
+            path.write_bytes(b'{}\n')
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            subprocess.run(['git', '-C', str(root), 'add', '.'], check=True)
+            subprocess.run(['git', '-C', str(root), '-c', 'user.name=Fixture', '-c',
+                            'user.email=fixture@example.invalid', 'commit', '-qm', 'fixed'], check=True)
+            commit = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip()
+            sha = hashlib.sha256(path.read_bytes()).hexdigest()
+            docs = [dict(commit='WORKING', path=old)]
+            blobs = {current+'axes_X/cosine.json': sha}
+            fixed, working = B.fixed_input_hashes(root, docs, blobs, df_raw_commit=(commit, current))
+            self.assertEqual(fixed, [dict(commit=commit, path=old, sha256=sha)])
+            self.assertEqual(working, [])
+            blobs[current+'axes_X/cosine.json'] = '0' * 64
+            with self.assertRaisesRegex(ValueError, 'Unfrozen or ambiguous WORKING'):
+                B.fixed_input_hashes(root, docs, blobs, df_raw_commit=(commit, current))
+
+    def test_leaf_keeps_only_its_used_worker_path_aliases(self):
+        aliases = {'/old/a': '/fixed', '/old/b': '/fixed', '/old/c': '/fixed'}
+        selected = B.used_path_aliases(aliases, {'/fixed': '@WORK@/input'},
+            [{'path': '/old/a/receipt.json'}], ['--input', '/old/c'])
+        self.assertEqual(selected, {'/old/a': '@WORK@/input', '/old/c': '@WORK@/input'})
+
     def test_df_signal_request_binds_selected_runner_without_legacy_bootstrap(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

@@ -3,6 +3,7 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 from fractions import Fraction as F
 import io
+import os
 from pathlib import Path
 import sqlite3
 from types import SimpleNamespace
@@ -23,6 +24,23 @@ from test_rpe_large_shot_bounds import FIXED as DECODER_SOURCE, FIXTURE as DECOD
 
 TAU = F(S.EPSILON)**2
 METHODS = ['FULL_PF', 'TRUNCATED_PF', 'PR_PAULI', 'PR_DF']
+
+
+def test_width_report_child_resumes_without_waiting_for_report_generation(tmp_path):
+    driver = entry.WidthDriver.__new__(entry.WidthDriver)
+    driver.run, driver.spec, driver.scaled_shots = tmp_path, {}, True
+    write(tmp_path/'NORMAL_DRIVER.json', dict(pid=os.getpid()))
+    row = dict(best=None, pending_request=None, stop_reason='WAITING_FOR_INPUTS',
+               ready_candidates=[], not_ready_candidates=[], evaluated_count=0)
+    result = {'FULL_PF': row}
+    with patch.object(entry, 'FIXED_RUN_WORKER_TRIAL', {'controller_queue_first': True}, create=True):
+        driver.report(result)
+        row['evaluated_count'] = 1
+        driver.report(result)
+        assert driver._report is not None
+        driver.finish_report()
+    assert load(tmp_path/'ROUND_RESULT.json')['methods']['FULL_PF']['evaluated_count'] == 1
+    assert 'WIDTH_QUEUE_REPORT' in (tmp_path/'ROUND_STAGES.jsonl').read_text()
 
 
 def small_policy(horizons=(11,12,13)):

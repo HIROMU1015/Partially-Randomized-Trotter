@@ -117,7 +117,7 @@ def saved_for_configuration(settings, field, configuration_id):
     return values.get(configuration_id, settings.get(field))
 
 
-def complete_selected(root,spec,run,request,entry,output,runtime):
+def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_registry=None):
     """Original finite PF contract; no independent candidate/shot selection."""
     original=Path(entry).resolve().parents[1];run=Path(run)
     owner_input=run/'ORIGINAL_OWNER_REQUEST.json';owner_output=run/'ORIGINAL_OWNER_CHECK.json'
@@ -127,7 +127,10 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     metadata_root = Path(__file__).resolve().parents[2]
     price_args = []
     settings = spec['pf_completion']
-    if settings.get('recover_saved_price_rounds', True):
+    if inherited_registry is not None:
+        # Resume the exact owner check and plan already bound to this workspace.
+        request = read(owner_input)
+    elif settings.get('recover_saved_price_rounds', True):
         from .pf_saved_prices import candidate_roots, completed_partial, price_indexes, prior_waves
         price_index = run/'SAVED_PRICE_INDEX.json'
         earlier_waves = prior_waves(wave_root.parent, spec)
@@ -163,6 +166,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
         put(owner_input,request)
     elif read(owner_input) != request:
         raise ValueError('Original PF owner request changed on resume')
+    registry_output = inherited_registry or request['registry_file']
     if not owner_output.exists() or not (run/'PROVIDER_SOURCE.json').exists():
         subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
             str(metadata_root/'scripts/check_pf_preparation_owner.py'),'--provider-root',str(original),
@@ -171,8 +175,8 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     owner=read(owner_output)
     held=[row for row in owner['rows']if row['status'] in ('PRIOR_OWNER_HOLD','PRICE_EVIDENCE_REQUIRED')]
     if held:
-        if not Path(request['registry_file']).exists():put(request['registry_file'],dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={}))
-        put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=held,registry_file=request['registry_file']))
+        if not Path(registry_output).exists():put(registry_output,dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={}))
+        put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=held,registry_file=registry_output))
         return
     reused=[row for row in owner['rows']if row['status']=='REUSE_COMPLETE_ORIGINAL_OWNER']
     if len(reused)==len(owner['rows']):
@@ -180,7 +184,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
         for row in reused:registry['configurations'][row['configuration_id']]=row['entry']
         subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(original),'HEAD'],cwd=root,check=True,
             stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
-        put(request['registry_file'],registry);put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=reused,registry_file=request['registry_file']))
+        put(registry_output,registry);put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=reused,registry_file=registry_output))
         return
     workspace=run/'provider_workspace';marker=run/'PROVIDER_SOURCE.json'
     if not marker.exists():
@@ -210,7 +214,10 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     owner_rows = {row['configuration_id']: row for row in owner['rows']}
     for item in response['items']:
         if item['status']=='REUSED_COMPLETED_REGISTRY':items.append(item);continue
-        folder=Path(item['output']);value=read(folder/'PLAN.json')
+        original_folder=Path(item['output'])
+        folder=(workspace/'docs/research/distributed_selected_pf'/item['configuration_id']
+                if inherited_registry is not None else original_folder)
+        value=read(folder/'PLAN.json')
         deferred = owner_rows[item['configuration_id']].get('deferred_price_rounds', {})
         if price_args:
             # Only the admitted prices actually selected by this plan need
@@ -239,10 +246,17 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                 subprocess.check_output(['git','show',fixed['source']+':'+name],cwd=workspace)).hexdigest()
                 for name in ['scripts/prepare_pf_candidate.py','src/trottertracks/pf_evidence_preparation.py',
                     'scripts/run_pf_m0_prices.py','scripts/run_pf_p7_h_prices.py','scripts/run_truncated_p7_prices.py']}))
+        if inherited_registry is not None:
+            context.inherited_preparation_root = original_folder.parents[3]
         def call(phase,tag,**fields):
             stage_in=folder/(tag+'.INPUT.json');stage_out=folder/(tag+'.RESULT.json')
-            put(stage_in,dict(value=value,relative_output=str(folder.relative_to(workspace)),
-                             phase=phase,source=source,**fields))
+            stage_input = dict(value=value, relative_output=str(folder.relative_to(workspace)),
+                               phase=phase, source=source, **fields)
+            if inherited_registry is not None and stage_in.exists():
+                if read(stage_in) != stage_input:
+                    raise ValueError('Inherited PF stage inputs changed: '+tag)
+            else:
+                put(stage_in, stage_input)
             cmd=[spec['pf_completion'].get('interpreter',sys.executable),'-B',
                 str(Path(root)/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
                 '--input',str(stage_in),'--output',str(stage_out)]
@@ -317,5 +331,5 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                    stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
     registry_path = Path(selected['registry_file'])
     registry = read(registry_path) if registry_path.exists() else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
-    put(request['registry_file'],registry)
-    put(output,dict(response,items=items,registry_file=request['registry_file']))
+    put(registry_output,registry)
+    put(output,dict(response,items=items,registry_file=registry_output))

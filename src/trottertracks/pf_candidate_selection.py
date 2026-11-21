@@ -234,13 +234,23 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
 
 
 def reconsider_prices(root, run, spec, settings, records):
-    from .pf_saved_prices import completed_partial, prior_waves, reconciliation_snapshot
+    from concurrent.futures import ThreadPoolExecutor
+    from .pf_saved_prices import completed_partial, prior_waves, receipt_locators, reconciliation_snapshot
 
     waves = [run/'pf_auto', *prior_waves(run, spec)]
-    for cid, row in records.items():
-        if row['status'] not in PRICE_RECHECK_STATES or row.get('configurations'):
-            continue
-        snapshot = reconciliation_snapshot(root, waves, settings, row)
+    pending = [(cid, row) for cid, row in records.items()
+               if row['status'] in PRICE_RECHECK_STATES and not row.get('configurations')]
+    if not pending:
+        return
+    audits = receipt_locators(waves, index=True)
+
+    def inspect(item):
+        cid, row = item
+        return cid, row, reconciliation_snapshot(root, waves, settings, row, audits=audits)
+
+    with ThreadPoolExecutor(max_workers=settings.get('max_candidates', 1)) as pool:
+        decisions = list(pool.map(inspect, pending))
+    for cid, row, snapshot in decisions:
         if row.get('price_recheck_snapshot') == snapshot:
             continue
         previous = run/row.get('price_recheck_directory', (
@@ -290,6 +300,13 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                            original_wave=previous)
     recovery = run/'pf_auto'/'price-recovery'
     distributed_completion = stage_executor is not None and settings.get('mode') == 'complete'
+    if distributed_completion and recheck_waiting:
+        for row in records.values():
+            if (row.get('reason') == 'PF_COMPLETION_REQUEST_MISMATCH'
+                    and not row.get('configurations')
+                    and set(row.get('differing_fields', ())) <=
+                    {'output_root', 'registry_file', 'recover_saved_price_rounds'}):
+                row['status'] = 'PREPARATION_WAITING'
     if distributed_completion and settings.get('recover_saved_price_rounds', True):
         for cid, row in records.items():
             if (row['status'] != 'PREPARATION_INCOMPLETE' or row.get('configurations')

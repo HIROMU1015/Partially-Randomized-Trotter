@@ -418,32 +418,65 @@ def outward(x, digits=30, up=False):
     """Decimal with ``digits`` significant digits rounded down (or up) -- exact integer arithmetic."""
     if x == 0:
         return '0'
-    sign = -1 if x < 0 else 1;x = abs(x)
-    e = len(str(x.numerator)) - len(str(x.denominator))
-    while Fraction(10) ** e > x:
-        e -= 1
-    while Fraction(10) ** (e + 1) <= x:
-        e += 1
-    scaled = x / Fraction(10) ** (e - digits + 1)
-    n = scaled.numerator // scaled.denominator
-    if (up if sign > 0 else not up) and n * scaled.denominator != scaled.numerator:
-        n += 1
-    return ('-' if sign < 0 else '') + '%se%d' % (n, e - digits + 1)
+    exponent, quotient, inexact = _decimal_parts(abs(x.numerator), x.denominator, digits)
+    return _decimal_text(x.numerator < 0, exponent, quotient, inexact, up)
+
+
+def _decimal_parts(numerator, denominator, digits):
+    exponent = len(str(numerator)) - len(str(denominator))
+    if (numerator < denominator * 10**exponent if exponent >= 0
+            else numerator * 10**-exponent < denominator):
+        exponent -= 1
+    exponent -= digits - 1
+    if exponent >= 0:
+        denominator *= 10**exponent
+    else:
+        numerator *= 10**-exponent
+    quotient, remainder = divmod(numerator, denominator)
+    return exponent, quotient, bool(remainder)
+
+
+def _decimal_text(negative, exponent, quotient, inexact, up):
+    if up != negative and inexact:
+        quotient += 1
+    return f"{'-' if negative else ''}{quotient}e{exponent}"
 
 
 def slim(value):
     """Long exact rationals (MSE bounds) -> outward 30-digit interval; the exact value stays in the job's OUTCOME.json."""
-    if isinstance(value, dict) and set(value) >= {'numerator', 'denominator'} and len(set(value) - {'numerator', 'denominator', 'display'}) == 0:
-        value = Fraction(int(value['numerator']), int(value['denominator']))
-    if isinstance(value, Fraction):
-        if max(len(str(abs(value.numerator))), len(str(value.denominator))) > EXACT_DIGITS:
-            return dict(lower_30=outward(value), upper_30=outward(value, up=True), exact='OMITTED_SEE_JOB_OUTCOME_JSON')
-        return value
-    if isinstance(value, dict):
-        return {k: slim(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [slim(v) for v in value]
-    return value
+    from functools import lru_cache
+
+    limit = 10**EXACT_DIGITS
+
+    @lru_cache(maxsize=4096)
+    def encoded(numerator, denominator):
+        # Normalize the saved form exactly once per distinct rational.
+        return rational(Fraction(int(numerator), int(denominator)))
+
+    @lru_cache(maxsize=4096)
+    def long_bounds(numerator, denominator):
+        args = (numerator < 0, *_decimal_parts(abs(numerator), denominator, 30))
+        return _decimal_text(*args, False), _decimal_text(*args, True)
+
+    def rational(x):
+        if abs(x.numerator) < limit and x.denominator < limit:
+            return x
+        lo, hi = long_bounds(x.numerator, x.denominator)
+        return dict(lower_30=lo, upper_30=hi, exact='OMITTED_SEE_JOB_OUTCOME_JSON')
+
+    def convert(item):
+        if isinstance(item, Fraction):
+            return rational(item)
+        if isinstance(item, dict):
+            if ('numerator' in item and 'denominator' in item
+                    and item.keys() <= {'numerator', 'denominator', 'display'}):
+                return encoded(item['numerator'], item['denominator'])
+            return {key: convert(child) for key, child in item.items()}
+        if isinstance(item, (list, tuple)):
+            return [convert(child) for child in item]
+        return item
+
+    return convert(value)
 
 
 def compact_plan_scope(spec):

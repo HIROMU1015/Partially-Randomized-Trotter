@@ -364,11 +364,19 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             stop = 'UNRESOLVED_SCALED_SCOPE'
         else:
             stop = 'SCALED_SHOT_GRID_COMPLETE'
-        input_requests = [dict(kind='HORIZON_INPUTS_MISSING', method=name, M=r['M'],
-            configuration_id=r['configuration_id'], source_configuration_id=r['source_configuration_id'],
-            configuration=r['configuration'], signal_rounds=r['required_rounds'],
-            price_round_axes=[dict(m=m, axis=axis) for m in r['required_rounds'] for axis in ('X','Y')])
-            for r in rows if r.get('required_rounds')]
+        horizon_requests = {}
+        for row in rows:
+            missing = row.get('required_rounds')
+            if not missing:
+                continue
+            # All shot vectors for the same source schedule and horizon share
+            # one request. Keep the original candidate identity for adoption.
+            key = (row['source_configuration_id'], row['configuration_id'], row['M'])
+            horizon_requests[key] = dict(kind='HORIZON_INPUTS_MISSING', method=name, M=row['M'],
+                configuration_id=row['configuration_id'], source_configuration_id=row['source_configuration_id'],
+                configuration=row['configuration'], signal_rounds=missing,
+                price_round_axes=[dict(m=m, axis=axis) for m in missing for axis in ('X','Y')])
+        input_requests = list(horizon_requests.values())
         compared = [(r['comparison_best']['cost'], r['M'], r['configuration_id'], r['comparison_best'])
                     for r in rows if r['comparison_best'] is not None]
         reference = min(compared, key=lambda r:r[:3])[3] if compared else None

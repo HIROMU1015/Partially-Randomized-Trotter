@@ -29,6 +29,7 @@ from fractions import Fraction
 from functools import wraps
 import hashlib
 import json
+import os
 import subprocess
 from pathlib import Path
 import sys
@@ -52,6 +53,33 @@ def read_loc(loc):
     for k in loc.get('selector', []):
         x = x[k]
     return x
+
+
+def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
+    import fcntl
+
+    with cli.round_phase(run, 'WIDTH_RESULT_BOUNDS'):
+        summary = cli.slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',
+            round=spec, methods=result, optimizer_source=optimizer_source))
+    with cli.round_phase(run, 'WIDTH_RESULT_JSON'):
+        summary = json.dumps(O.jsonable(summary), ensure_ascii=False, indent=2)
+    with (run/'ROUND_REPORT.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if owner is not None and O.load_json(run/'NORMAL_DRIVER.json').get('pid') != owner:
+            return
+        with cli.round_phase(run, 'WIDTH_RESULT_WRITE'):
+            path = run/'ROUND_RESULT.json'
+            staging = path.with_suffix('.json.tmp')
+            with staging.open('w') as stream:
+                stream.write(summary)
+                stream.write('\n')
+            staging.replace(path)
+        del summary
+        with cli.round_phase(run, 'WIDTH_METHOD_TABLE'):
+            path = run/'PER_METHOD.csv'
+            staging = path.with_suffix('.csv.tmp')
+            cli.table(result, staging)
+            staging.replace(path)
 
 
 def apply_worker_trial(spec, trial, *, run_dir=None):
@@ -1526,39 +1554,108 @@ class WidthDriver:
                 try:self.save()  # the preparation producer has now drained
                 except BaseException as error:O.record_runtime_error(self.run,error,'FAILED_STATE_SAVE')
             if original_error is None and cleanup_error is not None:raise cleanup_error
-        self.confirm_completed(context,executor,result)
+        with K.CLI.round_phase(self.run, 'WIDTH_CONFIRM_COMPLETED'):
+            self.confirm_completed(context,executor,result)
         launched_now={m:executor.launched(m)for m in self.methods}
         self.state['q3_launched']=launched_now
         with(self.run/'INVOCATIONS.jsonl').open('a')as f:
             f.write(json.dumps(O.jsonable(dict(time=time.time(),requested_widths=self.widths,budget=budgets,
                 launched=launched_now,
                 stop={m:r['stop_reason']for m,r in result.items()},new_calls={m:r['new_calls']for m,r in result.items()})))+'\n')
-        K.CLI.write(self.run/'ROUND_RESULT.json',K.CLI.slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',
-            round=self.spec,methods=result,optimizer_source=K.CLI.head())))
-        K.CLI.table(result,self.run/'PER_METHOD.csv')
+        with K.CLI.round_phase(self.run, 'WIDTH_UPDATE_CANDIDATE_STATE'):
+            self.update_evaluated_points(context, search, result)
+            self.save()
+        self.report(result)
         if str(self.run).startswith(str(ROOT/'docs/research')):
             K.CLI.write(self.run/'NEEDS.json',dict(candidates=K.CLI.candidate_rows(context)))
             from publish_h4_search_run import prepare as publish_search
             publish_search(ROOT,self.run,self.run.parent/'SEARCH_PUBLICATION.json',run_id=self.spec['round_id'])
+        return result
+
+    def finish_report(self):
+        report = getattr(self, '_report', None)
+        if report is not None:
+            self._report = None
+            process, snapshot = report
+            with snapshot:
+                if process.wait():
+                    import pickle
+                    snapshot.seek(0)
+                    run, spec, result, source, owner = pickle.load(snapshot)
+                    write_width_report(Path(run), K.CLI, spec, result, source, owner=owner)
+
+    def report(self, result):
+        self.finish_report()
+        source = K.CLI.head()
+        holds = {method: rows.get('execution_holds', []) for method, rows in result.items()}
+        # Older executors reload these holds from ROUND_RESULT at batch start.
+        # Publish changes synchronously before another executor can reserve work.
+        same_holds = getattr(self, '_reported_holds', None) == holds
+        self._reported_holds = deepcopy(holds)
+        trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+        if (not same_holds or not getattr(self, 'scaled_shots', False)
+                or not trial.get('controller_queue_first')
+                or str(self.run).startswith(str(ROOT/'docs/research'))
+                or not (self.run/'NORMAL_DRIVER.json').is_file()):
+            write_width_report(self.run, K.CLI, self.spec, result, source)
+            return
+
+        import pickle
+        import tempfile
+
+        # A single child renders an immutable snapshot from a private file
+        # descriptor while the controller advances its saved checkpoint.
+        script = (
+            'import pickle,runpy,sys\n'
+            'from pathlib import Path\n'
+            'root,driver,entry=sys.argv[1:]\n'
+            'report=runpy.run_path(driver,init_globals={"FIXED_RUN_CODE_ROOT":root})\n'
+            'from types import SimpleNamespace\n'
+            'cli=SimpleNamespace(**runpy.run_path(entry))\n'
+            'run,spec,result,source,owner=pickle.load(sys.stdin.buffer)\n'
+            'report["write_width_report"](Path(run),cli,spec,result,source,owner=owner)\n')
+        with K.CLI.round_phase(self.run, 'WIDTH_QUEUE_REPORT'):
+            snapshot = tempfile.TemporaryFile()
+            try:
+                pickle.dump((str(self.run), self.spec, result, source, os.getpid()),
+                            snapshot, protocol=pickle.HIGHEST_PROTOCOL)
+                snapshot.seek(0)
+                process = subprocess.Popen(
+                    [sys.executable, '-B', '-c', script, str(ROOT), str(Path(__file__).resolve()), K.CLI.__file__],
+                    stdin=snapshot, cwd=ROOT)
+            except BaseException:
+                snapshot.close()
+                raise
+            self._report = process, snapshot
+
+    def update_evaluated_points(self, context, search, result):
         priced={c['configuration_id']:c['prices'] for c in context['candidates']
                 if c.get('ready') and c.get('prices')}
+        by_id = {}
+        for method, method_result in result.items():
+            indexed = by_id.setdefault(method, {})
+            for row in method_result.get('by_configuration') or []:
+                ids = (row['configuration_id'],)
+                if getattr(self, 'scaled_shots', False) and row.get('source_configuration_id'):
+                    ids = dict.fromkeys((*ids, row['source_configuration_id']))
+                for cid in ids:
+                    indexed.setdefault(cid, []).append(row)
         for p in self.state['points']:
             if p['status']not in('REGISTERED','EVALUATED'):continue
             prices=priced.get(p.get('evaluation_configuration_id',p.get('configuration_id')),[])
             if (search.get('review_search_order') is True and len(prices)==26
                     and all(type(v) in (int,Fraction) and v>=0 for v in prices)):
                 p['own_price_floor']=sum(prices)
-            rows=result.get(p['method'],{}).get('by_configuration',[])
             cid = p.get('evaluation_configuration_id', p.get('configuration_id'))
+            matches = by_id.get(p['method'], {}).get(cid, ())
             if getattr(self, 'scaled_shots', False):
-                matches = [v for v in rows if cid and cid in (v['configuration_id'], v.get('source_configuration_id'))]
                 b = min(matches, key=lambda v: (v['best'] is None,
                     v['best']['cost'] if v['best'] else 0, v['M']), default=None)
                 if b:
                     p['best_M'] = b['M'] if b['best'] else None
                     b = dict(b, promising=sum(v['promising'] for v in matches))
             else:
-                b = next((v for v in rows if v['configuration_id'] == cid), None)
+                b = next(iter(matches), None)
             if b:
                 adopted=b.get('best');best=b.get('confirmed_all_best')or adopted
                 p.update(status='EVALUATED',best=None if best is None else best['cost'],
@@ -1568,7 +1665,6 @@ class WidthDriver:
                     best_N_Y=None if best is None else O.split(best['vector'])[1],
                     best_MSE_upper=None if best is None else best.get('MSE_upper'),
                     promising=b.get('promising'))
-        return result
 
     def loop(self):
         previous=self.state.get('stop',{}).get('reason')
@@ -1769,9 +1865,14 @@ def main(argv=None, *, driver_factory=None):
         except BaseException as save_error:O.record_runtime_error(a.run_dir,save_error,'FAILED_DRIVER_STATE_SAVE')
         raise
     finally:
-        manager = getattr(d, 'run_pbs_manager', None)
-        if manager is not None and manager.detached:
-            manager.close()
+        try:
+            finish_report = getattr(d, 'finish_report', None)
+            if finish_report is not None:
+                finish_report()
+        finally:
+            manager = getattr(d, 'run_pbs_manager', None)
+            if manager is not None and manager.detached:
+                manager.close()
     if (a.run_dir/'STOP_REQUESTED.json').exists() and d.state.get('stop',{}).get('reason') not in (
             'V2_RESULT_REQUIRES_REVIEW','RUNTIME_EXCEPTION'):
         d.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());d.save()

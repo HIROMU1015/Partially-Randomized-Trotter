@@ -311,6 +311,45 @@ class CompletionRequestMismatch(ValueError):
                              if key not in saved or key not in requested or saved[key] != requested[key])
 
 
+def inherited_completion_request(provider_entry, run, saved, requested, prior_runs):
+    """Continue an already selected provider workspace with its frozen paths."""
+    metadata = {'registry_file', 'output_root', 'recover_saved_price_rounds'}
+    if ({k: v for k, v in saved.items() if k not in metadata} !=
+            {k: v for k, v in requested.items() if k not in metadata}):
+        return False
+    marker = run/'PROVIDER_SOURCE.json'
+    local_request = run/'provider_workspace/docs/research/distributed_selected_pf/REQUEST.json'
+    if (len(saved.get('selected', ())) != 1 or not marker.is_file() or not local_request.is_file()
+            or not all((run/name).is_file() for name in ('PLAN_RESPONSE.json',
+                                                        'ORIGINAL_OWNER_REQUEST.json', 'ORIGINAL_OWNER_CHECK.json'))):
+        return False
+    provider = json.loads(marker.read_text())
+    if Path(provider['root']).resolve() != provider_entry.resolve().parents[1]:
+        return False
+    workspace_request = json.loads(local_request.read_text())
+    if workspace_request.get('selected') != saved['selected']:
+        return False
+    [candidate] = saved['selected']
+    cid = candidate['configuration_body']['id']
+    [item] = json.loads((run/'PLAN_RESPONSE.json').read_text())['items']
+    if item.get('configuration_id') != cid:
+        return False
+    producer_path = Path('docs/research/distributed_selected_pf')/cid
+    # Both saved paths must name the same selected leaf of a declared prior
+    # run. An earlier request's recovery options never change its saved plan.
+    for prior in prior_runs:
+        leaf = Path(prior).resolve()/'pf_auto/candidates'/cid/'pf_auto'
+        original = leaf/'pf_completion/provider_workspace'/producer_path
+        local_plan = run/'provider_workspace'/producer_path/'PLAN.json'
+        if (Path(saved['output_root']) == leaf/'provider_output' and
+                Path(saved['registry_file']) == leaf/'REGISTRY.json' and
+                item.get('output') == str(original) and local_plan.is_file()
+                and (original/'PLAN.json').is_file()
+                and local_plan.read_bytes() == (original/'PLAN.json').read_bytes()):
+            return True
+    return False
+
+
 def complete_selected(root, spec, run_dir, *, stage_executor=None):
     """One explicitly selected finite provider call before normal O.prepare.
 
@@ -333,20 +372,29 @@ def complete_selected(root, spec, run_dir, *, stage_executor=None):
     for key in ('registry_file', 'output_root'):
         path = Path(request[key]);request[key] = str(path if path.is_absolute() else root / path)
     req, out = run / 'REQUEST.json', run / 'RESPONSE.json'
+    entry = Path(completion.get('entry', 'scripts/prepare_pf_candidate.py'))
+    entry = entry if entry.is_absolute() else root / entry
+    result_registry = request['registry_file']
+    inherited = False
     if req.exists():
         saved = json.loads(req.read_text())
         if saved != request:
-            raise CompletionRequestMismatch(req, saved, request)
+            prior = spec.get('executor', {}).get('prior_run_dirs', ())
+            if (stage_executor is None or mode != 'complete' or not
+                    inherited_completion_request(entry, run, saved, request, prior)):
+                raise CompletionRequestMismatch(req, saved, request)
+            request = saved
+            inherited = True
     if not req.exists():
         req.write_text(json.dumps(request, ensure_ascii=False, indent=2) + '\n')
     if not out.exists():
-        entry = Path(completion.get('entry', 'scripts/prepare_pf_candidate.py'))
-        entry = entry if entry.is_absolute() else root / entry
         cmd = [completion.get('interpreter', sys.executable), '-B', str(entry), '--request', str(req.resolve()),
                '--output', str(out.resolve()), '--mode', mode]
         if stage_executor is not None and mode=='complete':
             from .pf_distributed_preparation import complete_selected as distributed_complete
-            distributed_complete(root,spec,run,request,entry,out,stage_executor)
+            options = {'inherited_registry': result_registry} if inherited else {}
+            distributed_complete(root,spec,run,request,entry,out,stage_executor,**options)
         else:subprocess.run(cmd, cwd=root, check=True)
     response = json.loads(out.read_text())
-    return dict(registry_file=request['registry_file'], response=response, request=str(req), output=str(out),mode=mode)
+    return dict(registry_file=response.get('registry_file', request['registry_file']), response=response,
+                request=str(req), output=str(out),mode=mode)

@@ -9,20 +9,33 @@ from pathlib import Path
 import subprocess
 
 
-def receipt_locators(waves, physical_ids=None):
+def receipt_locators(waves, physical_ids=None, *, index=False):
     """Read only outputs of the existing audited PF stage in this search."""
+    from itertools import chain
+
+    if isinstance(waves, Path):
+        waves = (waves,)
     result = []
-    for candidate_root in candidate_roots(waves):
+    by_physical = defaultdict(list)
+    for candidate_root in chain.from_iterable(map(candidate_roots, waves)):
         for path in sorted(candidate_root.glob(
                 '*/pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf/*/*AUDIT.RESULT.json')):
             try:
                 audit = json.loads(path.read_bytes())
                 if audit['status'] == 'AUDIT_PASS':
-                    result.extend(row['price_evidence']['source'] for row in audit['prices']
-                                  if row['gate'] == 'C_IMPLEMENTATION_GUARD_PASS'
-                                  and (physical_ids is None or row.get('physical_id') in physical_ids))
+                    for row in audit['prices']:
+                        physical = row.get('physical_id')
+                        if row['gate'] == 'C_IMPLEMENTATION_GUARD_PASS' and (
+                                physical_ids is None or physical in physical_ids):
+                            locator = row['price_evidence']['source']
+                            if index:
+                                by_physical[physical].append(locator)
+                            else:
+                                result.append(locator)
             except (OSError, KeyError, TypeError, ValueError):
                 continue
+    if index:
+        return by_physical
     return list({json.dumps(loc, sort_keys=True): loc for loc in result}.values())
 
 
@@ -36,9 +49,13 @@ def prior_waves(run, spec):
             if (p := Path(path).resolve()) != run.resolve() and (p/'pf_auto'/'WAVES.json').is_file()]
 
 
-def price_indexes(waves, settings, physical_ids=None):
-    locators = [*settings.get('saved_price_receipts', ()),
-                *(loc for path in waves for loc in receipt_locators(path, physical_ids))]
+def price_indexes(waves, settings, physical_ids=None, *, audits=None):
+    locators = list(settings.get('saved_price_receipts', ()))
+    if audits is None:
+        locators.extend(receipt_locators(waves, physical_ids))
+    else:
+        for physical in physical_ids or audits.keys():
+            locators.extend(audits.get(physical, ()))
     unique = {json.dumps(loc, sort_keys=True): loc for loc in locators}
     return [unique[key] for key in sorted(unique)]
 
@@ -101,14 +118,14 @@ def live_price_owners(item):
     return sorted(pending.items())
 
 
-def reconciliation_snapshot(root, waves, settings, row):
+def reconciliation_snapshot(root, waves, settings, row, *, audits=None):
     """Revisit final decisions when an applicable receipt or owner changes."""
     item = row.get('price_reconciliation', {})
     deferred = item.get('deferred_price_rounds', {})
     physical_ids = {axis['physical_id'] for axes in deferred.values() for axis in axes}
     physical_ids.update(axis[0] for axis in row.get('previously_audited_price_axes', ()))
     physical_ids.update(axis[0] for axis in item.get('missing_audited_axes', ()))
-    locators = price_indexes(waves, settings, physical_ids or None)
+    locators = price_indexes(waves, settings, physical_ids or None, audits=audits)
     paths = [loc['commit']+':'+loc['path'] for loc in locators]
     # An existing locator may become readable when the original object arrives.
     objects = subprocess.run(['git', 'cat-file', '--batch-check'], cwd=root,

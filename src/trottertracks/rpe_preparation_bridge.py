@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import threading
@@ -182,10 +183,33 @@ def contract_runtime(values, script, configured, provider=None):
     return result,sorted(compilers)
 
 
-def fixed_input_hashes(root, documents, artifacts):
+def fixed_input_hashes(root, documents, artifacts, *, df_raw_commit=None):
     """Hash every fixed Git locator in original JSON, including nested ones."""
     from .rpe_q3_coordinator import input_hashes
     working=[]
+    git_blobs = {}
+
+    def df_receipt(path):
+        # A copied PATH_INDEX can still name the original owner's artifact.
+        # The fixed DF audit resolves WORKING at --raw-commit. Ship that exact
+        # original blob only when the collected copy matches it byte for byte.
+        if not df_raw_commit or not path.startswith('search-evidence/'):
+            return None
+        commit, relocated = df_raw_commit
+        parts = path.split('/')
+        if (len(parts) < 5 or parts[2] != 'completion' or
+                parts[-1] not in ('cosine.json', 'sine.json', 'PATH_RECEIPT.json')):
+            return None
+        suffix = '/'.join(parts[2:])
+        matches = [sha for name, sha in artifacts.items()
+                   if name.startswith(relocated) and name.endswith('/' + suffix)]
+        if len(matches) != 1:
+            return None
+        if path not in git_blobs:
+            blob = subprocess.run(['git', 'show', commit + ':' + path],
+                                  cwd=root, capture_output=True)
+            git_blobs[path] = hashlib.sha256(blob.stdout).hexdigest() if blob.returncode == 0 else None
+        return commit if git_blobs[path] == matches[0] else None
     # PF's original audit binds these provisional sidecars to its collected
     # raw publication. Hash the same evidence without editing the sidecars.
     compiled={}
@@ -202,7 +226,13 @@ def fixed_input_hashes(root, documents, artifacts):
         if value.get('commit')=='WORKING'and isinstance(value.get('path'),str):
             # Existing providers use WORKING for a raw artifact already in the
             # owned output tree. Bind that artifact, never pretend it is Git.
-            matches=[(name,sha)for name,sha in artifacts.items()if name.endswith('/'+value['path'])]
+            path = value['path']
+            matches=[(name,sha)for name,sha in artifacts.items()if name.endswith('/'+path)]
+            if not matches and df_raw_commit:
+                commit = df_receipt(path)
+                if commit:
+                    result['commit'] = commit
+                    return result
             if len(matches)!=1:raise ValueError('Unfrozen or ambiguous WORKING input: '+value['path'])
             working.append(dict(path=matches[0][0],sha256=matches[0][1]));result.pop('commit')
         if value.get('commit')=='FILL_WITH_PUBLISHED_COMMIT' and value.get('path') in compiled:
@@ -241,6 +271,13 @@ def operational_source_requirements(documents):
 
 def collect_fixed_inputs(root, documents, artifacts=None):
     return fixed_input_hashes(root,documents,artifacts or{})
+
+
+def used_path_aliases(aliases, bindings, documents, command):
+    """Carry aliases referenced by this leaf, not every past worker checkout."""
+    text = json.dumps([*documents, command], ensure_ascii=False)
+    return {old: bindings[original] for old, original in aliases.items()
+            if original in bindings and json.dumps(old, ensure_ascii=False)[:-1] in text}
 
 
 def collect_required_views(documents):
@@ -793,7 +830,14 @@ class DistributedPreparationBridge:
                 original_documents.append(document)
                 if stage == 'PAULI_AUDIT' and isinstance(document, dict):
                     original_documents.extend(pauli_audit_raw_inputs(name, document))
-        input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs)
+        df_raw_commit = None
+        if (stage in ('DF_MODEL_FREEZE', 'DF_HOLDOUT_COMPARE')
+                and script.name == 'run_pr_df_candidate_prices.py' and '--raw-commit' in command):
+            raw = command[command.index('--raw-commit') + 1]
+            if not re.fullmatch(r'[0-9a-f]{40}', raw):
+                raise ValueError('DF audit requires an immutable raw commit')
+            df_raw_commit = (raw, 'workspace/' + relative + '/')
+        input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs,df_raw_commit=df_raw_commit)
         working_hashes.extend(pauli_inputs)
         working_hashes.extend(df_inputs)
         required_views=collect_required_views(runtime_inputs)
@@ -801,8 +845,8 @@ class DistributedPreparationBridge:
             required_views.update(pauli_calibration_view(root))
         required_paths=collect_required_paths(runtime_inputs,self.settings.get('controller_paths'))
         with self.lock:
-            for old, original in self.aliases.items():
-                if original in bindings:bindings[old]=bindings[original]
+            aliases = dict(self.aliases)
+        bindings.update(used_path_aliases(aliases, bindings, original_documents, command))
         root_bundles=self._bundle(root,source,input_hashes,
                                  tracked_workspace=not script.is_relative_to(root))
         if script.is_relative_to(root):
@@ -952,7 +996,7 @@ class DistributedPreparationBridge:
             raise ValueError('Returned Git delta does not bind the assigned input HEAD')
         return [(cache.path(row['sha256']),row.get('ref','HEAD')) for row in inputs]
 
-    def _import_result(self, result, request):
+    def _import_result(self, result, request, *, inherited_workspace=None):
         artifacts = result.get('artifacts') or result.get('artifact_manifest') or {}
         directory = Path(result['artifact_directory'])
         from .pr_candidate_completion import put
@@ -965,6 +1009,11 @@ class DistributedPreparationBridge:
         # Import scientific Git objects first, preserving original source-bound
         # locators from the remote provider without checkout/HEAD replacement.
         workspaces = {'workspace': Path(request['preparation'].get('controller_root', self.root))}
+        if inherited_workspace is not None:
+            original, destination = inherited_workspace
+            if workspaces['workspace'].resolve() != original.resolve() or request['preparation'].get('workspaces'):
+                raise ValueError('Inherited PF result names another producer workspace')
+            workspaces['workspace'] = destination
         for alias, descriptor in request['preparation'].get('workspaces', {}).items():
             old = next(key for key, value in request['preparation']['path_bindings'].items()
                        if value == '@WORKSPACE:' + alias + '@')
@@ -1041,9 +1090,13 @@ class DistributedPreparationBridge:
         from .pr_candidate_completion import Held, PreparationWait, put
         directory = Path(directory)
         marker = directory / (stage + '.DISTRIBUTED.json')
+        inherited_workspace = None
         if marker.exists():
             submitted = read(marker)
             request = submitted['request']
+            original = getattr(completion, 'inherited_preparation_root', None)
+            if original is not None and Path(request['preparation']['controller_root']).resolve() == original.resolve():
+                inherited_workspace = original, Path(completion.preparation_root)
             portable = 'private/pf-transport/scripts/run_pf_preparation_stage.py'
             if (stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
                     and self.executor.distributed.get('pf_legacy_compile_hosts')
@@ -1102,7 +1155,10 @@ class DistributedPreparationBridge:
                                                       'PREPARATION_STOPPED_BEFORE_RESERVATION') else PreparationWait
             raise hold('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
         try:
-            self._import_result(result, request)
+            if inherited_workspace is None:
+                self._import_result(result, request)
+            else:
+                self._import_result(result, request, inherited_workspace=inherited_workspace)
         except FileNotFoundError as error:
             raise PreparationWait('PREPARATION_RESULT_ARTIFACTS_MISSING:'+stage+':'+job_id+':'+str(error)) from error
         except ValueError as error:
