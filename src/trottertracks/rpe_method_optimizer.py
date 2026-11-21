@@ -957,7 +957,8 @@ class Executor:
     def ingest(self, job, proposal, calls):
         """Accept a job outcome only for the same configuration, allocation, total view/binding/signal and contract."""
         out, outcome_path = job_outcome(job);ident = out.get('identity') or {}
-        nx, ny = split(proposal['vector']);want = self.expected_for(proposal['configuration_id'], self.route(proposal['configuration_id']))
+        nx, ny = split(proposal['vector']);rule = self.route(proposal['configuration_id'])
+        want = self.expected_for(proposal['configuration_id'], rule)
         status, reason = out['status'], out.get('reason')
         if status in (PASS, FAIL, 'INCONCLUSIVE'):
             checks = dict(configuration=ident.get('configuration_id') == proposal['configuration_id'],
@@ -966,6 +967,8 @@ class Executor:
             for key in ('total_configuration_id', 'binding_id', 'M'):
                 if want.get(key) is not None:
                     checks[key] = ident.get(key) == want[key]
+            if (risk := (rule or {}).get('horizon_risk_source')) is not None:
+                checks['horizon_risk_source'] = ident.get('M') == 13 and out.get('horizon_risk_source') == risk
             if not all(checks.values()):
                 status, reason = 'UNKNOWN', 'IDENTITY_MISMATCH:' + ','.join(k for k, v in checks.items() if not v)
         source = 'ARTIFICIAL_JOB' if out.get('artificial') else 'NEW_Q3_JOB'

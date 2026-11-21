@@ -9,6 +9,7 @@ import numpy as np
 
 SCHEMA = 'RPE_FINITE_SUPPORT_MSE_V1'
 MAX_SHOTS_PER_AXIS = 2048
+MAX_ROUNDS = 14
 MAX_AXIS_INTEGER_BITS = 1 << 20
 MAX_ROUND_CELLS = 16384
 MAX_ROUND_PAIRS = 1 << 22
@@ -28,7 +29,7 @@ def _decode(value):
 
 
 def supports(shots):
-    return (1 <= len(shots) <= 13
+    return (1 <= len(shots) <= MAX_ROUNDS
             and all(type(row[axis]) is int and 1 <= row[axis] <= MAX_SHOTS_PER_AXIS
                     for row in shots for axis in ('N_X', 'N_Y')))
 
@@ -92,7 +93,7 @@ def _closure(decoder, phases, zeros, previous, q):
 
 def summarize(certificate, threshold, *, expected_rounds):
     """Recompute the result and account for each omitted history exactly once."""
-    if (certificate['schema'] != SCHEMA or not 1 <= expected_rounds <= 13
+    if (certificate['schema'] != SCHEMA or not 1 <= expected_rounds <= MAX_ROUNDS
             or len(certificate['rounds']) != expected_rounds):
         raise ValueError('Unexpected finite-support evidence scope')
     cap = _decode(certificate['loss_cap'])

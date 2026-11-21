@@ -50,6 +50,12 @@ PASS = 'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD'
 FAIL = 'MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD'
 VALIDATOR = dict(commit='cbc471c913072de45c25a0ed22d51dff8a9b7034', path='scripts/run_p7_s2_local_shot_search.py',
                  function='validate_result')
+M13_RISK = dict(commit='89fcde14f6ac5f4b97be234f9b0822091e7d9ac7',
+                path='src/trottertracks/rpe_deterministic_risk.py',
+                sha256='153f131b76aed35a0043eb60825b89fb62b6fcc616254d56b7a817712a376df3')
+M12_RISK_SHA256 = 'af472d0fdcc0bf797a2815e7d9a6b789b15be9c0e9285a89105109565e160091'
+M13_ROUTES = {('FULL_PF', 'pf_b_pf6'), ('TRUNCATED_PF', 'pf_b_pf6'),
+              ('PR_DF', 'prdf_d2_common_entry'), ('PR_DF', 'prdf_d2_split')}
 DROP = {'allocation', 'label', 'price_terms', 'conditional_cost', 'generation', 'rule', 'budget', 'budget_name', 'aliases',
         'finite_scope_preflight', 'reference_cost', 'unused_budget', 'cost_m0_m6', 'cost_m7_m12', 'm7_m12_fraction',
         'base_label', 'benchmark_cost', 'comparison_name', 'A_comparison_source', 'LD3_comparison', 'equivalent_Q3_result',
@@ -128,6 +134,92 @@ def horizon_of(request):
                 and hashlib.sha256(value.encode()).hexdigest() == request['configuration_id']):
             raise ValueError('Projected Q3 identity differs from its fixed source and horizon')
     return M
+
+
+def horizon_supported(request, M):
+    rule = request['route']
+    if M is None or M <= 12:
+        return 'horizon_risk_source' not in rule
+    return (M == 13 and not rule.get('horizon_projection')
+            and (request['method'], rule['kind']) in M13_ROUTES
+            and rule.get('horizon_risk_source') == M13_RISK
+            and set(rule.get('horizon_parent') or {}) == {'configuration', 'signal_packet'})
+
+
+def extended_risk_bound(implementation, route_views):
+    """Read the published science SOURCE and retain the existing route's globals."""
+    risk = implementation.binding.Q.D
+    if hashlib.sha256(Path(risk.__file__).read_bytes()).hexdigest() != M12_RISK_SHA256:
+        raise ValueError('M=13 requires the validated fixed baseline risk module')
+    view = Path(route_views[M13_RISK['commit']]).resolve()
+    if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=view, text=True).strip() != M13_RISK['commit']:
+        raise ValueError('M=13 fixed risk SOURCE HEAD differs')
+    raw = (view / M13_RISK['path']).read_bytes()
+    if hashlib.sha256(raw).hexdigest() != M13_RISK['sha256']:
+        raise ValueError('M=13 fixed risk SOURCE bytes differ')
+    function, = [node for node in ast.parse(raw).body
+                 if isinstance(node, ast.FunctionDef) and node.name == '_bound']
+    scope = dict(risk._bound.__globals__)
+    exec(compile(ast.Module(body=[function], type_ignores=[]), str(view / M13_RISK['path']), 'exec'), scope)
+    return risk, scope['_bound']
+
+
+@contextmanager
+def install_risk_bound(extension):
+    if extension is None:
+        yield
+    else:
+        from unittest.mock import patch
+        risk, bound = extension
+        with patch.object(risk, '_bound', bound):
+            yield
+
+
+def validate_horizon_extension(view, parent, metadata):
+    binding, packet_view = metadata
+    config = binding['original_configuration']
+    packet = packet_view['signal_packet']['origin_signal_packet']
+    previous = git_json(view, dict(parent['configuration'], inputs_selector=parent['configuration'].get('selector', [])))
+    prefix = git_json(view, dict(parent['signal_packet'], inputs_selector=parent['signal_packet'].get('selector', [])))
+    previous_spec, spec = previous['spec'], config['spec']
+
+    def parent_spec(value):
+        value = deepcopy(value)
+        value['M'] = 12
+        if value.get('A_input', {}).get('M') == 13:
+            value['A_input']['M'] = 12
+        return value
+
+    if (spec['M'] != 13 or previous_spec['M'] != 12 or config['id'] == previous['id']
+            or parent_spec(spec) != previous_spec or len(config['rounds']) != 14
+            or len(previous['rounds']) != 13):
+        raise ValueError('M=13 changes the saved configuration or physical prefix')
+    if (prefix['configuration_id'] != previous['id'] or packet['configuration_id'] != config['id']
+            or prefix['target'] != packet['target']
+            or [row['m'] for row in prefix['means']] != list(range(13))
+            or [row['m'] for row in packet['means']] != list(range(14))):
+        raise ValueError('M=13 requires the saved prefix and one complete terminal measurement')
+    def canonical_prefix(round_row, old_round):
+        """The new configuration reissues the round ID and law references."""
+        row = deepcopy(round_row)
+        old_id = old_round['candidate']['id']
+        row['candidate']['id'] = old_id
+        row['identity']['candidate']['id'] = old_id
+        configuration = row['identity']['configuration']
+        configuration.update(configuration_id=previous['id'], spec=parent_spec(configuration['spec']))
+        row['law_binding'].update(candidate_id=old_id, configuration_id=previous['id'])
+        return row
+
+    fields = ('raw', 'corrected', 'reference', 'normalization')
+    for before, after, former, extended in zip(previous['rounds'], config['rounds'],
+                                               prefix['means'], packet['means']):
+        if (canonical_prefix(after, before) != before
+                or any(former[k] != before[k] or extended[k] != after[k] for k in ('identity', 'law_binding'))
+                or any(json.dumps(former[k], sort_keys=True) != json.dumps(extended[k], sort_keys=True)
+                       for k in fields)):
+            raise ValueError('Saved signal or measurement law differs at m=' + str(former['m']))
+    if any(packet['means'][-1].get(field) is None for field in fields):
+        raise ValueError('M=13 terminal signal or law is incomplete')
 
 
 @contextmanager
@@ -224,7 +316,7 @@ def finite_support_kernel():
 def finite_support_requested(request, case):
     return (request.get('execution_profile', {}).get('large_shot_bounds') is True
             and request.get('origin', {}).get('kind') == 'RPE_SCALED_SHOTS_V1'
-            and request['origin'].get('M') in (11, 12)
+            and request['origin'].get('M') in (11, 12, 13)
             and finite_support_kernel().supports(case['allocation']['shots']))
 
 
@@ -262,7 +354,7 @@ def finite_support_input(case, inputs, route, binding, packet_view, source):
     prepared = entry['prepared']
     policy = entry['statistical_contract']['simulation_policy']
     risk.S.iid_policy(policy)
-    if (not prepared['input_complete'] or prepared['M'] >= 13
+    if (not prepared['input_complete'] or prepared['M'] > 13
             or (not prepared['physical_qualification_complete'] and not contract.get('allow_conditional_unqualified'))
             or prepared['decoder'] != risk.S.DECODER
             or any(row['law_binding']['definition']['model'] != policy['target_law'] for row in prepared['rows'])):
@@ -478,14 +570,20 @@ def identity(result, case, inputs):
     src = record.get('source')
     projection = case.get('horizon_projection')
     cid = case.get('configuration_id') or case.get('original_configuration_id')
-    if projection:
+    native_extension = isinstance(src, dict) and src.get('horizon_risk_source') == M13_RISK
+    horizon = projection['M'] if projection else 13 if native_extension else None
+    if horizon is not None:
         diagnostic = record['diagnostic']['deterministic_risk']
         rounds = diagnostic['bounds']['total_state_dp']['rounds']
-        if [r['m'] for r in rounds] != list(range(projection['M'] + 1)) or cid != projection['source_configuration_id']:
+        if [r['m'] for r in rounds] != list(range(horizon + 1)):
             raise ValueError('Returned Q3 terminal round/identity differs')
+    if projection:
+        if cid != projection['source_configuration_id']:
+            raise ValueError('Returned Q3 source configuration differs')
         cid = case['effective_configuration_id']
     return dict(configuration_id=cid,
-                **({'M': projection['M'], 'source_configuration_id': projection['source_configuration_id']} if projection else {}),
+                **({'M': horizon} if horizon is not None else {}),
+                **({'source_configuration_id': projection['source_configuration_id']} if projection else {}),
                 total_configuration_id=record.get('configuration_id'), binding_id=record.get('canonical_binding'),
                 signal_packet=case.get('signal_packet'), allocation=record.get('allocation', {}).get('shots'),
                 evaluation_target=record.get('evaluation_target'),
@@ -699,13 +797,18 @@ def main():
         outcome = artificial(request, out, a.mode)
         if M is not None and outcome.get('identity'):
             outcome['identity']['M'] = M
-    elif M is not None and M > 12:
+    elif not horizon_supported(request, M):
         outcome = dict(status='UNKNOWN', reason='OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN',
                        requested_M=M, MSE_lower=None, MSE_upper=None, scientific_evaluation_calls=0, identity=None)
     else:
         view = Path(request['route']['view'])
         route_views = json.loads(a.route_views.read_text()) if a.route_views else request['route'].get('route_views', {})
         case, inputs = scoped_case(view, request);inputs = execution_profile(inputs, request);r = route(view, kind, route_views)
+        extension = None
+        if M == 13:
+            if len(inputs['options']['phase_radii']) != 14:
+                raise ValueError('M=13 requires the fixed 14-round options')
+            extension = extended_risk_bound(r, route_views)
         stage(out, 'CASE_BUILT', template=inputs['template_source'])
         bounds = r.bounds(case['allocation']['shots'])
         old_scope = in_scope(bounds, inputs['options'])
@@ -715,15 +818,22 @@ def main():
                            scientific_evaluation_calls=0, identity=None)
         else:
             runtime = r.runtime() if r.runtime is not None else None
-            metadata = r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)
+            metadata = r.metadata(case)
+            if extension is not None:
+                validate_horizon_extension(view, request['route']['horizon_parent'], metadata)
+            stage(out, 'METADATA_PASS', bounds=bounds)
             source = dict(request_id=request['request_id'], route=kind, view_commit=request['route']['view_commit'],
                           adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=request.get('optimizer_source'), runtime=runtime, execution_profile=request.get('execution_profile'))
+            if extension is not None:
+                source['horizon_risk_source'] = M13_RISK
             if finite_support:
                 if a.mode == 'execute':
                     write(out/'SOURCE.json', source)
                     write(out/'CASE_INPUTS.json', inputs)
                 elif a.mode == 'collect' and (out/'SOURCE.json').is_file():
                     source = json.loads((out/'SOURCE.json').read_text())
+                    if extension is not None and source.get('horizon_risk_source') != M13_RISK:
+                        raise ValueError('M=13 completed outcome has a different fixed risk SOURCE')
                 outcome = finite_support_outcome(request, case, inputs, r, out, source, metadata, a.mode)
                 if a.mode == 'collect' and 'original_outcome_sha256' in outcome:
                     name = 'COLLECTED_OUTCOME.json'
@@ -751,8 +861,10 @@ def main():
                                    scientific_evaluation_calls=0, identity=None)
                 else:
                     saved_supervision=json.loads((out/'SUPERVISION.json').read_text()) if (out/'SUPERVISION.json').exists() else None
-                    outcome = outcome_from(view, dict(request,_collect=True), case, inputs, r, out,
-                        json.loads((out / 'SOURCE.json').read_text()), saved_supervision)
+                    saved_source = json.loads((out / 'SOURCE.json').read_text())
+                    if extension is not None and saved_source.get('horizon_risk_source') != M13_RISK:
+                        raise ValueError('M=13 completed outcome has a different fixed risk SOURCE')
+                    outcome = outcome_from(view, dict(request,_collect=True), case, inputs, r, out, saved_source, saved_supervision)
                     if (out/'OUTCOME.json').exists():
                         outcome['original_outcome_sha256']=hashlib.sha256((out/'OUTCOME.json').read_bytes()).hexdigest()
                         name='COLLECTED_OUTCOME.json'
@@ -764,11 +876,13 @@ def main():
                 storage = (EVIDENCE.capture(writer, out / case['label'])
                            if writer is not None and request.get('execution_profile', {}).get('compact_q3_evidence') is True
                            else nullcontext())
-                with horizon_inputs(case.get('horizon_projection')), prefix_cache_context(request, case, inputs, out), TIMING.body_context(
+                with install_risk_bound(extension), horizon_inputs(case.get('horizon_projection')), prefix_cache_context(request, case, inputs, out), TIMING.body_context(
                         sys.modules.get('trottertracks.rpe_total_dp_parallel'),out), r.installed(out), storage:
                     supervision = r.supervise([case], inputs, source, out)
                 stage(out, 'SCIENTIFIC_ROUTE_RETURNED')
                 outcome = outcome_from(view, request, case, inputs, r, out, source, supervision)
+            if extension is not None:
+                outcome['horizon_risk_source'] = M13_RISK
     outcome.update(request_id=request['request_id'], route=kind, mode=a.mode, finished_UTC=utc())
     if a.mode == 'collect' and outcome.get('reason') == 'NO_WORKER_ARTIFACT_TO_COLLECT':
         # Nothing to validate: leave no OUTCOME so the executor reports the job for review (no automatic retry).

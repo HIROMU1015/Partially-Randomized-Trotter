@@ -866,7 +866,8 @@ class DistributedPreparationBridge:
         df_inputs = []
         df_locators = []
         snapshot = self.settings.get('df_snapshot_directory')
-        pf_signal = stage == 'PF_SIGNALS' and script.name == 'run_pf_preparation_stage.py'
+        pf_terminal_signal = stage == 'PF_SIGNALS' and script.name == 'run_rpe_pf_horizon_signal.py'
+        pf_signal = stage == 'PF_SIGNALS' and (script.name == 'run_pf_preparation_stage.py' or pf_terminal_signal)
         pf_compile = stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
         if pf_compile and script.name == 'run_pf_preparation_stage.py':
             runtime_inputs.append(self._pf_native_runtime(script, inputs, bindings, df_inputs))
@@ -983,6 +984,8 @@ class DistributedPreparationBridge:
             # the sparse attempt checkout, even for audit-only commands.
             original_documents.extend(_DF_SPLIT_PRICE_IMPORTS)
             original_documents.extend(_DF_PRICE_BACKEND)
+        if pf_terminal_signal:
+            original_documents.extend(_PF_SIGNAL_KERNEL_INPUTS)
         if script.name == 'run_pf_preparation_stage.py':
             if stage == 'PF_SIGNALS':
                 original_documents.extend(_PF_SIGNAL_KERNEL_INPUTS)
@@ -1077,9 +1080,16 @@ class DistributedPreparationBridge:
                 if frozen['source'] != source:
                     raise ValueError('Parallel DF price input SOURCE differs from its assigned runner')
                 prep['parallel_df_price_axes'] = True
+        contract = dict(source=source, stage=stage, automatic_retry=False)
+        if pf_terminal_signal:
+            frozen = read(Path(command[command.index('--request')+1]))
+            if not re.fullmatch(r'[0-9a-f]{20}', frozen.get('physical_id', '')):
+                raise ValueError('Terminal signal needs a fixed PF physical round')
+            prep['horizon_round'] = dict(m=13, physical_id=frozen['physical_id'])
+            contract.update(rounds=[13], reference_state_actions=2, signal_calls=1)
         self._validate_bundle_inputs(prep)
         return dict(schema='RPE_PREPARATION_REQUEST_V1', route=dict(kind='preparation'), preparation=prep,
-                    original_contract=dict(source=source, stage=stage, automatic_retry=False))
+                    original_contract=contract)
 
     def _capture(self, path, prefix):
         path = Path(path).resolve()

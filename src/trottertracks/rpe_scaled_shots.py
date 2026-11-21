@@ -450,12 +450,16 @@ def horizon_candidates(candidates, problem, policy, executor=None, catalog=None)
                 c['kappa_value'] = str(Fraction(int(v['numerator']), int(v['denominator'])))
         if c.get('kappa_value') is None and isinstance(kappa, str):
             c['kappa_value'] = kappa
+        base_route = executor.route(original_id) if executor is not None and original_id and c['ready'] else None
         if problem.get('problem', {}).get('system') == 'H4' and original_M > 12:
-            c['execution_needs'] = list(dict.fromkeys([*c.get('execution_needs', []),
-                'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN']))
+            fixed = (base_route or {}).get('horizon_risk_source')
+            parent = (base_route or {}).get('horizon_parent')
+            if not (original_M == 13 and fixed and parent and c.get('source_configuration_id')
+                    and len(c.get('prices') or ()) == 28):
+                c['execution_needs'] = list(dict.fromkeys([*c.get('execution_needs', []),
+                    'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN']))
         if original_M in policy['M']:
             result.append(c)
-        base_route = executor.route(original_id) if executor is not None and original_id and c['ready'] else None
         for M in policy['M']:
             if M == original_M or (original_id and (original_id, M) in sources) or original.get('source_configuration_id'):
                 continue

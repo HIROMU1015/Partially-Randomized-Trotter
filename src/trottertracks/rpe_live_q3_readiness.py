@@ -189,7 +189,8 @@ request, views = payload['request'], payload['views']
 route = request['route']
 view = Path(views[route['view_commit']])
 horizon = adapter['horizon_of'](request)
-if horizon is not None and horizon > 12:
+supported_horizon = adapter.get('horizon_supported')
+if not (supported_horizon(request, horizon) if supported_horizon else horizon is None or horizon <= 12):
     print(json.dumps(dict(reason='OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN', M=horizon)))
 else:
     case, inputs = adapter['scoped_case'](view, request)
