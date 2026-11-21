@@ -60,3 +60,12 @@
 保存照合の対象はPR-DF `prep-560d471a187a5925fb79ee44`、PF `prep-2362edb82b18f7e03a6a2c2a`、`prep-70f2b41f84bb720861c65e7a`、`prep-8250a67a33af3e2284934995`。PR-DF `prep-b560873e7c8adbf2105f29c1` は `UNKNOWN` のまま照合対象から外れた。第1回は保存台帳の読み取りと人工検収で、稼働runの更新とCPU利用率の切替後の実測は次の配置時に行う。
 
 分散キュー、複数ホストの後着候補、PBS資源、価格・準備回復の人工・回帰検収は108テストと10サブテストが通過した。1件の既知のfixture失敗は基点でも再現し、集計から除いた。通常継続入口で追加の2モジュールをSHA-256で選択でき、個別runの固定ルートが保持されることを別に確認した。新しい科学計算は0件。
+
+### 元compileの確認
+
+50軸中4軸の元結果は、サーバー2の `/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/` にあった。Full PFの2ndとB0Iのp7・4thについて、元結果のPASS、X/Y両方の価格記録、実装・コンパイル時の数値検査記録を確認した。いずれも元の `result.json` 単体には生成SOURCEと現行Cの軸別sidecarがない。元キャリア・生成SOURCE・軸の対応を確認してから現行C受入へ渡す。[既存のC受入例](pf_m3_saved_price_admission_20261115/HANDOFF.md)の12軸を固定producerと同じ物理キーで照合したところ、今回の50軸との一致は0件だった。
+
+| 元trialの相対パス | `result.json` のSHA-256 |
+| --- | --- |
+| `847b59d8a17f904f7f26/0/result.json` | `e07554979651a256ee473d30e90210eaea23f8c2126d0bf4f605fc78b8066195` |
+| `c228f101f9a807d298a7/0/result.json` | `e867a1a5118070ae8451444e7b6c992fa18e801a037518ebd734666e98324674` |
