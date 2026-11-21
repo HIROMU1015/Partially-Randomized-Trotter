@@ -47,3 +47,31 @@ PR-DFの一部では、同じ物理条件でも複数の保存モデルが異な
 同じrunを通常Stopでドレインし、スケジューラ `3199dc7c9e26359369fe5f2490465faca8f9cc42` で通常Resumeした。該当するQ3のadapterを選択し、既存のwalltime・CPU・RAMの会計、準備profile、固定PBS設定は継承した。元の設定・入力8件のhashを照合した。PBS適格性と再開の回帰7件が通過した。既存の物理PBSジョブIDでworkerが起動した。
 
 11月21日16:15 JSTの時点で、PBSが実行した新版Q3をPR-DF 12件、B0I 2件、合計14件採用した。元attemptの終了receiptと中央採用を確認した。照合記録は `.rpe-central/deployment/pbs-large-shot-resume-3199dc7c9e/LIVE_PBS_ADOPTION.json`。
+
+## 5環境への配送設定と候補補充
+
+`search-29795d0e2e2593819e27` は、同じrunの通常Resumeでスケジューラ
+`9f75f3dd4a4f51fe220cc068911948e53b72504b` に切り替えた。新規run用のcurrentは
+`romutail-large-shots-bb0fd4cd97`。旧runのrelease、科学SOURCE、scope、元の固定ファイル8件の
+SHAを照合した。準備の未確定attempt 4件には元のIDと自動再試行禁止が残っている。
+
+先読み照合数は各ホストの適格仕事量の不足と最初の適格応答までの実測時間から調整する。
+今回の配置は最大8照合、補充時間5秒。候補生成と準備の予算・実行条件は固定runの規則を使用する。
+PBSは物理ジョブ `267684.CPUcluster-PRISM` の96 CPUと既存のタスク別CPU・RAM・walltime会計を使う。
+通常Stopはrun固有のworkerセッションを排出し、PBSの物理予約は同じIDで維持された。
+
+RomuTailとサーバー2は、実行条件の照合が選んだ大ショット評価器、従来Q3、準備の工程・providerごとに
+資源実績を持つ。RomuTailはOSのCPU quotaが設定されていないことを確認し、中央処理用2 CPUを控除した
+30 CPU相当をworkerの配分見積りに使用する。サーバー2は既存のCPU affinity 0–29を実機で確認した。
+WSLは同時4件と各DP 4並列。3つの遠隔workerには新版adapter `bb0fd4cd97` の専用profileを置き、
+B0IとPR-DFの各 $M=11,12$ の保存要求をホストごとに照合した。12件とも固定Python 3.11.0rc1でPASSし、
+各ホストの $M=12$ 2件は通常relayの配置・割当照合も通過した。
+
+人工・回帰試験86件と10サブテストが通過した。独立した実機の人工キューでは、RomuTail、WSL、
+サーバー1・2、PBSで各14件を一度ずつ回収・採用した。各環境の内訳は信号4、compile 1、監査1、Q3 8。
+PBSは同じ物理ジョブで追加のqsubなし。配置と受入記録はRomuTailの
+`.rpe-central/deployment/large-shot-fleet-20261121/` にある。通常Resume後のCPU観測は
+`CPU_OBSERVATION_20261121_1636.json`。現行runは保存評価を再利用し、観測中の新規割当は0件だった。
+PR-DFの残る準備には、元compile attemptが未確定の候補と、旧監査入力の `WORKING` 参照を固定照合
+できていない候補がある。該当する旧較正の保存ファイルは存在する。現行runでのCPU利用率の改善は、
+実行可能な新規候補が供給された時点で測定する。
