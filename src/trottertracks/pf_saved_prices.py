@@ -195,7 +195,8 @@ def price_axis_actions(item):
                 action, reason = 'CHECK_ORIGINAL_COMPILE', 'Check the raw compile and bind it with the existing C guard'
             else:
                 action, reason = 'LOCATE_ORIGINAL_RECEIPT', 'Catalog or aggregate evidence requires the original axis receipt'
-            recovery = {key: axis[key] for key in ('checked_receipts', 'unavailable_receipts') if key in axis}
+            recovery = {key: axis[key] for key in ('checked_receipts', 'unavailable_receipts',
+                                                   'checked_legacy_evidence') if key in axis}
             if recovery and action in ('CHECK_ORIGINAL_COMPILE', 'LOCATE_ORIGINAL_RECEIPT'):
                 action = 'NO_NEW_CALCULATION_UNEVALUATED'
                 reason = ('Registered evidence inspected without finding an admissible price '
@@ -204,6 +205,24 @@ def price_axis_actions(item):
                                 action=action, reason=reason,
                                 new_calculation=action == 'MISSING_AXIS', **recovery))
     return actions
+
+
+def legacy_origins(value):
+    """Read provenance links in legacy JSON evidence without treating it as a price row."""
+    if isinstance(value, list):
+        for item in value:
+            yield from legacy_origins(item)
+    elif isinstance(value, dict):
+        commit, path = value.get('commit'), value.get('path')
+        if isinstance(commit, str) and isinstance(path, str) and len(commit) == 40 and (
+                all(c in '0123456789abcdef' for c in commit)) and (
+                path and not Path(path).is_absolute() and '..' not in Path(path).parts):
+            yield {key: value[key] for key in ('commit', 'path', 'selector', 'key', 'result_sha256')
+                   if key in value}
+        for name in ('source', 'carrier', 'receipt_trace', 'evidence', 'original_trial', 'receipt',
+                     'receipts', 'references', 'proof', 'X', 'Y', 'cosine', 'sine'):
+            if name in value:
+                yield from legacy_origins(value[name])
 
 
 def catalog_receipt_locators(root, rows):
@@ -217,6 +236,26 @@ def catalog_receipt_locators(root, rows):
             return json.loads(gzip.decompress(raw) if path.endswith('.gz') else raw)
         except (OSError, ValueError, subprocess.CalledProcessError):
             return None
+
+    @lru_cache(maxsize=1)
+    def m5_dataset():
+        import csv
+        import io
+
+        # D's saved m3 provenance links this public, measured axis inventory.
+        commit = '5764aacb0714c6be42cb6dc7c7d8fdf1c8d98bdb'
+        path = ('artifacts/resource_applicability/track_a_h46_m5_det_cost_run01_results/'
+                '2026-10-20/direct_measured_axes_92.csv')
+        try:
+            raw = subprocess.check_output(['git', 'show', commit+':'+path], cwd=root,
+                                          stderr=subprocess.DEVNULL,
+                                          env=dict(os.environ, GIT_NO_LAZY_FETCH='1'))
+        except (OSError, subprocess.CalledProcessError):
+            return {}, {}
+        rows = csv.DictReader(io.StringIO(raw.decode()))
+        return dict(commit=commit, path=path), {
+            (r['candidate_id'], r['axis']): (i, r) for i, r in enumerate(rows)
+        }
 
     def references(value):
         if isinstance(value, list):
@@ -232,8 +271,11 @@ def catalog_receipt_locators(root, rows):
             if key in value:
                 yield from references(value[key])
 
-    def locate(ref, key=None):
+    def locate(ref, key=None, seen=frozenset()):
         path, commit = ref['path'], ref['commit']
+        identity = (commit, path, json.dumps([key, ref.get('selector')], sort_keys=True))
+        if identity in seen or len(seen) >= 8:
+            return [], []
         parsed = original(commit, path)
         if parsed is None:
             return [], [dict(commit=commit, path=path)]
@@ -242,15 +284,20 @@ def catalog_receipt_locators(root, rows):
                 return [dict(commit=commit, path=path, selector=ref['selector'])], []
             entries = range(len(parsed)) if isinstance(parsed, list) else ()
             return [dict(commit=commit, path=path, selector=[i]) for i in entries], []
-        if key is not None and isinstance(parsed, dict):
-            parsed = parsed.get(key, {})
+        try:
+            if key is not None:
+                parsed = parsed[key]
+            for selector in ref.get('selector', ()):
+                parsed = parsed[selector]
+        except (KeyError, IndexError, TypeError):
+            return [], []
         found = []
         missing = []
-        # Catalog rows can cite the immutable producer receipt. Follow the
-        # cited documents once. Guard admission below checks the actual row.
-        for nested in references(parsed):
-            if Path(nested['path']).name == 'PRICES.json':
-                refs, unavailable = locate(nested)
+        # Guard admission below still checks the actual price and sidecar.
+        for nested in [*references(parsed), *legacy_origins(parsed)]:
+            if Path(nested['path']).name == 'PRICES.json' or (
+                    nested.get('key') is not None or nested.get('selector')):
+                refs, unavailable = locate(nested, nested.get('key'), seen | {identity})
                 found.extend(refs)
                 missing.extend(unavailable)
         return found, missing
@@ -282,6 +329,49 @@ def catalog_receipt_locators(root, rows):
                 refs, unavailable = locate(ref)
                 found.extend(refs)
                 missing.extend(unavailable)
+            for ref in legacy_origins(hit.get('receipts', [])):
+                if not Path(ref['path']).name.endswith(('.json', '.json.gz')):
+                    continue
+                refs, unavailable = locate(ref, ref.get('key'))
+                found.extend(refs)
+                missing.extend(unavailable)
+        if row.get('findings'):
+            evidence = []
+            for hit in row['findings']:
+                refs = list(legacy_origins(hit))
+                for ref in refs:
+                    value = original(ref['commit'], ref['path']) if ref['path'].endswith(('.json', '.json.gz')) else None
+                    field = ref.get('key', hit.get('key') if ref == hit.get('source') else None)
+                    if field is not None and isinstance(value, dict):
+                        value = value.get(field)
+                    if value is None:
+                        continue
+                    evidence.append(dict(ref, axis=row['axis'], status='ORIGIN_REQUIRES_C_ADMISSION'))
+                    wrapper = {'X': 'cosine', 'Y': 'sine'}[row['axis']]
+                    for proof in value.get('proof', ()) if isinstance(value, dict) else ():
+                        if proof.get('source') != 'm5_dataset' or proof.get('axis') != wrapper:
+                            continue
+                        saved = proof['receipt']
+                        catalog, index = m5_dataset()
+                        match = index.get((saved['candidate_id'], wrapper))
+                        if match is None:
+                            continue
+                        line, observed = match
+                        if not (observed['cost_type'] == 'DIRECT_MEASURED_NEW_RUN01'
+                                and observed['result_sha256'] == saved['result_sha256']
+                                and observed['fingerprint'] == saved['fingerprint']
+                                and observed['compiler_settings_hash'] == saved['compiler_settings_hash']
+                                and observed['preparation_hash'] == saved['preparation_hash']
+                                and observed['cost_receipt_sha256'] == saved['receipt_sha256']
+                                and observed['rz_count'] == str(saved['rz_count'])):
+                            continue
+                        evidence.append(dict(catalog, axis=row['axis'], csv_data_row=line,
+                                             status='ORIGINAL_AXIS_MATCH_REQUIRES_C_ADMISSION'))
+                for path in hit.get('trial_files') or ([hit['trial']] if hit.get('trial') else []):
+                    if Path(path).is_absolute():
+                        evidence.append(dict(path=path, axis=row['axis'], status='ORIGINAL_HOST_RECEIPT'))
+            if evidence:
+                row['checked_legacy_evidence'] = unique_locators(evidence)
         by_axis[key] = (unique_locators(found), unique_locators(missing))
     return by_axis
 
@@ -442,7 +532,7 @@ def unresolved_rounds(root, plan, output, extra, *, discover=False):
         key = evidence.physical_key(row['physical_candidate']), row['axis']
         refs, unavailable = discovered.get((row['physical_id'], row['axis']), ([], []))
         if discover and row['findings']:
-            row.update(checked_receipts=refs, unavailable_receipts=unavailable)
+                row.update(checked_receipts=refs, unavailable_receipts=unavailable)
         compatible = matching_receipts([*extra.get(key, ()), *located.get(key, ())],
                                        requests[row['m'], row['axis']])
         if compatible:

@@ -349,6 +349,14 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             # The approved preparation concurrency can feed distinct PF
             # families as well as the PR lanes. Keep explicit PF limits.
             pf.setdefault('max_candidates', spec.get('candidate_completion', {}).get('parallel', 1))
+            # This controls the number of distinct PF families considered in a
+            # wave. The shared queue still reserves actual resources per task.
+            target = trial.get('pf_preparation_cpu_backlog')
+            if target is not None:
+                if type(target) is not int or target < 1:
+                    raise ValueError('PF candidate preparation backlog must be a positive integer')
+                pf['max_candidates'] = max(pf['max_candidates'], target)
+                pf['refill_candidate_preparation'] = True
     if 'pf_price_recheck_provider' in trial:
         provider = trial['pf_price_recheck_provider']
         root = Path(provider['root']).resolve(strict=True)
@@ -392,6 +400,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         apply_q3_adapter(distributed, trial['pbs_q3_adapter'])
     if 'pf_price_recheck_provider' in trial:
         bind_pf_continuation_release(distributed, provider, root)
+    if trial.get('pbs_stage_artifacts_over_ssh'):
+        pbs = distributed['pbs']
+        if not pbs.get('gateway_python') or not pbs.get('ssh_alias'):
+            raise ValueError('PBS artifact staging requires the fixed gateway interpreter and host')
+        distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
+        pbs['stage_artifacts_over_ssh'] = True
 
 
 @contextmanager
@@ -1606,8 +1620,11 @@ class WidthDriver:
                         if (self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill'):
                             return pf_candidate_selection.prepare_available(*args, stop_requested=stopped,
                                                                            announce=subscriber.announce_pf,
-                                                                           wait_for_work=wait_for_preparation)
-                        result = pf_candidate_selection.prepare_next(*args, stop_requested=stopped)
+                                                                           wait_for_work=wait_for_preparation,
+                                                                           refill_requested=getattr(executor, 'preparation_needs_refill', None))
+                        result = pf_candidate_selection.prepare_next(
+                            *args, stop_requested=stopped,
+                            refill_requested=getattr(executor, 'preparation_needs_refill', None))
                         if self.live_ready_refill:
                             subscriber.announce_pf(*result[:2])
                         return result

@@ -13,6 +13,7 @@ import sys
 import tempfile
 import threading
 import time
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -224,6 +225,8 @@ class CompletionBridgeTests(unittest.TestCase):
                 root=Path(tmp)
                 class Engine:
                     run_dir=root/'run'
+                    state=SimpleNamespace(failure=None)
+                    def _user_stop_requested(self):return False
                     def __init__(self):self.store=JobStore(root/'store.sqlite3');self.requests=[];self.result_calls=0;self.starts=0
                     def submit_preparation(self,request,**kwargs):
                         request = normalize_preparation_request(request)

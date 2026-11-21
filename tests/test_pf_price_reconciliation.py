@@ -247,6 +247,43 @@ class PFPriceReconciliationTests(unittest.TestCase):
                 selection.prepare_next(run, {}, context, spec, run, {}, object(), announce=announce)
             self.assertEqual([list(snapshot) for snapshot in announced], [['first'], ['first', 'second']])
 
+    def test_candidate_refill_starts_an_independent_family_before_the_slow_leaf_returns(self):
+        from copy import deepcopy
+        candidates = [dict(configuration_id=str(p), key={'formula': '2nd', 'p': p, 'delta_over_h': '1'},
+                           method='TRUNCATED_PF', ready=False, needs=['PRICE']) for p in (6, 7, 8)]
+        context = dict(pf_evidence_registry={'configurations': {}}, candidates=candidates,
+                       catalog={'candidates': []})
+        settings = dict(mode='complete', max_candidates=2, refill_candidate_preparation=True)
+        spec = dict(methods=['TRUNCATED_PF'], pf_completion=settings)
+        slow = threading.Event()
+        replenished = threading.Event()
+
+        def prepare(*args, selection, **kwargs):
+            cid = selection['selected']['configuration_id']
+            if cid == '7':
+                slow.set()
+                self.assertTrue(replenished.wait(3))
+            elif cid == '6':
+                self.assertTrue(slow.wait(3))
+            else:
+                replenished.set()
+            return {'pf_evidence_registry': {'configurations': {cid: {'id': cid}}}}, {}, {
+                'status': 'READY_RETURNED_TO_SAME_OPTIMIZER'}
+
+        def refresh(root, problem, old, methods, registry, artificial):
+            return dict(old, pf_evidence_registry=deepcopy(registry))
+
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(selection, 'prepare', side_effect=prepare), \
+             patch.object(selection, '_refresh', side_effect=refresh), \
+             patch.object(selection.PF, 'registry_routes', return_value={}):
+            run = Path(tmp)
+            _, _, outcome = selection.prepare_next(run, {}, context, spec, run, {}, object(),
+                                                    refill_requested=lambda: True)
+        self.assertEqual({row['status'] for row in outcome['records'].values()},
+                         {'READY_RETURNED_TO_SAME_OPTIMIZER'})
+        self.assertEqual(len(outcome['records']), 3)
+
     def test_completed_subset_requires_original_stage_end_and_audit(self):
         with tempfile.TemporaryDirectory() as tmp:
             leaf = Path(tmp)

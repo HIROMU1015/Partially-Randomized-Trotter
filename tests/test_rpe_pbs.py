@@ -183,6 +183,47 @@ class AdmissionTests(unittest.TestCase):
 
 
 class ManagerTests(unittest.TestCase):
+    def test_shared_artifact_transfer_leaves_poll_available_and_replays_ack(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            manager.settings['stage_artifacts_over_ssh'] = True
+            payload = b'x' * (1024 * 1024)
+            sha = hashlib.sha256(payload).hexdigest()
+            executor.artifact_cache.put({sha: base64.b64encode(payload).decode()})
+            target = Path(directory) / 'shared-cache'
+            token = 'owned-allocation'
+            manager.state['allocations'][token] = dict(status='F', spec=dict(profile=dict(
+                host_id='pbs-0', artifact_cache_directory=str(target))))
+            ready = threading.Event()
+            release = threading.Event()
+            transfers = []
+
+            def transfer(source, destination, identity):
+                ready.set()
+                if not release.wait(3):
+                    raise TimeoutError('test transport was not released')
+                self.assertEqual(identity, sha)
+                transfers.append(destination)
+                destination.parent.mkdir(parents=True)
+                destination.write_bytes(source.read_bytes())
+
+            gateway.stage_artifact = transfer
+            task = dict(request_id='first', endpoint='/v1/artifacts/get',
+                        payload=dict(host_id='pbs-0', hashes=[sha]))
+            self.assertIsNone(manager._dispatch_ready(token, task))
+            self.assertTrue(ready.wait(3))
+            poll = dict(request_id='second', endpoint='/v1/poll', payload=dict(host_id='pbs-0', slots=0))
+            self.assertTrue(manager._dispatch_ready(token, poll)['ok'])
+            self.assertIsNone(manager._dispatch_ready(token, task))
+            release.set()
+            manager.artifact_transfers[token, 'first'][1].result(3)
+            expected = dict(ok=True, result=dict(blobs={}))
+            self.assertEqual(manager._dispatch_ready(token, task), expected)
+            self.assertEqual(manager._dispatch_ready(token, task), expected)
+            self.assertEqual(transfers, [ArtifactCache(target).path(sha)])
+            self.assertEqual(ArtifactCache(target).get([sha]), {sha: base64.b64encode(payload).decode()})
+            self.assertEqual([endpoint for endpoint, _ in executor.calls], ['/v1/poll'])
+
     def test_preparation_trial_changes_the_live_pool_and_preserves_pinned_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             fixed = settings()

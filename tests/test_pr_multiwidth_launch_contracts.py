@@ -412,6 +412,7 @@ class IndependentMethodLaunchContract(unittest.TestCase):
                 trace=[dict(configuration_id=cid,vector=list(adopted))])}
             instance=ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
             instance.run=run;instance.problem=problem;instance.methods=[method]
+            instance.state_file=run/'KAPPA_STATE.json'
             instance.live_ready_refill=False
             instance.spec=dict(execution_routes={method:[route]},executor={},science_approved=True)
             instance.widths={method:[dict(raw=encoded(Fraction(1,8)))]};instance.a=SimpleNamespace(batch=2)

@@ -5,6 +5,7 @@ compiler resolve from a stage profile; output workspaces and Git publications
 are owned by one attempt. Dry-check probes identities, never scientific leaves.
 """
 from copy import deepcopy
+import errno
 import hashlib
 import fcntl
 import importlib.metadata
@@ -657,8 +658,19 @@ def execute(assignment, base_profile, directory):
                    OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',
                    RAYON_NUM_THREADS='1', QISKIT_NUM_PROCS='1')
     start=time.monotonic();timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_START',stage=spec['stage'])
-    with(directory/'PREPARATION_BODY.log').open('xb')as log:
-        process=subprocess.run(command,cwd=source,env=env,stdout=log,stderr=subprocess.STDOUT)
+    with (directory/'PREPARATION_BODY.log').open('xb') as log:
+        try:
+            process = subprocess.run(command, cwd=source, env=env, stdout=log, stderr=subprocess.STDOUT)
+        except OSError as error:
+            if error.errno != errno.E2BIG:
+                raise
+            timing_append(directory/'JOB_STAGES.jsonl', 'PREPARATION_EXEC_REJECTED', stage=spec['stage'],
+                          errno=error.errno, scientific_body_started=False)
+            outcome.update(status='PREPARATION_FAILED', artifacts={}, git_bundles=[],
+                           workspace_error=dict(step='exec', error='E2BIG', scientific_body_started=False))
+            put(directory/'ARTIFACT_MANIFEST.json', {})
+            put(directory/'OUTCOME.json', outcome)
+            return outcome
     timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_END',stage=spec['stage'],returncode=process.returncode)
     receipt=dict(command=command,source=spec['source'],runtime=fingerprint['runtime'],tools=fingerprint['tools'],returncode=process.returncode if process.returncode>=0 else None,signal=-process.returncode if process.returncode<0 else None,wall_seconds=time.monotonic()-start,automatic_retry=False)
     put(directory/'PREPARATION_RECEIPT.json',receipt)

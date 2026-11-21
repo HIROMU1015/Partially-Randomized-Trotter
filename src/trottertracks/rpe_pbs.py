@@ -41,6 +41,34 @@ while True:
         break
 """
 
+_STAGE_ARTIFACT = """
+import hashlib, os, sys, tempfile
+from pathlib import Path
+
+path, expected = Path(sys.argv[1]), sys.argv[2]
+path.parent.mkdir(parents=True, exist_ok=True)
+with tempfile.NamedTemporaryFile(dir=path.parent, prefix=expected+'.transfer-', delete=False) as output:
+    temporary = Path(output.name)
+    digest = hashlib.sha256()
+    try:
+        for block in iter(lambda: sys.stdin.buffer.read(1024 * 1024), b''):
+            digest.update(block)
+            output.write(block)
+        if digest.hexdigest() != expected:
+            raise ValueError('PBS artifact stream differs')
+        output.flush()
+        os.fsync(output.fileno())
+        try:
+            os.link(temporary, path)
+        except FileExistsError:
+            with path.open('rb') as existing:
+                if path.is_symlink() or hashlib.file_digest(existing, 'sha256').hexdigest() != expected:
+                    raise ValueError('Conflicting cached PBS artifact')
+        print(expected)
+    finally:
+        temporary.unlink()
+"""
+
 
 class Gateway:
     """A private persistent SSH JSON-lines connection; reconnect is read/replay."""
@@ -119,6 +147,17 @@ class Gateway:
 
     def verify_storage_launcher(self, launcher):
         self.verify_gateway_file(launcher['path'], launcher['sha256'])
+
+    def stage_artifact(self, source, destination, sha):
+        config = self.settings
+        command = [config['gateway_python'], '-B', '-c', _STAGE_ARTIFACT, str(destination), sha]
+        with source.open('rb') as stream:
+            completed = subprocess.run(
+                ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
+                 config['ssh_alias'], shlex.join(command)], stdin=stream, capture_output=True,
+                timeout=config.get('request_timeout_seconds', 20), check=True)
+        if completed.stdout.strip() != sha.encode():
+            raise ValueError('PBS artifact acknowledgement differs')
 
     def monitor_storage(self, profiles):
         """Keep the shared sample fresh only for running allocations in this run."""
@@ -417,6 +456,8 @@ class PbsManager:
         self.thread = None
         self.allocations = []
         self.responses = {}
+        self.artifact_pool = None
+        self.artifact_transfers = {}
         self.controls = {}
         self.storage_checks = {}
         self.last_error = None
@@ -606,6 +647,57 @@ class PbsManager:
         except (OSError, ValueError, KeyError) as error:
             response = dict(ok=False, error=type(error).__name__+': '+str(error))
         atomic(saved, dict(request_sha256=identity, response=response, clock=stamp()))
+        return response
+
+    def _dispatch_ready(self, token, request):
+        """Bulk inputs use the worker's shared cache, leaving the poll lane free."""
+        if (not self.settings.get('stage_artifacts_over_ssh')
+                or request['endpoint'] != '/v1/artifacts/get'):
+            return self._dispatch(token, request)
+        from .rpe_preparation_artifacts import artifact_hash
+
+        profile = self.state['allocations'][token]['spec']['profile']
+        payload = request['payload']
+        if payload.get('host_id') != profile['host_id']:
+            raise ValueError('PBS artifact request host differs from its allocation')
+        hashes = payload.get('hashes')
+        if not profile.get('artifact_cache_directory') or not isinstance(hashes, list) or len(hashes) != 1:
+            return self._dispatch(token, request)
+        sha = artifact_hash(hashes[0])
+        source = self.executor.artifact_cache.path(sha)
+        if source.is_symlink() or not source.is_file() or source.stat().st_size < 1024 * 1024:
+            return self._dispatch(token, request)
+        cache_root = Path(profile['artifact_cache_directory'])
+        destination = cache_root / sha[:2] / sha
+        ident = (token, request['request_id'])
+        saved = self.directory / 'responses' / token / (ident[1] + '.json')
+        if saved.exists():
+            return self._dispatch(token, request)
+        fingerprint = digest(request)
+        transfer = self.artifact_transfers.get(ident)
+        if transfer is None:
+            if self.artifact_pool is None:
+                self.artifact_pool = ThreadPoolExecutor(max_workers=len(self.configured),
+                                                        thread_name_prefix='pbs-artifact')
+            future = self.artifact_pool.submit(self.gateway.stage_artifact, source, destination, sha)
+            self.artifact_transfers[ident] = (fingerprint, future)
+            return None
+        observed, future = transfer
+        if observed != fingerprint:
+            raise ValueError('Reused PBS artifact RPC ID has changed content')
+        if not future.done():
+            return None
+        del self.artifact_transfers[ident]
+        try:
+            future.result()
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            self.log('PBS_SHARED_ARTIFACT_FALLBACK', token=token, sha256=sha, error=type(error).__name__)
+            return self._dispatch(token, request)
+        response = dict(ok=True, result=dict(blobs={}))
+        saved.parent.mkdir(parents=True, exist_ok=True)
+        atomic(saved, dict(request_sha256=fingerprint, response=response, clock=stamp()))
+        self.log('PBS_SHARED_ARTIFACT_STAGED', token=token, sha256=sha,
+                 bytes=source.stat().st_size)
         return response
 
     def _fetch_harvest(self, gateway, token, owners=None):
@@ -908,8 +1000,12 @@ class PbsManager:
                 profiles[profile['host_id']] = profile
             self.gateway.monitor_storage(profiles)
         for token, requests in data['requests'].items():
-            self.responses[token] = {request['request_id']:self._dispatch(token, request)
-                                     for request in requests if request is not None}
+            responses = {}
+            for request in requests:
+                if request is not None and (result := self._dispatch_ready(token, request)) is not None:
+                    responses[request['request_id']] = result
+            if responses:
+                self.responses[token] = responses
         if self.selective_harvest:
             self._advance_harvest()
         user_stop = self.stop.is_set() or self.executor._user_stop_requested()
@@ -1080,6 +1176,10 @@ class PbsManager:
             self.harvest_pool.shutdown(wait=True, cancel_futures=True)
             self.harvest_gateway.close()
             self.harvest_pool = self.harvest_pending = None
+        if self.artifact_pool is not None:
+            self.artifact_pool.shutdown(wait=True, cancel_futures=True)
+            self.artifact_pool = None
+            self.artifact_transfers.clear()
         try:
             if retain_allocation:
                 if self.responses:

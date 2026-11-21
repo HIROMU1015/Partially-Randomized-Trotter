@@ -219,7 +219,8 @@ def repair_metadata_waves(records, repairs):
     return records,repaired
 
 
-def prepare_available(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, announce, wait_for_work=None):
+def prepare_available(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, announce,
+                      wait_for_work=None, refill_requested=None):
     """Run the next bounded wave as soon as its predecessor is saved."""
     recheck_waiting = True
     previous = None
@@ -231,10 +232,11 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
             previous = context
 
     publish_ready(context, routes)
+    refill = {} if refill_requested is None else {'refill_requested': refill_requested}
     while True:
         context, routes, status = prepare_next(root, problem, context, spec, run, routes, stage_executor,
                                                stop_requested=stop_requested, recheck_waiting=recheck_waiting,
-                                               announce=publish_ready)
+                                               announce=publish_ready, **refill)
         recheck_waiting = False
         publish_ready(context, routes)
         if status['status'] != 'PREPARATION_WAVE_PROCESSED' or stop_requested():
@@ -283,8 +285,8 @@ def restore_price_checks(waves, records):
 
 def reconsider_prices(root, run, spec, settings, records):
     from concurrent.futures import ThreadPoolExecutor
-    from .pf_saved_prices import (completed_partial, prior_waves, receipt_locators, receipt_objects,
-                                  reconciliation_locators, reconciliation_snapshot)
+    from .pf_saved_prices import (catalog_receipt_locators, completed_partial, prior_waves, receipt_locators,
+                                  receipt_objects, reconciliation_locators, reconciliation_snapshot)
 
     waves = [run/'pf_auto', *prior_waves(run, spec)]
     restore_price_checks(waves, records)
@@ -292,6 +294,20 @@ def reconsider_prices(root, run, spec, settings, records):
                if row['status'] in PRICE_RECHECK_STATES and not row.get('configurations')]
     if not pending:
         return
+    # Trace finalized legacy duplicate findings without cloning a provider
+    # just to inspect the catalog. A new price locator still wakes the
+    # normal provider and C's original admission gate.
+    for _, row in pending:
+        item = row.get('price_reconciliation', {})
+        unresolved = [axis for axes in item.get('deferred_price_rounds', {}).values() for axis in axes
+                      if axis.get('findings') and 'checked_legacy_evidence' not in axis]
+        if unresolved:
+            origins = catalog_receipt_locators(root, unresolved)
+            for axis in unresolved:
+                found, missing = origins[axis['physical_id'], axis['axis']]
+                axis.setdefault('checked_legacy_evidence', [])
+                if found or missing:
+                    axis.update(checked_receipts=found, unavailable_receipts=missing)
     audits = receipt_locators(waves, index=True)
     locators = {cid: reconciliation_locators(waves, settings, row, audits=audits) for cid, row in pending}
     objects = receipt_objects(root, (loc['commit']+':'+loc['path']
@@ -380,9 +396,9 @@ def reconcile_received_preparation(run, records, stage_executor):
 
 
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None,recheck_waiting=True,
-                 announce=None):
+                 announce=None, refill_requested=None):
     """A durable PF wave, with each candidate and native owner in its own directory."""
-    from concurrent.futures import ThreadPoolExecutor,as_completed
+    from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
     from .pf_saved_prices import price_axis_actions
     from .rpe_preparation_round import snapshot_context
     from .rpe_release_registry import write as atomic_write
@@ -476,6 +492,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
     if selection['selected'] is None and not pending:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
     workers=limit if stage_executor is not None else 1
+    queued = []
     if pending:
         wave=[row for row in selection['candidates'] if row['configuration_id'] in pending]
         if len(wave)!=len(pending) or any(row['key']!=records[row['configuration_id']]['key'] for row in wave):
@@ -493,9 +510,9 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                         cid in waiting, cid in revisit)
             tiers.setdefault(priority, {}).setdefault(row['key'].get('delta_over_h'), []).append(row)
         from itertools import zip_longest
-        interleaved = (row for tier in sorted(tiers) for group in zip_longest(*tiers[tier].values())
-                       for row in group if row is not None)
-        for row in interleaved:
+        queued = [row for tier in sorted(tiers) for group in zip_longest(*tiers[tier].values())
+                  for row in group if row is not None]
+        for row in queued:
             family=(row['method'],row['key'].get('p'),row['key']['formula'])
             cid=row['configuration_id']
             if family in families:
@@ -504,6 +521,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             records.setdefault(cid, {}).update(status='PREPARATION_SCHEDULED',key=row['key'],configurations={})
             if len(wave)==workers:break
         atomic_write(index,records)
+        started = {row['configuration_id'] for row in wave}
+        queued = [row for row in queued if row['configuration_id'] not in started]
 
     if not wave:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
@@ -532,8 +551,40 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
 
     updated=False;processed=False
     current = None
-    with ThreadPoolExecutor(max_workers=min(workers,len(wave))) as pool:
-        for task in as_completed([pool.submit(acquire,row) for row in wave]):
+    def family(row):
+        return row['method'], row['key'].get('p'), row['key']['formula']
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        active = {pool.submit(acquire, row): row for row in wave}
+
+        def refill():
+            if (not settings.get('refill_candidate_preparation')
+                    or (stop_requested is not None and stop_requested())
+                    or (refill_requested is not None and not refill_requested())):
+                return
+            occupied = {family(row) for row in active.values()}
+            for row in list(queued):
+                if len(active) >= workers:
+                    break
+                if family(row) in occupied:
+                    continue
+                queued.remove(row)
+                cid = row['configuration_id']
+                records.setdefault(cid, {}).update(status='PREPARATION_SCHEDULED',
+                                                   key=row['key'], configurations={})
+                atomic_write(index, records)
+                occupied.add(family(row))
+                active[pool.submit(acquire, row)] = row
+
+        def completed():
+            while active:
+                done, _ = wait(active, return_when=FIRST_COMPLETED)
+                for task in done:
+                    yield task
+                    del active[task]
+                    refill()
+
+        for task in completed():
             result=task.result()
             if result is None:continue
             chosen,status,entry=result;cid=chosen['configuration_id']
