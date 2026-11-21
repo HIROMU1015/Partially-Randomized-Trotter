@@ -1023,7 +1023,8 @@ class WidthDriver:
         # INIT may expose a whole far-kappa ladder at once. Distributed
         # preparation refills bounded lanes as candidates finish; other callers
         # keep a single per-decision wave.
-        pending=[p for p in self.state['points']if p['status']in('COMPLETION','WAITING_INPUTS','PRICE_ACTION_UNAVAILABLE')]
+        pending=[p for p in self.state['points']if p['status']in(
+            'COMPLETION','WAITING_INPUTS','PRICE_ACTION_UNAVAILABLE','PRICE_NOT_EVALUATED')]
         total_pending = len(pending)
         priced_rechecks = (
             getattr(comp, 'priced_pauli_recheck_keys', set)() if continuous else set())
@@ -1134,8 +1135,8 @@ class WidthDriver:
                     p.update(status='COMPLETION',reason=record['reason'])
                     self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
                     break
-                elif record['status']=='PRICE_ACTION_UNAVAILABLE':
-                    p.update(status='PRICE_ACTION_UNAVAILABLE',reason=record['reason'])
+                elif record['status'] in ('PRICE_ACTION_UNAVAILABLE', 'PRICE_NOT_EVALUATED'):
+                    p.update(status=record['status'],reason=record['reason'])
                 elif (record.get('conflicting_signal_rounds') or record['status'].startswith('STOP')
                       or str(record.get('reason','')).startswith(('PREPARATION_REQUEST_MISMATCH:',
                                                                  'PREPARATION_RESULT_MISMATCH:'))
@@ -1895,7 +1896,8 @@ class WidthDriver:
             if (not proposals and not pending and ready_families ==
                     sum(f['status']=='READY_METADATA' for f in self.state['families'].values())):
                 blocked=waiting or any(f['status']!='READY_METADATA' for f in self.state['families'].values()) or any(
-                    p['status'] in ('HELD','PRICE_ACTION_UNAVAILABLE') for p in self.state['points']) or pf_held or any(
+                    p['status'] in ('HELD','PRICE_ACTION_UNAVAILABLE','PRICE_NOT_EVALUATED')
+                    for p in self.state['points']) or pf_held or any(
                     r.get('not_ready_candidates') for r in result.values())
                 reason=('SCOPE_HELD_INPUTS' if blocked else 'REQUESTED_WIDTH_RULE_EXHAUSTED') if getattr(self,'rule_stop',False) else (
                     'WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED')

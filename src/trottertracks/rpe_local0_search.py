@@ -485,7 +485,7 @@ def local0_progress(applied, spec, run=None):
         state = load(width_state)
         pending = {'UNSUPPORTED_MAPPER': 'UNSUPPORTED_GENERATION', 'WAITING_INPUTS': 'PREPARATION_WAITING',
                    'NEEDS_FAMILY_CONFIGURATION_SOURCE': 'MISSING_FIXED_INPUT', 'HELD': 'TECHNICAL_FAILURE',
-                   'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE'}
+                   'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE', 'PRICE_NOT_EVALUATED': 'NOT_EVALUATED'}
         for key, point in state.get('families', {}).items():
             if point.get('status') in pending:
                 observations[key] = dict(candidate_id=key, method=point['method'],
