@@ -119,6 +119,7 @@ PR-DFの旧 `WORKING` receiptは、監査のraw commitと引継ぎ先のバイ�
 
 ## 割当前に確認する入力と実行環境
 
+- PBSのPF準備でマウント範囲を制限したPythonを使う場合、同じ保存要求を実際のランチャーからdry-checkする。メタデータ取込みには所有者専用の `preparation_metadata_cache_directory` でのロックが必要になる。ランチャーの `cache_directories` とworkerの指定を合わせ、固定入力の読み取り専用マウントを保つ。[実機で確認した事例](rpe_fleet_efficiency_plan.md)
 - 工程・providerごとに、固定SOURCEの依存関係をREQUESTに記載し、実行先でその工程に使う固定Pythonを選ぶ。割当前の適格性照合では、要求したパッケージの版と、必要なimportがそのPythonで成功することを確認する。子プロセスで固定providerを読む経路を変えた場合は、その子プロセスでも確認する。不足時はホスト・工程・依存名を記録し、該当する割当を保留する。対応する別ホストや独立した候補は進める。
 - PBSのPR-Pauli信号では、固定SOURCEの `requirements.txt` に従って `openfermion`、`pyscf`、`openfermionpyscf` の版を照合し、専用の信号Pythonで `openfermionpyscf` のimportを確認する。依存関係は対象releaseの専用環境へ配置する。通常回収とPBS終了後の回収は、双方でprofileに指定した専用回収Pythonを使う。回収経路を変更したら、巨大な整数を含む保存OUTCOMEが厳密値のまま回収できることを確認する。
 - 変更したQ3 adapterの固定SHAは、release manifest、ホストの基本・route別profile、ROUNDに埋め込まれたローカル・PBSのprofile、PBS所要時間ルールのすべてで照合する。保存要求のdry-checkは選択されたホストの実パスと固定Pythonで行う。短いMを使う場合は元のsignal/priceから対応範囲を照合し、固定科学Q3の検証域外は候補単位で保留する。
@@ -215,8 +216,10 @@ PR-DFも同じ二択で判断する。descriptorと物理条件、固定信号pr
 - PBSの割当サイズの再計算は、workerから受付可能な空き枠が届いてから行う。PBSの枠は稼働中の割当IDに結び付け、spool交換に見合う時間だけ有効とする。計算ノードで容量測定が遅延する場合、設定済みの運用launcherは割当専用のgateway計測を使う。workerは更新を自ホストの単調時計で追い、他ホストの時刻差に依存しない。容量情報と入力照合の保留理由は `PBS_WORKER_ADMISSION` で確認する。Git bundleが存在しても前提コミットを辿れない場合は、対象bundleが参照する既存の前提オブジェクトを専用メタデータキャッシュへ補い、固定profileで照合を再実行する。
 - 容量整理では回収済み作業領域の同一Git packを内容照合して共有できる。過去のメタデータキャッシュを圧縮する場合は、取込みと同じロックで作業し、Gitオブジェクト一覧と新packの整合を検証する。実行・回収中や終了未確定のattemptは整理対象にしない。
 - WSLやPBSで追加のキャッシュ整理が必要なら、受領済みの中央保存データとのハッシュとサイズの一致、転送ACK、実行中・未回収・未確定attemptから参照されていないことを確認する。共有のGitメタデータを整理する場合は、元bundleで再生成できることを確認し、取込みと同じロックを使う。
-- RomuTailのユーザーサービス `rpe-storage-recovery.service` が `scripts/reclaim_rpe_worker_storage.py --state-dir STATE_DIR` で稼働中のrunを追跡する。約1分ごとに既存のSSH経路で点検し、点検結果は `journalctl --user -u rpe-storage-recovery.service` に残る。50 GiBの95%から、回収済み作業コピー・再計算可能なキャッシュを整理する。空きが戻れば既存workerの受付が自動復帰する。ロックとGitオブジェクトの一致を確認できる場合は、旧メタデータpackも容量外の専用一時領域で圧縮する。対になるpack・idxを持ちGit検証を通る `.rev` は整理対象に含め、オブジェクト集合を保つ。個別runを調査するときは、常設サービスと同時に同じrunを操作しない。
-- 整理後は45 GiBを目安に再計測する。worker使用量が上限未満で、対象の保存先すべての空きが最低値以上になれば、次のworker照会で容量による受付保留が自動で解除される。利用者のPause・受付OFFとWSL停止は各環境の設定に従う。実行可能な仕事が待機中なら、`QUEUE_WAIT_STATE` と台帳で新規割当まで確認する。
+- RomuTailのユーザーサービス `rpe-storage-recovery.service` が `scripts/reclaim_rpe_worker_storage.py --state-dir STATE_DIR` で稼働中のrunを追跡する。約1分ごとに既存のSSH経路で点検し、点検結果は `journalctl --user -u rpe-storage-recovery.service` に残る。常設監視では50 GiBの80%（40 GiB）から、回収済み作業コピー・再計算可能なキャッシュを整理する。空きが戻れば既存workerの受付が自動復帰する。ロックとGitオブジェクトの一致を確認できる場合は、旧メタデータpackも容量外の専用一時領域で圧縮する。対になるpack・idxを持ちGit検証を通る `.rev` は整理対象に含め、オブジェクト集合を保つ。個別runを調査するときは、常設サービスと同時に同じrunを操作しない。
+- 常設監視の整理目標は35 GiBで、worker自身が上限直前に行う整理の目標は45 GiB。整理後に再計測する。worker使用量が上限未満で、対象の保存先すべての空きが最低値以上になれば、次のworker照会で容量による受付保留が自動で解除される。利用者のPause・受付OFFとWSL停止は各環境の設定に従う。実行可能な仕事が待機中なら、`QUEUE_WAIT_STATE` と台帳で新規割当まで確認する。
+- PBSの共有転送キャッシュでも、常設監視が現runまたは同じ評価の終了済みrunにある中央原本とバイト長・SHA-256を照合する。PBS側では同じ領域を共有する各runのworkerロック、未回収・未確定要求の参照を確認し、安全が確認できたコピーを必要な分だけ整理する。容量が戻れば同じノード予約で新規受付が再開する。
+- 準備の実行前検査が非ゼロで終わり、元のsupervisorがロックを解放し、科学実行の開始・終了・成果の証拠がない場合、専有していた計算枠を返せる。元のattemptはUNKNOWN・自動再試行禁止を保持する。計算枠を返す判定と科学結果の採用は別々に記録する。
 
 ## RomuTail中央の常設保守
 
