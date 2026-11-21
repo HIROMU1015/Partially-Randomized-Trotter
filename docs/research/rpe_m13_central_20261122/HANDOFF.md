@@ -12,3 +12,11 @@
 人工キューでは (M=12,13) の通常StartとResumeを検査し、同一job ID・attempt IDと結果のバイト列が維持され、追加起動が0件だった。固定viewを使った通常Q3は全列挙と厳密一致し、大ショット精密化の区間も参照MSEを含んだ。PF/B0Iの実adapter入口には保存13行と人工の終端信号を渡し、14行のdry-checkが通過した。
 
 選択した回帰試験は92件と16サブテストが通過した。旧最適化関数とのAST比較、旧PF template所有照合、人工ホストのsupervisor Python期待値に関する別の失敗は、変更前の `f8e67d806fb845f5985a9c39638f36cae0b74029` でも再現した。
+
+## 実入力による確認
+
+2026-11-22 03:40 JST、同じrun `search-29795d0e2e2593819e27` の通常Resumeから、Full PFの4th（Yoshida）、要求幅4h、H₄ DF10の1候補を確認した。元構成 `99e539037a07452f2f5a4029549980c82ec72d1b832cfcbcff59313ee3b0ae0e` の保存 (m=0,ldots,12) を再利用した。終端 (m=13) は同じ状態・Hamiltonian・snapshot、(q=2048)、物理ID `a660e98c78346c3fa922) の1件をRomuTailで実行し、独立した参照状態作用2回と信号1件を回収した。
+
+中央の準備job `prep-b2e839b53009097dd0c8d577`、attempt `cd754c59626b425db5cfc65f60c15b90` に成功結果を保存した。この物理IDの予約は1件。入力取込み時にcheckoutのHEADが変わる問題は隔離検収で検出し、固定providerを保持する修正後の要求を実行した。変更前の要求に実行所有は付いていない。旧コンパイル2件は結果を回収し、既存の未確定attempt 4件の所有を保全した。
+
+回収した信号をhash照合し、14行の実信号を使う `pf_b_pf6` で `DRY_CHECK_PASS`。配分は現runの (s=2^{-12/4}) の格子点、位相半径は元の13行が使う固定値1.0を最終行にも明示した検収設定。実入力のQ3評価と追加価格コンパイルは各0件。運用正本の検収記録は `.rpe-central/deployment/fleet-m13-f8b2788517/REAL_TERMINAL_VALIDATION.json`。終端X/Y価格の受入後にFull PFの総RZ比較へ接続する。B0Iの実終端信号とPR-DFの終端信号providerの接続は後続の実入力検収とする。
