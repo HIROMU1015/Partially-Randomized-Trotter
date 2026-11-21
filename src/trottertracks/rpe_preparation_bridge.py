@@ -68,6 +68,11 @@ _PF_NATIVE_GUARD_INPUTS = tuple(
         'src/trottertracks/resource_applicability/h6_hash_reuse_v1.py',
         'src/trotterlib/rte_compiled_cost.py'))
 
+# Modules loaded with git show by the pinned native PF compilation provider.
+_PF_COMPILE_ADAPTER_INPUTS = tuple(
+    dict(commit='748be6875b5007707d864e16aa7a4fc4250f3714', path='src/trottertracks/'+name+'.py')
+    for name in ('efficient_controlled_zz', 'p1_efficient_zz', 'compiled_price_fast', 'candidate_price_adapter'))
+
 _PF_PRICE_GUARD_INPUTS = tuple(
     dict(commit=commit, path='src/trottertracks/'+name+'.py') for name, commit in (
         ('h4_df10_rpe_connection', '437ba4acdb82708b6fc98e3cd119a2a734f7cf64'),
@@ -1054,6 +1059,8 @@ class DistributedPreparationBridge:
                     [command[0], '-B', '-c', _PF_STEP_INPUTS, str(root), payload], cwd=root)))
             elif stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE', 'PF_AUDIT', 'PF_HOLDOUT_AUDIT'):
                 original_documents.extend(_PF_NATIVE_GUARD_INPUTS)
+                if pf_compile:
+                    original_documents.extend(_PF_COMPILE_ADAPTER_INPUTS)
             if stage in ('PF_AUDIT', 'PF_HOLDOUT_AUDIT', 'PF_MODEL_FREEZE', 'PF_FINISH'):
                 original_documents.extend(_PF_PRICE_GUARD_INPUTS)
         for name,sha in inputs.items():
