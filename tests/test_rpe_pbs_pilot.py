@@ -32,8 +32,9 @@ class PilotTest(unittest.TestCase):
                 token = Path(command[1]).parent.name
                 job = str(len(self.submissions)+1)+'.prism'
                 self.submissions.append(token)
+                resources = G.read(Path(command[1]).parent/'SPEC.json')['resources']
                 self.jobs[job] = dict(Job_Name='RPE'+token[:12], job_state='Q',
-                                      Resource_List=dict(pilot.RESOURCES))
+                                      Resource_List=dict(resources))
                 return subprocess.CompletedProcess(command, 0, job, '')
             if command[0] == '/opt/pbs/bin/qdel':
                 self.jobs[command[1]]['job_state'] = 'F'
@@ -137,6 +138,74 @@ while not (d/'CONTROL.json').is_file():
         self.jobs.clear()
         self.assertEqual(pilot.admin(self.pool, 'reserve')['status'], 'HISTORY_MISSING_RECONCILE_SPOOL')
         self.assertEqual(self.submissions, [row['token']])
+
+    def test_staged_72h_handoff_waits_for_allocation_and_old_exit(self):
+        first = pilot.admin(self.pool, 'reserve')
+        self.jobs['1.prism']['job_state'] = 'R'
+        old = self.pool/'allocations'/first['token']
+        session = self.attach(self.a, 'oldSession')
+        self.assertEqual(pilot.claim(self.pool, old, '1.prism'), session)
+        with ThreadPoolExecutor(2) as executor:
+            results = list(executor.map(lambda _: pilot.stage_successor(self.pool, '1.prism'), range(2)))
+        self.assertEqual([r['job_id'] for r in results], ['2.prism', '2.prism'])
+        self.assertEqual(len(self.submissions), 2)
+        self.assertEqual(pilot.admin(self.pool, 'status')['job_id'], '1.prism')
+        self.assertFalse((old/'RELEASE.json').exists())
+        self.assertFalse((session/'CONTROL.json').exists())
+        new = self.pool/'allocations'/self.submissions[-1]
+        self.assertIn('#PBS -l walltime=72:00:00', (new/'worker.pbs').read_text())
+        self.jobs['2.prism']['job_state'] = 'R'
+        with patch.dict(os.environ, PBS_JOBID='2.prism'), ThreadPoolExecutor(1) as executor:
+            server = executor.submit(pilot.serve, new)
+            try:
+                until = time.monotonic() + 5
+                while not (new/'HANDOVER.json').exists() and time.monotonic() < until:
+                    if server.done():
+                        server.result()
+                    time.sleep(.02)
+                self.assertEqual(G.read(new/'HANDOVER.json')['state'], 'DRAINING_PREDECESSOR')
+                self.assertTrue(G.read(session/'CONTROL.json')['stop'])
+                self.assertIsNone(pilot.claim(self.pool, old, '1.prism'))
+                self.assertEqual(pilot.stage_successor(self.pool, '1.prism')['job_id'], '2.prism')
+                self.assertFalse((session/'SESSION_END.json').exists())
+                another = self.attach(self.b, 'nextSession')
+                self.assertEqual(G.read(another/'PILOT.json')['token'], new.name)
+                self.assertEqual(pilot.session_snapshot(self.b)[0]['status'], 'Q')
+                self.assertFalse((another/'SESSION_START.json').exists())
+                self.stop(self.b, 'nextSession')
+                pilot.end(session, 'WORKER_EXIT', returncode=0)
+                self.jobs['1.prism']['job_state'] = 'F'
+                until = time.monotonic() + 8
+                while G.read(new/'HANDOVER.json')['state'] != 'ACTIVE' and time.monotonic() < until:
+                    time.sleep(.02)
+                self.assertEqual(G.read(new/'HANDOVER.json')['old_scheduler_state'], 'F')
+                self.assertEqual(pilot.admin(self.pool, 'status')['resources']['walltime'], '72:00:00')
+            finally:
+                pilot.admin(self.pool, 'release')
+            server.result(timeout=7)
+
+    def test_wrong_successor_walltime_preserves_old_and_purged_history_needs_unlock(self):
+        first = pilot.admin(self.pool, 'reserve')
+        self.jobs['1.prism']['job_state'] = 'R'
+        with self.assertRaises(ValueError):
+            pilot.stage_successor(self.pool, 'wrong.prism')
+        staged = pilot.stage_successor(self.pool, '1.prism')
+        old = self.pool/'allocations'/first['token']
+        new = self.pool/'allocations'/staged['token']
+        self.jobs['2.prism']['Resource_List']['walltime'] = '24:00:00'
+        with patch.dict(os.environ, PBS_JOBID='2.prism'), self.assertRaises(ValueError):
+            pilot.serve(new)
+        self.assertFalse((old/'RELEASE.json').exists())
+        self.assertEqual(G.read(self.pool/'CURRENT.json')['token'], old.name)
+        with patch.dict(os.environ, PBS_JOBID='1.prism'):
+            G.record_allocation(old)
+        del self.jobs['1.prism']
+        predecessor = G.read(new/'SPEC.json')['predecessor']
+        with (old/'NODE.lock').open('a') as lock:
+            pilot.fcntl.flock(lock, pilot.fcntl.LOCK_EX)
+            self.assertIsNone(pilot.predecessor_finished(self.pool, predecessor))
+        self.assertEqual(pilot.predecessor_finished(self.pool, predecessor),
+                         'ABSENT_FROM_LIVE_QUEUE_AND_NODE_LOCK_FREE')
 
     def test_offline_drain_requires_both_files_and_leaves_ack_to_controller(self):
         from trottertracks import rpe_pbs_worker as module

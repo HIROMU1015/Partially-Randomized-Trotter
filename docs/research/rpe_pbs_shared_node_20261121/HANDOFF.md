@@ -21,6 +21,23 @@ pbs_node status
 - ノード自体を返す指示を受けた場合に `pbs_node release` を使う。待機中はそのジョブを取り消し、稼働中は処理を排出して返す。予約状態が不明な間は同一tokenで照会する。PBSがworkerを異常終了させた場合は元runのreceiptを照合する。
 - 非対応の旧固定gatewayは従来どおりrun単位のqsubを使う。共通予約がある間は、別の旧経路からPBS割当を重ねない。旧runの直接投入済みジョブはその元の所有で回収する。
 
+## 24時間から72時間の共通予約への切替
+
+2026-11-21 17:10 JSTに、旧 `267684.CPUcluster-PRISM` の後継 `267693.CPUcluster-PRISM` がworkqに入った。両方とも1ノード・96 CPU・350 GiB。投入後のPBS照会では旧がR、後継がQで、後継は空きノード待ちだった。
+
+Codexは対象を旧物理ジョブIDで指定する。同じ指示の再送では同じ後継の投入記録を照合する。後継を投入したジョブ自身が切替を実行する。運用launcherのSHA-256は `4e45dd1ecfd3d20aa621058baba7911af64917c32030cbf5199035993b8359c2`。
+
+```bash
+ssh -o BatchMode=yes prism /home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python -B \
+  /home/AbeHiromu/projects/rpe-pbs-20261118/runs/operational-launchers/pilot-4e45dd1ecfd3.pyz \
+  --pool /home/AbeHiromu/projects/rpe-pbs-20261118/runs/shared-node \
+  --action stage-72h --replace-job-id 267684.CPUcluster-PRISM
+```
+
+後継が待機中は旧予約に配送する。後継が実ノード上でPBSの割当を照合した時点で、旧側の新規受付を閉じ、旧workerが実行中の処理を終えてノードを返す。後継への新規セッションは、旧ジョブの終了を確認してから処理を開始する。PBSで予約が一時的に重なる間も、計算するノードは最大1台。旧attemptの取得・照合先は元runのspoolを使用する。
+
+状態確認には `qstat -x -f 267684.CPUcluster-PRISM 267693.CPUcluster-PRISM` を使用する。後継のノード起動後は `runs/shared-node/allocations/48c932d5b0ef43c69f712aac11c0c274/HANDOVER.json` の `DRAINING_PREDECESSOR` が旧側の処理終了待ち、`ACTIVE` が切替完了。通常入口の既存runは従来の共通予約プロトコルで接続し、workerが実ノードの残り時間を読む。
+
 ## 実配置と確認範囲
 
 RomuTailの配置記録は `.rpe-central/deployment/shared-pbs-pilot-20261121/`。PBSの物理予約の記録は `runs/shared-node/`、個々のworkerと受領待ちの成果は従来の `runs/<runの名前空間>/` に残る。通常入口の運用設定では、対応するreleaseの `worker_trial.pbs_dispatch_gateway` と `pbs_storage_launcher` の2組のパス・SHA-256を同時に選ぶ。展開先の照合値は[配置設定](DEPLOYMENT.json)。
