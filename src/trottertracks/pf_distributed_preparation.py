@@ -20,6 +20,11 @@ def put(path,value):
 def git(root,*args):return subprocess.check_output(['git',*args],cwd=root,text=True).strip()
 
 
+def selected_workspace_request(request, workspace):
+    destination = workspace/'docs/research/distributed_selected_pf'
+    return dict(request, output_root=str(destination), registry_file=str(destination/'REGISTRY.json'))
+
+
 def reuse_signal(root, workspace, folder, plan, saved):
     """Carry the original completed signal into an explicitly scoped continuation."""
     from .pr_candidate_completion import Held
@@ -198,12 +203,16 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         put(marker,dict(root=str(original),source=source))
     fixed=read(marker)
     if fixed['root']!=str(original):raise ValueError('PF provider changed on resume')
-    selected=deepcopy(request)
-    selected['output_root']=str(workspace/'docs/research/distributed_selected_pf')
-    selected['registry_file']=str(workspace/'docs/research/distributed_selected_pf/REGISTRY.json')
+    selected=selected_workspace_request(request, workspace)
     inp=workspace/'docs/research/distributed_selected_pf/REQUEST.json'
     plan_output=run/'PLAN_RESPONSE.json'
     if not inp.exists():put(inp,selected)
+    elif inherited_registry is not None:
+        from .pr_candidate_completion import Held
+        [item] = read(plan_output)['items']
+        original_workspace = Path(item['output']).parents[3]
+        if read(inp) != selected_workspace_request(request, original_workspace):
+            raise Held('INHERITED_PF_SELECTED_CONTRACT_CHANGED')
     elif read(inp)!=selected:raise ValueError('PF selected contract changed')
     if not plan_output.exists():
         subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
@@ -254,7 +263,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                                phase=phase, source=source, **fields)
             if inherited_registry is not None and stage_in.exists():
                 if read(stage_in) != stage_input:
-                    raise ValueError('Inherited PF stage inputs changed: '+tag)
+                    raise Held('INHERITED_PF_STAGE_INPUTS_CHANGED:'+tag)
             else:
                 put(stage_in, stage_input)
             cmd=[spec['pf_completion'].get('interpreter',sys.executable),'-B',

@@ -1065,9 +1065,12 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     or 'source = configurations[projection[\'source_configuration_id\']]' not in trace):
                 hold('the failure is outside the projected Q3 request builder')
         elif kind == 'pf_request':
-            if (stop['error_type'] != 'ValueError'
-                    or message != 'PF completion directory belongs to another selected request'
-                    or 'pf_optimizer_connection.py' not in trace or 'in complete_selected' not in trace
+            old_mismatch = (message == 'PF completion directory belongs to another selected request'
+                            and 'pf_optimizer_connection.py' in trace)
+            inherited_paths = (message == 'PF selected contract changed'
+                               and 'pf_distributed_preparation.py' in trace)
+            if (stop['error_type'] != 'ValueError' or not (old_mismatch or inherited_paths)
+                    or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
         elif (kind != 'ast' or stop['error_type'] != 'SystemError'
@@ -1089,13 +1092,13 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
             with sqlite3.connect(queue, uri=True) as db:
                 excluded = "('ACCEPTED','CANCELLED')"
-                if kind == 'dispatch':
+                if kind == 'dispatch' or (kind == 'pf_request' and inherited_paths):
                     launched = (history/'LAUNCH.json').stat().st_mtime
                     if db.execute("SELECT 1 FROM jobs WHERE assigned_epoch >= ? OR started_epoch >= ?"
                                   " OR (state='QUEUED' AND (host_id IS NOT NULL OR attempt_id IS NOT NULL"
                                   " OR assigned_epoch IS NOT NULL OR started_epoch IS NOT NULL)) LIMIT 1",
                                   (launched, launched)).fetchone():
-                        hold('the failed dispatch invocation acquired an attempt')
+                        hold('the failed invocation acquired an attempt')
                     excluded = "('ACCEPTED','CANCELLED','QUEUED')"
                 rows = db.execute("SELECT state, attempt_id, detail FROM jobs WHERE state NOT IN " + excluded)
                 for state, attempt, detail in rows:
