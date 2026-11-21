@@ -81,8 +81,17 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         cli.ROOT = ROOT
         K.CLI = cli
         spec['executor']['large_shot_bounds'] = True
-    if 'ready_queue_waves' in trial:
-        distributed['ready_queue_waves'] = trial['ready_queue_waves']
+    for field in ('ready_queue_waves', 'live_readiness_max_workers', 'live_readiness_refill_seconds'):
+        if field in trial:
+            distributed[field] = trial[field]
+    if 'local_resource_worker' in trial:
+        selected = trial['local_resource_worker']
+        root = Path(__file__).resolve().parents[1]
+        for file, expected in selected['files'].items():
+            if hashlib.sha256((root/file).read_bytes()).hexdigest() != expected:
+                raise ValueError('Selected local worker implementation differs: '+file)
+        distributed['worker_script'] = str(root/'scripts/run_rpe_q3_worker.py')
+        distributed['local_worker'].setdefault('slot_policy', {}).update(selected['slot_policy'])
     if trial.get('pbs_hold_node') is True and distributed.get('pbs'):
         distributed['pbs_hold_node'] = True
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
@@ -148,6 +157,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             from trottertracks.rpe_q3_coordinator import atomic_json
             policy['hosts']['server1'] = dict(accepting=True, optional=True, reason='SERVER1_QG1_VALIDATED')
             atomic_json(admission, policy)
+    for host, profile in trial.get('relay_q3_profiles', {}).items():
+        workers = [worker for worker in distributed['relay']['workers'] if worker['host_id'] == host]
+        if (len(workers) != 1 or not {'profile'} <= profile.keys() <= {'profile', 'root'}
+                or not all(Path(path).is_absolute() for path in profile.values())):
+            raise ValueError('Expected one existing relay host and its fixed profile: '+host)
+        workers[0].update(profile)
     if 'local_memory_reserve_bytes' in trial:
         distributed['local_calibration_pair'] = dict(
             memory_reserve_bytes=trial['local_memory_reserve_bytes'],

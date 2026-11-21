@@ -113,7 +113,8 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
     else:
         fingerprint = current_host_fingerprint(assignment, configured)
         print(json.dumps(dict(status='PASS', request_sha256=assignment['request_sha256'],
-                              fingerprint=fingerprint, profile=profile_core(effective))))
+                              fingerprint=fingerprint, profile=profile_core(effective),
+                              evaluator=(result.get('adapter_result') or {}).get('evaluator'))))
 """
 
 
@@ -339,6 +340,8 @@ def probe(executor, request, job_id, decision, *, publish=None):
                 decision['host_fingerprints'][host] = Q.digest(fingerprint)
                 decision['execution_profiles'][host] = result['profile']
                 decision['host_decisions'][host] = dict(status='PASS', reasons=[])
+                if result.get('evaluator'):
+                    decision['host_decisions'][host]['evaluator'] = result['evaluator']
                 if publish is not None:
                     save(complete=False)
                     publish(snapshot())

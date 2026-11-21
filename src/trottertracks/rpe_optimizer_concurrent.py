@@ -688,7 +688,14 @@ class DistributedExecutor(ConcurrentExecutor):
         self.live_readiness_inflight = {}
         self.live_readiness_partial = {}
         self.live_readiness_workers = max(1, len(kwargs.get('problem', args[4] if len(args)>4 else {}).get('methods', {})))
-        self.live_readiness_pool = (ThreadPoolExecutor(max_workers=self.live_readiness_workers, thread_name_prefix='rpe-q3-readiness')
+        self.live_readiness_max_workers = distributed.get('live_readiness_max_workers')
+        self.live_readiness_refill_seconds = distributed.get('live_readiness_refill_seconds', 5)
+        if (self.live_readiness_max_workers is not None and
+                (type(self.live_readiness_max_workers) is not int or self.live_readiness_max_workers < 1)):
+            raise ValueError('Positive live readiness worker limit required')
+        if self.live_readiness_refill_seconds <= 0:
+            raise ValueError('Positive live readiness limits required')
+        self.live_readiness_pool = (ThreadPoolExecutor(max_workers=self.live_readiness_max_workers or self.live_readiness_workers, thread_name_prefix='rpe-q3-readiness')
                                     if self.distributed.get('live_q3_readiness') is True else None)
         self.host_admission_cache = {}
         self.preparation_holds = {}
@@ -1166,6 +1173,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                  if pool is not None else None)
                 by_stage = Counter()
                 estimates = []
+                q3_estimates = []
                 unknown = 0
                 for row in rows:
                     request = row['request']
@@ -1183,6 +1191,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     stage = (request.get('preparation') or {}).get('stage', 'q3')
                     by_stage[stage] += cpu
                     estimates.append(cpu)
+                    if stage == 'q3':
+                        q3_estimates.append(cpu)
                 known_limit = type(limit) is int and limit > 0
                 if not known_limit and report.get('mode') != 'FIXED':
                     continue
@@ -1191,6 +1201,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 supply[host] = dict(available_cpu=free_cpu, ready_cpu=sum(by_stage.values()),
                                     capacity_source='RESOURCE_OFFER' if known_limit else 'FIXED_SLOTS_BY_READY_FOOTPRINT',
                                     ready_cpu_by_stage=dict(by_stage), unestimated_jobs=unknown,
+                                    q3_cpus_per_job=min(q3_estimates, default=1),
                                     target_cpu=target, missing_cpu=max(0, target-sum(by_stage.values())))
             except (KeyError, ValueError, TypeError):
                 continue
@@ -1278,6 +1289,23 @@ class DistributedExecutor(ConcurrentExecutor):
             return not self._budget_reserved() and queued < self._standby_headroom()
         return super()._can_take_ready_candidates()
 
+    def _live_readiness_window(self):
+        maximum = self.live_readiness_max_workers or self.live_readiness_workers
+        if maximum <= self.live_readiness_workers or not self.state.allocation_auto:
+            return min(maximum, self.live_readiness_workers)
+        missing = 0
+        for host, supply in getattr(self.state, 'ready_cpu_supply', {}).items():
+            if not self._offer_fresh(host):
+                continue
+            per_job = max(1, supply.get('q3_cpus_per_job', 1))
+            missing += (supply['missing_cpu'] + per_job - 1) // per_job
+        if not missing and not getattr(self.state, 'ready_cpu_supply', {}):
+            missing = self._standby_capacity()
+        horizon = self.live_readiness_refill_seconds
+        seconds = getattr(self.state, 'q3_readiness_seconds', horizon)
+        from math import ceil
+        return min(maximum, max(self.live_readiness_workers, ceil(missing * min(1., seconds / horizon))))
+
     def _standby_can_fill(self):
         return (getattr(self, '_awaiting_probe_revision', None) !=
                 getattr(self.state, 'probe_revision', 0) and super()._standby_can_fill())
@@ -1304,7 +1332,7 @@ class DistributedExecutor(ConcurrentExecutor):
             task = self._enqueue(proposal, defer_readiness=True)
             if task is _CHECK_PENDING:
                 waiting.append(proposal)
-                if len(waiting) >= self.live_readiness_workers:
+                if len(waiting) >= self._live_readiness_window():
                     break
             elif task:
                 added += 1
@@ -1475,20 +1503,24 @@ class DistributedExecutor(ConcurrentExecutor):
             for job, starts in self.state.allocation_waits.items():
                 if starts: totals[job] = totals.get(job, 0)+sum(now-start for start in starts)
         selected = [totals[row['job_id']] for row in own if row['job_id'] in totals]
+        from .rpe_q3_resources import resource_class
         ready = 0
+        ready_classes = set()
         for task in self.state.tasks.values():
             if task.status != 'QUEUED' or not self._task_ready(task): continue
             row = self.store.row(task.job.name)
             if row is not None and self._host_supports_stage(host, row['request']) and self.store.eligible(row['request'], row['eligibility'], host,
                     self.hosts.get(host, {}).get('host_fingerprints'), row['job_id']):
                 ready += 1
+                decision = ((row['eligibility'] or {}).get('host_decisions') or {}).get(host, {})
+                ready_classes.add(resource_class(row['request'], decision.get('evaluator')))
         return dict(controller_invocation=self.invocation, measurement_seconds=now-self.state.allocation_start,
             controller_clock_id=stamp()['clock_id'],
             usable_results=sum(row['state'] == 'ACCEPTED' and (row['completed_epoch'] or 0) >= epoch for row in own),
             adopted_results=sum((row['adopted_epoch'] or 0) >= epoch for row in own),
             decision_wait_seconds=sum(selected) if selected else None,
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
-            ready_jobs=ready, capacity=self.capacity)
+            ready_jobs=ready, ready_task_classes=sorted(ready_classes), capacity=self.capacity)
 
     def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None, prefetch=False):
         """Bind a prepared host decision to this exact scientific request."""
@@ -1584,9 +1616,14 @@ class DistributedExecutor(ConcurrentExecutor):
                     and (not eligible['eligible_host_ids'] or missing_host)
                     and time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS))
                 if (stale and future is None and not self.state.closed and not self._user_stop_requested()
-                        and (blocking or len(self.live_readiness_inflight) < self.live_readiness_workers)):
+                        and (blocking or len(self.live_readiness_inflight) < self._live_readiness_window())):
+                    started = time.monotonic()
                     def publish(decision):
                         with self.state.cv:
+                            if key not in self.live_readiness_partial:
+                                elapsed = time.monotonic() - started
+                                previous_seconds = getattr(self.state, 'q3_readiness_seconds', elapsed)
+                                self.state.q3_readiness_seconds = .75 * previous_seconds + .25 * elapsed
                             if self.state.closed:
                                 return
                             # An unobserved host keeps its prior PASS until this
@@ -1643,8 +1680,8 @@ class DistributedExecutor(ConcurrentExecutor):
             for proposal in candidates:
                 with self.state.cv:
                     if (self.state.closed or self._user_stop_requested() or self._budget_reserved()
-                            or checked >= self.live_readiness_workers
-                            or len(self.live_readiness_inflight) >= self.live_readiness_workers):
+                            or checked >= self._live_readiness_window()
+                            or len(self.live_readiness_inflight) >= self._live_readiness_window()):
                         break
                 if self.has_job(proposal) or not self._candidate_preparation_ready(proposal):
                     continue
@@ -2277,7 +2314,11 @@ class DistributedExecutor(ConcurrentExecutor):
         # selected profile for replay/recovery even after policy replacement.
         fixed = self.store.row(row['job_id'])
         host = host_id or row.get('host_id')
-        profile = ((fixed.get('eligibility') or {}).get('execution_profiles') or {}).get(host)
+        eligibility = fixed.get('eligibility') or {}
+        profile = (eligibility.get('execution_profiles') or {}).get(host)
+        evaluator = (eligibility.get('host_decisions') or {}).get(host, {}).get('evaluator')
+        if evaluator:
+            value['q3_evaluator'] = evaluator
         if profile is not None:
             if preparation:
                 from .rpe_preparation_worker import preparation_profile_core

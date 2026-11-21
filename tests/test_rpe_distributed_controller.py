@@ -511,6 +511,18 @@ class ControllerFailures(unittest.TestCase):
                 ex.rpc('/v1/complete', dict(self.completion(assignment), host_id=host))
         self.assertEqual(len(delivered), 8)
 
+    def test_readiness_window_uses_fresh_cpu_deficit_and_check_time(self):
+        executor = self.executor(capacity='auto', live_q3_readiness=True,
+                                 live_readiness_max_workers=8)
+        executor.state.ready_cpu_supply = {'pbs-0': {'missing_cpu': 20, 'q3_cpus_per_job': 2}}
+        with patch.object(executor, '_offer_fresh', return_value=True):
+            executor.state.q3_readiness_seconds = 1
+            self.assertEqual(executor._live_readiness_window(), 2)
+            executor.state.q3_readiness_seconds = 4
+            self.assertEqual(executor._live_readiness_window(), 8)
+            executor.state.ready_cpu_supply['pbs-0']['missing_cpu'] = 0
+            self.assertEqual(executor._live_readiness_window(), executor.live_readiness_workers)
+
     def test_standby_dry_checks_roll_while_slow_request_is_pending(self):
         from concurrent.futures import ThreadPoolExecutor
         ex = self.executor(capacity=4, controller_queue_first=True, work_conserving_search=True,

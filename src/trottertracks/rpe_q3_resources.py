@@ -86,11 +86,25 @@ def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup
             except ValueError:
                 pass
         cpu_raw = _read(directory/'cpu.max')
-        if cpu_raw is not None:boundary_reads['cpu']=True
         quota = (cpu_raw or '').split()
-        if len(quota) == 2 and quota[0] != 'max':
-            q, period = _positive(quota[0]), _positive(quota[1])
-            if q and period: cpu_bounds.append(dict(kind='CGROUP_CPU_QUOTA', value=q/period, path=str(directory)))
+        if len(quota) == 2 and _positive(quota[1]) and (quota[0] == 'max' or _positive(quota[0])):
+            boundary_reads['cpu'] = True
+            if quota[0] != 'max':
+                cpu_bounds.append(dict(kind='CGROUP_CPU_QUOTA', value=float(quota[0])/float(quota[1]), path=str(directory)))
+        elif version == 'v2' and memberships and cpu_raw is None:
+            # The v2 mount root has no cpu.max. Other groups expose it
+            # precisely when their parent delegates the CPU controller.
+            enabled = _read(directory.parent/'cgroup.subtree_control')
+            if directory == groups:
+                readable = _read(directory/'cgroup.controllers') is not None
+            else:
+                readable = enabled is not None and 'cpu' not in enabled.split() and directory.is_dir()
+            if readable:
+                boundary_reads['cpu'] = True
+            else:
+                missing_controls.append('cpu')
+        elif cpu_raw is not None:
+            missing_controls.append('cpu')
         memory_raw = _read(directory/'memory.max')
         if memory_raw is not None:boundary_reads['memory']=True
         maximum = _positive(memory_raw)
@@ -145,6 +159,12 @@ def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup
         if amount: cpu_bounds.append(dict(kind='ALLOCATION_ENV_'+name, value=amount))
     policy = profile.get('slot_policy') or {}
     declared = policy.get('resource_limits') or {}
+    cpu_reserve = policy.get('controller_cpu_reserve', 0)
+    if type(cpu_reserve) is not int or cpu_reserve < 0:
+        raise ValueError('Controller CPU reserve must be a non-negative integer')
+    if cpu_reserve and cpu_bounds:
+        observed = min(bound['value'] for bound in cpu_bounds)
+        cpu_bounds.append(dict(kind='CONTROLLER_CPU_HEADROOM', value=max(1, observed-cpu_reserve)))
     amount = _positive(declared.get('cpu_count'))
     if amount: cpu_bounds.append(dict(kind='DECLARED_RESEARCH_CPU_BOUND', value=amount))
     meminfo = {}
@@ -196,6 +216,13 @@ def owned_tree_sample(pid, *, proc_root='/proc'):
     return dict(rss_bytes=rss, cpu_seconds=cpu, sampled_pids=len(seen))
 
 
+def resource_class(request, evaluator=None):
+    preparation = request.get('preparation')
+    if preparation:
+        return 'preparation:' + preparation['stage'] + ':' + preparation['provider']
+    return 'q3:' + ('finite_support' if evaluator == 'RPE_FINITE_SUPPORT_MSE_V1' else 'count_dp')
+
+
 def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None):
     """Pure bounded one-slot trials; reductions drain, and never signal a job."""
     now = time.monotonic() if now is None else float(now)
@@ -211,10 +238,34 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         return state, dict(schema=SCHEMA, mode='FIXED', capacity=capacity,
             slots=max(0,capacity-occupied), occupied=occupied, stage='EXPLICIT_FIXED_PROFILE', reasons=['Legacy/explicit worker slots retained'])
     target = max(1, int(state.get('target_slots', initial)))
-    peak = max([float(state.get('peak_job_rss_bytes', 0))] + [float(j.get('peak_rss_bytes', 0)) for j in jobs])
-    dp = max([int(profile.get('dp_workers') or 1)] + [int(j.get('dp_workers') or 1) for j in jobs])
+    feedback = deepcopy(feedback or state.get('feedback') or {})
+    if policy.get('separate_task_resources'):
+        peaks = state.setdefault('task_resource_peaks', {})
+        active = set(feedback.get('ready_task_classes', ()))
+        for job in jobs:
+            kind = job.get('resource_class')
+            if kind is None:
+                continue
+            if job['state'] in OCCUPIED:
+                active.add(kind)
+            entry = peaks.setdefault(kind, {})
+            for metric in ('peak_rss_bytes', 'observed_cpu_cores', 'dp_workers'):
+                entry[metric] = max(entry.get(metric, 0), job.get(metric, 0))
+        active = sorted(active) or state.get('task_resource_classes', [])
+        state['task_resource_classes'] = active
+        selected = [peaks.get(kind, {}) for kind in active]
+        peak = max((job.get('peak_rss_bytes', 0) for job in selected), default=0)
+        # An unmeasured stage is tried on its own, including after a change
+        # of evaluator. Never borrow the memory footprint of another stage.
+        if any(not job.get('peak_rss_bytes') for job in selected):
+            peak = 0
+        observed_cpu = max((job.get('observed_cpu_cores', 0) for job in selected), default=0)
+        dp = max([int(profile.get('dp_workers') or 1)] + [int(job.get('dp_workers') or 1) for job in selected])
+    else:
+        peak = max([float(state.get('peak_job_rss_bytes', 0))] + [float(j.get('peak_rss_bytes', 0)) for j in jobs])
+        dp = max([int(profile.get('dp_workers') or 1)] + [int(j.get('dp_workers') or 1) for j in jobs])
+        observed_cpu = max([float(state.get('peak_job_cpu_cores', 0))] + [float(j.get('observed_cpu_cores', 0)) for j in jobs])
     cpu = _positive(resources.get('allowed_cpu_count'))
-    observed_cpu = max([float(state.get('peak_job_cpu_cores', 0))] + [float(j.get('observed_cpu_cores', 0)) for j in jobs])
     cpu_per_job = max(dp, observed_cpu)
     cpu_limit = max(1, int(cpu//min(cpu_per_job,cpu))) if cpu else initial
     memory = resources.get('allowed_memory_bytes')
@@ -236,7 +287,6 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
     if ceiling < target:
         target = ceiling; state.pop('trial', None); stage = 'RESOURCE_REDUCTION_DRAIN'
         reasons.append('Observed process allowance or memory headroom decreased; existing jobs drain')
-    feedback = deepcopy(feedback or state.get('feedback') or {})
     prior = state.get('rate_anchor') or {}
     domain = feedback.get('controller_invocation')
     same_domain = domain is not None and domain == prior.get('controller_invocation')

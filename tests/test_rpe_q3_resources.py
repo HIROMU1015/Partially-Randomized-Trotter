@@ -57,6 +57,40 @@ class ResourceTests(unittest.TestCase):
             self.assertIn('NONEXCLUSIVE',got['cpu_scope'])
             self.assertTrue(got['observational_only'])
 
+    def test_cpu_not_delegated_and_unreadable_cgroup_are_distinct(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            proc, group = base/'proc', base/'cgroup'
+            write(proc/'self/cgroup', '0::/scope\n')
+            write(group/'cgroup.controllers', 'cpu memory')
+            write(group/'cgroup.subtree_control', 'memory')
+            write(group/'scope/memory.max', 'max')
+            snapshot = R.resource_snapshot(profile(controller_cpu_reserve=2), proc_root=proc,
+                                           cgroup_root=group, affinity=set(range(32)), environ={})
+            self.assertTrue(snapshot['allocation_bounds_complete'])
+            self.assertEqual(snapshot['allowed_cpu_count'], 30)
+            write(group/'cgroup.subtree_control', 'cpu memory')
+            snapshot = R.resource_snapshot(profile(), proc_root=proc, cgroup_root=group,
+                                           affinity=set(range(32)), environ={})
+            self.assertFalse(snapshot['allocation_bounds_complete'])
+            self.assertIn('cpu', snapshot['missing_controls'])
+
+    def test_finite_support_does_not_inherit_preparation_or_legacy_peaks(self):
+        p = profile(separate_task_resources=True)
+        prep = dict(resource_class='preparation:compile:TEST', state='TRANSFERRED',
+                    dp_workers=1, observed_cpu_cores=32, peak_rss_bytes=10000000)
+        finite = dict(resource_class='q3:finite_support', state='TRANSFERRED',
+                      dp_workers=2, observed_cpu_cores=1.5, peak_rss_bytes=1000000)
+        previous = dict(peak_job_cpu_cores=32, peak_job_rss_bytes=12000000)
+        facts = feedback(0, 0)
+        facts['ready_task_classes'] = ['q3:finite_support']
+        state, _ = R.decide_slots(p, previous, resources(cpu=30), [prep, finite], facts)
+        facts = dict(facts, usable_results=1, measurement_seconds=10)
+        _, report = R.decide_slots(p, state, resources(cpu=30), [prep, finite], facts)
+        self.assertEqual(report['capacity'], 2)
+        self.assertEqual(report['peak_job_cpu_cores'], 1.5)
+        self.assertEqual(report['peak_job_rss_bytes'], 1000000)
+
     def test_v1_cpu_cpuset_and_memory_ancestors_are_honoured(self):
         with tempfile.TemporaryDirectory()as temporary:
             base=Path(temporary);proc=base/'proc';group=base/'cgroup'
