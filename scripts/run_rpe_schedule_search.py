@@ -357,6 +357,15 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                     raise ValueError('PF candidate preparation backlog must be a positive integer')
                 pf['max_candidates'] = max(pf['max_candidates'], target)
                 pf['refill_candidate_preparation'] = True
+    if 'pf_recovered_price_receipts' in trial:
+        evidence = trial['pf_recovered_price_receipts']
+        raw = Path(evidence['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != evidence['sha256']:
+            raise ValueError('Recovered PF receipt index changed')
+        receipts = json.loads(raw)
+        if not isinstance(receipts, dict):
+            raise ValueError('Recovered PF receipts must map physical IDs to guarded locators')
+        spec['pf_completion']['recovered_price_receipts_by_physical_id'] = receipts
     if 'pf_price_recheck_provider' in trial:
         provider = trial['pf_price_recheck_provider']
         root = Path(provider['root']).resolve(strict=True)

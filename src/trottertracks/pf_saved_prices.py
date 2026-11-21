@@ -52,6 +52,9 @@ def prior_waves(run, spec):
 
 def price_indexes(waves, settings, physical_ids=None, *, audits=None):
     locators = list(settings.get('saved_price_receipts', ()))
+    recovered = settings.get('recovered_price_receipts_by_physical_id', {})
+    for physical in recovered.keys() if physical_ids is None else physical_ids:
+        locators.extend(recovered.get(physical, ()))
     if audits is None:
         locators.extend(receipt_locators(waves, physical_ids))
     else:

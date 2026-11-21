@@ -95,6 +95,14 @@ class PFPriceReconciliationTests(unittest.TestCase):
                          ['NO_NEW_CALCULATION_UNEVALUATED', 'RECONCILE_ORIGINAL_ATTEMPT'])
         self.assertTrue(all(not row['new_calculation'] for row in actions))
 
+    def test_legacy_receipt_index_only_reopens_affected_price_plans(self):
+        x = dict(commit='a'*40, path='old/PRICES.json', selector=[0])
+        y = dict(commit='b'*40, path='other/PRICES.json', selector=[1])
+        settings = {'recovered_price_receipts_by_physical_id': {'one': [x], 'two': [y]}}
+        self.assertEqual(prices.price_indexes([], settings, {'one'}), [x])
+        self.assertEqual(prices.price_indexes([], settings, {'unknown'}), [])
+        self.assertEqual(prices.price_indexes([], settings), [x, y])
+
     def test_original_calibration_requires_exact_plan_completed_compile_and_all_raw_files(self):
         relative = Path('docs/research/distributed_selected_pf/cfg')
         raw = relative/'calibration/run01'
