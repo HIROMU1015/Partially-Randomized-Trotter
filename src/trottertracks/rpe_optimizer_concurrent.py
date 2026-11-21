@@ -1532,6 +1532,11 @@ class DistributedExecutor(ConcurrentExecutor):
         stage = preparation.get('stage', 'q3')
         provider = preparation.get('provider')
         providers = (self.distributed.get('preparation_provider_hosts') or {}).get(provider)
+        continuation = self.distributed.get('local_pf_continuation')
+        if (continuation and provider and provider.startswith('PF_')
+                and preparation.get('source', {}).get('commit') == continuation['source']
+                and host not in continuation['references']):
+            return False
         if provider in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE') and self.distributed.get('pf_legacy_compile_hosts'):
             adapter = 'private/pf-transport/scripts/run_pf_preparation_stage.py'
             if adapter not in preparation.get('inputs', {}):
@@ -2403,16 +2408,19 @@ class DistributedExecutor(ConcurrentExecutor):
             value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
         if self.distributed.get('required_release'):
             value['required_release']=deepcopy(self.distributed['required_release'])
+            continuation = self.distributed.get('local_pf_continuation')
+            followup = (continuation and preparation and preparation['provider'].startswith('PF_')
+                        and preparation['source']['commit'] == continuation['source'])
+            if followup:
+                if (host not in continuation['references']
+                        or continuation['manifest']['parent_release'] != value['required_release']):
+                    raise ValueError('PF continuation host or parent release differs')
+                value['required_release'] = continuation['references'][host]
             local=self.distributed.get('local_worker')or{}
             if host==local.get('host_id')and self.distributed.get('local_deployment_layout'):
-                from .rpe_release_deployment import manifest_reference,read,validate_assignment_release
-                continuation = self.distributed.get('local_pf_continuation')
-                if (continuation and preparation and preparation['provider'].startswith('PF_')
-                        and preparation['source']['commit'] == continuation['source']):
+                from .rpe_release_deployment import read,validate_assignment_release
+                if followup:
                     manifest, layout = continuation['manifest'], continuation['layout']
-                    if manifest['parent_release'] != value['required_release']:
-                        raise ValueError('PF continuation parent release differs')
-                    value['required_release'] = manifest_reference(manifest)
                 else:
                     manifest, layout = self.release_manifest, read(self.distributed['local_deployment_layout'])
                 validate_assignment_release(manifest,layout,value,local)

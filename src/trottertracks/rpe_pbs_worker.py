@@ -289,7 +289,9 @@ class AllocationWorker(Worker):
         return read(path) if path.exists() else {}
 
     def _validate_acquisition(self, assignment):
-        deployment=self.profile['pbs'].get('deployment')
+        settings = self.profile['pbs']
+        release = (assignment.get('required_release') or {}).get('id')
+        deployment = settings.get('task_deployments', {}).get(release, settings.get('deployment'))
         if deployment:
             from .rpe_release_deployment import validate_assignment_release
             validate_assignment_release(read(deployment['manifest']),read(deployment['layout']),

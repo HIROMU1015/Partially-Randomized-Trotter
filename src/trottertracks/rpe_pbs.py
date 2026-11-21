@@ -844,6 +844,8 @@ class PbsManager:
         deployment=worker.get('deployment')or self.settings.get('deployment')
         if deployment:
             profile['pbs']['deployment']=deepcopy(deployment)
+        if worker.get('task_deployments'):
+            profile['pbs']['task_deployments'] = deepcopy(worker['task_deployments'])
         interpreter = self.settings['python']
         if self.storage_launcher and profile.get('storage_limit'):
             if not self.storage_launcher_verified:

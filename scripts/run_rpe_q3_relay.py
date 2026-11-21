@@ -237,6 +237,9 @@ class Relay:
     def ensure_worker_deployment(self,worker,assignment=None):
         """Install only missing selected code, then run existing task guards."""
         declaration=worker['deployment'];host=worker['host_id']
+        if assignment is not None:
+            release = (assignment.get('required_release') or {}).get('id')
+            declaration = worker.get('task_deployments', {}).get(release, declaration)
         if assignment is None and self.deployed_workers.get(host)==declaration:return
         command=[worker.get('python','python3'),'-B',declaration['entry'],
             '--manifest',declaration['manifest'],'--layout',declaration['layout'],
@@ -244,7 +247,8 @@ class Relay:
         if assignment is not None:command+=['--assignment-stdin','--profile',worker['profile']]
         result,_=self.remote_command(worker,command,'deployment',assignment or{})
         if result.get('status')!='PASS':raise ValueError('Worker release deployment HOLD: '+json.dumps(result))
-        self.deployed_workers[host]=dict(declaration)
+        if assignment is None:
+            self.deployed_workers[host]=dict(declaration)
         return result
 
     def submit_batch(self, worker, assignments):

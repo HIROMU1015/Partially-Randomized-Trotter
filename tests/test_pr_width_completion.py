@@ -10,6 +10,7 @@ from fractions import Fraction
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import threading
@@ -33,6 +34,32 @@ def load_script(name):
 
 def enrich(cfg):
     cfg['spec']['kappa']=dict(value=exact(2));return cfg
+
+
+def test_df_audit_worker_returns_archived_input_outputs_in_owned_leaf(tmp_path):
+    runner = tmp_path/'source/scripts/provider.py'
+    runner.parent.mkdir(parents=True)
+    runner.write_text("""
+import json, sys
+from pathlib import Path
+ROOT = Path(__file__).parents[1]
+def write(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value))
+def main():
+    document = Path(sys.argv[sys.argv.index('--input')+1])
+    fixed = json.loads(document.read_bytes())
+    write(ROOT/fixed['output_directory']/'FROZEN_MODELS.json', {'read_path': fixed['output_directory']})
+""")
+    doc = tmp_path/'owned/df_prices/INPUTS.json'
+    doc.parent.mkdir(parents=True)
+    content = dict(output_directory='prior/df_prices', runtime={'provider_root': str(tmp_path)})
+    doc.write_text(json.dumps(content))
+    subprocess.run([sys.executable, '-B', '-c', C._DF_PRICE_BOOTSTRAP,
+                    str(runner), str(tmp_path), 'freeze', '--input', str(doc)], check=True)
+    assert C.read(doc) == content
+    assert C.read(doc.with_name('FROZEN_MODELS.json'))['read_path'] == content['output_directory']
+    assert not (runner.parents[1]/content['output_directory']).exists()
 
 
 class WidthCompletionTests(unittest.TestCase):

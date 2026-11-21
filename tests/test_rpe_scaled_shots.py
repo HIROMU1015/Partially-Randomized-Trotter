@@ -44,6 +44,31 @@ def test_width_report_child_resumes_without_waiting_for_report_generation(tmp_pa
     assert 'WIDTH_QUEUE_REPORT' in (tmp_path/'ROUND_STAGES.jsonl').read_text()
 
 
+def test_width_report_reuses_exact_display_bounds_across_renderers(tmp_path):
+    cli = entry.K.CLI
+    row = dict(best=None, pending_request=None, stop_reason='WAITING_FOR_INPUTS',
+               ready_candidates=[], not_ready_candidates=[], evaluated_count=0,
+               bounds={'numerator': str(2**2048), 'denominator': str(3**2048)})
+    result = {'FULL_PF': row}
+    entry.write_width_report(tmp_path, cli, {}, result, 'fixed')
+    expected = (tmp_path/'ROUND_RESULT.json').read_bytes()
+    with patch.object(cli, '_decimal_parts', side_effect=AssertionError('cached bounds must be reused')):
+        entry.write_width_report(tmp_path, cli, {}, result, 'fixed')
+    assert (tmp_path/'ROUND_RESULT.json').read_bytes() == expected
+
+
+def test_shorter_horizon_uses_its_registered_route_when_base_route_is_missing():
+    base = dict(configuration_id='base', name='base', method='FULL_PF', key={}, ready=True,
+                needs=[], execution_needs=['Q3_ROUTE_CONFIGURATION_OR_TEMPLATE'], prices=[F(1)]*26)
+    short_id = S.projection_id('base', 12, 11)
+    execution = SimpleNamespace(route=lambda cid: {'configuration_ids': [short_id]} if cid == short_id else None,
+                                refresh_execution_hold=lambda cid: None)
+    base_result, short = S.horizon_candidates([base], {'rpe': {'M': 12}}, small_policy((11,12)), execution)
+    assert base_result['execution_needs'] == ['Q3_ROUTE_CONFIGURATION_OR_TEMPLATE']
+    assert short['configuration_id'] == short_id and not short['execution_needs']
+    assert len(short['prices']) == 24
+
+
 def small_policy(horizons=(11,12,13)):
     return S.settings(dict(M=list(horizons), grid=dict(min_k=-12,max_k=-11,divisor=4), compare_paper=False))
 

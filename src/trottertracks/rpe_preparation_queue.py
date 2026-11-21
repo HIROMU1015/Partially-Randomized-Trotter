@@ -93,31 +93,38 @@ def submit_horizon_preparation(runtime, requests):
         reports.append(report)
         if binding is None or binding.get('source_M') != request.get('source_M'):
             continue
+        incomplete = {}
         for m in rounds:
             entry = binding.get('rounds', {}).get(str(m))
             if not entry:
+                incomplete[str(m)] = {'round': 'HORIZON_ROUND_PROVIDER_NOT_CONFIGURED'}
                 continue
-            selected, ordered = {}, {}
-            try:
-                for role, allowed in (('signal', ('signal',)), ('X', ('compile', 'audit')), ('Y', ('compile', 'audit'))):
-                    name = entry[role]
+            successes, failures = {}, {}
+            for role, allowed in (('signal', ('signal',)), ('X', ('compile', 'audit')), ('Y', ('compile', 'audit'))):
+                try:
+                    name = entry.get(role)
+                    if name is None:
+                        failures[role] = 'HORIZON_ROLE_PROVIDER_NOT_CONFIGURED'
+                        continue
                     preparation = tasks[name]['request']['preparation']
                     if (preparation['stage'] not in allowed or
                             preparation['horizon_round'] != {'m': m, 'physical_id': entry['physical_id']} or
                             (role != 'signal' and role not in preparation.get('price_axes', ()))):
                         raise ValueError('Horizon task does not bind the selected physical round and axis')
-                    selected[role] = name
-                for name in selected.values():
+                    ordered = {}
                     validate(name, ordered)
-            except (KeyError, TypeError, ValueError) as error:
-                report.update(status='HORIZON_PROVIDER_CONTRACT_HOLD', reason=str(error))
-                continue
-            try:
-                for name, task in ordered.items():
-                    submit(name, task)
-                report['jobs'][str(m)] = {role: submitted[name] for role, name in selected.items()}
-            except (KeyError, TypeError, ValueError) as error:
-                report.update(status='HORIZON_PROVIDER_CONTRACT_HOLD', reason=str(error))
-        if len(report['jobs']) == len(rounds):
+                    for dependency, task in ordered.items():
+                        submit(dependency, task)
+                    successes[role] = submitted[name]
+                except (KeyError, TypeError, ValueError) as error:
+                    failures[role] = str(error)
+            if successes:
+                report['jobs'][str(m)] = successes
+            if failures:
+                incomplete[str(m)] = failures
+        if not incomplete:
             report['status'] = 'HORIZON_PREPARATION_REQUESTED'
+        else:
+            report.update(status='HORIZON_PREPARATION_PARTIAL' if report['jobs'] else
+                          'HORIZON_PROVIDER_CONTRACT_HOLD', incomplete=incomplete)
     return reports

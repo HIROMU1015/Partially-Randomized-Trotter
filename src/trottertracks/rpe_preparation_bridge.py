@@ -572,6 +572,36 @@ class DistributedPreparationBridge:
         except sqlite3.Error:
             return False
 
+    def resume_unreserved_stage(self, directory, reason):
+        """Recover the same frozen request when a previous stop left it unclaimed."""
+        prefix, _, payload = reason.partition(':')
+        stage, _, detail = payload.partition(':')
+        if prefix != 'DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD' or stage not in STAGES:
+            return False
+        try:
+            result = ast.literal_eval(detail)
+            if not isinstance(result, dict) or result.get('status') != 'PREPARATION_STOPPED_BEFORE_RESERVATION':
+                return False
+            job = result['job_id']
+            if self.executor._user_stop_requested() or self.executor.state.failure is not None:
+                return False
+            row = self.executor.store.row(job)
+            if row is not None and (row['state'] != 'QUEUED' or row['attempt_id'] is not None):
+                return False
+            from .rpe_preparation_queue import normalize_preparation_request
+            markers = [path for path in Path(directory).rglob(stage+'.DISTRIBUTED.json')
+                       if read(path).get('job_id') == job]
+            if len(markers) != 1:
+                return False
+            marker = read(markers[0])
+            request = normalize_preparation_request(marker['request'],
+                dependencies=self._dependencies(markers[0].parent, stage))
+            return (request['request_id'] == job and request['preparation']['provider'] == stage
+                    and request['preparation']['source']['commit'] == marker['source']
+                    and (row is None or request == row['request']))
+        except (OSError, SyntaxError, KeyError, TypeError, ValueError, sqlite3.Error):
+            return False
+
     def received_after_reservation_stop(self, directory, reason):
         prefix, _, payload = reason.partition(':')
         stage, _, detail = payload.partition(':')

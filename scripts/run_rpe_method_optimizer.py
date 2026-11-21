@@ -449,16 +449,38 @@ def _decimal_text(negative, exponent, quotient, inexact, up):
     return f"{'-' if negative else ''}{quotient}e{exponent}"
 
 
-def slim(value):
+def slim(value, *, bound_cache=None):
     """Long exact rationals (MSE bounds) -> outward 30-digit interval; the exact value stays in the job's OUTCOME.json."""
     from functools import lru_cache
+    from hashlib import sha256
 
     limit = 10**EXACT_DIGITS
 
     @lru_cache(maxsize=4096)
     def encoded(numerator, denominator):
         # Normalize the saved form exactly once per distinct rational.
-        return rational(Fraction(int(numerator), int(denominator)))
+        token = None
+        if bound_cache is not None:
+            def exact_bytes(part):
+                if type(part) is int:
+                    return part.to_bytes((part.bit_length() + 8) // 8, 'big', signed=True)
+                return str(part).encode()
+            first, second = exact_bytes(numerator), exact_bytes(denominator)
+            if max(len(first), len(second)) > EXACT_DIGITS:
+                h = sha256()
+                for part, data in ((numerator, first), (denominator, second)):
+                    h.update(b'i' if type(part) is int else b's')
+                    h.update(len(data).to_bytes(8, 'big'))
+                    h.update(data)
+                token = h.hexdigest()
+                if token in bound_cache:
+                    return bound_cache[token]
+        result = rational(Fraction(int(numerator), int(denominator)))
+        if token is not None and isinstance(result, dict):
+            if len(bound_cache) >= 16384:
+                bound_cache.pop(next(iter(bound_cache)))
+            bound_cache[token] = result
+        return result
 
     @lru_cache(maxsize=4096)
     def long_bounds(numerator, denominator):

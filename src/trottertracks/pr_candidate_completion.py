@@ -42,7 +42,8 @@ trottertracks.__path__.insert(0, str(Path(view)/'src'/'trottertracks'))
 if '--input' in sys.argv:
     from trottertracks.rpe_preparation_paths import resolve
     document = Path(sys.argv[sys.argv.index('--input')+1])
-    provider = resolve(json.loads(document.read_bytes())['runtime']['provider_root'])
+    fixed_inputs = json.loads(document.read_bytes())
+    provider = resolve(fixed_inputs['runtime']['provider_root'])
     native = Path(provider)/'src'/'trottertracks'
     if native.is_dir():
         import trottertracks.resource_applicability as resource_applicability
@@ -53,6 +54,19 @@ module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
 module.FIXED_VIEW = Path(view)
+if '--input' in sys.argv and ('freeze' in sys.argv[1:] or 'compare-holdout' in sys.argv[1:]):
+    # Retain the original paths for Git receipt reads. Return new evidence
+    # under the owned input's directory, including on continuation workers.
+    original = (module.ROOT / fixed_inputs['output_directory']).resolve()
+    target = document.resolve().parent
+    write = module.write
+    audit_outputs = {'FROZEN_MODELS.json', 'AXIS_PRICES.json', 'HOLDOUT_COMPARISON.json'}
+    def write_audit(path, value):
+        path = Path(path)
+        if path.parent.resolve() == original and path.name in audit_outputs:
+            path = target / path.name
+        write(path, value)
+    module.write = write_audit
 raise SystemExit(module.main())
 """
 
@@ -421,6 +435,25 @@ class Completion:
             digest = self.price_registry_digest()
             return {record['key'] for record in waiting if self.price_evidence_unchanged(record, digest)}
 
+    def deferred_stage_keys(self):
+        """Check whether saved exact UNKNOWN owners are still unresolved."""
+        runtime = getattr(self, 'stage_executor', None)
+        store = getattr(getattr(runtime, 'executor', None), 'store', None)
+        if store is None:
+            return set()
+        with self.lock:
+            waiting = [(record['key'], record['preparation_recovery'])
+                       for record in self.state['records'].values()
+                       if record.get('signal') and record.get('intake')
+                       and record['status'] == 'WAITING_DISTRIBUTED_PREPARATION'
+                       and (record.get('preparation_recovery') or {}).get('state') == 'UNKNOWN']
+        if not waiting:
+            return set()
+        with store._connection() as db:
+            return {key for key, evidence in waiting if evidence.get('attempt_id') and
+                    db.execute("SELECT 1 FROM jobs WHERE job_id=? AND state='UNKNOWN' AND attempt_id=?",
+                               (evidence['job_id'], evidence['attempt_id'])).fetchone()}
+
     def price_evidence_unchanged(self, record, registry_digest):
         if record.get('registry_at_hold') != registry_digest:
             return False
@@ -771,12 +804,21 @@ class Completion:
             if old and (old['status'].startswith(('HELD','STOP','WAITING')) or
                         old['status'] in DF_PRICE_RECHECK_STATES) and not (recovered_input or recheck):
                 if old.get('scientific_failure'):return dict(old,resumed=True)
-                if not old.get('recoverable_preparation'):
+                if not old.get('recoverable_preparation') and old['status'] == 'HELD_WITH_REASON':
                     bridge = getattr(self, 'stage_executor', None)
-                    reconcile = getattr(bridge, 'received_after_reservation_stop', None)
-                    if (old['status'] == 'HELD_WITH_REASON' and reconcile
-                            and not getattr(self, 'stop_requested', lambda: False)()):
-                        received_preparation = reconcile(d, old.get('reason') or '')
+                    if not getattr(self, 'stop_requested', lambda: False)():
+                        inspect_stage = getattr(bridge, 'hold_evidence', None)
+                        evidence = inspect_stage(d, old.get('reason') or '') if inspect_stage else None
+                        if evidence and evidence.get('action') == 'CHECK_ORIGINAL_OUTPUT':
+                            old['preparation_recovery'] = evidence
+                            old['reason'] = ('PREPARATION_RESULT_MISMATCH:ORIGINAL_AUDIT_OUTPUT_MISSING:'
+                                             + evidence['job_id'] + ':' + evidence['reason'])
+                            self.save()
+                            return dict(old, resumed=True)
+                        received_preparation = any(
+                            reconcile(d, old.get('reason') or '')
+                            for action in ('received_after_reservation_stop', 'resume_unreserved_stage')
+                            if (reconcile := getattr(bridge, action, None)) is not None)
                 if not (old.get('recoverable_preparation') or received_preparation):
                     self.ingest_price_results()
                     price_unresolved = str(old.get('reason','')).startswith(

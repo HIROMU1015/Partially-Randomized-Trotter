@@ -468,7 +468,16 @@ def horizon_candidates(candidates, problem, policy, executor=None, catalog=None)
                 item['prices'] = c['prices'][:2 * (M + 1)]
                 item['price_status'] = 'REUSED_SOURCE_HORIZON_PREFIX'
                 item['price_axes'] = c.get('price_axes', [])[:2 * (M + 1)]
-                if base_route is not None:
+                native = executor.route(item['configuration_id']) if executor is not None else None
+                native_ids = (native or {}).get('configuration_ids')
+                if isinstance(native_ids, (list, tuple)) and item['configuration_id'] in native_ids:
+                    item['execution_needs'] = [need for need in item['execution_needs']
+                                               if need != 'Q3_ROUTE_CONFIGURATION_OR_TEMPLATE']
+                    hold = executor.refresh_execution_hold(item['configuration_id'])
+                    if hold:
+                        item['execution_hold'] = hold
+                        item['execution_needs'].append('SAVED_JOB_REVIEW_REQUIRED')
+                elif base_route is not None:
                     base_rule = executor.expected_for(original_id, base_route)
                     projection = dict(source_configuration_id=original_id, source_M=original_M, M=M)
                     added_routes.append(dict(base_route, configuration_ids=[item['configuration_id']],

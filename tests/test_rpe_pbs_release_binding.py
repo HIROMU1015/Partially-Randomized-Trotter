@@ -25,26 +25,45 @@ class PbsReleaseBinding(unittest.TestCase):
         layout.write_text(json.dumps(dict(host_id='pbs-0')))
         worker=W.AllocationWorker.__new__(W.AllocationWorker)
         worker.profile=dict(host_id='pbs-0',pbs=dict(deployment=dict(manifest=str(manifest),layout=str(layout))))
+        worker.work=base/'spool'
+        worker.records={}
         return worker
 
     def test_wrong_release_cannot_reach_original_worker_acquisition(self):
         with tempfile.TemporaryDirectory()as directory:
             worker=self.worker(directory)
-            with patch.object(W.Worker,'_acquire',side_effect=AssertionError('Scientific worker must remain uncalled')):
-                with self.assertRaisesRegex(ValueError,'Assigned release'):
-                    worker._acquire(dict(required_release=dict(id='WRONG',manifest_sha256='WRONG')))
+            request={'request_id':'fixed-job'}
+            from trottertracks.rpe_q3_coordinator import digest
+            with self.assertRaisesRegex(ValueError,'Assigned release'):
+                worker._acquire(dict(job_id='fixed-job',attempt_id='fixed-attempt',request=request,
+                    request_sha256=digest(request),required_release=dict(id='WRONG',manifest_sha256='WRONG')))
+            self.assertFalse(worker.work.exists())
 
     def test_successful_binding_preserves_assignment_and_legacy_acquisition(self):
         with tempfile.TemporaryDirectory()as directory:
             worker=self.worker(directory);assignment=dict(request={'request_id':'UNCHANGED'},required_release={'id':'SELECTED'})
             before=deepcopy(assignment)
-            with patch('trottertracks.rpe_release_deployment.validate_assignment_release',return_value={'status':'PASS'})as check,patch.object(W.Worker,'_acquire')as acquire:
-                worker._acquire(assignment)
-                check.assert_called_once();acquire.assert_called_once_with(assignment)
+            with patch('trottertracks.rpe_release_deployment.validate_assignment_release',return_value={'status':'PASS'})as check:
+                worker._validate_acquisition(assignment)
+                check.assert_called_once()
             self.assertEqual(assignment,before)
             worker.profile['pbs'].pop('deployment')
-            with patch('trottertracks.rpe_release_deployment.validate_assignment_release',side_effect=AssertionError('Legacy contract must stay unchanged')),patch.object(W.Worker,'_acquire')as acquire:
-                worker._acquire(assignment);acquire.assert_called_once_with(assignment)
+            with patch('trottertracks.rpe_release_deployment.validate_assignment_release',side_effect=AssertionError('Legacy contract must stay unchanged')):
+                worker._validate_acquisition(assignment)
+
+    def test_additional_stage_selects_only_its_declared_release(self):
+        with tempfile.TemporaryDirectory() as directory:
+            worker = self.worker(directory)
+            parent = worker.profile['pbs']['deployment']
+            variant = Path(directory)/'FOLLOWUP.json'
+            variant.write_text(json.dumps(dict(schema='RPE_RELEASE_COMPONENTS_V1', release_id='FOLLOWUP')))
+            worker.profile['pbs']['task_deployments'] = {'FOLLOWUP': dict(parent, manifest=str(variant))}
+            validate = 'trottertracks.rpe_release_deployment.validate_assignment_release'
+            with patch(validate) as check:
+                for release in ('FOLLOWUP', 'SELECTED', 'UNKNOWN'):
+                    worker._validate_acquisition({'required_release': {'id': release}})
+                self.assertEqual([call.args[0]['release_id'] for call in check.call_args_list],
+                                 ['FOLLOWUP', 'SELECTED', 'SELECTED'])
 
     def test_missing_selected_components_hold_before_worker_startup(self):
         with tempfile.TemporaryDirectory()as directory:

@@ -58,9 +58,18 @@ def read_loc(loc):
 def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
     import fcntl
 
+    path = run/'ROUND_REPORT_BOUNDS_V1.json'
+    try:
+        document = O.load_json(path) if path.is_file() else {}
+        cache = document.get('bounds', {}) if document.get('source') == optimizer_source else {}
+    except (OSError, ValueError, AttributeError):
+        cache = {}
+    if not isinstance(cache, dict) or len(cache) > 16384:
+        cache = {}
     with cli.round_phase(run, 'WIDTH_RESULT_BOUNDS'):
         summary = cli.slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',
-            round=spec, methods=result, optimizer_source=optimizer_source))
+            round=spec, methods=result, optimizer_source=optimizer_source),
+            **({'bound_cache': cache} if 'bound_cache' in (cli.slim.__kwdefaults__ or {}) else {}))
     with cli.round_phase(run, 'WIDTH_RESULT_JSON'):
         summary = json.dumps(O.jsonable(summary), ensure_ascii=False, indent=2)
     with (run/'ROUND_REPORT.lock').open('a') as lock:
@@ -75,6 +84,9 @@ def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
                 stream.write('\n')
             staging.replace(path)
         del summary
+        if cache:
+            from trottertracks.rpe_q3_coordinator import atomic_json
+            atomic_json(run/'ROUND_REPORT_BOUNDS_V1.json', dict(source=optimizer_source, bounds=cache))
         with cli.round_phase(run, 'WIDTH_METHOD_TABLE'):
             path = run/'PER_METHOD.csv'
             staging = path.with_suffix('.csv.tmp')
@@ -83,7 +95,7 @@ def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
 
 
 def bind_pf_continuation_release(distributed, provider, root):
-    """Extend the local PF producer envelope while keeping the run's parent release pinned."""
+    """Bind the additional PF producer to the hosts with staged deployments."""
     from trottertracks.rpe_release_deployment import manifest_reference, read
     if not distributed.get('required_release'):
         return
@@ -99,6 +111,12 @@ def bind_pf_continuation_release(distributed, provider, root):
               if component['source'] == provider['base_source'] and
               name in manifest['stage_components']['compile']]
     component = 'pf_price_recheck_' + provider['source']
+    remote = provider.get('host_deployments', {})
+    relays = {worker['host_id']: worker for worker in distributed.get('relay', {}).get('workers', [])}
+    pbs = distributed.get('pbs') or {}
+    pbs_workers = {worker['host_id']: worker for worker in pbs.get('workers', [])}
+    if host in remote or not set(remote) <= (relays.keys() | pbs_workers.keys()):
+        raise ValueError('PF continuation deployment names an unconfigured remote host')
     manifest.update(parent_release=parent, release_id=parent['id'] + '-' + component)
     manifest['components'][component] = dict(manifest['components'][base],
                                              source=provider['source'], hosts=[host])
@@ -111,7 +129,50 @@ def bind_pf_continuation_release(distributed, provider, root):
         for rule in layout.get(section, {}).values():
             if base in rule.get('components', []):
                 rule['components'].append(component)
-    distributed['local_pf_continuation'] = dict(source=provider['source'], manifest=manifest, layout=layout)
+    references = {host: manifest_reference(manifest)}
+    for host_id, deployment in remote.items():
+        successor = deepcopy(manifest)
+        successor['release_id'] += '-' + host_id
+        successor['components'][component]['hosts'] = [host_id]
+        reference = manifest_reference(successor)
+        if deployment['reference'] != reference:
+            raise ValueError('PF continuation host release differs: '+host_id)
+        references[host_id] = reference
+        configured = O.load_json(Path(deployment['controller_profile']))
+        if configured['host_id'] != host_id or not any(
+                rule.get('source_commit') == provider['source'] and rule['provider'].startswith('PF_')
+                for rule in configured.get('preparation_profiles', [])):
+            raise ValueError('PF continuation host lacks its verified preparation profile: '+host_id)
+        paths = {key: deployment[key] for key in ('manifest', 'layout')}
+        if host_id in relays:
+            worker = relays[host_id]
+            if not worker.get('deployment'):
+                raise ValueError('PF continuation requires the base host deployment: '+host_id)
+            distributed['preparation_profiles'][host_id] = configured
+            worker['profile'] = deployment['profile']
+            worker.setdefault('task_deployments', {})[reference['id']] = dict(paths, entry=deployment['entry'])
+        else:
+            worker = pbs_workers[host_id]
+            if not (worker.get('deployment') or pbs.get('deployment')):
+                raise ValueError('PF continuation requires the base PBS deployment: '+host_id)
+            distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
+            chosen = [rule for rule in configured['preparation_profiles']
+                      if rule.get('source_commit') == provider['source']]
+            runtime = distributed['preparation_profiles'][host_id]
+            if not isinstance(runtime, dict):
+                runtime = O.load_json(Path(runtime))
+                distributed['preparation_profiles'][host_id] = runtime
+            for profile in (runtime, worker['profile']):
+                profile['preparation_profiles'].extend(deepcopy(chosen))
+            estimates = pbs['preparation_task_seconds']
+            # Reuse the existing conservative bound and resource reservation
+            # for the same validated producer stage and selected-axis subset.
+            estimates.extend([dict(rule, id=rule['id']+'-price-recovery', source=provider['source'])
+                              for rule in estimates if rule['source'] == provider['base_source']
+                              and rule['provider'] in {choice['provider'] for choice in chosen}])
+            worker.setdefault('task_deployments', {})[reference['id']] = paths
+    distributed['local_pf_continuation'] = dict(source=provider['source'], manifest=manifest, layout=layout,
+                                                references=references)
 
 
 def apply_worker_trial(spec, trial, *, run_dir=None):
@@ -301,7 +362,6 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         validation_sources = distributed['preparation'].get('bundle_validation_sources')
         if validation_sources:
             validation_sources.setdefault(provider['source'], str(root))
-        bind_pf_continuation_release(distributed, provider, root)
         # Remote mailboxes keep their deployed profiles. Only the verified
         # local profile advertises this additional producer on this Resume.
         local = distributed['local_worker']
@@ -330,6 +390,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     if trial.get('pbs_q3_adapter'):
         from trottertracks.rpe_pbs import apply_q3_adapter
         apply_q3_adapter(distributed, trial['pbs_q3_adapter'])
+    if 'pf_price_recheck_provider' in trial:
+        bind_pf_continuation_release(distributed, provider, root)
 
 
 @contextmanager
@@ -1029,9 +1091,12 @@ class WidthDriver:
         priced_rechecks = (
             getattr(comp, 'priced_pauli_recheck_keys', set)() if continuous else set())
         blocked = comp.price_deferred_keys() if hasattr(comp, 'price_deferred_keys') else set()
-        if blocked:
+        owned = comp.deferred_stage_keys() if hasattr(comp, 'deferred_stage_keys') else set()
+        excluded = blocked | owned
+        if excluded:
             from trottertracks.pr_candidate_completion import key
-            pending = [p for p in pending if key(p['completion_request']) not in blocked]
+            pending = [p for p in pending if key(p['completion_request']) not in excluded
+                       and (p.get('completion') or {}).get('key') not in excluded]
         cycle=self.state['cycle'];limit=W.settings(self.wide)['per_decision']
         if continuous:
             pending = [p for p in pending if p.get('input_dispatch_cycle') != cycle]
@@ -1100,7 +1165,7 @@ class WidthDriver:
                   'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')
         self.log(event='PREPARATION_WAVE_START',dispatch_reason=reason,per_method_limit=limit,
             selected_by_method=counts,pending_before=total_pending,deferred=total_pending-len(selected),
-            waiting_unchanged_price=total_pending-len(pending),
+            waiting_unchanged_price=len(blocked), waiting_original_attempt=len(owned),
             selected=[dict(method=p['method'],family=p['family'],kappa=p['kappa'])for p in selected])
         def prepare_points(points):
             for p in points:
@@ -1622,8 +1687,7 @@ class WidthDriver:
                 with K.CLI.round_phase(self.run,'WIDTH_PREPARATION_CONTINUATION'):
                     result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
                         active_spec,self.run,comp,executor,result,optimizer=optimize)
-            if getattr(runtime, 'settings', {}).get('horizon_extensions') and not any(
-                    r['stop_reason'] in fatal for r in result.values()):
+            if runtime is not None and not any(r['stop_reason'] in fatal for r in result.values()):
                 from trottertracks.rpe_preparation_queue import submit_horizon_preparation
                 requests = [req for r in result.values() for req in r.get('input_requests', [])
                             if req['kind'] == 'HORIZON_INPUTS_MISSING']
@@ -1669,17 +1733,26 @@ class WidthDriver:
             publish_search(ROOT,self.run,self.run.parent/'SEARCH_PUBLICATION.json',run_id=self.spec['round_id'])
         return result
 
-    def finish_report(self):
+    def finish_report(self, *, include_deferred=True):
         report = getattr(self, '_report', None)
         if report is not None:
             self._report = None
             process, snapshot = report
             with snapshot:
                 if process.wait():
-                    import pickle
-                    snapshot.seek(0)
-                    run, spec, result, source, owner = pickle.load(snapshot)
-                    write_width_report(Path(run), self.report_cli(), spec, result, source, owner=owner)
+                    self.render_snapshot(snapshot)
+        deferred = getattr(self, '_deferred_report', None)
+        if include_deferred and deferred is not None:
+            self._deferred_report = None
+            with deferred:
+                self.render_snapshot(deferred)
+
+    def render_snapshot(self, snapshot):
+        import pickle
+
+        snapshot.seek(0)
+        run, spec, result, source, owner = pickle.load(snapshot)
+        write_width_report(Path(run), self.report_cli(), spec, result, source, owner=owner)
 
     def report_cli(self):
         trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
@@ -1698,7 +1771,6 @@ class WidthDriver:
         return self._report_cli
 
     def report(self, result):
-        self.finish_report()
         source = K.CLI.head()
         holds = {method: rows.get('execution_holds', []) for method, rows in result.items()}
         # Older executors reload these holds from ROUND_RESULT at batch start.
@@ -1710,6 +1782,7 @@ class WidthDriver:
                 or not trial.get('controller_queue_first')
                 or str(self.run).startswith(str(ROOT/'docs/research'))
                 or not (self.run/'NORMAL_DRIVER.json').is_file()):
+            self.finish_report()
             write_width_report(self.run, self.report_cli(), self.spec, result, source)
             return
 
@@ -1733,6 +1806,15 @@ class WidthDriver:
                 pickle.dump((str(self.run), self.spec, result, source, os.getpid()),
                             snapshot, protocol=pickle.HIGHEST_PROTOCOL)
                 snapshot.seek(0)
+                deferred = getattr(self, '_deferred_report', None)
+                if deferred is not None:
+                    deferred.close()
+                    self._deferred_report = None
+                previous = getattr(self, '_report', None)
+                if previous is not None and previous[0].poll() is None:
+                    self._deferred_report = snapshot
+                    return
+                self.finish_report(include_deferred=False)
                 process = subprocess.Popen(
                     [sys.executable, '-B', '-c', script, str(ROOT), str(Path(__file__).resolve()),
                      self.report_cli().__file__],

@@ -65,6 +65,25 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(sum(row['event'] == 'ASSIGN' for row in restarted.store.events()), 2)
         self.assertTrue(all(restarted.store.row(job)['state'] == 'ACCEPTED' for job in set(jobs.values())))
 
+    def test_horizon_signal_can_run_with_missing_or_invalid_price_axis(self):
+        from trottertracks.rpe_preparation_queue import submit_horizon_preparation
+
+        executor = self.executor(capacity=1)
+        request = self.request('signal', 'extension')
+        request['original_contract'] = {'round': 13}
+        request['preparation']['horizon_round'] = {'m': 13, 'physical_id': 'physical'}
+        runtime = SimpleNamespace(executor=executor, approved=True, settings=dict(
+            budgets={'signal': 1}, horizon_extensions=dict(tasks={'signal': {'request': request}},
+                bindings={'origin': {'source_M': 12, 'rounds': {'13': {
+                    'physical_id': 'physical', 'signal': 'signal', 'Y': 'signal'}}}})))
+        extension = dict(source_configuration_id='origin', configuration_id='extended',
+                         M=13, source_M=12, extension_rounds=[13])
+        report, = submit_horizon_preparation(runtime, [extension])
+        self.assertEqual(report['status'], 'HORIZON_PREPARATION_PARTIAL')
+        self.assertEqual(set(report['incomplete']['13']), {'X', 'Y'})
+        self.assertEqual(set(report['jobs']['13']), {'signal'})
+        self.assertEqual(executor.store.preparation_reservations(), {'signal': 1})
+
     def test_shared_q3_and_preparation_slot_cannot_be_claimed_twice(self):
         ex=self.executor(capacity=1)
         prep=self.submit(ex,'compile','cell')
