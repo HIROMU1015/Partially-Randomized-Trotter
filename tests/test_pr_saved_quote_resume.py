@@ -55,6 +55,34 @@ class SavedQuotes(unittest.TestCase):
             configuration_source=source,means=[dict(source=source)])),saved_index=lambda:{'physical':'original'})
         self.assertEqual(service.validated_packet_index(entry,source,None,'fixed'),{'physical':'original'})
 
+    def test_df_extended_packet_checks_the_reissued_prefix_carrier(self):
+        spec = importlib.util.spec_from_file_location('_df_horizon_service', ROOT/'scripts/pr_candidate_services.py')
+        service = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(service)
+        locator = dict(commit='a'*40, path='bundle.json')
+        original = dict(commit='b'*40, path='before.json')
+        carrier = dict(commit='c'*40, path='after.json')
+        packet = dict(configuration_source=locator, means=[
+            dict(m=m, source=carrier, horizon_origin=original) for m in range(13)])
+        packet['means'].append(dict(m=13, source=carrier))
+        records = {
+            'bundle.json': packet,
+            'before.json': dict(signal=1, B_configuration_id='before'),
+            'after.json': dict(signal=1, B_configuration_id='after', horizon_origin=original),
+        }
+        reader = SimpleNamespace(read=lambda loc: records[loc['path']])
+
+        def saved_index():
+            self.assertTrue(all('horizon_origin' not in row for row in reader.read(locator)['means']))
+            return {'physical': 'checked'}
+
+        entry = SimpleNamespace(reader=reader, saved_index=saved_index)
+        self.assertEqual(service.validated_packet_index(entry, locator, None, None), {'physical': 'checked'})
+        self.assertIn('horizon_origin', reader.read(locator)['means'][0])
+        records['after.json']['signal'] = 2
+        with self.assertRaisesRegex(ValueError, 'Reissued DF carrier differs'):
+            service.validated_packet_index(entry, locator, None, None)
+
     def test_df_alias_reuses_only_strictly_matching_scientific_records(self):
         spec=importlib.util.spec_from_file_location('_scoped_df_service',ROOT/'scripts/pr_candidate_services.py')
         service=importlib.util.module_from_spec(spec);spec.loader.exec_module(service)

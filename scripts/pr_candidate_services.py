@@ -70,11 +70,11 @@ def df_extension():
 
 
 # The fixed stage() rebinds these canonical labels after matching the physical
-# key and checking each record against its original job. 'reuse' is lineage
-# for that rebind. Numerical values, recipe and input/reference evidence
+# key and checking each record against its original job. The lineage fields
+# describe that rebind. Numerical values, recipe and input/reference evidence
 # remain in the comparison.
 DF_DECLARATION_FIELDS = frozenset({
-    'B_configuration_id', 'B_candidate_id', 'B_identity', 'B_law_binding', 'reuse',
+    'B_configuration_id', 'B_candidate_id', 'B_identity', 'B_law_binding', 'reuse', 'horizon_origin',
 })
 
 
@@ -95,6 +95,25 @@ def fixed_locator(ref):
     return isinstance(commit, str) and re.fullmatch(r'[0-9a-f]{40}', commit) is not None
 
 
+def index_reissued_df_packet(entry, source, packet):
+    """Verify the original carriers before passing the normal packet to fixed intake."""
+    packet = deepcopy(packet)
+    if [mean['m'] for mean in packet['means']] != list(range(14)):
+        raise ValueError('Reissued DF horizon must have all fourteen rounds')
+    reader = entry.reader.read
+    for mean in packet['means'][:13]:
+        origin = mean.pop('horizon_origin', None)
+        record = reader(mean['source'])
+        if (not fixed_locator(origin) or record.get('horizon_origin') != origin
+                or df_record_differences(record, reader(origin))):
+            raise ValueError('Reissued DF carrier differs from its source at m=' + str(mean['m']))
+    entry.reader.read = lambda loc: deepcopy(packet) if loc == source else reader(loc)
+    try:
+        return entry.saved_index()
+    finally:
+        entry.reader.read = reader
+
+
 def validated_packet_index(entry, source, cache_dir, scope):
     entry.saved = [source]
     entry._index = None
@@ -109,6 +128,8 @@ def validated_packet_index(entry, source, cache_dir, scope):
             or not isinstance(packet.get('means'), list)
             or any(not isinstance(mean, dict) or 'source' not in mean for mean in packet['means'])):
         raise ValueError('DF_SAVED_BUNDLE_EXPECTED: saved_df_bundles requires a DF bundle with configuration_source and top-level means: '+str(source))
+    if any('horizon_origin' in mean for mean in packet['means']):
+        return index_reissued_df_packet(entry, source, packet)
     if cache_dir is None or not fixed_locator(source):
         return entry.saved_index()
     cache_dir = Path(cache_dir)

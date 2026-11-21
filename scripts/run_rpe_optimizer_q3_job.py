@@ -26,6 +26,7 @@ from contextlib import contextmanager, nullcontext
 from copy import deepcopy
 from fractions import Fraction
 import importlib.util
+import inspect
 import hashlib
 import json
 import os
@@ -175,7 +176,7 @@ def install_risk_bound(extension):
             yield
 
 
-def validate_horizon_extension(view, parent, metadata):
+def validate_horizon_extension(view, parent, metadata, *, allow_df_carrier=False):
     binding, packet_view = metadata
     config = binding['original_configuration']
     packet = packet_view['signal_packet']['origin_signal_packet']
@@ -213,6 +214,12 @@ def validate_horizon_extension(view, parent, metadata):
     fields = ('raw', 'corrected', 'reference', 'normalization')
     for before, after, former, extended in zip(previous['rounds'], config['rounds'],
                                                prefix['means'], packet['means']):
+        if allow_df_carrier and extended['normalization']['source'] != former['normalization']['source']:
+            if (extended.get('horizon_origin') != former['source']
+                    or extended['normalization']['source'] != extended['source']):
+                raise ValueError('PR-DF prefix carrier lost its saved provenance at m=' + str(former['m']))
+            extended = dict(extended, normalization=dict(extended['normalization'],
+                          source=former['normalization']['source']))
         if (canonical_prefix(after, before) != before
                 or any(former[k] != before[k] or extended[k] != after[k] for k in ('identity', 'law_binding'))
                 or any(json.dumps(former[k], sort_keys=True) != json.dumps(extended[k], sort_keys=True)
@@ -527,7 +534,25 @@ def load_prdf_route(view, route_views):
                         saved_caller=dict(commit=old, path=saved_path), frozen_sources_modified=False)
 
 
-def route(view, kind, route_views=None):
+def extend_prdf_intake(module):
+    """Keep the fixed intake checks and enforce the configured round count."""
+    original = module.U.metadata
+    path = Path(inspect.getsourcefile(original)).resolve()
+    root = module.U.ROOT
+    ref = f"27e70efe533862f38f4080aabb9cdd3ad1749fe9:{path.relative_to(root).as_posix()}"
+    if path.read_bytes() != subprocess.check_output(['git', 'show', ref], cwd=root):
+        raise ValueError('PR-DF intake differs from the fixed inner SOURCE')
+    source = inspect.getsource(original)
+    old = "len(view['signal_packet']['means'])!=13"
+    if source.count(old) != 1:
+        raise ValueError('Expected exactly the original PR-DF round-count check')
+    scope = dict(vars(module.U))
+    generated = source.replace(old, "len(view['signal_packet']['means'])!=len(original['rounds'])")
+    exec(compile(generated, str(path), 'exec'), scope)
+    module.U.metadata = scope['metadata']
+
+
+def route(view, kind, route_views=None, *, extended_horizon=False):
     """(metadata, installed-context, supervise, validate, bounds) of an existing route, loaded unchanged."""
     if kind == 'pf_b_pf6':
         F = load(view, '_rpe_opt_pf6', 'scripts/run_pf6_cost_budget_q3_fixed.py');F.check_source()
@@ -553,6 +578,8 @@ def route(view, kind, route_views=None):
                   binding=X.T, binding_root=view)
     if kind in ('prdf_d2_split','prdf_d2_common_entry'):
         W, resolution = load_prdf_route(view, route_views or {})
+        if extended_horizon:
+            extend_prdf_intake(W)
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
                   evidence_writer=W.U.R if kind=='prdf_d2_common_entry' else None, validate=pinned_validator(view, W.U.H, W.U.T.Q.a.exact_scalar), bounds=lambda s: W.Q.bounds(dict(allocation=dict(shots=s))),
                   runtime=W.runtime_check, source_resolution=resolution, binding=W.U.T, binding_root=W.U.ROOT)
@@ -803,7 +830,10 @@ def main():
     else:
         view = Path(request['route']['view'])
         route_views = json.loads(a.route_views.read_text()) if a.route_views else request['route'].get('route_views', {})
-        case, inputs = scoped_case(view, request);inputs = execution_profile(inputs, request);r = route(view, kind, route_views)
+        case, inputs = scoped_case(view, request)
+        inputs = execution_profile(inputs, request)
+        df_extension = M == 13 and kind in ('prdf_d2_split', 'prdf_d2_common_entry')
+        r = route(view, kind, route_views, extended_horizon=df_extension)
         extension = None
         if M == 13:
             if len(inputs['options']['phase_radii']) != 14:
@@ -820,7 +850,8 @@ def main():
             runtime = r.runtime() if r.runtime is not None else None
             metadata = r.metadata(case)
             if extension is not None:
-                validate_horizon_extension(view, request['route']['horizon_parent'], metadata)
+                validate_horizon_extension(view, request['route']['horizon_parent'], metadata,
+                                           allow_df_carrier=df_extension)
             stage(out, 'METADATA_PASS', bounds=bounds)
             source = dict(request_id=request['request_id'], route=kind, view_commit=request['route']['view_commit'],
                           adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=request.get('optimizer_source'), runtime=runtime, execution_profile=request.get('execution_profile'))
