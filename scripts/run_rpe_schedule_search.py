@@ -109,6 +109,10 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         cli.ROOT = ROOT
         K.CLI = cli
         spec['executor']['large_shot_bounds'] = True
+    elif 'width_report_sha256' in trial:
+        path = Path(__file__).resolve().with_name('run_rpe_method_optimizer.py')
+        if hashlib.sha256(path.read_bytes()).hexdigest() != trial['width_report_sha256']:
+            raise ValueError('Selected width report formatter differs')
     for field in ('ready_queue_waves', 'live_readiness_max_workers', 'live_readiness_refill_seconds'):
         if field in trial:
             distributed[field] = trial[field]
@@ -1582,7 +1586,23 @@ class WidthDriver:
                     import pickle
                     snapshot.seek(0)
                     run, spec, result, source, owner = pickle.load(snapshot)
-                    write_width_report(Path(run), K.CLI, spec, result, source, owner=owner)
+                    write_width_report(Path(run), self.report_cli(), spec, result, source, owner=owner)
+
+    def report_cli(self):
+        trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+        if 'width_report_sha256' not in trial or 'large_shot_adapter' in trial:
+            return K.CLI
+        import runpy
+        from types import SimpleNamespace
+
+        if not hasattr(self, '_report_cli'):
+            path = Path(__file__).resolve().with_name('run_rpe_method_optimizer.py')
+            imports = sys.path[:]
+            try:
+                self._report_cli = SimpleNamespace(**runpy.run_path(str(path)))
+            finally:
+                sys.path[:] = imports
+        return self._report_cli
 
     def report(self, result):
         self.finish_report()
@@ -1597,7 +1617,7 @@ class WidthDriver:
                 or not trial.get('controller_queue_first')
                 or str(self.run).startswith(str(ROOT/'docs/research'))
                 or not (self.run/'NORMAL_DRIVER.json').is_file()):
-            write_width_report(self.run, K.CLI, self.spec, result, source)
+            write_width_report(self.run, self.report_cli(), self.spec, result, source)
             return
 
         import pickle
@@ -1621,7 +1641,8 @@ class WidthDriver:
                             snapshot, protocol=pickle.HIGHEST_PROTOCOL)
                 snapshot.seek(0)
                 process = subprocess.Popen(
-                    [sys.executable, '-B', '-c', script, str(ROOT), str(Path(__file__).resolve()), K.CLI.__file__],
+                    [sys.executable, '-B', '-c', script, str(ROOT), str(Path(__file__).resolve()),
+                     self.report_cli().__file__],
                     stdin=snapshot, cwd=ROOT)
             except BaseException:
                 snapshot.close()
