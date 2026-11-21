@@ -57,6 +57,30 @@ def read_loc(loc):
 def apply_worker_trial(spec, trial, *, run_dir=None):
     """Install the selected execution policy in memory after fixed-input checks."""
     distributed = spec['executor']['distributed']
+    if 'large_shot_adapter' in trial:
+        import importlib.util
+
+        selected = trial['large_shot_adapter']
+        path = Path(__file__).resolve().with_name('run_rpe_method_optimizer.py')
+        if hashlib.sha256(path.read_bytes()).hexdigest() != selected['optimizer_entry_sha256']:
+            raise ValueError('Selected large-shot optimizer entry differs')
+        adapter = dict(adapter_root=selected['root'], adapter_manifest=selected['manifest'])
+        from trottertracks.rpe_host_profiles import validate_adapter_profile
+        validate_adapter_profile(adapter)
+        local = distributed['local_worker']
+        local.update(adapter)
+        for rule in local.get('route_profiles', ()):
+            rule['profile'].update(adapter)
+        entry = importlib.util.spec_from_file_location('_rpe_large_shot_optimizer_entry', path)
+        cli = importlib.util.module_from_spec(entry)
+        imports = sys.path[:]
+        try:
+            entry.loader.exec_module(cli)
+        finally:
+            sys.path[:] = imports
+        cli.ROOT = ROOT
+        K.CLI = cli
+        spec['executor']['large_shot_bounds'] = True
     if 'ready_queue_waves' in trial:
         distributed['ready_queue_waves'] = trial['ready_queue_waves']
     if trial.get('pbs_hold_node') is True and distributed.get('pbs'):

@@ -597,12 +597,14 @@ class Gateway:
     restores_preparation_archives_on_resume = True
 
     def __init__(self, config, *, preflight=None, launch=None, resume_ast_failure=None,
-                 resume_dispatch_failure=None, resume_pf_request_failure=None):
+                 resume_dispatch_failure=None, resume_pf_request_failure=None,
+                 resume_controller_kill=None):
         self.config = deepcopy(config); self.state = Path(config['state_directory'])
         self.preflight = preflight or self.normal_preflight; self.launch = launch or self.normal_launch
         self.resume_ast_failure = resume_ast_failure
         self.resume_dispatch_failure = resume_dispatch_failure
         self.resume_pf_request_failure = resume_pf_request_failure
+        self.resume_controller_kill = resume_controller_kill
 
     def create_run_directory(self, run):
         evidence = self.config.get('run_evidence_root')
@@ -739,14 +741,18 @@ class Gateway:
         recovery_kind, recovery_invocation = next(
             ((kind, invocation) for kind, invocation in (
                 ('pf_request', self.resume_pf_request_failure),
-                ('dispatch', self.resume_dispatch_failure), ('ast', self.resume_ast_failure))
+                ('dispatch', self.resume_dispatch_failure), ('ast', self.resume_ast_failure),
+                ('controller_kill', self.resume_controller_kill))
              if invocation), (None, None))
         if completed and completed.get('returncode') != 0 and not user_interrupted:
             stop_path = run/'KAPPA_STATE.json'
             stop = (load(stop_path).get('stop') or {}).get('reason') if stop_path.exists() else None
             if request['action'] != 'resume' or not recovery_invocation:
                 raise RequestError('run', 'failed invocation requires reconciliation: '+str(stop or completed.get('returncode')))
-            recovered_stop = reconcile_runtime_failure(run, state, completed, recovery_invocation, recovery_kind)
+            if recovery_kind == 'controller_kill':
+                recovered_stop = reconcile_controller_kill(run, state, completed, recovery_invocation)
+            else:
+                recovered_stop = reconcile_runtime_failure(run, state, completed, recovery_invocation, recovery_kind)
         suspended_marker = None
         if (run/'ROUND_RESULT.json').exists():
             outcomes=load(run/'ROUND_RESULT.json')['methods']
@@ -1100,6 +1106,55 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
     except (OSError, ValueError, KeyError, sqlite3.Error) as error:
         hold(str(error))
     return stop
+
+
+def reconcile_controller_kill(run, launch, ended, invocation):
+    """Resume a checkpoint after its killed controller and run-owned workers have ended."""
+    import sqlite3
+
+    try:
+        archived = run/'invocations'/invocation
+        driver = load(run/'NORMAL_DRIVER.json')
+        relay = load(run/'distributed/relay/STATUS.json')
+        if (launch.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
+                or ended.get('returncode') != -signal.SIGKILL
+                or launch != load(archived/'LAUNCH.json') or ended != load(archived/'EXIT.json')
+                or driver.get('invocation_id') != invocation or relay.get('stopped') is not True):
+            raise ValueError('the killed invocation or its ended relay differs')
+        for owner in (launch, driver, relay, load(run/'distributed/LOCAL_DAEMON.json')):
+            pid = owner['pid']
+            if type(pid) is not int or pid <= 0:
+                raise ValueError('invalid owner PID')
+            process = Path('/proc', str(pid), 'cmdline')
+            try:
+                if process.read_bytes().strip(b'\0'):
+                    raise ValueError('an owner still has a live process')
+            except FileNotFoundError:
+                pass
+        hold = driver_restart_hold(run, load(run/'ROUND.json'))
+        if hold:
+            raise ValueError(hold)
+        terminal_pbs = ('F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED')
+        if any(a['status'] not in terminal_pbs or a.get('inflight')
+               for a in load(run/'distributed/pbs/STATE.json')['allocations'].values()):
+            raise ValueError('a run-owned PBS allocation is still open')
+        with (run/'FAST_DRIVER.lock').open('rb') as lock:
+            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+            with sqlite3.connect(queue, uri=True) as db:
+                rows = db.execute("SELECT job_id,state,attempt_id,detail FROM jobs WHERE state NOT IN "
+                                  "('ACCEPTED','CANCELLED')")
+                held = []
+                for job, state, attempt, detail in rows:
+                    detail = json.loads(detail)
+                    if (state != 'UNKNOWN' or not attempt or detail.get('automatic_retry') is not False
+                            or detail.get('resource_released') is not True):
+                        raise ValueError('job still has unresolved ownership: '+job)
+                    held.append(dict(job_id=job, attempt_id=attempt))
+        return dict(reason='CONTROLLER_KILLED_CHECKPOINT_RECONCILED', invocation_id=invocation,
+                    returncode=ended['returncode'], held_attempts=held)
+    except (OSError, ValueError, KeyError, sqlite3.Error) as error:
+        raise RequestError('run', 'controller kill reconciliation: '+str(error)) from error
 
 
 def schedule_driver(config, run, selection):

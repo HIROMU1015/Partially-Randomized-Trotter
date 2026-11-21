@@ -86,6 +86,55 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(RequestError, 'Q3 store differs'):
             schedule_driver(self.config, run, selection)
 
+    def test_explicit_resume_preserves_killed_controller_attempts_and_stop(self):
+        import signal
+        from trottertracks.rpe_q3_store import JobStore
+
+        invocation = '8' * 32
+        launched = []
+        gateway = Gateway(self.config, preflight=lambda *_: {'status': 'PASS'},
+                          launch=lambda run, *_: launched.append(run), resume_controller_kill=invocation)
+        run = pathlib.Path(gateway.handle(dict(request(4, 6), action='prepare'))['run_directory'])
+        spec = load(run/'ROUND.requested.json')
+        spec['executor']['distributed'] = {}
+        write(run/'ROUND.requested.json', spec)
+        write(run/'ROUND.json', spec)
+        scope = load(run/'APPLIED_SCOPE.json')
+        write(run/'APPLIED_SCOPE.json', dict(scope, round_requested_sha256=digest(spec)))
+        launch = dict(invocation_id=invocation, pid=2147483647)
+        ended = dict(invocation_id=invocation, returncode=-signal.SIGKILL)
+        history = run/'invocations'/invocation
+        for location in (run, history):
+            write(location/'LAUNCH.json', launch)
+            write(location/'EXIT.json', ended)
+        write(run/'NORMAL_DRIVER.json', launch)
+        write(run/'distributed/relay/STATUS.json', dict(stopped=True, pid=launch['pid']))
+        write(run/'distributed/LOCAL_DAEMON.json', dict(pid=launch['pid']))
+        write(run/'distributed/pbs/STATE.json', dict(allocations={}))
+        write(run/'KAPPA_STATE.json', dict(schema='RPE_REQUESTED_WIDTH_SCHEDULE_STATE_V1', round_id=spec['round_id']))
+        (run/'FAST_DRIVER.lock').touch()
+        queue = JobStore(run/'distributed/QUEUE.sqlite3')
+        queue.reserve('PR_PAULI', 'artificial-job', dict(route=dict(kind='artificial')), 2, True)
+        assignment, = queue.claim('worker', 1)
+        before = queue.row('artificial-job')
+        resume = dict(action='resume', run_id=run.name, instruction='Resume artificial checkpoint')
+        with self.assertRaisesRegex(RequestError, 'job still has unresolved ownership'):
+            gateway.handle(resume)
+        queue.update('worker', 'artificial-job', assignment['attempt_id'], 'UNKNOWN',
+                     dict(automatic_retry=False, resource_released=True))
+        stop = run/'STOP_REQUESTED.json'
+        write(stop, dict(reason='USER_REQUESTED_STOP'))
+        with self.assertRaisesRegex(RequestError, 'STOP_OR_SEARCH_TERMINATION'):
+            gateway.handle(resume)
+        stop.unlink()
+        self.assertEqual(gateway.handle(resume)['status'], 'STARTED')
+        self.assertEqual(launched, [run])
+        self.assertEqual(queue.row('artificial-job')['attempt_id'], before['attempt_id'])
+        self.assertEqual(queue.row('artificial-job')['state'], 'UNKNOWN')
+        self.assertEqual(load(history/'EXIT.json'), ended)
+        saved = load(run/'stop-history'/('controller_kill-'+invocation+'.json'))
+        self.assertEqual(saved['held_attempts'], [dict(job_id='artificial-job', attempt_id=before['attempt_id'])])
+
     def test_technical_ast_resume_requires_ended_owners_and_preserves_stop(self):
         import sqlite3
 
