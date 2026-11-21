@@ -149,6 +149,28 @@ def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest()
 
 
+def df_freeze_output_problem(request, result):
+    """A clean provider exit must return the model and prices for this leaf."""
+    prep = request['preparation']
+    if prep.get('provider') != 'DF_MODEL_FREEZE' or prep.get('artificial'):
+        return None
+    try:
+        command = prep['command']
+        payload = Path(command[command.index('--input') + 1])
+        leaf = artifact_path(payload.relative_to(prep['controller_root']).parent.as_posix())
+    except (KeyError, IndexError, TypeError, ValueError):
+        return 'DF_FREEZE_INPUT_LOCATION_UNAVAILABLE'
+    artifacts = result.get('artifacts') or result.get('artifact_manifest') or {}
+    inputs = prep['inputs']
+    missing = []
+    for filename in ('FROZEN_MODELS.json', 'AXIS_PRICES.json'):
+        name = (Path('workspace') / leaf / filename).as_posix()
+        if name not in artifacts or artifacts[name] == inputs.get(name):
+            missing.append(filename)
+    if missing:
+        return 'DF_FREEZE_REQUIRED_OUTPUT_NOT_RETURNED:' + ','.join(missing)
+
+
 def contract_runtime(values, script, configured, provider=None):
     """Extract declared package/compiler identities without importing a provider."""
     result=deepcopy(configured);packages=result.setdefault('packages',{});compilers=set()
@@ -495,6 +517,14 @@ class DistributedPreparationBridge:
             if state == 'ACCEPTED' and row['attempt_id'] and row['completion_sha256']:
                 action = 'CHECK_ORIGINAL_RECEIPT'
                 if status == 'PREPARATION_COMPLETE':
+                    if stage == 'DF_MODEL_FREEZE' and not request['preparation'].get('artificial'):
+                        job = self.executor.run_dir/'jobs'/row['method']/job_id
+                        outcome = read(job/'OUTCOME.json')
+                        if (outcome.get('request_sha256') != row['request_sha256']
+                                or outcome.get('status') != status):
+                            return unmatched
+                        if problem := df_freeze_output_problem(request, outcome):
+                            return dict(result, action='CHECK_ORIGINAL_OUTPUT', reason=problem)
                     action = 'IMPORT_SUCCESSFUL_STAGE'
                 elif status == 'PREPARATION_FAILED':
                     job = self.executor.run_dir/'jobs'/row['method']/job_id
@@ -1251,6 +1281,8 @@ class DistributedPreparationBridge:
             hold = Held if terminal.get('status') in ('PREPARATION_HOLD', 'PREPARATION_BUDGET_OR_PERMISSION_HOLD',
                                                       'PREPARATION_STOPPED_BEFORE_RESERVATION') else PreparationWait
             raise hold('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
+        if problem := df_freeze_output_problem(request, result):
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':'+problem)
         try:
             if inherited_workspace is None:
                 self._import_result(result, request)

@@ -332,7 +332,7 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         from trottertracks import pf_candidate_selection as PF
         events = []
 
-        def next_wave(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, recheck_waiting):
+        def next_wave(root, problem, context, spec, run, routes, stage_executor, *, stop_requested, recheck_waiting, announce):
             events.append(('prepare', context))
             self.assertEqual(recheck_waiting, context == 0)
             updated = context + 1
@@ -343,7 +343,7 @@ class IndependentMethodLaunchContract(unittest.TestCase):
             answer = PF.prepare_available(None, None, 0, None, None, {}, None, stop_requested=lambda: False,
                                           announce=lambda snapshot, routes: events.append(('ready', snapshot)))
         self.assertEqual(answer[2]['status'], 'NO_INCOMPLETE_PF_CANDIDATE')
-        self.assertEqual(events, [('prepare', 0), ('ready', 1), ('prepare', 1), ('ready', 2),
+        self.assertEqual(events, [('ready', 0), ('prepare', 0), ('ready', 1), ('prepare', 1), ('ready', 2),
                                   ('prepare', 2), ('ready', 3)])
 
     def test_joint_method_planning_matches_independent_method_refinements(self):

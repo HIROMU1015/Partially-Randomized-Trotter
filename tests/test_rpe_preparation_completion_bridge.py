@@ -27,6 +27,65 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_df_freeze_receipt_with_only_input_copies_is_not_adopted(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            method = 'PREPARATION:audit'
+            prep = dict(provider='DF_MODEL_FREEZE', stage='audit', controller_root=str(root),
+                        command=['provider', 'freeze', '--input', str(root/'candidate/df_prices/INPUTS.json')],
+                        source={'commit': 'fixed', 'files': {}},
+                        inputs={'workspace/candidate/df_prices/INPUTS.json': 'a'*64,
+                                'workspace/candidate/df_prices/AXIS_PRICES.json': 'b'*64})
+            request = normalize_preparation_request(
+                dict(route={'kind': 'preparation'}, preparation=prep, original_contract={'source': 'fixed'}))
+            job = request['request_id']
+            candidate = root/'candidate'
+            C.put(candidate/'DF_MODEL_FREEZE.DISTRIBUTED.json', dict(job_id=job, request=request, source='fixed'))
+            executor = type('Engine', (), {'run_dir': root/'run', 'store': JobStore(root/'store.sqlite3')})()
+            host = {'fixture': True}
+            eligibility = dict(request_sha256=W.digest(request), eligible_host_ids=['fixed-host'],
+                               host_fingerprints={'fixed-host': W.digest(host)})
+            self.assertTrue(executor.store.reserve(method, job, request, 1, True, eligibility=eligibility))
+            attempt = executor.store.claim('fixed-host', 1, host_fingerprints={job: host})[0]['attempt_id']
+            executor.store.update('fixed-host', job, attempt, 'RUNNING')
+            executor.store.update('fixed-host', job, attempt, 'COMPLETED_PENDING_TRANSFER',
+                                  {'outcome_status': 'PREPARATION_COMPLETE'})
+            executor.store.complete('fixed-host', job, attempt, W.digest(request), {})
+            outcome = dict(status='PREPARATION_COMPLETE', request_sha256=W.digest(request),
+                           artifacts=dict(prep['inputs'], **{
+                               'workspace/other/df_prices/FROZEN_MODELS.json': 'c'*64,
+                               'workspace/other/df_prices/AXIS_PRICES.json': 'd'*64,
+                           }))
+            result_path = executor.run_dir/'jobs'/method/job/'OUTCOME.json'
+            C.put(result_path, outcome)
+            executor.submit_preparation = lambda *a, **k: job
+            executor.preparation_result = lambda *a, **k: outcome
+            executor.adopt_preparation = executor.store.adopt
+            completion = type('Completion', (), {'log': lambda *a, **k: None})()
+            bridge = B.DistributedPreparationBridge(executor, root)
+            with patch.object(bridge, '_import_result') as import_result:
+                result = bridge.recovery_evidence(candidate, 'DF_MODEL_FREEZE', job)
+                self.assertEqual(result['action'], 'CHECK_ORIGINAL_OUTPUT')
+                self.assertEqual(result['attempt_id'], attempt)
+                with self.assertRaisesRegex(C.Held, 'FROZEN_MODELS.json,AXIS_PRICES.json'):
+                    bridge.call(completion, prep['command'], candidate, 'DF_MODEL_FREEZE')
+                import_result.assert_not_called()
+                self.assertIsNone(executor.store.row(job)['adopted_epoch'])
+                self.assertFalse((candidate/'DF_MODEL_FREEZE.RETURN.json').exists())
+
+                # A separate valid provider result would contain both outputs in
+                # this exact candidate directory, with bytes absent from its inputs.
+                outcome['artifacts'].update({
+                    'workspace/candidate/df_prices/FROZEN_MODELS.json': 'e'*64,
+                    'workspace/candidate/df_prices/AXIS_PRICES.json': 'f'*64,
+                })
+                C.put(result_path, outcome)
+                self.assertEqual(bridge.recovery_evidence(candidate, 'DF_MODEL_FREEZE', job)['action'],
+                                 'IMPORT_SUCCESSFUL_STAGE')
+                bridge.call(completion, prep['command'], candidate, 'DF_MODEL_FREEZE')
+                import_result.assert_called_once()
+                self.assertIsNotNone(executor.store.row(job)['adopted_epoch'])
+
     def test_df_audit_requires_the_relocated_receipt_to_match_the_raw_commit(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

@@ -230,6 +230,7 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
             announce(context, routes)
             previous = context
 
+    publish_ready(context, routes)
     while True:
         context, routes, status = prepare_next(root, problem, context, spec, run, routes, stage_executor,
                                                stop_requested=stop_requested, recheck_waiting=recheck_waiting,
@@ -360,6 +361,15 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             if row.get('status')=='PREPARATION_SCHEDULED':
                 row.update(status='PRIOR_OWNER_HOLD',reason='Reconcile the scheduled wave in its original run',
                            original_wave=previous)
+    registry=deepcopy(context['pf_evidence_registry'])
+    for record in records.values():
+        registry['configurations'].update(record.get('configurations',{}))
+    if records:
+        restored = registry != context['pf_evidence_registry']
+        context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
+        routes=PF.registry_routes(routes,registry)
+        if restored and announce is not None:
+            announce(context, routes)
     recovery = run/'pf_auto'/'price-recovery'
     distributed_completion = stage_executor is not None and settings.get('mode') == 'complete'
     if distributed_completion and recheck_waiting:
@@ -392,12 +402,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 row['price_axis_actions'] = price_axis_actions(row['price_reconciliation'])
         if records:
             atomic_write(index, records)
-    registry=deepcopy(context['pf_evidence_registry'])
-    for record in records.values():
-        registry['configurations'].update(record.get('configurations',{}))
     if records:
-        context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
-        routes=PF.registry_routes(routes,registry)
         newly_ready = False
         for candidate in context['candidates']:
             record = records.get(candidate['configuration_id'])
@@ -410,8 +415,6 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 newly_ready = True
         if newly_ready:
             atomic_write(index, records)
-            if announce is not None:
-                announce(context, routes)
     pending={cid for cid,row in records.items() if row.get('status')=='PREPARATION_SCHEDULED'}
     revisit = {cid for cid, row in records.items() if row['status'] in
                ('PRICE_RECEIPT_RECHECK_AVAILABLE', 'PRICE_RECHECK_AVAILABLE')}

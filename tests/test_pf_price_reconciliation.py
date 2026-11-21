@@ -46,6 +46,30 @@ class PFPriceReconciliationTests(unittest.TestCase):
             self.assertEqual(records['finished']['status'], 'PREPARATION_WAITING')
             self.assertEqual(records['failed']['status'], 'PREPARATION_INCOMPLETE')
 
+    def test_restored_candidates_are_announced_before_price_reconciliation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            entry = {'saved': {'id': 'saved'}}
+            write(run/'pf_auto/WAVES.json', {'saved': {'status': 'READY_RETURNED_TO_SAME_OPTIMIZER',
+                                                       'configurations': entry}})
+            context = dict(pf_evidence_registry={'configurations': {}}, candidates=[])
+            spec = dict(methods=['TRUNCATED_PF'], pf_completion={'mode': 'complete'})
+            events = []
+
+            def refresh(root, problem, old, methods, registry, artificial):
+                return dict(old, pf_evidence_registry=registry)
+
+            def announce(updated, routes):
+                self.assertEqual(updated['pf_evidence_registry']['configurations'], entry)
+                events.append('READY')
+
+            with patch.object(selection, '_refresh', side_effect=refresh), \
+                 patch.object(selection.PF, 'registry_routes', return_value={}), \
+                 patch.object(selection, 'reconsider_prices', side_effect=lambda *args: events.append('RECONCILE')), \
+                 patch.object(selection, 'select', return_value={'selected': None}):
+                selection.prepare_next(run, {}, context, spec, run, {}, object(), announce=announce)
+            self.assertEqual(events, ['READY', 'RECONCILE'])
+
     def test_pf_wave_announces_first_ready_while_other_candidate_prepares(self):
         from copy import deepcopy
         first = dict(configuration_id='first', key={'formula': '2nd', 'p': 6, 'delta_over_h': '1'},
