@@ -24,6 +24,30 @@ def fixture():
 
 
 class DescriptorTests(unittest.TestCase):
+    def test_terminal_reference_is_bound_to_exact_time_and_collected_bytes(self):
+        _, cfg, _ = fixture()
+        binding = cfg['spec']['binding']
+        job = dict(m=13, physical_context=dict(binding=binding, physical_candidate=dict(T=1.25)))
+        doc = dict(binding=binding, T=dict(numerator=5, denominator=4),
+                   source=dict(commit='a'*40), kind='NEW_D2_TWO_EXPONENTIAL_PATHS',
+                   reference_state_actions=2)
+        raw = json.dumps(doc).encode()
+        locator = dict(commit='b'*40, path='REFERENCE.json', sha256=hashlib.sha256(raw).hexdigest())
+        checked = []
+        provider = SimpleNamespace(_reference=lambda job, ref: checked.append(ref),
+                                   saved_h4_reference=lambda root, job: 'saved prefix')
+        with patch.object(E.subprocess, 'check_output', return_value=raw):
+            ref = E.terminal_reference(ROOT, locator, job, provider)
+            self.assertEqual(ref['source'], locator)
+            self.assertEqual(checked, [ref])
+            old = dict(job, m=12)
+            self.assertEqual(E.terminal_reference(ROOT, locator, old, provider), 'saved prefix')
+            with self.assertRaisesRegex(ValueError, 'collected outcome'):
+                E.terminal_reference(ROOT, dict(locator, sha256='0'*64), job, provider)
+            job['physical_context']['physical_candidate']['T'] = 1.0
+            with self.assertRaisesRegex(ValueError, 'binding, time or provenance'):
+                E.terminal_reference(ROOT, locator, job, provider)
+
     def test_saved_prefix_relocation_preserves_original_descriptor_source(self):
         _,cfg,_=fixture();calls=[]
         with tempfile.TemporaryDirectory() as directory:

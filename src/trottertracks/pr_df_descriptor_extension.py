@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import re
 import subprocess
 from types import FunctionType, SimpleNamespace
 
@@ -22,6 +23,37 @@ def read(root,locator):
     value=json.loads(subprocess.check_output(['git','show',locator['commit']+':'+locator['path']],cwd=root))
     for k in locator.get('selector',[]):value=value[k]
     return value
+
+
+def terminal_reference(root, locator, job, provider):
+    """Read a separately collected full-H reference for the new last round."""
+    if locator is None or job['m'] != 13:
+        return provider.saved_h4_reference(root, job)
+    if (not re.fullmatch(r'[0-9a-f]{40}', locator.get('commit', ''))
+            or not isinstance(locator.get('path'), str) or locator.get('selector')
+            or not re.fullmatch(r'[0-9a-f]{64}', locator.get('sha256', ''))):
+        raise ValueError('Terminal reference requires a fixed Git locator and outcome SHA-256')
+    try:
+        raw = subprocess.check_output(['git', 'show', locator['commit']+':'+locator['path']], cwd=root,
+                                      stderr=subprocess.DEVNULL)
+    except subprocess.CalledProcessError as exc:
+        raise ValueError('Fixed terminal reference is unavailable') from exc
+    if hashlib.sha256(raw).hexdigest() != locator['sha256']:
+        raise ValueError('Terminal reference differs from collected outcome')
+    evidence = json.loads(raw)
+    context = job['physical_context']
+    binding = evidence['binding']
+    T = context['physical_candidate']['T']
+    time = evidence['T']
+    if (any(binding[key] != context['binding'][key] for key in BINDING_KEYS)
+            or Fraction(time['numerator'], time['denominator']) != Fraction(T)
+            or evidence.get('kind') != 'NEW_D2_TWO_EXPONENTIAL_PATHS'
+            or evidence.get('reference_state_actions') != 2
+            or not evidence.get('source', {}).get('commit')):
+        raise ValueError('Terminal full-H reference binding, time or provenance differs')
+    reference = dict(binding=deepcopy(context['binding']), T=T, source=deepcopy(locator), evidence=evidence)
+    provider._reference(job, reference)
+    return reference
 
 
 def validate(document,locator,configuration):

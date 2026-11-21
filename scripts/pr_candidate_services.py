@@ -16,6 +16,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 
 ROOT=Path(globals().get('FIXED_RUN_CODE_ROOT', Path(__file__).resolve().parents[1])).resolve()
 if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)
@@ -63,7 +64,8 @@ def check_intake_inputs(view, locators):
 
 
 def df_extension():
-    spec=importlib.util.spec_from_file_location('_df_supplied_descriptor',ROOT/'src/trottertracks/pr_df_descriptor_extension.py')
+    path = Path(__file__).resolve().parents[1]/'src/trottertracks/pr_df_descriptor_extension.py'
+    spec=importlib.util.spec_from_file_location('_df_supplied_descriptor',path)
     helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper);return helper
 
 
@@ -192,7 +194,7 @@ def bind_df_conflicts(entry, conflicts):
     entry.plan = plan
 
 
-def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=None):
+def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=None,terminal_reference=None):
     # Same fixed entry as326fe; no source edits to its canonical/provider contracts.
     sys.path.insert(0,str(DF_VIEW/'src'))
     from trottertracks.pr_df_signal_entry import DFSignalEntry,FixedRuntime
@@ -215,6 +217,19 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=
     entry=(DFSignalEntry(ROOT,runtime=runtime)if tail_descriptor is None else
            df_extension().entry(ROOT,tail_descriptor,DFSignalEntry,runtime=runtime))
     entry.saved.extend(x for x in saved_bundles if x not in entry.saved)
+    if terminal_reference is not None:
+        if configuration is None or configuration['spec']['M'] != 13:
+            raise ValueError('Terminal reference requires a fourteen-round DF configuration')
+        provider = runtime.provider
+        reference = df_extension().terminal_reference
+        runtime.provider = SimpleNamespace(numerical_recipe=provider.numerical_recipe,
+            saved_h4_reference=lambda root, job: reference(root, terminal_reference, job, provider))
+        original_plan = entry.plan
+
+        def terminal_plan(config):
+            return dict(original_plan(config), terminal_reference=terminal_reference)
+
+        entry.plan = terminal_plan
     if configuration is not None and not entry._support(configuration):
         scope = None
         if cache_dir is not None:
@@ -238,7 +253,22 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=
 
 def df_generate(request):
     if request.get('configuration'):
-        config=read(request['configuration']);df_entry(request.get('tail_descriptor')).runtime.b.validate(config)
+        config = read(request['configuration'])
+        b = df_entry(request.get('tail_descriptor')).runtime.b
+        b.validate(config)
+        horizon = request.get('M', config['spec']['M'])
+        if horizon != config['spec']['M']:
+            if (config['spec']['M'], horizon) != (12, 13):
+                raise ValueError('Expected an existing twelve-to-thirteen DF horizon extension')
+            inputs = deepcopy(config['spec']['A_input'])
+            inputs['M'] = horizon
+            extended = b.generate(b.a_spec(inputs, 'PR'))
+            b.validate(extended)
+            fields = ('physical_candidate', 'structure', 'T', 'actual_delta_pf', 'q_PF', 'R_outer')
+            if any(before[key] != after[key] for before, after in zip(config['rounds'], extended['rounds'])
+                   for key in fields):
+                raise ValueError('DF prefix physical schedule changed during horizon extension')
+            config = extended
         return dict(status='CONFIGURATION_READY',configuration=config)
     S=module(DF_VIEW,'_df_auto_generate_fixed','scripts/run_pr_df_ld7_v0.py');S.ROOT=ROOT
     _,_,_,b=S.signal_modules();base=read(request.get('base')or DF_TEMPLATE)
@@ -337,13 +367,17 @@ def main():
     mapping.update(r.get('preparation_path_map') or {})
     os.environ['RPE_PREPARATION_PATH_MAP'] = json.dumps(mapping)
     DF_VIEW=Path(paths.get('DF_VIEW',DF_VIEW));SIGNAL_VIEW=Path(paths.get('SIGNAL_VIEW',SIGNAL_VIEW))
+    def signal_entry(config):
+        return df_entry(r.get('tail_descriptor'), r.get('saved_bundles', []), config,
+                        r.get('saved_index_cache'), r.get('terminal_reference'))
+
     if a.mode=='df-generate':value=df_generate(r)
     elif a.mode=='df-plan':
-        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config,r.get('saved_index_cache')).plan(config)
+        config=read(r['configuration']);value=signal_entry(config).plan(config)
     elif a.mode=='df-stage':
-        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config,r.get('saved_index_cache')).stage(config,ROOT/r['directory'],obtained={int(m):v for m,v in r.get('obtained',{}).items()})
+        config=read(r['configuration']);value=signal_entry(config).stage(config,ROOT/r['directory'],obtained={int(m):v for m,v in r.get('obtained',{}).items()})
     elif a.mode=='df-bundle':
-        config=read(r['configuration_source']);entry=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config,r.get('saved_index_cache'));value=entry.assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
+        config=read(r['configuration_source']);value=signal_entry(config).assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
     elif a.mode=='df-price-design':
         spec=importlib.util.spec_from_file_location('_df_candidate_price_design',ROOT/'scripts/run_pr_df_candidate_prices.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)

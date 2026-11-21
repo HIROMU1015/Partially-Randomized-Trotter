@@ -21,7 +21,8 @@ import time
 import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'src'))
+DESCRIPTOR_EXTENSION = 'src/trottertracks/pr_df_descriptor_extension.py'
+sys.path.insert(0, str((Path.cwd() if '--transport-source' in sys.argv else ROOT) / 'src'))
 from trottertracks.rpe_preparation_paths import resolve as resolve_runtime_path
 CALLER = 'scripts/run_pr_df_candidate_signal_jobs.py'
 PROVIDER_COMMIT = 'fefd548ecd56f60d72031b3d385f6f5e6ee95d06'
@@ -113,7 +114,15 @@ def validate_jobs(config, plan, provider, metadata, b):
                 or not metadata.common.same(context['structure'], source['structure'])
                 or context['numerical_recipe'] != provider.numerical_recipe(IMPLEMENTATION)):
             raise ValueError('Request physical schedule/recipe differs at m' + str(m))
-        ref = provider.saved_h4_reference(ROOT, job)
+        locator = plan.get('terminal_reference')
+        if m == 13 and locator is not None:
+            path = Path(__file__).resolve().parents[1] / DESCRIPTOR_EXTENSION
+            spec = importlib.util.spec_from_file_location('_df_terminal_reference_fixed', path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            ref = module.terminal_reference(ROOT, locator, job, provider)
+        else:
+            ref = provider.saved_h4_reference(ROOT, job)
         if not metadata.common.same(ref, row['request']['reference']):
             raise ValueError('Saved reference differs at m' + str(m))
         jobs.append((job, ref))
@@ -237,14 +246,20 @@ def execute(config, plan, output, provider, metadata, b, *, workers=None, tail_d
 
 
 def main():
+    global ROOT
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--input', type=Path, required=True)
     p.add_argument('--inputs-commit', required=True)
     p.add_argument('--source', required=True)
     p.add_argument('--workers', type=int)
+    p.add_argument('--transport-source')
+    p.add_argument('--check-input-only', action='store_true')
     a = p.parse_args()
+    if a.transport_source:
+        ROOT = Path.cwd().resolve()
     source = subprocess.check_output(['git', 'rev-parse', a.source], cwd=ROOT, text=True).strip()
-    if read_git(source, CALLER) != Path(__file__).read_bytes():
+    caller_source = a.transport_source or source
+    if read_git(caller_source, CALLER) != Path(__file__).read_bytes():
         raise ValueError('DF candidate signal runner differs from fixed SOURCE')
     input_path = a.input.resolve(); relative = str(input_path.relative_to(ROOT))
     raw = read_git(a.inputs_commit, relative)
@@ -253,6 +268,12 @@ def main():
     request = json.loads(raw)
     if request['execution_source'] != source:
         raise ValueError('Input execution SOURCE differs')
+    if request['plan'].get('terminal_reference') is not None:
+        helper = Path(__file__).resolve().parents[1] / DESCRIPTOR_EXTENSION
+        if read_git(caller_source, DESCRIPTOR_EXTENSION) != helper.read_bytes():
+            raise ValueError('DF terminal reference helper differs from fixed SOURCE')
+        if [row['m'] for row in request['plan']['rounds'] if row['decision'] == 'REQUEST'] != [13]:
+            raise ValueError('Terminal transport may request only the new last round')
     provider, metadata, b = fixed_runtime(resolve_runtime_path(str(request.get('runtime', {}).get('signal_view',
         ROOT.parent / 'd2-pr-df-ld7-signal-source-fefd-20261116'))))
     import numpy, scipy
@@ -263,6 +284,11 @@ def main():
         config = json.loads(read_git(config['commit'], config['path']))
         for key in request['configuration'].get('selector', []):
             config = config[key]
+    if a.check_input_only:
+        jobs = validate_jobs(config, request['plan'], provider, metadata, b)
+        print(json.dumps(dict(status='FIXED_SIGNAL_INPUTS_READY',
+                              requested_rounds=[job['m'] for job, _ in jobs])))
+        return 0
     output = (ROOT / request['output_directory']).resolve()
     if not output.is_relative_to(ROOT):
         raise ValueError('Output must be in the owned candidate worktree')

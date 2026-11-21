@@ -550,7 +550,9 @@ class Completion:
         tag=tag or mode;inp=d/(tag+'.INPUT.json');out=d/(tag+'.json');put(inp,request)
         command = [python, '-B', str(ROOT/'scripts/pr_candidate_services.py')]
         metadata_entry = globals().get('FIXED_RUN_PR_PRICE_SERVICE')
-        if metadata_entry and mode == 'df-price-design':
+        terminal_request = (request.get('terminal_reference') is not None
+                            or (mode == 'df-generate' and request.get('M') == 13))
+        if metadata_entry and (mode == 'df-price-design' or terminal_request):
             command = [python, '-B', '-c',
                        'import runpy,sys\n'
                        'root,entry=sys.argv[1:3]\n'
@@ -927,7 +929,8 @@ class Completion:
                 rec['deferred_configuration'] = cref
                 if not (rec.get('signal') and rec.get('intake')):
                     df_bundles=self.saved_signal_packets('PR_DF')
-                    df_plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,saved_bundles=df_bundles),d)
+                    df_plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,
+                        saved_bundles=df_bundles,terminal_reference=request.get('terminal_reference')),d)
                     conflicts=df_plan.get('saved_signal_conflicts',[])
                     if conflicts:
                         rec['conflicting_signal_rounds']=conflicts
@@ -1036,7 +1039,7 @@ class Completion:
                     put(answer,out);return out
                 config=generated['configuration'];prepared=None
                 signals=self.service('df-plan',dict(configuration=config,tail_descriptor=selected.get('tail_descriptor'),
-                    saved_bundles=self.saved_signal_packets('PR_DF')),d)
+                    saved_bundles=self.saved_signal_packets('PR_DF'),terminal_reference=selected.get('terminal_reference')),d)
             quote=self.initial_quote(config,config,d)
             holds = price_source_holds(quote) if request['method']=='PR_DF' else {}
             if request['method']=='PR_PAULI':
@@ -1055,7 +1058,7 @@ class Completion:
                     price_axes=[row for row in quote['rows']if row['m']==r['m']])for r in config['rounds']],
                 requested_delta_pf=config['spec']['delta_pf'],readiness=dict(configuration=True,
                     signal=not signals.get('request_rounds')and not signals.get('unsupported_rounds')
-                        and len(signals.get('reuse_rounds',[]))==13,
+                        and len(signals.get('reuse_rounds',[]))==len(config['rounds']),
                     prices=quote['complete']))
         except Held as exc:out['reason']=str(exc)
         put(answer,out)
@@ -1192,22 +1195,30 @@ class Completion:
 
     def df_signals(self,config,cref,d,descriptor,*,plan,bundles):
         result=dict(rows=[],new_provider_calls=0);obtained={}
+        terminal = plan.get('terminal_reference')
         if any(row['decision']=='REQUEST' for row in plan['rounds']):
             source=self.stage_source('DF_SIGNALS')
             request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=source,
                          output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
             inp=d/'DF_SIGNAL_REQUEST.json';put(inp,request);input_commit=publish([d],'Fix missing DF round jobs')
             output=d/'df_signals/RESULT.json'
-            result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',source],d,'DF_SIGNALS',output,science=True)
+            transport_root = (Path(globals()['FIXED_RUN_PR_PRICE_SERVICE']).parents[1]
+                              if terminal and globals().get('FIXED_RUN_PR_PRICE_SERVICE') else ROOT)
+            result=self.call([self.path('NATIVE'),'-B',str(transport_root/'scripts/run_pr_df_candidate_signal_jobs.py'),
+                '--input',str(inp),'--inputs-commit',input_commit,'--source',source],d,'DF_SIGNALS',output,science=True)
             if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
             raw=publish([d],'Publish missing DF round signals')
             obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
         staged=d/'df_carrier'
-        st=self.service('df-stage',dict(configuration=cref,directory=rel(staged),obtained=obtained,tail_descriptor=descriptor,saved_bundles=bundles),d)
+        st=self.service('df-stage',dict(configuration=cref,directory=rel(staged),obtained=obtained,
+            tail_descriptor=descriptor,saved_bundles=bundles,terminal_reference=terminal),d)
         if st['status']!='CARRIERS_READY':raise Held('DF_CARRIER:'+str(st))
         carrier=publish([d],'Fix unified DF raw carrier')
         configref=dict(commit=carrier,path=rel(staged/'CONFIGURATION.json'))
-        packet=self.service('df-bundle',dict(configuration_source=configref,tail_descriptor=descriptor,saved_bundles=bundles,raw_sources={str(m):dict(commit=carrier,path=rel(staged/'raw'/('m'+str(m)+'.json')))for m in range(13)}),d)
+        self.service('df-bundle',dict(configuration_source=configref,tail_descriptor=descriptor,
+            saved_bundles=bundles,terminal_reference=terminal,
+            raw_sources={str(row['m']):dict(commit=carrier,path=rel(staged/'raw'/('m'+str(row['m'])+'.json')))
+                         for row in config['rounds']}),d)
         pub=publish([d],'Assemble DF bundle for normal intake')
         return dict(status='SIGNALS_READY',configuration_source=configref,packet_source=dict(commit=pub,path=rel(d/'df-bundle.json')),new_signal_calls=result.get('new_provider_calls'))
 

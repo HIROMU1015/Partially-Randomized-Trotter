@@ -830,16 +830,29 @@ class DistributedPreparationBridge:
         if script is None:
             raise ValueError('Preparation leaf requires an explicit fixed script')
         script = script.resolve()
+        df_terminal = None
+        if stage == 'DF_SIGNALS' and script.name == 'run_pr_df_candidate_signal_jobs.py':
+            df_plan = read(Path(command[command.index('--input')+1])).get('plan', {})
+            if df_plan.get('terminal_reference') is not None:
+                requested = [row for row in df_plan['rounds'] if row['decision'] == 'REQUEST']
+                if (len(requested) != 1 or requested[0]['m'] != 13
+                        or [row['m'] for row in df_plan['rounds'] if row['decision'] == 'REUSE']
+                        != list(range(13))):
+                    raise ValueError('DF terminal preparation must request only the new last round')
+                df_terminal = requested[0]['job']['physical_context']['physical_candidate']['id']
         if script.name in ('run_pr_pauli_candidate_signals.py','run_pr_pauli_candidate_prices.py')and'--no-push'not in command:
             command.append('--no-push')
-        if script.is_relative_to(root):
-            script_relative = script.relative_to(root).as_posix()
-            source_files = {script_relative: hashlib.sha256(script.read_bytes()).hexdigest()}
+        if script.is_relative_to(root) or df_terminal:
+            script_relative = ('scripts/run_pr_df_candidate_signal_jobs.py' if df_terminal
+                               else script.relative_to(root).as_posix())
             expected = subprocess.check_output(['git', 'show', source + ':' + script_relative], cwd=root)
-            if expected != script.read_bytes():
+            source_files = {script_relative: hashlib.sha256(expected).hexdigest()}
+            if not df_terminal and expected != script.read_bytes():
                 raise ValueError('Preparation leaf script differs from its declared SOURCE')
             for name in ('src/trottertracks/rpe_preparation_paths.py',
                          'scripts/run_pr_pauli_candidate_signals.py',
+                         *(['src/trottertracks/pr_df_descriptor_extension.py']
+                           if script.name=='run_pr_df_candidate_signal_jobs.py' else []),
                          *(['src/trottertracks/rpe_saved_signal_index.py']
                            if script.name=='run_pr_pauli_candidate_signals.py' else [])):
                 item=root/name
@@ -868,6 +881,22 @@ class DistributedPreparationBridge:
         snapshot = self.settings.get('df_snapshot_directory')
         pf_terminal_signal = stage == 'PF_SIGNALS' and script.name == 'run_rpe_pf_horizon_signal.py'
         pf_signal = stage == 'PF_SIGNALS' and (script.name == 'run_pf_preparation_stage.py' or pf_terminal_signal)
+        if df_terminal:
+            if not snapshot or not re.fullmatch(r'[0-9a-f]{20}', df_terminal):
+                raise ValueError('DF terminal signal requires a fixed physical round and snapshot')
+            caller = completion.settings.get('df_terminal_transport_source')
+            if not isinstance(caller, str) or not re.fullmatch(r'[0-9a-f]{40}', caller):
+                raise ValueError('DF terminal transport SOURCE must be pinned')
+            for name in (script_relative, 'src/trottertracks/pr_df_descriptor_extension.py'):
+                raw = subprocess.check_output(['git', 'show', caller + ':' + name], cwd=root)
+                if raw != (script.parents[1] / name).read_bytes():
+                    raise ValueError('DF terminal transport differs from fixed SOURCE: ' + name)
+                destination = 'private/df-terminal-transport/' + name
+                inputs[destination] = sha = self._blob(raw)
+                df_inputs.append(dict(path=destination, sha256=sha))
+                df_locators.append(dict(commit=caller, path=name))
+            bindings[str(script)] = '@WORK@/private/df-terminal-transport/' + script_relative
+            command.extend(('--transport-source', caller))
         if pf_terminal_signal:
             if not snapshot:
                 raise ValueError('Terminal PF signal requires the fixed H4 snapshot')
@@ -1048,7 +1077,7 @@ class DistributedPreparationBridge:
         bindings.update(used_path_aliases(aliases, bindings, original_documents, command))
         root_bundles=self._bundle(root,source,input_hashes,
                                  tracked_workspace=not script.is_relative_to(root))
-        if script.is_relative_to(root) or pf_terminal_signal:
+        if script.is_relative_to(root) or pf_terminal_signal or df_terminal:
             # This bundle supplies locators for frozen inputs. Checking out
             # its HEAD would substitute controller code for the provider.
             root_bundles=[dict(bundle,checkout_input_head=False)for bundle in root_bundles]
@@ -1071,7 +1100,7 @@ class DistributedPreparationBridge:
                     packages[name] = version
             if pauli_signals:
                 requirements['imports'] = sorted(set(requirements.get('imports', ())) | {'openfermionpyscf'})
-        if (stage == 'DF_SIGNALS' and script.name == 'run_pr_df_candidate_signal_jobs.py'
+        if (stage == 'DF_SIGNALS' and not df_terminal and script.name == 'run_pr_df_candidate_signal_jobs.py'
                 and not getattr(completion, 'settings', {}).get('df_signal_source')):
             position = command.index(str(script))
             command[position:position] = ['-c', _DF_SIGNAL_BOOTSTRAP]
@@ -1113,6 +1142,9 @@ class DistributedPreparationBridge:
                 raise ValueError('Terminal signal needs a fixed PF physical round')
             prep['horizon_round'] = dict(m=13, physical_id=frozen['physical_id'])
             contract.update(rounds=[13], reference_state_actions=2, signal_calls=1)
+        elif df_terminal:
+            prep['horizon_round'] = dict(m=13, physical_id=df_terminal)
+            contract.update(rounds=[13], reference_state_actions=0, signal_calls=1)
         self._validate_bundle_inputs(prep)
         return dict(schema='RPE_PREPARATION_REQUEST_V1', route=dict(kind='preparation'), preparation=prep,
                     original_contract=contract)
