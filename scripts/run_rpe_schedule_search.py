@@ -266,6 +266,9 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             raise ValueError('PF price continuation requires its pinned producer and original source')
         subprocess.run(['git', 'merge-base', '--is-ancestor', provider['base_source'], provider['source']],
                        cwd=root, check=True)
+        validation_sources = distributed['preparation'].get('bundle_validation_sources')
+        if validation_sources:
+            validation_sources.setdefault(provider['source'], str(root))
         # Remote mailboxes keep their deployed profiles. Only the verified
         # local profile advertises this additional producer on this Resume.
         local = distributed['local_worker']
