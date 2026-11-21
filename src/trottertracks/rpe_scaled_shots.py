@@ -322,6 +322,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                        comparison_delta_RZ=None if best is None or compare is None else compare['cost']-best['cost'],
                        paper_comparison_pending=group.get('paper_comparison_pending'),
                        allocations=group['rows'], promising=len(blockers), required_rounds=c.get('required_rounds'))
+            if 'horizon_preparation' in c:
+                row['horizon_preparation'] = c['horizon_preparation']
             rows.append(row)
             if best is not None:
                 winners.append((best['cost'], c['M'], c['configuration_id'], best, c))
@@ -369,13 +371,17 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             missing = row.get('required_rounds')
             if not missing:
                 continue
-            # All shot vectors for the same source schedule and horizon share
-            # one request. Keep the original candidate identity for adoption.
+            # Base inputs belong to the existing candidate preparation path.
+            # All shot vectors for this source share one horizon request.
+            preparation = row.get('horizon_preparation')
+            rounds = preparation['extension_rounds'] if preparation is not None else missing
             key = (row['source_configuration_id'], row['configuration_id'], row['M'])
             horizon_requests[key] = dict(kind='HORIZON_INPUTS_MISSING', method=name, M=row['M'],
                 configuration_id=row['configuration_id'], source_configuration_id=row['source_configuration_id'],
-                configuration=row['configuration'], signal_rounds=missing,
-                price_round_axes=[dict(m=m, axis=axis) for m in missing for axis in ('X','Y')])
+                configuration=row['configuration'], signal_rounds=rounds,
+                price_round_axes=[dict(m=m, axis=axis) for m in rounds for axis in ('X','Y')])
+            if preparation is not None:
+                horizon_requests[key].update(preparation)
         input_requests = list(horizon_requests.values())
         compared = [(r['comparison_best']['cost'], r['M'], r['configuration_id'], r['comparison_best'])
                     for r in rows if r['comparison_best'] is not None]
@@ -448,12 +454,15 @@ def horizon_candidates(candidates, problem, policy, executor=None, catalog=None)
                 elif executor is not None:
                     item['execution_needs'].append('SOURCE_HORIZON_ROUTE_UNAVAILABLE')
             else:
-                missing = list(range(original_M + 1, M + 1)) if c['ready'] else list(range(M + 1))
+                extension = list(range(original_M + 1, M + 1))
                 item.update(ready=False, prices=None, price_status='HORIZON_INPUTS_MISSING',
-                            required_rounds=missing,
+                            required_rounds=extension if c['ready'] else list(range(M + 1)),
                             needs=list(dict.fromkeys(item['needs'] + ['SIGNAL_AND_PRICE_FOR_HORIZON'])))
                 if problem.get('problem', {}).get('system') == 'H4' and M > 12:
                     item['execution_needs'].append('OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN')
+                item['horizon_preparation'] = dict(source_M=original_M, base_inputs_ready=c['ready'],
+                    base_preparation_needs=list(c['needs']), extension_rounds=extension,
+                    evaluator_preflight_needs=list(dict.fromkeys(item['execution_needs'])))
             result.append(item)
     if added_routes:
         ids = {v['configuration_ids'][0] for v in added_routes}

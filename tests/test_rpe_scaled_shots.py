@@ -48,6 +48,22 @@ def small_policy(horizons=(11,12,13)):
 
 
 class ScaleTests(unittest.TestCase):
+    def test_horizon_request_does_not_repeat_the_base_preparation(self):
+        problem = {'rpe': {'M': 12}, 'problem': {'system': 'H4'}}
+        policy = small_policy()
+        base = dict(configuration_id='saved-base', name='saved-base', method='FULL_PF',
+                    key={}, ready=False, needs=['SIGNAL'], M=12)
+        candidates = S.horizon_candidates([base], problem, policy)
+        outcome = S.run('FULL_PF', candidates, {}, lambda *args: self.fail('Unprepared Q3 dispatched'),
+                        dict(scaled_shots=policy), TAU, 4)
+        extension = next(r for r in outcome['input_requests'] if r['M'] == 13)
+        self.assertEqual(extension['base_preparation_needs'], ['SIGNAL'])
+        self.assertEqual(extension['signal_rounds'], [13])
+        self.assertEqual(extension['price_round_axes'], [{'m': 13, 'axis': axis} for axis in ('X', 'Y')])
+        self.assertEqual(extension['evaluator_preflight_needs'], ['OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN'])
+        self.assertEqual(next(r for r in outcome['input_requests'] if r['M'] == 11)['signal_rounds'], [])
+        self.assertEqual(outcome['new_calls'], 0)
+
     @unittest.skipUnless((DECODER_VIEW/'src/trottertracks/rpe_total_risk.py').is_file(),
                          'requires the fixed Z1+T1 source view')
     def test_normal_start_and_resume_with_large_shot_evidence(self):
