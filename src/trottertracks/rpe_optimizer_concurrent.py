@@ -2883,6 +2883,11 @@ class DistributedExecutor(ConcurrentExecutor):
         job = Path(job)
         if job.parent.parent != self.run_dir/'jobs':
             return
+        # This set only suppresses duplicate timing events. The caller has
+        # already checked the current outcome, route and input evidence.
+        with self.state.cv:
+            if job.name in getattr(self.state, 'reused_jobs', ()):
+                return
         current = self.store.row(job.name)
         if current is not None and job.parent.name == current['method'] and current['state'] == 'ACCEPTED':
             with self.state.cv:

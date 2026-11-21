@@ -580,7 +580,12 @@ class DistributedPreparationBridge:
             return False
         try:
             result = ast.literal_eval(detail)
-            if not isinstance(result, dict) or result.get('status') != 'PREPARATION_STOPPED_BEFORE_RESERVATION':
+            if not isinstance(result, dict):
+                return False
+            stopped = result.get('status') == 'PREPARATION_STOPPED_BEFORE_RESERVATION'
+            stopped |= (result.get('status') == 'PREPARATION_HOLD'
+                        and result.get('reason') == 'USER_REQUESTED_STOP')
+            if not stopped:
                 return False
             job = result['job_id']
             if self.executor._user_stop_requested() or self.executor.state.failure is not None:
@@ -831,7 +836,7 @@ class DistributedPreparationBridge:
             raise ValueError('Preparation leaf requires an explicit fixed script')
         script = script.resolve()
         df_terminal = None
-        if stage == 'DF_SIGNALS' and script.name == 'run_pr_df_candidate_signal_jobs.py':
+        if stage == 'DF_SIGNALS' and script.name == 'run_pr_df_candidate_signal_jobs.py' and '--input' in command:
             df_plan = read(Path(command[command.index('--input')+1])).get('plan', {})
             if df_plan.get('terminal_reference') is not None:
                 requested = [row for row in df_plan['rounds'] if row['decision'] == 'REQUEST']

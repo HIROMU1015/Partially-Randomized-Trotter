@@ -1,0 +1,11 @@
+#!/usr/bin/python3
+"""Start the project worker and its descendants within the shared 30-CPU mask."""
+import os
+import sys
+
+# Every attempt uses the same mask, including concurrently starting workers.
+allowed = os.sched_getaffinity(0).intersection(range(30))
+if not allowed:
+    sys.exit("server1 worker CPU mask has no CPUs available")
+os.sched_setaffinity(0, allowed)
+os.execv(sys.executable, [sys.executable, *sys.argv[1:]])

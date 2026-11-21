@@ -375,7 +375,8 @@ def reconcile_received_preparation(run, records, stage_executor):
             continue
         if (leaf/'RESPONSE.json').exists() or (folder/'STOP.json').exists():
             continue
-        if reconcile(folder, reason):
+        unreserved = getattr(stage_executor, 'resume_unreserved_stage', None)
+        if reconcile(folder, reason) or (unreserved and unreserved(folder, reason)):
             row.update(status='PREPARATION_WAITING', previous_preparation_hold=reason)
             continue
         needs_audit = getattr(stage_executor, 'needs_original_compile_audit', None)
@@ -433,7 +434,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         registry['configurations'].update(record.get('configurations',{}))
     if records:
         restored = registry != context['pf_evidence_registry']
-        context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
+        if restored:
+            context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
         routes=PF.registry_routes(routes,registry)
         if restored and announce is not None:
             announce(context, routes)
