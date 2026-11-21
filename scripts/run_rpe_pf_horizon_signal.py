@@ -90,15 +90,18 @@ def main():
     parser.add_argument('--request', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--mode', required=True, choices=('plan', 'execute'))
+    parser.add_argument('--caller-source')
     args = parser.parse_args()
     root = args.provider_root.resolve()
     if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip() != PROVIDER:
         raise ValueError('Fixed baseline signal provider differs')
     subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'src', 'scripts'], cwd=root, check=True)
     local = Path(__file__).resolve().parents[1]
-    commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=local, text=True).strip()
+    commit = args.caller_source
+    if commit is None:
+        commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=local, text=True).strip()
     for file in (ENTRY, PATH_BINDER, PATH_RESOLVER):
-        if (local / file).read_bytes() != subprocess.check_output(['git', 'show', commit + ':' + file], cwd=local):
+        if (local / file).read_bytes() != subprocess.check_output(['git', 'show', commit + ':' + file], cwd=root):
             raise ValueError('Terminal signal runtime differs from its fixed SOURCE: ' + file)
     source = dict(commit=commit, path=ENTRY, role='FIXED_TERMINAL_SIGNAL_AND_PREFIX_ASSEMBLY', provider=PROVIDER)
     sys.path[:0] = [str(root / 'src'), str(root / 'scripts')]

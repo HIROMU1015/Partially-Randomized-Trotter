@@ -868,6 +868,22 @@ class DistributedPreparationBridge:
         snapshot = self.settings.get('df_snapshot_directory')
         pf_terminal_signal = stage == 'PF_SIGNALS' and script.name == 'run_rpe_pf_horizon_signal.py'
         pf_signal = stage == 'PF_SIGNALS' and (script.name == 'run_pf_preparation_stage.py' or pf_terminal_signal)
+        if pf_terminal_signal:
+            if not snapshot:
+                raise ValueError('Terminal PF signal requires the fixed H4 snapshot')
+            caller_root = script.parents[1]
+            caller = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=caller_root, text=True).strip()
+            for name in ('scripts/run_rpe_pf_horizon_signal.py', 'scripts/run_pf_preparation_stage.py',
+                         'src/trottertracks/rpe_preparation_paths.py'):
+                raw = subprocess.check_output(['git', 'show', caller + ':' + name], cwd=root)
+                if raw != (caller_root / name).read_bytes():
+                    raise ValueError('Terminal PF transport differs from its fixed SOURCE: ' + name)
+                destination = 'private/pf-terminal-transport/' + name
+                inputs[destination] = sha = self._blob(raw)
+                df_inputs.append(dict(path=destination, sha256=sha))
+                df_locators.append(dict(commit=caller, path=name))
+            bindings[str(script)] = '@WORK@/private/pf-terminal-transport/scripts/run_rpe_pf_horizon_signal.py'
+            command.extend(('--caller-source', caller))
         pf_compile = stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
         if pf_compile and script.name == 'run_pf_preparation_stage.py':
             runtime_inputs.append(self._pf_native_runtime(script, inputs, bindings, df_inputs))
