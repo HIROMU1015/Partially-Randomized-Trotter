@@ -2,6 +2,8 @@
 
 Only presentation: no signal, Q3, price or optimization code is called.
 """
+import base64
+import gzip
 from html import escape
 import json
 from urllib.parse import quote
@@ -49,10 +51,21 @@ def _validation_sources(index, point):
     return sources.values()
 
 
+def index_text(index):
+    """Canonical compact JSON shared by the browser and the machine-readable map."""
+    return json.dumps(index, ensure_ascii=False, separators=(',', ':'))
+
+
 def render(index):
     """Render one self-contained document; the embedded index remains exact."""
     # Escape script-closing strings without altering decoded JSON strings.
-    data = json.dumps(index, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
+    raw = index_text(index).encode('utf-8')
+    if len(raw) >= 32 * 1024**2:
+        data = base64.b64encode(gzip.compress(raw, compresslevel=4, mtime=0)).decode('ascii')
+        data_type = 'application/gzip'
+    else:
+        data = raw.decode('utf-8').replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
+        data_type = 'application/json'
     points = index.get('points', [])
     fallback = []
     for p in points:
@@ -64,7 +77,7 @@ def render(index):
             _money(p.get('conditional_cost')) + (' · ' + ' / '.join(v.get('label') or v.get('status') or '検証未完了' for v in p.get('price_validations', [])) if p.get('price_validations') else ''),
             p.get('N_X'), p.get('N_Y'))) + '<td>' + (_source(source) if source else '未取込') +
             ''.join('<br>価格検証：' + _source(value) for value in _validation_sources(index, p)) + '</td></tr>')
-    return _PAGE.replace('<!--DATA-->', data).replace('<!--FALLBACK-->', ''.join(fallback))
+    return _PAGE.replace('<!--DATA_TYPE-->', data_type).replace('<!--DATA-->', data).replace('<!--FALLBACK-->', ''.join(fallback))
 
 
 _PAGE = r'''<!doctype html>
@@ -97,9 +110,16 @@ _PAGE = r'''<!doctype html>
 <details class="card"><summary>収録run・比較条件・取り込み待ちの記録</summary><div id="sources"></div></details>
 <details class="card"><summary>全収録点の静的表（JavaScriptなしでも閲覧可能）</summary><p class="data-note">ブラウザ内検索も使えます。詳細なJSONは <a href="INDEX.json">INDEX.json</a> を参照してください。</p><div class="scroll"><table class="fallback-table"><thead><tr><th>方式</th><th>公式/p/LD</th><th>要求幅</th><th>configuration</th><th>保存Q3判定</th><th>条件付き費用</th><th>N_X</th><th>N_Y</th><th>固定SOURCE</th></tr></thead><tbody><!--FALLBACK--></tbody></table></div></details>
 <footer class="data-note">Cの比較カタログと公開探索記録を読取専用で結合。ロードマップとは別の探索coverage成果物です。</footer>
-</main><script id="index-data" type="application/json"><!--DATA--></script><script>
+</main><script id="index-data" type="<!--DATA_TYPE-->"><!--DATA--></script><script>
 'use strict';
-const D=JSON.parse(document.getElementById('index-data').textContent), E=id=>document.getElementById(id), labels={FULL_PF:'Full PF',TRUNCATED_PF:'B0I',PR_PAULI:'PR-Pauli',PR_DF:'PR-DF'}, formulas={'2nd':'S2','4th':'標準Yoshida4','4th(m5_best)':'M5'};
+async function loadMap() {
+const source=document.getElementById('index-data');
+if(source.type==='application/json')return JSON.parse(source.textContent);
+const compressed=Uint8Array.from(atob(source.textContent), c=>c.charCodeAt(0));
+return new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).json();
+}
+function displayMap(D) {
+const E=id=>document.getElementById(id), labels={FULL_PF:'Full PF',TRUNCATED_PF:'B0I',PR_PAULI:'PR-Pauli',PR_DF:'PR-DF'}, formulas={'2nd':'S2','4th':'標準Yoshida4','4th(m5_best)':'M5'};
 const states={TARGET_UNEVALUATED:'探索対象・未評価',EVALUATED_NO_FEASIBLE:'評価済み・適合0件',SOURCE_NOT_IMPORTED:'元記録が未取込',NOT_TARGETED:'対象として未確認',MIXED:'評価済み＋未取込/未評価',FEASIBLE:'適合点あり',EVALUATED:'評価済み',PRICE_WAITING:'Q3適合・価格待ち'};
 let method='FULL_PF'; const allPoints=new Map((D.points||[]).map(p=>[p.id,p])), allTargets=new Map((D.targets||[]).map(p=>[p.id,p]));
 function el(tag,text,cls){let n=document.createElement(tag);if(text!==undefined&&text!==null)n.textContent=String(text);if(cls)n.className=cls;return n}
@@ -315,4 +335,9 @@ for(const [m,label]of Object.entries(labels)){let b=el('button',label,m===method
 for(const v of D.views||[]){let option=el('option',v.label||v.id);option.value=v.id;E('view').append(option)}E('view').onchange=()=>{clearDimensions();redraw()};E('search').oninput=redraw;E('clear').onclick=()=>{clearDimensions();E('search').value='';redraw()};E('coverage').textContent='収録 '+(D.runs||[]).length+' run / '+(D.points||[]).length+' 一意配分点 / '+(D.sources||[]).length+' 固定SOURCE。表示用の丸め値から価格・判定を再計算しません。';
 for(const button of E('overview').querySelectorAll('button[data-point]')){button.onclick=()=>{const v=(D.views||[]).find(v=>v.mode==='ALL');if(!v)return;clearDimensions();method=button.dataset.method;E('view').value=v.id;E('search').value='';for(const x of E('methods').children)x.classList.toggle('active',x.textContent===labels[method]);redraw();const c=v.cells.find(c=>c.method===method&&(c.min_point_ids||[]).includes(button.dataset.point));if(c){const b=[...E('grid').querySelectorAll('button')].find(b=>b.getAttribute('aria-label')===c.row_label+' '+c.width_label+' '+(states[c.state]||c.state));if(b)b.setAttribute('aria-pressed','true');showCell(c,button.dataset.point);E('detail').focus()}}}
 let sourceHost=E('sources');let comp=el('details');comp.append(el('summary','共通snapshot・精度・比較条件'),jsonBlock(D.comparison));sourceHost.append(comp);for(const r of D.runs||[]){let item=el('details');item.append(el('summary',(r.label||r.id)+' · '+(r.status||'状態未同定')));field(item,'run ID',r.id);field(item,'host',r.hosts);field(item,'未取込/不明',r.missing||r.issues);if(r.source)item.append(link(r.source));sourceHost.append(item)}let src=el('details');src.append(el('summary','固定SOURCE一覧'));let list=el('ul',null,'source-list');for(const s of D.sources||[]){let li=el('li');li.append(link(s));list.append(li)}src.append(list);sourceHost.append(src);let issue=el('details');issue.append(el('summary','取込み待ち・不足情報'),jsonBlock(D.issues||[]));sourceHost.append(issue);redraw();
+}
+loadMap().then(displayMap).catch(error=>{
+ const note=document.createElement('p');note.textContent='対話表示を開けません。下の静的表を参照してください。 '+error.message;
+ document.querySelector('main').prepend(note);
+});
 </script></body></html>'''

@@ -255,7 +255,7 @@ def synchronize(root,config,*,fetch=True,publish=False):
         if config.get('search_map'):
             from trottertracks.h4_search_run_evidence import discover_runs
             from trottertracks.h4_search_map import build_index, report as map_report
-            from trottertracks.h4_search_map_html import render
+            from trottertracks.h4_search_map_html import index_text, render
             print('SYNC SEARCH_MAP_START',flush=True)
             try:
                 # The comparison has already normalized its saved values. Do
@@ -270,7 +270,7 @@ def synchronize(root,config,*,fetch=True,publish=False):
                 index=build_index(result,runs,sources=fixed_sources,issues=map_issues)
                 index['included_public_heads']=publication_heads
                 write(config['search_map']+'/SOURCES.json',map_sources)
-                write(config['search_map']+'/INDEX.json',index)
+                write(config['search_map']+'/INDEX.json',index_text(index)+'\n')
                 write(config['search_map']+'/index.html',render(index))
                 write(config['search_map']+'/REPORT.md',map_report(index))
                 map_state=dict(status='CURRENT',runs=len(index['runs']),unique_points=len(index['points']),
