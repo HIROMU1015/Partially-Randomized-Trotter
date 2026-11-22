@@ -70,6 +70,43 @@ class EligibilityQueue(unittest.TestCase):
         return ex.rpc('/v1/poll', dict(host_id=host, slots=slots, source_sha=ex.optimizer_source,
                       cached_prefixes=[], host_fingerprints=facts or {}))
 
+    def test_prelaunch_failure_redispatches_once_with_same_reservation(self):
+        ex = self.executor()
+        proposal = self.proposal('prelaunch')
+        view = ex.for_method('METHOD')
+        job = view.job_dir(proposal)
+        facts = self.policy(ex, [(proposal, ['a', 'b'])])[job.name]
+        view._enqueue(proposal, demand=True)
+        first, = self.poll(ex, 'a', {job.name: facts['a']})['assignments']
+
+        def report(assignment, host, *, proof=True):
+            evidence = dict(kind='FAILED_DRY_CHECK_BEFORE_EXECUTION', job_id=job.name,
+                            attempt_id=assignment['attempt_id'], request_sha256=assignment['request_sha256'],
+                            returncode=2, signal=None)
+            detail = dict(reason='ValueError: Existing adapter dry-check failed', automatic_retry=False,
+                          resource_released=True)
+            if proof:
+                detail['prelaunch_rejection'] = evidence
+            ex.rpc('/v1/state', dict(host_id=host, job_id=job.name, attempt_id=assignment['attempt_id'],
+                                     state='UNKNOWN', detail=detail))
+
+        report(first, 'a', proof=False)
+        self.assertEqual(self.poll(ex, 'b', {job.name: facts['b']})['assignments'], [])
+        report(first, 'a')
+        self.assertEqual(self.poll(ex, 'a', {job.name: facts['a']})['assignments'], [])
+        self.assertEqual(self.poll(ex, 'b')['assignments'], [])
+        second, = self.poll(ex, 'b', {job.name: facts['b']})['assignments']
+        self.assertEqual(second['request'], first['request'])
+        self.assertEqual(second['job_id'], first['job_id'])
+        self.assertNotEqual(second['attempt_id'], first['attempt_id'])
+        self.assertEqual(ex.store.counts('METHOD'), 1)
+        self.assertTrue((job/'attempt-history'/first['attempt_id']/'LAUNCH.json').exists())
+        with self.assertRaisesRegex(ValueError, 'Different execution host/attempt'):
+            report(first, 'a')
+        report(second, 'b')
+        self.assertEqual(self.poll(ex, 'a', {job.name: facts['a']})['assignments'], [])
+        self.assertEqual([event['event'] for event in ex.store.events()].count('REDISPATCH_AFTER_DRY_CHECK'), 1)
+
     def test_skips_unsupported_head_for_next_independent_without_chain_backfill(self):
         ex = self.executor();view = ex.for_method('METHOD')
         head, chain, later = self.proposal('head'), self.proposal('chain', True), self.proposal('later')

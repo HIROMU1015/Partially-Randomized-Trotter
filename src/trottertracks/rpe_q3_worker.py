@@ -4,6 +4,7 @@ A detached per-attempt supervisor preserves adapter exit evidence if the network
 or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 """
 from copy import deepcopy
+from .rpe_dry_check_recovery import dry_check_rejection, failed_dry_check_released
 from .rpe_q3_timing import stamp, append as timing_append
 from . import rpe_q3_resources as Resources
 from . import rpe_worker_storage as Storage
@@ -126,27 +127,6 @@ def supervisor_session_ended(attempt):
                     return False
         return True
     except (OSError, ValueError, KeyError, IndexError, TypeError):
-        return False
-
-
-def failed_dry_check_released(attempt):
-    """Check the supervisor's original files, including from a shared PBS spool."""
-    try:
-        with (attempt / 'WORKER_PROCESS.lock').open('rb') as lock:
-            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
-            state = read(attempt / 'WORKER_STATE.json')
-            detail = state['detail']
-            receipt = read(attempt / 'WORKER_DRY-CHECK_RETURN.json')
-            pid = read(attempt / 'SUPERVISOR_STARTED.json')['pid']
-            launch_pid = read(attempt / 'SUPERVISOR_LAUNCH.json')['pid']
-            return (state['state'] == 'UNKNOWN' and detail.get('automatic_retry') is False
-                    and detail.get('reason') == 'ValueError: Existing adapter dry-check failed'
-                    and type(receipt['returncode']) is int and receipt['returncode'] != 0
-                    and type(pid) is int and pid > 0 and launch_pid == pid
-                    and not any((attempt / name).exists() for name in (
-                        'SCIENTIFIC_STARTING.json', 'WORKER_EXECUTE.log', 'WORKER_EXECUTE_RETURN.json',
-                        'PROCESS_RETURN.json', 'OUTCOME.json')))
-    except (OSError, ValueError, KeyError, TypeError, AttributeError):
         return False
 
 
@@ -659,9 +639,12 @@ class Worker:
                     state = save_state(attempt, 'UNKNOWN', reason=str(error), automatic_retry=False)
             else:
                 state = save_state(attempt, 'UNKNOWN', reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
-        if state['state'] == 'UNKNOWN' and not state['detail'].get('resource_released'):
-            if resource_state(attempt, 'UNKNOWN') == 'EXITED':
-                state = save_state(attempt, 'UNKNOWN', **dict(state['detail'], resource_released=True))
+        if state['state'] == 'UNKNOWN':
+            detail = state['detail']
+            if detail.get('prelaunch_rejection') is None and (proof := dry_check_rejection(attempt, assignment)):
+                state = save_state(attempt, 'UNKNOWN', **dict(detail, resource_released=True, prelaunch_rejection=proof))
+            elif not detail.get('resource_released') and resource_state(attempt, 'UNKNOWN') == 'EXITED':
+                state = save_state(attempt, 'UNKNOWN', **dict(detail, resource_released=True))
         return state
 
     def _prepare_challenge_artifacts(self, challenges):
@@ -811,8 +794,15 @@ def mailbox(profile, action, payload=None):
                 (assignment['job_id'], assignment['attempt_id'], assignment.get('host_id', host),
                  assignment['request_sha256']) != (job, attempt_id, host, payload['request_sha256'])):
             raise ValueError('Completion identity differs from the saved assignment')
-        if read(attempt/'WORKER_STATE.json')['state'] != 'COMPLETED_PENDING_TRANSFER':
-            raise ValueError('Attempt has no pending completion')
+        state = read(attempt/'WORKER_STATE.json')['state']
+        if state != 'COMPLETED_PENDING_TRANSFER':
+            if (state != 'UNKNOWN' or not (attempt/'PROCESS_RETURN.json').is_file()
+                    or not (attempt/'OUTCOME.json').is_file()):
+                raise ValueError('Attempt has no pending completion')
+            with (attempt/'WORKER_PROCESS.lock').open('rb') as lock:
+                fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+                saved = read(attempt/'WORKER_PROFILE.json')
+                validate_completed(saved, assignment, attempt)
         result = dict(files=result_bundle(attempt))
         if Preparation.is_preparation(assignment):
             result['artifact_manifest'] = read(attempt/'OUTCOME.json').get('artifacts', {})

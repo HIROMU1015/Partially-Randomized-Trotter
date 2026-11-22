@@ -9,6 +9,7 @@ import base64
 import fcntl
 import getpass
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -247,6 +248,13 @@ def harvest(directory, wanted=None, owners=None):
     spec = read(directory/'SPEC.json'); profile = read(directory/'PROFILE.json')
     attempts = []; hashes = set(); incomplete = []
     work = Path(profile['work_dir'])
+    helper = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dry_check_recovery.py'
+    observe_rejection = None
+    if helper.is_file():
+        module_spec = importlib.util.spec_from_file_location('_pbs_dry_check_recovery', str(helper))
+        recovery = importlib.util.module_from_spec(module_spec)
+        module_spec.loader.exec_module(recovery)
+        observe_rejection = recovery.dry_check_rejection
     paths = work.glob('*/*/ASSIGNMENT.json') if owners is None else (
         work/safe_id(owner['job_id'])/safe_id(owner['attempt_id'])/'ASSIGNMENT.json'
         for owner in owners)
@@ -263,6 +271,10 @@ def harvest(directory, wanted=None, owners=None):
             allocation_directory = (saved_profile.get('pbs') or {}).get('allocation_dir')
             same_session = allocation_directory and Path(allocation_directory).resolve() == directory.resolve()
             if state.get('state') != 'TRANSFERRED' and (owners is None or same_session):
+                if observe_rejection and state.get('state') == 'UNKNOWN':
+                    proof = observe_rejection(path.parent, assignment)
+                    if proof:
+                        state['detail'].update(resource_released=True, prelaunch_rejection=proof)
                 incomplete.append(dict(assignment=assignment, state=state))
             continue
         names = ('OUTCOME.json','PROCESS_RETURN.json','ARTIFACT_MANIFEST.json','PREPARATION_RECEIPT.json',

@@ -158,6 +158,54 @@ class Tests(unittest.TestCase):
         saved = load(run/'stop-history'/('controller_kill-'+invocation+'.json'))
         self.assertEqual(saved['held_attempts'], [dict(job_id='artificial-job', attempt_id=before['attempt_id'])])
 
+    def test_unattended_recovery_preserves_start_and_waits_for_a_receipt(self):
+        import signal
+        from trottertracks.rpe_q3_store import JobStore
+
+        invocation = '9' * 32
+        started = []
+        gateway = Gateway(self.config, preflight=lambda *_: {'status': 'PASS'},
+                          launch=lambda run, *_: started.append(run))
+        run = pathlib.Path(gateway.handle(dict(request(4, 6), action='prepare'))['run_directory'])
+        scope = load(run/'APPLIED_SCOPE.json')
+        spec = load(run/'ROUND.requested.json')
+        spec['executor']['distributed'] = {'port': 39000}
+        write(run/'ROUND.requested.json', spec)
+        write(run/'ROUND.json', spec)
+        write(run/'APPLIED_SCOPE.json', dict(scope, entry='schedule', round_requested_sha256=digest(spec)))
+        original = dict(kind='EXPLICIT_USER_START', instruction='Artificial start',
+                        scope_signature=scope['signature'], authorized_utc=123)
+        write(run/'AUTHORIZATION.json', original)
+        launch = dict(invocation_id=invocation, pid=2147483647)
+        history = run/'invocations'/invocation
+        write(run/'LAUNCH.json', launch)
+        write(history/'LAUNCH.json', launch)
+        write(run/'NORMAL_DRIVER.json', launch)
+        write(run/'distributed/relay/STATUS.json', dict(stopped=False, pid=launch['pid']))
+        write(run/'distributed/LOCAL_DAEMON.json', dict(pid=launch['pid']))
+        write(run/'distributed/pbs/STATE.json', dict(allocations={}))
+        write(run/'KAPPA_STATE.json', dict(schema='RPE_REQUESTED_WIDTH_SCHEDULE_STATE_V1', round_id=spec['round_id']))
+        (run/'FAST_DRIVER.lock').touch()
+        queue = JobStore(run/'distributed/QUEUE.sqlite3')
+        queue.reserve('PR_PAULI', 'still-queued', dict(route=dict(kind='artificial')), 1, True)
+        write(run/'EXIT.json', dict(invocation_id='8' * 32, returncode=-signal.SIGKILL))
+        with self.assertRaisesRegex(RequestError, 'no matching killed-controller receipt'):
+            gateway.resume_interrupted(run, invocation)
+        ended = dict(invocation_id=invocation, returncode=-signal.SIGKILL)
+        write(run/'EXIT.json', ended)
+        write(history/'EXIT.json', ended)
+        write(run/'STOP_REQUESTED.json', dict(reason='USER_REQUESTED_STOP'))
+        with self.assertRaisesRegex(RequestError, 'explicit STOP'):
+            gateway.resume_interrupted(run, invocation)
+        (run/'STOP_REQUESTED.json').unlink()
+        self.assertEqual(gateway.resume_interrupted(run, invocation), 'STARTED')
+        with self.assertRaisesRegex(RequestError, 'one unattended resume'):
+            gateway.resume_interrupted(run, invocation)
+        self.assertEqual(started, [run])
+        self.assertEqual(load(run/'AUTHORIZATION.json'), original)
+        self.assertEqual(queue.row('still-queued')['state'], 'QUEUED')
+        self.assertEqual(load(history/'EXIT.json'), ended)
+
     def test_technical_ast_resume_requires_ended_owners_and_preserves_stop(self):
         import sqlite3
 

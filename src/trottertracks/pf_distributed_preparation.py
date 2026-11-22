@@ -518,7 +518,8 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
                         tip+':refs/rpe-preparation/pf-terminal/'+cfg['id']],
                        cwd=root,check=True,capture_output=True)
         entry=dict(leaf['entry'], prices=dict(commit=tip,path=relative))
-        return dict(status='READY', configuration_id=cfg['id'], entry=entry)
+        return dict(status='READY', configuration_id=cfg['id'], entry=entry,
+                    verified_terminal_axes=dict(m=13, physical_id=ids[13], axes=list(AXES)))
 
     def process(item):
         parent_id, leaf = item

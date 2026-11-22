@@ -792,8 +792,9 @@ class DistributedExecutor(ConcurrentExecutor):
             with self.state.cv:
                 for row in self.store.rows():
                     if row['state'] == 'QUEUED':
-                        decision = self._eligibility_for(row['request'], row['job_id'], blocking=False,
-                                                         previous=row['eligibility'])
+                        decision = (row['eligibility'] if row['detail'].get('prelaunch_recovery') is True
+                                    else self._eligibility_for(row['request'], row['job_id'], blocking=False,
+                                                               previous=row['eligibility']))
                         if not self.store.set_eligibility(row['job_id'], decision):
                             self.eligibility_holds[row['job_id']] = decision
                             continue
@@ -1969,6 +1970,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if not self._host_supports_stage(host,record['request']):continue
             old=self.store.row(job_id)
             if old is not None and old['state']not in('QUEUED','CANCELLED'):continue
+            if old is not None and old['detail'].get('prelaunch_recovery') is True:continue
             if job_id not in fingerprints and job_id not in errors:continue
             decision=deepcopy(record['decision']);changed=False
             try:
@@ -2012,6 +2014,79 @@ class DistributedExecutor(ConcurrentExecutor):
                 hold=self._preparation_probe_hold(record)
                 if hold is not None:self.preparation_holds[job_id]=hold
         self.state.cv.notify_all()
+
+    def _prelaunch_recovery_challenges(self, host, slots, fingerprints):
+        """Use normal host checks and keep an ended attempt's reservation."""
+        from .rpe_q3_coordinator import atomic_json, digest
+        from .rpe_preparation_worker import validate_preparation_fingerprint
+
+        challenges = []
+        if not self.state.approved:
+            return challenges
+        for row in self.store.prelaunch_rejections():
+            if self._user_stop_requested() or self.state.failure or self.state.closed:
+                break
+            job_id, request = row['job_id'], row['request']
+            if not self._host_supports_stage(host, request) or not self._fits_host_walltime(host, request):
+                continue
+            job = self.run_dir/'jobs'/row['method']/job_id
+            if (job/'OUTCOME.json').exists() or (job/'PROCESS_RETURN.json').exists():
+                continue
+            transfer = self.run_dir/'distributed'/'transfers'/job_id/row['attempt_id']
+            if (transfer/'OUTCOME.json').exists() or (transfer/'PROCESS_RETURN.json').exists():
+                continue
+            prep = self._preparation_request(request)
+            facts = fingerprints.get(job_id)
+            try:
+                if prep:
+                    assignment = self._pending_preparation_assignment(dict(request=request), host)
+                    decision = dict(request_sha256=row['request_sha256'], eligible_host_ids=[host],
+                                    host_fingerprints={}, execution_profiles={})
+                    if facts is not None:
+                        profile = self._configured_preparation_profile(host)
+                        selected = validate_preparation_fingerprint(assignment, profile, facts)
+                        decision['host_fingerprints'][host] = digest(facts)
+                        decision['execution_profiles'][host] = selected
+                else:
+                    decision = self._eligibility_for(request, job_id, blocking=False, host=host,
+                                                     previous=row['eligibility'], prefetch=True)
+                    if not decision or host not in decision['eligible_host_ids']:
+                        continue
+                    assignment = self._assignment(row, host_id=host, eligibility=decision)
+                    assignment.pop('attempt_id', None)
+                if facts is None:
+                    if len(challenges) < slots:
+                        challenges.append(assignment)
+                    continue
+                if (host == row['host_id'] and digest(facts) ==
+                        ((row['eligibility'] or {}).get('host_fingerprints') or {}).get(host)):
+                    continue
+                # A queued fallback still requires a fresh fingerprint at claim.
+                decision = dict(decision, eligible_host_ids=[host])
+                launch = job/'LAUNCH.json'
+                if launch.is_file():
+                    history = job/'attempt-history'/row['attempt_id']/'LAUNCH.json'
+                    if not history.is_file():
+                        history.parent.mkdir(parents=True, exist_ok=True)
+                        atomic_json(history, json.loads(launch.read_bytes()))
+                if not self.store.requeue_prelaunch(job_id, row['attempt_id'], host, decision, facts):
+                    continue
+                original = self.state.tasks.get(job)
+                demand = prep is not None or (original is not None and original.demand)
+                self.state.tasks.pop(job, None)
+                self._restore_task(self.store.row(job_id), demand=demand)
+                self.preparation_holds.pop(job_id, None)
+                self.eligibility_holds.pop(job_id, None)
+                self.log(event='PRELAUNCH_REDISPATCH', job=job_id, host_id=host,
+                         original_host_id=row['host_id'], original_attempt_id=row['attempt_id'])
+                self.state.cv.notify_all()
+                slots -= 1
+                if not slots:
+                    break
+            except (OSError, KeyError, ValueError, TypeError, subprocess.SubprocessError):
+                # Leave the same attempt available for safe re-observation.
+                continue
+        return challenges
 
     def submit_preparation(self, request, *, budget='UNLIMITED', approved=False, contract=None,
                            eligibility=None, dependencies=(), expected_job_id=None):
@@ -2372,6 +2447,10 @@ class DistributedExecutor(ConcurrentExecutor):
             return task
 
     def _cancel(self, task):
+        row = self.store.row(task.job.name)
+        if row and row['state'] == 'QUEUED' and row['detail'].get('prelaunch_recovery') is True:
+            super()._cancel(task)  # preserve the original reservation for the next Resume
+            return
         if self.store.cancel(task.view.method, task.job.name): super()._cancel(task)
 
     def launched(self, method):
@@ -2381,7 +2460,7 @@ class DistributedExecutor(ConcurrentExecutor):
         row = self.store.row(self.job_dir(proposal).name)
         return (row is not None and row['state'] != 'CANCELLED') or super().has_job(proposal)
 
-    def _assignment(self, row, host_id=None):
+    def _assignment(self, row, host_id=None, *, eligibility=None):
         from .rpe_q3_coordinator import input_hashes, prefix_key, digest
         from .rpe_host_profiles import profile_core
         preparation = self._preparation_request(row['request'])
@@ -2395,7 +2474,7 @@ class DistributedExecutor(ConcurrentExecutor):
         # selected profile for replay/recovery even after policy replacement.
         fixed = self.store.row(row['job_id'])
         host = host_id or row.get('host_id')
-        eligibility = fixed.get('eligibility') or {}
+        eligibility = eligibility if eligibility is not None else fixed.get('eligibility') or {}
         profile = (eligibility.get('execution_profiles') or {}).get(host)
         evaluator = (eligibility.get('host_decisions') or {}).get(host, {}).get('evaluator')
         if evaluator:
@@ -2564,6 +2643,8 @@ class DistributedExecutor(ConcurrentExecutor):
                              and self._offer_fresh(host)
                              and ((value.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs', True))
                 pending_challenges = self._pending_preparation_challenges(host, new_slots) if may_probe else []
+                if may_probe and new_slots:
+                    pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
                 def reply(**fields):
                     existing=fields.get('eligibility_challenges',[])
                     fields['eligibility_challenges']=list({item['job_id']:item for item in existing+pending_challenges}.values())
@@ -2599,8 +2680,9 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not self._fits_host_walltime(host, row['request']):
                         skipped = True
                         continue
-                    decision = self._eligibility_for(row['request'], row['job_id'], blocking=False,
-                                                     previous=row['eligibility'], host=host)
+                    decision = (row['eligibility'] if row['detail'].get('prelaunch_recovery') is True
+                                else self._eligibility_for(row['request'], row['job_id'], blocking=False,
+                                                           previous=row['eligibility'], host=host))
                     if not self.store.set_eligibility(row['job_id'], decision):
                         self.eligibility_holds[row['job_id']] = decision
                         task.error = 'HOST_ELIGIBILITY_HOLD'

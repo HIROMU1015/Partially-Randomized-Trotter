@@ -733,7 +733,7 @@ class ManagerTests(unittest.TestCase):
             manager, executor, gateway = self.manager(directory)
             token = self.submit(manager)
             assignment = dict(job_id='original-task', attempt_id='original-attempt', request_sha256='fixed-request')
-            executor.rows['original-task'] = dict(state='RUNNING')
+            executor.rows['original-task'] = dict(state='RUNNING', attempt_id='original-attempt', host_id='pbs-0')
             gateway.harvest = dict(host_id='pbs-0', artifact_hashes=[], attempts=[],
                                    incomplete=[dict(assignment=assignment, state=dict(state='RUNNING'))])
             missing = dict(token=token, status='HISTORY_MISSING_RECONCILE_SPOOL', worker=dict(state='READY'))

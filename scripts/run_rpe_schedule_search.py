@@ -1792,6 +1792,13 @@ class WidthDriver:
                                                stop_requested=stopped, on_ready=terminal_ready)
                             result = regular()
                             work.result()
+                        # A parent can become READY while the initial terminal
+                        # wave is running. Submit its fixed extension this pass.
+                        late = {cid: entry for cid, entry in result[0]['pf_evidence_registry']['configurations'].items()
+                                if cid in terminal and cid not in entries}
+                        if late and not stopped():
+                            complete_terminal_prices(ROOT, runtime, late,
+                                                     stop_requested=stopped, on_ready=terminal_ready)
                         return (*include_terminal(*result[:2]), result[2])
                     pf_future=preparation_pool.submit(prepare_pf)
 

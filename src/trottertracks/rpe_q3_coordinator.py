@@ -38,7 +38,8 @@ def source_manifest(root, commit):
              'src/trottertracks/rpe_q3_worker.py', 'src/trottertracks/rpe_dp_prefix_reuse.py')
     # A separately pinned old computation root keeps its old byte manifest.
     # New roots which import timing must bind that additional dependency.
-    for name in ('rpe_q3_evidence', 'rpe_q3_timing', 'rpe_large_shot_bounds', 'rpe_q3_round_tables'):
+    for name in ('rpe_q3_evidence', 'rpe_q3_timing', 'rpe_large_shot_bounds', 'rpe_q3_round_tables',
+                 'rpe_dry_check_recovery'):
         path = f'src/trottertracks/{name}.py'
         if (Path(root)/path).exists():
             paths += (path,)

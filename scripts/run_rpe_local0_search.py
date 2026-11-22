@@ -2,7 +2,7 @@
 import argparse,json,pathlib,sys
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts')]
-from trottertracks.rpe_local0_search import Gateway,RequestError,execute_run
+from trottertracks.rpe_local0_search import Gateway,RequestError,execute_run,supervise_run
 from trottertracks.rpe_release_registry import load_service
 
 def main():
@@ -12,13 +12,18 @@ def main():
     group.add_argument('--request',type=pathlib.Path);group.add_argument('--execute-run',type=pathlib.Path)
     parser.add_argument('--invocation')
     parser.add_argument('--schedule-resume',type=json.loads)
+    parser.add_argument('--supervise-run',action='store_true')
     args=parser.parse_args();config=load_service(args.config)
     if args.execute_run:
         if not args.invocation:parser.error('--execute-run requires --invocation')
+        if args.supervise_run:
+            command=[sys.executable,'-B',str(pathlib.Path(__file__).resolve()),
+                     *(arg for arg in sys.argv[1:] if arg != '--supervise-run')]
+            return supervise_run(args.execute_run,args.invocation,command)
         execute_run(config,args.execute_run,args.invocation,schedule_resume=args.schedule_resume);return
     if args.schedule_resume is not None:parser.error('--schedule-resume requires --execute-run')
     try:value=Gateway(config).handle(json.loads(args.request.read_text()))
     except RequestError as error:value=dict(status='NOT_STARTED',started=False,errors=[dict(field=error.field,reason=error.reason)])
     print(json.dumps(value,ensure_ascii=False))
 
-if __name__=='__main__':main()
+if __name__=='__main__':raise SystemExit(main())

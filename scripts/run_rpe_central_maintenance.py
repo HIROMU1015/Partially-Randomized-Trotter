@@ -6,6 +6,8 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import re
+import signal
 import subprocess
 import sqlite3
 import sys
@@ -97,7 +99,29 @@ def archive_candidates(runs, current, rows):
                 allocated_bytes=sum(row['allocated_bytes'] for row in result))
 
 
-def run_pass(state, *, offline=False):
+def resume_interrupted_target(state, run):
+    """Run only after collection, via the fixed run's ordinary Gateway."""
+    if (run/'STOP_REQUESTED.json').exists() or (run/'SEARCH_TERMINATION.json').exists() or live_driver(run):
+        return None
+    launch, ended = optional(run/'LAUNCH.json'), optional(run/'EXIT.json')
+    invocation = launch.get('invocation_id', '')
+    if (not isinstance(invocation, str) or not re.fullmatch(r'[0-9a-f]{32}', invocation)
+            or ended.get('invocation_id') != invocation or ended.get('returncode') != -signal.SIGKILL):
+        return None
+    code = Path(__file__).resolve().parents[1]
+    sys.path.insert(0, str(code/'src'))
+    from trottertracks.rpe_local0_search import Gateway
+    try:
+        config = load(run/'CONTROLLER_CONFIG.json')
+        if Path(config['state_directory']).resolve() != state.resolve():
+            raise ValueError('Fixed controller state directory differs')
+        result = Gateway(config).resume_interrupted(run, invocation)
+        return dict(status=result, previous_invocation=invocation)
+    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError, sqlite3.Error) as error:
+        return dict(status='RECOVERY_HELD', previous_invocation=invocation, reason=str(error))
+
+
+def run_pass(state, *, offline=False, resume_interrupted=False):
     report_dir = state/'maintenance'
     report_dir.mkdir(exist_ok=True)
     with (report_dir/'LOCK').open('a+b') as lock:
@@ -147,6 +171,10 @@ def run_pass(state, *, offline=False):
             except (OSError,ValueError,subprocess.SubprocessError) as error:
                 result = dict(status='RECOVERY_PENDING',reason=str(error)[:350],jobs=previous.get('jobs', []),
                               repaired_inputs=[],new_scientific_calls=0)
+            if resume_interrupted and not offline and run_id == current and result['status'] != 'RECOVERY_PENDING':
+                resumed = resume_interrupted_target(state, run)
+                if resumed is not None:
+                    result['controller_resume'] = resumed
             save(report,dict(result,wait=wait_summary(run,result),observed_epoch=time.time()))
             if (run_id != current and not live_driver(run)
                     and not any(row['state'] in OWNED for row in read_rows(run))):
@@ -170,8 +198,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state-directory',type=Path,required=True)
     parser.add_argument('--offline',action='store_true')
+    parser.add_argument('--resume-interrupted',action='store_true')
     args = parser.parse_args()
-    print(json.dumps(run_pass(args.state_directory.resolve(strict=True),offline=args.offline),ensure_ascii=False))
+    print(json.dumps(run_pass(args.state_directory.resolve(strict=True), offline=args.offline,
+                              resume_interrupted=args.resume_interrupted), ensure_ascii=False))
 
 
 if __name__ == '__main__':

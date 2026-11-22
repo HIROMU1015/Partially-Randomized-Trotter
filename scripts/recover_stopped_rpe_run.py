@@ -95,7 +95,7 @@ def check_assignment(row, assignment):
 
 # This probe is intentionally independent from mailbox status. That action
 # can start a detached supervisor for previously delivered ASSIGNED work.
-PROBE = r"""
+PROBE = (Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dry_check_recovery.py').read_text() + r"""
 import json, os, sys
 from pathlib import Path
 profile = json.loads(Path(sys.argv[1]).read_bytes())
@@ -125,9 +125,13 @@ for name in ('SUPERVISOR_STARTED.json','SUPERVISOR_LAUNCH.json'):
         live |= os.fsencode(attempt) in (Path('/proc')/str(pid)/'cmdline').read_bytes().split(b'\0')
     except FileNotFoundError:
         pass
-print(json.dumps(dict(state=state.get('state','NO_WORKER_STATE'), supervisor_live=live,
-                      exit_receipt=(attempt/'PROCESS_RETURN.json').is_file(),
-                      outcome=(attempt/'OUTCOME.json').is_file())))
+result = dict(state=state.get('state','NO_WORKER_STATE'), supervisor_live=live,
+              exit_receipt=(attempt/'PROCESS_RETURN.json').is_file(), outcome=(attempt/'OUTCOME.json').is_file())
+if state.get('state') == 'UNKNOWN' and not live:
+    proof = dry_check_rejection(attempt, bound)
+    if proof:
+        result['prelaunch_detail'] = dict(state['detail'], resource_released=True, prelaunch_rejection=proof)
+print(json.dumps(result))
 """
 
 
@@ -169,7 +173,9 @@ def worker_results(run, rows, cache):
                 worker = workers[host]
                 command = [worker.get('python','python3'), '-B', '-c', PROBE, worker['profile']]
                 status, _ = relay.remote_command(worker, command, 'recovery-observe', owner(row))
-                ready = status['state'] == 'COMPLETED_PENDING_TRANSFER'
+                ready = status['state'] == 'COMPLETED_PENDING_TRANSFER' or (
+                    status['state'] == 'UNKNOWN' and not status.get('supervisor_live')
+                    and status.get('exit_receipt') and status.get('outcome'))
                 if ready:
                     saved, _ = relay.remote(worker, 'result', owner(row))
                 fetch = lambda hashes: relay.remote(worker,'artifacts-get',dict(hashes=hashes))[0]['blobs']
@@ -213,8 +219,11 @@ def pbs_results(run, rows, cache):
                 if row is None or item['assignment']['attempt_id'] != row['attempt_id']:
                     continue
                 check_assignment(row, item['assignment'])
-                pending[row['job_id']] = dict(state=item.get('state', {}).get('state','INCOMPLETE'),
+                state = item.get('state', {})
+                pending[row['job_id']] = dict(state=state.get('state','INCOMPLETE'),
                                               allocation=token, pbs_state=allocation['status'], exit_receipt=False)
+                if allocation['status'] in ('F', 'X') and state.get('detail', {}).get('prelaunch_rejection'):
+                    pending[row['job_id']]['prelaunch_detail'] = state['detail']
             for item in data.get('attempts', []):
                 row = candidates.get(item['assignment']['job_id'])
                 if row is None or item['assignment']['attempt_id'] != row['attempt_id'] or row['job_id'] not in pending:
@@ -376,6 +385,16 @@ def recover(state, run, *, remote=True):
             except (OSError, ValueError, KeyError, sqlite3.Error) as error:
                 item['recovery'] = 'HELD'
                 item['reason'] = str(error)
+        elif prelaunch := status.get('prelaunch_detail'):
+            try:
+                with stopped_lock(state, run, launch):
+                    store = JobStore(run/'distributed/QUEUE.sqlite3')
+                    current = store.row(row['job_id'])
+                    if current['state'] in OWNED and current['request_sha256'] == row['request_sha256']:
+                        store.update(row['host_id'], row['job_id'], row['attempt_id'], 'UNKNOWN', prelaunch)
+                        item['recovery'] = 'PRELAUNCH_EVIDENCE_RECORDED'
+            except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                item.update(recovery='HELD', reason=str(error))
         report['jobs'].append(item)
     return dict(report,status='CHECKED' if remote else 'OFFLINE')
 

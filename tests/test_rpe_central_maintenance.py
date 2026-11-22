@@ -12,6 +12,7 @@ sys.path[:0] = [str(ROOT/'src'), str(ROOT/'scripts')]
 from recover_stopped_rpe_run import accept, check_assignment, owner, pbs_results, probe_local, publish_received, read_rows, repair_dependencies
 from run_rpe_central_maintenance import archive_candidates, wait_summary
 from trottertracks.rpe_completion_acceptance import validate_preparation_result
+from trottertracks.rpe_local0_search import supervise_run
 from trottertracks.rpe_preparation_artifacts import ArtifactCache
 from trottertracks.rpe_q3_store import JobStore
 
@@ -119,6 +120,19 @@ class CentralMaintenanceTests(unittest.TestCase):
               reasons={'signal':'PREPARATION_BUDGET_HOLD'},hosts={'pbs-0':{'idle_reason':'PREPARATION_BUDGET_HOLD'}}))+'\n')
         self.assertEqual(wait_summary(self.run,{})['queue_wait_reasons'],{'PREPARATION_BUDGET_HOLD':1})
         self.assertEqual(archive_candidates([self.run],None,{self.run:read_rows(self.run)})['count'],0)
+
+    def test_supervisor_uses_the_actual_child_wait_status(self):
+        state = self.run.parent/'state'
+        invocation = '6'*32
+        history = self.run/'invocations'/invocation
+        write(self.run/'CONTROLLER_CONFIG.json', dict(state_directory=str(state)))
+        write(self.run/'LAUNCH.json', dict(invocation_id=invocation))
+        command = [sys.executable, '-B', '-c', 'import os, signal; os.kill(os.getpid(), signal.SIGKILL)']
+        self.assertEqual(supervise_run(self.run, invocation, command), -9)
+        ended = json.loads((history/'EXIT.json').read_text())
+        self.assertEqual(ended['returncode'], -9)
+        self.assertEqual(ended['command'], command)
+        self.assertEqual(json.loads((self.run/'EXIT.json').read_text()), ended)
 
 
 if __name__ == '__main__':

@@ -119,6 +119,8 @@ def submit_horizon_preparation(runtime, requests):
             if not entry:
                 incomplete[str(m)] = {'round': 'HORIZON_ROUND_PROVIDER_NOT_CONFIGURED'}
                 continue
+            if m == 13:
+                report['terminal_physical_id'] = entry['physical_id']
             successes, failures = {}, {}
             for role, allowed in (('signal', ('signal',)), ('X', ('compile', 'audit')), ('Y', ('compile', 'audit'))):
                 try:
@@ -156,9 +158,27 @@ def save_horizon_preparation(path, reports, store):
     from .rpe_release_registry import write
 
     previous = json.loads(path.read_bytes()) if path.is_file() else []
+    terminal_path = path.parent/'pf_auto'/'TERMINAL_PRICES.json'
+    terminal_prices = json.loads(terminal_path.read_bytes()) if terminal_path.is_file() else {}
     rows = {(row['source_configuration_id'], row['M']): row for row in previous}
     rows.update(((row['source_configuration_id'], row['M']), row) for row in reports)
     for row in rows.values():
+        terminal = terminal_prices.get(row['source_configuration_id'])
+        if row['M'] == 13 and terminal:
+            terminal_axes = terminal.get('verified_terminal_axes') or {}
+            expected = row.get('terminal_physical_id')
+            if (terminal['status'] == 'READY' and terminal_axes.get('m') == 13
+                    and expected and terminal_axes.get('physical_id') == expected
+                    and set(terminal_axes.get('axes', ())) == {'X', 'Y'}):
+                row['terminal_prices'] = dict(status='READY', source=terminal['entry']['prices'])
+                for axis in ('X', 'Y'):
+                    row.get('incomplete', {}).get('13', {}).pop(axis, None)
+                if not row.get('incomplete', {}).get('13'):
+                    row.get('incomplete', {}).pop('13', None)
+                if not row.get('incomplete'):
+                    row['status'] = 'HORIZON_TERMINAL_PRICES_READY'
+            elif terminal['status'] == 'WAITING':
+                row['terminal_prices'] = dict(status='WAITING', reason=terminal.get('reason'))
         progress = {}
         for round_number, roles in row['jobs'].items():
             progress[round_number] = {}

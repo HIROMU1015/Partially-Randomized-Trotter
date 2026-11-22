@@ -739,7 +739,39 @@ class Gateway:
             status=self.start(run, request)
             return self.result(run, status)
 
-    def start(self, run, request):
+    def resume_interrupted(self, run, invocation):
+        """Continue an already authorized run through the ordinary launch checks."""
+        with locked(self.state):
+            target = self.state/'CURRENT_TARGET.json'
+            selected_target = load(target) if target.is_file() else {}
+            if (selected_target.get('run_id') != run.name or
+                    Path(selected_target.get('run_directory', '')).resolve() != run.resolve()):
+                raise RequestError('run', 'the interrupted run is no longer the current target')
+            if (self.state/'MIGRATED_TO.json').exists() or (run/'STOP_REQUESTED.json').exists():
+                raise RequestError('run', 'migration or explicit STOP prevents unattended resume')
+            launched, ended = load(run/'LAUNCH.json'), load(run/'EXIT.json')
+            if (launched.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
+                    or ended.get('returncode') != -signal.SIGKILL):
+                raise RequestError('run', 'no matching killed-controller receipt')
+            authorization = load(run/'AUTHORIZATION.json')
+            scope, spec = load(run/'APPLIED_SCOPE.json'), load(run/'ROUND.requested.json')
+            if (scope['entry'] != 'schedule' or not spec.get('executor', {}).get('distributed')
+                    or spec.get('science_approved') is not True
+                    or authorization.get('scope_signature') != scope['signature']
+                    or authorization.get('kind') != 'EXPLICIT_USER_START'):
+                raise RequestError('run', 'no resumable authorized distributed schedule')
+            self.resume_controller_kill = invocation
+            previous = run/'AUTO_RESUME.json'
+            if previous.is_file() and load(previous).get('authorized_utc') == authorization.get('authorized_utc'):
+                raise RequestError('run', 'one unattended resume already used for this start')
+            command = launched.get('command') or []
+            selected = (json.loads(command[command.index('--schedule-resume')+1])
+                        if '--schedule-resume' in command else None)
+            return self.start(run, {'action': 'resume'}, interrupted=dict(
+                from_invocation=invocation, authorized_utc=authorization['authorized_utc'],
+                schedule_resume=selected))
+
+    def start(self, run, request, *, interrupted=None):
         state = load(run/'LAUNCH.json') if (run/'LAUNCH.json').exists() else None
         completed=load(run/'EXIT.json') if (run/'EXIT.json').exists() else {}
         if state and (not state.get('invocation_id') or completed.get('invocation_id')!=state.get('invocation_id')):
@@ -814,12 +846,24 @@ class Gateway:
             history = run/'stop-history'
             history.mkdir(exist_ok=True)
             suspended_marker.replace(history/('legacy-search-termination-'+str(time.time_ns())+'.json'))
-        write(run/'AUTHORIZATION.json', dict(kind='EXPLICIT_USER_START',instruction=request['instruction'],scope_signature=applied['signature'],authorized_utc=time.time()))
-        if (run/'STOP_REQUESTED.json').exists():
+        if interrupted is None:
+            write(run/'AUTHORIZATION.json', dict(kind='EXPLICIT_USER_START',instruction=request['instruction'],scope_signature=applied['signature'],authorized_utc=time.time()))
+        elif stop_request.exists():
+            raise RequestError('run', 'explicit STOP prevents unattended resume')
+        if interrupted is None and stop_request.exists():
             previous=load(run/'STOP_REQUESTED.json')
             write(run/'stop-history'/(str(time.time_ns())+'.json'),previous)
             (run/'STOP_REQUESTED.json').unlink()
-        self.launch(run, problem, spec)
+        if interrupted is not None:
+            if interrupted['schedule_resume'] is not None:
+                schedule_driver(self.config, run, interrupted['schedule_resume'])
+            write(run/'AUTO_RESUME.json', dict(interrupted, resumed_epoch=time.time()))
+            if interrupted['schedule_resume'] is not None:
+                self.normal_launch(run, problem, spec, schedule_resume=interrupted['schedule_resume'])
+            else:
+                self.launch(run, problem, spec)
+        else:
+            self.launch(run, problem, spec)
         return 'STARTED'
 
     def result(self, run, status):
@@ -983,6 +1027,9 @@ class Gateway:
             schedule_driver(self.config, run, schedule_resume)
             command[2] = str(Path(schedule_resume['root'])/'scripts/run_rpe_local0_search.py')
             command.extend(['--schedule-resume', json.dumps(schedule_resume)])
+        # Older fixed launchers may not implement the supervisor switch.
+        if (Path(command[2]).is_file() and "'--supervise-run'" in Path(command[2]).read_text()):
+            command.append('--supervise-run')
         with (run/'DRIVER.log').open('a') as log:
             process=subprocess.Popen(command,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
                 env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),start_new_session=True)
@@ -1145,8 +1192,8 @@ def reconcile_controller_kill(run, launch, ended, invocation):
         if (launch.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
                 or ended.get('returncode') != -signal.SIGKILL
                 or launch != load(archived/'LAUNCH.json') or ended != load(archived/'EXIT.json')
-                or driver.get('invocation_id') != invocation or relay.get('stopped') is not True):
-            raise ValueError('the killed invocation or its ended relay differs')
+                or driver.get('invocation_id') != invocation):
+            raise ValueError('the killed invocation differs')
         for owner in (launch, driver, relay, load(run/'distributed/LOCAL_DAEMON.json')):
             pid = owner['pid']
             if type(pid) is not int or pid <= 0:
@@ -1168,10 +1215,13 @@ def reconcile_controller_kill(run, launch, ended, invocation):
             fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
             queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
             with sqlite3.connect(queue, uri=True) as db:
-                rows = db.execute("SELECT job_id,state,attempt_id,detail FROM jobs WHERE state NOT IN "
+                rows = db.execute("SELECT job_id,state,attempt_id,detail,host_id,assigned_epoch,started_epoch "
+                                  "FROM jobs WHERE state NOT IN "
                                   "('ACCEPTED','CANCELLED')")
                 held = []
-                for job, state, attempt, detail in rows:
+                for job, state, attempt, detail, host, assigned, started in rows:
+                    if state == 'QUEUED' and all(value is None for value in (attempt, host, assigned, started)):
+                        continue
                     detail = json.loads(detail)
                     if (state != 'UNKNOWN' or not attempt or detail.get('automatic_retry') is not False
                             or detail.get('resource_released') is not True):
@@ -1259,6 +1309,29 @@ def driver_restart_hold(run, spec):
     except (OSError, sqlite3.Error, ValueError, KeyError) as error:
         return 'RECONCILIATION_REQUIRED: '+str(error)
     return None
+
+
+def supervise_run(run, invocation, command):
+    """Save a real wait receipt if the controller wrapper itself is killed."""
+    run = Path(run)
+    process = subprocess.Popen(command, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+    code = process.wait()
+    if code != -signal.SIGKILL:
+        return code
+    launch_path = run/'LAUNCH.json'
+    history = run/'invocations'/invocation
+    # The gateway publishes the launch while holding the registry lock.
+    # Synchronize even if the child exited before that publication.
+    config = load(run/'CONTROLLER_CONFIG.json')
+    with locked(Path(config['state_directory'])):
+        if (not launch_path.is_file() or load(launch_path).get('invocation_id') != invocation
+                or (history/'EXIT.json').exists()):
+            return code
+        value = dict(returncode=code, command=command, invocation_id=invocation,
+                     finished_utc=time.time(), observed_by='DETACHED_CONTROLLER_SUPERVISOR')
+        write(history/'EXIT.json', value)
+        write(run/'EXIT.json', value)
+    return code
 
 
 def execute_run(config, run, invocation, *, schedule_resume=None):

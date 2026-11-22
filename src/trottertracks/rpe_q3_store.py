@@ -74,6 +74,8 @@ class JobStore:
                     epoch REAL NOT NULL,
                     detail TEXT NOT NULL
                 );
+                CREATE INDEX IF NOT EXISTS prelaunch_redispatch
+                    ON events(job_id) WHERE event='REDISPATCH_AFTER_DRY_CHECK';
             ''')
             if 'eligibility' not in {r['name'] for r in db.execute('PRAGMA table_info(jobs)')}:
                 db.execute("ALTER TABLE jobs ADD COLUMN eligibility TEXT NOT NULL DEFAULT 'null'")
@@ -128,6 +130,52 @@ class JobStore:
                              THEN json_type(request, '$.preparation') = 'object' ELSE 0 END) AS is_preparation
                 FROM jobs ORDER BY enqueued_epoch, job_id
             """).fetchall()
+
+    def prelaunch_rejections(self):
+        with self._connection() as db:
+            return [self._decoded(row) for row in db.execute("""
+                SELECT * FROM jobs WHERE state='UNKNOWN' AND completion_sha256 IS NULL
+                    AND json_type(detail, '$.prelaunch_rejection') = 'object'
+                    AND NOT EXISTS (SELECT 1 FROM events WHERE events.job_id=jobs.job_id
+                        AND event='REDISPATCH_AFTER_DRY_CHECK')
+                ORDER BY enqueued_epoch, job_id
+            """)]
+
+    def requeue_prelaunch(self, job_id, attempt_id, host, eligibility, facts):
+        """Reuse the original reservation after a proved non-scientific exit."""
+        with self._connection(write=True) as db:
+            row = self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
+            if not row or row['state'] != 'UNKNOWN' or row['attempt_id'] != attempt_id:
+                return False
+            detail = row['detail']
+            proof = detail.get('prelaunch_rejection') or {}
+            if (not row['host_id'] or detail.get('automatic_retry') is not False
+                    or detail.get('resource_released') is not True
+                    or detail.get('reason') != 'ValueError: Existing adapter dry-check failed'
+                    or proof.get('kind') != 'FAILED_DRY_CHECK_BEFORE_EXECUTION'
+                    or (proof.get('job_id'), proof.get('attempt_id'), proof.get('request_sha256'))
+                       != (job_id, attempt_id, row['request_sha256'])
+                    or type(proof.get('returncode')) is not int or proof['returncode'] <= 0
+                    or proof.get('signal') is not None
+                    or any(row[key] is not None for key in ('completion_sha256', 'completed_epoch', 'adopted_epoch'))
+                    or db.execute("SELECT 1 FROM events WHERE job_id=? AND event='REDISPATCH_AFTER_DRY_CHECK'",
+                                  (job_id,)).fetchone()):
+                return False
+            if (not isinstance(eligibility, dict) or not self.eligible(row['request'], eligibility, host,
+                                                                      {job_id: facts}, job_id)):
+                return False
+            old_fingerprint = ((row['eligibility'] or {}).get('host_fingerprints') or {}).get(host)
+            if host == row['host_id'] and (not old_fingerprint or old_fingerprint == digest(facts)):
+                return False
+            previous = dict(host_id=row['host_id'], attempt_id=attempt_id, assigned_epoch=row['assigned_epoch'],
+                            started_epoch=row['started_epoch'], detail=detail)
+            self._event(db, job_id, 'REDISPATCH_AFTER_DRY_CHECK',
+                        dict(original=previous, replacement_host=host, replacement_fingerprint=digest(facts),
+                             request_sha256=row['request_sha256']))
+            db.execute("""UPDATE jobs SET state='QUEUED',host_id=NULL,attempt_id=NULL,assigned_epoch=NULL,
+                          started_epoch=NULL,updated_epoch=?,detail=?,eligibility=? WHERE job_id=?""",
+                       (time.time(), canonical(dict(prelaunch_recovery=True)), canonical(eligibility), job_id))
+            return True
 
     def unadopted_results(self, method):
         with self._connection() as db:
@@ -313,6 +361,10 @@ class JobStore:
             started = old['started_epoch']
             if started is None and state in ('STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER'):
                 started = now
+            if state == old['state'] == 'UNKNOWN':
+                previous = json.loads(old['detail'])
+                if previous.get('prelaunch_rejection') and not (detail or {}).get('prelaunch_rejection'):
+                    detail = previous  # an older poll cannot discard a verified exit
             value = canonical(detail or {})
             db.execute('UPDATE jobs SET state=?,detail=?,updated_epoch=?,started_epoch=? WHERE job_id=?',
                        (state, value, now, started, job_id))

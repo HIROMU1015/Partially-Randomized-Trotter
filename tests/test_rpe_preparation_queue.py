@@ -105,6 +105,28 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(progress['outcome_status'], 'PREPARATION_COMPLETE')
         self.assertFalse(progress['adopted'])
 
+    def test_horizon_price_status_uses_the_matching_audited_terminal_axes(self):
+        from trottertracks.rpe_preparation_queue import save_horizon_preparation
+
+        executor = self.executor(capacity=1)
+        output = self.run/'HORIZON_PREPARATION.json'
+        terminal = self.run/'pf_auto'/'TERMINAL_PRICES.json'
+        terminal.parent.mkdir()
+        row = dict(source_configuration_id='parent', M=13, jobs={}, terminal_physical_id='round13',
+                   status='HORIZON_PROVIDER_CONTRACT_HOLD', incomplete={'13': {
+                       'signal': 'WAITING', 'X': 'PROVIDER', 'Y': 'PROVIDER'}})
+        ready = dict(status='READY', entry={'prices': {'commit': 'fixed', 'path': 'prices.json'}},
+                     verified_terminal_axes=dict(m=13, physical_id='wrong', axes=['X', 'Y']))
+        terminal.write_text(json.dumps({'parent': ready}))
+        save_horizon_preparation(output, [row], executor.store)
+        self.assertIn('X', json.loads(output.read_text())[0]['incomplete']['13'])
+        ready['verified_terminal_axes']['physical_id'] = 'round13'
+        terminal.write_text(json.dumps({'parent': ready}))
+        save_horizon_preparation(output, [], executor.store)
+        result = json.loads(output.read_text())[0]
+        self.assertEqual(result['terminal_prices']['status'], 'READY')
+        self.assertEqual(result['incomplete'], {'13': {'signal': 'WAITING'}})
+
     def test_shared_q3_and_preparation_slot_cannot_be_claimed_twice(self):
         ex=self.executor(capacity=1)
         prep=self.submit(ex,'compile','cell')

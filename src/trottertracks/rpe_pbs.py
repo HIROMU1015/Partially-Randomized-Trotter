@@ -735,6 +735,15 @@ class PbsManager:
             assignment = item['assignment']; row = self.executor.store.row(assignment['job_id'])
             if (owners is not None and (assignment['job_id'], assignment['attempt_id']) not in owners):
                 raise ValueError('Unrequested incomplete PBS attempt returned by harvest')
+            if row is None or row['attempt_id'] != assignment['attempt_id'] or row['host_id'] != data['host_id']:
+                continue
+            detail = item.get('state', {}).get('detail') or {}
+            if (item['state'].get('state') == 'UNKNOWN' and detail.get('prelaunch_rejection')
+                    and row['state'] not in ('ACCEPTED', 'CANCELLED')
+                    and row['request_sha256'] == assignment['request_sha256']):
+                self.executor.rpc('/v1/state', dict(host_id=data['host_id'], job_id=row['job_id'],
+                    attempt_id=row['attempt_id'], state='UNKNOWN', detail=detail))
+                continue
             if row is not None and row['state'] not in ('ACCEPTED','UNKNOWN','CANCELLED'):
                 self.executor.rpc('/v1/state', dict(host_id=data['host_id'], job_id=assignment['job_id'],
                     attempt_id=assignment['attempt_id'], state='UNKNOWN',
