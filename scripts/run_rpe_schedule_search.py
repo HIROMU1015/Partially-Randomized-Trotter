@@ -67,25 +67,6 @@ def read_loc(loc):
     return x
 
 
-def pf_horizon_operations():
-    """Bind the selected scheduler's preparation code, with the run's science root intact."""
-    expected = (globals().get('FIXED_RUN_WORKER_TRIAL') or {}).get('pf_horizon_preparation_sha256')
-    if expected is None:
-        from trottertracks import pf_horizon_preparation
-        return pf_horizon_preparation
-
-    from importlib.util import module_from_spec, spec_from_file_location
-
-    path = Path(__file__).resolve().parents[1]/'src/trottertracks/pf_horizon_preparation.py'
-    if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
-        raise ValueError('Selected horizon preparation differs from deployment')
-    spec = spec_from_file_location('trottertracks.pf_horizon_preparation', path)
-    module = module_from_spec(spec)
-    module.FIXED_RUN_CODE_ROOT = ROOT
-    spec.loader.exec_module(module)
-    return module
-
-
 def equivalent_df_descriptor(config, base):
     """Recognize the original H4 descriptor runner and its input-path port."""
     import re
@@ -1857,8 +1838,8 @@ class WidthDriver:
                         regular_done = False
                         producer_failed = threading.Event()
                         if extend_pf:
+                            from trottertracks import pf_horizon_preparation as horizon_operations
                             from trottertracks.pf_optimizer_connection import registry_routes
-                            horizon_operations = pf_horizon_operations()
 
                             def parent_evidence(pf_context):
                                 return {row['configuration_id']: entry for row in pf_context['candidates']

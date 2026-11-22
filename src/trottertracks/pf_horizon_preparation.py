@@ -280,7 +280,7 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
     directory = shared/'horizon-inputs'/parent
     directory.mkdir(parents=True, exist_ok=True)
     payload = directory/'REQUEST_INPUT.json'
-    caller = Path(globals().get('FIXED_RUN_CODE_ROOT', Path(__file__).resolve().parents[2]))/ENTRY
+    caller = Path(__file__).resolve().parents[2]/ENTRY
     args = [interpreter,'-B',str(caller),'--provider-root',str(shared),'--request',str(payload)]
     plan_file = base/'plan'/'PLAN.json'
     if not plan_file.is_file():
