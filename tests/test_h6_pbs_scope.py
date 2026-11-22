@@ -66,6 +66,40 @@ def test_price_pool_prioritizes_larger_circuits_in_the_same_memory_group(tmp_pat
     assert [read(path)["index"] for path in completed] == [1000, 800, 600]
 
 
+def test_starting_long_price_job_leaves_room_for_short_jobs(tmp_path):
+    import time
+    import h6_preparation_pool as pool
+
+    heavy = ("price", {"size": (0, 1 << 15), "seconds": 0.18}, 0, tmp_path / "long.json", "fixture")
+    medium = ("price", {"size": (0, 1 << 14), "seconds": 0.13}, 0, tmp_path / "medium.json", "fixture")
+    short = [("price", {"size": (1024, 0), "seconds": 0.025}, i, tmp_path / f"short-{i}.json", "fixture")
+             for i in range(5)]
+    memory = 8 * pool.GIB + (16 << 20)
+    metrics = []
+
+    def execute(job):
+        with pool.price_phase("artificial"):
+            time.sleep(job[1]["seconds"])
+            write(job[3], {"index": job[2]})
+
+    assert not pool.prices([heavy, medium, *short], execute, 8, memory, lambda c: c["size"], metrics.append)
+    assert all(job[3].stat().st_mtime_ns < heavy[3].stat().st_mtime_ns for job in short)
+    assert metrics[-1]["peak_workers"] >= 3
+    assert metrics[-1]["peak_reserved_bytes"] <= memory
+    phases = metrics[-1]["phase_metrics"]["artificial"]
+    assert phases["tasks"] == 7 and phases["peak_rss_bytes"] > 0
+
+
+def test_price_memory_learning_requires_two_successful_measurements():
+    import h6_preparation_pool as pool
+
+    forecast, low, high = 10 * pool.GIB, 2 * pool.GIB, 8 * pool.GIB
+    assert pool.reserved_bytes(forecast, low, 0, 1) == 2 * forecast
+    assert pool.reserved_bytes(forecast, low, 1, 1) == forecast
+    assert pool.reserved_bytes(forecast, low, 2, 1) == 3 * pool.GIB
+    assert pool.reserved_bytes(forecast, high, 2, 1) == 12 * pool.GIB
+
+
 def test_scoped_price_archive_preserves_events_and_price_reuse(tmp_path, monkeypatch):
     import hashlib
     import json

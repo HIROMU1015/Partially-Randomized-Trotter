@@ -178,24 +178,26 @@ def price(cell, index, cohort):
     if cell["R_outer"] is None:
         requests, seeds, laws = [], [], []
     else:
-        with reuse_sampled_events():
+        with pool.price_phase("sample_events"), reuse_sampled_events():
             requests, seeds, laws = STATE.helpers["sample_requests"](cell, prep, cohort, index)
     compiler = CompilerSettings(("rz", "sx", "x", "cx"), None, None, 1, None, None, 17, "1.3.0")
     result = {}
     with fingerprint_context()() as session:
-        fp = PriceFingerprints(session)
-        evolution = STATE.pieces[cell["prefix"]].assemble(
-            cell, STATE.helpers["core"], requests, scalar(cell), fp.prepare,
-        )
+        with pool.price_phase("assemble_and_fingerprint"):
+            fp = PriceFingerprints(session)
+            evolution = STATE.pieces[cell["prefix"]].assemble(
+                cell, STATE.helpers["core"], requests, scalar(cell), fp.prepare,
+            )
         for axis, native in (("X", "cosine"), ("Y", "sine")):
-            wrapper = hadamard_wrapper(evolution.circuit, native)
-            cost = transpile_and_measure_cost(wrapper, compiler, actual_circuit_fingerprint=fp.axes[native])
-            if (cost.compiler_settings_hash != STATE.compiler or session.fingerprint(wrapper) != fp.axes[native]
-                    or cost.rz_count <= 0):
-                raise ValueError("Compiled H6 receipt fails compiler, fingerprint or price binding")
-            result[axis] = dict(rz=cost.rz_count, fingerprint=fp.axes[native],
-                metrics={key: getattr(cost, key) for key in ("rz_depth", "cx_count", "cx_depth", "total_depth", "circuit_size")})
-            del cost, wrapper
+            with pool.price_phase(f"compile_{axis}"):
+                wrapper = hadamard_wrapper(evolution.circuit, native)
+                cost = transpile_and_measure_cost(wrapper, compiler, actual_circuit_fingerprint=fp.axes[native])
+                if (cost.compiler_settings_hash != STATE.compiler or session.fingerprint(wrapper) != fp.axes[native]
+                        or cost.rz_count <= 0):
+                    raise ValueError("Compiled H6 receipt fails compiler, fingerprint or price binding")
+                result[axis] = dict(rz=cost.rz_count, fingerprint=fp.axes[native],
+                    metrics={key: getattr(cost, key) for key in ("rz_depth", "cx_count", "cx_depth", "total_depth", "circuit_size")})
+                del cost, wrapper
     events = [request.rte_occurrence.events for request in requests]
     return dict(candidate=cell, index=index, cohort=cohort, axes=result, compiler=STATE.compiler,
                 preparation_hash=prep.preparation_hash, seeds=seeds, laws=laws, events=events)
@@ -221,7 +223,9 @@ def execute(job):
         json.dump(dict(owner=owner, job=os.environ.get("PBS_JOBID"), candidate=cell["id"]), marker)
     if kind == "price":
         cohort = getattr(STATE, "price_cohort", "H6_SCOPE_" + owner)
-        write_price(path, dict(price(cell, index, cohort), owner=owner))
+        receipt = dict(price(cell, index, cohort), owner=owner)
+        with pool.price_phase("write_receipt"):
+            write_price(path, receipt)
     else:
         write(path, dict(signal(cell), owner=owner))
 

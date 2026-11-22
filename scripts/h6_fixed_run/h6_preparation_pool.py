@@ -2,6 +2,7 @@
 
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from contextlib import contextmanager
 import math
 import multiprocessing as mp
 from multiprocessing.connection import wait
@@ -12,6 +13,7 @@ import time
 
 GIB = 1 << 30
 CONTEXT = mp.get_context("fork")
+_price_phases = None
 
 
 def price_size(cell, block_bound, stages):
@@ -30,7 +32,25 @@ def estimated_bytes(profile):
     return GIB + head * 1024 + tail * (128 << 10)
 
 
+def reserved_bytes(forecast, measured, successful, running):
+    if successful >= 2:
+        return max(GIB, math.ceil(measured * 1.5))
+    return max(forecast * (2 if running and not successful else 1), math.ceil(measured * 1.5))
+
+
+@contextmanager
+def price_phase(name):
+    if _price_phases is None:
+        yield
+        return
+    began = time.monotonic()
+    yield
+    _price_phases[name] = (time.monotonic() - began, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
+
+
 def measured_price(connection, execute, task):
+    global _price_phases
+    _price_phases = {}
     with connection:
         cpu_start = time.process_time()
         error = None
@@ -39,17 +59,17 @@ def measured_price(connection, execute, task):
         except Exception as failure:
             error = f"{type(failure).__name__}: {failure}"[:1024]
         rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
-        connection.send((error, rss, time.process_time() - cpu_start))
+        connection.send((error, rss, time.process_time() - cpu_start, _price_phases))
 
 
 def result(process, connection):
     process.join()
     try:
         if process.exitcode != 0:
-            return f"Price worker exited with status {process.exitcode}", 0, 0
+            return f"Price worker exited with status {process.exitcode}", 0, 0, {}
         return connection.recv()
     except EOFError:
-        return "Price worker completed without accounting", 0, 0
+        return "Price worker completed without accounting", 0, 0, {}
     finally:
         connection.close()
         process.close()
@@ -74,7 +94,12 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
         for profile, group in grouped.items()
     }
     profiles = sorted(pending, key=estimated_bytes, reverse=True)
+    forecasts = {profile: estimated_bytes(profile) for profile in profiles}
+    short = {profile for profile in profiles if forecasts[profile] <= memory // slots}
+    short_target = slots // 2
     observed = defaultdict(int)
+    successes = defaultdict(int)
+    by_phase = {}
     active = {}
     in_profile = defaultdict(int)
     reserved = 0
@@ -92,15 +117,14 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
             while profiles and len(active) < slots:
                 free = memory - reserved - overrun
                 selected = None
-                for profile in profiles:
-                    measured = observed[profile]
-                    forecast = estimated_bytes(profile)
-                    # Allow multiple early jobs when they fit a conservative
-                    # forecast. Compare newly permitted jobs against measured RSS.
-                    if measured:
-                        need = max(forecast, math.ceil(measured * 1.25))
-                    else:
-                        need = forecast * (2 if in_profile[profile] else 1)
+                active_short = sum(in_profile[profile] for profile in short)
+                order = profiles
+                if active_short < min(len(active), short_target):
+                    # The first long task gets a head start. While it runs,
+                    # use part of the CPU allocation for shorter tasks that fit.
+                    order = [p for p in reversed(profiles) if p in short] + [p for p in profiles if p not in short]
+                for profile in order:
+                    need = reserved_bytes(forecasts[profile], observed[profile], successes[profile], in_profile[profile])
                     if need <= free or not active:
                         selected = profile, min(need, memory)
                         break
@@ -127,12 +151,18 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
 
             for sentinel in wait(active, timeout=10):
                 process, connection, profile, need, path = active.pop(sentinel)
-                error, rss, cpu = result(process, connection)
+                error, rss, cpu, phases = result(process, connection)
                 reserved -= need
                 in_profile[profile] -= 1
                 cpu_seconds += cpu
+                observed[profile] = max(observed[profile], rss)
                 if error is None:
-                    observed[profile] = max(observed[profile], rss)
+                    successes[profile] += 1
+                    for name, (seconds, peak) in phases.items():
+                        stats = by_phase.setdefault(name, dict(tasks=0, wall_seconds=0., peak_rss_bytes=0))
+                        stats["tasks"] += 1
+                        stats["wall_seconds"] += seconds
+                        stats["peak_rss_bytes"] = max(stats["peak_rss_bytes"], peak)
                     completed += 1
                 else:
                     errors[path.name] = error
@@ -142,7 +172,8 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
                 checkpoint(dict(phase="price", done=completed, errors=len(errors), active=len(active),
                     worker_limit=slots, peak_workers=peak_workers, cpu_seconds=cpu_seconds,
                     wall_seconds=now-begin, memory_budget=memory, reserved_bytes=reserved,
-                    peak_reserved_bytes=peak_reserved, peak_worker_rss_bytes=max(observed.values(), default=0)))
+                    peak_reserved_bytes=peak_reserved, peak_worker_rss_bytes=max(observed.values(), default=0),
+                    phase_metrics=by_phase))
                 next_checkpoint = now + 30
     finally:
         for process, connection, _, _, _ in active.values():
