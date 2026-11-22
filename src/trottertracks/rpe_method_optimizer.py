@@ -293,28 +293,31 @@ def enumerate_candidates(reader, problem, facts, catalog):
     by_config = {}
     for p in points:
         by_config.setdefault(p['configuration_id'], []).append(p)
-    from .pf_optimizer_connection import read_source, width_inside
+    from .pf_optimizer_connection import indexed_prefix, read_source, scoped_index_row, width_inside
     index = read_source(Path(reader.root), reader, problem['evidence']['pf_candidate_index'])
     out = []
     for name, spec in problem['methods'].items():
         caps = spec['caps']
         allowed = spec.get('configuration_ids')  # optional allow-list, applied to every candidate source
         if spec['family'] == 'PF':
-            prefix = facts['fragment_count'] if name == 'FULL_PF' else 7
-            def inside(formula, delta, p=prefix):
+            rank = facts['fragment_count']
+            def inside(formula, delta, p):
                 return (formula in spec['formulas'] and delta is not None and width_inside(delta, spec)
                         and (spec.get('p_values') is None or p in spec['p_values']))
-            indexed = [r for r in index['candidates'] if r['method'] == spec['index_method']]
+            indexed = [r for r in index['candidates'] if scoped_index_row(name, spec, r)]
             seen = {r['configuration_id'] for r in indexed}
             for r in indexed:
-                if inside(r['formula'], r['requested_delta_over_h']):
+                prefix = rank if name == 'FULL_PF' else indexed_prefix(reader, r, rank)
+                if inside(r['formula'], r['requested_delta_over_h'], prefix):
                     out.append(dict(method=name, family='PF', key=dict(p=prefix, formula=r['formula'], delta_over_h=r['requested_delta_over_h']),
                                     configuration_id=r['configuration_id'], index_signal=r['source_bound_13round_packet'], caps=caps))
             for cid, ps in by_config.items():
                 if ps[0]['method'] == name and cid not in seen:
                     # Catalog-only configurations get the same formula/width range test (width = delta_pf / h).
                     delta = None if ps[0].get('delta_pf') is None else str(frac(ps[0]['delta_pf']) / frac(ps[0]['h']))
-                    catalog_prefix = (ps[0].get('L_D') if name != 'FULL_PF' and ps[0].get('L_D') is not None else prefix)
+                    catalog_prefix = rank if name == 'FULL_PF' else ps[0].get('L_D')
+                    if catalog_prefix is None:
+                        continue  # Cannot place this saved row in a physical prefix scope
                     if inside(ps[0]['formula'], delta, catalog_prefix):
                         out.append(dict(method=name, family='PF', key=dict(p=catalog_prefix, formula=ps[0]['formula'], delta_over_h=delta),
                                         configuration_id=cid, index_signal=None, caps=caps, outside_index=True))
@@ -354,6 +357,15 @@ def enumerate_candidates(reader, problem, facts, catalog):
                  price_axes=deepcopy(metadata.get('price_axes',[])),
                  price_evidence=deepcopy(metadata.get('price_evidence')),
                  configuration_source=deepcopy(metadata.get('configuration_source')))
+        if c['family'] == 'PF' and c.get('configuration_source') and c.get('signal_source'):
+            # A previous search may have published a complete input binding in
+            # the saved catalog without installing it in this run's registry.
+            matches = [p for p in ps if p.get('configuration_source') == c['configuration_source']
+                       and p.get('signal_source') == c['signal_source']]
+            for field in ('price_registry_source', 'q3_template_source'):
+                locators = [p[field] for p in matches if p.get(field)]
+                if locators and all(loc == locators[0] for loc in locators):
+                    c[field] = deepcopy(locators[0])
         needs = []
         if c['configuration_id'] is None:
             needs.append('CONFIGURATION_AND_SCHEDULE')
@@ -1453,7 +1465,9 @@ def scope_absolute_kappa(context, problem):
         if isinstance(value, dict) and 'value' in value:
             value = value['value']
         if value is None:
-            raise ValueError('Cannot establish absolute kappa of candidate: ' + candidate['configuration_id'])
+            excluded.append(dict(configuration_id=candidate['configuration_id'],
+                                 reason='MISSING_ABSOLUTE_KAPPA_FOR_SCOPE_CHECK'))
+            continue
         kappa = _frac(value)
         inside_bounds = bounds is None or _frac(bounds[0]) <= kappa <= _frac(bounds[1])
         inside_grid = grid is None or kappa in {_frac(v) for v in grid}
@@ -1643,11 +1657,17 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 parallel_history = (ready_source is not None and getattr(ex, 'optimizer_history_directory', None) is not None
                                     and getattr(ex, 'preparation_history_cache', None) is None
                                     and getattr(ex, 'supports_nonblocking_prefetch', False))
+                method_scope = problem['methods'][name]
+                if (method_scope.get('family') == 'PR' and method_scope.get('L_D_values') is None
+                        and method_scope.get('configuration_ids') is None and 'L_D_range' in method_scope):
+                    domain = method_scope['L_D_range']
+                    upper = context['facts']['fragment_count'] + domain['max_offset_from_fragment_count']
+                    method_scope = dict(method_scope, L_D_values=range(domain['min'], upper + 1))
                 with (ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-ready-history')
                       if parallel_history else nullcontext()) as history_pool:
                     result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
                                         spent=spent, free=free, science_approved=science_approved,
-                                        refresh_ready=refresh_ready, submit_standby=submit_standby,
+                                        method_scope=method_scope, refresh_ready=refresh_ready, submit_standby=submit_standby,
                                         await_ready=await_ready if parallel_history else None,
                                         read_completed=read_completed,
                                         after_drain=after_drain if scaled_finalizers is not None else None,

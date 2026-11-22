@@ -1648,8 +1648,10 @@ class WidthDriver:
         if pf_enabled:
             from trottertracks import pf_optimizer_connection as PF
             routes=PF.registry_routes(routes,context['pf_evidence_registry'])
+        horizon_keys = set()
         def install_ready(current_routes, snapshot=False):
             accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
+            accepted.update(horizon_keys.copy())
             if snapshot and hasattr(comp,'install_snapshot'):
                 current_routes,records=comp.install_snapshot(context,dict(problem,execution_routes=current_routes),accepted)
             else:
@@ -1705,6 +1707,20 @@ class WidthDriver:
                     scaled_settings(search['scaled_shots']), problem['rpe']['M'])
                 if early:
                     save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', early, runtime.executor.store)
+            def prepare_df(scope, notify=None):
+                if (runtime is None or 'PR_DF' not in self.methods or self.spec.get('science_approved') is not True
+                        or search.get('rule') != 'RPE_SCALED_SHOTS_V1' or context.get('artificial')
+                        or problem.get('problem',{}).get('system') != 'H4'
+                        or context.get('pf_evidence_registry',{}).get('artificial')):
+                    return
+                from trottertracks.pr_df_horizon_preparation import prepare as prepare_df_horizons
+                def ready(record):
+                    horizon_keys.add(record['key'])
+                    if notify:
+                        notify('PR_DF',record)
+                prepare_df_horizons(ROOT,runtime,comp,scope,scaled_settings(search['scaled_shots'])['M'],
+                                    active_spec['executor'].get('prior_run_dirs', ()),
+                                    executor._user_stop_requested, on_ready=ready)
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
                 prepare_during = executor.replay_prior_q3() and prepare_during
             interim=None
@@ -1734,11 +1750,14 @@ class WidthDriver:
                     prepare_options.update(announce_ready=announce, stop_on_error=stop_preparing,
                                            wait_for_preparation=wait_for_preparation, continuous=continuous)
                     search_options['ready_source'] = subscriber
+                df_scope = [c.copy() for c in context['candidates'] if c['method']=='PR_DF']
                 def prepare():
                     if runtime is not None and not stop_preparation.is_set():
                         self.bootstrap_families()
                     if not stop_preparation.is_set():
                         self.complete_points(**prepare_options)
+                    if not stop_preparation.is_set():
+                        prepare_df(df_scope, prepare_options.get('announce_ready'))
                 pf_future=None
                 self.pf_more=False
                 if pf_enabled:
@@ -1751,21 +1770,17 @@ class WidthDriver:
                     args = (ROOT, problem, snapshot_context(context), active_spec, self.run, deepcopy(routes), runtime)
                     def prepare_pf():
                         stopped = lambda: stop_preparation.is_set() or executor._user_stop_requested()
-                        terminal = (runtime.settings.get('pf_terminal_price_leaves', {}) if runtime is not None else {})
-                        if 13 not in search.get('scaled_shots', {}).get('M', ()):
-                            terminal = {}
+                        horizons = scaled_settings(search['scaled_shots'])['M'] if runtime is not None and search.get('rule') == 'RPE_SCALED_SHOTS_V1' else ()
+                        extend_pf = (runtime is not None and 13 in horizons and
+                                     problem.get('problem', {}).get('system') == 'H4' and
+                                     not context['pf_evidence_registry'].get('artificial'))
                         initial_context, initial_routes = args[2], args[5]
                         latest = (initial_context, initial_routes)
                         terminal_entries = {}
                         lock = threading.RLock()
-                        if terminal:
-                            from trottertracks.pf_distributed_preparation import complete_terminal_prices
+                        if extend_pf:
+                            from trottertracks.pf_horizon_preparation import complete_scoped
                             from trottertracks.pf_optimizer_connection import registry_routes
-                            adopted = self.run/'pf_auto'/'TERMINAL_PRICES.json'
-                            if adopted.is_file():
-                                saved = json.loads(adopted.read_bytes())
-                                terminal_entries.update({row['configuration_id']:row['entry']
-                                    for parent,row in saved.items() if parent in terminal and row['status']=='READY'})
 
                         def include_terminal(pf_context, pf_routes):
                             if not terminal_entries:
@@ -1800,26 +1815,23 @@ class WidthDriver:
                             announce_pf(*result[:2])
                             return result
 
-                        if not terminal:
+                        if not extend_pf:
                             return regular()
-                        entries = dict(initial_context['pf_evidence_registry']['configurations'])
-                        waves_path = self.run/'pf_auto'/'WAVES.json'
-                        if waves_path.is_file():
-                            for row in json.loads(waves_path.read_bytes()).values():
-                                entries.update(row.get('configurations', {}))
+
+                        def complete_extensions(pf_context, pf_routes):
+                            complete_scoped(ROOT, runtime, pf_context['candidates'], self.methods,
+                                horizons, pf_routes, pf_settings.get('interpreter', sys.executable),
+                                active_spec['executor'].get('prior_run_dirs', ()), stop_requested=stopped,
+                                on_ready=terminal_ready)
                         with ThreadPoolExecutor(max_workers=1,thread_name_prefix='pf-terminal-producer') as pool:
-                            work = pool.submit(complete_terminal_prices, ROOT, runtime, entries,
-                                               stop_requested=stopped, on_ready=terminal_ready)
+                            work = pool.submit(complete_extensions, initial_context, initial_routes)
                             result = regular()
                             work.result()
-                        # A parent can become READY while the initial terminal
-                        # wave is running. Submit its fixed extension this pass.
-                        late = {cid: entry for cid, entry in result[0]['pf_evidence_registry']['configurations'].items()
-                                if cid in terminal and entry.get('prices')
-                                and entry['prices'] != entries.get(cid, {}).get('prices')}
-                        if late and not stopped():
-                            complete_terminal_prices(ROOT, runtime, late,
-                                                     stop_requested=stopped, on_ready=terminal_ready)
+                        refreshed = [c for c in result[0]['candidates'] if c.get('pf_evidence') and
+                            c.get('pf_evidence') != initial_context['pf_evidence_registry']['configurations'].get(
+                                c.get('configuration_id'))]
+                        if refreshed and not stopped():
+                            complete_extensions(dict(result[0], candidates=refreshed), result[1])
                         return (*include_terminal(*result[:2]), result[2])
                     pf_future=preparation_pool.submit(prepare_pf)
 
@@ -1834,7 +1846,7 @@ class WidthDriver:
                     pf_future=None
                 def ready_keys():
                     return {p['completion']['key'] for p in self.state['points']
-                            if p['status'] in ('REGISTERED', 'EVALUATED') and p.get('completion', {}).get('key')}
+                            if p['status'] in ('REGISTERED', 'EVALUATED') and p.get('completion', {}).get('key')} | horizon_keys.copy()
 
                 installed=ready_keys()
                 pending=preparation_pool.submit(prepare)
@@ -1884,6 +1896,12 @@ class WidthDriver:
                 if pf_future is not None:
                     install_pf()
                 O.apply_published(context['candidates'],routes)
+            if not prepare_during:
+                prepare_df(context['candidates'])
+                if horizon_keys:
+                    routes=install_ready(routes)
+                    executor.routes=routes;executor.expected=context['expected']
+                    O.apply_published(context['candidates'],routes)
             if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
             else:
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
@@ -2190,11 +2208,15 @@ class WidthDriver:
                 blocked=waiting or any(f['status']!='READY_METADATA' for f in self.state['families'].values()) or any(
                     p['status'] in ('HELD','PRICE_ACTION_UNAVAILABLE','PRICE_NOT_EVALUATED')
                     for p in self.state['points']) or pf_held or any(
-                    r.get('not_ready_candidates') for r in result.values())
+                    r.get('not_ready_candidates') or r.get('scaled_shots', {}).get('scope_coverage', {}).get('missing_count')
+                    for r in result.values())
                 reason=('SCOPE_HELD_INPUTS' if blocked else 'REQUESTED_WIDTH_RULE_EXHAUSTED') if getattr(self,'rule_stop',False) else (
                     'WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED')
                 if held_q3 or (scaled and not blocked and (budget_remaining or
                         any(r['stop_reason'] == 'UNRESOLVED_SCALED_SCOPE' for r in result.values()))):
+                    reason = 'SCOPE_HELD_Q3'
+                elif scaled and not blocked and any(r['stop_reason'] == 'SCALED_SCOPE_INCLUDES_UNSUPPORTED_HORIZON'
+                                                    for r in result.values()):
                     reason = 'SCOPE_HELD_Q3'
                 elif scaled and not blocked and budget_stops:
                     reason = 'Q3_BUDGET_EXHAUSTED'

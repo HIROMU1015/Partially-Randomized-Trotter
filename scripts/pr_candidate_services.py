@@ -452,10 +452,15 @@ def main():
             got=A.accept_saved(view,integration=T.C.interfaces(str(view)).pipeline,handoff_source=r['packet'])
             item=got['results'][0];binding=T.create(view,item['configuration'],original_source=r['configuration']);T.bind_signal(view,binding,item['signal_packet'])
         else:
-            adapter=module(ROOT,'_portable_prdf_intake','scripts/run_rpe_optimizer_q3_job.py')
+            adapter_root = Path(__file__).resolve().parents[1] if r.get('M') == 13 else ROOT
+            adapter=module(adapter_root,'_portable_prdf_intake','scripts/run_rpe_optimizer_q3_job.py')
             W,_=adapter.load_prdf_route(view,r.get('controller_paths',{}).get('route_views',{}))
             check_intake_inputs(W.U.ROOT, inputs)
             config=read(r['configuration']);binding,_=W.U.T.create(view,config,original_source=r['configuration']),None
+            if r.get('M') == 13:
+                if config['spec']['M'] != 13:
+                    raise ValueError('DF intake horizon differs from configuration')
+                adapter.extend_prdf_intake(W)
             case=dict(configuration=r['configuration'],original_configuration_id=config['id'],signal_packet=r['packet'],
                 signal_packet_kind='A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED',binding_id=binding['id'],total_configuration_id=binding['total_configuration']['id'])
             W.U.metadata(case)

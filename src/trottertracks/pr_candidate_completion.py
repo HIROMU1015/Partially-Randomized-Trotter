@@ -531,7 +531,7 @@ class Completion:
             return self.settings.get('df_price_source', self.source)
         return self.source
 
-    def call(self,cmd,d,stage,output=None,science=False):
+    def call(self,cmd,d,stage,output=None,science=False,*,poll=False):
         d=Path(d);d.mkdir(parents=True,exist_ok=True);done=d/(stage+'.RETURN.json');started=d/(stage+'.STARTED.json')
         if done.exists():
             r=read(done)
@@ -541,7 +541,11 @@ class Completion:
         if runtime is not None and science and runtime.handles(stage):
             # Recovery is reconciled with the original host/attempt by the
             # shared executor. A local STARTED marker is never a retry grant.
+            if poll:
+                return runtime.call(self,cmd,d,stage,output,science=science,wait=False)
             return runtime.call(self,cmd,d,stage,output,science=science)
+        if poll and runtime is not None:
+            raise PreparationWait('NO_DISTRIBUTED_PREPARATION_PROVIDER:'+stage)
         if started.exists():raise Held('IN_PROGRESS_OR_AMBIGUOUS_NO_DUPLICATE:'+stage)
         if getattr(self,'stop_requested',lambda:False)():
             self.log(event='STAGE_YIELDED_AFTER_ORCHESTRATOR_FAILURE',stage=stage,directory=rel(d))
@@ -577,7 +581,7 @@ class Completion:
         command = [python, '-B', str(ROOT/'scripts/pr_candidate_services.py')]
         metadata_entry = globals().get('FIXED_RUN_PR_PRICE_SERVICE')
         terminal_request = (request.get('terminal_reference') is not None
-                            or (mode == 'df-generate' and request.get('M') == 13))
+                            or (mode in ('df-generate','intake') and request.get('M') == 13))
         if metadata_entry and (mode == 'df-price-design' or terminal_request):
             command = [python, '-B', '-c',
                        'import runpy,sys\n'
@@ -616,9 +620,11 @@ class Completion:
         config = value(record['configuration'])
         configuration, packet = intake_locators(record)
         method = record['method']
-        intake = self.service('intake', dict(
-            method=method, configuration=configuration, packet=packet,
-            view=str(self.path('B_VIEW') if method == 'PR_PAULI' else self.path('DF_Q3_VIEW'))), directory)
+        inputs = dict(method=method, configuration=configuration, packet=packet,
+                      view=str(self.path('B_VIEW') if method == 'PR_PAULI' else self.path('DF_Q3_VIEW')))
+        if record.get('request', {}).get('horizon_parent'):
+            inputs['M'] = config['spec']['M']
+        intake = self.service('intake', inputs, directory)
         if intake != record['intake']:
             raise ValueError('CONTINUATION_INTAKE_BINDING_DIFFERS')
         registry = directory/'PRICE_RULES.json'
@@ -780,7 +786,7 @@ class Completion:
                 ready.add(identifier)
         return ready
 
-    def complete(self,request):
+    def complete(self,request, *, existing_signal_only=False, saved_packets=()):
         request=deepcopy(request)  # internal descriptor resolution must not change the caller's cache key
         if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
         if request.get('plan_only')or getattr(self,'settings',{}).get('plan_only'):
@@ -960,20 +966,35 @@ class Completion:
                 rec['deferred_configuration'] = cref
                 if not (rec.get('signal') and rec.get('intake')):
                     df_bundles=self.saved_signal_packets('PR_DF')
-                    df_plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,
-                        saved_bundles=df_bundles,terminal_reference=request.get('terminal_reference')),d)
+                    if parent := request.get('horizon_parent'):
+                        for packet in (parent['signal_packet'], *saved_packets):
+                            if packet not in df_bundles:
+                                df_bundles = [*df_bundles, packet]
+                    plan_args = dict(configuration=config, tail_descriptor=descriptor,
+                                     saved_bundles=df_bundles, terminal_reference=request.get('terminal_reference'))
+                    if existing_signal_only:
+                        # A newly arrived packet must invalidate only the metadata plan.
+                        df_plan = self.service('df-plan', plan_args, d, tag='DF_SAVED_PLAN_'+key(plan_args))
+                    else:
+                        df_plan = self.service('df-plan', plan_args, d)
                     conflicts=df_plan.get('saved_signal_conflicts',[])
                     if conflicts:
                         rec['conflicting_signal_rounds']=conflicts
                         rounds=','.join(str(row['m']) for row in conflicts)
                         raise Held('DF_SAVED_SIGNAL_CONFLICT:rounds='+rounds)
+                    if existing_signal_only and any(row['decision'] != 'REUSE' for row in df_plan['rounds']):
+                        raise PreparationWait('AWAIT_ORIGINAL_DF_HORIZON_SIGNAL_OR_SAVED_PACKET')
                     if df_plan.get('unsupported_rounds') or any(row['decision']=='UNSUPPORTED' for row in df_plan['rounds']):
                         raise Held('DF_PROVIDER_UNSUPPORTED:'+str(df_plan))
             def intake_work(signal):
                 if rec.get('intake'):
                     return rec['intake']
-                return self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),
-                    packet=signal['packet_source'],view=str(self.path('B_VIEW') if request['method']=='PR_PAULI'else self.path('DF_Q3_VIEW'))),d)
+                intake = dict(method=request['method'],configuration=signal.get('configuration_source',cref),
+                              packet=signal['packet_source'],view=str(self.path(
+                                  'B_VIEW' if request['method']=='PR_PAULI' else 'DF_Q3_VIEW')))
+                if request.get('horizon_parent'):
+                    intake['M'] = request['M']
+                return self.service('intake',intake,d)
             def signal_work():
                 if rec.get('signal') and rec.get('intake'):
                     return rec['signal']
@@ -1240,16 +1261,29 @@ class Completion:
     def df_signals(self,config,cref,d,descriptor,*,plan,bundles):
         result=dict(rows=[],new_provider_calls=0);obtained={}
         terminal = plan.get('terminal_reference')
-        if any(row['decision']=='REQUEST' for row in plan['rounds']):
+        marker = d/'DF_SIGNALS.DISTRIBUTED.json'
+        recovering = terminal and marker.is_file()
+        if recovering or any(row['decision']=='REQUEST' for row in plan['rounds']):
             source=self.stage_source('DF_SIGNALS')
             request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=source,
                          output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
-            inp=d/'DF_SIGNAL_REQUEST.json';put(inp,request);input_commit=publish([d],'Fix missing DF round jobs')
+            inp = d/'DF_SIGNAL_REQUEST.json'
+            if recovering:
+                frozen = read(inp)
+                if (frozen['execution_source'] != source
+                        or frozen['plan'].get('terminal_reference') != terminal
+                        or value(frozen['configuration']) != config):
+                    raise Held('Existing DF terminal attempt has different physical inputs')
+                input_commit = git('log','-1','--format=%H','--',rel(inp))
+            else:
+                put(inp,request)
+                input_commit=publish([d],'Fix missing DF round jobs')
             output=d/'df_signals/RESULT.json'
             transport_root = (Path(globals()['FIXED_RUN_PR_PRICE_SERVICE']).parents[1]
                               if terminal and globals().get('FIXED_RUN_PR_PRICE_SERVICE') else ROOT)
             result=self.call([self.path('NATIVE'),'-B',str(transport_root/'scripts/run_pr_df_candidate_signal_jobs.py'),
-                '--input',str(inp),'--inputs-commit',input_commit,'--source',source],d,'DF_SIGNALS',output,science=True)
+                '--input',str(inp),'--inputs-commit',input_commit,'--source',source],d,'DF_SIGNALS',output,science=True,
+                **({'poll':True} if terminal else {}))
             if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
             raw=publish([d],'Publish missing DF round signals')
             obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
@@ -1304,6 +1338,12 @@ class Completion:
         registry_digest=self.price_registry_digest()
         quote=self.quote_with_steps(config,quote)
         if r['method']=='PR_PAULI' and price_source_holds(quote):
+            quote['price_registry_at_quote'] = registry_digest
+            put(d/'FINAL_QUOTE.json',quote)
+            return quote
+        if r.get('horizon_parent') and not quote['complete']:
+            # The terminal extension inherits the parent's model policy. A
+            # missing model quote does not request a large direct circuit here.
             quote['price_registry_at_quote'] = registry_digest
             put(d/'FINAL_QUOTE.json',quote)
             return quote
@@ -1930,6 +1970,8 @@ class Completion:
             def same_placeholder(candidate):
                 if candidate.get('configuration_id')is not None:return False
                 k=candidate.get('key',{})
+                if rec.get('request', {}).get('horizon_parent') and candidate.get('M', k.get('M')) != config['spec']['M']:
+                    return False
                 if k.get('L_D')!=config['spec']['L_D']or k.get('formula',config['spec']['formula'])!=config['spec']['formula']:
                     return False
                 width=(dec(k['delta_pf'])if k.get('delta_pf')is not None else
@@ -1976,6 +2018,15 @@ class Completion:
                 schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
             rule=self.common_route(method,cid,configuration,packet,binding)
+            parent = rec.get('request',{}).get('horizon_parent')
+            if parent:
+                from run_rpe_optimizer_q3_job import M13_RISK
+                source_id = value(parent['configuration'])['id']
+                if config['spec']['M'] != 13 or len(cand['prices']) != 2*(config['spec']['M']+1):
+                    raise ValueError('Native DF horizon requires complete per-axis prices')
+                cand.update(M=config['spec']['M'],source_configuration_id=source_id)
+                context['expected'][cid]['M'] = config['spec']['M']
+                rule.update(horizon_parent=parent,horizon_risk_source=deepcopy(M13_RISK))
             routes[method]=[rule]+[old for old in routes.get(method,[])if old!=rule]
         routes=self.install_saved_routes(context,routes)
         self.save()

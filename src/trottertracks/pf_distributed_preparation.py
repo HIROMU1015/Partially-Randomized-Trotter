@@ -483,7 +483,7 @@ def terminal_model_prices(parent, config, method, table, model, physical_id):
     return prices
 
 
-def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, on_ready):
+def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, on_ready, selected=None):
     """Register 14-round evidence using the same price rule as the admitted parent."""
     from concurrent.futures import ThreadPoolExecutor, as_completed
     from hashlib import sha256
@@ -491,7 +491,8 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
     from .pr_candidate_completion import Held
     from .rpe_release_registry import write
 
-    selected = runtime.settings.get('pf_terminal_price_leaves', {})
+    if selected is None:
+        selected = runtime.settings.get('pf_terminal_price_leaves', {})
     state_path = runtime.executor.run_dir/'pf_auto'/'TERMINAL_PRICES.json'
     states = read(state_path) if state_path.is_file() else {}
 
@@ -513,7 +514,7 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
         if (parent['id'] != parent_id or cfg['spec']['M'] != 13
                 or dict(cfg['spec'], M=12) != parent['spec']):
             raise ValueError('Terminal PF scope differs from the admitted parent')
-        ids = physical_ids(workspace, cfg)
+        ids = physical_ids(root if leaf.get('terminal_reference') else workspace, cfg)
         if ids[13] != leaf['physical_id'] or {m:ids[m] for m in range(13)} != physical_ids(root, parent):
             raise ValueError('Terminal PF physical schedule differs from its fixed receipt')
         parent_table = fixed(root, parent_entry['prices'])
@@ -553,7 +554,7 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
                         tip+':refs/rpe-preparation/pf-terminal/'+cfg['id']],
                        cwd=root,check=True,capture_output=True)
         entry=dict(leaf['entry'], prices=dict(commit=tip,path=relative))
-        return dict(status='READY', configuration_id=cfg['id'], entry=entry,
+        return dict(status='READY', configuration_id=cfg['id'], entry=entry, parent_prices=parent_entry['prices'],
                     verified_terminal_axes=dict(m=13, physical_id=ids[13], axes=list(AXES)))
 
     def process(item):
@@ -563,13 +564,31 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
         except (Held, ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
             return parent_id, dict(status='WAITING', reason=str(error))
 
-    pending = [(key, item) for key,item in selected.items() if parent_entries.get(key, {}).get('prices') and
-               states.get(key,{}).get('status')!='READY']
+    pending = []
+    for key, leaf in selected.items():
+        parent_entry = parent_entries.get(key, {})
+        if not parent_entry.get('prices'):
+            continue
+        previous = states.get(key, {})
+        locs = {field:parent_entry.get(field) for field in ('configuration','signal_packet')}
+        if (previous.get('status') == 'READY' and previous.get('parent_prices') == parent_entry['prices']
+                and previous['entry'].get('horizon_parent') == locs):
+            on_ready(previous['configuration_id'], previous['entry'])
+        else:
+            # Older receipts lack the parent table locator. Recreate its checked
+            # model quote against the immutable output before attaching it.
+            pending.append((key, leaf))
     if not pending:
         return
     with ThreadPoolExecutor(max_workers=len(pending),thread_name_prefix='pf-terminal-prices') as pool:
         for future in as_completed(pool.submit(process,item) for item in pending):
             parent_id, state = future.result()
+            prior = states.get(parent_id, {})
+            if state['status'] != 'READY':
+                if prior.get('status') == 'READY':
+                    state['previous_adoption'] = prior
+                elif 'previous_adoption' in prior:
+                    state['previous_adoption'] = prior['previous_adoption']
             states[parent_id] = state
             write(state_path,states)
             if state['status']=='READY':

@@ -109,9 +109,54 @@ def _classification(answer, threshold):
     return 'IN_PROGRESS' if status == 'IN_PROGRESS' else 'UNKNOWN'
 
 
+def scope_coverage(method_scope, horizons, rows):
+    """Match the declared finite design axes before claiming scope exhaustion."""
+    from itertools import islice, product
+    from math import prod
+    from .rpe_kappa_schedule import _frac as frac
+
+    scope = method_scope or {}
+    generation = scope.get('generation') or {}
+    axes = {'M': horizons}
+    if scope.get('configuration_ids') is not None:
+        axes['source_configuration_id'] = scope['configuration_ids']
+    else:
+        for field, values in (
+            ('p', scope.get('p_values')), ('L_D', scope.get('L_D_values')),
+            ('formula', scope.get('formulas') or generation.get('formulas')),
+            ('delta_pf', scope.get('requested_delta_pf_values')),
+            ('delta_over_h', None if scope.get('requested_delta_pf_values') else
+             scope.get('delta_over_h_values') or generation.get('delta_over_h_values')),
+            ('absolute_kappa', scope.get('absolute_kappa_values')),
+        ):
+            if values:
+                axes[field] = values
+
+    def normalized(key, value):
+        if key in ('absolute_kappa', 'delta_over_h', 'delta_pf') and value is not None:
+            return str(frac(value))
+        return value
+
+    seen = set()
+    for row in rows:
+        if not row['configuration_id']:
+            continue
+        key = dict(row['configuration'], M=row['M'],
+                   source_configuration_id=row.get('source_configuration_id') or row['configuration_id'])
+        seen.add(tuple(normalized(field, key.get(field)) for field in axes))
+    values = [dict.fromkeys(normalized(field, v) for v in grid) for field, grid in axes.items()]
+    requested = prod(map(len, values))
+    represented = sum(all(v in grid for v, grid in zip(key, values)) for key in seen)
+    missing = requested - represented
+    sample = (islice((row for row in product(*values) if row not in seen), 32) if missing else ())
+    return dict(axes=list(axes), absolute_kappa_bounds=scope.get('absolute_kappa_bounds'),
+                requested=requested, represented=represented, missing_count=missing,
+                missing_sample=[dict(zip(axes, row)) for row in sample])
+
+
 def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spent=0, free=None,
         science_approved=True, refresh_ready=None, submit_standby=None, held=(), flagged_stop=None,
-        read_completed=None, after_drain=None, await_ready=None):
+        read_completed=None, after_drain=None, await_ready=None, method_scope=None):
     """Prove local grid minima by exact price order, with no MSE monotonicity."""
     from decimal import DecimalException
     from . import rpe_method_optimizer as O
@@ -151,10 +196,27 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             verified = dict(answer, status=status, cost=row['cost'])
             knowledge[key] = known[key] = verified
 
+    native_parents = set()
+
     def register(c):
         M, cid = c['M'], c['configuration_id']
+        parent = c.get('source_configuration_id')
+        if parent and c.get('horizon_preparation'):
+            if (c['method'], parent, M) in native_parents:
+                return
+        elif parent and c.get('ready') and not c.get('execution_needs'):
+            native_parents.add((c['method'], parent, M))
+            # A projection awaiting inputs is replaced by its collected native
+            # configuration. Other parents and selected shot attempts are independent.
+            for key, previous in list(groups.items()):
+                pending_candidate = previous['candidate']
+                if (key[0] == c['method'] and key[2] == M and pending_candidate.get('horizon_preparation')
+                        and pending_candidate.get('source_configuration_id') == parent and not pending_candidate['ready']):
+                    del groups[key]
         group = dict(candidate=c, rows=[])
         groups[c['method'], cid or c['name'], M] = group
+        if c.get('unsupported_horizon'):
+            return
         prices = c.get('prices')
         known_prices = prices is not None and len(prices) == 2 * (M + 1) and all(p >= 0 for p in prices)
         ready = bool(cid) and c['ready'] and not c.get('execution_needs') and known_prices
@@ -328,9 +390,11 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                              or (r['cost'], r['smallest_grid_k']) < (best['cost'], best['smallest_grid_k']))]
             verdict = ('EVALUATED_MINIMUM' if blockers else 'GRID_MINIMUM_CONFIRMED') if best is not None else (
                 'NO_CONFIRMED_GRID_POINT' if blockers else 'NO_GRID_POINT_MEETS_LIMIT')
+            if c.get('unsupported_horizon'):
+                verdict = 'OUTSIDE_QUALIFIED_EVALUATOR_DOMAIN'
             key = dict(c.get('key', {}), M=c['M'])
             spec = (c.get('generated_configuration') or {}).get('spec', {})
-            for field in ('formula', 'delta_pf', 'h'):
+            for field in ('formula', 'delta_pf', 'h', 'L_D'):
                 if spec.get(field) is not None:
                     key[field] = spec[field]
             if c.get('kappa_value') is not None:
@@ -376,6 +440,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                               and (r['cost'] is None or r['cost'] < limit)
                               for g in groups for r in g['allocations'])
             return 'EVALUATED_MINIMUM' if can_improve else 'MINIMUM_WITHIN_REGISTERED_CANDIDATES'
+        coverage = scope_coverage(method_scope, policy['M'], rows)
         has_pending = any(r['status'] == 'PENDING' for g in rows for r in g['allocations'])
         budget_exhausted = (pending is not None and has_pending and budget is not None
                             and spent + used >= budget)
@@ -385,8 +450,10 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             stop = requested_stop
         elif budget_exhausted:
             stop = 'Q3_BUDGET_EXHAUSTED'
-        elif any(r['status'] in unresolved for g in rows for r in g['allocations']):
+        elif (not rows or coverage['missing_count']) or any(r['status'] in unresolved for g in rows for r in g['allocations']):
             stop = 'UNRESOLVED_SCALED_SCOPE'
+        elif any(row['minimum_status'] == 'OUTSIDE_QUALIFIED_EVALUATOR_DOMAIN' for row in rows):
+            stop = 'SCALED_SCOPE_INCLUDES_UNSUPPORTED_HORIZON'
         else:
             stop = 'SCALED_SHOT_GRID_COMPLETE'
         horizon_requests = {}
@@ -412,7 +479,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         return dict(rule=RULE, incumbent_scope='CONFIGURATION_AND_HORIZON', incumbent=winning,
                     input_requests=input_requests,
                     trace=trace, held=holds, pending_request=pending if pending is None or pending['status'] == 'PENDING' else None, new_calls=used, stop_reason=stop,
-                    by_configuration=rows, scaled_shots=dict(policy=policy, M12_best=external(baseline),
+                    by_configuration=rows, scaled_shots=dict(policy=policy, scope_coverage=coverage, M12_best=external(baseline),
                         M12_minimum_status=scope_status(baseline, [r for r in rows if r['M'] == 12]),
                         all_M_best=external(winning), all_M_minimum_status=scope_status(winning, rows),
                         comparison_only_best=reference,
@@ -431,9 +498,14 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
 def horizon_candidates(candidates, problem, policy, executor=None, catalog=None):
     """Keep base identities for archival reuse and bind shorter views to their owners."""
     by_id = {r['configuration_id']: r for r in (catalog or {}).get('candidates', [])}
-    sources = {(c.get('source_configuration_id') or c.get('configuration_id'),
+    sources = {(c['method'], c.get('source_configuration_id') or c.get('configuration_id'),
                 c.get('M', problem['rpe']['M'])) for c in candidates if c.get('configuration_id')}
     result, added_routes = [], []
+    def unsupported(method, M, route):
+        if problem.get('problem', {}).get('system') != 'H4' or (route or {}).get('kind') == 'artificial':
+            return False
+        from run_rpe_optimizer_q3_job import M13_ROUTES
+        return M > 13 or (M == 13 and not any(name == method for name, _ in M13_ROUTES))
     for original in candidates:
         original_id = original['configuration_id']
         original_M = original.get('M', problem['rpe']['M'])
@@ -459,14 +531,22 @@ def horizon_candidates(candidates, problem, policy, executor=None, catalog=None)
                 c['execution_needs'] = list(dict.fromkeys([*c.get('execution_needs', []),
                     'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN']))
         if original_M in policy['M']:
+            if unsupported(c['method'], original_M, base_route):
+                c.update(unsupported_horizon=True, ready=False)
             result.append(c)
         for M in policy['M']:
-            if M == original_M or (original_id and (original_id, M) in sources) or original.get('source_configuration_id'):
+            if M == original_M or (original_id and (c['method'], original_id, M) in sources) or original.get('source_configuration_id'):
                 continue
             item = dict(c, M=M, name=c['name'] + ':M=' + str(M), source_configuration_id=original_id,
                         key=dict(c['key'], M=M), needs=list(c['needs']), execution_needs=list(c.get('execution_needs', [])))
             if original_id:
                 item['configuration_id'] = projection_id(original_id, original_M, M)
+            if unsupported(c['method'], M, base_route):
+                item.update(ready=False, prices=None, unsupported_horizon=True, required_rounds=[],
+                            price_status='OUTSIDE_QUALIFIED_EVALUATOR_DOMAIN')
+                item['execution_needs'].append('NO_QUALIFIED_Q3_ROUTE_FOR_METHOD_AND_HORIZON')
+                result.append(item)
+                continue
             price_count = 2 * (original_M + 1)
             if M < original_M and c['ready'] and original_id and c.get('prices') is not None and len(c['prices']) == price_count:
                 item['prices'] = c['prices'][:2 * (M + 1)]

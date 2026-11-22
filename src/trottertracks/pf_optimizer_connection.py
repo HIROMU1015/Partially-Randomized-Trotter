@@ -93,6 +93,35 @@ def _inside(entry, spec):
             and (spec.get('p_values') is None or entry['p'] in spec['p_values']))
 
 
+def indexed_prefix(reader, row, rank):
+    if row['method'] == 'FULL_PF':
+        return rank
+    # The historical index names the prefix (e.g. B0I_P7). Future indices
+    # can supply p or an immutable configuration when the label is generic.
+    prefix = row.get('p')
+    label = row['method'].removeprefix('B0I_P')
+    if label != row['method'] and label.isdecimal():
+        declared = int(label)
+        if prefix is not None and prefix != declared:
+            raise ValueError('Conflicting PF index prefix and method')
+        prefix = declared
+    if row.get('configuration_locator') and prefix is None:
+        prefix = reader.read(row['configuration_locator'])['spec']['L_D']
+    if type(prefix) is not int or not 0 <= prefix < rank:
+        raise ValueError('Truncated PF index needs an identifiable strict prefix')
+    return prefix
+
+
+def scoped_index_row(method, spec, row):
+    label = row['method']
+    if label == spec['index_method']:
+        return True
+    if method == 'TRUNCATED_PF' and spec.get('p_values') is not None and label.startswith('B0I_P'):
+        suffix = label[len('B0I_P'):]
+        return suffix.isdecimal() and int(suffix) in spec['p_values']
+    return False
+
+
 def enumerate_prefixes(root, reader, problem, candidates, methods=None):
     """Expose requested p as missing candidates before any acquisition choice.
 
@@ -114,7 +143,9 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
     for method,spec in scoped:
         values=spec.get('p_values')
         if values is None:
-            values=[problem['problem']['hamiltonian_data']['expected']['fragment_count']] if method=='FULL_PF' else [7]
+            rank = problem['problem']['hamiltonian_data']['expected']['fragment_count']
+            values = ([rank] if method == 'FULL_PF' else sorted({indexed_prefix(reader, row, rank)
+                      for row in index['candidates'] if row['method'] == spec['index_method']}))
         if (len(set(values))!=len(values) or any(type(p)is not int or p not in range(11)for p in values)
                 or (method=='FULL_PF' and any(p!=10 for p in values))):
             raise ValueError('PF p_values must be unique legal prefixes; Full PF is p10')
@@ -123,7 +154,7 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
         if explicit is None:
             for row in index['candidates']:
                 width=row.get('requested_delta_over_h');formula=row['formula']
-                if (row['method']==spec['index_method'] and formula in widths and width is not None
+                if (scoped_index_row(method, spec, row) and formula in widths and width is not None
                         and width_inside(width, spec)):
                     if frac(width) not in widths[formula]:
                         widths[formula].append(frac(width))

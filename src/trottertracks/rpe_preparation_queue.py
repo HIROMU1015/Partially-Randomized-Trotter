@@ -1,5 +1,6 @@
 """Canonical preparation identities, shared by planning, dry-check and dispatch."""
 from copy import deepcopy
+from pathlib import Path
 from .rpe_q3_coordinator import digest
 from .rpe_preparation_artifacts import input_manifest,artifact_path
 
@@ -49,6 +50,8 @@ def submit_registered_horizons(runtime, candidates, policy, source_M):
         if not binding or candidate.get('M', source_M) != binding['source_M']:
             continue
         for horizon in policy['M']:
+            if str(horizon) not in binding.get('rounds', {}):
+                continue
             rounds = list(range(binding['source_M'] + 1, horizon + 1))
             if rounds:
                 requests.append(dict(source_configuration_id=cid, source_M=binding['source_M'],
@@ -120,12 +123,13 @@ def submit_horizon_preparation(runtime, requests):
             if not entry:
                 incomplete[str(m)] = {'round': 'HORIZON_ROUND_PROVIDER_NOT_CONFIGURED'}
                 continue
-            if m == 13:
+            if m == request['M']:
                 report['terminal_physical_id'] = entry['physical_id']
             successes, failures = {}, {}
             for role, allowed in (('signal', ('signal',)), ('X', ('compile', 'audit')), ('Y', ('compile', 'audit'))):
                 try:
-                    if m == 13 and role != 'signal' and configuration in pf_terminal_prices:
+                    if (m == request['M'] and role != 'signal' and configuration in pf_terminal_prices
+                            and pf_terminal_prices[configuration].get('M', 13) == m):
                         leaf = pf_terminal_prices[configuration]
                         if leaf['physical_id'] != entry['physical_id']:
                             raise ValueError('PF model price and horizon provider bind different physical rounds')
@@ -170,20 +174,56 @@ def save_horizon_preparation(path, reports, store):
     rows = {(row['source_configuration_id'], row['M']): row for row in previous}
     rows.update(((row['source_configuration_id'], row['M']), row) for row in reports)
     for row in rows.values():
-        terminal = terminal_prices.get(row['source_configuration_id'])
-        if row['M'] == 13 and terminal:
+        parent = row['source_configuration_id']
+        horizon = row['M']
+        terminal = terminal_prices.get(parent)
+        # Run-owned dynamic producers use the same stage marker and adopted
+        # outcome as the rest of preparation. Do not relabel an owned signal
+        # as an absent provider when a later optimizer pass refreshes this row.
+        if isinstance(parent, str) and parent not in ('', '.', '..') and Path(parent).name == parent:
+            folder = path.parent/'pf_auto'/'horizon'
+            marker = folder/'signal-provider'/'horizon-inputs'/parent/'PF_SIGNALS.DISTRIBUTED.json'
+            if marker.is_file():
+                owned = json.loads(marker.read_bytes())
+                physical = owned['request']['preparation']['horizon_round']
+                if physical['m'] == horizon:
+                    row['terminal_physical_id'] = physical['physical_id']
+                    roles = row['jobs'].setdefault(str(horizon), {})
+                    if roles.get('signal', owned['job_id']) != owned['job_id']:
+                        raise ValueError('Conflicting horizon preparation owners')
+                    roles['signal'] = owned['job_id']
+                    row['status'] = 'HORIZON_PREPARATION_PARTIAL'
+                    row.setdefault('incomplete', {}).setdefault(str(horizon), {}).update(
+                        {axis: 'AWAITING_ADOPTED_PRICE_EVIDENCE' for axis in ('X','Y')})
+            if horizon == 13:
+                pf_detail = folder/parent/'PREPARATION.json'
+                df_detail = path.parent/'completion'/'horizons'/parent/'STATUS.json'
+                if df_detail.is_file():
+                    row['preparation_detail'] = json.loads(df_detail.read_bytes())
+                    row['status'] = row['preparation_detail']['status']
+                elif pf_detail.is_file():
+                    row['preparation_detail'] = json.loads(pf_detail.read_bytes())
+                leaf = folder/parent/'LEAF.json'
+                if not row.get('terminal_physical_id') and leaf.is_file():
+                    row['terminal_physical_id'] = json.loads(leaf.read_bytes())['physical_id']
+        if terminal:
             terminal_axes = terminal.get('verified_terminal_axes') or {}
             expected = row.get('terminal_physical_id')
-            if (terminal['status'] == 'READY' and terminal_axes.get('m') == 13
+            if (not expected and terminal.get('entry', {}).get('horizon_source_configuration_id') == parent
+                    and terminal.get('entry', {}).get('horizon_parent')):
+                expected = terminal_axes.get('physical_id')
+                row['terminal_physical_id'] = expected
+            if (terminal['status'] == 'READY' and terminal_axes.get('m') == horizon
                     and expected and terminal_axes.get('physical_id') == expected
                     and set(terminal_axes.get('axes', ())) == {'X', 'Y'}):
                 row['terminal_prices'] = dict(status='READY', source=terminal['entry']['prices'])
                 for axis in ('X', 'Y'):
-                    row.get('incomplete', {}).get('13', {}).pop(axis, None)
-                if not row.get('incomplete', {}).get('13'):
-                    row.get('incomplete', {}).pop('13', None)
+                    row.get('incomplete', {}).get(str(horizon), {}).pop(axis, None)
+                if not row.get('incomplete', {}).get(str(horizon)):
+                    row.get('incomplete', {}).pop(str(horizon), None)
                 if not row.get('incomplete'):
                     row['status'] = 'HORIZON_TERMINAL_PRICES_READY'
+                    row.pop('preparation_detail', None)
             elif terminal['status'] == 'WAITING':
                 row['terminal_prices'] = dict(status='WAITING', reason=terminal.get('reason'))
         progress = {}

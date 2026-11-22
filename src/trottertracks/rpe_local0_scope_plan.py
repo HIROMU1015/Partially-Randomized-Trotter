@@ -14,6 +14,41 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def verified_scope(applied, actual):
+    from fractions import Fraction
+    from .rpe_schedule_search import kappa_bounds, kappa_values
+
+    method_settings = applied['method_settings']
+    search = applied['search']
+    plan = actual['scope_plan']
+    bounds, grids = {}, {}
+    splits = {m: v.get('L_D_values') for m, v in method_settings.items()}
+    if splits != plan['requested_L_D']:
+        raise RequestError('scope.L_D', 'Planner and accepted split scopes differ')
+    for method, cfg in method_settings.items():
+        if method not in ('PR_PAULI', 'PR_DF'):
+            continue
+        wide = search.get('schedule_wide_by_method', {}).get(method, search.get('schedule_wide', {}))
+        interval, grid = kappa_bounds(wide), kappa_values(wide)
+        bounds[method] = list(map(str, interval)) if interval else None
+        grids[method] = list(map(str, grid)) if grid else None
+        if (bounds[method] != plan['kappa_bounds_by_method'].get(method)
+                or grids[method] != plan['kappa_values_by_method'].get(method)):
+            raise RequestError('scope.kappa', 'Planner and accepted kappa scope differ for '+method)
+        allowed = cfg.get('L_D_values')
+        actual_splits = {f['L_D'] for f in actual['families'].values() if f['method'] == method}
+        if allowed is not None and actual_splits != set(allowed):
+            raise RequestError('scope.L_D', 'Physical family coverage differs for '+method)
+    for row in actual['history'][-1]['proposals']:
+        method = actual['families'][row['family']]['method']
+        value = Fraction(row['kappa'])
+        interval, grid = bounds[method], grids[method]
+        if ((interval and not Fraction(interval[0]) <= value <= Fraction(interval[1]))
+                or (grid and value not in map(Fraction, grid))):
+            raise RequestError('scope.kappa', 'Proposal outside accepted scope for '+method)
+    return bounds, grids
+
+
 def handle(config, request):
     config = request_service(config, request)
     if request.get('action') != 'planonly' or not config.get('absolute_kappa_schedule'):
@@ -65,16 +100,9 @@ def handle(config, request):
             raise RequestError('normal_entry','plan-only exit=%d; see %s'%(process.returncode,run/'NORMAL_ENTRY.log'))
         actual = load(output/'KAPPA_STATE.json')
         actual_fixed = load(output/'FIXED_INPUTS.json')
-        from fractions import Fraction
-        lo,hi=(Fraction(v) for v in applied['search']['schedule_wide']['kappa_bounds'])
-        allowed=applied['method_settings']['PR_PAULI']['L_D_values']
-        assert actual['scope_plan']['kappa_bounds']==[str(lo),str(hi)]
-        assert actual['scope_plan']['requested_L_D']=={'PR_PAULI':allowed}
+        bounds, grids = verified_scope(applied, actual)
+        proposals = actual['history'][-1]['proposals']
         assert actual_fixed['round_scope']['search_overrides']==spec['search_overrides']
-        assert all(v['L_D'] in allowed for v in actual['families'].values())
-        assert set(v['L_D'] for v in actual['families'].values())==set(allowed)
-        proposals=actual['history'][-1]['proposals']
-        assert all(lo<=Fraction(v['kappa'])<=hi for v in proposals)
         assert actual['scope_plan']['scientific_calls']==actual['scope_plan']['queue_operations']==actual['scope_plan']['dry_check_calls']==0
         assert not (output/'jobs').exists() and not (output/'distributed').exists()
         assert (current.read_bytes() if current.exists() else None)==current_before
@@ -86,7 +114,8 @@ def handle(config, request):
         result=dict(status='PLAN_ONLY_READY',started=False,run_id=run_id,run_directory=str(run),
             applied=applied,computation_source=config['computation_source'],implementation=config['code_source'],
             normal_entry='run_rpe_schedule_search.py',selection_rule=actual['scope_plan']['rule'],
-            requested_kappa_bounds=[str(lo),str(hi)],bounds_inclusive=[True,True],
+            requested_kappa_bounds=next(iter(bounds.values())) if len(bounds)==1 else None,
+            requested_kappa_bounds_by_method=bounds,requested_kappa_values_by_method=grids,bounds_inclusive=[True,True],
             distributed=dict(scheduler=distributed['scheduler'],max_concurrent_jobs=distributed['max_concurrent_jobs'],
                 priority_groups=distributed['distributed']['auto_allocation']['priority_groups'],
                 required_hosts=distributed['distributed']['required_hosts']),

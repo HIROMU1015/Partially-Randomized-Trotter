@@ -928,6 +928,15 @@ class DistributedPreparationBridge:
             for alias, view in views.items():
                 manifest = view['source']
                 baseline = sources.get(manifest['commit'])
+                if not baseline and alias == 'source':
+                    from .rpe_preparation_worker import select_preparation_profile
+                    configured = getattr(self.executor, 'distributed', {}).get('preparation_profiles', {}).get('local')
+                    if configured:
+                        local = configured if isinstance(configured, dict) else read(Path(configured))
+                        profile = select_preparation_profile(local, dict(preparation=spec))
+                        baseline = profile.get('preparation_sources', {}).get(manifest['commit'])
+                        if isinstance(baseline, dict):
+                            baseline = baseline.get('root')
                 if not baseline:
                     raise ValueError('Fixed bundle validation view missing: '+manifest['commit'])
                 baseline = Path(baseline)
@@ -997,7 +1006,9 @@ class DistributedPreparationBridge:
             # PF's source-frozen provider is invoked by the new transport
             # wrapper. The provider manifest is explicit and separately fixed.
             source_files = deepcopy(getattr(completion, 'preparation_source_manifest', {}).get('files', {}))
-            if not script.is_relative_to(self.root) or not source_files:
+            terminal_wrapper = Path(__file__).resolve().parents[2]/'scripts'/'run_rpe_pf_horizon_signal.py'
+            if not source_files or not (script.is_relative_to(self.root) or
+                    (stage == 'PF_SIGNALS' and script == terminal_wrapper)):
                 raise ValueError('External preparation wrapper requires a fixed provider manifest')
         inputs, outputs, optional_outputs = {}, ['workspace/' + relative], []
         bindings = {str(root): '@SOURCE@', command[0]: '@PYTHON@'}
@@ -1023,6 +1034,8 @@ class DistributedPreparationBridge:
             if not snapshot or not re.fullmatch(r'[0-9a-f]{20}', df_terminal):
                 raise ValueError('DF terminal signal requires a fixed physical round and snapshot')
             caller = completion.settings.get('df_terminal_transport_source')
+            if caller is None:
+                caller = subprocess.check_output(['git','rev-parse','HEAD'],cwd=script.parents[1],text=True).strip()
             if not isinstance(caller, str) or not re.fullmatch(r'[0-9a-f]{40}', caller):
                 raise ValueError('DF terminal transport SOURCE must be pinned')
             for name in (script_relative, 'src/trottertracks/pr_df_descriptor_extension.py'):
@@ -1464,7 +1477,7 @@ class DistributedPreparationBridge:
             if not destination.exists() or destination.read_bytes() != raw:
                 destination.write_bytes(raw)
 
-    def call(self, completion, command, directory, stage, output=None, science=True):
+    def call(self, completion, command, directory, stage, output=None, science=True, *, wait=True):
         from .pr_candidate_completion import Held, PreparationWait, put
         directory = Path(directory)
         marker = directory / (stage + '.DISTRIBUTED.json')
@@ -1517,7 +1530,9 @@ class DistributedPreparationBridge:
         job_id = self.executor.submit_preparation(request, budget=budget, approved=self.approved,
             contract=request['original_contract'], dependencies=dependencies, expected_job_id=submitted.get('job_id'))
         put(marker, dict(submitted, job_id=job_id))
-        result = self.executor.preparation_result(job_id, wait=True, adopt=False)
+        result = self.executor.preparation_result(job_id, wait=wait, adopt=False)
+        if result is None and not wait:
+            raise PreparationWait('DISTRIBUTED_PREPARATION_IN_PROGRESS:'+stage+':'+job_id)
         if not result or result.get('status') != 'PREPARATION_COMPLETE':
             terminal=result or{}
             while terminal.get('status')=='PREPARATION_DEPENDENCY_HOLD'and isinstance(terminal.get('predecessor'),dict):

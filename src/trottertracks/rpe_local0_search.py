@@ -99,20 +99,23 @@ def exact_values(value, field):
 
 
 def request_service(config, request):
-    """Select the adopted physical schedule entry for a PR-Pauli absolute interval."""
+    """Select the adopted physical schedule entry for bounded or discrete PR scopes."""
     scope = request.get('scope') or {}
     if not isinstance(scope, dict):
         return config
     per_method = scope.get('per_method') or {}
-    if not isinstance(per_method, dict) or not isinstance(per_method.get('PR_PAULI', {}), dict):
+    if not isinstance(per_method, dict):
         return config
-    kappa = (per_method.get('PR_PAULI') or {}).get('kappa') or {}
-    if not isinstance(kappa, dict):
+    methods = scope.get('methods', ['PR_PAULI'])
+    if not isinstance(methods, list):
         return config
+    absolute = [m for m in methods if m in ('PR_PAULI', 'PR_DF')
+                and isinstance(per_method.get(m), dict) and isinstance(per_method[m].get('kappa'), dict)
+                and per_method[m]['kappa'].get('mode') == 'absolute']
     route = config.get('absolute_kappa_route')
-    if route and kappa.get('mode') == 'absolute':
-        if scope.get('methods', ['PR_PAULI']) != ['PR_PAULI'] and not config.get('combined_width_search'):
-            raise RequestError('scope.methods', 'absolute kappa schedule entry currently accepts PR_PAULI alone')
+    if route and absolute:
+        if len(methods) > 1 and not config.get('combined_width_search'):
+            raise RequestError('scope.methods', 'combined absolute-kappa search requires a combined schedule entry')
         selected = deepcopy(config)
         selected.pop('absolute_kappa_route')
         selected.update(route)

@@ -131,7 +131,7 @@ function showCell(c){let d=E('detail');d.replaceChildren();let h=el('div',null,'
 }
 const gridStatus={MINIMUM_WITHIN_REGISTERED_CANDIDATES:'登録済み回路の範囲で格子内確定',GRID_MINIMUM_CONFIRMED:'この回路とMで格子内確定',EVALUATED_MINIMUM:'評価済み最安',
  NO_GRID_POINT_MEETS_LIMIT:'格子内適合なし',NO_CONFIRMED_GRID_POINT:'適合未確認'};
-const scaledStops={SCALED_SHOT_GRID_COMPLETE:'指定範囲の倍率探索が完了',
+const scaledStops={SCALED_SCOPE_INCLUDES_UNSUPPORTED_HORIZON:'指定範囲に評価器が未対応のMあり',SCALED_SHOT_GRID_COMPLETE:'登録構成の倍率格子を評価済み',
  Q3_BUDGET_EXHAUSTED:'新規Q3の予算上限',STEP_LIMIT:'探索step上限',WORK_SLICE_YIELDED:'次の探索区間に継続',
  UNRESOLVED_SCALED_SCOPE:'未評価・入力待ち・判定保留が残る', USER_REQUESTED_STOP:'利用者による停止', UNKNOWN_RESULT:'結果照合が必要'};
 const scaledDirections={COST_DOWN:'費用減',COST_UP:'費用増',EQUAL:'同額',UNRESOLVED:'費用差は未確定'};
@@ -162,6 +162,10 @@ function scaledView(view){
   const card=el('details');card.append(el('summary',run.label));
   field(card,'停止・継続理由',scaledStops[stop_reason]||stop_reason);
   field(card,'指定探索範囲',s.policy);
+  if(s.scope_coverage){const c=s.scope_coverage;
+   field(card,'指定した離散条件の登録数',c.represented+' / '+c.requested);
+   if(c.missing_count)field(card,'未登録条件の例',c.missing_sample);
+  }
   field(card,'M=12の格子内',s.M12_best?.cost);
   field(card,'全Mの格子内',s.all_M_best?.cost);
   field(card,'集約状態',gridStatus[s.all_M_minimum_status]||s.all_M_minimum_status);

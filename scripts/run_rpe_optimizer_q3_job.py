@@ -115,6 +115,9 @@ def common_case(view, request):
     case['allocation'] = dict(allocation_id='RPE_OPT_' + request['request_id'], shot_policy='USER_SUPPLIED',
                               shots=[dict(m=m, N_X=x, N_Y=y) for m, (x, y) in enumerate(zip(request['N_X'], request['N_Y']))])
     inputs = {k: deepcopy(saved[k]) for k in ('kernel_source', 'C_source', 'acceleration') + CONTRACT if k in saved}
+    if rule['kind'] == 'prdf_d2_common_entry' and rule.get('horizon_risk_source') == M13_RISK:
+        if inputs['options']['phase_radii'] == [1.0]*13:
+            inputs['options']['phase_radii'] = [*inputs['options']['phase_radii'],1.0]
     inputs.update(cases=[case], concurrent_configurations=1, maximum_scientific_calls=1,
                   template_source=dict(rule['contract_template'], role='EVALUATION_CONTRACT_ONLY'), signal_source=entry['signal_packet'])
     return case, inputs
