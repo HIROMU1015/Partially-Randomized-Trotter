@@ -1841,7 +1841,7 @@ class WidthDriver:
                         producers_done = threading.Event()
                         if extend_pf:
                             from trottertracks import pf_horizon_preparation as horizon_operations
-                            from trottertracks.pf_optimizer_connection import registry_routes
+                            from trottertracks import pf_optimizer_connection as pf_registry
 
                             def parent_evidence(pf_context):
                                 return {row['configuration_id']: entry for row in pf_context['candidates']
@@ -1855,11 +1855,32 @@ class WidthDriver:
                         def include_terminal(pf_context, pf_routes, entries):
                             if not entries:
                                 return pf_context, pf_routes
-                            registry = deepcopy(pf_context['pf_evidence_registry'])
-                            registry['configurations'].update(entries)
-                            updated = pf_candidate_selection._refresh(ROOT, dict(problem, search=search),
-                                pf_context, self.methods, registry, registry.get('artificial',False))
-                            return updated, registry_routes(pf_routes, registry)
+                            updated = snapshot_context(pf_context)
+                            registry = updated['pf_evidence_registry']
+                            additions = {cid: entry for cid, entry in entries.items()
+                                         if entry != registry['configurations'].get(cid)}
+                            if not additions:
+                                return pf_context, pf_routes
+                            # Use the same PF validation as prepare(), just for transferred
+                            # entries. Re-enumerating every method and re-quoting every
+                            # unchanged candidate can leave the workers idle for minutes.
+                            delta = dict(registry, configurations=additions)
+                            expected = pf_registry.hydrate(ROOT, O.Reader(ROOT), dict(problem, search=search),
+                                updated['candidates'], delta, updated['facts'])
+                            for cid, binding in expected.items():
+                                prior = updated['expected'].get(cid) or {}
+                                for field in ('total_configuration_id', 'binding_id'):
+                                    if prior.get(field) is not None and binding.get(field) is not None and prior[field] != binding[field]:
+                                        raise ValueError('PF registry conflicts with saved Q3 binding: ' + field)
+                                updated['expected'][cid] = dict(prior, **{k: v for k, v in binding.items() if v is not None})
+                            if updated.get('saved') is not None:
+                                prices = {c['configuration_id']: c['prices'] for c in updated['candidates']
+                                          if c['configuration_id'] in expected and c['prices'] is not None}
+                                restored = O.SavedBackend([p for p in updated['catalog']['candidates']
+                                                           if p['configuration_id'] in expected], prices)
+                                updated['saved'].table.update(restored.table)
+                            registry['configurations'].update(additions)
+                            return updated, pf_registry.registry_routes(pf_routes, delta)
 
                         def announce_pf(pf_context, pf_routes):
                             nonlocal latest, parents, parent_revision
