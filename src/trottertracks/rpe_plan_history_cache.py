@@ -15,6 +15,7 @@ import pickle
 import sqlite3
 import subprocess
 import sys
+import textwrap
 import time
 import zlib
 
@@ -26,6 +27,15 @@ MARKERS = ('REQUEST.json', 'OUTCOME.json', 'COLLECTED_OUTCOME.json',
            'PROCESS_RETURN.json', 'LAUNCH.json', 'STARTING.json',
            'SUPERVISION.json', 'DRY_CHECK.json', 'RESOLVED_REQUEST.json',
            'WORKER_STATE.json', 'ASSIGNMENT.json')
+REUSE_HOOKS = ('job_dir', 'same_route', 'prior_route_fields', 'route', 'expected_for',
+               'pf_template_source', 'ingest', 'scope_unknown')
+DISTRIBUTED_INGEST_WRAPPER = '''\
+def ingest(self, job, proposal, calls):
+    answer = super().ingest(job, proposal, calls)
+    if calls == 0:
+        self.record_prior_result_reuse(job)
+    return answer
+'''
 
 
 def _json(value):
@@ -83,12 +93,28 @@ def _hashes(job, signature):
 
 
 def _validator(executor):
-    paths = {Path(O.__file__).resolve()}
+    # Whole-file hashes also cover the canonical exact parser and the fixed
+    # Git-blob reader used by route/template validation.
+    paths = {Path(inspect.getfile(value)).resolve() for value in (O, O.Reader, O.frac, O.blob)}
     for cls in type(executor).__mro__:
         try:
-            paths.add(Path(inspect.getfile(cls)).resolve())
+            path = Path(inspect.getfile(cls)).resolve()
         except (TypeError, OSError):
-            pass
+            continue  # Builtin base classes have no source file.
+        if cls.__module__ == __package__ + '.rpe_optimizer_concurrent':
+            hooks = {name for name in REUSE_HOOKS if name in vars(cls)}
+            # The known distributed wrapper logs validated reuse. The
+            # ordinary Executor still decides which exact result is valid.
+            if cls.__name__ == 'ConcurrentExecutor' and not hooks:
+                continue
+            if cls.__name__ == 'DistributedExecutor' and hooks == {'ingest'}:
+                try:
+                    wrapper = textwrap.dedent(inspect.getsource(cls.ingest))
+                except (TypeError, OSError):
+                    wrapper = None
+                if wrapper == DISTRIBUTED_INGEST_WRAPPER:
+                    continue
+        paths.add(path)
     return {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 
 

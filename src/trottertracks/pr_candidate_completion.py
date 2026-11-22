@@ -1406,7 +1406,7 @@ class Completion:
             for source, path in ((locator, original), (obtained[round_key], raw_file)):
                 if subprocess.check_output(['git','show',source['commit']+':'+source['path']], cwd=ROOT) != path.read_bytes():
                     return None
-            return dict(obtained=obtained, obtained_request=locator, result=result)
+            return dict(obtained=obtained, obtained_request=locator, result=result, job_id=job_id)
         except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
             return None
 
@@ -1460,7 +1460,12 @@ class Completion:
             raw_sources={str(row['m']):dict(commit=carrier,path=rel(staged/'raw'/('m'+str(row['m'])+'.json')))
                          for row in config['rounds']}),d)
         pub=publish([d],'Assemble DF bundle for normal intake')
-        return dict(status='SIGNALS_READY',configuration_source=configref,packet_source=dict(commit=pub,path=rel(d/'df-bundle.json')),new_signal_calls=result.get('new_provider_calls'))
+        signals = dict(status='SIGNALS_READY', configuration_source=configref,
+                       packet_source=dict(commit=pub,path=rel(d/'df-bundle.json')),
+                       new_signal_calls=0 if repair else result.get('new_provider_calls'))
+        if repair:
+            signals['reused_signal_job_id'] = repair['job_id']
+        return signals
 
     def initial_quote(self,config,cref,d):
         registry=d/'PRICE_RULES.json'

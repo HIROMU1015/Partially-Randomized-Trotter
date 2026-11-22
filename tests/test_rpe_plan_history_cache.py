@@ -12,7 +12,8 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from trottertracks import rpe_method_optimizer as O
-from trottertracks.rpe_plan_history_cache import HistoryCache, _unpack
+from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, DistributedExecutor
+from trottertracks.rpe_plan_history_cache import HistoryCache, _unpack, _validator
 
 
 class SavedHistoryDeltas(unittest.TestCase):
@@ -100,6 +101,39 @@ class SavedHistoryDeltas(unittest.TestCase):
         self.assertEqual(changed[:2], cold[:2])
         self.assertEqual((changed[2]['cache_hits'], changed[2]['validated_jobs']), (0, 1))
         self.assertEqual(changed[2]['context_changes'], {'validator': 1})
+
+    def test_pure_dispatch_source_changes_keep_the_validated_record(self):
+        concurrent = ConcurrentExecutor.__new__(ConcurrentExecutor)
+        distributed = DistributedExecutor.__new__(DistributedExecutor)
+        canonical = _validator(self.executor)
+        self.assertEqual(_validator(concurrent), canonical)
+        self.assertEqual(_validator(distributed), canonical)
+        self.evidence(4)
+        self.cache.prior_records(self.executor, self.candidates, details=False)
+
+        transport = ROOT/'src'/'trottertracks'/'rpe_optimizer_concurrent.py'
+        original_read = Path.read_bytes
+
+        def read_changed(path):
+            data = original_read(path)
+            return data + b'\n# dispatch edit\n' if path == transport else data
+
+        with patch.object(Path, 'read_bytes', read_changed):
+            with patch('trottertracks.rpe_plan_history_cache._validator', return_value=_validator(distributed)):
+                _, _, stats = self.cache.prior_records(self.executor, self.candidates, details=False)
+        self.assertEqual((stats['cache_hits'], stats['validated_jobs']), (1, 0))
+
+    def test_new_validation_hook_or_wrapper_restores_full_dispatch_hash(self):
+        distributed = DistributedExecutor.__new__(DistributedExecutor)
+
+        def changed(self, *args, **kwargs):
+            raise AssertionError('Only the source should be inspected')
+
+        hash_path = str(ROOT/'src'/'trottertracks'/'rpe_optimizer_concurrent.py')
+        with patch.object(ConcurrentExecutor, 'same_route', changed):
+            self.assertIn(hash_path, _validator(distributed))
+        with patch.object(DistributedExecutor, 'ingest', changed):
+            self.assertIn(hash_path, _validator(distributed))
 
     def test_late_ready_subset_skips_unrelated_exact_payloads_until_request_changes(self):
         job = self.evidence(4)
