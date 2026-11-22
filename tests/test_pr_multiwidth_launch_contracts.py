@@ -295,7 +295,7 @@ class IndependentMethodLaunchContract(unittest.TestCase):
 
     def test_pf_wave_notifies_selector_without_waiting_for_another_method(self):
         d = driver(['PR_DF'])
-        d.methods = ['PR_DF', 'TRUNCATED_PF']
+        d.methods = ['PR_DF', 'FULL_PF', 'TRUNCATED_PF']
         d.log = lambda **event: None
         executor = SimpleNamespace(state=SimpleNamespace(cv=threading.Condition()))
         _, _, ready = d.live_ready_source(executor, None, {'methods': {}}, threading.Event())
@@ -308,9 +308,15 @@ class IndependentMethodLaunchContract(unittest.TestCase):
                                 expected_for=lambda identity, _: identity)
         original = dict(candidates=[old], expected={}, saved=SimpleNamespace(table={}))
         pending, take = ready.subscribe(method, original, [old], view)
+        full_view = SimpleNamespace(routes={}, expected={}, for_method=lambda _: trial)
+        full_pending, full_take = ready.subscribe('FULL_PF', original, [], full_view)
         self.assertFalse(pending())
-        snapshot = dict(candidates=[pf], expected={cid: cid}, saved=SimpleNamespace(table={(cid, (1, 1)): 'saved'}))
+        full = dict(method='FULL_PF', configuration_id='full-ready', ready=True)
+        snapshot = dict(candidates=[pf, full], expected={cid: cid, 'full-ready': 'full-ready'},
+                        saved=SimpleNamespace(table={(cid, (1, 1)): 'saved'}))
         ready.announce_pf(snapshot, {})
+        self.assertEqual(full_take()[0], [dict(full, execution_needs=[])])
+        self.assertFalse(full_pending())
         self.assertTrue(ready.has_new(method))
         self.assertFalse(ready.has_new('PR_DF'))
         self.assertTrue(pending())
@@ -322,11 +328,14 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         self.assertEqual(original['saved'].table, {})
         self.assertFalse(ready.has_new(method))
         self.assertEqual(take(), ([], None))
-        ready.announce_pf(dict(snapshot, candidates=[dict(pf)]), {})
+        ready.announce_pf(dict(snapshot, candidates=[dict(pf), full]), {})
         self.assertFalse(ready.has_new(method))
         newer = dict(pf, configuration_id='pf-next')
-        ready.announce_pf(dict(snapshot, candidates=[pf, newer], expected={cid: cid, 'pf-next': 'pf-next'}), {})
+        ready.announce_pf(dict(snapshot, candidates=[pf, newer, full],
+                               expected={**snapshot['expected'], 'pf-next': 'pf-next'}), {})
         self.assertTrue(pending())
+        self.assertFalse(full_pending())
+        self.assertFalse(ready.has_new('FULL_PF'))
         added, _ = take()
         self.assertEqual([c['configuration_id'] for c in added], ['pf-next'])
 

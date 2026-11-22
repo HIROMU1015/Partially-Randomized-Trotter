@@ -1491,9 +1491,10 @@ class WidthDriver:
         announced = {method: set() for method in self.methods}
         observed = {method: set() for method in self.methods}
         from trottertracks.rpe_preparation_round import PF_METHODS, _merge_pf, snapshot_context
-        pf_snapshot = None
-        pf_revision = 0
-        pf_observed = {method: 0 for method in self.methods}
+        pf_methods = PF_METHODS.intersection(self.methods)
+        pf_snapshots = {}
+        pf_revision = dict.fromkeys(pf_methods, 0)
+        pf_observed = dict.fromkeys(pf_methods, 0)
         pf_ready_by_method = {}
         state = executor.state
         condition = state.cv
@@ -1520,26 +1521,25 @@ class WidthDriver:
                 condition.notify_all()
 
         def announce_pf(context, routes):
-            nonlocal pf_snapshot, pf_revision
             ready = {
                 method: ({row['configuration_id']: row for row in context['candidates']
                           if row['method'] == method and row.get('ready')}, routes.get(method, ()))
-                for method in PF_METHODS.intersection(self.methods)
+                for method in pf_methods
             }
             with condition:
-                if ready == pf_ready_by_method:
-                    return
-                pf_ready_by_method.clear()
-                pf_ready_by_method.update(ready)
-                pf_snapshot = (context, routes)
-                pf_revision += 1
-                condition.notify_all()
+                for method, snapshot in ready.items():
+                    if snapshot == pf_ready_by_method.get(method):
+                        continue
+                    pf_ready_by_method[method] = snapshot
+                    pf_snapshots[method] = (context, routes)
+                    pf_revision[method] += 1
+                    condition.notify_all()
 
         def has_new(method):
             with condition:
                 return not stop_preparation.is_set() and (
                     bool(announced[method] - observed[method]) or
-                    (method in PF_METHODS and pf_revision > pf_observed[method]))
+                    (method in pf_methods and pf_revision[method] > pf_observed[method]))
 
         def subscriber(method, context, candidates, view):
             seen = set()
@@ -1550,7 +1550,7 @@ class WidthDriver:
                 with condition:
                     return not stop_preparation.is_set() and (
                         bool(announced[method] - seen) or
-                        (method in PF_METHODS and pf_revision > pf_seen))
+                        (method in pf_methods and pf_revision[method] > pf_seen))
 
             def take():
                 nonlocal pf_seen
@@ -1558,10 +1558,10 @@ class WidthDriver:
                     keys = announced[method] - seen
                     seen.update(keys)
                     observed[method].update(keys)
-                    pf = pf_snapshot if method in PF_METHODS and pf_revision > pf_seen else None
+                    pf = pf_snapshots[method] if method in pf_methods and pf_revision[method] > pf_seen else None
                     if pf is not None:
-                        pf_seen = pf_revision
-                        pf_observed[method] = pf_revision
+                        pf_seen = pf_revision[method]
+                        pf_observed[method] = pf_seen
                 if (not keys and pf is None) or stop_preparation.is_set():
                     return [], None
                 scratch = dict(context, candidates=deepcopy(candidates), expected=dict(view.expected))
