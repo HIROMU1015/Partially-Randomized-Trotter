@@ -29,6 +29,38 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_pf_redelivery_reuses_frozen_stage_under_changed_search_settings(self):
+        with tempfile.TemporaryDirectory() as temp:
+            run = Path(temp)
+            candidate, job, stage = 'fixed-candidate', 'original-job', 'PF_COMPILE'
+            workspace = run/f'pf_auto/candidates/{candidate}/pf_auto/pf_completion/provider_workspace'
+            directory = workspace/'docs/research/distributed_selected_pf'/candidate
+            source = dict(commit='fixed', files={})
+            req = normalize_preparation_request(dict(route=dict(kind='preparation'),
+                original_contract={'calls': 2}, preparation=dict(source=source, provider=stage, stage='compile')))
+            C.put(run/'pf_auto/WAVES.json', {candidate: dict(status='PREPARATION_INCOMPLETE',
+                reason='PF_COMPLETION_REQUEST_MISMATCH', differing_fields=['exploratory_cost'])})
+            C.put(workspace.parent/'PROVIDER_SOURCE.json', {'source': source['commit']})
+            C.put(directory/(stage+'.DISTRIBUTED.json'), dict(job_id=job, request=req))
+            stage_input = directory/(stage+'.INPUT.json')
+            C.put(stage_input, dict(value=dict(configuration=dict(id=candidate))))
+            proof = dict(kind='PF_PORTABLE_INPUT_DELIVERY', configuration_id=candidate,
+                         audit_attempt='old', input_sha256=hashlib.sha256(stage_input.read_bytes()).hexdigest())
+            executor = SimpleNamespace(run_dir=run, _user_stop_requested=lambda: False,
+                                       store=SimpleNamespace(row=lambda _: dict(request=req)), log=lambda **_: None)
+            bridge = B.DistributedPreparationBridge(executor, run,
+                dict(pf_stage_audit_recoveries={job: proof}), approved=True)
+            with patch.object(bridge, 'call') as call:
+                bridge.reconcile_pf_input_redeliveries(dict(exploratory_cost=True), sys.executable)
+                completion, cmd, target, provider, output = call.call_args.args
+                self.assertEqual((completion.source, target, provider), ('fixed', directory, stage))
+                self.assertEqual(cmd[cmd.index('--input')+1], str(stage_input))
+                self.assertEqual(call.call_args.kwargs, {'wait': False})
+                stage_input.write_text('{}')
+                call.reset_mock()
+                bridge.reconcile_pf_input_redeliveries(dict(exploratory_cost=True), sys.executable)
+                call.assert_not_called()
+
     def test_pf_redelivery_needs_prelaunch_proof_and_a_changed_delivery(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

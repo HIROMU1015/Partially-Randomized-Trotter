@@ -1821,6 +1821,8 @@ class WidthDriver:
                 runtime.reconcile_interrupted_calibrations()
             if runtime is not None:
                 runtime.reconcile_failed_preparations()
+                runtime.reconcile_pf_input_redeliveries(
+                    pf_settings, pf_settings.get('interpreter', sys.executable))
             if runtime is not None and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                 from trottertracks.rpe_preparation_queue import save_horizon_preparation, submit_registered_horizons
                 from trottertracks.rpe_scaled_shots import settings as scaled_settings

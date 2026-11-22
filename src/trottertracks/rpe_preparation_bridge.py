@@ -1126,6 +1126,73 @@ class DistributedPreparationBridge:
                 states[original] = dict(status='RECOVERY_INPUT_HOLD', reason=reason, detail=str(error))
         write(path, states)
 
+    def reconcile_pf_input_redeliveries(self, settings, interpreter):
+        """Resume a proved delivery failure at its original PF stage."""
+        from types import SimpleNamespace
+
+        from .pr_candidate_completion import Held, PreparationWait
+        from .rpe_preparation_queue import normalize_preparation_request
+        from .rpe_release_registry import write
+
+        plans = {job: proof for job, proof in self.settings.get('pf_stage_audit_recoveries', {}).items()
+                 if proof.get('kind') == 'PF_PORTABLE_INPUT_DELIVERY'}
+        if not plans or not self.approved or self.executor._user_stop_requested():
+            return
+        run = self.executor.run_dir
+        index = run/'pf_auto/WAVES.json'
+        if not index.is_file():
+            return
+        candidates = read(index)
+        states = {}
+        for job, proof in plans.items():
+            if self.executor._user_stop_requested():
+                break
+            try:
+                candidate = proof['configuration_id']
+                row = candidates[candidate]
+                if row.get('configurations') or row['status'] == 'READY_RETURNED_TO_SAME_OPTIMIZER':
+                    states[job] = dict(status='CANDIDATE_ALREADY_READY')
+                    continue
+                base = run/row.get('price_recheck_directory', (
+                    'pf_auto/price-recovery' if row.get('price_receipt_recheck') else 'pf_auto'))
+                workspace = (base/'candidates'/candidate/'pf_auto/pf_completion/provider_workspace').resolve()
+                if not workspace.is_relative_to(run.resolve()):
+                    raise ValueError('PF delivery workspace is outside the fixed run')
+                directory = workspace/'docs/research/distributed_selected_pf'/candidate
+                owner = self.executor.store.row(job)
+                prep = owner['request']['preparation']
+                stage = prep['provider']
+                if stage not in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
+                    raise ValueError('PF input redelivery only supports compile stages')
+                marker = read(directory/(stage+'.DISTRIBUTED.json'))
+                original = marker['request']['preparation'].get('supersedes_preparation', {})
+                if marker['job_id'] == job:
+                    requested = normalize_preparation_request(
+                        marker['request'], dependencies=self._dependencies(directory, stage))
+                    if requested != owner['request']:
+                        raise ValueError('Original PF stage request differs from the queue')
+                elif (original.get('job_id'), original.get('attempt_id')) != (job, proof['audit_attempt']):
+                    raise ValueError('A different request owns the original PF stage')
+                provider = read(workspace.parent/'PROVIDER_SOURCE.json')
+                if provider['source'] != prep['source']['commit']:
+                    raise ValueError('Original PF provider SOURCE differs')
+                stage_input = directory/(stage+'.INPUT.json')
+                if hashlib.sha256(stage_input.read_bytes()).hexdigest() != proof['input_sha256']:
+                    raise ValueError('Original PF stage input differs')
+                completion = SimpleNamespace(directory=directory, settings=settings,
+                    source=prep['source']['commit'], preparation_root=workspace,
+                    preparation_source_manifest=prep['source'], log=self.executor.log)
+                output = directory/(stage+'.RESULT.json')
+                cmd = [interpreter, '-B', str(self.root/'scripts/run_pf_preparation_stage.py'),
+                       '--provider-root', str(workspace), '--input', str(stage_input), '--output', str(output)]
+                self.call(completion, cmd, directory, stage, output, wait=False)
+                states[job] = dict(status='STAGE_COMPLETE')
+            except PreparationWait as error:
+                states[job] = dict(status='WAITING_FOR_STAGE', reason=str(error)[:500])
+            except (Held, OSError, KeyError, TypeError, ValueError, subprocess.SubprocessError) as error:
+                states[job] = dict(status='RECOVERY_INPUT_HOLD', reason=str(error)[:500])
+        write(run/'preparation/PF_INPUT_REDELIVERIES.json', states)
+
     def recoverable_transport(self, directory, reason):
         """Use the original marker to identify the failed stage cheaply."""
         if not reason.startswith(('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:', 'STAGE_FAILED:',
