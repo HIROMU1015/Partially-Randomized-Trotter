@@ -12,7 +12,8 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'src'))
 from trottertracks.rpe_local0_search import (
-    RequestError, load, locked, reconcile_runtime_failure, schedule_driver, write,
+    RequestError, load, locked, reconcile_controller_detachment, reconcile_controller_kill,
+    reconcile_runtime_failure, schedule_driver, write,
 )
 
 
@@ -24,6 +25,8 @@ def resume(central, selection_file, previous_file, instruction):
     run_id = selection['run_id']
     kinds = [(kind, selection['resume_'+kind+'_failure']) for kind in ('ast', 'dispatch', 'pf_request')
              if selection.get('resume_'+kind+'_failure')]
+    if selection.get('resume_controller_kill'):
+        kinds.append(('controller_kill', selection['resume_controller_kill']))
     if len(kinds) != 1:
         raise ValueError('Select exactly one failed invocation')
     kind, invocation = kinds[0]
@@ -54,7 +57,13 @@ def resume(central, selection_file, previous_file, instruction):
                 if config is None:
                     break
                 try:
-                    reconcile_runtime_failure(run, load(run/'LAUNCH.json'), load(run/'EXIT.json'), invocation, kind)
+                    launch, ended = load(run/'LAUNCH.json'), load(run/'EXIT.json')
+                    if kind != 'controller_kill':
+                        reconcile_runtime_failure(run, launch, ended, invocation, kind)
+                    elif ended['invocation_id'] == invocation:
+                        reconcile_controller_kill(run, launch, ended, invocation)
+                    else:
+                        reconcile_controller_detachment(run, launch, invocation)
                     schedule_driver(load(run/'CONTROLLER_CONFIG.json'), run, selection)
                 except RequestError as error:
                     if error.field != 'runtime_ownership':
@@ -96,6 +105,27 @@ def resume(central, selection_file, previous_file, instruction):
         record('RESUME_REJECTED', result.get('errors') or result.get('error') or status)
         return 1
     record('RESUME_'+status)
+    if status in ('STARTED', 'ALREADY_RUNNING'):
+        # A transient systemd service stops descendants when its main process
+        # exits. Keep the service alive until the launched supervisor exits.
+        launch = load(run/'LAUNCH.json')
+        history = run/'invocations'/launch['invocation_id']
+        if launch['invocation_id'] == invocation:
+            record('RESUME_REJECTED', 'No successor launch was recorded')
+            return 1
+        while not (history/'EXIT.json').is_file():
+            try:
+                command = Path('/proc', str(launch['pid']), 'cmdline').read_bytes().split(b'\0')
+            except FileNotFoundError:
+                command = ()
+            if os.fsencode(launch['invocation_id']) not in command:
+                if not (history/'EXIT.json').is_file():
+                    record('SUCCESSOR_EXIT_UNCONFIRMED', launch['invocation_id'])
+                    return 1
+                break
+            time.sleep(5)
+        record('SUCCESSOR_EXIT_OBSERVED', {'invocation_id': launch['invocation_id'],
+                                           'returncode': load(history/'EXIT.json')['returncode']})
     return 0
 
 

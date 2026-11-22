@@ -460,6 +460,41 @@ class Tests(unittest.TestCase):
             self.assertEqual(db.execute('SELECT state, attempt_id FROM jobs ORDER BY rowid').fetchall(),
                              [('ACCEPTED', 'done'), ('UNKNOWN', 'original-attempt')])
 
+    def test_detached_launcher_keeps_original_attempts_and_does_not_invent_exit(self):
+        from trottertracks.rpe_q3_store import JobStore
+
+        invocation = 'd' * 32
+        gateway = Gateway(self.config)
+        run = pathlib.Path(gateway.handle(dict(request(4, 6), action='prepare'))['run_directory'])
+        spec = load(run/'ROUND.requested.json')
+        spec['executor']['distributed'] = {}
+        write(run/'ROUND.json', spec)
+        # Exercise the recovery separately from the immutable requested spec.
+        from trottertracks.rpe_local0_search import reconcile_controller_detachment
+        launch = dict(invocation_id=invocation, pid=2147483647)
+        history = run/'invocations'/invocation
+        write(history/'LAUNCH.json', launch)
+        write(run/'LAUNCH.json', launch)
+        write(run/'NORMAL_DRIVER.json', launch)
+        write(run/'distributed/ENDPOINT.json', {'pid': launch['pid']})
+        write(run/'distributed/relay/STATUS.json', dict(stopped=False, pid=2147483647))
+        write(run/'KAPPA_STATE.json', dict(schema='RPE_REQUESTED_WIDTH_SCHEDULE_STATE_V1',
+                                         round_id=spec['round_id']))
+        (run/'FAST_DRIVER.lock').touch()
+        store = JobStore(run/'distributed/QUEUE.sqlite3')
+        req = dict(route=dict(kind='artificial'), configuration_id='ARTIFICIAL')
+        store.reserve('PR_PAULI', 'test-job', req, 1, True)
+        assignment, = store.claim('server2', 1)
+        write(run/'jobs/PR_PAULI/test-job/REQUEST.json', req)
+        write(run/'STOP_REQUESTED.json', {'reason': 'USER_REQUESTED_STOP'})
+        with self.assertRaisesRegex(RequestError, 'STOP_OR_SEARCH_TERMINATION'):
+            reconcile_controller_detachment(run, launch, invocation)
+        (run/'STOP_REQUESTED.json').unlink()
+        proof = reconcile_controller_detachment(run, launch, invocation)
+        self.assertEqual(proof['reason'], 'CONTROLLER_DETACHED_WITHOUT_EXIT_RECEIPT')
+        self.assertFalse((history/'EXIT.json').exists())
+        self.assertEqual(store.row('test-job')['attempt_id'], assignment['attempt_id'])
+
     def test_status_observes_local_q3_body_before_the_worker_state_report(self):
         from trottertracks.rpe_local0_search import local0_progress
         from trottertracks.rpe_q3_store import JobStore

@@ -787,6 +787,7 @@ class Gateway:
     def start(self, run, request, *, interrupted=None):
         state = load(run/'LAUNCH.json') if (run/'LAUNCH.json').exists() else None
         completed=load(run/'EXIT.json') if (run/'EXIT.json').exists() else {}
+        detached = None
         if state and (not state.get('invocation_id') or completed.get('invocation_id')!=state.get('invocation_id')):
             pid = state.get('pid')
             if pid:
@@ -795,9 +796,12 @@ class Gateway:
                         return 'ALREADY_RUNNING'
                 except FileNotFoundError:
                     pass
-            if request.get('action') != 'resume' or not restore_pre_dispatch_launch(run, state, completed):
+            if request.get('action') == 'resume' and self.resume_controller_kill == state.get('invocation_id'):
+                detached = reconcile_controller_detachment(run, state, self.resume_controller_kill)
+            elif request.get('action') != 'resume' or not restore_pre_dispatch_launch(run, state, completed):
                 raise RequestError('run', 'previous launch has no completion receipt; existing STOP/UNKNOWN is preserved')
-            state = load(run/'LAUNCH.json')
+            else:
+                state = load(run/'LAUNCH.json')
         stop_request = run/'STOP_REQUESTED.json'
         user_interrupted = (request.get('action') == 'resume' and completed.get('returncode') == -signal.SIGINT
                             and stop_request.is_file() and load(stop_request).get('reason') == 'USER_REQUESTED_STOP')
@@ -808,7 +812,9 @@ class Gateway:
                 ('dispatch', self.resume_dispatch_failure), ('ast', self.resume_ast_failure),
                 ('controller_kill', self.resume_controller_kill))
              if invocation), (None, None))
-        if completed and completed.get('returncode') != 0 and not user_interrupted:
+        if detached is not None:
+            recovery_kind, recovered_stop = 'controller_detachment', detached
+        elif completed and completed.get('returncode') != 0 and not user_interrupted:
             stop_path = run/'KAPPA_STATE.json'
             stop = (load(stop_path).get('stop') or {}).get('reason') if stop_path.exists() else None
             if request['action'] != 'resume' or not recovery_invocation:
@@ -1278,6 +1284,50 @@ def verify_reattachable_attempts(run, db):
                 raise ValueError('saved launch owner differs from the queue: '+job)
 
 
+def reconcile_controller_detachment(run, launch, invocation):
+    """Reattach the queue when the named controller disappeared before writing EXIT."""
+    import re
+    import sqlite3
+
+    try:
+        history = run/'invocations'/invocation
+        if (not re.fullmatch(r'[0-9a-f]{32}', invocation) or launch['invocation_id'] != invocation
+                or launch != load(history/'LAUNCH.json') or (history/'EXIT.json').exists()):
+            raise ValueError('the detached invocation differs')
+        driver = load(run/'NORMAL_DRIVER.json')
+        endpoint = load(run/'distributed/ENDPOINT.json')
+        relay = load(run/'distributed/relay/STATUS.json')
+        if driver['invocation_id'] != invocation or endpoint['pid'] != driver['pid']:
+            raise ValueError('the detached driver and endpoint differ')
+        for name, owner in (('launcher', launch), ('driver', driver), ('relay', relay)):
+            pid = owner['pid']
+            if type(pid) is not int or pid <= 0:
+                raise ValueError('invalid '+name+' PID')
+            try:
+                if Path('/proc', str(pid), 'cmdline').read_bytes().strip(b'\0'):
+                    raise BlockingIOError(name+' still has a live process')
+            except FileNotFoundError:
+                pass
+        spec = load(run/'ROUND.json')
+        hold = driver_restart_hold(run, spec)
+        if hold:
+            raise ValueError(hold)
+        local_worker_for_reattachment(run)
+        with ExitStack() as locks:
+            for name in ('FAST_DRIVER.lock', 'distributed/relay/RELAY.lock', 'distributed/pbs/MANAGER.lock'):
+                path = run/name
+                if name == 'FAST_DRIVER.lock' or path.exists():
+                    fcntl.flock(locks.enter_context(path.open('rb')), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            path = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+            with sqlite3.connect(path, uri=True) as db:
+                verify_reattachable_attempts(run, db)
+        return dict(reason='CONTROLLER_DETACHED_WITHOUT_EXIT_RECEIPT', invocation_id=invocation)
+    except BlockingIOError as error:
+        raise RequestError('runtime_ownership', 'controller detachment: '+str(error)) from error
+    except (OSError, ValueError, KeyError, sqlite3.Error) as error:
+        raise RequestError('run', 'controller detachment: '+str(error)) from error
+
+
 def reconcile_controller_kill(run, launch, ended, invocation):
     """Resume a checkpoint after its killed controller and run-owned workers have ended."""
     import sqlite3
@@ -1359,7 +1409,7 @@ def schedule_driver(config, run, selection):
             path = driver.parents[1]/'src/trottertracks'/(name+'.py')
             if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != trial[field]:
                 raise RequestError('schedule_resume', 'Selected optimizer differs from deployment: '+name)
-        if 'resume_pf_request_failure' in selection:
+        if 'resume_pf_request_failure' in selection or 'resume_controller_kill' in selection:
             try:
                 worker = local_worker_for_reattachment(run)
                 settings = trial.get('local_resource_worker', {})
