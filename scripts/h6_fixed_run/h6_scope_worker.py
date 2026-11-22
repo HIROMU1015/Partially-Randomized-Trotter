@@ -310,22 +310,23 @@ def inherit_jobs(jobs, plan, preparations):
 
 
 def collect(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path=None,
-            previous=None):
+            previous=None, overlap=None):
     import fcntl
 
     run.mkdir(parents=True, exist_ok=True)
     with (run / ".preparation.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         if previous is None:
-            return collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path)
+            return collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path,
+                                 overlap=overlap)
         with (previous / ".h6_scope.lock").open("rb") as predecessor:
             fcntl.flock(predecessor, fcntl.LOCK_SH | fcntl.LOCK_NB)
             return collect_owned(scope, assets, run, signal_workers, price_workers, price_memory,
-                                 saved_signal_path, previous)
+                                 saved_signal_path, previous, overlap)
 
 
 def collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path,
-                  previous=None):
+                  previous=None, overlap=None):
     global STATE
     STATE = startup(assets, scope)
     cases, binding, target, compiler = STATE.cases, STATE.binding, STATE.target, STATE.compiler
@@ -396,7 +397,7 @@ def collect_owned(scope, assets, run, signal_workers, price_workers, price_memor
 
     errors = pool.signals(signal_jobs, execute, signal_workers, checkpoint)
     errors.update(pool.prices(price_jobs, execute, price_workers, price_memory, size, checkpoint,
-                              pair_memory_for=measured_pair_memory))
+                              pair_memory_for=measured_pair_memory, overlap=overlap))
     write(run / "PREPARATION_ERRORS.json", errors)
     return 0
 
@@ -411,6 +412,8 @@ if __name__ == "__main__":
     parser.add_argument("--signal-workers", type=int)
     parser.add_argument("--price-workers", type=int)
     parser.add_argument("--price-memory-bytes", type=int)
+    parser.add_argument("--q3-overlap-fd", type=int)
+    parser.add_argument("--allocated-cpus", type=int)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     if args.check:
@@ -428,5 +431,10 @@ if __name__ == "__main__":
     if args.scope is None or args.run is None or any(value is None or value < 1 for value in resources):
         parser.error("Preparation needs a scope, output directory, positive worker counts and a price memory budget")
     previous = args.continue_from.resolve() if args.continue_from else None
+    overlap = None
+    if args.q3_overlap_fd is not None:
+        from multiprocessing.connection import Connection
+
+        overlap = pool.Q3Overlap(Connection(args.q3_overlap_fd), args.allocated_cpus)
     raise SystemExit(collect(read(args.scope), args.assets.resolve(), args.run.resolve(), *resources,
-                             args.saved_signals, previous))
+                             args.saved_signals, previous, overlap))

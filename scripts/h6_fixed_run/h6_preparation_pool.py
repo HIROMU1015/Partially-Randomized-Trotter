@@ -32,6 +32,38 @@ class ActivePrice:
     extra_cpu: int = 0
 
 
+class Q3Overlap:
+    """Price supervisor owns both reservations while it admits new work."""
+
+    def __init__(self, connection, total_cpus):
+        self.connection = connection
+        self.total_cpus = total_cpus
+        self.cpus = self.memory = 0
+        self.request = None
+
+    def receive(self):
+        if self.connection is None or not self.connection.poll():
+            return
+        try:
+            self.request = self.connection.recv()
+        except EOFError:
+            self.connection.close()
+            self.connection = None
+        if self.request == "release":
+            self.cpus = self.memory = 0
+            self.request = None
+
+    def grant(self, occupied, free_memory):
+        if self.connection is None or self.request is None:
+            return
+        wanted, cpus, memory = self.request
+        slots = max(0, min(wanted, (self.total_cpus - occupied) // cpus, free_memory // memory))
+        assert not self.cpus and not self.memory
+        self.cpus, self.memory = cpus * slots, memory * slots
+        self.request = None
+        self.connection.send(slots)
+
+
 def price_size(cell, block_bound, stages):
     head = cell["q"] * stages * block_bound
     tail = cell["q"] * (cell["R_outer"] or 0) * ((cell["K"] or 0) + 1)
@@ -125,7 +157,7 @@ def current_rss(pid, include_children=False):
     return rss
 
 
-def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=None):
+def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=None, overlap=None):
     grouped = defaultdict(list)
     for job in jobs:
         size = size_for(job[1])
@@ -154,10 +186,14 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=N
 
     try:
         while profiles or active:
+            if overlap is not None:
+                overlap.receive()
+            price_slots = slots if overlap is None else min(slots, overlap.total_cpus - overlap.cpus)
+            price_memory = memory if overlap is None else memory - overlap.memory
             overrun = sum(max(0, current_rss(job.process.pid, bool(job.extra_cpu))
                               - job.memory - job.extra_memory) for job in active.values())
-            while profiles and len(active) + extra_cpu < slots:
-                free = memory - reserved - overrun
+            while profiles and len(active) + extra_cpu < price_slots:
+                free = price_memory - reserved - overrun
                 selected = None
                 active_short = sum(in_profile[profile] for profile in short)
                 order = profiles
@@ -167,8 +203,8 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=N
                     order = [p for p in reversed(profiles) if p in short] + [p for p in profiles if p not in short]
                 for profile in order:
                     need = reserved_bytes(forecasts[profile], observed[profile], successes[profile], in_profile[profile])
-                    if need <= free or not active:
-                        selected = profile, min(need, memory)
+                    if need <= free or not active and not (overlap and overlap.cpus):
+                        selected = profile, min(need, price_memory)
                         break
                 if selected is None:
                     break
@@ -195,12 +231,12 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=N
 
             # All ordinary work is in flight before reserving a second axis.
             # That keeps the extra CPU and its memory out of the path queue.
-            if not profiles and len(active) + extra_cpu < slots:
+            if not profiles and len(active) + extra_cpu < price_slots:
                 for job in active.values():
-                    if job.axis_slot is None or len(active) + extra_cpu >= slots:
+                    if job.axis_slot is None or len(active) + extra_cpu >= price_slots:
                         continue
                     extra = max(0, job.pair_memory - job.memory)
-                    if extra + reserved + overrun > memory:
+                    if extra + reserved + overrun > price_memory:
                         continue
                     with job.axis_slot.get_lock():
                         if job.axis_slot.value == AXIS_OPEN:
@@ -210,7 +246,14 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=N
                             peak_reserved = max(peak_reserved, reserved)
                             job.axis_slot.value = AXIS_RESERVED
 
-            for sentinel in wait(active, timeout=10):
+            if overlap is not None:
+                overlap.grant(len(active) + extra_cpu, price_memory - reserved - overrun)
+            watched = list(active)
+            if overlap is not None and overlap.connection is not None:
+                watched.append(overlap.connection)
+            for sentinel in wait(watched, timeout=10):
+                if sentinel not in active:
+                    continue
                 job = active.pop(sentinel)
                 error, rss, cpu, phases = result(job.process, job.connection)
                 reserved -= job.memory + job.extra_memory
@@ -241,6 +284,7 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=N
                     worker_limit=slots, peak_workers=peak_workers, cpu_seconds=cpu_seconds,
                     wall_seconds=now-begin, memory_budget=memory, reserved_bytes=reserved,
                     peak_reserved_bytes=peak_reserved, peak_worker_rss_bytes=peak_worker_rss,
+                    q3_reserved_cpus=overlap.cpus if overlap else 0, q3_reserved_bytes=overlap.memory if overlap else 0,
                     extra_axis_cpus=extra_cpu, completed_parallel_prices=parallel_completed, phase_metrics=by_phase))
                 next_checkpoint = now + 30
     finally:

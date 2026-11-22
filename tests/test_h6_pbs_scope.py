@@ -261,6 +261,117 @@ def artificial_plan(run, scope=None):
                 target=-3.2360662799087647, cases=cases, designs=list(designs.values()))
 
 
+def test_price_overlap_refuses_a_q3_slot_when_cpu_or_memory_is_busy():
+    from multiprocessing import Pipe
+    import h6_preparation_pool as pool
+
+    parent, worker = Pipe()
+    with parent, worker:
+        overlap = pool.Q3Overlap(worker, 8)
+        for active, free_bytes in ((8, 12 * pool.GIB), (3, 2 * pool.GIB)):
+            parent.send((2, 3, 4 * pool.GIB))
+            overlap.receive()
+            overlap.grant(active, free_bytes)
+            assert parent.recv() == 0 and (overlap.cpus, overlap.memory) == (0, 0)
+        parent.send((2, 3, 4 * pool.GIB))
+        overlap.receive()
+        overlap.grant(3, 11 * pool.GIB)
+        assert parent.recv() == 1 and (overlap.cpus, overlap.memory) == (3, 4 * pool.GIB)
+        parent.send("release")
+        overlap.receive()
+        assert (overlap.cpus, overlap.memory) == (0, 0)
+
+
+def test_fitted_price_batch_waits_for_holdout_evidence(tmp_path):
+    from h6_scope import group_key
+    from run_h6_scope import ready_batch
+
+    plan = artificial_plan(tmp_path)
+    holdout = next(design["holdout"] for design in plan["designs"] if design["holdout"] is not None)
+    path = tmp_path / "prices" / f"{holdout['id']}-0.json"
+    path.rename(path.with_suffix(".pending"))
+    methods = set(plan["scope"]["methods"])
+    ready = ready_batch(plan, tmp_path, methods, set())
+    assert ready["cases"]
+    assert all(group_key(cell) != group_key(holdout) for case in ready["cases"] for cell in case["rounds"])
+
+
+def test_ready_q3_runs_before_another_price_and_is_reused_for_final_result(tmp_path, monkeypatch):
+    from textwrap import dedent
+    from run_h6_scope import concurrent, prepare_with_overlap, ready_batch
+
+    scope = read(RUNNER / "h6_scope_example.json")
+    scope.update(M=1, calibration_max_m=1, methods={
+        "FULL_PF": {"formulas": ["2nd"], "width_over_h": [1, 2]},
+    })
+    plan = artificial_plan(tmp_path, scope)
+    write(tmp_path / "PLAN.json", plan)
+    first, second = plan["cases"]
+    first_cells = {cell["id"] for cell in first["rounds"]}
+    late = next(c for c in second["rounds"] if c["id"] not in first_cells)
+    receipt = tmp_path / "prices" / f"{late['id']}-0.json"
+    receipt.rename(receipt.with_suffix(".pending"))
+    assert ready_batch(plan, tmp_path, {"FULL_PF"}, set())["cases"] == [first]
+
+    prep = tmp_path / "prepare.py"
+    prep.write_text(dedent("""
+        import argparse, time
+        from pathlib import Path
+        from multiprocessing.connection import Connection
+        import h6_preparation_pool as pool
+        p = argparse.ArgumentParser()
+        p.add_argument('price', type=Path)
+        p.add_argument('--q3-overlap-fd', required=True, type=int)
+        p.add_argument('--allocated-cpus', required=True, type=int)
+        a = p.parse_args()
+        def delayed(job):
+            marker = a.price.parents[1] / 'FIRST_Q3'
+            deadline = time.monotonic() + 12
+            while not marker.exists():
+                if time.monotonic() > deadline:
+                    raise RuntimeError('Q3 did not run during preparation')
+                time.sleep(.03)
+            a.price.with_suffix('.pending').replace(a.price)
+        overlap = pool.Q3Overlap(Connection(a.q3_overlap_fd), a.allocated_cpus)
+        errors = pool.prices([('price', dict(), 0, a.price, 'artificial')], delayed, 4, 8 * pool.GIB,
+                             lambda _: (0, 0), lambda _: None, overlap=overlap)
+        assert not errors, errors
+    """))
+    # The actual launcher and adapter receipt ingestion run, with an artificial outcome.
+    calls = []
+    execute = dedent("""
+        import json, sys
+        from pathlib import Path
+        job = Path(sys.argv[1])
+        r = json.loads((job/'REQUEST.json').read_text())
+        alloc = [dict(m=m,N_X=x,N_Y=y) for m,(x,y) in enumerate(zip(r['N_X'],r['N_Y']))]
+        (job/'OUTCOME.json').write_text(json.dumps(dict(request_id=r['request_id'], route=r['route']['kind'],
+            status=sys.argv[2],MSE_lower=0,MSE_upper=0,artificial=True,scientific_evaluation_calls=0,
+            identity=dict(configuration_id=r['configuration_id'],M=len(alloc)-1,contract_matches=True,allocation=alloc))))
+        (job.parents[2]/'FIRST_Q3').touch()
+    """)
+
+    def artificial_adapter(self, job, rule, mode):
+        request = read(job / "REQUEST.json")
+        if not calls:
+            assert not receipt.exists() and request["configuration_id"] == first["id"]
+        calls.append(request)
+        return subprocess.Popen([sys.executable, "-B", "-c", execute, str(job), optimizer.PASS])
+
+    monkeypatch.setattr(concurrent.ConcurrentExecutor, "run_adapter", artificial_adapter)
+    monkeypatch.setenv("PYTHONPATH", str(RUNNER))
+    budgets = {"FULL_PF": "UNLIMITED"}
+    prepare_with_overlap([sys.executable, "-B", str(prep), str(receipt)], tmp_path, tmp_path, 2, 4, 8 << 30,
+                         budgets, execute=True)
+    assert receipt.exists() and len(calls) == 1
+    assert not (tmp_path / "ROUND_RESULT.json").exists()
+    assert read(tmp_path / "Q3_OVERLAP.json")["processed"] == [first["id"]]
+    results, held = optimize(plan, tmp_path, tmp_path, 2, 4, budgets, execute=True)
+    assert not held and results["FULL_PF"]["evaluated_count"] == 2
+    assert [call["configuration_id"] for call in calls] == [first["id"], second["id"]]
+    assert read(tmp_path / "ROUND_RESULT.json")["ready"] == 2
+
+
 def test_all_requested_combinations_reach_common_shot_optimizer(tmp_path):
     plan = artificial_plan(tmp_path)
     assert len(plan["cases"]) == 130

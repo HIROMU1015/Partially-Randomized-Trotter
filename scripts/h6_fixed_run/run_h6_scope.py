@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 
 from h6_scope import AXES, LABELS, case_rows, digest, enc, exact, group_key, read
 from h6_scope_worker import read_price, write
@@ -48,11 +49,47 @@ def observation(plan, cell, run, axis):
     return Fraction(sum(values), len(values)), sources
 
 
-def price_models(plan, run):
+def design_key(design):
+    first = next(iter(design["anchors"]), design.get("reference"))
+    return group_key(dict(first, actual_step=design["target_step"]))
+
+
+def ready_batch(plan, run, methods, completed):
+    """Return candidate inputs whose direct prices or entire fitted group have arrived."""
+    signals = {p.stem for p in (run / "signals").glob("*.json")}
+    prices = {p.stem for p in (run / "prices").glob("*.json")}
+
+    def covered(cell):
+        paths = plan["scope"]["price_paths"] if cell["method"] == "PR" else 1
+        return all(f"{cell['id']}-{i}" in prices for i in range(paths))
+
+    direct, fitted = set(), set()
+    for design in plan["designs"]:
+        if design["mode"] == "DIRECT":
+            direct.update(cell["id"] for cell in design["anchors"] if covered(cell))
+        else:
+            dependencies = [cell for cell in (*design["anchors"], design["holdout"]) if cell is not None]
+            if all(covered(cell) for cell in dependencies):
+                fitted.add(design_key(design))
+    cases = [case for case in plan["cases"] if case["id"] not in completed and case["method"] in methods
+             and all(cell["id"] in signals and (cell["id"] in direct or group_key(cell) in fitted)
+                     for cell in case["rounds"])]
+    keys = {group_key(cell) for case in cases for cell in case["rounds"]}
+    used = {cell["id"] for case in cases for cell in case["rounds"]}
+    designs = []
+    for design in plan["designs"]:
+        if design_key(design) not in keys:
+            continue
+        if design["mode"] == "DIRECT":
+            design = dict(design, anchors=[cell for cell in design["anchors"] if cell["id"] in used])
+        designs.append(design)
+    return dict(plan, cases=cases, designs=designs)
+
+
+def price_models(plan, run, *, require_holdout=False):
     models, errors = {}, {}
     for design in plan["designs"]:
-        first = next(iter(design["anchors"]), design.get("reference"))
-        key = group_key(dict(first, actual_step=design["target_step"]))
+        key = design_key(design)
         calibration_step = design["calibration_step"]
         names = ("one", "q", "qR") if design["mode"] == "AFFINE_QR" else ("one", "q")
         for axis in AXES:
@@ -63,7 +100,13 @@ def price_models(plan, run):
                 for cell in design["anchors"]:
                     if group_key(cell) != key:
                         raise ValueError("H6 calibration anchor belongs to a different price group")
-                    mean, proof = observation(plan, cell, run, axis)
+                    try:
+                        mean, proof = observation(plan, cell, run, axis)
+                    except (OSError, ValueError, KeyError) as error:
+                        if design["mode"] != "DIRECT":
+                            raise
+                        errors[str((key, axis, cell["id"]))] = str(error)
+                        continue
                     direct[cell["id"]] = dict(price=enc(mean), source=proof)
                 holdout = design["holdout"]
                 if holdout is not None and group_key(holdout) != key:
@@ -99,6 +142,8 @@ def price_models(plan, run):
                         comparison = dict(observed=enc(observed), predicted=enc(predicted),
                             relative_error=enc((predicted-observed)/observed), source=proof, refit=False)
                     except (OSError, ValueError) as error:
+                        if require_holdout:
+                            raise
                         comparison = dict(status="HOLDOUT_UNAVAILABLE", reason=str(error), refit=False)
                 models[key, axis] = dict(direct=direct, estimate=estimate, holdout=comparison)
             except (OSError, ValueError, KeyError) as error:
@@ -167,13 +212,16 @@ def candidate_inputs(run, plan, case, models):
     return axes, dict(entry, signal_packet=str(signal_path), signal_packet_sha256=sha(signal_path)), price_path
 
 
-def optimize(plan, run, risk_source, q3_slots, allocated, budgets, *, execute, artificial_backend=None):
+def optimize(plan, run, risk_source, q3_slots, allocated, budgets, *, execute, artificial_backend=None,
+             partial=False, route_cpus=None):
     # Uses the same optimizer and allocation rule as the normal distributed flow.
-    models, errors = price_models(plan, run)
+    models, errors = price_models(plan, run, require_holdout=partial)
     scope = plan["scope"]
     model_dir = run / "price_models"
     model_dir.mkdir(exist_ok=True)
     for key, model in models.items():
+        if partial and model["estimate"] is None:
+            continue
         path = model_dir / f"{digest(str(key))}.json"
         if path.exists():
             # Late receipts can support a new estimate in a new scope. Jobs in
@@ -181,7 +229,8 @@ def optimize(plan, run, risk_source, q3_slots, allocated, budgets, *, execute, a
             models[key] = read(path)
         else:
             retain(path, model)
-    write(run / "PRICE_MODELS.json", dict(models={str(k): v for k, v in models.items()}, errors=errors))
+    if not partial:
+        write(run / "PRICE_MODELS.json", dict(models={str(k): v for k, v in models.items()}, errors=errors))
     routes = defaultdict(list)
     expected, candidates, prices_by_id, held = {}, [], {}, {}
     methods = {name: {"family": "PR" if name == "PR_DF" else "PF"} for name in scope["methods"]}
@@ -220,9 +269,10 @@ def optimize(plan, run, risk_source, q3_slots, allocated, budgets, *, execute, a
         expected[cid] = dict(M=horizon, signal_source=entry["signal_packet"])
         routes[method].append(dict(kind="h6_df19_scoped_q3", scope_owner=plan["owner"], interpreter=sys.executable,
             view_commit="cbc471c913072de45c25a0ed22d51dff8a9b7034", risk_source=str(risk_source),
-            allocated_cpus=max(1, allocated // q3_slots), configuration_ids=[cid], configurations={cid: entry},
+            allocated_cpus=route_cpus or max(1, allocated // q3_slots), configuration_ids=[cid], configurations={cid: entry},
             registered_prices=str(price_path), registered_prices_sha256=sha(price_path)))
-    write(run / "HELD_CANDIDATES.json", held)
+    if not partial:
+        write(run / "HELD_CANDIDATES.json", held)
     tau = optimizer.tau(problem)
     context = dict(candidates=candidates, saved=optimizer.SavedBackend([], prices_by_id), tau=tau,
                    catalog={"candidates": []}, generate=None, generation={})
@@ -230,15 +280,94 @@ def optimize(plan, run, risk_source, q3_slots, allocated, budgets, *, execute, a
         results = optimizer.optimize(ROOT, problem, context=context, backend=artificial_backend,
                                      max_new=budgets, science_approved=True)
     else:
+        overlap_record = run / "Q3_OVERLAP.json"
+        previous = read(overlap_record) if overlap_record.exists() else {}
+        if previous and previous["scope_owner"] != plan["owner"]:
+            raise ValueError("Q3 overlap results belong to a different H6 scope")
         executor = concurrent.ConcurrentExecutor(ROOT, run, routes, expected, problem, budgets=budgets,
                     science_approved=execute, max_concurrent=q3_slots, wait_for_running=True,
                     optimizer_source=plan["owner"])
+        for method, values in previous.get("execution_holds", {}).items():
+            executor.execution_holds.setdefault(method, {}).update(values)
         results = concurrent.optimize(ROOT, problem, context=context, executor=executor,
-                                      max_new=budgets, science_approved=execute)
-    write(run / "ROUND_RESULT.json", optimizer.jsonable(dict(methods=results, scope_owner=plan["owner"],
-              counts={method: sum(c["method"] == method for c in candidates) for method in methods},
-              ready=sum(c["ready"] for c in candidates), held=len(held))))
+                                      max_new=budgets, science_approved=execute,
+                                      methods=list(routes) if partial else None)
+    if not partial:
+        write(run / "ROUND_RESULT.json", optimizer.jsonable(dict(methods=results, scope_owner=plan["owner"],
+                  counts={method: sum(c["method"] == method for c in candidates) for method in methods},
+                  ready=sum(c["ready"] for c in candidates), held=len(held))))
     return results, held
+
+
+def prepare_with_overlap(command, run, risk_source, q3_slots, allocated, price_memory, budgets, *, execute):
+    # A finite method budget depends on complete global prioritization.
+    methods = {method for method, budget in budgets.items() if budget in (None, "UNLIMITED")}
+    if not execute or not methods:
+        subprocess.run(command, check=True)
+        return
+
+    from multiprocessing import Pipe
+
+    cpus = max(1, allocated // q3_slots)
+    memory = max(1, price_memory // q3_slots)
+    plan_path = run / "PLAN.json"
+    record_path = run / "Q3_OVERLAP.json"
+    record = (read(record_path) if record_path.exists()
+              else dict(processed=[], batches=0, launched={}, execution_holds={}))
+    processed = set(record["processed"])
+    controller, preparation = Pipe()
+    fd = preparation.fileno()
+    command = [*command, "--q3-overlap-fd", str(fd), "--allocated-cpus", str(allocated)]
+    with controller, preparation, subprocess.Popen(command, pass_fds=(fd,)) as process:
+        preparation.close()
+        plan = None
+        while process.poll() is None and not record.get("failure"):
+            if (run / "STOP_REQUESTED.json").exists():
+                break
+            if plan is None and plan_path.exists():
+                plan = read(plan_path)
+                if record.get("scope_owner", plan["owner"]) != plan["owner"]:
+                    raise ValueError("Q3 overlap results belong to a different H6 scope")
+                record["scope_owner"] = plan["owner"]
+            if plan is not None:
+                batch = ready_batch(plan, run, methods, processed)
+                if batch["cases"]:
+                    try:
+                        controller.send((min(q3_slots, len(batch["cases"])), cpus, memory))
+                        while not controller.poll(1):
+                            if process.poll() is not None:
+                                break
+                        slots = controller.recv() if controller.poll() else 0
+                    except (EOFError, BrokenPipeError, ConnectionResetError):
+                        break
+                    if process.poll() is not None:
+                        break
+                    if slots:
+                        try:
+                            results, _ = optimize(batch, run, risk_source, slots, allocated, budgets, execute=True,
+                                                  partial=True, route_cpus=cpus)
+                            processed.update(case["id"] for case in batch["cases"])
+                            record.update(processed=sorted(processed), batches=record["batches"] + 1)
+                            for method, result in results.items():
+                                holds = record["execution_holds"].setdefault(method, {})
+                                for row in result.get("execution_holds", []):
+                                    holds[row["configuration_id"]] = row
+                                record["launched"][method] = record["launched"].get(method, 0) + result["new_calls"]
+                                if result["stop_reason"] == "UNKNOWN_RESULT":
+                                    record["failure"] = result["stop_reason"]
+                            write(record_path, record)
+                        finally:
+                            try:
+                                controller.send("release")
+                            except (BrokenPipeError, ConnectionResetError):
+                                pass
+                        continue
+            time.sleep(5)
+        code = process.wait()
+    if code:
+        raise subprocess.CalledProcessError(code, command)
+    if record.get("failure"):
+        raise ValueError("Q3 overlap requires review: " + record["failure"])
 
 
 def main():
@@ -317,9 +446,11 @@ def main():
             command.extend(["--saved-signals", str(args.saved_signals.resolve())])
         if args.continue_from:
             command.extend(["--continue-from", str(args.continue_from.resolve())])
-        subprocess.run(command, check=True)
+        risk_source = assets / "q3-pilot/risk-source/src"
+        prepare_with_overlap(command, run, risk_source, q3_slots, available, price_memory, budgets,
+                             execute=args.execute)
         plan = read(run / "PLAN.json")
-        _, held = optimize(plan, run, assets / "q3-pilot/risk-source/src", q3_slots, available, budgets,
+        _, held = optimize(plan, run, risk_source, q3_slots, available, budgets,
                            execute=args.execute)
     return 2 if held else 0
 
