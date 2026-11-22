@@ -120,6 +120,36 @@ class AdmissionTests(unittest.TestCase):
         self.assertEqual(pbs['workers'][0]['profile']['preparation_profiles'], [{'input':'fixed'}])
         self.assertEqual(pbs['q3_task_seconds'][0], dict(original['q3_task_seconds'][0], adapter_source='new'))
 
+    def test_add_horizon_keeps_short_route_and_fixed_pbs_contract(self):
+        from trottertracks.rpe_host_profiles import select_host_profile
+
+        host = 'pbs-0'
+        base = dict(host_id=host, interpreter='/fixed/python', route_views={'view': '/fixed/view'},
+                    adapter_root='/fixed/base', adapter_manifest={'commit': 'old'}, dp_workers=3)
+        route = dict(route_kind='pf_b_pf6', view_commit='view')
+        pbs = dict(transport_root='/fixed/base', transport_source='old',
+                   workers=[dict(host_id=host, profile=dict(base, route_profiles=[dict(route, profile=base)]))],
+                   q3_task_seconds=[dict(route, method='FULL_PF', hosts=[host], seconds=60, memory_bytes=4096)])
+        original = deepcopy(pbs)
+        alternate = dict(base, adapter_root='/fixed/horizon',
+                         adapter_manifest={'commit': 'new', 'files': {'adapter.py': 'hash'}},
+                         route_views=dict(base['route_views'], risk='/fixed/risk'))
+        change = dict(host_id=host, transport_root='/fixed/horizon', transport_source='new',
+                      route_profiles=[dict(route, profile=alternate, horizon_risk_commit='risk')])
+        with self.assertRaisesRegex(ValueError, 'runtime or resource settings'):
+            bad = deepcopy(change)
+            bad['route_profiles'][0]['profile']['interpreter'] = '/different/python'
+            P.apply_q3_horizon({'pbs': deepcopy(pbs)}, bad)
+        distributed = {'pbs': pbs}
+        P.apply_q3_horizon(distributed, change)
+        self.assertEqual(distributed['pbs_pinned_settings'], original)
+        profile = pbs['workers'][0]['profile']
+        request = dict(method='FULL_PF', route=dict(kind='pf_b_pf6', view_commit='view'))
+        self.assertEqual(select_host_profile(profile, {'request': request}), base)
+        request['route']['horizon_risk_source'] = {'commit': 'risk'}
+        self.assertEqual(select_host_profile(profile, {'request': request}), alternate)
+        self.assertEqual(P.task_estimate(request, pbs, host), 60)
+
     def test_release_q3_estimate_binds_the_route_and_worker_and_can_be_disabled(self):
         route = dict(route_kind='pauli', view_commit='view', adapter_source='new-adapter')
         policy = dict(schema='RPE_PBS_WALLTIME_POLICY_V1', id='walltime-v1',

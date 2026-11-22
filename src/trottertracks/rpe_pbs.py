@@ -418,6 +418,43 @@ def apply_q3_adapter(distributed, selection):
         rule['adapter_source'] = manifest['commit']
 
 
+def apply_q3_horizon(distributed, selection):
+    """Add a verified horizon profile without replacing the original routes."""
+    from .rpe_host_profiles import select_host_profile
+
+    pbs = distributed['pbs']
+    distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
+    host = selection['host_id']
+    worker = next(entry for entry in pbs['workers'] if entry['host_id'] == host)
+    profile = worker['profile']
+    root, source = selection['transport_root'], selection['transport_source']
+    if not Path(root).is_absolute():
+        raise ValueError('PBS horizon worker root must be absolute')
+    for row in selection['route_profiles']:
+        new_profile = row['profile']
+        risk = row['horizon_risk_commit']
+        route = dict(kind=row['route_kind'], view_commit=row['view_commit'])
+        rule = next((rule for rule in pbs['q3_task_seconds'] if
+                     (rule['route_kind'], rule['view_commit']) == (route['kind'], route['view_commit'])
+                     and host in rule['hosts'] and rule['seconds'] > 0), None)
+        if rule is None:
+            raise ValueError('PBS horizon profile needs a fixed route resource estimate')
+        previous = select_host_profile(profile, {'request': {'method': rule['method'], 'route': route}})
+        manifest = new_profile['adapter_manifest']
+        if (new_profile['adapter_root'] != root or manifest['commit'] != source or not manifest['files']
+                or risk in previous['route_views'] or not Path(new_profile['route_views'][risk]).is_absolute()):
+            raise ValueError('PBS horizon profile needs its fixed adapter and risk view')
+        previous.update(adapter_root=root, adapter_manifest=manifest)
+        previous['route_views'][risk] = new_profile['route_views'][risk]
+        if previous != new_profile:
+            raise ValueError('PBS horizon profile changes the existing host runtime or resource settings')
+        if any((r['route_kind'], r['view_commit'], r.get('horizon_risk_commit')) ==
+               (row['route_kind'], row['view_commit'], risk) for r in profile['route_profiles']):
+            raise ValueError('PBS horizon profile already configured')
+        profile['route_profiles'].append(deepcopy(row))
+    pbs.update(transport_root=root, transport_source=source)
+
+
 class PbsManager:
     def __init__(self, executor, settings, *, gateway=None):
         self.executor = executor
