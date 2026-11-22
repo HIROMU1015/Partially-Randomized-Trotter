@@ -67,6 +67,25 @@ def read_loc(loc):
     return x
 
 
+def pf_horizon_operations():
+    """Bind the selected scheduler's preparation code, with the run's science root intact."""
+    expected = (globals().get('FIXED_RUN_WORKER_TRIAL') or {}).get('pf_horizon_preparation_sha256')
+    if expected is None:
+        from trottertracks import pf_horizon_preparation
+        return pf_horizon_preparation
+
+    from importlib.util import module_from_spec, spec_from_file_location
+
+    path = Path(__file__).resolve().parents[1]/'src/trottertracks/pf_horizon_preparation.py'
+    if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+        raise ValueError('Selected horizon preparation differs from deployment')
+    spec = spec_from_file_location('trottertracks.pf_horizon_preparation', path)
+    module = module_from_spec(spec)
+    module.FIXED_RUN_CODE_ROOT = ROOT
+    spec.loader.exec_module(module)
+    return module
+
+
 def equivalent_df_descriptor(config, base):
     """Recognize the original H4 descriptor runner and its input-path port."""
     import re
@@ -1833,9 +1852,22 @@ class WidthDriver:
                         latest = (initial_context, initial_routes)
                         terminal_entries = {}
                         lock = threading.RLock()
+                        changed = threading.Condition(lock)
+                        parent_revision = 0
+                        regular_done = False
+                        producer_failed = threading.Event()
                         if extend_pf:
-                            from trottertracks.pf_horizon_preparation import complete_scoped
                             from trottertracks.pf_optimizer_connection import registry_routes
+                            horizon_operations = pf_horizon_operations()
+
+                            def parent_evidence(pf_context):
+                                return {row['configuration_id']: entry for row in pf_context['candidates']
+                                    if row['method'] in ('FULL_PF', 'TRUNCATED_PF')
+                                    and row.get('configuration_id') and row.get('M', 12) == 12
+                                    and not row.get('source_configuration_id')
+                                    and (entry := horizon_operations.parent_entry(row))}
+
+                            parents = parent_evidence(initial_context)
 
                         def include_terminal(pf_context, pf_routes):
                             if not terminal_entries:
@@ -1847,16 +1879,23 @@ class WidthDriver:
                             return updated, registry_routes(pf_routes, registry)
 
                         def announce_pf(pf_context, pf_routes):
-                            nonlocal latest
+                            nonlocal latest, parents, parent_revision
                             with lock:
                                 latest = (pf_context, pf_routes)
+                                if extend_pf and (updated := parent_evidence(pf_context)) != parents:
+                                    parents = updated
+                                    parent_revision += 1
+                                    changed.notify_all()
                                 if self.live_ready_refill:
                                     subscriber.announce_pf(*include_terminal(*latest))
 
                         def terminal_ready(cid, entry):
                             with lock:
+                                if terminal_entries.get(cid) == entry:
+                                    return
                                 terminal_entries[cid] = entry
-                                announce_pf(*latest)
+                                if self.live_ready_refill:
+                                    subscriber.announce_pf(*include_terminal(*latest))
 
                         def regular():
                             if self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill':
@@ -1873,20 +1912,39 @@ class WidthDriver:
                         if not extend_pf:
                             return regular()
 
-                        def complete_extensions(pf_context, pf_routes):
-                            complete_scoped(ROOT, runtime, pf_context['candidates'], self.methods,
-                                horizons, pf_routes, pf_settings.get('interpreter', sys.executable),
-                                active_spec['executor'].get('prior_run_dirs', ()), stop_requested=stopped,
-                                on_ready=terminal_ready)
+                        def complete_extensions():
+                            seen = -1
+                            terminal_stopped = lambda: stopped() or producer_failed.is_set()
+                            while not terminal_stopped():
+                                with changed:
+                                    while (parent_revision == seen and not regular_done
+                                           and not terminal_stopped()):
+                                        changed.wait(.5)
+                                    if parent_revision == seen or terminal_stopped():
+                                        return
+                                    seen = parent_revision
+                                    pf_context, pf_routes = latest
+                                # Yield only the watcher on new parent evidence. Original queued
+                                # jobs stay owned, and the next pass reuses the same requirements.
+                                horizon_operations.complete_scoped(
+                                    ROOT, runtime, pf_context['candidates'], self.methods, horizons,
+                                    pf_routes, pf_settings.get('interpreter', sys.executable),
+                                    active_spec['executor'].get('prior_run_dirs', ()),
+                                    stop_requested=terminal_stopped, on_ready=terminal_ready,
+                                    refresh_requested=lambda: parent_revision != seen)
+
                         with ThreadPoolExecutor(max_workers=1,thread_name_prefix='pf-terminal-producer') as pool:
-                            work = pool.submit(complete_extensions, initial_context, initial_routes)
-                            result = regular()
+                            work = pool.submit(complete_extensions)
+                            try:
+                                result = regular()
+                            except BaseException:
+                                producer_failed.set()
+                                raise
+                            finally:
+                                with changed:
+                                    regular_done = True
+                                    changed.notify_all()
                             work.result()
-                        refreshed = [c for c in result[0]['candidates'] if c.get('pf_evidence') and
-                            c.get('pf_evidence') != initial_context['pf_evidence_registry']['configurations'].get(
-                                c.get('configuration_id'))]
-                        if refreshed and not stopped():
-                            complete_extensions(dict(result[0], candidates=refreshed), result[1])
                         return (*include_terminal(*result[:2]), result[2])
                     pf_future=preparation_pool.submit(prepare_pf)
 

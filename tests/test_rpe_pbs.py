@@ -149,6 +149,13 @@ class AdmissionTests(unittest.TestCase):
         request['route']['horizon_risk_source'] = {'commit': 'risk'}
         self.assertEqual(select_host_profile(profile, {'request': request}), alternate)
         self.assertEqual(P.task_estimate(request, pbs, host), 60)
+        def old_footprint(selected, _):
+            # The original run's selector has no horizon key.
+            route, = selected['route_profiles']
+            self.assertEqual(route['profile'], alternate)
+            return route['profile']['dp_workers']
+        with patch.object(P, 'request_cpu_footprint', side_effect=old_footprint):
+            self.assertEqual(P.resource_need(request, profile, pbs, host), (3, 4096))
 
     def test_release_q3_estimate_binds_the_route_and_worker_and_can_be_disabled(self):
         route = dict(route_kind='pauli', view_commit='view', adapter_source='new-adapter')
@@ -832,6 +839,21 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(executor.calls[0][1]['state'], 'UNKNOWN')
             self.assertFalse(executor.calls[0][1]['detail']['automatic_retry'])
 
+    def test_admission_exit_releases_capacity_without_completing_or_retrying(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, _ = self.manager(directory)
+            token = self.submit(manager)
+            assignment = dict(job_id='old', attempt_id='attempt', request_sha256='fixed')
+            executor.rows['old'] = dict(assignment, state='ASSIGNED', host_id='pbs-0', started_epoch=None)
+            detail = dict(reason='PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH', scientific_execution_started=False,
+                          automatic_retry=False, resource_released=True, pbs_admission_exit=dict(assignment, token=token))
+            data = dict(host_id='pbs-0', attempts=[], incomplete=[dict(assignment=assignment,
+                        state=dict(state='UNKNOWN', detail=detail))])
+            manager._harvest(dict(token=token, host_id='pbs-0', status='F'), fetched=(data, {}),
+                             owners={('old', 'attempt')})
+            self.assertEqual(executor.calls, [('/v1/state', dict(host_id='pbs-0', job_id='old',
+                attempt_id='attempt', state='UNKNOWN', detail=detail))])
+
 
 class GatewayTests(unittest.TestCase):
     def test_explicit_gateway_runtime_survives_exchange_to_harvest_reconnect(self):
@@ -937,6 +959,36 @@ class GatewayTests(unittest.TestCase):
             G.atomic(later/'WORKER_PROFILE.json', dict(pbs=dict(allocation_dir=str(root/'active-allocation'))))
             result = G.harvest(allocation, owners=[dict(job_id='new-session', attempt_id='attempt')])
             self.assertEqual(result['incomplete'], [])
+
+    def test_ended_session_can_prove_an_unlaunched_attempt_with_a_route_profile(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            allocation = root/'old-session'
+            work = root/'worker'
+            attempt = work/'job'/'attempt'
+            assignment = dict(job_id='job', attempt_id='attempt', request_sha256='fixed')
+            owners = [dict(job_id='job', attempt_id='attempt')]
+            G.atomic(allocation/'SPEC.json', dict(profile=dict(host_id='pbs-0')))
+            G.atomic(allocation/'PROFILE.json', dict(work_dir=str(work)))
+            worker = dict(state='EXITED', clock_id='clock', monotonic=5, pid=2,
+                          start_clock=dict(clock_id='clock', monotonic=1))
+            G.atomic(allocation/'STATE.json', worker)
+            G.atomic(attempt/'ASSIGNMENT.json', assignment)
+            G.atomic(attempt/'WORKER_PROFILE.json', dict(host_id='pbs-0'))
+            G.atomic(attempt/'WORKER_STATE.json', dict(state='UNKNOWN', clock_id='clock', monotonic=4,
+                detail=dict(reason='PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH',
+                            scientific_execution_started=False, automatic_retry=False)))
+            timing = dict(job_id='job', attempt_id='attempt', event='WORKER_ASSIGNMENT_DURABLE',
+                          clock_id='clock', monotonic=3, pid=2)
+            (attempt/'TRANSPORT_TIMING.jsonl').write_text(json.dumps(timing)+'\n')
+            item, = G.harvest(allocation, owners=owners)['incomplete']
+            self.assertTrue(item['state']['detail']['resource_released'])
+            self.assertEqual(item['state']['detail']['pbs_admission_exit']['token'], 'old-session')
+            G.atomic(allocation/'STATE.json', dict(worker, pid=3))
+            self.assertEqual(G.harvest(allocation, owners=owners)['incomplete'], [])
+            G.atomic(allocation/'STATE.json', worker)
+            (attempt/'SCIENTIFIC_STARTING.json').touch()
+            self.assertEqual(G.harvest(allocation, owners=owners)['incomplete'], [])
 
     def test_saved_artifact_harvest_never_calls_a_worker_or_subprocess(self):
         with tempfile.TemporaryDirectory() as directory:

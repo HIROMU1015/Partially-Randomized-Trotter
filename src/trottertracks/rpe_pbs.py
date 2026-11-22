@@ -309,6 +309,14 @@ def resource_need(request, profile, settings, host):
     if memory is None:
         # An unmeasured preparation stage runs alone from the memory pool.
         memory = usable_memory(profile, settings) if request.get('preparation') else settings['allocation_sizing']['q3_startup_memory_bytes_per_task']
+    # A resumed controller may import the original run's profile selector,
+    # whose route key predates the horizon binding. Give it only the matching
+    # horizon before accounting for that specific worker's CPUs.
+    route = request.get('route') or {}
+    horizon = (route.get('horizon_risk_source') or {}).get('commit')
+    if profile.get('route_profiles'):
+        profile = dict(profile, route_profiles=[row for row in profile['route_profiles']
+                       if row.get('horizon_risk_commit') == horizon])
     return (request_cpu_footprint(profile, request),
             max(1, memory, (profile.get('pbs') or {}).get('task_memory_bytes') or 0))
 
@@ -841,7 +849,12 @@ class PbsManager:
             if row is None or row['attempt_id'] != assignment['attempt_id'] or row['host_id'] != data['host_id']:
                 continue
             detail = item.get('state', {}).get('detail') or {}
-            if (item['state'].get('state') == 'UNKNOWN' and detail.get('prelaunch_rejection')
+            admission_exit = detail.get('pbs_admission_exit') or {}
+            released_before_launch = (detail.get('resource_released') is True and
+                detail.get('automatic_retry') is False and detail.get('scientific_execution_started') is False and
+                row.get('started_epoch') is None and admission_exit.get('token') == token and
+                all(admission_exit.get(k) == row[k] for k in ('job_id', 'attempt_id', 'request_sha256')))
+            if (item['state'].get('state') == 'UNKNOWN' and (detail.get('prelaunch_rejection') or released_before_launch)
                     and row['state'] not in ('ACCEPTED', 'CANCELLED')
                     and row['request_sha256'] == assignment['request_sha256']):
                 self.executor.rpc('/v1/state', dict(host_id=data['host_id'], job_id=row['job_id'],

@@ -243,6 +243,32 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
     return dict(requests=requests, allocations=snapshotter(root, finished))
 
 
+def admission_exit(directory, attempt, assignment, state):
+    """Prove that an ended PBS session declined this attempt before launching it."""
+    detail = state.get('detail') or {}
+    if (state.get('state') != 'UNKNOWN' or detail.get('reason') != 'PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH'
+            or detail.get('scientific_execution_started') is not False or detail.get('automatic_retry') is not False):
+        return None
+    try:
+        worker = read(directory/'STATE.json')
+        started = worker['start_clock']
+        evidence = [json.loads(line) for line in (attempt/'TRANSPORT_TIMING.jsonl').read_text().splitlines()]
+        records = [row for row in evidence if row['event'] == 'WORKER_ASSIGNMENT_DURABLE']
+        matching, = records
+        names = {'ASSIGNMENT.json', 'ORIGINAL_REQUEST.json', 'TRANSPORT_TIMING.jsonl',
+                 'WORKER_PROFILE.json', 'WORKER_STATE.json'}
+        if (worker['state'] != 'EXITED' or {p.name for p in attempt.iterdir()} - names
+                or matching['clock_id'] != state['clock_id'] or matching['clock_id'] != worker['clock_id']
+                or matching['clock_id'] != started['clock_id'] or matching['pid'] != worker['pid']
+                or not started['monotonic'] <= matching['monotonic'] <= state['monotonic'] <= worker['monotonic']
+                or any(matching[k] != assignment[k] for k in ('job_id', 'attempt_id'))):
+            return None
+        return dict(token=directory.name, **{k: assignment[k] for k in
+            ('job_id', 'attempt_id', 'request_sha256')}, pid=worker['pid'], clock_id=worker['clock_id'])
+    except (OSError, KeyError, TypeError, ValueError):
+        return None
+
+
 def harvest(directory, wanted=None, owners=None):
     """Return saved bytes after PBS exits; never reconcile by launching work."""
     spec = read(directory/'SPEC.json'); profile = read(directory/'PROFILE.json')
@@ -270,6 +296,11 @@ def harvest(directory, wanted=None, owners=None):
             saved_profile = read(path.parent/'WORKER_PROFILE.json', {}) if owners is not None else {}
             allocation_directory = (saved_profile.get('pbs') or {}).get('allocation_dir')
             same_session = allocation_directory and Path(allocation_directory).resolve() == directory.resolve()
+            if not allocation_directory or same_session:
+                proof = admission_exit(directory, path.parent, assignment, state)
+                if proof:
+                    state['detail'].update(resource_released=True, pbs_admission_exit=proof)
+                    same_session = True  # route profiles in older workers omitted the PBS directory
             if state.get('state') != 'TRANSFERRED' and (owners is None or same_session):
                 if observe_rejection and state.get('state') == 'UNKNOWN':
                     proof = observe_rejection(path.parent, assignment)

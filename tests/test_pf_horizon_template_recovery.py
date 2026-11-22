@@ -112,3 +112,17 @@ def test_q3_template_block_preserves_collected_signal(monkeypatch, tmp_path):
                         lambda root, parent, entry, routes, interpreter, leaf, *args: dict(leaf, signal_only=False))
     assert not pf.produce(root, runtime, 'parent', entry, {}, 'python', lambda: False)['signal_only']
     assert calls == ['PF_SIGNALS']
+
+
+def test_new_parent_evidence_yields_watcher_without_stopping_preparation(monkeypatch, tmp_path):
+    from trottertracks import pf_distributed_preparation
+
+    checks = []
+    monkeypatch.setattr(pf_distributed_preparation, 'complete_terminal_prices',
+                        lambda *args, stop_requested, **kwargs: checks.append(stop_requested()))
+    runtime = SimpleNamespace(settings={}, executor=SimpleNamespace(run_dir=tmp_path),
+        follow_preparations=lambda items, advance, yield_requested: checks.append(yield_requested()))
+    pf.complete_scoped(tmp_path, runtime, [], ('FULL_PF',), (13,), {}, 'python', (),
+                       stop_requested=lambda: False, on_ready=lambda *_: None,
+                       refresh_requested=lambda: True)
+    assert checks == [False, True]

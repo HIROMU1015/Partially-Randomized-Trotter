@@ -370,8 +370,10 @@ class JobStore:
                 started = now
             if state == old['state'] == 'UNKNOWN':
                 previous = json.loads(old['detail'])
-                if previous.get('prelaunch_rejection') and not (detail or {}).get('prelaunch_rejection'):
-                    detail = previous  # an older poll cannot discard a verified exit
+                for field in ('prelaunch_rejection', 'pbs_admission_exit'):
+                    if previous.get(field) and not (detail or {}).get(field):
+                        detail = previous  # an older poll cannot discard a verified exit
+                        break
             value = canonical(detail or {})
             db.execute('UPDATE jobs SET state=?,detail=?,updated_epoch=?,started_epoch=? WHERE job_id=?',
                        (state, value, now, started, job_id))
