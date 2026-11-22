@@ -37,7 +37,8 @@ def write_price(path, data):
                         if key not in encoded:
                             if len(encoded) == 256:
                                 encoded.clear()
-                            encoded[key] = json.dumps(event.to_dict(), allow_nan=False).encode("ascii")
+                            item = event if isinstance(event, dict) else event.to_dict()
+                            encoded[key] = json.dumps(item, allow_nan=False).encode("ascii")
                         if event_index:
                             out.write(b", ")
                         out.write(encoded[key])
@@ -200,32 +201,105 @@ def price(cell, index, cohort):
                 preparation_hash=prep.preparation_hash, seeds=seeds, laws=laws, events=events)
 
 
+def completed(job):
+    kind, cell, index, path, owner = job
+    if not path.exists():
+        return False
+    old = read_price(path) if kind == "price" else read(path)
+    if (old["owner"] != owner or old["candidate"] != cell
+            or kind == "price" and old["index"] != index):
+        raise ValueError("Saved H6 preparation receipt belongs to a different input")
+    return True
+
+
 def execute(job):
     kind, cell, index, path, owner = job
-    if path.exists():
-        old = read_price(path) if kind == "price" else read(path)
-        if old["owner"] != owner or old["candidate"]["id"] != cell["id"]:
-            raise ValueError("Saved H6 preparation receipt belongs to a different input")
+    if completed(job):
         return
     # Ownership stays visible if PBS ends before the receipt is committed.
     with path.with_suffix(".started").open("x") as marker:
         json.dump(dict(owner=owner, job=os.environ.get("PBS_JOBID"), candidate=cell["id"]), marker)
     if kind == "price":
-        write_price(path, dict(price(cell, index, "H6_SCOPE_" + owner), owner=owner))
+        cohort = getattr(STATE, "price_cohort", "H6_SCOPE_" + owner)
+        write_price(path, dict(price(cell, index, cohort), owner=owner))
     else:
         write(path, dict(signal(cell), owner=owner))
 
 
-def collect(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path=None):
+def resume_plan(plan, previous, run):
+    if previous == run or any((previous / name).exists() for name in ("STOP.json", "cases", "ROUND_RESULT.json")):
+        raise ValueError("H6 predecessor must be a separate preparation-stage run without a STOP")
+    raw = (previous / "PLAN.json").read_bytes()
+    old = json.loads(raw)
+    if any(old[key] != plan[key] for key in ("scope", "binding", "target", "compiler", "cases", "designs")):
+        raise ValueError("H6 predecessor plan differs from the new physical schedule")
+    source = dict(run=str(previous), owner=old["owner"], plan_sha256=hashlib.sha256(raw).hexdigest())
+    cohort = old.get("price_cohort", "H6_SCOPE_" + old["owner"])
+    return dict(plan, owner=digest(dict(owner=plan["owner"], source=source, price_cohort=cohort)),
+                continued_from=source, price_cohort=cohort)
+
+
+def inherit_jobs(jobs, plan, preparations):
+    source = Path(plan["continued_from"]["run"])
+    old_owner = plan["continued_from"]["owner"]
+    pending, inherited = [], 0
+    for job in jobs:
+        kind, cell, index, path, owner = job
+        origin = source / path.parent.name / path.name
+        if completed(job):
+            continue
+        if not origin.is_file():
+            pending.append(job)
+            continue
+        raw = origin.read_bytes()
+        receipt = json.loads(raw)
+        if receipt["owner"] != old_owner or receipt["candidate"] != cell:
+            raise ValueError(f"H6 predecessor result identity differs: {origin}")
+        if kind == "price" and (
+            receipt["compiler"] != plan["compiler"] or receipt["index"] != index
+            or receipt["cohort"] != plan["price_cohort"]
+            or receipt["preparation_hash"] != preparations[cell["prefix"]].preparation_hash
+        ):
+            raise ValueError(f"H6 predecessor price source differs: {origin}")
+        receipt.update(owner=owner, reused_source=dict(path=str(origin), owner=old_owner,
+                                                       sha256=hashlib.sha256(raw).hexdigest()))
+        if kind == "price" and isinstance(receipt["events"], dict):
+            read_price(origin)
+            old_archive = origin.with_suffix(".events.json.xz")
+            with old_archive.open("rb") as stream:
+                if hashlib.file_digest(stream, "sha256").hexdigest() != receipt["events"]["sha256"]:
+                    raise ValueError(f"H6 predecessor event archive checksum differs: {old_archive}")
+            dest = path.with_suffix(".events.json.xz")
+            if not dest.exists():
+                os.link(old_archive, dest)
+            elif not dest.samefile(old_archive):
+                raise ValueError(f"H6 continuation event archive already exists: {dest}")
+            write(path, receipt)
+        elif kind == "price":
+            write_price(path, receipt)
+        else:
+            write(path, receipt)
+        inherited += 1
+    return pending, inherited
+
+
+def collect(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path=None,
+            previous=None):
     import fcntl
 
     run.mkdir(parents=True, exist_ok=True)
     with (run / ".preparation.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path)
+        if previous is None:
+            return collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path)
+        with (previous / ".h6_scope.lock").open("rb") as predecessor:
+            fcntl.flock(predecessor, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            return collect_owned(scope, assets, run, signal_workers, price_workers, price_memory,
+                                 saved_signal_path, previous)
 
 
-def collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path):
+def collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path,
+                  previous=None):
     global STATE
     STATE = startup(assets, scope)
     cases, binding, target, compiler = STATE.cases, STATE.binding, STATE.target, STATE.compiler
@@ -237,6 +311,10 @@ def collect_owned(scope, assets, run, signal_workers, price_workers, price_memor
                         preparations={str(p): pre.preparation_hash for p, pre in STATE.preparations.items()}))
     plan = dict(owner=owner, cases=cases, binding=binding, target=target, compiler=compiler, scope=scope,
                 designs=list(designs.values()))
+    if previous is not None:
+        plan = resume_plan(plan, previous, run)
+        owner = plan["owner"]
+        STATE.price_cohort = plan["price_cohort"]
     plan_path = run / "PLAN.json"
     if plan_path.exists() and read(plan_path) != plan:
         raise ValueError("PBS work belongs to a different frozen H6 scope")
@@ -275,6 +353,15 @@ def collect_owned(scope, assets, run, signal_workers, price_workers, price_memor
         paths = scope["price_paths"] if cell["method"] == "PR" else 1
         price_jobs.extend(("price", cell, i, run / "prices" / f"{cell['id']}-{i}.json", owner) for i in range(paths))
 
+    if previous is not None:
+        signal_total, price_total = len(signal_jobs), len(price_jobs)
+        signal_jobs, signals = inherit_jobs(signal_jobs, plan, STATE.preparations)
+        price_jobs, prices = inherit_jobs(price_jobs, plan, STATE.preparations)
+        write(run / "CONTINUED_PREPARATION.json", dict(source=plan["continued_from"],
+            price_cohort=STATE.price_cohort, imported_signals=signals, imported_prices=prices,
+            existing_signals=signal_total-len(signal_jobs), existing_prices=price_total-len(price_jobs),
+            pending_signals=len(signal_jobs), pending_prices=len(price_jobs)))
+
     def checkpoint(metrics):
         write(run / f"{metrics['phase'].upper()}_PREPARATION_METRICS.json", metrics)
 
@@ -293,6 +380,7 @@ if __name__ == "__main__":
     parser.add_argument("--assets", type=Path, required=True)
     parser.add_argument("--run", type=Path)
     parser.add_argument("--saved-signals", type=Path)
+    parser.add_argument("--continue-from", type=Path)
     parser.add_argument("--signal-workers", type=int)
     parser.add_argument("--price-workers", type=int)
     parser.add_argument("--price-memory-bytes", type=int)
@@ -312,4 +400,6 @@ if __name__ == "__main__":
     resources = (args.signal_workers, args.price_workers, args.price_memory_bytes)
     if args.scope is None or args.run is None or any(value is None or value < 1 for value in resources):
         parser.error("Preparation needs a scope, output directory, positive worker counts and a price memory budget")
-    raise SystemExit(collect(read(args.scope), args.assets.resolve(), args.run.resolve(), *resources, args.saved_signals))
+    previous = args.continue_from.resolve() if args.continue_from else None
+    raise SystemExit(collect(read(args.scope), args.assets.resolve(), args.run.resolve(), *resources,
+                             args.saved_signals, previous))

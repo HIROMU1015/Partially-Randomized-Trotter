@@ -115,6 +115,62 @@ def test_scoped_price_archive_preserves_events_and_price_reuse(tmp_path, monkeyp
     assert len(calls) == 1
 
 
+def test_scope_continuation_keeps_old_events_and_seeds_without_rerunning_completed_jobs(tmp_path, monkeypatch):
+    import fcntl
+    from types import SimpleNamespace
+
+    import h6_scope_worker as worker
+
+    old, new = tmp_path / "old", tmp_path / "new"
+    (old / "signals").mkdir(parents=True)
+    (old / "prices").mkdir()
+    old_lock = old / ".h6_scope.lock"
+    cell = {"id": "pr", "method": "PR", "prefix": 1}
+    cases = [dict(rounds=[cell])]
+    scope = {"price_paths": 2}
+    design = {"anchors": [cell], "holdout": None}
+    state = SimpleNamespace(cases=cases, binding={"system": "H6"}, target=-3.0, compiler="test",
+                            preparations={1: SimpleNamespace(preparation_hash="prep")})
+    write(old / "PLAN.json", dict(owner="old-owner", cases=cases, binding=state.binding, target=state.target,
+                                 compiler=state.compiler, scope=scope, designs=[design]))
+    write(old / "signals/pr.json", dict(owner="old-owner", candidate=cell, signal={"raw": {"real": 0.5}}))
+    original = dict(owner="old-owner", candidate=cell, index=0, cohort="H6_SCOPE_old-owner", compiler="test",
+                    preparation_hash="prep", axes={"X": {"rz": 20}, "Y": {"rz": 22}}, seeds=[123],
+                    events=[[{"component": "previous"}]])
+    write(old / "prices/pr-0.json", original)
+    (old / "prices/pr-1.started").touch()
+    monkeypatch.setattr(worker, "startup", lambda *_: state)
+    monkeypatch.setattr(worker, "calibration_design", lambda *_: {"group": design})
+    seen = []
+
+    def artificial_price(candidate, index, cohort):
+        seen.append((candidate, index, cohort))
+        return dict(original, index=index, cohort=cohort, events=[])
+
+    def execute_all(jobs, execute, *args):
+        for job in jobs:
+            execute(job)
+        return {}
+
+    monkeypatch.setattr(worker, "price", artificial_price)
+    monkeypatch.setattr(worker.pool, "signals", execute_all)
+    monkeypatch.setattr(worker.pool, "prices", execute_all)
+    with old_lock.open("w") as previous:
+        fcntl.flock(previous, fcntl.LOCK_EX)
+        with pytest.raises(BlockingIOError):
+            worker.collect(scope, tmp_path, new, 2, 2, 2 * worker.pool.GIB, previous=old)
+    assert worker.collect(scope, tmp_path, new, 2, 2, 2 * worker.pool.GIB, previous=old) == 0
+    assert seen == [(cell, 1, "H6_SCOPE_old-owner")]
+    continued = read(new / "CONTINUED_PREPARATION.json")
+    assert (continued["imported_signals"], continued["imported_prices"]) == (1, 1)
+    imported = worker.read_price(new / "prices/pr-0.json")
+    assert imported["owner"] == read(new / "PLAN.json")["owner"] != original["owner"]
+    assert imported["seeds"] == original["seeds"]
+    assert (old / "prices/pr-1.started").is_file() and read(old / "prices/pr-0.json") == original
+    assert worker.collect(scope, tmp_path, new, 2, 2, 2 * worker.pool.GIB, previous=old) == 0
+    assert len(seen) == 1
+
+
 def artificial_plan(run, scope=None):
     scope = scope or read(RUNNER / "h6_scope_example.json")
     scope["scaled_shots"]["grid"].update(min_k=0, max_k=0)

@@ -22,5 +22,6 @@ if [[ -n "${H6_PRICE_WORKERS:-}" ]]; then options+=(--price-workers "$H6_PRICE_W
 if [[ -n "${H6_PRICE_MEMORY_GIB:-}" ]]; then options+=(--price-memory-gib "$H6_PRICE_MEMORY_GIB"); fi
 if [[ -n "${H6_Q3_SLOTS:-}" ]]; then options+=(--q3-slots "$H6_Q3_SLOTS"); fi
 if [[ -n "${H6_SAVED_SIGNALS:-}" ]]; then options+=(--saved-signals "$H6_SAVED_SIGNALS"); fi
+if [[ -n "${H6_CONTINUE_FROM:-}" ]]; then options+=(--continue-from "$H6_CONTINUE_FROM"); fi
 exec "$python" -B -u "$code/scripts/h6_fixed_run/run_h6_scope.py" \
     --scope "$scope" --assets "$assets" --run "$run" "${H6_SCOPE_ACTION:---plan-only}" "${options[@]}"

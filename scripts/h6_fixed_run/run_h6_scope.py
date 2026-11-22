@@ -247,6 +247,7 @@ def main():
     parser.add_argument("--run", type=Path)
     parser.add_argument("--assets", type=Path)
     parser.add_argument("--saved-signals", type=Path)
+    parser.add_argument("--continue-from", type=Path)
     parser.add_argument("--q3-slots", type=int)
     parser.add_argument("--preparation-workers", type=int)
     parser.add_argument("--signal-workers", type=int)
@@ -314,6 +315,8 @@ def main():
                    "--price-workers", str(price_workers), "--price-memory-bytes", str(price_memory)]
         if args.saved_signals:
             command.extend(["--saved-signals", str(args.saved_signals.resolve())])
+        if args.continue_from:
+            command.extend(["--continue-from", str(args.continue_from.resolve())])
         subprocess.run(command, check=True)
         plan = read(run / "PLAN.json")
         _, held = optimize(plan, run, assets / "q3-pilot/risk-source/src", q3_slots, available, budgets,
