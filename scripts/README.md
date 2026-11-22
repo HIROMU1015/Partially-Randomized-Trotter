@@ -236,6 +236,8 @@ Track D C3は[`run_track_d_c3_q4_q8.py`](run_track_d_c3_q4_q8.py)。[固定PLAN]
 
 ### RPE信号・測定回数・1 shotコストへの接続
 
+[H6の価格取得と方式別Q3](h6_fixed_run/README.md) に、回路部品・X/Y指紋・確率表の再利用と、H6専用経路の入力照合・テストをまとめる。
+
 | runner | 用途 |
 |---|---|
 | `run_rpe_round_cost_connection_validation.py` | 短いRPE段で信号半径、shot数、回路costを接続 |

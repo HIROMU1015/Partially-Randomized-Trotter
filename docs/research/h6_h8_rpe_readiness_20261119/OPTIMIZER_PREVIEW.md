@@ -1,5 +1,7 @@
 # H₆ Full PFの通常探索入口への接続
 
+[後続のH6専用経路](../../../scripts/h6_fixed_run/README.md) で、価格取得の高速化、方式別Q3、各環境での入力照合を確認できる。
+
 固定Full19/M5／h=0.1／要求幅1.6／M=12のcanonical configurationは `4147c55d83984e21ea4a26586c561c5a2ca56ab5e99b86a97f154747592f3b59`。既存B/D mapperで発行し、全13ラウンドについて旧physical ID、T、qと一致することを確認した。Q3の基準は保存全DF19 solver値、目標精度は十進値 `0.00159360010199040 Ha`。Q3 workerは未接続。
 
 ## 実際に通った入口

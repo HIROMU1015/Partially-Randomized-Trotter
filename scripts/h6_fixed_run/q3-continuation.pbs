@@ -1,0 +1,50 @@
+#!/bin/bash
+#PBS -N H6MethodQ3
+#PBS -q R267805
+#PBS -j oe
+#PBS -r n
+
+set -euo pipefail
+umask 077
+base="$HOME/projects/rpe-h6-independent/R267805"
+cd "$base/fast-continuation"
+code_root="${H6_CODE_ROOT:-$PWD}"
+python="$HOME/projects/rpe-pbs-20261118/runtime/venv311rc1-pauli-signal-chem05/bin/python"
+method="${H6_Q3_METHOD:?Set H6_Q3_METHOD to FULL_PF, TRUNCATED_PF, or PR_DF}"
+case "$method" in
+    FULL_PF|TRUNCATED_PF|PR_DF) ;;
+    *) echo "Invalid H6_Q3_METHOD: $method" >&2; exit 1 ;;
+esac
+job_dir="$PWD/q3-methods/$method"
+mkdir -p "$job_dir"
+exec 9>"$job_dir/.pbs.lock"
+flock -n 9
+set -o noclobber
+exec > "$job_dir/${PBS_JOBID:?}.log" 2>&1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export RAYON_NUM_THREADS=1 QISKIT_PARALLEL=FALSE MPLCONFIGDIR="$base/matplotlib"
+unset PYTHONPATH
+export H6_ALLOCATED_CPUS="${H6_ALLOCATED_CPUS:-${NCPUS:-${PBS_NCPUS:-1}}}"
+signals="$base/representative-signals/SIGNALS.json"
+registry="$job_dir/REGISTERED_PRICES.json"
+outcomes="$job_dir/outcomes"
+adoption="$job_dir/Q3_ADOPTION.json"
+if [[ -f "$PWD/q3-outcomes/$method/REQUEST.json" ]]; then
+    registry="$PWD/REGISTERED_PRICES.json"
+    outcomes="$PWD/q3-outcomes"
+elif [[ ! -f "$registry" ]]; then
+    price_options=()
+    if [[ "${H6_Q3_DETERMINISTIC_CLOSURE:-0}" == 1 ]]; then
+        price_options+=(--deterministic-closure)
+    fi
+    "$python" -B -u "$code_root/finish_h6_registry.py" . initial-evidence "$signals" "$registry" \
+        --method "$method" "${price_options[@]}"
+fi
+code=0
+"$python" -B -u "$code_root/q3-pilot/run_h6_continuation.py" --registered-prices "$registry" \
+    --signals "$signals" --output "$outcomes" --method "$method" || code=$?
+if [[ -f "$outcomes/PROCESS_RETURN.json" ]]; then
+    "$python" -B -u "$code_root/ingest_h6_continuation.py" "$code_root" initial-evidence/PROBLEM.json "$registry" \
+        "$outcomes" "$adoption" --method "$method"
+fi
+exit "$code"

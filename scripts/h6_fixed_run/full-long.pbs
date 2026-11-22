@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -q R267805
+#PBS -j oe
+#PBS -r n
+
+set -euo pipefail
+umask 077
+run_root="$HOME/projects/rpe-h6-independent/R267805/fast-continuation"
+code_root="${H6_CODE_ROOT:-$run_root}"
+python="$HOME/projects/rpe-pbs-20261118/runtime/venv311rc1-pauli-signal-chem05/bin/python"
+cd "$run_root"
+set -o noclobber
+exec > "full-m${H6_ROUND}.live.log" 2>&1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export RAYON_NUM_THREADS=1 QISKIT_PARALLEL=FALSE MPLCONFIGDIR="$run_root/matplotlib"
+unset PYTHONPATH
+exec "$python" -B -u "$code_root/run_full_long.py" --m "$H6_ROUND" --output "$run_root/full-m${H6_ROUND}"

@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -q R267805
+#PBS -j oe
+#PBS -r n
+
+set -euo pipefail
+umask 077
+base="$HOME/projects/rpe-h6-independent/R267805"
+cd "$base/fast-continuation"
+code_root="${H6_CODE_ROOT:-$PWD}"
+python="$HOME/projects/rpe-pbs-20261118/runtime/venv311rc1-pauli-signal-chem05/bin/python"
+result="price-${H6_PRICE_METHOD}-m${H6_FIRST_ROUND}-${H6_LAST_ROUND}${H6_RESULT_SUFFIX:-}"
+set -o noclobber
+exec > "$result.live.log" 2>&1
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export RAYON_NUM_THREADS=1 QISKIT_PARALLEL=FALSE MPLCONFIGDIR="$base/matplotlib"
+unset PYTHONPATH
+signals="$base/representative-signals/SIGNALS.json"
+"$python" -B -u "$code_root/representative-prices-r2/run_prices.py" --accelerated \
+    --method "$H6_PRICE_METHOD" --first-round "$H6_FIRST_ROUND" --last-round "$H6_LAST_ROUND" \
+    --signals "$signals" --output "$result"
+"$python" -B "$code_root/collect_h6_prices.py" "$result" "$signals" > "$result/VERIFIED.json"
