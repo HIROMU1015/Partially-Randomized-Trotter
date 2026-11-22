@@ -51,19 +51,27 @@ def observation(plan, cell, run, axis):
 def price_models(plan, run):
     models, errors = {}, {}
     for design in plan["designs"]:
-        first = design["anchors"][0]
+        first = next(iter(design["anchors"]), design.get("reference"))
         key = group_key(dict(first, actual_step=design["target_step"]))
         calibration_step = design["calibration_step"]
         names = ("one", "q", "qR") if design["mode"] == "AFFINE_QR" else ("one", "q")
         for axis in AXES:
             try:
+                if calibration_step != design["target_step"]:
+                    raise ValueError("H6 price calibration must match the target physical step")
                 direct = {}
                 for cell in design["anchors"]:
+                    if group_key(cell) != key:
+                        raise ValueError("H6 calibration anchor belongs to a different price group")
                     mean, proof = observation(plan, cell, run, axis)
                     direct[cell["id"]] = dict(price=enc(mean), source=proof)
                 holdout = design["holdout"]
+                if holdout is not None and group_key(holdout) != key:
+                    raise ValueError("H6 holdout belongs to a different price group")
                 if design["mode"] == "DIRECT":
                     models[key, axis] = dict(direct=direct, estimate=None, holdout=None)
+                    if design.get("reason"):
+                        errors[str((key, axis))] = design["reason"]
                     continue
                 route = dict(binding=plan["binding"], mode=key[0], formula=key[1], prefix=key[2],
                              actual_step=calibration_step, K=key[4])
@@ -81,8 +89,7 @@ def price_models(plan, run):
                 estimate = linear.fit(records, features=names,
                                       design_source={"maximum_direct_round": plan["scope"]["calibration_max_m"],
                                                      "target_step": design["target_step"]})
-                estimate["extrapolation_scope"] = ("CONDITIONAL_SAME_STEP" if calibration_step == design["target_step"]
-                                                   else "CONDITIONAL_STEP_TRANSFER")
+                estimate["extrapolation_scope"] = "CONDITIONAL_SAME_STEP"
                 comparison = None
                 if holdout is not None:
                     try:
@@ -129,12 +136,17 @@ def candidate_inputs(run, plan, case, models):
                 price = exact(axis_price["price"])
                 kind, evidence = "DIRECT_COMPILED_RZ", axis_price["source"]
             else:
-                price = linear.predict(model["estimate"], features(cell))
-                step_transfer = model["estimate"]["extrapolation_scope"] == "CONDITIONAL_STEP_TRANSFER"
-                kind = "CONDITIONAL_STEP_TRANSFER_PRICE" if step_transfer else "CONDITIONAL_COMPILED_PRICE_MODEL"
+                estimate = model["estimate"]
+                if estimate is None:
+                    raise ValueError(f"H6 price missing at {m}/{axis}: insufficient same-step calibration")
+                step = estimate["domain"]["route"]["actual_step"]
+                if step != cell["actual_step"]:
+                    raise ValueError(f"H6 price model step differs from the physical step at {m}/{axis}")
+                price = linear.predict(estimate, features(cell))
+                kind = "CONDITIONAL_COMPILED_PRICE_MODEL"
                 proof = run / "price_models" / f"{digest(str((group_key(cell), axis)))}.json"
                 evidence = dict(path=str(proof), sha256=sha(proof), direct_observation=False,
-                                calibration_step=model["estimate"]["domain"]["route"]["actual_step"],
+                                calibration_step=step,
                                 target_step=cell["actual_step"])
             if price <= 0:
                 raise ValueError(f"Nonpositive H6 price prediction at {m}/{axis}")
@@ -191,7 +203,7 @@ def optimize(plan, run, risk_source, q3_slots, allocated, budgets, *, execute, a
             key.update(kappa=str(exact(case["kappa"])), K=case["K"])
         row = dict(configuration_id=cid, name=f"H6:{method}:{cid[:12]}", method=method,
                    family=methods[method]["family"], key=key, caps=scaled.base_shots(horizon),
-                   labels=[], saved_points=[], M=horizon, ready=False, prices=None, needs=[])
+                   labels=[], saved_points=[], M=horizon, ready=False, prices=None, signal_source=None, needs=[])
         if pr:
             row["kappa_value"] = key["kappa"]
         candidates.append(row)

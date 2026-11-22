@@ -64,6 +64,16 @@ def request_inputs(request):
     registry = q3.check_registered_prices(Path(route["registered_prices"]), signal_sha, signals["compiler"],
                                          name, expected_sha=route.get("registered_prices_sha256"), M=M)
     price = registry["methods"][name]
+    if scoped:
+        for row in price["axes"]:
+            kind = row["kind"]
+            if kind == "CONDITIONAL_STEP_TRANSFER_PRICE":
+                raise ValueError("H6 Q3 requires a model calibrated at the physical step")
+            if kind == "CONDITIONAL_COMPILED_PRICE_MODEL":
+                step = config["rounds"][row["m"]]["actual_delta_pf"]
+                evidence = row["price_evidence"]
+                if evidence.get("calibration_step") != step or evidence.get("target_step") != step:
+                    raise ValueError("H6 Q3 price calibration step differs from the physical step")
     if (price["configuration_id"] != cid or price["configuration_sha256"] != entry["configuration_sha256"]
             or Path(price["configuration"]).resolve() != config_path.resolve()):
         raise ValueError("Registered price configuration differs from the H6 request")

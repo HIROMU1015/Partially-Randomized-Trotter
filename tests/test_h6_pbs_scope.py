@@ -106,15 +106,15 @@ def test_all_requested_combinations_reach_common_shot_optimizer(tmp_path):
 def test_entire_prefix_domain_and_arbitrary_widths_reach_optimizer(tmp_path):
     scope = read(RUNNER / "h6_scope_example.json")
     scope.update(M=13, price_paths=2, methods={
-        "FULL_PF": {"formulas": ["4th(m5_best)"], "width_over_h": [64]},
-        "TRUNCATED_PF": {"formulas": ["4th"], "prefixes": "all", "width_over_h": [3, 64]},
-        "PR_DF": {"formulas": ["2nd"], "prefixes": "all", "width_over_h": [3, 64],
+        "FULL_PF": {"formulas": ["4th(m5_best)"], "width_over_h": [10]},
+        "TRUNCATED_PF": {"formulas": ["4th"], "prefixes": "all", "width_over_h": [3, 10]},
+        "PR_DF": {"formulas": ["2nd"], "prefixes": "all", "width_over_h": [3, 10],
                   "kappas": ["3/2"], "K": [2, 4]},
     })
     plan = artificial_plan(tmp_path, scope)
     assert all({c["prefix"] for c in plan["cases"] if c["method"] == method} == set(range(19))
                for method in ("TRUNCATED_PF", "PR_DF"))
-    assert any(d["target_step"] != d["calibration_step"] for d in plan["designs"])
+    assert all(d["target_step"] == d["calibration_step"] for d in plan["designs"])
     assert any(c["m"] is None and d["target_step"] == d["calibration_step"]
                for d in plan["designs"] for c in d["anchors"])
     seen = set()
@@ -131,8 +131,23 @@ def test_entire_prefix_domain_and_arbitrary_widths_reach_optimizer(tmp_path):
     assert len(seen) == len(plan["cases"]) == 115
     full_id = next(c["id"] for c in plan["cases"] if c["method"] == "FULL_PF")
     axes = read(tmp_path / "cases" / full_id / "REGISTERED_PRICES.json")["methods"]["Full PF"]["axes"]
-    assert any(axis["kind"] == "CONDITIONAL_STEP_TRANSFER_PRICE" for axis in axes)
+    assert any(axis["kind"] == "CONDITIONAL_COMPILED_PRICE_MODEL" for axis in axes)
     assert all(axis["qualified_E_C"] is False for axis in axes)
+
+
+def test_missing_same_step_calibration_holds_only_affected_candidate(tmp_path):
+    scope = read(RUNNER / "h6_scope_example.json")
+    scope["methods"] = {"FULL_PF": {"formulas": ["2nd"], "width_over_h": [2, 64]}}
+    plan = artificial_plan(tmp_path, scope)
+    assert all(d["target_step"] == d["calibration_step"] for d in plan["designs"])
+    assert any(not d["anchors"] and d.get("reason") == "INSUFFICIENT_SAME_STEP_CALIBRATION"
+               for d in plan["designs"])
+    backend = optimizer.FixtureBackend(lambda *_: (0, 0), Fraction("0.00159360010199040") ** 2)
+    _, held = optimize(plan, tmp_path, tmp_path, 1, 1, {"FULL_PF": None},
+                       execute=False, artificial_backend=backend)
+    assert set(held) == {plan["cases"][1]["id"]}
+    assert "insufficient same-step calibration" in next(iter(held.values()))
+    assert read(tmp_path / "ROUND_RESULT.json")["ready"] == 1
 
 
 def test_prefix_bounds_and_single_round():
@@ -188,6 +203,15 @@ def test_scoped_q3_adapter_accepts_materialized_candidate(tmp_path):
     assert identity["M"] == 13
     request["route"]["scope_owner"] = "different"
     with pytest.raises(ValueError, match="horizon or owner"):
+        h6_q3_adapter.request_inputs(request)
+    request["route"]["scope_owner"] = plan["owner"]
+    escaped = read(registry)
+    model_axis = next(row for row in escaped["methods"][label]["axes"]
+                      if row["kind"] == "CONDITIONAL_COMPILED_PRICE_MODEL")
+    model_axis["price_evidence"]["calibration_step"] = {"numerator": 19, "denominator": 10}
+    write(registry, escaped)
+    request["route"]["registered_prices_sha256"] = sha(registry)
+    with pytest.raises(ValueError, match="calibration step differs"):
         h6_q3_adapter.request_inputs(request)
 
 

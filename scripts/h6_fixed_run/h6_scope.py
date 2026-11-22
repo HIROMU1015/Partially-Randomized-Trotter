@@ -132,12 +132,14 @@ def calibration_design(cases, scope):
         step = key[3]
         pr = key[0] == "PR"
         if hi is None:
+            if 2 * step > max_time:
+                designs[key] = dict(design, mode="DIRECT", anchors=observed, holdout=None,
+                                    reference=lo, reason="INSUFFICIENT_SAME_STEP_CALIBRATION")
+                continue
             # q=1 and q=2 identify repetition cost independently of the RPE grid.
             # Keep both probes inside the maximum direct duration.
-            step = min(step, max_time / 2)
             r = FORMULAS[lo["formula"]] if pr else None
             lo, hi = (probe(lo, step, q, r) for q in (1, 2))
-            design["calibration_step"] = enc(step)
         anchors = [lo, hi]
         mode = "AFFINE_Q"
         if pr and len({c["R_outer"] for c in (*cells.values(), *anchors)}) > 1:
