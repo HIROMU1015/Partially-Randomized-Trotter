@@ -4,7 +4,7 @@ No optimizer or scientific adapter is implemented here. Saved Q3 acceptance is
 delegated to Executor.prior_records/ingest, including route and identity checks.
 """
 from collections import Counter
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 from copy import deepcopy
 from fractions import Fraction
 from pathlib import Path
@@ -1114,14 +1114,43 @@ SCHEDULE_PREPARATION_MODULES = (
 )
 
 
+def local_worker_for_reattachment(run):
+    """Return the live worker entry bound to this run's fixed endpoint."""
+    marker = run/'distributed/LOCAL_DAEMON.json'
+    if not marker.is_file():
+        return None
+    owner = load(marker)
+    pid = owner['pid']
+    if type(pid) is not int or pid <= 0:
+        raise ValueError('invalid local worker PID')
+    try:
+        argv = Path('/proc', str(pid), 'cmdline').read_bytes().rstrip(b'\0').split(b'\0')
+    except FileNotFoundError:
+        return None
+    if argv == [b'']:
+        return None
+    distributed = load(run/'ROUND.json')['executor']['distributed']
+    port = distributed.get('port', 8763)
+    profile = (run/'distributed/LOCAL_WORKER.json').resolve()
+    endpoint = load(run/'distributed/ENDPOINT.json')
+    url = 'http://127.0.0.1:'+str(port)
+    if (not port or Path(owner['profile']).resolve() != profile or endpoint['url'] != url
+            or argv[1:2] != [b'-B'] or len(argv) < 7
+            or argv[3:7] != [b'--profile', os.fsencode(profile), b'--controller', os.fsencode(url)]
+            or Path(os.fsdecode(argv[2])).name != 'run_rpe_q3_worker.py'):
+        raise ValueError('the live worker does not match the saved profile and fixed endpoint')
+    return Path(os.fsdecode(argv[2])).resolve()
+
+
 def reconcile_runtime_failure(run, launch, ended, invocation, kind):
     """Verify ended ownership after a specifically identified controller error."""
     import fcntl
     import re
     import sqlite3
 
-    def hold(reason):
-        raise RequestError('run', kind + ' failure reconciliation: ' + reason)
+    def hold(reason, *, ownership_wait=False):
+        field = 'runtime_ownership' if ownership_wait else 'run'
+        raise RequestError(field, kind + ' failure reconciliation: ' + reason)
 
     if (not re.fullmatch(r'[0-9a-f]{32}', invocation) or not launch
             or launch.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
@@ -1133,8 +1162,10 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
         driver = load(run/'NORMAL_DRIVER.json')
         relay = load(run/'distributed/relay/STATUS.json')
         if (load(history/'LAUNCH.json') != launch or load(history/'EXIT.json') != ended
-                or driver['invocation_id'] != invocation or relay['stopped'] is not True):
-            hold('the driver and relay exit records do not agree')
+                or driver['invocation_id'] != invocation):
+            hold('the driver and exit records do not agree')
+        if relay['stopped'] is not True:
+            hold('the relay has not stopped', ownership_wait=True)
         with (run/'RUNTIME_ERRORS.jsonl').open() as log:
             fault = next((row for row in reversed([json.loads(line) for line in log])
                           if row.get('phase') == 'DRIVER'), {})
@@ -1170,24 +1201,40 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
+            if incomplete_recovery_index and (run/'STOP_REQUESTED.json').exists():
+                hold('user STOP prevents recovery')
         elif (kind != 'ast' or stop['error_type'] != 'SystemError'
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
+        reattach = kind == 'pf_request' and incomplete_recovery_index
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
-        if local.is_file():
+        if reattach:
+            local_worker_for_reattachment(run)
+        elif local.is_file():
             owners.append(load(local))
         if any(type(owner.get('pid')) is not int or owner['pid'] <= 0
                or Path('/proc', str(owner['pid'])).exists() for owner in owners):
-            hold('a controller or local worker still has a live process')
+            hold('a controller or local worker still has a live process', ownership_wait=True)
         allocations = load(run/'distributed/pbs/STATE.json')['allocations'].values()
-        if any(a['status'] not in ('F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED') for a in allocations):
-            hold('a PBS allocation is still open')
-        with (run/'FAST_DRIVER.lock').open('rb') as lock:
-            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
+        if not reattach and any(a['status'] not in ('F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED')
+                                for a in allocations):
+            hold('a PBS allocation is still open', ownership_wait=True)
+        with ExitStack() as locks:
+            for filename in ('FAST_DRIVER.lock', 'distributed/relay/RELAY.lock', 'distributed/pbs/MANAGER.lock'):
+                path = run/filename
+                if filename == 'FAST_DRIVER.lock' or (reattach and path.exists()):
+                    lock = locks.enter_context(path.open('rb'))
+                    try:
+                        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    except BlockingIOError:
+                        hold(filename+' still has an owner', ownership_wait=True)
             queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
             with sqlite3.connect(queue, uri=True) as db:
+                if reattach:
+                    verify_reattachable_attempts(run, db)
+                    return stop
                 excluded = "('ACCEPTED','CANCELLED')"
                 if kind == 'dispatch' or (kind == 'pf_request' and (inherited_paths or saved_axis_encoding)):
                     launched = (history/'LAUNCH.json').stat().st_mtime
@@ -1202,10 +1249,33 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     saved = json.loads(detail)
                     if (state != 'UNKNOWN' or not attempt or saved.get('automatic_retry') is not False
                             or saved.get('resource_released') is not True):
-                        hold('a queue entry still has unresolved execution or recovery')
+                        hold('a queue entry still has unresolved execution or recovery', ownership_wait=True)
     except (OSError, ValueError, KeyError, sqlite3.Error) as error:
         hold(str(error))
     return stop
+
+
+def verify_reattachable_attempts(run, db):
+    from .rpe_q3_store import digest as request_digest
+
+    rows = db.execute("""SELECT job_id, method, state, host_id, attempt_id, request_sha256, request
+                         FROM jobs WHERE state NOT IN ('ACCEPTED', 'CANCELLED')""")
+    for job, method, state, host, attempt, sha, request in rows:
+        directory = run/'jobs'/method/job
+        if (directory.resolve().parent != (run/'jobs'/method).resolve()
+                or not directory.resolve().is_relative_to((run/'jobs').resolve())
+                or request_digest(json.loads(request)) != sha
+                or request_digest(load(directory/'REQUEST.json')) != sha):
+            raise ValueError('saved request differs from the queue: '+job)
+        if state == 'QUEUED' and host is None and attempt is None:
+            continue
+        if state not in ('ASSIGNED', 'STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER', 'UNKNOWN') or not host or not attempt:
+            raise ValueError('queue ownership is incomplete: '+job)
+        marker = directory/'LAUNCH.json'
+        if marker.is_file():
+            launched = load(marker)
+            if (launched.get('host_id'), launched.get('attempt_id')) != (host, attempt):
+                raise ValueError('saved launch owner differs from the queue: '+job)
 
 
 def reconcile_controller_kill(run, launch, ended, invocation):
@@ -1289,6 +1359,19 @@ def schedule_driver(config, run, selection):
             path = driver.parents[1]/'src/trottertracks'/(name+'.py')
             if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != trial[field]:
                 raise RequestError('schedule_resume', 'Selected optimizer differs from deployment: '+name)
+        if 'resume_pf_request_failure' in selection:
+            try:
+                worker = local_worker_for_reattachment(run)
+                settings = trial.get('local_resource_worker', {})
+                if worker is not None:
+                    worker_root = Path(settings.get('root', driver.parents[1])).resolve()
+                    if worker != worker_root/'scripts/run_rpe_q3_worker.py' or not settings.get('files'):
+                        raise ValueError('selected resume would start a second local worker')
+                    for name, sha in settings['files'].items():
+                        if hashlib.sha256((worker_root/name).read_bytes()).hexdigest() != sha:
+                            raise ValueError('selected local worker file differs: '+name)
+            except (OSError, ValueError, KeyError) as error:
+                raise RequestError('schedule_resume', str(error)) from error
     if 'q3_store_sha256' in selection:
         store = driver.parents[1]/'src/trottertracks/rpe_q3_store.py'
         if not store.is_file() or hashlib.sha256(store.read_bytes()).hexdigest() != selection['q3_store_sha256']:

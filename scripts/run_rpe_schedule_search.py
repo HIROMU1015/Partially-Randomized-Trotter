@@ -288,7 +288,7 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         distributed['relay_script'] = str(relay)
     if 'local_resource_worker' in trial:
         selected = trial['local_resource_worker']
-        root = Path(__file__).resolve().parents[1]
+        root = Path(selected.get('root', Path(__file__).resolve().parents[1])).resolve()
         for file, expected in selected['files'].items():
             if hashlib.sha256((root/file).read_bytes()).hexdigest() != expected:
                 raise ValueError('Selected local worker implementation differs: '+file)

@@ -323,6 +323,8 @@ python3 scripts/restore_rpe_preparation_bundle.py --archived-run "$run_directory
 
 中断でResumeが保留された場合、RomuTailの通常入口は `resume_reconciliation` に対象run、最後のinvocationと対応終了証跡の有無、未回収・実行所有中・未確定のjob、元hostとattempt IDを返す。`RUNNING` は台帳上の記録なので、実機での継続は元workerで確認する。部分書込みだけの準備成果や診断用Q3ファイルは、完了receiptや有効なDPチェックポイントと区別する。
 
+PF再配送索引の技術例外から同じrunを再開するときは、旧中央・relay・PBS管理の所有が終了し、固定接続先と台帳の要求・attemptが整合すれば、元workerとPBS予約を引き継ぐ。要求を別attemptとして再配送せず、独立した準備や評価は通常キューへ送る。Codexが対象と再開を指示した場合に使う `scripts/resume_rpe_after_runtime_failure.py` は、一時的な所有待ちを再照合し、現在の対象の変更・利用者STOP・照合不一致で終了する。
+
 RomuTailの通常入口は `.rpe-central/CLIENT_GATEWAY.py` を使い、復元処理は `.rpe-central/deployment/resume-archives-a1dbe26e87/` に固定した。同ディレクトリに切替前のbootstrapと適用差分を保持する。登録release・実行時の科学SOURCE・固定profileは各runの記録から選ぶ。旧固定版を使う人工Resumeで、終了証跡が欠ける場合の保留と、終了証跡がある場合のSHA一致復元を確認した。
 
 既存runの整理では、起動と終了の記録が同じinvocationであること、未確定attemptや配布・回収待ちの要求が対象を参照していないこと、元の固定版でResumeする前に復元できることを確認する。復元元が候補の作業checkoutや一時的なGit alternatesにしかない場合は、復元元を保全するまで実体を残す。未検査の `workspace-*` やbase bundleも保持する。

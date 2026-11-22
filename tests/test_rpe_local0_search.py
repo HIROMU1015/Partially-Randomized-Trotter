@@ -370,6 +370,7 @@ class Tests(unittest.TestCase):
 
     def test_pf_request_mismatch_resumes_without_retrying_the_failed_invocation_jobs(self):
         import sqlite3
+        from trottertracks.rpe_q3_store import digest as queue_digest
 
         started = []
         invocation = '3' * 32
@@ -395,7 +396,8 @@ class Tests(unittest.TestCase):
         database = run/'distributed/QUEUE.sqlite3'
         with sqlite3.connect(database) as db:
             db.execute('CREATE TABLE jobs (state TEXT, attempt_id TEXT, detail TEXT, host_id TEXT,'
-                       ' assigned_epoch REAL, started_epoch REAL)')
+                       ' assigned_epoch REAL, started_epoch REAL, job_id TEXT, method TEXT,'
+                       ' request_sha256 TEXT, request TEXT)')
             db.execute("INSERT INTO jobs(state,attempt_id,detail) VALUES "
                        "('ACCEPTED','done','{}'),('RUNNING','original-attempt','{}')")
         resume = dict(action='resume', instruction='Artificial PF request recovery')
@@ -424,7 +426,29 @@ class Tests(unittest.TestCase):
             'pf_candidate_selection.py\npf_optimizer_connection.py, in complete_selected\n'
             "    record['configuration_id'] == candidates[0]"))
         (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(fault)+'\n')
+        job = run/'jobs/PREPARATION:compile/original-job'
+        saved = dict(preparation={'stage': 'compile'})
+        write(job/'REQUEST.json', saved)
+        write(job/'LAUNCH.json', dict(host_id='server2', attempt_id='original-attempt'))
+        with sqlite3.connect(database) as db:
+            db.execute("""UPDATE jobs SET state='RUNNING', job_id='original-job',
+                          method='PREPARATION:compile', host_id='server2', request_sha256=?, request=?
+                          WHERE attempt_id='original-attempt'""", (queue_digest(saved), json.dumps(saved)))
+        write(run/'distributed/pbs/STATE.json', dict(allocations={'pilot': {'status': 'R'}}))
+        write(run/'STOP_REQUESTED.json', {'reason': 'USER_REQUESTED_STOP'})
+        with self.assertRaisesRegex(RequestError, 'user STOP prevents recovery'):
+            reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request')
+        (run/'STOP_REQUESTED.json').unlink()
+        write(job/'LAUNCH.json', dict(host_id='server2', attempt_id='another-attempt'))
+        with self.assertRaisesRegex(RequestError, 'saved launch owner differs'):
+            reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request')
+        write(job/'LAUNCH.json', dict(host_id='server2', attempt_id='original-attempt'))
         self.assertEqual(reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request'), redelivery)
+        with sqlite3.connect(database) as db:
+            self.assertEqual(db.execute("SELECT state,attempt_id FROM jobs WHERE job_id='original-job'").fetchone(),
+                             ('RUNNING', 'original-attempt'))
+            db.execute("UPDATE jobs SET state='UNKNOWN' WHERE job_id='original-job'")
+        write(run/'distributed/pbs/STATE.json', dict(allocations={}))
         write(run/'KAPPA_STATE.json', dict(stop=stop))
         fault.update(stop, traceback='pf_candidate_selection.py\npf_optimizer_connection.py, in complete_selected')
         (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(fault)+'\n')
