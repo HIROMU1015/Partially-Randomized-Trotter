@@ -481,10 +481,22 @@ class Completion:
                        and (record.get('preparation_recovery') or {}).get('state') == 'UNKNOWN']
         if not waiting:
             return set()
+        with self.lock:
+            repairable = {key for key, _ in waiting
+                          if self.recoverable_transport(self.state['records'][key])}
         with store._connection() as db:
-            return {key for key, evidence in waiting if evidence.get('attempt_id') and
+            return {key for key, evidence in waiting if key not in repairable and evidence.get('attempt_id') and
                     db.execute("SELECT 1 FROM jobs WHERE job_id=? AND state='UNKNOWN' AND attempt_id=?",
                                (evidence['job_id'], evidence['attempt_id'])).fetchone()}
+
+    def recoverable_transport(self, record):
+        check = getattr(getattr(self, 'stage_executor', None), 'recoverable_transport', None)
+        if (check is None or not record.get('directory')
+                or not record['status'].startswith(('HELD', 'WAITING'))):
+            return False
+        directory = (ROOT/record['directory']).resolve()
+        return (directory.is_relative_to(self.directory.resolve())
+                and check(directory, record.get('reason') or ''))
 
     def price_evidence_unchanged(self, record, registry_digest):
         if record.get('registry_at_hold') != registry_digest:
@@ -928,13 +940,15 @@ class Completion:
             elif recovered_input:
                 d = d/'saved-input-recheck'
             df_recheck = False
-            received_preparation = False
+            received_preparation = bool(old and not getattr(self, 'stop_requested', lambda: False)()
+                                        and self.recoverable_transport(old))
             recovered_terminal = (old and request.get('horizon_parent') and old.get('scientific_failure')
                                   and old['status'] == 'HELD_WITH_REASON'
                                   and str(old.get('reason')).startswith('STAGE_FAILED:df-stage:')
                                   and self.terminal_df_stage_recovery(d))
             if old and (old['status'].startswith(('HELD','STOP','WAITING')) or
-                        old['status'] in DF_PRICE_RECHECK_STATES) and not (recovered_input or recheck or recovered_terminal):
+                        old['status'] in DF_PRICE_RECHECK_STATES) and not (
+                            recovered_input or recheck or recovered_terminal or received_preparation):
                 if old.get('scientific_failure'):return dict(old,resumed=True)
                 if not old.get('recoverable_preparation') and old['status'] == 'HELD_WITH_REASON':
                     bridge = getattr(self, 'stage_executor', None)

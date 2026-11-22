@@ -28,6 +28,49 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_exec_rejection_repairs_only_unused_aliases_and_keeps_the_frozen_contract(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            cache = ArtifactCache(root/'artifacts')
+            raw = b'{"raw":"/used/raw.json"}'
+            sha = hashlib.sha256(raw).hexdigest()
+            cache.path(sha).parent.mkdir(parents=True)
+            cache.path(sha).write_bytes(raw)
+            bindings = {'/fixed': '@SOURCE@', '/used': '@SOURCE@', '/unused': '@SOURCE@'}
+            stage = 'DF_CALIBRATION'
+            request = normalize_preparation_request(dict(route=dict(kind='preparation'),
+                original_contract={'calls': 4}, preparation=dict(stage='compile', provider=stage,
+                    source=dict(commit='fixed', files={}), command=['python', 'acquire'],
+                    controller_root=str(root), input_hashes=[], inputs={'workspace/input.json': sha},
+                    path_bindings=bindings)))
+            job = request['request_id']
+            row = dict(job_id=job, request=request, request_sha256=W.digest(request), state='ACCEPTED',
+                       attempt_id='failed', method='PREPARATION:compile', completion_sha256='accepted',
+                       detail={'outcome_status': 'PREPARATION_FAILED'})
+            marker = dict(request=request, job_id=job, source='fixed')
+            C.put(root/(stage+'.DISTRIBUTED.json'), marker)
+            result_dir = root/'jobs'/row['method']/job
+            C.put(result_dir/'PROCESS_RETURN.json', dict(returncode=2, signal=None))
+            outcome = dict(status='PREPARATION_FAILED', request_sha256=row['request_sha256'], artifacts={},
+                           workspace_error=dict(step='exec', error='E2BIG', scientific_body_started=False))
+            C.put(result_dir/'OUTCOME.json', outcome)
+            bridge = B.DistributedPreparationBridge(SimpleNamespace(
+                run_dir=root, store=SimpleNamespace(row=lambda _: row), artifact_cache=cache), root)
+            bridge.aliases = {'/used': '/fixed', '/unused': '/fixed'}
+            replacement = bridge._transport_repair(root, stage, marker)['request']
+            self.assertNotEqual(job, normalize_preparation_request(replacement)['request_id'])
+            self.assertEqual(replacement['original_contract'], request['original_contract'])
+            self.assertEqual(replacement['preparation']['inputs'], request['preparation']['inputs'])
+            self.assertEqual(replacement['preparation']['path_bindings'], {'/fixed': '@SOURCE@', '/used': '@SOURCE@'})
+            self.assertEqual(replacement['preparation']['supersedes_preparation']['attempt_id'], 'failed')
+            self.assertEqual(request['preparation']['path_bindings'], bindings)
+            C.put(root/'STOP.json', {})
+            self.assertIsNone(bridge._transport_repair(root, stage, marker))
+            (root/'STOP.json').unlink()
+            outcome['workspace_error']['scientific_body_started'] = True
+            C.put(result_dir/'OUTCOME.json', outcome)
+            self.assertIsNone(bridge._transport_repair(root, stage, marker))
+
     def test_missing_received_artifact_resumes_the_original_stage_when_available(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

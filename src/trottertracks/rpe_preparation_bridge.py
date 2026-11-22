@@ -481,6 +481,7 @@ class DistributedPreparationBridge:
         self.aliases=read(self.alias_path)if self.alias_path.exists()else{}
         self.lock=threading.RLock()
         self.bundle_hashes = {}
+        self.compact_bindings = {}
 
     @staticmethod
     def handles(stage):
@@ -689,6 +690,144 @@ class DistributedPreparationBridge:
             return dict(result, action=action)
         except (OSError, KeyError, TypeError, ValueError, sqlite3.Error):
             return unmatched
+
+    def _exec_rejected(self, row):
+        """Require positive evidence that the kernel never started the provider."""
+        try:
+            job = self.executor.run_dir/'jobs'/row['method']/row['job_id']
+            if row['state'] == 'ACCEPTED':
+                outcome = read(job/'OUTCOME.json')
+                return (outcome['status'] == 'PREPARATION_FAILED' and not outcome['artifacts']
+                        and outcome['request_sha256'] == row['request_sha256']
+                        and outcome['workspace_error'] == dict(step='exec', error='E2BIG',
+                                                                 scientific_body_started=False))
+            # Older local workers could exit before returning a structured
+            # outcome. Accept only the original subprocess exec rejection.
+            local = self.executor.distributed.get('local_worker') or {}
+            if (row['state'] != 'UNKNOWN' or row['detail'].get('resource_released') is not True
+                    or row['host_id'] != local.get('host_id')):
+                return False
+            spool = Path(local['work_dir'])/row['job_id']/row['attempt_id']
+            launch = read(job/'LAUNCH.json')
+            receipt = read(spool/'PROCESS_RETURN.json')
+            if ((launch['host_id'], launch['attempt_id']) != (row['host_id'], row['attempt_id'])
+                    or read(spool/'ORIGINAL_REQUEST.json') != row['request']
+                    or read(spool/'PREPARATION_STARTED.json')['request_sha256'] != row['request_sha256']
+                    or receipt['returncode'] != 1 or receipt['signal'] is not None
+                    or receipt['automatic_retry'] is not False
+                    or any((spool/name).exists() for name in ('OUTCOME.json', 'PREPARATION_RECEIPT.json'))
+                    or (spool/'PREPARATION_BODY.log').stat().st_size != 0):
+                return False
+            with (spool/'WORKER_EXECUTE.log').open('rb') as log:
+                log.seek(-min(4096, os.fstat(log.fileno()).st_size), os.SEEK_END)
+                tail = log.read().decode('utf-8', errors='replace').rstrip()
+            return ('in execute\n    process=subprocess.run(command,cwd=source,env=env,' in tail
+                    and 'raise child_exception_type(errno_num, err_msg, err_filename)' in tail
+                    and tail.split('\n')[-1].startswith('OSError: [Errno 7] Argument list too long:'))
+        except (OSError, KeyError, TypeError, ValueError):
+            return False
+
+    def _compact_frozen_df_bindings(self, preparation):
+        """Keep only historical aliases referenced by exact frozen input bytes."""
+        bindings = preparation['path_bindings']
+        aliases = {alias for alias, original in self.aliases.items()
+                   if bindings.get(alias) is not None and bindings[alias] == bindings.get(original)}
+        if not aliases:
+            return bindings
+        documents = [json.dumps(preparation['command'], ensure_ascii=False).encode()]
+        for name, sha in preparation['inputs'].items():
+            if name.endswith('.json'):
+                body = self.executor.artifact_cache.path(sha).read_bytes()
+                if hashlib.sha256(body).hexdigest() != sha:
+                    raise ValueError('Frozen preparation artifact differs: '+name)
+                documents.append(body)
+        for entry in preparation['input_hashes']:
+            if entry['path'].endswith('.json'):
+                body = subprocess.check_output(['git', 'show', entry['commit']+':'+entry['path']],
+                                               cwd=preparation['controller_root'], stderr=subprocess.PIPE)
+                if hashlib.sha256(body).hexdigest() != entry['sha256']:
+                    raise ValueError('Frozen preparation Git input differs: '+entry['path'])
+                documents.append(body)
+        text = b'\n'.join(documents).decode('utf-8')
+        return {path: binding for path, binding in bindings.items()
+                if path not in aliases or path in text
+                or json.dumps(path, ensure_ascii=True)[1:-1] in text}
+
+    def _transport_repair(self, directory, stage, submitted):
+        """Build a successor of a proved transport-only failure from its own request."""
+        from .pr_candidate_completion import _DF_PRICE_BOOTSTRAP
+
+        if stage not in ('DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT') or (directory/'STOP.json').exists():
+            return None
+        job = submitted['job_id']
+        proof = self.recovery_evidence(directory, stage, job)
+        if not proof.get('attempt_id'):
+            return None
+        row = self.executor.store.row(job)
+        request = deepcopy(row['request'])
+        request.pop('request_id')
+        preparation = request['preparation']
+        if preparation.get('supersedes_preparation') or preparation.get('artificial'):
+            return None
+        if stage == 'DF_MODEL_FREEZE':
+            command = preparation['command']
+            legacy = _DF_PRICE_BOOTSTRAP.split("if '--input' in sys.argv and ('freeze'", 1)[0]
+            legacy = legacy.replace("    fixed_inputs = json.loads(document.read_bytes())\n"
+                                    "    provider = resolve(fixed_inputs['runtime']['provider_root'])",
+                                    "    provider = resolve(json.loads(document.read_bytes())['runtime']['provider_root'])")
+            legacy += 'raise SystemExit(module.main())\n'
+            if (proof['action'] != 'CHECK_ORIGINAL_OUTPUT'
+                    or not proof['reason'].startswith('DF_FREEZE_REQUIRED_OUTPUT_NOT_RETURNED:')
+                    or command.count(legacy) != 1 or 'freeze' not in command
+                    or '--raw-commit' not in command or not preparation['dependencies']):
+                return None
+            try:
+                receipt = read(self.executor.run_dir/'jobs'/row['method']/job/'PROCESS_RETURN.json')
+            except (OSError, ValueError):
+                return None
+            if receipt['returncode'] != 0 or receipt['signal'] is not None:
+                return None
+            command[command.index(legacy)] = _DF_PRICE_BOOTSTRAP
+            reason = 'AUDIT_OUTPUT_REDIRECTION'
+        elif self._exec_rejected(row):
+            compact = self.compact_bindings.get(job)
+            if compact is None:
+                try:
+                    compact = self._compact_frozen_df_bindings(preparation)
+                except (OSError, KeyError, TypeError, ValueError, subprocess.SubprocessError):
+                    return None
+                self.compact_bindings[job] = compact
+            if compact == preparation['path_bindings']:
+                return None
+            preparation['path_bindings'] = compact
+            reason = 'EXEC_REJECTED_UNUSED_PATH_ALIASES'
+        else:
+            return None
+        preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=proof['attempt_id'], reason=reason)
+        return dict(request=request, source=submitted['source'], automatic_retry=False)
+
+    def recoverable_transport(self, directory, reason):
+        """Use the original marker to identify the failed stage cheaply."""
+        if not reason.startswith(('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:', 'STAGE_FAILED:',
+                                  'PREPARATION_RESULT_MISMATCH:')):
+            return False
+        job = re.search(r'\bprep-[0-9a-f]{24}\b', reason)
+        if not job:
+            return False
+        for stage in ('DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT'):
+            if stage not in reason and not reason.startswith('PREPARATION_RESULT_MISMATCH:ORIGINAL_AUDIT_OUTPUT_MISSING:'):
+                continue
+            for path in directory.rglob(stage+'.DISTRIBUTED.json'):
+                try:
+                    submitted = read(path)
+                    superseded = submitted['request']['preparation'].get('supersedes_preparation', {})
+                    if superseded.get('job_id') == job[0]:
+                        return True  # Resume the already-recorded successor.
+                    if submitted.get('job_id') == job[0] and self._transport_repair(path.parent, stage, submitted):
+                        return True
+                except (OSError, KeyError, TypeError, ValueError, subprocess.SubprocessError):
+                    continue
+        return False
 
     def hold_evidence(self, directory, reason):
         prefix, _, payload = reason.partition(':')
@@ -1536,6 +1675,17 @@ class DistributedPreparationBridge:
         inherited_workspace = None
         if marker.exists():
             submitted = self.repair_compile_context(directory, stage, read(marker))
+            if submitted.get('job_id') and (repair := self._transport_repair(directory, stage, submitted)):
+                from .rpe_preparation_queue import preparation_job_id
+
+                archive = marker.with_name(stage+'.ORIGINAL_TRANSPORT_ATTEMPT.json')
+                if not archive.exists():
+                    put(archive, submitted)
+                # Publish the successor identity before submitting it. A lost
+                # response or controller interruption reuses this exact request.
+                submitted = dict(repair, job_id=preparation_job_id(
+                    repair['request'], dependencies=self._dependencies(directory, stage)))
+                put(marker, submitted)
             request = submitted['request']
             original = getattr(completion, 'inherited_preparation_root', None)
             if original is not None and Path(request['preparation']['controller_root']).resolve() == original.resolve():

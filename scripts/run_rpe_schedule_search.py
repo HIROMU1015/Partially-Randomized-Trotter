@@ -1274,7 +1274,9 @@ class WidthDriver:
                     if announce_ready is not None:
                         announce_ready(point['method'], record)
                     continue
-                if point['status'] == 'HELD' and record and comp.reconcile_committed_df_holdout(record):
+                if point['status'] == 'HELD' and record and (
+                        comp.reconcile_committed_df_holdout(record)
+                        or getattr(comp, 'recoverable_transport', lambda _: False)(record)):
                     point.update(status='WAITING_INPUTS',reason=record['reason'])
         # INIT may expose a whole far-kappa ladder at once. Distributed
         # preparation refills bounded lanes as candidates finish; other callers
