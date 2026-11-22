@@ -24,6 +24,43 @@ class Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
 
+    def test_missing_exit_can_resume_only_before_dispatch(self):
+        import os
+        import sqlite3
+        from trottertracks.rpe_local0_search import restore_pre_dispatch_launch
+
+        run = self.home/'pre-dispatch'
+        previous = dict(invocation_id='completed-test-invocation')
+        launched = dict(invocation_id='lost-test-invocation')
+        ended = dict(previous, returncode=0)
+        missed = run/'invocations'/launched['invocation_id']
+        before = run/'invocations'/previous['invocation_id']
+        for path, value in ((run/'LAUNCH.json', launched), (run/'NORMAL_DRIVER.json', launched),
+                            (missed/'LAUNCH.json', launched), (before/'LAUNCH.json', previous),
+                            (before/'EXIT.json', ended), (run/'EXIT.json', ended)):
+            write(path, value)
+            os.utime(path, (20, 20))
+        (run/'distributed/relay').mkdir(parents=True)
+        for path in ('FAST_DRIVER.lock', 'distributed/relay/RELAY.lock', 'PROGRESS.jsonl'):
+            (run/path).touch()
+            os.utime(run/path, (10, 10))
+        with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+            db.execute('CREATE TABLE jobs(state TEXT, assigned_epoch REAL, started_epoch REAL)')
+            db.execute("INSERT INTO jobs VALUES ('UNKNOWN', 30, NULL)")
+        self.assertFalse(restore_pre_dispatch_launch(run, launched, ended))
+        self.assertEqual(load(run/'LAUNCH.json'), launched)
+        with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+            db.execute('UPDATE jobs SET assigned_epoch=5')
+        (run/'STOP_REQUESTED.json').touch()
+        self.assertFalse(restore_pre_dispatch_launch(run, launched, ended))
+        (run/'STOP_REQUESTED.json').unlink()
+        self.assertTrue(restore_pre_dispatch_launch(run, launched, ended))
+        self.assertEqual(load(run/'LAUNCH.json'), previous)
+        self.assertEqual(load(missed/'LAUNCH.json'), launched)
+        self.assertFalse((missed/'EXIT.json').exists())
+        with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+            self.assertEqual(db.execute('SELECT * FROM jobs').fetchall(), [('UNKNOWN', 5, None)])
+
     def test_driver_interrupt_reuses_checkpoint_and_never_restarts_after_stop(self):
         import signal
         from unittest.mock import Mock, patch

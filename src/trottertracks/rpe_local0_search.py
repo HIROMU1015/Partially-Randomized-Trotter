@@ -779,9 +779,15 @@ class Gateway:
         completed=load(run/'EXIT.json') if (run/'EXIT.json').exists() else {}
         if state and (not state.get('invocation_id') or completed.get('invocation_id')!=state.get('invocation_id')):
             pid = state.get('pid')
-            if pid and Path('/proc/%d/cmdline' % pid).exists() and str(run) in Path('/proc/%d/cmdline' % pid).read_bytes().decode(errors='replace'):
-                return 'ALREADY_RUNNING'
-            raise RequestError('run', 'previous launch has no completion receipt; existing STOP/UNKNOWN is preserved')
+            if pid:
+                try:
+                    if os.fsencode(run) in (Path('/proc')/str(pid)/'cmdline').read_bytes().split(b'\0'):
+                        return 'ALREADY_RUNNING'
+                except FileNotFoundError:
+                    pass
+            if request.get('action') != 'resume' or not restore_pre_dispatch_launch(run, state, completed):
+                raise RequestError('run', 'previous launch has no completion receipt; existing STOP/UNKNOWN is preserved')
+            state = load(run/'LAUNCH.json')
         stop_request = run/'STOP_REQUESTED.json'
         user_interrupted = (request.get('action') == 'resume' and completed.get('returncode') == -signal.SIGINT
                             and stop_request.is_file() and load(stop_request).get('reason') == 'USER_REQUESTED_STOP')
@@ -1317,6 +1323,58 @@ def driver_restart_hold(run, spec):
     except (OSError, sqlite3.Error, ValueError, KeyError) as error:
         return 'RECONCILIATION_REQUIRED: '+str(error)
     return None
+
+
+def restore_pre_dispatch_launch(run, launch, completed):
+    """Restore the prior launch pointer only if its interrupted successor never entered dispatch."""
+    import sqlite3
+
+    invocation = launch.get('invocation_id')
+    previous = completed.get('invocation_id')
+    if not invocation or not previous or completed.get('returncode') != 0:
+        return False
+    archived = run/'invocations'/invocation
+    before = run/'invocations'/previous
+    try:
+        proof = load(archived/'LAUNCH.json')
+        normal = load(run/'NORMAL_DRIVER.json')
+        old_launch = load(before/'LAUNCH.json')
+        published_at = min((archived/'LAUNCH.json').stat().st_mtime, (run/'NORMAL_DRIVER.json').stat().st_mtime)
+        if (launch != proof or normal['invocation_id'] != invocation
+                or completed != load(before/'EXIT.json') or old_launch['invocation_id'] != previous
+                or (archived/'EXIT.json').exists() or (run/'STOP_REQUESTED.json').exists()
+                or (run/'SEARCH_TERMINATION.json').exists()):
+            return False
+        # A process in another PID namespace can have a different PID in its
+        # marker. Use invocation and run arguments, not the marker PID alone.
+        for proc in Path('/proc').iterdir():
+            if not proc.name.isdecimal():
+                continue
+            try:
+                if proc.stat().st_uid == os.getuid():
+                    args = (proc/'cmdline').read_bytes().split(b'\0')
+                    if os.fsencode(invocation) in args or os.fsencode(run) in args or os.fsencode(run.resolve()) in args:
+                        return False
+            except FileNotFoundError:
+                pass
+        with (run/'FAST_DRIVER.lock').open('rb') as driver, (run/'distributed/relay/RELAY.lock').open('rb') as relay:
+            for lock in (driver, relay):
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            if (load(run/'LAUNCH.json') != launch or load(run/'EXIT.json') != completed
+                    or (run/'STOP_REQUESTED.json').exists() or (run/'PROGRESS.jsonl').stat().st_mtime >= published_at):
+                return False
+            database = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+            with sqlite3.connect(database, uri=True, timeout=1) as db:
+                if db.execute("""SELECT 1 FROM jobs WHERE assigned_epoch>=? OR started_epoch>=?
+                    OR state IN ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER') LIMIT 1""",
+                              (published_at, published_at)).fetchone():
+                    return False
+            immutable(archived/'PRE_DISPATCH_RECOVERY.json', dict(invocation_id=invocation,
+                previous_invocation_id=previous, status='PREVIOUS_COMPLETED_LAUNCH_POINTER_RESTORED'))
+            write(run/'LAUNCH.json', old_launch)
+        return True
+    except (OSError, KeyError, ValueError, sqlite3.Error):
+        return False
 
 
 def supervise_run(run, invocation, command):
