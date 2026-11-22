@@ -205,6 +205,20 @@ class HistoryCache:
         validator = _validator(executor)
         contexts, comparisons = {}, {}
         known, refused = {}, []
+        writes = {}
+
+        def flush():
+            if writes:
+                with self.db:
+                    self.db.executemany('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
+                                        ((job, *row) for job, row in writes.items()))
+                writes.clear()
+
+        def save(key, signature, context, payload):
+            writes[key] = (_json(signature), context, _pack(payload))
+            if len(writes) >= 64:
+                flush()
+
         stats = dict(cache_schema=SCHEMA, cache_path=str(self.path), scanned_jobs=0,
                      cache_hits=0, request_cache_hits=0, unrelated_request_hits=0,
                      parsed_jobs=0, validated_jobs=0, invalidated_jobs=0,
@@ -247,7 +261,9 @@ class HistoryCache:
                     continue
                 request_signature = tuple(signature[0][1] or ())
                 key = str(job.resolve())
-                saved = self.db.execute('SELECT signature, context, payload FROM evidence WHERE job=?', (key,)).fetchone()
+                saved = writes.get(key)
+                if saved is None:
+                    saved = self.db.execute('SELECT signature, context, payload FROM evidence WHERE job=?', (key,)).fetchone()
                 cached = None
                 if saved is not None and saved[0] == _json(signature):
                     try:
@@ -268,8 +284,7 @@ class HistoryCache:
                     if signature != _signature(job):
                         refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
                         continue
-                    self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
-                                    (key, _json(signature), '', _pack(cached)))
+                    save(key, signature, '', cached)
                 cid = request.get('configuration_id')
                 if request_signature:
                     request_configurations[request_path] = request_signature, cid
@@ -285,8 +300,7 @@ class HistoryCache:
                             cached['outcome_status'] = 'UNKNOWN_BAD_OUTCOME'
                         if signature == _signature(job):
                             old_context = saved[1] if saved is not None and cached.get('record') is not None else ''
-                            self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
-                                            (key, _json(signature), old_context, _pack(cached)))
+                            save(key, signature, old_context, cached)
                     if details and cached['outcome_status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
                         stats['current_unresolved'].append(_current_unresolved(job, cached['outcome_status']))
                     refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
@@ -347,15 +361,14 @@ class HistoryCache:
                     if hit and record_reuse is not None:
                         record_reuse(job)
                     if updated:
-                        self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
-                                        (key, _json(signature), context, _pack(cached)))
+                        save(key, signature, context, cached)
                     known[(cid, proposal['vector'])] = dict(record, source='PRIOR_ROUND_JOB',
                                                           cost=O.cost(proposal['vector'], candidate['prices']))
                 except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
                     refused.append(dict(job=str(job), reason='HISTORY_METADATA_ERROR:' + str(exc)))
             if stats['interrupted']:
                 break
-        self.db.commit()
+        flush()
         stats.update(known_records=len(known), refused_records=len(refused), wall_seconds=time.monotonic() - started)
         self.stats_by_method[executor.method] = stats
         return known, refused, stats

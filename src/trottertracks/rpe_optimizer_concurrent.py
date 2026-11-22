@@ -95,6 +95,8 @@ class ConcurrentExecutor(O.Executor):
         self.state.scaled_completions = defaultdict(dict)
         self.state.unmatched_scaled_completions = defaultdict(dict)
         self.state.scaled_recovered = set()
+        self.state.reuse_lock = threading.Lock()
+        self.state.reused_jobs = set()
         self.invocation=str(os.getpid())+'-'+str(time.time_ns())
         progress = self.run_dir/'PROGRESS.jsonl'
         self.progress_start = progress.stat().st_size if progress.exists() else 0
@@ -3134,16 +3136,16 @@ class DistributedExecutor(ConcurrentExecutor):
             return
         # This set only suppresses duplicate timing events. The caller has
         # already checked the current outcome, route and input evidence.
-        with self.state.cv:
-            if job.name in getattr(self.state, 'reused_jobs', ()):
+        with self.state.reuse_lock:
+            if job.name in self.state.reused_jobs:
                 return
-        current = self.store.row(job.name)
-        if current is not None and job.parent.name == current['method'] and current['state'] == 'ACCEPTED':
-            with self.state.cv:
-                reused = getattr(self.state, 'reused_jobs', set())
-                if current['job_id'] not in reused:
-                    reused.add(current['job_id']); self.state.reused_jobs = reused
-                    self.log(event='RESULT_REUSE', job=current['job_id'], host_id=current['host_id'])
+        host = self.store.accepted_host(job.name, job.parent.name)
+        if host is not None:
+            with self.state.reuse_lock:
+                if job.name in self.state.reused_jobs:
+                    return
+                self.state.reused_jobs.add(job.name)
+            self.log(event='RESULT_REUSE', job=job.name, host_id=host)
 
     def ingest(self, job, proposal, calls):
         answer = super().ingest(job, proposal, calls)

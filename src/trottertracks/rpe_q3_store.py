@@ -116,6 +116,13 @@ class JobStore:
         with self._connection() as db:
             return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
 
+    def accepted_host(self, job_id, method):
+        """Read the host for reuse telemetry without opening the saved request."""
+        with self._connection() as db:
+            row = db.execute("SELECT host_id FROM jobs WHERE job_id=? AND method=? AND state='ACCEPTED'",
+                             (job_id, method)).fetchone()
+            return row[0] if row is not None else None
+
     def preparation_states(self, job_ids):
         """Read scheduling states without deserializing preparation payloads."""
         with self._connection() as db:

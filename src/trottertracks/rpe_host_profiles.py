@@ -16,6 +16,28 @@ REVIEWED_PR_Q3_ROUTES = {
 }
 PREFIX_PR_Q3_ROUTES = REVIEWED_PR_Q3_ROUTES | {('PR_DF', 'prdf_d2_split')}
 
+COMPACT_Q3_RUNTIME_PROBE = '''\
+import sqlite3
+with sqlite3.connect(':memory:') as db:
+    db.execute('CREATE TABLE checkpoints (value INTEGER)')
+    db.execute('INSERT INTO checkpoints VALUES (1)')
+    if db.execute('SELECT value FROM checkpoints').fetchone() != (1,):
+        raise RuntimeError('SQLite checkpoint round trip differs')
+'''
+
+
+def needs_compact_q3_runtime(request):
+    return (request['route']['kind'] != 'artificial'
+            and (request.get('execution_profile') or {}).get('compact_q3_evidence') is True)
+
+
+def check_compact_q3_runtime(interpreter, code=COMPACT_Q3_RUNTIME_PROBE):
+    result = subprocess.run([interpreter, '-B', '-c', code], capture_output=True, text=True, timeout=15)
+    if result.returncode:
+        detail = result.stderr.strip().splitlines()[-1:] or [f'exit {result.returncode}']
+        raise ValueError('Q3 compact evidence requires SQLite in the assigned runtime: ' + detail[-1])
+    return result.stdout
+
 
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest()

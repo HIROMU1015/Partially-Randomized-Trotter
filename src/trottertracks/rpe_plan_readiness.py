@@ -204,7 +204,8 @@ def _view_fingerprint(path):
 
 def dry_check_fingerprint(root, assignment, profile):
     """Refresh source/input/route/runtime evidence before considering a cache."""
-    from .rpe_host_profiles import select_host_profile, profile_core
+    from .rpe_host_profiles import (COMPACT_Q3_RUNTIME_PROBE, check_compact_q3_runtime,
+                                    needs_compact_q3_runtime, select_host_profile, profile_core)
     profile = select_host_profile(profile, assignment)
     root = Path(profile['root'])
     route = assignment['request']['route']
@@ -215,7 +216,11 @@ def dry_check_fingerprint(root, assignment, profile):
                     '\n try: d[n]=m.version(n)'
                     '\n except m.PackageNotFoundError: d[n]=None'
                     '\nprint(json.dumps(dict(executable=sys.executable,version=sys.version,platform=platform.platform(),packages=d),sort_keys=True))')
-    runtime = subprocess.check_output([profile['interpreter'], '-B', '-c', runtime_code])
+    if needs_compact_q3_runtime(assignment['request']):
+        runtime = json.loads(check_compact_q3_runtime(profile['interpreter'], COMPACT_Q3_RUNTIME_PROBE + runtime_code))
+        runtime['compact_q3_sqlite'] = 'PASS'
+    else:
+        runtime = json.loads(subprocess.check_output([profile['interpreter'], '-B', '-c', runtime_code]))
     executable = Path(profile['interpreter']).resolve()
     stat = executable.stat()
     views = [_view_fingerprint(view)]
@@ -238,7 +243,7 @@ def dry_check_fingerprint(root, assignment, profile):
     return dict(source=Q.source_manifest(root, SOURCE), source_head=_git(root, 'rev-parse', 'HEAD').decode().strip(),
                 input_hashes=Q.input_hashes(root, assignment['request']),
                 request_sha256=Q.digest(assignment['request']), profile=profile_core(profile), views=views,
-                runtime=json.loads(runtime), interpreter_stat=dict(path=str(executable), size=stat.st_size,
+                runtime=runtime, interpreter_stat=dict(path=str(executable), size=stat.st_size,
                 mtime_ns=stat.st_mtime_ns, inode=stat.st_ino))
 
 

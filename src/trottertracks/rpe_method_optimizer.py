@@ -1593,14 +1593,14 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             from trottertracks import rpe_priority_search as P
             refresh_ready = None
             history_pool = None
-            ready_history = []
+            ready_history = {}
             initial_batches = deque()
+            late_batches = deque()
             remaining = iter(initial_ready)
             size = 1
             while batch := list(islice(remaining, size)):
                 initial_batches.append(batch)
-                # Limit how long a new READY notice must wait for a batch
-                # already in progress. All initial candidates still run.
+                # Fit the first placements quickly and bound each later scan.
                 size = min(size * 2, 8)
             if ready_source is not None:
                 pending_ready, take_ready = ready_source.subscribe(name, context, base_candidates, ex)
@@ -1610,7 +1610,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     began = time.perf_counter()
                     prior_saved, refused = view.prior_records(added)
                     view.log(event='PRIOR_READY_INGEST_END', seconds=time.perf_counter()-began,
-                             configurations=len(added), reused=len(prior_saved))
+                             configurations=len(added), reused=len(prior_saved),
+                             lane='initial' if initial_batch else 'late')
                     fresh = {key: value for key, value in prior_saved.items() if key not in saved}
                     if initial_batch:
                         scoped = [row for row in refused if row['reason'] != 'CONFIGURATION_NOT_IN_THIS_ROUND']
@@ -1622,53 +1623,63 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     return added, saved
 
                 def ready_pending():
-                    return ready_history[0].done() if ready_history else bool(initial_batches) or pending_ready()
+                    return (any(future.done() for future in ready_history.values())
+                            or ('late' not in ready_history and (bool(late_batches) or pending_ready()))
+                            or ('initial' not in ready_history and bool(initial_batches)))
 
                 def wake_selector(_):
                     with ex.state.cv:
                         ex.state.cv.notify_all()
 
-                def stage_history(added, saved_snapshot=None, *, initial_batch=False):
+                def stage_history(lane, added, saved_snapshot=None):
                     view = ex.for_method(name)
                     view.routes, view.expected = dict(ex.routes), dict(ex.expected)
-                    offset, size = 0, len(added) if initial_batch else 1
-                    while offset < len(added):
-                        batch = added[offset:offset + size]
-                        future = history_pool.submit(validate_ready, view, batch, saved_snapshot, initial_batch)
-                        ready_history.append(future)
-                        future.add_done_callback(wake_selector)
-                        offset += len(batch)
-                        size = max(2 * size, getattr(ex, 'capacity', 1))
+                    view.log(event='PRIOR_READY_INGEST_START', configurations=len(added), lane=lane)
+                    future = history_pool.submit(validate_ready, view, added, saved_snapshot, lane == 'initial')
+                    ready_history[lane] = future
+                    future.add_done_callback(wake_selector)
 
                 def await_ready():
-                    if not ready_history:
-                        return bool(initial_batches) or (stream_initial and pending_ready())
-                    # A failing validation propagates through the normal
-                    # selector fault handling. Nothing is dispatched for it.
-                    ready_history[0].result()
-                    return True
+                    with ex.state.cv:
+                        while not ready_pending():
+                            if (not ready_history or ex.state.closed or ex.state.failure is not None
+                                    or (ex.run_dir/'STOP_REQUESTED.json').exists()):
+                                return False
+                            ex.state.cv.wait(.5)
+                        return True
 
                 ex.ready_pending = ready_pending
 
                 def refresh_ready():
-                    if ready_history:
-                        if not ready_history[0].done():
-                            return [], {}
-                        added, saved = ready_history.pop(0).result()
-                        if initial_batches and not ready_history and not pending_ready():
-                            stage_history(initial_batches.popleft(), initial_batch=True)
-                    else:
-                        added, saved_snapshot = take_ready()
-                        if not added:
-                            if initial_batches:
-                                stage_history(initial_batches.popleft(), initial_batch=True)
-                            return [], {}
-                        if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
-                            added = scaled.horizon_candidates(added, problem, policy, ex, context.get('catalog'))
-                        if history_pool is not None:
-                            stage_history(added, saved_snapshot)
-                            return [], {}
-                        added, saved = validate_ready(ex, added, saved_snapshot)
+                    added, saved = [], {}
+                    for lane in ('late', 'initial'):
+                        future = ready_history.get(lane)
+                        if future is not None and future.done():
+                            del ready_history[lane]
+                            checked, known = future.result()
+                            added.extend(checked)
+                            saved.update(known)
+                    if 'late' not in ready_history and not late_batches and pending_ready():
+                        arrived, saved_snapshot = take_ready()
+                        if arrived and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+                            arrived = scaled.horizon_candidates(arrived, problem, policy, ex, context.get('catalog'))
+                        if arrived and history_pool is None:
+                            checked, known = validate_ready(ex, arrived, saved_snapshot)
+                            added.extend(checked)
+                            saved.update(known)
+                        else:
+                            # Keep subsequent cohorts bounded, with one validation in
+                            # flight per lane. Older cohorts cannot occupy the late lane.
+                            remaining = iter(arrived)
+                            size = 1
+                            while batch := list(islice(remaining, size)):
+                                late_batches.append((batch, saved_snapshot))
+                                size = min(size * 2, 8)
+                    if history_pool is not None:
+                        if 'late' not in ready_history and late_batches:
+                            stage_history('late', *late_batches.popleft())
+                        if 'initial' not in ready_history and initial_batches:
+                            stage_history('initial', initial_batches.popleft())
                     ids = {c['configuration_id'] for c in added}
                     cands[:] = [c for c in cands if c['configuration_id'] not in ids] + added
                     return added, saved
@@ -1720,7 +1731,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     domain = method_scope['L_D_range']
                     upper = context['facts']['fragment_count'] + domain['max_offset_from_fragment_count']
                     method_scope = dict(method_scope, L_D_values=range(domain['min'], upper + 1))
-                with (ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-ready-history')
+                with (ThreadPoolExecutor(max_workers=2 if stream_initial else 1, thread_name_prefix='rpe-ready-history')
                       if parallel_history else nullcontext()) as history_pool:
                     result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
                                         spent=spent, free=free, science_approved=science_approved,
@@ -1731,9 +1742,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                         held=prior_q3_holds,
                                         flagged_stop=(lambda: (ex.run_dir/'STOP_REQUESTED.json').exists()) if executor is not None else None)
                     if executor is not None and (ex.run_dir/'STOP_REQUESTED.json').exists():
-                        for future in ready_history:
+                        for future in ready_history.values():
                             future.cancel()
-                    for future in ready_history:
+                    for future in ready_history.values():
                         if not future.cancelled():
                             future.result()
             else:

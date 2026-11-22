@@ -17,6 +17,20 @@ FIXED = Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rp
 
 
 class ReadinessTests(unittest.TestCase):
+    def test_compact_evidence_checks_sqlite_in_the_selected_interpreter(self):
+        from trottertracks import rpe_host_profiles as profiles
+
+        request = dict(route=dict(kind='prdf_d2_common_entry'),
+                       execution_profile=dict(compact_q3_evidence=True))
+        self.assertTrue(profiles.needs_compact_q3_runtime(request))
+        self.assertFalse(profiles.needs_compact_q3_runtime(dict(request, route=dict(kind='artificial'))))
+        self.assertEqual(profiles.check_compact_q3_runtime(sys.executable), '')
+        with patch.object(profiles.subprocess, 'run', return_value=subprocess.CompletedProcess(
+                [], 1, '', "ModuleNotFoundError: No module named '_sqlite3'\n")) as run:
+            with self.assertRaisesRegex(ValueError, r'SQLite in the assigned runtime.*_sqlite3'):
+                profiles.check_compact_q3_runtime('/assigned/python')
+            self.assertEqual(run.call_args.args[0][0], '/assigned/python')
+
     def test_cached_wrapper_keeps_original_hash_and_rejects_changed_original(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -83,6 +83,10 @@ def main():
         resolved.write_text(json.dumps(request, indent=2, ensure_ascii=False) + '\n')
         result.update(route=request['route'], execution_profile=request.get('execution_profile'),
                       resolved_request_sha256=hashlib.sha256(resolved.read_bytes()).hexdigest())
+        if profile_helper().needs_compact_q3_runtime(request):
+            stage = 'COMPACT_Q3_RUNTIME_PRECHECK'
+            profile_helper().check_compact_q3_runtime(profile['interpreter'])
+            result['compact_q3_sqlite'] = 'PASS'
         if profile.get('runtime_checks'):
             stage = 'FIXED_RUNTIME_AST_PRECHECK'
             result['runtime_precheck'] = profile_helper().check_runtime_profile(profile)

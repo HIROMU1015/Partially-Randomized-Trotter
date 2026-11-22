@@ -313,9 +313,65 @@ class ScaleTests(unittest.TestCase):
             with patch.object(ConcurrentExecutor, 'prior_records', prior):
                 result = optimize(ROOT, problem, context=context, executor=executor, methods=[method],
                                   max_new={method: 'UNLIMITED'}, ready_source=ready_source)
-            self.assertEqual(verified, [c['configuration_id'] for c in (first, late, tail)])
+            self.assertEqual(verified[0], first['configuration_id'])
+            self.assertCountEqual(verified[1:], [late['configuration_id'], tail['configuration_id']])
             self.assertEqual(result[method]['evaluated_count'], 3)
             self.assertFalse(list(run.glob('jobs/*/*/LAUNCH.json')))
+
+    def test_late_candidate_runs_while_unrelated_saved_history_is_still_open(self):
+        from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, optimize
+
+        method = 'FULL_PF'
+        problem, context, routes = fixture([method])
+        problem['rpe'] = {'M': 0}
+        problem['search'].update(rule=S.RULE, work_conserving_search=True, scaled_shots=dict(
+            M=[0], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
+        context['saved'].table.clear()
+        context['tau'] = TAU
+        first, late = context['candidates']
+        first['prices'] = late['prices'] = [F(1), F(1)]
+        context['candidates'] = [first]
+        routes[method][0]['artificial'].update(weights=[1], scale='1/1000000000', tau=str(TAU))
+        arrived, late_done = threading.Event(), threading.Event()
+
+        def take():
+            if not arrived.is_set():
+                return [], None
+            arrived.clear()
+            return [late], None
+
+        def prior(view, candidates):
+            if candidates[0]['configuration_id'] == late['configuration_id']:
+                return {}, []
+            with view.state.cv:
+                arrived.set()
+                view.state.cv.notify_all()
+            self.assertTrue(late_done.wait(5))
+            lo, up = self.bounds(True)
+            return {(first['configuration_id'], (11, 11)): dict(status=O.PASS,
+                MSE_lower=lo, MSE_upper=up, source='PRIOR_ROUND_JOB', allocation_rule=S.RULE)}, []
+
+        original_answer = ConcurrentExecutor.answer
+
+        def answer(view, proposal):
+            value = original_answer(view, proposal)
+            if proposal['configuration_id'] == late['configuration_id'] and value['status'] == O.PASS:
+                late_done.set()
+            return value
+
+        ready_source = SimpleNamespace(subscribe=lambda *args: (arrived.is_set, take),
+                                       has_new=lambda _: arrived.is_set())
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            executor = ConcurrentExecutor(ROOT, run, routes, {}, problem, budgets={method: None},
+                                          science_approved=True, prior_run_dirs=[run])
+            executor.optimizer_history_directory = run/'history'
+            with patch.object(ConcurrentExecutor, 'prior_records', prior), patch.object(ConcurrentExecutor, 'answer', answer):
+                results = optimize(ROOT, problem, context=context, executor=executor, methods=[method],
+                                   max_new={method: 'UNLIMITED'}, ready_source=ready_source)
+            self.assertTrue(late_done.is_set())
+            self.assertEqual(results[method]['evaluated_count'], 2)
+            self.assertEqual(len(list(run.glob('jobs/*/*/LAUNCH.json'))), 1)
 
     def _check_active_series_during_history(self, *, initial):
         from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, optimize
@@ -336,9 +392,14 @@ class ScaleTests(unittest.TestCase):
         routes[method][0]['artificial'].update(weights=[1], scale='1/1000000000', tau=str(TAU))
         head_done, history_started = threading.Event(), threading.Event()
         notifications = [] if initial else [late]
+
+        def take():
+            announced = list(notifications)
+            notifications.clear()
+            return announced, None
+
         ready_source = SimpleNamespace(
-            subscribe=lambda *args: (lambda: bool(notifications), lambda: (list(notifications), None)
-                                     if not history_started.is_set() else ([], None)),
+            subscribe=lambda *args: (lambda: bool(notifications), take),
             has_new=lambda _: False)
         original_answer = ConcurrentExecutor.answer
 

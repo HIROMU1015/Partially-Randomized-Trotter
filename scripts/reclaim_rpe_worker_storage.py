@@ -21,13 +21,15 @@ from trottertracks.rpe_local_pack_maintenance import compact_local_metadata
 from trottertracks.rpe_worker_storage import duplicate_reclaim_target, prefix_caches, report
 
 
+# Windows SSH has a command-line limit even when the mailbox input uses SCP.
+# Send the report body with the existing file payload and keep the command short.
+REMOTE_ENTRY = "import json, sys; payload = json.load(sys.stdin); exec(payload.pop('report_code'))"
 REMOTE_REPORT = """
 import json
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(sys.argv[1])/'src'))
 from trottertracks import rpe_worker_storage as storage
-payload = json.load(sys.stdin)
 exec(compile(payload['source'], 'rpe_worker_storage.py', 'exec'), vars(storage))
 profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload['profile']
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
@@ -268,6 +270,7 @@ def cleanup(run, source):
     admission = read(admission_path).get('hosts', {}) if admission_path.exists() else {}
     local = distributed/'LOCAL_WORKER.json'
     pbs = distributed/'pbs'/'SETTINGS.json'
+    report_payload = dict(source=source, report_code=REMOTE_REPORT)
     work = []
     if local.exists():
         profile = read(local)
@@ -281,16 +284,16 @@ def cleanup(run, source):
                 wsl = w.get('transport') == 'ssh-wsl'
                 if wsl and not wsl_running(w, relay.ssh):
                     return dict(status='WSL_STOPPED')
-                command = [w['python'], '-B', '-c', REMOTE_REPORT, w['root'], w['profile']]
+                command = [w['python'], '-B', '-c', REMOTE_ENTRY, w['root'], w['profile']]
                 result = relay.remote_command(w, command, 'storage-reclaim',
-                                              dict(source=source, duplicate_inventory=True))[0]
+                                              dict(report_payload, duplicate_inventory=True))[0]
                 inventory = result.pop('duplicate_inventory', {}) if result else {}
                 if inventory:
                     target = duplicate_reclaim_target(result)
                     proof = verified_remote_duplicates(run, w['host_id'], inventory, target)
                     if proof:
                         result = relay.remote_command(w, command, 'storage-reclaim-verified',
-                                                      dict(source=source, verified_duplicates=proof))[0]
+                                                      dict(report_payload, verified_duplicates=proof))[0]
                 return result
             work.append((host, remote))
     if pbs.exists():
@@ -299,9 +302,9 @@ def cleanup(run, source):
         runs = str(namespace.parent) if settings.get('namespace_by_run', True) else None
         for worker in settings['workers']:
             def gateway(w=worker):
-                command = [settings['gateway_python'], '-B', '-c', REMOTE_REPORT,
+                command = [settings['gateway_python'], '-B', '-c', REMOTE_ENTRY,
                            settings['transport_root'], '']
-                payload = dict(source=source, profile=w['profile'],
+                payload = dict(report_payload, profile=w['profile'],
                                spools=[str(namespace/'workers'/w['host_id'])], pbs_runs=runs)
                 def check(**options):
                     output = subprocess.check_output(
