@@ -692,7 +692,7 @@ class DistributedPreparationBridge:
             return False
 
     def resume_unreserved_stage(self, directory, reason):
-        """Recover the same frozen request when a previous stop left it unclaimed."""
+        """Recover the same unclaimed request after a stop or a released budget hold."""
         prefix, _, payload = reason.partition(':')
         stage, _, detail = payload.partition(':')
         if prefix != 'DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD' or stage not in STAGES:
@@ -704,14 +704,20 @@ class DistributedPreparationBridge:
             stopped = result.get('status') == 'PREPARATION_STOPPED_BEFORE_RESERVATION'
             stopped |= (result.get('status') == 'PREPARATION_HOLD'
                         and result.get('reason') == 'USER_REQUESTED_STOP')
-            if not stopped:
+            budget_hold = result.get('status') == 'PREPARATION_BUDGET_OR_PERMISSION_HOLD'
+            if not (stopped or budget_hold):
                 return False
             job = result['job_id']
             if self.executor._user_stop_requested() or self.executor.state.failure is not None:
                 return False
             row = self.executor.store.row(job)
-            if row is not None and (row['state'] != 'QUEUED' or row['attempt_id'] is not None):
+            if row is not None and (row['state'] not in ('QUEUED', 'CANCELLED') or row['attempt_id'] is not None):
                 return False
+            if budget_hold and (row is None or row['state'] == 'CANCELLED'):
+                budget = self.settings.get('budgets', {}).get(STAGES[stage], 0)
+                used = self.executor.store.preparation_reservations().get(STAGES[stage], 0)
+                if not self.approved or not (budget == 'UNLIMITED' or type(budget) is int and used < budget):
+                    return False
             from .rpe_preparation_queue import normalize_preparation_request
             markers = [path for path in Path(directory).rglob(stage+'.DISTRIBUTED.json')
                        if read(path).get('job_id') == job]
@@ -1515,6 +1521,26 @@ class DistributedPreparationBridge:
             hold = Held if terminal.get('status') in ('PREPARATION_HOLD', 'PREPARATION_BUDGET_OR_PERMISSION_HOLD',
                                                       'PREPARATION_STOPPED_BEFORE_RESERVATION') else PreparationWait
             raise hold('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
+        receipt = self._adopt_received_stage(completion, directory, stage, job_id, request, result,
+                                             inherited_workspace=inherited_workspace)
+        return read(output) if output and Path(output).exists() else receipt
+
+    def import_received_stage(self, completion, marker, stage):
+        """Restore an accepted stage from this run without submitting a request."""
+        submitted = read(marker)
+        job_id = submitted['job_id']
+        directory = marker.parent
+        if not self.received_stage(directory, stage, job_id):
+            return False
+        row = self.executor.store.row(job_id)
+        result = self.executor.preparation_result(job_id, adopt=False)
+        if not result or result.get('status') != 'PREPARATION_COMPLETE':
+            return False
+        self._adopt_received_stage(completion, directory, stage, job_id, row['request'], result)
+        return True
+
+    def _adopt_received_stage(self, completion, directory, stage, job_id, request, result, *, inherited_workspace=None):
+        from .pr_candidate_completion import Held, PreparationWait, put
         if problem := df_freeze_output_problem(request, result):
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':'+problem)
         try:
@@ -1529,6 +1555,10 @@ class DistributedPreparationBridge:
         self.executor.adopt_preparation(job_id)
         receipt = dict(returncode=0, signal=None, source=request['preparation']['source']['commit'], job_id=job_id,
                        transport='distributed', automatic_retry=False, preparation_calls=result.get('preparation_calls', 0))
+        heads = [bundle['head'] for bundle in result.get('git_bundles', [])
+                 if bundle.get('workspace', 'workspace') == 'workspace']
+        if heads:
+            receipt['git_heads'] = heads
         put(directory / (stage + '.RETURN.json'), receipt)
         completion.log(event='DISTRIBUTED_STAGE_RETURN', stage=stage, job_id=job_id)
-        return read(output) if output and Path(output).exists() else receipt
+        return receipt

@@ -323,11 +323,52 @@ class WidthCompletionTests(unittest.TestCase):
                     C.put(d/'df_prices/INPUTS.json',dict(cells=[dict(m=0,role='CALIBRATION',
                         axis_evidence={'0':{axis:dict(status='REUSE') for axis in ('X','Y')}})],
                         model_design={'holdout_round':None}))
-            with (patch.object(c,'call',side_effect=call),patch.object(C,'publish',side_effect=publisher)):
+            with (patch.object(c,'call',side_effect=call),patch.object(C,'publish',side_effect=publisher),
+                  patch.object(c,'df_saved_axis_objects',return_value={})):
                 got=c.df_price_group(package['configuration_source'],dict(rows=[]),root,c.registry,group,
                                      recovered_axes=evidence)
             self.assertEqual(got['calibration_compile_axes'],[])
             self.assertEqual(stages,[('DF_PRICE_PREPARE',False),('DF_CALIBRATION',False),('DF_MODEL_FREEZE',True)])
+
+    def test_df_different_price_group_can_recover_original_wrappers(self):
+        reader,cfg,imp,package=df_direct_fixture()
+        with tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)):
+            c,publisher=self.setup_completion(Path(tmp),reader)
+            C.put(c.registry,dict(entries=[dict(name='DF_LD7',implementation=imp)]))
+            prior=c.directory/'candidates/prior/df_price_groups/other/evidence-old'
+            cell=dict(m=0,role='CALIBRATION',request=dict(axes=['X','Y'],physical_context={
+                'physical_candidate':cfg['rounds'][0]['physical_candidate']}))
+            C.put(prior/'df_prices/INPUTS.json',dict(cells=[cell]))
+            marker=prior/'DF_CALIBRATION.DISTRIBUTED.json'
+            C.put(marker,dict(job_id='prep-original'))
+            current=c.directory/'candidates/current/df_price_groups/new'
+            group=dict(covered_rounds=[0],direct_resolution=True,required_saved_companions=[])
+            quote=dict(rows=[])
+            stages=[]
+            def call(cmd,d,stage,*args,science=False):
+                stages.append((stage,science))
+                if stage=='DF_PRICE_PREPARE':
+                    status='REUSE' if '--saved-axis-quotes' in cmd else 'MISSING'
+                    C.put(d/'df_prices/INPUTS.json',dict(cells=[dict(cell,axis_evidence={
+                        '0':{axis:dict(status=status) for axis in ('X','Y')}})],
+                        model_design={'holdout_round':None}))
+            evidence=dict(schema='PR_DF_PARTIAL_AXIS_QUOTES_V1',rows=[])
+            with (patch.object(c,'call',side_effect=call),patch.object(C,'publish',side_effect=publisher),
+                  patch.object(c,'df_original_axis_quotes',side_effect=[None,evidence]) as recover,
+                  patch.object(c,'df_saved_axis_objects',return_value={})):
+                with self.assertRaises(C.DFOriginalPriceAttempt) as held:
+                    c.df_price_group(package['configuration_source'],quote,current,c.registry,group)
+                self.assertEqual(held.exception.marker,marker)
+                self.assertFalse((current/'EXECUTION_LEAF.json').exists())
+                record=dict(price_actions=[dict(original_marker=str(marker))])
+                before=c.df_price_evidence_snapshot(record)
+                C.put(prior/'DF_CALIBRATION.RETURN.json',dict(returncode=0))
+                self.assertNotEqual(c.df_price_evidence_snapshot(record),before)
+                result=c.df_price_group(package['configuration_source'],quote,current,c.registry,group)
+            self.assertEqual([entry.args for entry in recover.call_args_list],[(prior,),(prior,)])
+            self.assertEqual(result['calibration_compile_axes'],[])
+            self.assertIn(('DF_MODEL_FREEZE',True),stages)
+            self.assertNotIn(('DF_CALIBRATION',True),stages)
 
     def test_df_normal_resume_acquires_exact_price_and_keeps_original_signal(self):
         reader,cfg,imp,package=df_direct_fixture()
@@ -427,6 +468,43 @@ class WidthCompletionTests(unittest.TestCase):
                 self.assertEqual(accepted['status'],'READY_FOR_SEARCH',accepted)
                 self.assertEqual(configuration.call_args.args[0]['configuration'],held['configuration'])
                 signals.assert_called_once();price.assert_called_once()
+
+    def test_distributed_pauli_keeps_independent_signal_when_price_conflicts(self):
+        reader,cfg,_,_=pauli_fixture();enrich(cfg)
+        request=dict(method='PR_PAULI',design=dict(L_D=3,formula='2nd',delta_pf=.2,kappa='2',K=2))
+        hold=missing_quote(cfg)
+        hold['rows'][0]['needs']=dict(reasons=[C.PRICE_SOURCE_CONFLICT],entry_ids=['a','b'])
+        ready=deepcopy(hold);ready['complete']=True
+        for row in ready['rows']:
+            row['unit_price_RZ']=exact(2)
+        with tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)):
+            c,publisher=self.setup_completion(Path(tmp),reader)
+            signal=dict(packet_source=reader.add('PACKET.json',dict(status='ARTIFICIAL_COMPLETE')))
+            def service(mode,*args,**kwargs):
+                if mode=='intake':
+                    return dict(binding_id='BIND',total_configuration_id='TOTAL')
+                self.assertEqual(mode,'quote')
+                return deepcopy(ready)
+            with (patch.object(C,'value',side_effect=reader.read),patch.object(C,'publish',side_effect=publisher),
+                  patch.object(c,'pauli_configuration',return_value=(cfg,{})),patch.object(c,'quote_with_steps',side_effect=lambda _,q:q),
+                  patch.object(c,'initial_quote',return_value=hold),patch.object(c,'price',return_value=hold),
+                  patch.object(c,'pauli_signals',return_value=signal) as signals,patch.object(c,'service',side_effect=service)):
+                old=c.complete(request)
+                self.assertTrue(old['signal_deferred_for_price'])
+                signals.assert_not_called()
+                c.stage_executor=object()
+                self.assertNotIn(old['key'],c.price_deferred_keys())
+                held=c.complete(request)
+                self.assertEqual(held['status'],'PRICE_NOT_EVALUATED')
+                self.assertEqual(held['key'],old['key'])
+                self.assertEqual(held['signal'],signal)
+                self.assertEqual(held['price_actions'][0]['recheck_on'],'PRICE_REGISTRY_CHANGED')
+                self.assertTrue(c.complete(request)['resumed'])
+                C.put(c.registry,dict(entries=[],revision='new admissible price'))
+                accepted=c.complete(request)
+                self.assertEqual(accepted['status'],'READY_FOR_SEARCH')
+                self.assertEqual(accepted['signal'],signal)
+                signals.assert_called_once()
 
     def test_df_direct_group_does_not_expand_to_other_rounds(self):
         reader,cfg,imp,package=df_direct_fixture();enrich(cfg)

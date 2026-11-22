@@ -370,6 +370,27 @@ class Tests(unittest.TestCase):
         self.assertEqual(observed['candidates'][0]['state'],'EVALUATION_RUNNING')
         self.assertEqual(store.row('job')['state'],'ASSIGNED')
 
+    def test_status_keeps_individual_recoveries_for_candidates_in_same_family(self):
+        from trottertracks.rpe_local0_search import local0_progress
+
+        run=self.home/'telemetry'
+        wait=dict(reasons=['DF_PRICE_ORIGINAL_ATTEMPT'],recheck_epoch=1)
+        recovery=dict(job_id='original',attempt_id='attempt',action='RECOVER_ORIGINAL_ATTEMPT')
+        points=[
+            dict(method='PR_DF',family='LD6',status='PRICE_NOT_EVALUATED',completion=dict(
+                key='first',price_actions=[dict(m=0,axis='X',action='RECONCILE_ORIGINAL_ATTEMPT')])),
+            dict(method='PR_DF',family='LD6',status='WAITING_INPUTS',completion=dict(
+                key='second',preparation_recovery=recovery)),
+        ]
+        write(run/'KAPPA_STATE.json',dict(points=points,recovery_wait=wait))
+        progress=local0_progress({}, {}, run)
+        self.assertEqual(progress['recovery_wait'],wait)
+        first,second=progress['candidates']
+        self.assertEqual(first['candidate_id'],'first')
+        self.assertEqual(first['price_actions'][0]['axis'],'X')
+        self.assertEqual(second['candidate_id'],'second')
+        self.assertEqual(second['preparation_recovery'],recovery)
+
     def test_start_returns_a_small_duplicate_check_summary_and_keeps_full_evidence(self):
         refused=[dict(job=str(i),reason='DIFFERENT_JOB_KEY_OR_ROUTE') for i in range(100)]
         g=Gateway(self.config,preflight=lambda *args:dict(status='PASS',refused=refused),

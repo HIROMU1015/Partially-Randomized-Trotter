@@ -145,6 +145,11 @@ class Held(Exception):pass
 class PreparationWait(Held):
     """A stage can be checked again through its original request and owner."""
 
+class DFOriginalPriceAttempt(Held):
+    def __init__(self, marker):
+        self.marker = marker
+        super().__init__(DF_PRICE_UNAVAILABLE+' ORIGINAL_PRICE_ATTEMPT_REQUIRES_RECEIPT:'+str(marker))
+
 
 class PreparationYield(Exception):
     """No new stage started; an orchestration failure requested a boundary yield."""
@@ -427,8 +432,10 @@ class Completion:
 
     def price_deferred_keys(self):
         with self.lock:
+            distributed = getattr(self, 'stage_executor', None) is not None
             waiting = [record for record in self.state['records'].values()
-                       if (record.get('signal_deferred_for_price') and record['status']=='WAITING_INPUTS')
+                       if (record.get('signal_deferred_for_price') and record['status']=='WAITING_INPUTS'
+                           and not (distributed and record['method']=='PR_PAULI' and not record.get('signal')))
                        or record['status'] in DF_PRICE_RECHECK_STATES]
             if not waiting:
                 return set()
@@ -639,6 +646,7 @@ class Completion:
             design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),delta_pf=config['spec']['delta_pf']),
             schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']],
             recovered_by='METADATA_REQUERY_NO_SCIENTIFIC_RETRY')
+        record.pop('price_actions', None)
         self.save();return record
 
     def reconcile_committed_df_holdout(self, record):
@@ -827,7 +835,10 @@ class Completion:
                         ('PRICE_EVIDENCE_REQUIRED:', 'PRICE_RULE_INCOMPLETE:', DF_PRICE_UNAVAILABLE))
                     if old.get('signal_deferred_for_price'):
                         digest=self.price_registry_digest()
-                        if old.get('registry_at_hold')==digest:return dict(old,resumed=True)
+                        can_prepare_signal = (request['method']=='PR_PAULI' and not old.get('signal')
+                                              and getattr(self, 'stage_executor', None) is not None)
+                        if old.get('registry_at_hold')==digest and not can_prepare_signal:
+                            return dict(old,resumed=True)
                         d=self.directory/'candidates'/identifier/'price-refresh'/digest
                         df_recheck = request['method']=='PR_DF'
                     elif request['method']=='PR_DF' and price_unresolved and old.get('configuration'):
@@ -862,6 +873,7 @@ class Completion:
         request=deepcopy(request)  # descriptor resolution must not change the caller's stable request key
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
         physical_guard=None
+        quoted_registry=None
         try:
             if request.get('selection_error'):raise Held('B2_SELECTION_NORMALIZATION:'+request['selection_error'])
             if request['method']=='PR_PAULI':
@@ -916,7 +928,7 @@ class Completion:
                 already_started = (bool(old and old.get('signal')) or
                     any(d.glob('PAULI_SIGNALS.*.json')) or any(d.glob('PAULI_COMPILE.*.json')) or
                     any(d.glob('PAULI_PRICES.*.json')) or (d/'PAULI_SIGNAL_REQUEST.json').exists())
-                if holds and not already_started:
+                if holds and not already_started and getattr(self, 'stage_executor', None) is None:
                     # Another scoped Pauli model cannot resolve the existing
                     # per-axis choice. Ordinary missing axes still calibrate.
                     put(d/'FINAL_QUOTE.json',initial_quote)
@@ -939,12 +951,12 @@ class Completion:
                     if df_plan.get('unsupported_rounds') or any(row['decision']=='UNSUPPORTED' for row in df_plan['rounds']):
                         raise Held('DF_PROVIDER_UNSUPPORTED:'+str(df_plan))
             def intake_work(signal):
-                if request['method']=='PR_DF' and rec.get('intake'):
+                if rec.get('intake'):
                     return rec['intake']
                 return self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),
                     packet=signal['packet_source'],view=str(self.path('B_VIEW') if request['method']=='PR_PAULI'else self.path('DF_Q3_VIEW'))),d)
             def signal_work():
-                if request['method']=='PR_DF' and rec.get('signal') and rec.get('intake'):
+                if rec.get('signal') and rec.get('intake'):
                     return rec['signal']
                 return (self.pauli_signals(config,prepared,d)if request['method']=='PR_PAULI'
                         else self.df_signals(config,cref,d,descriptor,plan=df_plan,bundles=df_bundles))
@@ -964,13 +976,20 @@ class Completion:
                 rec['intake']=intake;self.save()
                 quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
             if not quote['complete']:
+                quoted_registry = quote.get('price_registry_at_quote', initial_registry)
                 if quote.get('price_decisions'):
                     rec['price_actions']=quote['price_decisions']
                 holds = price_source_holds(quote)
                 record_price_holds(rec, holds)
                 if request['method']=='PR_DF':
-                    raise Held(DF_PRICE_UNAVAILABLE+str(quote.get('price_decisions', [])))
+                    count = sum(row.get('unit_price_RZ') is None for row in quote['rows'])
+                    raise Held(f'{DF_PRICE_UNAVAILABLE}{count} unresolved price axes (DF_PRICE_DECISIONS.json)')
                 if holds:
+                    rec['price_actions'] = [dict(m=row['m'], axis=row['axis'],
+                        physical_id=row['physical_id'], quote_needs=row['needs'],
+                        action='RECHECK_REGISTERED_PRICE_EVIDENCE', new_calculation=False,
+                        recheck_on='PRICE_REGISTRY_CHANGED') for row in quote['rows']
+                        if row.get('unit_price_RZ') is None and row.get('needs')]
                     raise Held(price_hold_reason(holds))
                 raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
@@ -979,6 +998,11 @@ class Completion:
                 # DF publishes step rules through the locked registry writer.
                 if request['method'] == 'PR_PAULI' and local_registry.exists():
                     current=read(self.registry);merged={e['name']:e for e in current['entries']};merged.update({e['name']:e for e in read(local_registry)['entries']});put(self.registry,dict(current,entries=list(merged.values())))
+            rec.pop('preparation_recovery', None)
+            if quote.get('price_decisions'):
+                rec['price_actions'] = quote['price_decisions']
+            else:
+                rec.pop('price_actions', None)
             rec.update(status='READY_FOR_SEARCH',quote=dict(commit=quote_commit,path=rel(d/'FINAL_QUOTE.json')),
                 price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],
                 design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),
@@ -996,7 +1020,8 @@ class Completion:
                 rec['preparation_recovery'] = evidence
             waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))
             operational=isinstance(exc, PreparationWait)
-            unavailable = request['method']=='PR_DF' and text.startswith(DF_PRICE_UNAVAILABLE)
+            unavailable = (request['method']=='PR_DF' and text.startswith(DF_PRICE_UNAVAILABLE) or
+                           request['method']=='PR_PAULI' and bool(rec.get('price_actions')) and waiting)
             rec.update(status='WAITING_DISTRIBUTED_PREPARATION'if operational else
                        'PRICE_NOT_EVALUATED'if unavailable else'WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
                        recoverable_preparation=operational,
@@ -1005,7 +1030,7 @@ class Completion:
         finally:
             if physical_guard is not None:physical_guard.release()
         if (rec['status'].startswith(('HELD','STOP','WAITING')) or rec['status'] in DF_PRICE_RECHECK_STATES) and not rec.get('signal_deferred_for_price'):
-            rec['registry_at_hold']=self.price_registry_digest()
+            rec['registry_at_hold']=quoted_registry or self.price_registry_digest()
             if rec['method'] == 'PR_DF' and rec['status'] in DF_PRICE_RECHECK_STATES:
                 rec['df_price_evidence_at_decision'] = self.df_price_evidence_snapshot(rec)
         self.save();self.log(event='CANDIDATE_COMPLETED',method=request['method'],status=rec['status'],reason=rec.get('reason'));return rec
@@ -1257,8 +1282,10 @@ class Completion:
         registry=d/'PRICE_RULES.json'
         req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
+        registry_digest=self.price_registry_digest()
         quote=self.quote_with_steps(config,quote)
         if r['method']=='PR_PAULI' and price_source_holds(quote):
+            quote['price_registry_at_quote'] = registry_digest
             put(d/'FINAL_QUOTE.json',quote)
             return quote
         if not quote['complete']:
@@ -1291,6 +1318,7 @@ class Completion:
                 if result['status']not in('PRICES_READY','PRICE_READY','COMPLETE_MODEL_26_AXES','STEP_MODELS_READY'):
                     raise Held(('PRICE_EVIDENCE_REQUIRED:'if result['status']in('WAITING_PRICE_EVIDENCE','CALIBRATION_PLANNED_NOT_EXECUTED')else'PAULI_PRICE:')+str(result))
             else:self.df_price(cref,quote,d,registry,r.get('tail_descriptor'))
+            registry_digest=self.price_registry_digest()
             quote=self.quote_with_steps(config,quote)
             if not quote['complete']:
                 quote=self.service('quote',req,d,tag='REQUOTE',python=self.path('PRICE'))
@@ -1303,6 +1331,8 @@ class Completion:
                 if actions[index]['action'] not in ('REUSE_PRICE', 'AUDIT_ORIGINAL_COMPILE'):
                     actions[index]=dict(actions[index],action='PRICE_ADMITTED')
             quote=dict(quote,price_decisions=list(actions.values()))
+        if not quote['complete']:
+            quote['price_registry_at_quote'] = registry_digest
         put(d/'FINAL_QUOTE.json',quote)
         return quote
 
@@ -1312,9 +1342,13 @@ class Completion:
         prior = d/'DF_PRICE_GROUPS.json'
         if not prior.is_file():
             return plan
-        owned = [g for g in read(prior).get('groups', [])
-                 if (d/'df_price_groups'/g['group_id'][:20]/'df_prices/INPUTS.json').exists()
-                 and not (d/'df_price_groups'/g['group_id'][:20]/'PRICE_EVIDENCE.json').exists()]
+        owned = []
+        for group in read(prior).get('groups', []):
+            owner = d/'df_price_groups'/group['group_id'][:20]
+            leaf = self.df_execution_leaf(owner)
+            if ((leaf/'df_prices/INPUTS.json').is_file() and not (owner/'PRICE_EVIDENCE.json').is_file()
+                    and any(leaf.glob('DF_CALIBRATION.*.json'))):
+                owned.append(group)
         if not owned:
             return plan
         # Complete the original INPUTS and its queue request first.
@@ -1336,10 +1370,51 @@ class Completion:
             raise ValueError('Malformed DF price owner leaf')
         return owner/name
 
+    def df_attempt_observation(self, marker):
+        """Read the matched run's ledger without claiming or retrying its work."""
+        if not marker.name.endswith('.DISTRIBUTED.json'):
+            return {}
+        from .rpe_preparation_bridge import DistributedPreparationBridge
+        from .rpe_preparation_queue import normalize_preparation_request
+        from .rpe_q3_coordinator import digest
+        for root in (self.directory, *self.df_price_owner_roots()):
+            if not marker.resolve().is_relative_to(root.resolve()):
+                continue
+            database = root.parent/'distributed/QUEUE.sqlite3'
+            try:
+                submitted = read(marker)
+                job_id = submitted['job_id']
+                stage = marker.name.removesuffix('.DISTRIBUTED.json')
+                dependencies = DistributedPreparationBridge._dependencies(marker.parent, stage)
+                request = normalize_preparation_request(submitted['request'], dependencies=dependencies)
+                if request['request_id'] != job_id:
+                    return {}
+                with sqlite3.connect(database.resolve().as_uri()+'?mode=ro', uri=True, timeout=1) as db:
+                    row = db.execute('''SELECT state,attempt_id,host_id,completion_sha256 FROM jobs
+                                        WHERE job_id=? AND request_sha256=?''',
+                                     (job_id,digest(request))).fetchone()
+                return (dict(zip(('state','attempt_id','host_id','completion_sha256'), row), job_id=job_id)
+                        if row else {})
+            except (OSError, KeyError, TypeError, ValueError, sqlite3.Error):
+                return {}
+        return {}
+
+    def df_price_waiting_for_owner(self):
+        """Only live ledger owners keep the unattended recovery loop active."""
+        with self.lock:
+            markers = {a['original_marker'] for r in self.state['records'].values()
+                       if r['status'] in DF_PRICE_RECHECK_STATES for a in r.get('price_actions', ())
+                       if a.get('original_marker') and a.get('action') == 'RECONCILE_ORIGINAL_ATTEMPT'}
+        return any(self.df_attempt_observation(Path(path)).get('state') in
+                   ('QUEUED','ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')
+                   for path in markers)
+
     def df_price_evidence_snapshot(self, record):
         """Wake only when a registered receipt or observed owner's evidence changes."""
         files = set()
         groups = {a['group_id'] for a in record.get('price_actions', ()) if a.get('group_id')}
+        owners = {Path(a['original_marker']).parent for a in record.get('price_actions', ())
+                  if a.get('original_marker')}
         for root in [self.directory, *self.df_price_owner_roots()]:
             for gid in groups:
                 marker = root/'df-price-owners'/(gid+'.json')
@@ -1348,14 +1423,20 @@ class Completion:
                     owner = Path(read(marker)['directory']).resolve()
                     if not owner.is_relative_to(root.resolve()):
                         continue
-                    leaf = self.df_execution_leaf(owner)
                 except (OSError, KeyError, TypeError, ValueError):
                     continue
-                files.add(owner/'PRICE_EVIDENCE.json')
-                files.add(owner/'EXECUTION_LEAF.json')
-                for stage, name in (('DF_CALIBRATION', 'calibration'), ('DF_HOLDOUT', 'holdout')):
-                    files.update((leaf/(stage+'.RETURN.json'), leaf/'df_prices'/name/'acquisition/RESULT.json'))
-                files.update(leaf/'df_prices'/name for name in ('FROZEN_MODELS.json','HOLDOUT_COMPARISON.json'))
+                owners.add(owner)
+        for owner in owners:
+            try:
+                leaf = self.df_execution_leaf(owner)
+            except (OSError, KeyError, TypeError, ValueError):
+                continue
+            files.update((owner/'PRICE_EVIDENCE.json', owner/'EXECUTION_LEAF.json',
+                          leaf/'df_prices/INPUTS.json'))
+            for stage, name in (('DF_CALIBRATION', 'calibration'), ('DF_HOLDOUT', 'holdout')):
+                files.update(leaf/(stage+suffix) for suffix in ('.DISTRIBUTED.json', '.STARTED.json', '.RETURN.json'))
+                files.add(leaf/'df_prices'/name/'acquisition/RESULT.json')
+            files.update(leaf/'df_prices'/name for name in ('FROZEN_MODELS.json','HOLDOUT_COMPARISON.json'))
         observed = []
         for path in sorted(files):
             try:
@@ -1363,7 +1444,20 @@ class Completion:
                 observed.append((str(path), stat.st_mtime_ns, stat.st_size))
             except OSError:
                 observed.append((str(path), None, None))
-        return key(dict(files=observed, configured=self.settings.get('saved_df_price_axis_quotes', ())))
+        configured = self.settings.get('saved_df_price_axis_quotes', ())
+        try:
+            objects = self.df_saved_axis_objects(configured)
+        except (OSError, KeyError, TypeError, ValueError, subprocess.CalledProcessError):
+            objects = None
+        attempts = {str(path): self.df_attempt_observation(path) for path in files
+                    if path.name.endswith('.DISTRIBUTED.json') and path.is_file()}
+        return key(dict(files=observed, configured=configured, objects=objects, attempts=attempts,
+                        source=self.stage_source('DF_PRICE_PREPARE')))
+
+    @staticmethod
+    def df_saved_axis_objects(locators):
+        from .pf_saved_prices import receipt_objects
+        return receipt_objects(ROOT, [loc['commit']+':'+loc['path'] for loc in locators])
 
     def df_original_axis_quotes(self, owner):
         """Expose finished immutable raw wrappers to the existing DF receipt validator."""
@@ -1373,6 +1467,12 @@ class Completion:
         for stage, name, role in (('DF_CALIBRATION', 'calibration', 'CALIBRATION'),
                                   ('DF_HOLDOUT', 'holdout', 'HOLDOUT')):
             try:
+                recovery = getattr(getattr(self, 'stage_executor', None), 'import_received_stage', None)
+                marker = leaf/(stage+'.DISTRIBUTED.json')
+                if (recovery is not None and marker.is_file()
+                        and leaf.resolve().is_relative_to(self.directory.resolve())
+                        and not (leaf/(stage+'.RETURN.json')).is_file()):
+                    recovery(self, marker, stage)
                 ended = read(leaf/(stage+'.RETURN.json'))
                 path = base/name/'acquisition/RESULT.json'
                 result = read(path)
@@ -1386,6 +1486,14 @@ class Completion:
                 relative = (fixed_output/name/'acquisition/RESULT.json').as_posix()
                 audit = base/('FROZEN_MODELS.json' if role == 'CALIBRATION' else 'HOLDOUT_COMPARISON.json')
                 snapshot = read(audit).get('raw_commit') if audit.is_file() else None
+                if not snapshot:
+                    for head in ended.get('git_heads', ()):
+                        try:
+                            if value(dict(commit=head, path=relative)) == result:
+                                snapshot = head
+                                break
+                        except (OSError, ValueError, subprocess.CalledProcessError):
+                            continue
                 if not snapshot:
                     snapshot = git('log', '-1', '--format=%H', '--', relative, cwd=ROOT)
                 if not snapshot or value(dict(commit=snapshot, path=relative)) != result:
@@ -1402,14 +1510,19 @@ class Completion:
                     for axis in ('X', 'Y'):
                         witnesses = []
                         for index in cell['indices']:
-                            row = observed[cell['m'], index]
-                            witness = deepcopy(row['axes'][axis])
-                            if row['status'] != 'VALID' or witness['status'] != 'REUSE':
-                                raise ValueError('Incomplete original DF wrapper receipts')
+                            row = observed.get((cell['m'], index), {})
+                            witness = deepcopy(row.get('axes', {}).get(axis, {}))
+                            if (row.get('status') != 'VALID' or witness.get('status') != 'REUSE' or
+                                    not all(isinstance(witness.get(field), dict) and
+                                            witness[field].get('commit') and witness[field].get('path')
+                                            for field in ('receipt', 'path_receipt'))):
+                                continue
                             for field in ('receipt', 'path_receipt'):
                                 if witness[field]['commit'] == 'WORKING':
                                     witness[field]['commit'] = snapshot
                             witnesses.append(witness)
+                        if not witnesses:
+                            continue
                         recovered.append(dict(m=cell['m'], axis=axis, q=physical['q'], R=physical['R_outer'],
                             physical_id=physical['id'], direct_alternatives=[dict(role=role, cohort=cell['cohort'],
                                 source=dict(commit=snapshot, path=relative), path_witnesses=witnesses)]))
@@ -1444,21 +1557,16 @@ class Completion:
                     for suffix in ('.DISTRIBUTED.json','.STARTED.json','.RETURN.json'):
                         marker=directory/(stage+suffix)
                         if marker.exists() and missing_axes.intersection(previous['request']['axes']):
-                            db=root.parent/'distributed/QUEUE.sqlite3'
-                            if suffix=='.DISTRIBUTED.json' and db.is_file():
-                                try:
-                                    with sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True) as store:
-                                        status=store.execute('SELECT state,attempt_id FROM jobs WHERE job_id=?',
-                                                             (read(marker)['job_id'],)).fetchone()
-                                    if status==('CANCELLED',None):continue
-                                except (sqlite3.Error,KeyError,OSError,ValueError):
-                                    pass  # An unreadable ledger cannot establish absence of an attempt.
+                            state = self.df_attempt_observation(marker)
+                            if state.get('state') == 'CANCELLED' and state.get('attempt_id') is None:
+                                continue
                             return marker
         return None
 
     def df_price(self,cref,quote,d,registry,descriptor=None):
         config=value(cref)
         planned=self.df_price_plan(config,quote,d)
+        put(d/'DF_PRICE_GROUPS.json', planned)
         groups=[g for g in planned.get('groups',[]) if g['status']=='CALIBRATION_DESIGN_READY']
         packages=[];decisions=[];waiting=None
         for group in groups:
@@ -1477,7 +1585,10 @@ class Completion:
                 # while we waited. Requote from its verified registry first.
                 refreshed=self.quote_with_steps(config,quote)
                 missing={(r['m'],r['axis'])for r in refreshed['rows']if r.get('unit_price_RZ')is None}
-                if not any((r['m'],r['axis'])in missing for r in group['axis_keys']):continue
+                if not any((r['m'],r['axis'])in missing for r in group['axis_keys']):
+                    decisions.extend(dict(axis, action='REUSE_PRICE', new_calculation=False)
+                                     for axis in group['axis_keys'])
+                    continue
                 name=Path('df-price-owners')/(gid+'.json')
                 owner_file=self.directory/name
                 prior=next((root/name for root in self.df_price_owner_roots() if (root/name).is_file()),None)
@@ -1497,22 +1608,35 @@ class Completion:
                         continue
                     recovered_axes = self.df_original_axis_quotes(original)
                     original_leaf = self.df_execution_leaf(original)
-                    if not recovered_axes and ((original/'EXECUTION_LEAF.json').exists() or any(
-                            original_leaf.glob('DF_CALIBRATION.*.json'))):
+                    marker = next((original_leaf/('DF_CALIBRATION'+suffix) for suffix in
+                                   ('.DISTRIBUTED.json', '.STARTED.json', '.RETURN.json')
+                                   if (original_leaf/('DF_CALIBRATION'+suffix)).is_file()), None)
+                    observation = self.df_attempt_observation(marker) if marker else {}
+                    cancelled = observation.get('state') == 'CANCELLED' and observation.get('attempt_id') is None
+                    if not recovered_axes and not cancelled and (marker or (original/'EXECUTION_LEAF.json').exists()):
+                        evidence = dict(original_marker=str(marker), original_attempt=observation,
+                                        recheck_on='ORIGINAL_ATTEMPT_RECEIPT') if marker else {}
                         decisions.extend(dict(axis,action='RECONCILE_ORIGINAL_ATTEMPT',group_id=gid,
                             new_calculation=False,
-                            reason='PRIOR_RUN_DF_PRICE_OWNER_UNRESOLVED:'+str(original))
+                            reason='PRIOR_RUN_DF_PRICE_OWNER_UNRESOLVED:'+str(original), **evidence)
                             for axis in group['axis_keys'])
                         continue
-                owner=Path(read(owner_file)['directory']) if owner_file.is_file() else directory
+                owner=Path(read(owner_file)['directory']).resolve() if owner_file.is_file() else directory.resolve()
+                if not owner.is_relative_to(self.directory.resolve()):
+                    decisions.extend(dict(axis, action='NO_SAFE_PRICE_ACTION', group_id=gid,
+                        reason='ORIGINAL_DF_OWNER_PATH_DIFFERS', new_calculation=False) for axis in group['axis_keys'])
+                    continue
                 saved=owner/'PRICE_EVIDENCE.json'
                 reused = saved.is_file()
                 if reused:
                     package=read(saved)
-                elif owner != directory:
+                elif owner != directory.resolve():
                     if (owner/'NO_SAFE_ACTION.json').exists():
-                        decisions.extend(dict(axis,action='NO_SAFE_PRICE_ACTION',group_id=gid,new_calculation=False,
-                            reason=read(owner/'NO_SAFE_ACTION.json')['reason']) for axis in group['axis_keys'])
+                        original = read(owner/'NO_SAFE_ACTION.json')
+                        action = ('RECONCILE_ORIGINAL_ATTEMPT' if original.get('original_marker')
+                                  else 'NO_SAFE_PRICE_ACTION')
+                        decisions.extend(dict(axis,action=action,group_id=gid,new_calculation=False,
+                            **original) for axis in group['axis_keys'])
                     else:
                         waiting=PreparationWait('DF_PRICE_ORIGINAL_OWNER:'+str(owner))
                         decisions.extend(dict(axis,action='RECONCILE_ORIGINAL_ATTEMPT',group_id=gid,
@@ -1535,11 +1659,15 @@ class Completion:
                                                   new_calculation=False,reason=str(error))
                                              for axis in group['axis_keys'])
                             continue
-                        put(directory/'NO_SAFE_ACTION.json',dict(reason=str(error)))
+                        disposition = dict(reason=str(error))
+                        if isinstance(error, DFOriginalPriceAttempt):
+                            disposition.update(original_marker=str(error.marker), recheck_on='ORIGINAL_ATTEMPT_RECEIPT',
+                                               original_attempt=self.df_attempt_observation(error.marker))
+                        put(directory/'NO_SAFE_ACTION.json',disposition)
                         if not str(error).startswith(DF_PRICE_UNAVAILABLE):
                             raise
-                        decisions.extend(dict(axis,action='NO_SAFE_PRICE_ACTION',group_id=gid,
-                                              new_calculation=False,reason=str(error))
+                        decisions.extend(dict(axis,action='RECONCILE_ORIGINAL_ATTEMPT' if isinstance(error, DFOriginalPriceAttempt)
+                                              else 'NO_SAFE_PRICE_ACTION',group_id=gid,new_calculation=False, **disposition)
                                          for axis in group['axis_keys'])
                         continue
                     put(saved,package)
@@ -1551,7 +1679,9 @@ class Completion:
                     for axis in group['axis_keys'])
         resolved = {(r['m'], r['axis']): dict(r, new_calculation=False)
                     for r in planned.get('round_actions', [])}
-        resolved.update({(r['m'], r['axis']):r for r in decisions})
+        for row in decisions:
+            index = row['m'], row['axis']
+            resolved[index] = dict(resolved.get(index, {}), **row)
         put(d/'DF_PRICE_DECISIONS.json', list(resolved.values()))
         if waiting is not None:
             raise waiting
@@ -1559,6 +1689,7 @@ class Completion:
 
     def df_price_group(self,cref,quote,d,registry,group,descriptor=None,*,recovered_axes=None):
         """One existing DF calibration/holdout campaign per exact actual step."""
+        owner=d
         direct=group.get('direct_resolution')
         cohort='D2_AUTO_DF_'+d.name
         leaf=d/'EXECUTION_LEAF.json'
@@ -1603,6 +1734,14 @@ class Completion:
         if locators and not saved_file.exists() and not inp.exists():
             put(saved_file,locators)
         if saved_file.is_file():
+            if not inp.exists():
+                try:
+                    unavailable = [ref for ref, status in self.df_saved_axis_objects(read(saved_file)).items()
+                                   if status.rstrip().endswith((' missing', ' ambiguous'))]
+                except (OSError, KeyError, TypeError, ValueError, subprocess.CalledProcessError) as error:
+                    raise Held(DF_PRICE_UNAVAILABLE+' SAVED_AXIS_RECEIPT_INDEX_UNREADABLE: '+str(error)) from error
+                if unavailable:
+                    raise Held(DF_PRICE_UNAVAILABLE+' SAVED_AXIS_RECEIPT_OBJECT_UNAVAILABLE: '+str(unavailable))
             saved_axes=['--saved-axis-quotes',str(saved_file)]
         self.call(args+['prepare']+parallel+saved_axes+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort',cohort,'--source',price_source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
         if not inp.exists():
@@ -1624,7 +1763,7 @@ class Completion:
                            ('.DISTRIBUTED.json', '.STARTED.json', '.RETURN.json')):
                     original = self.df_existing_price_attempt(inp, cell, axes)
                     if original is not None:
-                        raise Held(DF_PRICE_UNAVAILABLE+' ORIGINAL_PRICE_ATTEMPT_REQUIRES_RECEIPT:'+str(original))
+                        raise DFOriginalPriceAttempt(original)
         compile_needed=bool(compile_axes['CALIBRATION'])
         if direct:
             [cell]=frozen_inputs['cells']
@@ -1635,13 +1774,22 @@ class Completion:
                 existing=next(r for r in read(quote_file)['rows'] if (r['m'],r['axis'])==(cell['m'],axis))
                 if sum(dec(path[axis]['C']) for path in paths)/len(paths)!=dec(existing['unit_price_RZ']):
                     raise Held(DF_PRICE_UNAVAILABLE+' SAVED_COMPANION_PRICE_DIFFERS:'+axis)
-            if compile_needed and not getattr(getattr(self,'stage_executor',None),'handles',lambda _:False)('DF_CALIBRATION'):
-                raise Held(DF_PRICE_UNAVAILABLE+' DISTRIBUTED_DF_CALIBRATION_UNAVAILABLE')
             if not leaf.exists():
                 missing={a for path in paths for a,v in path.items() if v['status']=='MISSING'}
                 original=self.df_existing_price_attempt(inp,cell,missing) if missing else None
                 if original is not None:
-                    raise Held(DF_PRICE_UNAVAILABLE+' ORIGINAL_PRICE_ATTEMPT_REQUIRES_RECEIPT:'+str(original))
+                    # Another plan can have reserved the same physical axis
+                    # under a different group ID. Recover exact old wrappers
+                    # before choosing a new cohort or reserving any science.
+                    if recovered_axes is None:
+                        recovered = self.df_original_axis_quotes(original.parent)
+                        if recovered is not None:
+                            return self.df_price_group(cref, quote, owner, registry, group, descriptor,
+                                                       recovered_axes=recovered)
+                    raise DFOriginalPriceAttempt(original)
+            if compile_needed and not getattr(getattr(self,'stage_executor',None),'handles',lambda _:False)('DF_CALIBRATION'):
+                raise Held(DF_PRICE_UNAVAILABLE+' DISTRIBUTED_DF_CALIBRATION_UNAVAILABLE')
+            if not leaf.exists():
                 put(leaf,dict(name=d.name))
         inputs=publish([d],'Fix candidate DF calibration and independent holdout inputs')
         common=['--input',str(inp),'--inputs-commit',inputs,'--source',price_source]

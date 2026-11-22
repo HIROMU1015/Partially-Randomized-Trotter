@@ -1,5 +1,7 @@
 # 分散探索のCPU利用と候補供給の改善計画
 
+価格・入力・実行所有の詰まりを通常探索の中で解消する次の実装は、[中央制御の実装指示と受入試験](rpe_blocker_recovery_implementation.md) にまとめた。
+
 ## 2026-11-22　全工程の残件と完了条件
 
 対象は通常run `search-29795d0e2e2593819e27`。固定ROUNDの対象方式はFull PF、B0I（TRUNCATED_PF）、PR-DF。PR-Pauliは次の対象runへの回帰確認に含める。新規runのcurrentは `romutail-large-shots-bb0fd4cd97`、このrunの継続制御は `f8b2788517` とB0I終端カタログ。PR-DFの保存M=13取込 `a68b0589ed` は検収済みの別配置である。この節は運用記録と実装を読んで作った残件表である。

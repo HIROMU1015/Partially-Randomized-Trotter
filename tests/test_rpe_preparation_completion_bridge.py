@@ -28,6 +28,53 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_unclaimed_stage_reopens_only_with_an_available_budget(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            store = JobStore(root/'QUEUE.sqlite3')
+            executor = SimpleNamespace(store=store, run_dir=root, state=SimpleNamespace(failure=None),
+                                       _user_stop_requested=lambda: False)
+            bridge = B.DistributedPreparationBridge(executor, root, {'budgets': {'compile': 0}}, approved=True)
+            stage = 'DF_CALIBRATION'
+            request = normalize_preparation_request(dict(route=dict(kind='preparation'), preparation=dict(
+                stage='compile', provider=stage, artificial=True, source=dict(commit='fixed', files={}))))
+            job = request['request_id']
+            C.put(root/(stage+'.DISTRIBUTED.json'), dict(job_id=job, request=request, source='fixed'))
+            hold = ('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':'+
+                    str(dict(status='PREPARATION_BUDGET_OR_PERMISSION_HOLD', job_id=job)))
+            self.assertFalse(bridge.resume_unreserved_stage(root, hold))
+            bridge.settings['budgets']['compile'] = 1
+            self.assertTrue(bridge.resume_unreserved_stage(root, hold))
+            self.assertIsNone(store.row(job))
+            self.assertTrue(store.reserve('PREPARATION:compile',job,request,1,True))
+            store.claim('worker',1)
+            self.assertIsNotNone(store.row(job)['attempt_id'])
+            self.assertFalse(bridge.resume_unreserved_stage(root, hold))
+
+    def test_import_received_stage_does_not_submit_a_new_job(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bridge = B.DistributedPreparationBridge.__new__(B.DistributedPreparationBridge)
+            outcome = dict(status='PREPARATION_COMPLETE')
+            request = dict(preparation={'source': {'commit': 'FIXED'}})
+            marker = root/'DF_CALIBRATION.DISTRIBUTED.json'
+            C.put(marker, dict(job_id='original'))
+            bridge.executor = SimpleNamespace(
+                store=SimpleNamespace(row=lambda job: dict(request=request)),
+                preparation_result=lambda job, **kwargs: outcome,
+                submit_preparation=lambda *args: self.fail('Do not submit original stage again'),
+                adopt_preparation=lambda job: self.assertEqual(job, 'original'))
+            completion = SimpleNamespace(log=lambda **kwargs: None)
+            with (patch.object(bridge,'received_stage',return_value=False),
+                  patch.object(bridge,'_import_result') as restore):
+                self.assertFalse(bridge.import_received_stage(completion, marker, 'DF_CALIBRATION'))
+                restore.assert_not_called()
+            with (patch.object(bridge,'received_stage',return_value=True),
+                  patch.object(bridge,'_import_result') as restore):
+                self.assertTrue(bridge.import_received_stage(completion, marker, 'DF_CALIBRATION'))
+                restore.assert_called_once_with(outcome, request)
+            self.assertEqual(C.read(root/'DF_CALIBRATION.RETURN.json')['job_id'],'original')
+
     def test_df_freeze_receipt_with_only_input_copies_is_not_adopted(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

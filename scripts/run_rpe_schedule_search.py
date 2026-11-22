@@ -1286,6 +1286,7 @@ class WidthDriver:
                 self.log(event='CANDIDATE_INPUTS_END',family=p['family'],kappa=p['kappa'],status=record['status'],
                     reason=record.get('reason'),wall_seconds=time.monotonic()-started)
                 p['completion']=dict(status=record['status'],key=record.get('key'),reason=record.get('reason'),
+                                     configuration_id=record.get('configuration_id'),
                                      signal_plan=record.get('signal_plan'),price_plan=record.get('price_plan',record.get('price_quote')),
                                      calibration_requests=record.get('calibration_requests'),readiness=record.get('readiness'),
                                      rounds=record.get('rounds'))
@@ -1293,6 +1294,8 @@ class WidthDriver:
                     p['completion']['conflicting_signal_rounds']=record['conflicting_signal_rounds']
                 if record.get('price_actions'):
                     p['completion']['price_actions']=record['price_actions']
+                if record.get('preparation_recovery'):
+                    p['completion']['preparation_recovery']=record['preparation_recovery']
                 if record['status']=='READY_FOR_SEARCH':
                     try:self.check_completed_configuration(p,record)
                     except (ValueError,KeyError,TypeError) as exc:
@@ -2173,6 +2176,9 @@ class WidthDriver:
                 if any(row.get('status') in ('PRICE_RECHECK_AVAILABLE', 'PRICE_OWNER_WAITING')
                        for row in pf_records):
                     waits.append('PF_PRICE_RECHECK')
+                if ('PR_DF' in self.methods and auto_recheck and
+                        getattr(self.completion_api(), 'df_price_waiting_for_owner', lambda: False)()):
+                    waits.append('DF_PRICE_ORIGINAL_ATTEMPT')
                 if unresolved or any(h.get('status') == 'IN_PROGRESS' for r in result.values()
                                      for h in r.get('held', ())):
                     waits.append('OWNED_ATTEMPT')

@@ -343,6 +343,14 @@ def df_price_disposition(config, quote, runner):
     scoped = {axis for axis, row in rows.items()
               if row.get('unit_price_RZ') is None and (row.get('needs') or {}).get('entry_ids')}
     actions = {(r['m'], r['axis']): r for r in plan['round_actions']}
+    for index, action in actions.items():
+        row = rows[index]
+        needs = row.get('needs') or {}
+        action['physical_id'] = row['physical_id']
+        if row.get('source'):
+            action['source'] = row['source']
+        if needs:
+            action['quote_needs'] = needs
     groups = []
     for group in plan['groups']:
         pending = {(r['m'], r['axis']) for r in group['axis_keys']}
@@ -354,11 +362,17 @@ def df_price_disposition(config, quote, runner):
             axes = [axis for axis in ('X', 'Y') if (m, axis) in pending]
             companion = [axis for axis in ('X', 'Y') if axis not in axes]
             design = runner.design(config, [m])
-            if any(rows[m, axis].get('needs', {}).get('source_kind') == 'DIRECT_RECEIPTS'
-                   for axis in axes):
-                reasons = ['MULTIPLE_ADMITTED_DIRECT_COHORTS_REQUIRE_SOURCE_SELECTION']
-            else:
-                reasons = design['reasons']
+            direct_conflicts = [axis for axis in axes if
+                                (rows[m, axis].get('needs') or {}).get('source_kind') == 'DIRECT_RECEIPTS']
+            reasons = design['reasons']
+            if direct_conflicts:
+                # This provider finalizes X/Y from the same finite cohort.
+                # An ambiguous direct axis cannot be used as a frozen companion.
+                for axis in axes:
+                    reason = ('MULTIPLE_ADMITTED_DIRECT_COHORTS_REQUIRE_SOURCE_SELECTION'
+                              if axis in direct_conflicts else 'DIRECT_PAIR_REQUIRES_RESOLVED_COMPANION')
+                    actions[m, axis].update(action='NO_SAFE_PRICE_ACTION', group_id=None, reasons=[reason])
+                continue
             if reasons:
                 for axis in axes:
                     actions[m, axis].update(action='NO_SAFE_PRICE_ACTION', group_id=None, reasons=reasons)

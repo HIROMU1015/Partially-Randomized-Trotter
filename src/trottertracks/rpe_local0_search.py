@@ -483,6 +483,8 @@ def local0_progress(applied, spec, run=None):
     width_state = run/'KAPPA_STATE.json'
     if width_state.is_file():
         state = load(width_state)
+        if state.get('recovery_wait'):
+            progress['recovery_wait'] = state['recovery_wait']
         pending = {'UNSUPPORTED_MAPPER': 'UNSUPPORTED_GENERATION', 'WAITING_INPUTS': 'PREPARATION_WAITING',
                    'NEEDS_FAMILY_CONFIGURATION_SOURCE': 'MISSING_FIXED_INPUT', 'HELD': 'TECHNICAL_FAILURE',
                    'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE', 'PRICE_NOT_EVALUATED': 'NOT_EVALUATED'}
@@ -491,14 +493,17 @@ def local0_progress(applied, spec, run=None):
                 observations[key] = dict(candidate_id=key, method=point['method'],
                                          state=pending[point['status']], reason=point.get('reason'))
         for point in state.get('points', []):
-            key = point.get('configuration_id') or point.get('family')
+            completion = point.get('completion') or {}
+            key = (point.get('configuration_id') or completion.get('configuration_id')
+                   or completion.get('key') or point.get('family'))
             status = pending.get(point.get('status'))
             if point.get('status') == 'EVALUATED' and point.get('saved_point_ids'):
                 status = 'REUSED_SAVED_RESULT'
             if key and status:
                 observations[key] = dict(candidate_id=key, method=point['method'], state=status, reason=point.get('reason'))
-                if (actions := point.get('completion', {}).get('price_actions')):
-                    observations[key]['price_actions'] = actions
+                for field in ('price_actions', 'preparation_recovery', 'conflicting_signal_rounds'):
+                    if (detail := completion.get(field)):
+                        observations[key][field] = detail
     pf_status = run/'PF_PREPARATION_STATUS.json'
     if pf_status.is_file():
         pending = {'PREPARATION_WAITING': 'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE': 'TECHNICAL_FAILURE',
@@ -511,6 +516,8 @@ def local0_progress(applied, spec, run=None):
                                          reason=record.get('reason'), differing_fields=record.get('differing_fields'))
                 if record.get('price_axis_actions'):
                     observations[key]['price_actions'] = record['price_axis_actions']
+                if record.get('preparation_recovery'):
+                    observations[key]['preparation_recovery'] = record['preparation_recovery']
     database = run/'distributed/QUEUE.sqlite3'
     if not database.exists():
         progress['candidates'] = list(observations.values())
@@ -587,6 +594,10 @@ def local0_progress(applied, spec, run=None):
                                                      reason=metadata.get('reason'), stage=stage))
         for (candidate, stage), (_, row) in identified.items():
             if stage == 'q3' or candidate not in observations:
+                previous = observations.get(candidate, {})
+                for field in ('price_actions', 'preparation_recovery', 'conflicting_signal_rounds'):
+                    if field in previous:
+                        row[field] = previous[field]
                 observations[candidate] = row
         progress['stages'] = list(stages.values())
     except (sqlite3.Error, OSError, ValueError) as error:
