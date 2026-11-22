@@ -673,7 +673,7 @@ class Completion:
         metadata_entry = globals().get('FIXED_RUN_PR_PRICE_SERVICE')
         terminal_request = (request.get('terminal_reference') is not None
                             or (mode in ('df-generate','intake') and request.get('M') == 13))
-        if metadata_entry and (mode == 'df-price-design' or terminal_request):
+        if metadata_entry and (mode in ('df-plan', 'df-price-design') or terminal_request):
             command = [python, '-B', '-c',
                        'import runpy,sys\n'
                        'root,entry=sys.argv[1:3]\n'
@@ -1035,7 +1035,8 @@ class Completion:
                 config,prepared=self.pauli_configuration(pauli_request,d)
             elif rec.get('deferred_configuration'):
                 config,prepared=value(rec['deferred_configuration']),None
-                descriptor=rec.get('deferred_tail_descriptor') or self.saved_df_descriptor(request)
+                descriptor=rec.get('deferred_tail_descriptor') or self.saved_df_descriptor(
+                    dict(request, configuration=rec['deferred_configuration']))
                 if descriptor:request['tail_descriptor']=descriptor
             else:
                 saved_descriptor=self.saved_df_descriptor(request)
