@@ -37,10 +37,12 @@ No signal, price, compile or Q3 is computed here.  Costs are each candidate's ow
 saved unit prices times the integer shots, validated against C's saved totals.
 """
 import ast
+from collections import deque
 from copy import deepcopy
 from fractions import Fraction
 from functools import lru_cache
 import hashlib
+from itertools import islice
 import json
 import math
 import os
@@ -1592,6 +1594,14 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             refresh_ready = None
             history_pool = None
             ready_history = []
+            initial_batches = deque()
+            remaining = iter(initial_ready)
+            size = 1
+            while batch := list(islice(remaining, size)):
+                initial_batches.append(batch)
+                # Limit how long a new READY notice must wait for a batch
+                # already in progress. All initial candidates still run.
+                size = min(size * 2, 8)
             if ready_source is not None:
                 pending_ready, take_ready = ready_source.subscribe(name, context, base_candidates, ex)
 
@@ -1612,7 +1622,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     return added, saved
 
                 def ready_pending():
-                    return ready_history[0].done() if ready_history else pending_ready()
+                    return ready_history[0].done() if ready_history else bool(initial_batches) or pending_ready()
 
                 def wake_selector(_):
                     with ex.state.cv:
@@ -1621,7 +1631,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 def stage_history(added, saved_snapshot=None, *, initial_batch=False):
                     view = ex.for_method(name)
                     view.routes, view.expected = dict(ex.routes), dict(ex.expected)
-                    offset, size = 0, 1
+                    offset, size = 0, len(added) if initial_batch else 1
                     while offset < len(added):
                         batch = added[offset:offset + size]
                         future = history_pool.submit(validate_ready, view, batch, saved_snapshot, initial_batch)
@@ -1632,7 +1642,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
 
                 def await_ready():
                     if not ready_history:
-                        return False
+                        return bool(initial_batches) or (stream_initial and pending_ready())
                     # A failing validation propagates through the normal
                     # selector fault handling. Nothing is dispatched for it.
                     ready_history[0].result()
@@ -1645,9 +1655,13 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                         if not ready_history[0].done():
                             return [], {}
                         added, saved = ready_history.pop(0).result()
+                        if initial_batches and not ready_history and not pending_ready():
+                            stage_history(initial_batches.popleft(), initial_batch=True)
                     else:
                         added, saved_snapshot = take_ready()
                         if not added:
+                            if initial_batches:
+                                stage_history(initial_batches.popleft(), initial_batch=True)
                             return [], {}
                         if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                             added = scaled.horizon_candidates(added, problem, policy, ex, context.get('catalog'))
@@ -1708,8 +1722,6 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     method_scope = dict(method_scope, L_D_values=range(domain['min'], upper + 1))
                 with (ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-ready-history')
                       if parallel_history else nullcontext()) as history_pool:
-                    if initial_ready:
-                        stage_history(initial_ready, initial_batch=True)
                     result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
                                         spent=spent, free=free, science_approved=science_approved,
                                         method_scope=method_scope, refresh_ready=refresh_ready, submit_standby=submit_standby,

@@ -271,6 +271,52 @@ class ScaleTests(unittest.TestCase):
     def test_first_series_runs_while_other_initial_history_is_being_checked(self):
         self._check_active_series_during_history(initial=True)
 
+    def test_late_candidate_history_runs_before_waiting_initial_batches(self):
+        from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, optimize
+
+        method = 'FULL_PF'
+        problem, context, routes = fixture([method], configurations=3)
+        problem['rpe'] = {'M': 0}
+        problem['search'].update(rule=S.RULE, work_conserving_search=True, scaled_shots=dict(
+            M=[0], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
+        context['saved'].table.clear()
+        context['tau'] = TAU
+        first, tail, late = context['candidates']
+        for candidate in (first, tail, late):
+            candidate['prices'] = [F(1), F(1)]
+        context['candidates'] = [first, tail]
+        notifications, verified = [], []
+
+        def take():
+            pending = list(notifications)
+            notifications.clear()
+            return pending, None
+
+        def prior(view, candidates):
+            known = {}
+            for candidate in candidates:
+                cid = candidate['configuration_id']
+                verified.append(cid)
+                if cid == first['configuration_id']:
+                    notifications.append(late)
+                known[cid, (11, 11)] = dict(status=O.PASS, MSE_lower=TAU/2, MSE_upper=TAU/2,
+                                             source='PRIOR_ROUND_JOB', allocation_rule=S.RULE)
+            return known, []
+
+        ready_source = SimpleNamespace(subscribe=lambda *args: (lambda: bool(notifications), take),
+                                       has_new=lambda _: False)
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            executor = ConcurrentExecutor(ROOT, run, routes, {}, problem, budgets={method: None},
+                                          science_approved=True, prior_run_dirs=[run])
+            executor.optimizer_history_directory = run/'history'
+            with patch.object(ConcurrentExecutor, 'prior_records', prior):
+                result = optimize(ROOT, problem, context=context, executor=executor, methods=[method],
+                                  max_new={method: 'UNLIMITED'}, ready_source=ready_source)
+            self.assertEqual(verified, [c['configuration_id'] for c in (first, late, tail)])
+            self.assertEqual(result[method]['evaluated_count'], 3)
+            self.assertFalse(list(run.glob('jobs/*/*/LAUNCH.json')))
+
     def _check_active_series_during_history(self, *, initial):
         from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, optimize
 
