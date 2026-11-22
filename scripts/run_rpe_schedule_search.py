@@ -26,7 +26,7 @@ import argparse
 from contextlib import contextmanager
 from copy import deepcopy
 from fractions import Fraction
-from functools import wraps
+from functools import lru_cache, wraps
 import hashlib
 import json
 import os
@@ -48,8 +48,20 @@ if hasattr(sys, 'set_int_max_str_digits'):
     sys.set_int_max_str_digits(0)
 
 
+@lru_cache(maxsize=256)
+def read_fixed_document(commit, path):
+    return json.loads(subprocess.check_output(
+        ['git', 'show', commit + ':' + path], cwd=ROOT, stderr=subprocess.PIPE))
+
+
 def read_loc(loc):
-    x = json.loads(subprocess.check_output(['git', 'show', loc['commit'] + ':' + loc['path']], cwd=ROOT))
+    import re
+
+    commit, path = loc['commit'], loc['path']
+    if re.fullmatch('[a-f0-9]{40}|[a-f0-9]{64}', commit):
+        x = deepcopy(read_fixed_document(commit, path))
+    else:
+        x = json.loads(subprocess.check_output(['git', 'show', commit + ':' + path], cwd=ROOT))
     for k in loc.get('selector', []):
         x = x[k]
     return x
@@ -396,6 +408,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if not isinstance(receipts, dict):
             raise ValueError('Recovered PF receipts must map physical IDs to guarded locators')
         spec['pf_completion']['recovered_price_receipts_by_physical_id'] = receipts
+    if 'pf_stage_audit_recoveries' in trial:
+        selection = trial['pf_stage_audit_recoveries']
+        raw = Path(selection['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != selection['sha256']:
+            raise ValueError('Recovered PF audit package changed')
+        distributed['preparation']['pf_stage_audit_recoveries'] = json.loads(raw)
     if 'horizon_preparation_catalog' in trial:
         catalog = trial['horizon_preparation_catalog']
         raw = Path(catalog['path']).read_bytes()
@@ -1470,6 +1488,7 @@ class WidthDriver:
         pf_snapshot = None
         pf_revision = 0
         pf_observed = {method: 0 for method in self.methods}
+        pf_ready_by_method = {}
         state = executor.state
         condition = state.cv
 
@@ -1496,7 +1515,14 @@ class WidthDriver:
 
         def announce_pf(context, routes):
             nonlocal pf_snapshot, pf_revision
+            ready = {method: {row['configuration_id']: row for row in context['candidates']
+                              if row['method'] == method and row.get('ready')}
+                     for method in PF_METHODS.intersection(self.methods)}
             with condition:
+                if ready == pf_ready_by_method:
+                    return
+                pf_ready_by_method.clear()
+                pf_ready_by_method.update(ready)
                 pf_snapshot = (context, routes)
                 pf_revision += 1
                 condition.notify_all()
@@ -1642,12 +1668,12 @@ class WidthDriver:
             runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
             if runtime is not None:comp.bind_stage_executor(runtime)
             if runtime is not None and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
-                from trottertracks.rpe_preparation_queue import submit_registered_horizons
+                from trottertracks.rpe_preparation_queue import save_horizon_preparation, submit_registered_horizons
                 from trottertracks.rpe_scaled_shots import settings as scaled_settings
                 early = submit_registered_horizons(runtime, context['candidates'],
                     scaled_settings(search['scaled_shots']), problem['rpe']['M'])
                 if early:
-                    K.CLI.write(self.run/'HORIZON_PREPARATION.json', early)
+                    save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', early, runtime.executor.store)
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
                 prepare_during = executor.replay_prior_q3() and prepare_during
             interim=None
@@ -1782,12 +1808,12 @@ class WidthDriver:
                     result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
                         active_spec,self.run,comp,executor,result,optimizer=optimize)
             if runtime is not None and not any(r['stop_reason'] in fatal for r in result.values()):
-                from trottertracks.rpe_preparation_queue import submit_horizon_preparation
+                from trottertracks.rpe_preparation_queue import save_horizon_preparation, submit_horizon_preparation
                 requests = [req for r in result.values() for req in r.get('input_requests', [])
                             if req['kind'] == 'HORIZON_INPUTS_MISSING']
-                if requests:
+                if requests or (self.run/'HORIZON_PREPARATION.json').is_file():
                     reports = submit_horizon_preparation(runtime, requests)
-                    K.CLI.write(self.run/'HORIZON_PREPARATION.json', reports)
+                    save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', reports, runtime.executor.store)
         except BaseException as error:
             if preparation_pool is not None:stop_preparing()
             O.record_runtime_error(self.run,error,'WIDTH_BATCH')

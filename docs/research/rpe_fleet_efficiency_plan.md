@@ -405,3 +405,11 @@ PBSでは価格compile 1件の失敗結果も受領した。固定Gitコミッ�
 公開用の巨大な結果JSONは厳密な数値を再変換せず空白を省き、Cの単体HTMLは埋め込みデータを可逆圧縮する。2 runの公開を復旧し、Cの探索マップを更新した。公開版はチェックポイント時点の情報で、その後の採用数は中央台帳で確認する。[公開スナップショット](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/8e398c582512bb7906ee3dea08b8e998fd2c7a50)・[Cの同期版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/802c7bacb47586045892eb8f63eee9b3f14730b4)
 
 Windowsの通常Syncで大きい応答が停止した。同じSSH接続でSFTPを使うと公開HTML 53,432,959バイトの転送が5.45秒で終わった。observerは公開commitの各Git blobとSHA-256を返し、Windowsは変更された閲覧ファイルだけをSFTPで受け取り、全件の照合後に従来のトランザクションで設置する。照合失敗時に旧ファイルが残ることを人工入力で確認した。実際のOneDrive閲覧先のHTML・INDEX.json・同期receiptもCの `802c7bacb4` と一致した。[実閲覧ファイルの照合値](rpe_fleet_efficiency_20261122/DF_RECOVERY.json)
+
+### 監査で中断したPF・B0I準備の再開
+
+原compileが成功し、その監査がworkerのGit展開または事前照合で終了した7候補を照合した。原compileの確定結果・物理ID・測定軸を既存のC実装ガードで検査し、58軸が通過した。同じrunのResumeは、その7件に限り、保存した監査結果を元のcompileの依存関係へ結び付ける。元の監査attemptは台帳に残る。別の入力を渡した反例7件は拒否し、保存成果での検査中に新規予約は作らなかった。
+
+終端ラウンドの準備台帳は、探索の前後で見つかった候補を併合して、受付・回収・採用の進捗を表示する。価格providerが未登録の場合はX/Yそれぞれの不足を記録する。PFの通過候補に変化がない通知と、同じ固定Git文書の再読込みも減らした。
+
+PR-DF LD6・2nd・κ=1・幅2hには、複数適用や外挿に関する既存の価格ガードが残る。保存quoteを構成した所有元と現在の登録モデルを照合したうえで、価格を採用できる範囲の証拠が必要となる。今回回収した58軸はPF・B0Iの原compileである。終端 (m=13) のX/Y価格と混用しない。

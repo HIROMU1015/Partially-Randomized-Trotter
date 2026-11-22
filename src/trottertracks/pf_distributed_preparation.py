@@ -308,6 +308,11 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             cmd=[spec['pf_completion'].get('interpreter',sys.executable),'-B',
                 str(Path(root)/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
                 '--input',str(stage_in),'--output',str(stage_out)]
+            recovered_audit = getattr(runtime, 'recovered_audit', None)
+            if phase == 'audit' and recovered_audit is not None:
+                result = recovered_audit(folder, tag, stage_input, fields['compiled'])
+                if result is not None:
+                    return result
             return runtime.call(context,cmd,folder,tag,stage_out,science=True)
         def compile_stage(tag, cohort, cells):
             options = {}

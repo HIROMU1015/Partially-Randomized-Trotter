@@ -322,6 +322,8 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         self.assertEqual(original['saved'].table, {})
         self.assertFalse(ready.has_new(method))
         self.assertEqual(take(), ([], None))
+        ready.announce_pf(dict(snapshot, candidates=[dict(pf)]), {})
+        self.assertFalse(ready.has_new(method))
         newer = dict(pf, configuration_id='pf-next')
         ready.announce_pf(dict(snapshot, candidates=[pf, newer], expected={cid: cid, 'pf-next': 'pf-next'}), {})
         self.assertTrue(pending())

@@ -86,6 +86,25 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(set(report['jobs']['13']), {'signal'})
         self.assertEqual(executor.store.preparation_reservations(), {'signal': 1})
 
+    def test_horizon_ledger_preserves_rows_and_reports_actual_queue_progress(self):
+        from trottertracks.rpe_preparation_queue import save_horizon_preparation
+
+        executor = self.executor(capacity=1)
+        job_id = self.submit(executor, 'signal', 'terminal')
+        output = self.run / 'HORIZON_PREPARATION.json'
+        first = dict(source_configuration_id='first', M=13, jobs={'13': {'signal': job_id}})
+        second = dict(source_configuration_id='other', M=13, jobs={})
+        save_horizon_preparation(output, [first], executor.store)
+        assignment, = self.poll_host(executor,'server1')['assignments']
+        executor.rpc('/v1/complete', self.prep_complete(executor, assignment))
+        save_horizon_preparation(output, [second], executor.store)
+        records = {row['source_configuration_id']: row for row in json.loads(output.read_bytes())}
+        self.assertEqual(set(records), {'first','other'})
+        progress = records['first']['job_progress']['13']['signal']
+        self.assertEqual(progress['state'], 'ACCEPTED')
+        self.assertEqual(progress['outcome_status'], 'PREPARATION_COMPLETE')
+        self.assertFalse(progress['adopted'])
+
     def test_shared_q3_and_preparation_slot_cannot_be_claimed_twice(self):
         ex=self.executor(capacity=1)
         prep=self.submit(ex,'compile','cell')

@@ -488,8 +488,53 @@ class DistributedPreparationBridge:
 
     @staticmethod
     def _dependencies(directory, stage):
-        paths = (directory/(name+'.DISTRIBUTED.json') for name in DEPENDENCIES.get(stage, ()))
-        return [read(path)['job_id'] for path in paths if path.exists()]
+        jobs = []
+        for name in DEPENDENCIES.get(stage, ()):
+            marker = directory/(name+'.DISTRIBUTED.json')
+            recovered = directory/(name+'.RECOVERED_AUDIT.json')
+            if recovered.is_file():
+                jobs.append(read(recovered)['compile_job'])
+            elif marker.is_file():
+                jobs.append(read(marker)['job_id'])
+        return list(dict.fromkeys(jobs))
+
+    def recovered_audit(self, directory, stage, stage_input, compiled):
+        """Consume C-checked raw compiler output while preserving the failed audit."""
+        from .rpe_q3_coordinator import digest
+        from .rpe_release_registry import write
+        from .pr_candidate_completion import Held
+
+        marker = directory/(stage+'.DISTRIBUTED.json')
+        if stage not in ('PF_AUDIT', 'PF_HOLDOUT_AUDIT') or not marker.is_file():
+            return None
+        job_id = read(marker)['job_id']
+        recovery = self.settings.get('pf_stage_audit_recoveries', {}).get(job_id)
+        if not recovery:
+            return None
+        original = self.recovery_evidence(directory, stage, job_id)
+        owner = self.executor.store.row(job_id)
+        compile_job = recovery['compile_job']
+        compile_stage = 'PF_COMPILE' if stage == 'PF_AUDIT' else 'PF_HOLDOUT_COMPILE'
+        producer = self.recovery_evidence(directory, compile_stage, compile_job)
+        if (original.get('attempt_id') != recovery['audit_attempt']
+                or original['action'] not in ('PRESERVE_FAILED_ATTEMPT', 'RECOVER_ORIGINAL_ATTEMPT')
+                or (original['state'] == 'UNKNOWN' and
+                    (owner['started_epoch'] is not None or owner['detail'].get('resource_released') is not True))
+                or owner['request']['preparation']['dependencies'] != [compile_job]
+                or digest(stage_input) != recovery['input_sha256']
+                or compiled != recovery['compiled']
+                or producer['action'] != 'IMPORT_SUCCESSFUL_STAGE'
+                or producer['attempt_id'] != recovery['compile_attempt']):
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':AUDIT_RECOVERY')
+        result = recovery['result']
+        # C verified all returned raw axes; retain the original raw path
+        # and receipt lineage when the successor bundles these prices.
+        for price in result['prices']:
+            loc = price['price_evidence']['source']
+            if loc['path'] != compiled['relative']+'/PRICES.json':
+                raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':RAW_PRICE_LOCATOR')
+        write(directory/(stage+'.RECOVERED_AUDIT.json'), recovery)
+        return result
 
     def recovery_evidence(self, directory, stage, job_id):
         """Classify an exact owned attempt without starting or mutating it."""

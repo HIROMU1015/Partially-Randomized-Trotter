@@ -148,3 +148,34 @@ def submit_horizon_preparation(runtime, requests):
             report.update(status='HORIZON_PREPARATION_PARTIAL' if report['jobs'] else
                           'HORIZON_PROVIDER_CONTRACT_HOLD', incomplete=incomplete)
     return reports
+
+
+def save_horizon_preparation(path, reports, store):
+    """Keep discoveries from both the early and final optimizer passes."""
+    import json
+    from .rpe_release_registry import write
+
+    previous = json.loads(path.read_bytes()) if path.is_file() else []
+    rows = {(row['source_configuration_id'], row['M']): row for row in previous}
+    rows.update(((row['source_configuration_id'], row['M']), row) for row in reports)
+    for row in rows.values():
+        progress = {}
+        for round_number, roles in row['jobs'].items():
+            progress[round_number] = {}
+            for role, job_id in roles.items():
+                job = store.row(job_id)
+                if job is None:
+                    progress[round_number][role] = {'state': 'NOT_RESERVED'}
+                    continue
+                status = job['detail'].get('outcome_status')
+                if status is None and job['state'] == 'ACCEPTED':
+                    outcome_path = path.parent/'jobs'/job['method']/job_id/'OUTCOME.json'
+                    if outcome_path.is_file():
+                        outcome = json.loads(outcome_path.read_bytes())
+                        if outcome.get('request_sha256') == job['request_sha256']:
+                            status = outcome.get('status')
+                progress[round_number][role] = dict(
+                    state=job['state'], host_id=job['host_id'], attempt_id=job['attempt_id'],
+                    outcome_status=status, adopted=job['adopted_epoch'] is not None)
+        row['job_progress'] = progress
+    write(path, list(rows.values()))

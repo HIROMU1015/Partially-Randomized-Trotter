@@ -361,7 +361,7 @@ def reconcile_received_preparation(run, records, stage_executor):
         return
     for cid, row in records.items():
         reason = row.get('reason') or ''
-        if (row['status'] != 'PREPARATION_INCOMPLETE' or row.get('configurations')
+        if (row['status'] not in ('PREPARATION_INCOMPLETE', 'PREPARATION_WAITING') or row.get('configurations')
                 or reason.startswith('PREPARATION_RESULT_MISMATCH:')):
             continue
         base = run/row.get('price_recheck_directory', (
@@ -371,6 +371,11 @@ def reconcile_received_preparation(run, records, stage_executor):
         inspect = getattr(stage_executor, 'hold_evidence', None)
         if inspect is not None and (evidence := inspect(folder, reason)) is not None:
             row['preparation_recovery'] = evidence
+            recoveries = getattr(stage_executor, 'settings', {}).get('pf_stage_audit_recoveries', {})
+            if (evidence['job_id'] in recoveries and
+                    evidence.get('attempt_id') == recoveries[evidence['job_id']]['audit_attempt']):
+                row.update(status='PREPARATION_WAITING', previous_preparation_hold=reason)
+                continue
             if (reason.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:')
                     and evidence['action'] == 'PRESERVE_FAILED_ATTEMPT'):
                 stage = reason.split(':', 2)[1]
@@ -482,7 +487,10 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         newly_ready = False
         for candidate in context['candidates']:
             record = records.get(candidate['configuration_id'])
-            if candidate['ready'] and record and record['status'] in PRICE_RECHECK_STATES:
+            if (candidate['ready'] and record and record['status'] in
+                    PRICE_RECHECK_STATES | {'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE'}):
+                if record.get('reason'):
+                    record.setdefault('previous_preparation_hold', record['reason'])
                 record.update(status='READY_RETURNED_TO_SAME_OPTIMIZER', reason=None)
                 record.pop('price_reconciliation', None)
                 newly_ready = True
