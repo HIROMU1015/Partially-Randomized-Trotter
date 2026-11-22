@@ -158,8 +158,19 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
         from tempfile import TemporaryDirectory
         write(payload, parent_locs)
         base.mkdir(parents=True, exist_ok=True)
+        # Planning only reads Git and the saved parent. The worker resolves
+        # execution Python from its profile; older PF launchers only accept
+        # their original science entries and cannot run this planner.
+        planner = [sys.executable, *args[1:]]
+        if source := runtime.settings.get('horizon_transport_source'):
+            planner.extend(('--caller-source', source))
         with TemporaryDirectory(dir=base) as scratch:
-            subprocess.run([*args,'--output',scratch,'--mode','plan'],check=True,capture_output=True)
+            completed = subprocess.run([*planner,'--output',scratch,'--mode','plan'],
+                                       capture_output=True, text=True)
+            if completed.returncode:
+                errors = completed.stderr.strip().splitlines()
+                reason = errors[-1] if errors else f'exit {completed.returncode}'
+                raise ValueError('Terminal PF planning failed: ' + reason)
             write(plan_file, read(Path(scratch)/'PLAN.json'))
     planned = read(plan_file)
     if planned['parent'] != parent_locs or planned['requested_rounds'] != [13]:
