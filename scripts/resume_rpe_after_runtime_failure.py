@@ -38,7 +38,6 @@ def resume(central, selection_file, previous_file, instruction):
 
     def current_binding():
         if ((run/'STOP_REQUESTED.json').exists() or (run/'SEARCH_TERMINATION.json').exists()
-                or load(state/'CURRENT_TARGET.json')['run_id'] != run_id
                 or load(run/'LAUNCH.json')['invocation_id'] != invocation):
             return None
         config = load(service)
