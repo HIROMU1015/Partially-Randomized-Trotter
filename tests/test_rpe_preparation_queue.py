@@ -487,6 +487,29 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(landed, ['b', 'a'])
         self.assertEqual(sum(row['event'] == 'ASSIGN' for row in executor.store.events()), 2)
 
+    def test_preparation_completion_watch_waits_for_publication_and_handles_lost_owner(self):
+        from time import time
+        from unittest.mock import patch
+
+        executor = self.executor(capacity=2)
+        completed = self.submit(executor, 'signal', 'accepted-not-yet-visible')
+        lost = self.submit(executor, 'signal', 'contact-lost')
+        assignments = {a['job_id']: a for a in self.poll_host(executor, 'server1', 2)['assignments']}
+        payload = self.prep_complete(executor, assignments[completed])
+        with patch.object(executor, '_publish_transfer', side_effect=OSError('fixture publish interruption')):
+            with self.assertRaises(OSError):
+                executor.rpc('/v1/complete', payload)
+        watched = {completed: (), lost: ()}
+        self.assertEqual(executor.ready_preparations(watched, wait=False, stop_requested=lambda: False), [])
+        self.assertIsNone(executor.preparation_result(completed, adopt=False))
+
+        executor.rpc('/v1/complete', payload)
+        with patch('trottertracks.rpe_optimizer_concurrent.time.time', return_value=time()+600):
+            executor._check_worker_contact()
+        self.assertCountEqual(executor.ready_preparations(watched, wait=False, stop_requested=lambda: False), watched)
+        self.assertEqual(executor.preparation_result(lost, adopt=False)['status'], 'UNKNOWN')
+        self.assertEqual(executor.store.row(lost)['attempt_id'], assignments[lost]['attempt_id'])
+
 
 # Base fixture's existing tests already have their own coverage; inherited
 # methods here would rerun them needlessly.

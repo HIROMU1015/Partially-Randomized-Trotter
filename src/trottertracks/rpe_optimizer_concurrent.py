@@ -2226,13 +2226,18 @@ class DistributedExecutor(ConcurrentExecutor):
                             if eligibility is None:  # Artificial queues may have no readiness policy.
                                 can_progress = True
                             else:
-                                targets = self._preparation_probe_targets()
                                 policy, error = self._host_admission_policy()
-                                manager = self.pbs_manager
-                                can_progress |= any(host in targets or (
-                                    manager is not None and host in manager.configured
-                                    and self._host_admission(host, policy, error)['accepting'])
-                                    for host in eligibility)
+                                age = time.time() - row['enqueued_epoch']
+                                for host in eligibility:
+                                    admission = self._host_admission(host, policy, error)
+                                    offer = self.hosts.get(host, {})
+                                    if (not admission['accepting'] or admission['max_slots'] == 0
+                                            or offer.get('accepting_new_jobs') is False):
+                                        continue
+                                    if (self._offer_fresh(host) and self._fits_host_walltime(host, row['request'])
+                                            or not offer and age < self.allocation_config['offer_ttl_seconds']):
+                                        can_progress = True
+                                        break
                     elif state not in (None, 'CANCELLED'):
                         can_progress = True
                     if state not in (None, 'CANCELLED'):

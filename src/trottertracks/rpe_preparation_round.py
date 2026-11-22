@@ -172,34 +172,37 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
         pf_future=pool.submit(prepare_pf_inputs, snapshot_context(context), deepcopy(routes))
         pr_future=(pool.submit(prepare_pr_inputs, snapshot_context(context), deepcopy(routes))
                    if completion is not None else None)
-        pending={pf_future}|({pr_future}if pr_future is not None else set())
-        while True:
-            if pf_future.done()and not pf_merged:
-                after,after_routes,pf_status=pf_future.result()
-                context,routes=_merge_pf(context,after,routes,after_routes,methods);pf_merged=True
-            entries = {}
+        try:
+            pending={pf_future}|({pr_future}if pr_future is not None else set())
             while True:
-                try:
-                    cid, entry = pf_arrivals.get_nowait()
-                except Empty:
-                    break
-                entries[cid] = entry
-            if entries and not pf_merged:
-                after, after_routes = with_terminal_candidates(snapshot_context(context), deepcopy(routes), entries)
-                context, routes = _merge_pf(context, after, routes, after_routes, methods)
+                if pf_future.done()and not pf_merged:
+                    after,after_routes,pf_status=pf_future.result()
+                    context,routes=_merge_pf(context,after,routes,after_routes,methods);pf_merged=True
+                entries = {}
+                while True:
+                    try:
+                        cid, entry = pf_arrivals.get_nowait()
+                    except Empty:
+                        break
+                    entries[cid] = entry
+                if entries and not pf_merged:
+                    after, after_routes = with_terminal_candidates(snapshot_context(context), deepcopy(routes), entries)
+                    context, routes = _merge_pf(context, after, routes, after_routes, methods)
+                install_pr()
+                search_ready(any(not future.done()for future in pending))
+                pending={future for future in pending if not future.done()}
+                if not pending:break
+                # Completed futures are inspected without waiting for unrelated
+                # producers. The pool still drains all work on fatal/exception.
+                done,_=wait(pending,timeout=.03,return_when=FIRST_COMPLETED)
+                for future in done:future.result()
+            if pr_future is not None:pr_future.result()
+            if not pf_merged:
+                after,after_routes,pf_status=pf_future.result()
+                context,routes=_merge_pf(context,after,routes,after_routes,methods)
             install_pr()
-            search_ready(any(not future.done()for future in pending))
-            pending={future for future in pending if not future.done()}
-            if not pending:break
-            # Completed futures are inspected without waiting for unrelated
-            # producers. The pool still drains all work on fatal/exception.
-            done,_=wait(pending,timeout=.03,return_when=FIRST_COMPLETED)
-            for future in done:future.result()
-        if pr_future is not None:pr_future.result()
-        if not pf_merged:
-            after,after_routes,pf_status=pf_future.result()
-            context,routes=_merge_pf(context,after,routes,after_routes,methods)
-        install_pr()
-        search_ready(False)
+            search_ready(False)
+        finally:
+            stop.set()
     executor.routes=routes;executor.expected=context['expected']
     return context,routes,pf_status,completion,early_result or None

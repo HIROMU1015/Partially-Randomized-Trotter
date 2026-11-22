@@ -121,6 +121,43 @@ class PreparationRoundTests(unittest.TestCase):
         self.assertIn('late',{c['configuration_id']for c in got['candidates']})
         self.assertEqual(early['FULL_PF']['stop_reason'],'UNKNOWN_RESULT')
 
+    def test_producer_error_stops_other_producers_waiting_for_results(self):
+        from trottertracks import pr_df_horizon_preparation as horizons
+
+        context, spec, problem, executor = self.inputs()
+        problem['problem'] = {'system': 'H4'}
+        spec['search_overrides'] = dict(rule='RPE_SCALED_SHOTS_V1',
+            scaled_shots=dict(M=[13], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
+        started = threading.Event()
+        stopped = threading.Event()
+
+        def pr_prepare(root, problem, context, spec, run, *, completion, stage_executor):
+            return context, problem['execution_routes'], completion
+
+        def follow(root, runtime, completion, candidates, policy, priors, stop_requested):
+            started.set()
+            deadline = time.monotonic() + 3
+            while not stop_requested() and time.monotonic() < deadline:
+                time.sleep(.01)
+            if stop_requested():
+                stopped.set()
+
+        def pf_prepare(*args, **kwargs):
+            if not started.wait(3):
+                raise AssertionError('fixture did not start watching')
+            raise ValueError('ARTIFICIAL PF preparation failed')
+
+        def optimize(root, problem, **kwargs):
+            return {m: {'stop_reason': 'ARTIFICIAL_ROUND', 'new_calls': 0} for m in kwargs['methods']}
+
+        with tempfile.TemporaryDirectory() as tmp, patch.object(PR, 'Completion', Completion), \
+                patch.object(PF, 'prepare', pf_prepare), patch.object(PR, 'prepare_for_search', pr_prepare), \
+                patch.object(horizons, 'prepare', follow):
+            with self.assertRaisesRegex(ValueError, 'ARTIFICIAL PF preparation failed'):
+                R.prepare_inputs(ROOT, problem, context, spec, tmp, {m: [] for m in METHODS},
+                                 executor, optimize, object(), [])
+        self.assertTrue(stopped.is_set())
+
     def test_runtime_is_required_and_no_local_fallback_is_invoked(self):
         context,spec,problem,executor=self.inputs()
         with tempfile.TemporaryDirectory()as tmp,patch.object(PF,'prepare')as producer:
