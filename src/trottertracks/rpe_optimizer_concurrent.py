@@ -739,6 +739,10 @@ class DistributedExecutor(ConcurrentExecutor):
             raise ValueError('Positive live readiness limits required')
         self.live_readiness_pool = (ThreadPoolExecutor(max_workers=self.live_readiness_max_workers or self.live_readiness_workers, thread_name_prefix='rpe-q3-readiness')
                                     if self.distributed.get('live_q3_readiness') is True else None)
+        self.readiness_connections = None
+        if self.live_readiness_pool is not None and self.controller_parallel:
+            from .rpe_live_q3_readiness import ReadinessConnections
+            self.readiness_connections = ReadinessConnections()
         self.host_admission_cache = {}
         self.preparation_holds = {}
         self.preparation_dependencies = {}
@@ -1021,14 +1025,15 @@ class DistributedExecutor(ConcurrentExecutor):
                     optional=rule.get('optional', False), max_slots=rule.get('max_slots'),
                     error=error)
 
-    def _host_new_slots(self, host, slots, admission):
+    def _host_new_slots(self, host, slots, admission, *, owned=None):
         if not admission['accepting']: return 0
         maximum = admission['max_slots']
         if maximum is None: return slots
         # UNKNOWN and completed-but-untransferred attempts still belong to this
         # host. A communication outage must not open another execution slot.
-        owned = sum(row['host_id'] == host for row in self._owned_attempts())
-        return min(slots, max(0, maximum-owned))
+        owned = self._owned_attempts() if owned is None else owned
+        count = sum(row['host_id'] == host for row in owned)
+        return min(slots, max(0, maximum-count))
 
     def _local_calibration_pair_allows(self, host, request):
         trial = self.distributed.get('local_calibration_pair')
@@ -1115,15 +1120,15 @@ class DistributedExecutor(ConcurrentExecutor):
                 task.view.log(event='WORKER_CONTACT_LOST', job=row['job_id'], host_id=row['host_id'],
                               attempt_id=row['attempt_id'], owner_preserved=True, automatic_retry=False)
 
-    def _offer_free(self, host, policy, error=None):
+    def _offer_free(self, host, policy, error=None, *, owned=None):
         """Fresh unused capacity, never a lease on an assigned evaluation."""
         info = self.hosts.get(host)
         if not self._offer_fresh(host):
             return 0
         if info.get('accepting_new_jobs') is False: return 0
         admission = self._host_admission(host, policy, error)
-        free = self._host_new_slots(host, info['reported_slots'], admission)
-        owned = self._owned_attempts()
+        owned = self._owned_attempts() if owned is None else owned
+        free = self._host_new_slots(host, info['reported_slots'], admission, owned=owned)
         current = {row['attempt_id'] for row in owned if row['host_id'] == host}
         # An offer cannot be reused by another poll after its free slot has
         # already been committed to an attempt by this controller.
@@ -1151,15 +1156,15 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _refresh_capacity(self, policy, error=None):
         if not self.state.allocation_auto: return
-        owned = len(self._owned_attempts())
+        owned = self._owned_attempts()
         queue = self._ready_queue()
-        available = {host:self._offer_free(host, policy, error) for host in self.hosts}
+        available = {host:self._offer_free(host, policy, error, owned=owned) for host in self.hosts}
         available = {host:min(free,len(queue)) for host,free in available.items() if free > 0}
         usable = len(self._match_ready_jobs(queue, available))
-        capacity = max(1, owned+usable)
+        capacity = max(1, len(owned)+usable)
         if capacity != self.state.allocation_capacity:
             self.state.allocation_capacity = capacity
-            self.log(event='AUTO_CAPACITY', capacity=capacity, unresolved_owned=owned,
+            self.log(event='AUTO_CAPACITY', capacity=capacity, unresolved_owned=len(owned),
                      ready_jobs=len(queue), fresh_free_slots=sum(available.values()),
                      request_compatible_slots=usable,
                      reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
@@ -1202,7 +1207,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if (not self._offer_fresh(host) or info.get('accepting_new_jobs') is False
                     or not self._host_admission(host, policy, error)['accepting']):
                 continue
-            slots = self._offer_free(host, policy, error)
+            slots = self._offer_free(host, policy, error, owned=owned)
             report = info.get('resource_report') or {}
             limit = (report.get('resources') or {}).get('allowed_cpu_count')
             pool = (report.get('pbs') or {}).get('resource_pool')
@@ -1412,6 +1417,9 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _host_readiness_limit(self, host):
         window = self._live_readiness_window()
+        local = self.distributed.get('local_worker') or {}
+        if self.readiness_connections is not None and host != local.get('host_id'):
+            window = min(window, self.readiness_connections.channels_per_host)
         capacity = self.hosts.get(host, {}).get('capacity')
         return min(window, self.ready_queue_waves * capacity) if capacity else window
 
@@ -1430,6 +1438,8 @@ class DistributedExecutor(ConcurrentExecutor):
             self.live_readiness_pool.shutdown(wait=False, cancel_futures=True)
         for pool in self.live_readiness_host_pools.values():
             pool.shutdown(wait=False, cancel_futures=True)
+        if self.readiness_connections is not None:
+            self.readiness_connections.close()
 
     def _dispatch_live_checks(self, key, participants, check, receive, finish):
         """Use separate bounded lanes and publish each host as it finishes."""
@@ -2878,6 +2888,12 @@ class DistributedExecutor(ConcurrentExecutor):
     def _timing_queue(self):
         """Observe queue causes under the existing claim lock; never reorder."""
         s=self.state;reasons={}
+        started = time.monotonic()
+        # Waiting work and CPU supply are sampled diagnostics. Several hosts
+        # can poll in the same instant. Rebuilding the same report for each
+        # poll delays claims and result acknowledgements behind the lock.
+        if started < getattr(s, 'next_queue_timing', 0):
+            return
         admission=None;admission_error=None
         # Use the newer optional-host policy when supplied by the integration;
         # do not copy or change its dispatch/admission implementation here.
@@ -2942,7 +2958,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 cpu = getattr(s, 'ready_cpu_supply', {}).get(host)
                 if cpu is not None:
                     observation['cpu_supply'] = cpu
-                free = self._offer_free(host, admission, admission_error)
+                free = self._offer_free(host, admission, admission_error, owned=owned_attempts)
                 observation.update(owned=owned[host], fresh_free_slots=free)
                 storage = (self.hosts[host].get('resource_report') or {}).get('storage')
                 if storage is not None:
@@ -2964,7 +2980,8 @@ class DistributedExecutor(ConcurrentExecutor):
                             'DISPATCH_READINESS_OR_POLL_WAIT' if compatible else 'NO_ELIGIBLE_READY_TASK')
         marker=json.dumps(payload,sort_keys=True)
         if marker!=getattr(s,'last_timing_queue',None):
-            s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE',**payload)
+            s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE', report_seconds=time.monotonic()-started,**payload)
+        s.next_queue_timing = time.monotonic() + 2
 
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
@@ -2978,7 +2995,11 @@ class DistributedExecutor(ConcurrentExecutor):
             if path == '/v1/artifacts/get': return dict(blobs=self.artifact_cache.get(value.get('hashes', [])))
             if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
             raise ValueError('Unknown artifact RPC endpoint')
+        waiting = time.monotonic()
         with s.cv:
+            lock_wait = time.monotonic()-waiting
+            if lock_wait >= 1:
+                self.log(event='DISTRIBUTED_RPC_LOCK_WAIT', endpoint=path, host_id=host, seconds=lock_wait)
             if path == '/v1/poll':
                 if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
                 stopping = self._user_stop_requested()
@@ -2988,7 +3009,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 if not isinstance(fingerprints, dict): raise ValueError('Host fingerprints must map job IDs to current facts')
                 admission_policy, admission_error = self._host_admission_policy()
                 admission = self._host_admission(host, admission_policy, admission_error)
-                new_slots = self._host_new_slots(host, slots, admission)
+                owned = self._owned_attempts()
+                new_slots = self._host_new_slots(host, slots, admission, owned=owned)
                 host_capacity = value.get('capacity')
                 if host_capacity is not None and (type(host_capacity) is not int or host_capacity < 0):
                     raise ValueError('Nonnegative host capacity required')
@@ -2998,7 +3020,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                        capacity=host_capacity, host_admission=admission,
                                        accepting_new_jobs=value.get('accepting_new_jobs', True),
                                        observed_monotonic=time.monotonic(),
-                                       owned_at_offer=[row['attempt_id'] for row in self._owned_attempts() if row['host_id'] == host],
+                                       owned_at_offer=[row['attempt_id'] for row in owned if row['host_id'] == host],
                                        resource_report=value.get('resource_report'),
                                        cached_prefixes=value.get('cached_prefixes', []),
                                        host_fingerprints=fingerprints, readiness_errors=value.get('readiness_errors'))
@@ -3031,8 +3053,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 if stopping:
                     return reply(assignments=assignments, stop=False,
                                  host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
-                self._timing_queue()
                 if not new_slots:
+                    self._timing_queue()
                     return reply(assignments=assignments, stop=False, host_admission=admission,
                                 eligibility_challenges=[])
                 queue = self._ready_queue()

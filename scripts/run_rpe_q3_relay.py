@@ -61,7 +61,7 @@ def child_options(platform_name=None):
     return {}
 
 
-def ssh_wsl_command(worker, command, action, *, input_file=None, inline_input=None):
+def ssh_wsl_command(worker, command, action, *, input_file=None, inline_input=None, timeout_seconds=60):
     """Windows SSH -> existing WSL mailbox, preserving JSON stdin/stdout.
 
     Encoded PowerShell avoids CMD quoting Linux paths or the Japanese Windows
@@ -96,33 +96,49 @@ def ssh_wsl_command(worker, command, action, *, input_file=None, inline_input=No
             payload = base64.b64encode(inline_input).decode('ascii')
             write_input = "[IO.File]::WriteAllBytes($inputPath,[Convert]::FromBase64String('" + payload + "'));"
         script += (
-            "$inputPath=Join-Path $env:USERPROFILE "+filename+";try{"
-            + write_input +
+            # An SSH timeout on RomuTail does not terminate Windows children.
+            # Keep the deadline here so the launcher and temporary input are
+            # cleaned up while an already accepted attempt remains in its spool.
+            "$limit="+str(max(1, int((float(timeout_seconds) - 2) * 1000)))+";"
+            "$clock=[Diagnostics.Stopwatch]::StartNew();"
+            "function LeftMs{[int][Math]::Max(0,$limit-$clock.ElapsedMilliseconds)};"
+            "function WslRun($a,[switch]$optional){"
             "$si=New-Object Diagnostics.ProcessStartInfo;"
-            "$si.FileName="+executable+";$si.Arguments=("+arguments+").Replace('__RPE_INPUT_FILE__',('\"'+$inputPath+'\"'));"
+            "$si.FileName="+executable+";$si.Arguments=$a;"
             "$si.UseShellExecute=$false;$si.CreateNoWindow=$true;"
             "$si.RedirectStandardOutput=$true;$si.RedirectStandardError=$true;"
             "$utf8=New-Object System.Text.UTF8Encoding($false);"
             "$si.StandardOutputEncoding=$utf8;$si.StandardErrorEncoding=$utf8;"
             "$proc=[Diagnostics.Process]::Start($si);"
             "$stdout=$proc.StandardOutput.ReadToEndAsync();$stderr=$proc.StandardError.ReadToEndAsync();"
-            "$proc.WaitForExit();"
+            "if(!$proc.WaitForExit((LeftMs))){try{$proc.Kill()}catch{};throw 'WSL launcher timed out'};"
+            "if(!$stdout.Wait((LeftMs)) -or !$stderr.Wait((LeftMs))){throw 'WSL output timed out'};"
             "$text=$stdout.GetAwaiter().GetResult();$errorText=$stderr.GetAwaiter().GetResult();"
-            "if($proc.ExitCode -ne 0){[Console]::Error.Write($errorText);exit $proc.ExitCode};"
-            "$value=$text|ConvertFrom-Json;"
+            "if($proc.ExitCode -ne 0){if($optional){return ''};"
+            "[Console]::Out.Write($text);[Console]::Error.Write($errorText);exit $proc.ExitCode};"
+            "return $text};"
+            "$inputPath=Join-Path $env:USERPROFILE "+filename+";try{"
+            + write_input +
+            "$a=("+arguments+").Replace('__RPE_INPUT_FILE__',('\"'+$inputPath+'\"'));"
+            "$value=(WslRun $a)|ConvertFrom-Json;"
             "}finally{Remove-Item -LiteralPath $inputPath -Force -ErrorAction SilentlyContinue};"
         )
     if action == 'status' and (worker.get('participation_file') or worker.get('participation_wsl_file')):
         if worker.get('participation_wsl_file'):
             flag_args = ['-d', worker['distribution'], '--exec', 'cat', worker['participation_wsl_file']]
-            flag_literals = ','.join("'" + str(value).replace("'", "''") + "'" for value in flag_args)
-            script += (
-                "$enabled=$false;$flagArgs=@(" + flag_literals + ");"
-                "$flagLines=& " + executable + " @flagArgs 2>$null;"
-                "if($LASTEXITCODE -eq 0){"
-                "$flag=($flagLines -join [Environment]::NewLine)|ConvertFrom-Json;"
-                "$enabled=($flag.accepting_new_jobs -eq $true)};"
-            )
+            if input_file is not None:
+                flag = subprocess.list2cmdline(flag_args).replace("'", "''")
+                script += ("$enabled=$false;try{$flag=(WslRun '"+flag+"' -Optional)|ConvertFrom-Json;"
+                           "$enabled=($flag.accepting_new_jobs -eq $true)}catch{};")
+            else:
+                flag_literals = ','.join("'" + str(value).replace("'", "''") + "'" for value in flag_args)
+                script += (
+                    "$enabled=$false;$flagArgs=@(" + flag_literals + ");"
+                    "$flagLines=& " + executable + " @flagArgs 2>$null;"
+                    "if($LASTEXITCODE -eq 0){"
+                    "$flag=($flagLines -join [Environment]::NewLine)|ConvertFrom-Json;"
+                    "$enabled=($flag.accepting_new_jobs -eq $true)};"
+                )
         else:
             path = "'" + worker['participation_file'].replace("'", "''") + "'"
             script += (
@@ -181,6 +197,7 @@ class Relay:
         self.directory.mkdir(parents=True, exist_ok=True)
         self.ssh = self.config.get('ssh_command', ['ssh'])
         self.ssh_socket_directory = None
+        self.readiness_connections = None
         self.controller = self.config['controller']
         self.poll_seconds = float(self.config.get('poll_seconds', 1))
         maximum = float(self.config.get('retry_backoff_max_seconds', 30))
@@ -209,8 +226,11 @@ class Relay:
     def post(self, path, value):
         payload = json.dumps(value).encode()
         request = urllib.request.Request(self.url+path, payload, {'Content-Type': 'application/json'})
-        with urllib.request.urlopen(request, timeout=self.config.get('request_timeout_seconds', 60)) as response:
-            return json.load(response)
+        try:
+            with urllib.request.urlopen(request, timeout=self.config.get('request_timeout_seconds', 60)) as response:
+                return json.load(response)
+        except TimeoutError as error:
+            raise TimeoutError('Controller RPC '+path+' timed out') from error
 
     def failed(self, state, error, event, **detail):
         failures = state.get('failure_count', 0)+1
@@ -273,7 +293,10 @@ class Relay:
         if worker.get('transport') == 'wsl':
             command = [worker.get('wsl_executable', 'wsl.exe'), '-d', worker['distribution'], '--exec'] + command
         elif worker.get('transport') == 'ssh-wsl':
-            process=self._remote_wsl_file(worker,command,action,value or{})
+            try:
+                process=self._remote_wsl_file(worker,command,action,value or{})
+            except subprocess.TimeoutExpired as error:
+                raise TimeoutError(f'WSL mailbox {action} timed out after {error.timeout:g} seconds') from None
             command=None
         else:
             alias = worker['ssh_alias']
@@ -281,7 +304,9 @@ class Relay:
             remote_command = shlex.join(command)
             ssh = worker.get('ssh_command', self.ssh)
             reuse = []
-            if self.ssh_socket_directory is not None and Path(ssh[0]).name == 'ssh':
+            if self.readiness_connections is not None:
+                reuse = self.readiness_connections.options(ssh, alias)
+            elif self.ssh_socket_directory is not None and Path(ssh[0]).name == 'ssh':
                 reuse = ['-o', 'ControlMaster=auto', '-o', 'ControlPersist=15',
                          '-o', 'ControlPath='+self.ssh_socket_directory.name+'/%C']
             command = [*ssh, *reuse, '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, remote_command]
@@ -291,19 +316,19 @@ class Relay:
                 encoding='utf-8', errors='replace',
                 timeout=self.config.get('request_timeout_seconds', 60), **child_options())
         if process.returncode:
-            detail = process.stderr.strip()
-            if not detail:
+            # Prefer the worker error to incidental Windows SSH diagnostics.
+            # Never echo arbitrary stdout (it may contain an input bundle).
+            detail = process.stderr.strip()[-1500:]
+            if not detail or (worker.get('transport') == 'ssh-wsl' and process.returncode == 2):
                 try:
                     response = json.loads(process.stdout)
-                    detail = response.get('error', '') if isinstance(response, dict) else ''
+                    error = response.get('error') if isinstance(response, dict) else None
                 except (ValueError, TypeError):
-                    detail = ''
-                if not isinstance(detail, str):
-                    detail = ''
-                # Mailboxes report their exception as JSON on stdout. Include
-                # only that field, never an arbitrary payload or terminal codes.
-                detail = ''.join(c if c.isprintable() else ' ' for c in detail)[:1500]
-            raise RuntimeError('Worker mailbox '+action+' failed ('+str(process.returncode)+'): '+detail[-1500:])
+                    error = None
+                if isinstance(error, str) and error.strip():
+                    detail = error[:1500]
+            detail = ''.join(c if c.isprintable() else ' ' for c in detail)
+            raise RuntimeError('Worker mailbox '+action+' failed ('+str(process.returncode)+'): '+detail)
         result = json.loads(process.stdout)
         if action == 'status' and worker.get('participation_file') and worker.get('transport') != 'ssh-wsl':
             participation = Path(worker['participation_file'])
@@ -327,7 +352,8 @@ class Relay:
         # Keep larger requests below the Windows command-line length limit
         # by using the existing file transfer.
         if action in ('status', 'result', 'ack', 'resources') and len(payload_bytes) <= 600:
-            remote = ssh_wsl_command(worker, command, action, input_file=name, inline_input=payload_bytes)
+            remote = ssh_wsl_command(worker, command, action, input_file=name, inline_input=payload_bytes,
+                                     timeout_seconds=timeout)
             if len(remote) < 7000:
                 return subprocess.run(ssh+[remote], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE, encoding='utf-8', errors='replace', timeout=timeout, **child_options())
@@ -338,7 +364,7 @@ class Relay:
                 stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,
                 encoding='utf-8',errors='replace',timeout=timeout,**child_options())
             if transfer.returncode:raise RuntimeError('WSL mailbox input transfer failed: '+transfer.stderr[-1500:])
-            remote=ssh_wsl_command(worker,command,action,input_file=name)
+            remote=ssh_wsl_command(worker,command,action,input_file=name,timeout_seconds=timeout)
             return subprocess.run(ssh+[remote],
                 stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,
                 encoding='utf-8',errors='replace',timeout=timeout,**child_options())
@@ -443,9 +469,16 @@ class Relay:
             challenges = self._readiness_batch(worker, challenges, cached, slots=max(1, status['slots']))
             # A fresh worker inventory avoids an SSH round trip. The worker
             # still verifies and binds all metadata in its readiness check.
-            if cached is None or self._readiness_bundle_hashes(challenges) - cached:
-                self._deliver_challenge_artifacts(worker,challenges)
-            facts, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
+            try:
+                if cached is None or self._readiness_bundle_hashes(challenges) - cached:
+                    self._deliver_challenge_artifacts(worker,challenges)
+                facts, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
+            except (TimeoutError, subprocess.TimeoutExpired, RuntimeError) as error:
+                # Completed and already-owned attempts still need this tick.
+                # Reject no input and retry the failed check on the next poll.
+                self.log('MAILBOX_READINESS_DEFERRED', host_id=worker['host_id'],
+                         jobs=[item['job_id'] for item in challenges], error=str(error))
+                return status, seconds, started, poll, dict(observed, readiness_deferred=True)
             if facts.get('host_id') != status['host_id']:
                 raise ValueError('Readiness response host differs')
             poll.update(host_fingerprints=facts.get('host_fingerprints', {}),
@@ -498,7 +531,7 @@ class Relay:
 
     def _report_attempt(self, owner, state, detail):
         try:
-            self.post('/v1/state', dict(owner, state=state, detail=detail))
+            response = self.post('/v1/state', dict(owner, state=state, detail=detail))
         except HTTPError as error:
             # A relay on a different host has no local ledger to consult.
             # Only an explicit ownership rejection can be skipped.
@@ -510,6 +543,9 @@ class Relay:
             if reason not in ('ValueError: Different execution host/attempt',
                               'ValueError: Unknown job or different execution host/attempt'):
                 raise ValueError(reason) from error
+            self._log_unowned_attempt(owner)
+            return False
+        if response.get('disposition') == 'STATE_OUTSIDE_CURRENT_RUN':
             self._log_unowned_attempt(owner)
             return False
         return True
@@ -605,7 +641,8 @@ class Relay:
         info['phase'] = 'CONTROLLER_POLL'
         # The worker's fresh offer still governs every claim, including Pause.
         response = self.post('/v1/poll', poll)
-        if not response['assignments'] and response.get('eligibility_challenges'):
+        if (not response['assignments'] and response.get('eligibility_challenges')
+                and not (observed is not None and observed[-1].get('readiness_deferred'))):
             challenges = response['eligibility_challenges']
             if observed is not None:
                 # cycle() already checked one group of preparation requests.

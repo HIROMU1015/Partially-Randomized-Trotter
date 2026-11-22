@@ -111,6 +111,26 @@ os.execv(command[0], command)
 
 
 class RelayTests(unittest.TestCase):
+    def test_readiness_timeout_still_reconciles_owned_attempts(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            config = Path(temporary)/'relay.json'
+            worker = dict(host_id='ARTIFICIAL')
+            write(config, dict(state_directory=str(Path(temporary)/'state'),
+                               controller=dict(ssh_alias='qg2'), workers=[worker]))
+            relay = R.Relay(config)
+            challenge = dict(job_id='waiting', request=dict(route=dict(kind='preparation')))
+            status = dict(host_id=worker['host_id'], slots=1, cached_prefixes=[],
+                          source_sha='ARTIFICIAL', cached_artifact_sha256=[], attempts=[])
+            reply = dict(assignments=[], eligibility_challenges=[challenge])
+            with patch.object(relay, 'post', return_value=reply), \
+                    patch.object(relay, 'remote', side_effect=[(status, 0), TimeoutError()]) as remote, \
+                    patch.object(relay, '_recover_attempts', return_value=False) as recover:
+                discovery = relay._discover(worker)
+                relay.tick(worker, discovery)
+            recover.assert_called_once()
+            self.assertEqual([call.args[1] for call in remote.call_args_list], ['status', 'readiness'])
+            self.assertEqual(relay.state['workers'][worker['host_id']]['phase'], 'READY')
+
     def test_discovery_returns_one_ready_request_before_other_bundle_delivery(self):
         with tempfile.TemporaryDirectory(prefix='relay-single-readiness-') as temporary:
             configuration = Path(temporary)/'relay.json'

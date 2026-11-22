@@ -793,6 +793,8 @@ class ControllerFailures(unittest.TestCase):
         self.executors.append(executor)
 
         def poll(host, observe_only=False):
+            # Treat each synthetic change as a separate telemetry sample.
+            executor.state.next_queue_timing = 0
             return executor.rpc('/v1/poll', dict(host_id=host, source_sha=self.source, slots=1, capacity=1,
                                                 observe_only=observe_only))
 

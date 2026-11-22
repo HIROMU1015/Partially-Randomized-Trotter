@@ -89,9 +89,9 @@ class DirectRelayTests(unittest.TestCase):
             self.assertIn('wslpath -u',script)
             self.assertNotIn('RedirectStandardInput',script)
             self.assertIn('finally{Remove-Item',script)
-            transfer=call.call_args_list[0].args[0]
-            self.assertEqual(transfer[:3],['scp','-i','owned windows key'])
-            self.assertTrue(transfer[-1].startswith('romuk@Romulaptop:.rpe-mailbox-'))
+            self.assertIn('WaitForExit((LeftMs))',script)
+            self.assertIn('$proc.Kill()',script)
+            call.assert_called_once()  # the small status payload is sent inline
             self.assertEqual(call.call_args.kwargs['stdin'],subprocess.DEVNULL)
 
     def test_large_wsl_request_is_transferred_intact_without_console_stdin(self):

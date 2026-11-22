@@ -2,17 +2,70 @@
 import base64
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from copy import deepcopy
+from functools import lru_cache
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import shlex
 import subprocess
 import sys
+import tempfile
+import threading
 import time
 import zlib
 
 from . import rpe_q3_coordinator as Q
 from .rpe_pbs import task_estimate
+
+
+class ReadinessConnections:
+    """One private OpenSSH master per target for short metadata checks."""
+
+    # Leave room for the relay and gateway, even with the usual SSH limit of
+    # ten sessions per connection. This bounds handshakes, not job CPU slots.
+    channels_per_host = 8
+
+    def __init__(self):
+        self.sockets = tempfile.TemporaryDirectory(prefix='rpe-q3-probe-', dir='/tmp')
+        self.locks = {}
+        self.lock = threading.Lock()
+        self.closed = False
+
+    def options(self, ssh, alias):
+        if Path(ssh[0]).name != 'ssh':
+            return []
+        token = hashlib.sha256(json.dumps([list(ssh), alias]).encode()).hexdigest()[:16]
+        path = Path(self.sockets.name)/token
+        with self.lock:
+            target_lock = self.locks.setdefault(token, threading.Lock())
+        with target_lock:
+            if self.closed:
+                raise OSError('Readiness connection pool closed')
+            control = ['-o', 'ControlPath='+str(path)]
+            flags = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=6']
+            checked = path.is_socket() and subprocess.run([*ssh, *control, '-O', 'check', alias],
+                stdin=subprocess.DEVNULL, capture_output=True, timeout=2).returncode == 0
+            if not checked:
+                subprocess.run([*ssh, *control, *flags, '-o', 'ControlMaster=yes', '-o', 'ControlPersist=15',
+                                '-fNT', alias], stdin=subprocess.DEVNULL, capture_output=True, timeout=9, check=True)
+            return [*control, '-o', 'ControlMaster=auto', '-o', 'ControlPersist=15']
+
+    def close(self):
+        with self.lock:
+            self.closed = True
+            self.sockets.cleanup()
+
+
+@lru_cache(maxsize=8)
+def relay_type(script):
+    if script is None:
+        from run_rpe_q3_relay import Relay
+        return Relay
+    spec = importlib.util.spec_from_file_location('_rpe_selected_q3_relay', script)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.Relay
 
 _REMOTE_PROBE = (
     'import base64,io,json,sys,zlib;v=json.load(sys.stdin);'
@@ -307,9 +360,10 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
     participants.extend((host, None) for host in pbs_workers)
     relay = executor.run_dir/'distributed'/'relay'/'CONFIG.json'
     bridge = None
+    connections = getattr(executor, 'readiness_connections', None)
     if relay.is_file():
-        from run_rpe_q3_relay import Relay
-        bridge = Relay(relay)
+        bridge = relay_type(executor.distributed.get('relay_script'))(relay)
+        bridge.readiness_connections = connections
         bridge.config['request_timeout_seconds'] = 120
         participants.extend((worker['host_id'], worker) for worker in bridge.config.get('workers', [])
                             if worker.get('enabled', True)
@@ -336,7 +390,8 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
                 payload.update(profile=declared['profile'], worker_root=pbs['transport_root'],
                     deployment=dict(deployment=declared.get('deployment') or pbs.get('deployment'),
                                     task_deployments=declared.get('task_deployments',{})))
-                command = ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
+                reuse = connections.options(['ssh'], pbs['ssh_alias']) if connections else []
+                command = ['ssh', *reuse, '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
                            pbs['ssh_alias'], shlex.join([pbs['gateway_python'], '-B', '-c', _HOST_PROBE])]
                 def invoke(data):
                     checked = subprocess.run(command, input=json.dumps(data), text=True,
