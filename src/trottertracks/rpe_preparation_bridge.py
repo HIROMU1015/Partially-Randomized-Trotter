@@ -1033,7 +1033,7 @@ class DistributedPreparationBridge:
         if df_terminal:
             if not snapshot or not re.fullmatch(r'[0-9a-f]{20}', df_terminal):
                 raise ValueError('DF terminal signal requires a fixed physical round and snapshot')
-            caller = completion.settings.get('df_terminal_transport_source')
+            caller = completion.settings.get('df_terminal_transport_source') or self.settings.get('horizon_transport_source')
             if caller is None:
                 caller = subprocess.check_output(['git','rev-parse','HEAD'],cwd=script.parents[1],text=True).strip()
             if not isinstance(caller, str) or not re.fullmatch(r'[0-9a-f]{40}', caller):
@@ -1052,7 +1052,11 @@ class DistributedPreparationBridge:
             if not snapshot:
                 raise ValueError('Terminal PF signal requires the fixed H4 snapshot')
             caller_root = script.parents[1]
-            caller = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=caller_root, text=True).strip()
+            caller = self.settings.get('horizon_transport_source')
+            if caller is None:
+                caller = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=caller_root, text=True).strip()
+            if not re.fullmatch(r'[0-9a-f]{40}', caller):
+                raise ValueError('PF terminal transport SOURCE must be pinned')
             for name in ('scripts/run_rpe_pf_horizon_signal.py', 'scripts/run_pf_preparation_stage.py',
                          'src/trottertracks/rpe_preparation_paths.py'):
                 raw = subprocess.check_output(['git', 'show', caller + ':' + name], cwd=root)

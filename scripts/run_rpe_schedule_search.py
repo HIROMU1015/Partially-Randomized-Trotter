@@ -330,6 +330,27 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         sys.modules[name] = module
         # The optimizer also imports from the package directly.
         setattr(sys.modules['trottertracks'], module_name, module)
+    if assets := trial.get('scoped_horizon_sha256'):
+        deployment = Path(__file__).resolve().parents[1]
+        # Keep the run's provider checkout on sys.path. These entry points
+        # belong to the selected scheduler, including its route metadata.
+        for name, relative in (
+            ('run_rpe_optimizer_q3_job', 'scripts/run_rpe_optimizer_q3_job.py'),
+            ('run_rpe_pf_horizon_signal', 'scripts/run_rpe_pf_horizon_signal.py'),
+            ('trottertracks.pf_horizon_preparation', 'src/trottertracks/pf_horizon_preparation.py'),
+            ('trottertracks.pr_df_horizon_preparation', 'src/trottertracks/pr_df_horizon_preparation.py'),
+            ('trottertracks.rpe_preparation_round', 'src/trottertracks/rpe_preparation_round.py'),
+        ):
+            path = deployment / relative
+            if hashlib.sha256(path.read_bytes()).hexdigest() != assets.get(relative):
+                raise ValueError('Selected horizon preparation implementation differs: ' + relative)
+            loader = importlib.util.spec_from_file_location(name, path)
+            module = importlib.util.module_from_spec(loader)
+            loader.loader.exec_module(module)
+            sys.modules[name] = module
+            if name.startswith('trottertracks.'):
+                setattr(sys.modules['trottertracks'], name.split('.')[1], module)
+        distributed['preparation']['horizon_transport_source'] = trial['horizon_transport_source']
     if trial.get('recover_saved_price_rounds'):
         for file, key in (('run_pf_preparation_stage.py', 'pf_stage_sha256'),
                           ('check_pf_preparation_owner.py', 'pf_owner_sha256')):
