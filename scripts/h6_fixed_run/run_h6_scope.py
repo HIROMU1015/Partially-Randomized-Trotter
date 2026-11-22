@@ -1,7 +1,7 @@
 """Plan and run H6 parameter scopes on PBS using the common RPE shot optimizer."""
 
 import argparse
-from collections import defaultdict
+from collections import Counter, defaultdict
 from fractions import Fraction
 import hashlib
 import json
@@ -54,7 +54,7 @@ def design_key(design):
     return group_key(dict(first, actual_step=design["target_step"]))
 
 
-def ready_batch(plan, run, methods, completed):
+def ready_batch(plan, run, methods, completed, require_all=()):
     """Return candidate inputs whose direct prices or entire fitted group have arrived."""
     signals = {p.stem for p in (run / "signals").glob("*.json")}
     prices = {p.stem for p in (run / "prices").glob("*.json")}
@@ -74,6 +74,10 @@ def ready_batch(plan, run, methods, completed):
     cases = [case for case in plan["cases"] if case["id"] not in completed and case["method"] in methods
              and all(cell["id"] in signals and (cell["id"] in direct or group_key(cell) in fitted)
                      for cell in case["rounds"])]
+    outstanding = Counter(case["method"] for case in plan["cases"] if case["id"] not in completed)
+    ready_counts = Counter(case["method"] for case in cases)
+    cases = [case for case in cases if case["method"] not in require_all
+             or ready_counts[case["method"]] == outstanding[case["method"]]]
     keys = {group_key(cell) for case in cases for cell in case["rounds"]}
     used = {cell["id"] for case in cases for cell in case["rounds"]}
     designs = []
@@ -300,8 +304,9 @@ def optimize(plan, run, risk_source, q3_slots, allocated, budgets, *, execute, a
 
 
 def prepare_with_overlap(command, run, risk_source, q3_slots, allocated, price_memory, budgets, *, execute):
-    # A finite method budget depends on complete global prioritization.
-    methods = {method for method, budget in budgets.items() if budget in (None, "UNLIMITED")}
+    # A finite budget requires the complete priority order for that method.
+    methods = {method for method, budget in budgets.items() if budget != 0}
+    finite = {method for method, budget in budgets.items() if budget not in (None, "UNLIMITED")}
     if not execute or not methods:
         subprocess.run(command, check=True)
         return
@@ -330,7 +335,7 @@ def prepare_with_overlap(command, run, risk_source, q3_slots, allocated, price_m
                     raise ValueError("Q3 overlap results belong to a different H6 scope")
                 record["scope_owner"] = plan["owner"]
             if plan is not None:
-                batch = ready_batch(plan, run, methods, processed)
+                batch = ready_batch(plan, run, methods, processed, require_all=finite)
                 if batch["cases"]:
                     try:
                         controller.send((min(q3_slots, len(batch["cases"])), cpus, memory))

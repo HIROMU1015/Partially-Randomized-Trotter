@@ -312,6 +312,7 @@ def test_ready_q3_runs_before_another_price_and_is_reused_for_final_result(tmp_p
     receipt = tmp_path / "prices" / f"{late['id']}-0.json"
     receipt.rename(receipt.with_suffix(".pending"))
     assert ready_batch(plan, tmp_path, {"FULL_PF"}, set())["cases"] == [first]
+    assert not ready_batch(plan, tmp_path, {"FULL_PF"}, set(), require_all={"FULL_PF"})["cases"]
 
     prep = tmp_path / "prepare.py"
     prep.write_text(dedent("""
@@ -364,6 +365,7 @@ def test_ready_q3_runs_before_another_price_and_is_reused_for_final_result(tmp_p
     prepare_with_overlap([sys.executable, "-B", str(prep), str(receipt)], tmp_path, tmp_path, 2, 4, 8 << 30,
                          budgets, execute=True)
     assert receipt.exists() and len(calls) == 1
+    assert ready_batch(plan, tmp_path, {"FULL_PF"}, set(), require_all={"FULL_PF"})["cases"] == [first, second]
     assert not (tmp_path / "ROUND_RESULT.json").exists()
     assert read(tmp_path / "Q3_OVERLAP.json")["processed"] == [first["id"]]
     results, held = optimize(plan, tmp_path, tmp_path, 2, 4, budgets, execute=True)
