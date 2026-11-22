@@ -608,11 +608,13 @@ class DistributedPreparationBridge:
         proof = self.recovery_evidence(directory, stage, job)
         owner = self.executor.store.row(job)
         stage_input = directory/(stage+'.INPUT.json')
+        raw = stage_input.read_bytes()
         if (stage not in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
                 or proof['action'] != 'PRESERVE_FAILED_ATTEMPT'
                 or proof['attempt_id'] != recovery['audit_attempt']
                 or owner['request_sha256'] != recovery['request_sha256']
-                or hashlib.sha256(stage_input.read_bytes()).hexdigest() != recovery['input_sha256']
+                or hashlib.sha256(raw).hexdigest() != recovery['input_sha256']
+                or json.loads(raw)['value']['configuration']['id'] != recovery['configuration_id']
                 or (directory/'STOP.json').exists()):
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job+':PF_INPUT_REDELIVERY')
         original = owner['request']['preparation']

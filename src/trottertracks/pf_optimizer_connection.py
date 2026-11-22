@@ -462,7 +462,7 @@ def complete_selected(root, spec, run_dir, *, stage_executor=None):
             candidates = [item['configuration_body']['id'] for item in saved.get('selected', ())
                           if 'configuration_body' in item]
             recovering = len(candidates) == 1 and any(
-                record['configuration_id'] == candidates[0] for record in recoveries.values())
+                record.get('configuration_id') == candidates[0] for record in recoveries.values())
             if (stage_executor is None or mode != 'complete' or not
                     inherited_completion_request(entry, run, saved, request, prior,
                                                  recovered_audit=recovering)):

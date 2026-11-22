@@ -418,6 +418,13 @@ class Tests(unittest.TestCase):
             reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request')
         with sqlite3.connect(database) as db:
             db.execute("UPDATE jobs SET assigned_epoch=NULL")
+        redelivery = dict(stop, error_type='KeyError', message="'configuration_id'")
+        write(run/'KAPPA_STATE.json', dict(stop=redelivery))
+        fault = dict(redelivery, phase='DRIVER', traceback=(
+            'pf_candidate_selection.py\npf_optimizer_connection.py, in complete_selected\n'
+            "    record['configuration_id'] == candidates[0]"))
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(fault)+'\n')
+        self.assertEqual(reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request'), redelivery)
         write(run/'KAPPA_STATE.json', dict(stop=stop))
         fault.update(stop, traceback='pf_candidate_selection.py\npf_optimizer_connection.py, in complete_selected')
         (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(fault)+'\n')

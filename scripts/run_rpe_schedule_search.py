@@ -473,7 +473,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         raw = Path(selection['path']).read_bytes()
         if hashlib.sha256(raw).hexdigest() != selection['sha256']:
             raise ValueError('Recovered PF audit package changed')
-        distributed['preparation']['pf_stage_audit_recoveries'] = json.loads(raw)
+        recoveries = json.loads(raw)
+        for job, record in recoveries.items():
+            if record.get('kind') == 'PF_PORTABLE_INPUT_DELIVERY' and not all(record.get(key) for key in (
+                    'configuration_id', 'audit_attempt', 'request_sha256', 'input_sha256')):
+                raise ValueError('PF input redelivery lacks its fixed candidate or attempt: '+job)
+        distributed['preparation']['pf_stage_audit_recoveries'] = recoveries
     if 'interrupted_calibrations' in trial:
         selection = trial['interrupted_calibrations']
         raw = Path(selection['path']).read_bytes()

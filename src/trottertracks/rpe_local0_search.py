@@ -1162,8 +1162,11 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             saved_axis_encoding = (stop['error_type'] == 'TypeError' and message == "unhashable type: 'list'"
                                    and 'pf_distributed_preparation.py' in trace
                                    and 'consumed.update(audited)' in trace)
+            incomplete_recovery_index = (stop['error_type'] == 'KeyError' and message == "'configuration_id'"
+                                         and 'pf_optimizer_connection.py' in trace
+                                         and "record['configuration_id'] == candidates[0]" in trace)
             if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
-                     or saved_axis_encoding)
+                     or saved_axis_encoding or incomplete_recovery_index)
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
