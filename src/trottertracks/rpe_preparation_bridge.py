@@ -627,7 +627,7 @@ class DistributedPreparationBridge:
                 or 'private/pf-transport/scripts/run_pf_preparation_stage.py' not in replacement['inputs']):
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job+':PF_SCIENTIFIC_SOURCE')
         replacement['supersedes_preparation'] = dict(job_id=job, attempt_id=proof['attempt_id'],
-                                                      reason='PORTABLE_FIXED_INPUT_DELIVERY')
+            reason=recovery.get('reason', 'PORTABLE_FIXED_INPUT_DELIVERY'))
         return dict(request=request, source=submitted['source'], automatic_retry=False)
 
     def recovered_holdout_prices(self, directory, stage_input):
@@ -901,6 +901,71 @@ class DistributedPreparationBridge:
                 states[original]['status'] = result['status'] if result else 'PENDING'
             except (OSError, KeyError, TypeError, ValueError, sqlite3.Error) as error:
                 states[original] = dict(status='RECOVERY_INPUT_HOLD', reason=str(error))
+        write(path, states)
+
+    def failed_preparation_request(self, job, plan):
+        """Derive one successor from a failed, fully returned preparation."""
+        from .rpe_q3_coordinator import digest as request_digest
+
+        row = self.executor.store.row(job)
+        if (not row or row['state'] != 'ACCEPTED' or not row['completion_sha256']
+                or not row['attempt_id'] or row['attempt_id'] != plan['attempt_id']
+                or row['request_sha256'] != plan['request_sha256']
+                or request_digest(row['request']) != row['request_sha256']):
+            raise ValueError('Original preparation has no matching terminal attempt: '+job)
+        request = deepcopy(row['request'])
+        preparation = request['preparation']
+        root = self.executor.run_dir/'jobs'/row['method']/job
+        launch = read(root/'LAUNCH.json')
+        receipt = read(root/'PROCESS_RETURN.json')
+        outcome = read(root/'OUTCOME.json')
+        if (preparation.get('supersedes_preparation') or preparation.get('optional_price_validation')
+                or read(root/'REQUEST.json') != request
+                or (launch['host_id'], launch['attempt_id']) != (row['host_id'], row['attempt_id'])
+                or outcome.get('request_sha256') != row['request_sha256']
+                or outcome.get('status') != 'PREPARATION_FAILED' or outcome.get('artifacts')
+                or receipt.get('automatic_retry') is not False
+                or not (receipt.get('returncode') or receipt.get('signal'))):
+            raise ValueError('Original preparation needs ownership or partial-result reconciliation: '+job)
+        reason = plan['reason']
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError('Missing reason for preparation recalculation: '+job)
+        request.pop('request_id')
+        preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=row['attempt_id'], reason=reason)
+        return request
+
+    def reconcile_failed_preparations(self):
+        """Reserve exact retries through the existing stage budgets and persist their outcome."""
+        from .rpe_preparation_queue import preparation_job_id
+        from .rpe_release_registry import write
+
+        plans = self.settings.get('failed_preparation_recalculations', {})
+        if not plans or not self.approved or self.executor._user_stop_requested():
+            return
+        path = self.executor.run_dir/'preparation'/'FAILED_PREPARATION_RECALCULATIONS.json'
+        states = read(path) if path.is_file() else {}
+        for original, plan in sorted(plans.items()):
+            if self.executor._user_stop_requested():
+                break
+            reason = plan['reason']
+            try:
+                request = self.failed_preparation_request(original, plan)
+                preparation = request['preparation']
+                job = preparation_job_id(request)
+                with self.executor.store._connection() as db:
+                    other = db.execute("""SELECT job_id FROM jobs WHERE job_id != ?
+                        AND json_extract(request, '$.preparation.supersedes_preparation.job_id') = ?
+                        AND state != 'CANCELLED' LIMIT 1""", (job, original)).fetchone()
+                if other:
+                    states[original] = dict(job_id=other[0], reason=reason, status='EXISTING_SUCCESSOR')
+                    continue
+                self.executor.submit_preparation(request, budget=self.settings['budgets'][preparation['stage']],
+                    approved=self.approved, contract=request['original_contract'],
+                    dependencies=preparation['dependencies'], expected_job_id=job)
+                result = self.executor.preparation_result(job, adopt=False, materialize=False)
+                states[original] = dict(job_id=job, reason=reason, status=result['status'] if result else 'PENDING')
+            except (OSError, KeyError, TypeError, ValueError, sqlite3.Error) as error:
+                states[original] = dict(status='RECOVERY_INPUT_HOLD', reason=reason, detail=str(error))
         write(path, states)
 
     def recoverable_transport(self, directory, reason):

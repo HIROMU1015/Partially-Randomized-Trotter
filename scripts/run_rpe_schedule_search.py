@@ -485,6 +485,17 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if hashlib.sha256(raw).hexdigest() != selection['sha256']:
             raise ValueError('Interrupted calibration input plan changed')
         distributed['preparation']['interrupted_calibrations'] = json.loads(raw)
+    if 'failed_preparation_recalculations' in trial:
+        selection = trial['failed_preparation_recalculations']
+        raw = Path(selection['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != selection['sha256']:
+            raise ValueError('Fixed preparation recalculation selection changed')
+        plans = json.loads(raw)
+        if not isinstance(plans, dict) or any(not isinstance(plan, dict) or not all(
+                isinstance(plan.get(key), str) and plan[key].strip()
+                for key in ('attempt_id', 'request_sha256', 'reason')) for plan in plans.values()):
+            raise ValueError('Preparation recalculation must identify the failed attempt and reason')
+        distributed['preparation']['failed_preparation_recalculations'] = plans
     if 'pf_terminal_price_leaves' in trial:
         terminal = trial['pf_terminal_price_leaves']
         raw = Path(terminal['path']).read_bytes()
@@ -1808,6 +1819,8 @@ class WidthDriver:
             if runtime is not None:comp.bind_stage_executor(runtime)
             if runtime is not None and runtime.settings.get('interrupted_calibrations'):
                 runtime.reconcile_interrupted_calibrations()
+            if runtime is not None:
+                runtime.reconcile_failed_preparations()
             if runtime is not None and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                 from trottertracks.rpe_preparation_queue import save_horizon_preparation, submit_registered_horizons
                 from trottertracks.rpe_scaled_shots import settings as scaled_settings

@@ -28,6 +28,39 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_failed_preparation_recalculates_only_the_returned_attempt(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            request = normalize_preparation_request(dict(route=dict(kind='preparation'),
+                original_contract={'calls': 2}, preparation=dict(stage='signal', provider='DF_SIGNALS',
+                    source=dict(commit='fixed', files={}), command=['python', 'signals'],
+                    outputs=['workspace/result'])))
+            job = request['request_id']
+            row = dict(request=request, request_sha256=W.digest(request), state='ACCEPTED',
+                       attempt_id='failed', host_id='assigned', method='PREPARATION:signal',
+                       completion_sha256='accepted')
+            directory = root/'jobs'/row['method']/job
+            C.put(directory/'REQUEST.json', request)
+            C.put(directory/'LAUNCH.json', dict(attempt_id='failed', host_id='assigned'))
+            C.put(directory/'PROCESS_RETURN.json', dict(returncode=2, signal=None, automatic_retry=False))
+            outcome = dict(status='PREPARATION_FAILED', request_sha256=row['request_sha256'], artifacts={})
+            C.put(directory/'OUTCOME.json', outcome)
+            bridge = B.DistributedPreparationBridge(SimpleNamespace(
+                run_dir=root, store=SimpleNamespace(row=lambda _:row)), root)
+            plan = dict(attempt_id='failed', request_sha256=row['request_sha256'], reason='numerical gate')
+
+            replacement = bridge.failed_preparation_request(job, plan)
+            self.assertEqual(replacement, bridge.failed_preparation_request(job, plan))
+            successor = replacement['preparation'].pop('supersedes_preparation')
+            self.assertEqual(successor, dict(job_id=job, attempt_id='failed', reason='numerical gate'))
+            self.assertEqual(normalize_preparation_request(replacement), request)
+            C.put(directory/'OUTCOME.json', dict(outcome, artifacts={'workspace/result':'a'*64}))
+            with self.assertRaisesRegex(ValueError, 'partial-result reconciliation'):
+                bridge.failed_preparation_request(job, plan)
+            row['state'] = 'UNKNOWN'
+            with self.assertRaisesRegex(ValueError, 'terminal attempt'):
+                bridge.failed_preparation_request(job, plan)
+
     def test_interrupted_calibration_preserves_fixed_inputs_and_only_reuses_scoped_receipts(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
