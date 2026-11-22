@@ -37,8 +37,9 @@ class HostEligibilityTests(unittest.TestCase):
             base=git(controller,'rev-parse','HEAD')
             view=top/'frozen-route';git(top,'clone','--no-local',str(controller),str(view))
             computation=top/'fixed-computation';git(top,'clone','--no-local',str(controller),str(computation))
-            raw=b'{"fixture":true}\n';(controller/'input.json').write_bytes(raw)
-            git(controller,'add','input.json');git(controller,'commit','-m','new saved input')
+            input_name = 'input with space.json'
+            raw=b'{"fixture":true}\n';(controller/input_name).write_bytes(raw)
+            git(controller,'add',input_name);git(controller,'commit','-m','new saved input')
             revision=git(controller,'rev-parse','HEAD')
             modules=worker/'src'/'trottertracks';modules.mkdir(parents=True)
             (modules/'__init__.py').touch()
@@ -54,23 +55,27 @@ p=Path(sys.argv[sys.argv.index('--output')+1]);p.mkdir()
 ''')
             payload=dict(worker_root=str(worker),profile=dict(root=str(view)),input_anchors=[base],
                 assignment=dict(request={'route':{'kind':'fixture'}},request_sha256='fixture',
-                    input_hashes=[dict(commit=revision,path='input.json',sha256=hashlib.sha256(raw).hexdigest())]))
+                    input_hashes=[dict(commit=base,path='fixed.txt',sha256=hashlib.sha256(
+                        (controller/'fixed.txt').read_bytes()).hexdigest()),
+                        dict(commit=revision,path=input_name,sha256=hashlib.sha256(raw).hexdigest())]))
             executor=SimpleNamespace(root=controller,computation_root=computation,input_hash_cache={})
-            request=dict(route=dict(kind='fixture',templates=[dict(commit=revision,path='input.json')]))
-            self.assertEqual(controller_input_hashes(executor,request),payload['assignment']['input_hashes'])
+            request=dict(route=dict(kind='fixture',templates=[dict(commit=base,path='fixed.txt'),
+                                                             dict(commit=revision,path=input_name)]))
+            self.assertCountEqual(controller_input_hashes(executor,request),payload['assignment']['input_hashes'])
             self.assertEqual(git(computation,'rev-parse','HEAD'),base)
-            self.assertFalse((computation/'input.json').exists())
+            self.assertFalse((computation/input_name).exists())
             def invoke(data):
                 return json.loads(subprocess.check_output([sys.executable,'-B','-c',_HOST_PROBE],
                     input=json.dumps(data),text=True))
             first=invoke(payload)
             self.assertEqual(first['status'],'NEEDS_Q3_INPUT_OBJECTS')
+            self.assertEqual(first['repositories'][0]['commits'],[revision])
             result=_supply_inputs(executor,payload,invoke,first)
             self.assertEqual(result['status'],'PASS')
             self.assertEqual(result['input_transfer']['objects'],3)
-            self.assertEqual(git(view,'show',revision+':input.json'),raw.decode().strip())
+            self.assertEqual(git(view,'show',revision+':'+input_name),raw.decode().strip())
             self.assertEqual(git(view,'rev-parse','HEAD'),base)
-            self.assertFalse((view/'input.json').exists())
+            self.assertFalse((view/input_name).exists())
             self.assertEqual(invoke(payload)['status'],'PASS')
 
     def runtime_guard_fixture(self):

@@ -8,6 +8,7 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
+import time
 import zlib
 
 from . import rpe_q3_coordinator as Q
@@ -70,14 +71,29 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
         return subprocess.run(['git', *args], cwd=repo, capture_output=True,
                               env=dict(os.environ, GIT_NO_LAZY_FETCH='1', GIT_TERMINAL_PROMPT='0'), **kwargs)
 
+    def unavailable_inputs(repo):
+        rows = assignment['input_hashes']
+        if not rows:
+            return []
+        locators = [os.fsencode(row['commit'] + ':' + row['path']) for row in rows]
+        # Do one lookup per checkout for the common case. If Git cannot
+        # enumerate a partial object store, preserve the per-locator fallback.
+        if all(b'\n' not in locator and b'\x00' not in locator for locator in locators):
+            batch = git(repo, 'cat-file', '--batch-check=%(objecttype)',
+                        input=b'\n'.join(locators) + b'\n')
+            reports = batch.stdout.split(b'\n')[:-1]
+            if (not batch.returncode and len(reports) == len(rows)
+                    and all(report in (b'blob', b'tree', b'commit', b'tag')
+                            or report.endswith(b' missing') for report in reports)):
+                return [row for row, report in zip(rows, reports) if report.endswith(b' missing')]
+        return [row for row, locator in zip(rows, locators)
+                if git(repo, 'cat-file', '-e', locator).returncode]
+
     # Input commits may be newer than this fixed scientific checkout.
     # Install their missing objects only; the checkout and its refs stay fixed.
     missing = []
     for repo in sorted(repositories):
-        locators = []
-        for row in assignment['input_hashes']:
-            if git(repo, 'cat-file', '-e', row['commit']+':'+row['path']).returncode:
-                locators.append(row)
+        locators = unavailable_inputs(repo)
         if not locators:
             continue
         if 'input_pack' in payload:
@@ -301,7 +317,7 @@ def probe(executor, request, job_id, decision, *, publish=None):
                             and (not executor._host_admission(worker['host_id'], policy, error)['optional']
                                  or executor.hosts.get(worker['host_id'], {}).get('accepting_new_jobs') is True))
 
-    def check(item):
+    def check_host(item):
         host, worker = item
         try:
             anchors = [executor.computation_source, (request.get('route') or {}).get('view_commit')]
@@ -347,6 +363,11 @@ def probe(executor, request, job_id, decision, *, publish=None):
             return host, result
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
             return host, dict(status='HOLD', reason=str(exc)[-2000:])
+
+    def check(item):
+        started = time.monotonic()
+        host, result = check_host(item)
+        return host, dict(result, readiness_seconds=time.monotonic() - started)
 
     def snapshot():
         value = deepcopy(decision)
