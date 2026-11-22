@@ -3,6 +3,7 @@ from contextlib import redirect_stdout
 import importlib.util
 import io
 import json
+import math
 import os
 from pathlib import Path
 import tempfile
@@ -143,6 +144,39 @@ class ExecutionTests(unittest.TestCase):
             value=E.execute(cfg,plan,out,FakeProvider(),metadata,b,workers=1)
             self.assertEqual(value['new_provider_calls'],1)
             self.assertEqual(value['rows'][0]['status'],'HELD_AMBIGUOUS_PRIOR_START_NO_RETRY')
+
+
+class FiniteNormalizerTests(unittest.TestCase):
+    def test_binary64_unity_keeps_the_small_log_correction(self):
+        import numpy as np
+        from trotterlib.rte import finite_rte_distribution
+        from trottertracks import pr_rpe_signal_provider as provider
+
+        tau = 7.8e-9
+        dt = 0.05
+        zero = np.zeros((2, 2))
+        ctx = provider.make_context((zero, zero, np.diag([tau, -tau])), [1, 0], 0.0,
+                                    {1: dict(scalar=0.0, lambda_R=tau/dt, source={'fixture': True})},
+                                    binding={'rank': 2}, source={'fixture': True})
+        for sign in (1, -1):
+            with self.subTest(sign=sign):
+                self.assertEqual(finite_rte_distribution(sign*tau, 2).exact_finite_distribution, 1.0)
+                macro, _ = provider._macros(ctx, dict(prefix=1, formula='2nd', T=dt, q=1, R_outer=1, K=2),
+                                             dict(signed_weights=[sign], allocation=[1]))
+                self.assertGreater(macro['log_B_per_outer'], 0.0)
+                self.assertAlmostEqual(macro['log_B_per_outer']/(tau*tau), 1.0, places=13)
+                self.assertLess(macro['log_B_per_outer'], macro['log_sensitivity_per_outer'])
+                np.testing.assert_array_equal(macro['operators'][1], macro['operators'][2])
+
+    def test_regular_and_invalid_normalizers_keep_the_existing_behavior(self):
+        from trottertracks import pr_rpe_signal_provider as provider
+
+        self.assertEqual(provider._normalizer_log(1.01, 0.1, 2), math.log(1.01))
+        for value, tau in ((0.9, 0.1), (math.inf, 0.1), (math.nan, 0.1),
+                           (1.0, 0.0), (1.0, 1e-4)):
+            with self.subTest(value=value, tau=tau):
+                with self.assertRaises(provider.NumericalFailure):
+                    provider._normalizer_log(value, tau, 2)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

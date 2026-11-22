@@ -66,6 +66,24 @@ def _reference(job, ref):
     return a,max(pair,abs(a-b))
 
 
+def _normalizer_log(b, tau, order):
+    if math.isfinite(b) and b > 1.0:
+        return math.log(b)
+    if b == 1.0 and 0.0 < abs(tau) < 1.0:
+        from trotterlib.rte import _paired_order_weight
+
+        # The order-zero weight is hypot(1, tau). Evaluate its excess
+        # over one without subtracting rounded values near one.
+        magnitude = abs(tau)
+        order_zero_excess = magnitude * (magnitude / (math.hypot(1.0, magnitude) + 1.0))
+        excess = math.fsum([order_zero_excess, *(
+            _paired_order_weight(tau, k) for k in range(2, order + 1, 2))])
+        if excess <= math.ulp(1.0) / 2:
+            return math.log1p(excess)
+    raise NumericalFailure('Finite-normalizer precision unresolved',
+                           dict(tau=tau, normalizer=b if math.isfinite(b) else None))
+
+
 def _macros(ctx,c,st):
     import numpy as np
     from scipy.linalg import expm
@@ -94,10 +112,11 @@ def _macros(ctx,c,st):
                 raise NumericalFailure('Finite-normalizer scope exhausted',dict(tau=tau,K=c['K']))
             b=finite_rte_distribution(tau,c['K']).exact_finite_distribution
             if cache is not None:cache[nkey]=b
-        if not math.isfinite(b) or b<=1:
-            raise NumericalFailure('Finite-normalizer precision unresolved',
-                dict(piece_index=len(pieces),signed_time=time,events=count,event_time=dt,tau=tau,
-                    normalizer=None if not math.isfinite(b) else b))
+        try:
+            log_b = _normalizer_log(b, tau, c['K'])
+        except NumericalFailure as error:
+            error.observed.update(piece_index=len(pieces),signed_time=time,events=count,event_time=dt)
+            raise
         # Existing paired-Taylor primitive, with physical A and dt. The
         # polynomial depends on dt*A; lambda is used by its sampling law.
         polynomial=finite_taylor_operator(tail['matrix'],dt,c['K'])
@@ -109,7 +128,7 @@ def _macros(ctx,c,st):
             for factor in head:ops[index]=factor@ops[index]
             ops[index]=update@ops[index]
             for factor in reversed(head):ops[index]=factor@ops[index]
-        logs.append(count*math.log(b))
+        logs.append(count*log_b)
         sensitivities.append(count*(math.log(math.nextafter(b,math.inf))-math.log(math.nextafter(b,0.))))
         pieces.append(dict(signed_time=time,events=count,event_time=dt,tau=tau,b=b))
     packed=dict(operators=ops,log_B_per_outer=math.fsum(logs),pieces=pieces,
