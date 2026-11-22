@@ -1515,9 +1515,11 @@ class WidthDriver:
 
         def announce_pf(context, routes):
             nonlocal pf_snapshot, pf_revision
-            ready = {method: {row['configuration_id']: row for row in context['candidates']
-                              if row['method'] == method and row.get('ready')}
-                     for method in PF_METHODS.intersection(self.methods)}
+            ready = {
+                method: ({row['configuration_id']: row for row in context['candidates']
+                          if row['method'] == method and row.get('ready')}, routes.get(method, ()))
+                for method in PF_METHODS.intersection(self.methods)
+            }
             with condition:
                 if ready == pf_ready_by_method:
                     return

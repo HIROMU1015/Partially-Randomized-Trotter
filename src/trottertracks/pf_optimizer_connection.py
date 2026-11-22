@@ -345,9 +345,13 @@ class CompletionRequestMismatch(ValueError):
                              if key not in saved or key not in requested or saved[key] != requested[key])
 
 
-def inherited_completion_request(provider_entry, run, saved, requested, prior_runs):
+def inherited_completion_request(provider_entry, run, saved, requested, prior_runs, *, recovered_audit=False):
     """Continue an already selected provider workspace with its frozen paths."""
     metadata = {'registry_file', 'output_root', 'recover_saved_price_rounds'}
+    if recovered_audit:
+        # The selected leaf skips the failed audit using its fixed original
+        # compile. Its persisted price plan keeps the old receipt selection.
+        metadata.update(('recovered_price_receipts_by_physical_id', 'refill_candidate_preparation'))
     if ({k: v for k, v in saved.items() if k not in metadata} !=
             {k: v for k, v in requested.items() if k not in metadata}):
         return False
@@ -414,8 +418,14 @@ def complete_selected(root, spec, run_dir, *, stage_executor=None):
         saved = json.loads(req.read_text())
         if saved != request:
             prior = spec.get('executor', {}).get('prior_run_dirs', ())
+            recoveries = getattr(stage_executor, 'settings', {}).get('pf_stage_audit_recoveries', {})
+            candidates = [item['configuration_body']['id'] for item in saved.get('selected', ())
+                          if 'configuration_body' in item]
+            recovering = len(candidates) == 1 and any(
+                record['configuration_id'] == candidates[0] for record in recoveries.values())
             if (stage_executor is None or mode != 'complete' or not
-                    inherited_completion_request(entry, run, saved, request, prior)):
+                    inherited_completion_request(entry, run, saved, request, prior,
+                                                 recovered_audit=recovering)):
                 raise CompletionRequestMismatch(req, saved, request)
             request = saved
             inherited = True

@@ -369,12 +369,14 @@ def reconcile_received_preparation(run, records, stage_executor):
         leaf = base/'candidates'/cid/'pf_auto/pf_completion'
         folder = leaf/'provider_workspace/docs/research/distributed_selected_pf'/cid
         inspect = getattr(stage_executor, 'hold_evidence', None)
-        if inspect is not None and (evidence := inspect(folder, reason)) is not None:
+        recovery_reason = (row.get('previous_preparation_hold', reason)
+                           if reason == 'PF_COMPLETION_REQUEST_MISMATCH' else reason)
+        if inspect is not None and (evidence := inspect(folder, recovery_reason)) is not None:
             row['preparation_recovery'] = evidence
             recoveries = getattr(stage_executor, 'settings', {}).get('pf_stage_audit_recoveries', {})
             if (evidence['job_id'] in recoveries and
                     evidence.get('attempt_id') == recoveries[evidence['job_id']]['audit_attempt']):
-                row.update(status='PREPARATION_WAITING', previous_preparation_hold=reason)
+                row.update(status='PREPARATION_WAITING', previous_preparation_hold=recovery_reason)
                 continue
             if (reason.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:')
                     and evidence['action'] == 'PRESERVE_FAILED_ATTEMPT'):
