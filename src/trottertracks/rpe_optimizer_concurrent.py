@@ -721,6 +721,9 @@ class DistributedExecutor(ConcurrentExecutor):
         self.eligibility_policy_cache = {}
         self.live_readiness_inflight = {}
         self.live_readiness_partial = {}
+        self.live_readiness_planning = set()
+        self.live_readiness_host_counts = Counter()
+        self.live_readiness_host_pools = {}
         self.pbs_q3_check_queue = {}
         self.live_readiness_workers = max(1, len(kwargs.get('problem', args[4] if len(args)>4 else {}).get('methods', {})))
         self.controller_parallel = distributed.get('controller_parallel') is True
@@ -885,7 +888,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.cv.notify_all()
                 self.state.monitor_stop.set()
             self.dispatcher.join(); self.monitor.join()
-            if self.live_readiness_pool: self.live_readiness_pool.shutdown(wait=False, cancel_futures=True)
+            self._close_live_readiness()
             self.stop_controller_relay()
             if self.pbs_manager: self.pbs_manager.close()
             if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
@@ -1407,6 +1410,69 @@ class DistributedExecutor(ConcurrentExecutor):
         return (getattr(self, '_awaiting_probe_revision', None) !=
                 getattr(self.state, 'probe_revision', 0) and super()._standby_can_fill())
 
+    def _host_readiness_limit(self, host):
+        window = self._live_readiness_window()
+        capacity = self.hosts.get(host, {}).get('capacity')
+        return min(window, self.ready_queue_waves * capacity) if capacity else window
+
+    def _live_readiness_has_room(self, host=None):
+        if not self.controller_parallel:
+            return len(self.live_readiness_inflight) < self._live_readiness_window()
+        if len(self.live_readiness_planning) >= self._live_readiness_window():
+            return False
+        hosts = [host] if host else [name for name, row in self.hosts.items()
+                                    if row.get('accepting_new_jobs', True)]
+        return not hosts or any(self.live_readiness_host_counts[name] < self._host_readiness_limit(name)
+                                for name in hosts)
+
+    def _close_live_readiness(self):
+        if self.live_readiness_pool:
+            self.live_readiness_pool.shutdown(wait=False, cancel_futures=True)
+        for pool in self.live_readiness_host_pools.values():
+            pool.shutdown(wait=False, cancel_futures=True)
+
+    def _dispatch_live_checks(self, key, participants, check, receive, finish):
+        """Use separate bounded lanes and publish each host as it finishes."""
+        with self.state.cv:
+            self.live_readiness_planning.discard(key)
+            if self.state.closed:
+                finish(())
+                return
+            checking = {}
+            deferred = set()
+            for item in participants:
+                host = item[0]
+                if self.live_readiness_host_counts[host] >= self._host_readiness_limit(host):
+                    deferred.add(host)
+                    continue
+                pool = self.live_readiness_host_pools.get(host)
+                if pool is None:
+                    pool = self.live_readiness_host_pools[host] = ThreadPoolExecutor(
+                        max_workers=self.live_readiness_max_workers or self.live_readiness_workers,
+                        thread_name_prefix='rpe-q3-readiness-'+host)
+                self.live_readiness_host_counts[host] += 1
+                checking[pool.submit(check, item)] = host
+
+            def complete(future):
+                with self.state.cv:
+                    host = checking.pop(future)
+                    self.live_readiness_host_counts[host] -= 1
+                    try:
+                        if not self.state.closed and not future.cancelled():
+                            receive(*future.result())
+                    except (OSError, KeyError, TypeError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                        self.log(event='Q3_HOST_READINESS_ERROR', job=key[0], host_id=host, reason=str(error))
+                    finally:
+                        self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
+                        if not checking:
+                            finish(deferred)
+                        self.state.cv.notify_all()
+
+            if not checking:
+                finish(deferred)
+            for future in tuple(checking):
+                future.add_done_callback(complete)
+
     def _fill_standby(self):
         if not (self.live_readiness_pool and (self.controller_parallel or
                 self.ready_queue_waves > 1 and self.distributed.get('work_conserving_search'))):
@@ -1779,10 +1845,18 @@ class DistributedExecutor(ConcurrentExecutor):
                     self.pbs_q3_check_queue.get(host, {}).pop(job_id, None)
                 continue
             pending = self.pbs_q3_check_queue.setdefault(host, {})
-            pending.pop(job_id, None)
-            pending[job_id] = (time.monotonic(), request, decision)
-            while len(pending) > self._live_readiness_window():
-                del pending[next(iter(pending))]
+            previous = pending.get(job_id)
+            if previous and previous[2]['request_sha256'] == decision['request_sha256']:
+                # Late eligibility from other hosts must not push an already
+                # waiting request behind the next compute-node check batch.
+                pending[job_id] = (previous[0], request, decision)
+            else:
+                pending[job_id] = (time.monotonic(), request, decision)
+            supply = getattr(self.state, 'ready_cpu_supply', {}).get(host, {})
+            per_job = max(1, supply.get('q3_cpus_per_job', 1))
+            depth = max(self._live_readiness_window(), (supply.get('target_cpu', 0) + per_job - 1) // per_job)
+            while len(pending) > depth:
+                del pending[next(reversed(pending))]
 
     def _pbs_q3_challenges(self, host, fingerprints, existing, slots):
         from .rpe_pbs import Q3_WORKER_PROOF_SECONDS
@@ -1795,7 +1869,9 @@ class DistributedExecutor(ConcurrentExecutor):
         now = time.monotonic()
         result = []
         unreserved = []
-        for job_id, (checked, request, decision) in list(pending.items()):
+        # Already queued requests take precedence over speculative probes.
+        for job_id in sorted(pending, key=lambda job: job not in rows):
+            checked, request, decision = pending[job_id]
             row = rows.get(job_id)
             if (now - checked >= Q3_WORKER_PROOF_SECONDS
                     or row is not None and (row['state'] != 'QUEUED'
@@ -1842,17 +1918,42 @@ class DistributedExecutor(ConcurrentExecutor):
             future = self.live_readiness_inflight.get(key)
             missing_host = host is not None and host in seen and host not in eligible['eligible_host_ids']
             if blocking or missing_host or prefetch:
+                deferred = set(eligible.get('deferred_hosts', ())) & seen
+                targets = {host} if self.controller_parallel and missing_host and cached and eligible['eligible_host_ids'] else None
+                if targets is None and deferred and not eligible['eligible_host_ids']:
+                    targets = deferred
                 holds = (eligible.get('host_decisions') or {}).values()
                 fixed_scope_hold = holds and all(h.get('reasons') in (
                     ['COUNT_ONLY_SCOPE_EXCEEDED'], ['OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN'])
                     for h in holds)
                 stale = not cached or (not eligible.get('controller_scope') and (
+                    bool(deferred.intersection(targets or seen)) or
                     cached[1] != seen or not fixed_scope_hold
                     and (not eligible['eligible_host_ids'] or missing_host)
                     and time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS))
                 if (stale and future is None and not self.state.closed and not self._user_stop_requested()
-                        and (blocking or len(self.live_readiness_inflight) < self._live_readiness_window())):
+                        and (blocking or self._live_readiness_has_room(host if targets == {host} else None))):
                     started = time.monotonic()
+                    def merge(decision):
+                        if not decision.get('controller_scope'):
+                            # An unobserved host keeps its prior PASS until this
+                            # refresh reaches it. The claim still checks current facts.
+                            observed = set(decision.get('host_decisions', {}))
+                            for name in eligible['eligible_host_ids']:
+                                if name not in observed and name not in decision['eligible_host_ids']:
+                                    decision['eligible_host_ids'].append(name)
+                                    for section in ('host_fingerprints', 'execution_profiles', 'host_decisions'):
+                                        if name in eligible.get(section, {}):
+                                            decision.setdefault(section, {})[name] = eligible[section][name]
+                            waiting = (deferred - observed) | set(decision.get('deferred_hosts', ()))
+                            if waiting:
+                                decision['deferred_hosts'] = sorted(waiting)
+                            if decision['eligible_host_ids']:
+                                decision['reasons'] = []
+                        decision.pop('decision_sha256', None)
+                        decision['decision_sha256'] = digest(decision)
+                        return decision
+
                     def publish(decision):
                         with self.state.cv:
                             if key not in self.live_readiness_partial:
@@ -1861,43 +1962,52 @@ class DistributedExecutor(ConcurrentExecutor):
                                 self.state.q3_readiness_seconds = .75 * previous_seconds + .25 * elapsed
                             if self.state.closed:
                                 return
-                            # An unobserved host keeps its prior PASS until this
-                            # refresh reaches it. The claim still checks current facts.
-                            observed = decision['host_decisions']
-                            for name in eligible['eligible_host_ids']:
-                                if name not in observed:
-                                    decision['eligible_host_ids'].append(name)
-                                    for section in ('host_fingerprints', 'execution_profiles', 'host_decisions'):
-                                        if name in eligible.get(section, {}):
-                                            decision[section][name] = eligible[section][name]
                             decision['eligible_host_ids'].sort()
-                            decision.pop('decision_sha256', None)
-                            decision['decision_sha256'] = digest(decision)
+                            decision = merge(decision)
                             self.live_readiness_partial[key] = decision
                             self._publish_queued_readiness(job_id, request, decision)
                             self._plan_pbs_q3_checks(job_id, request, decision)
                             self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
                             self.state.cv.notify_all()
 
-                    def check():
-                        decision = result
-                        try:
-                            decision = probe(self, request, job_id, deepcopy(result), publish=publish)
-                        except (OSError, KeyError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
-                            decision['reasons'].append(str(exc))
-                        finally:
-                            with self.state.cv:
-                                cache[key] = (time.monotonic(), seen, decision)
-                                self.live_readiness_partial.pop(key, None)
-                                self.live_readiness_inflight.pop(key, None)
+                    def finish(decision):
+                        with self.state.cv:
+                            decision = merge(decision)
+                            cache[key] = (time.monotonic(), seen, decision)
+                            self.live_readiness_partial.pop(key, None)
+                            self.live_readiness_inflight.pop(key, None)
+                            self.live_readiness_planning.discard(key)
+                            if not decision.get('deferred_hosts') or decision['eligible_host_ids']:
                                 self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
-                                self.state.cv.notify_all()
-                                self._publish_queued_readiness(job_id, request, decision)
-                                self._plan_pbs_q3_checks(job_id, request, decision)
-                        return decision
+                            self.state.cv.notify_all()
+                            self._publish_queued_readiness(job_id, request, decision)
+                            self._plan_pbs_q3_checks(job_id, request, decision)
+
+                    def dispatch(participants, check_host, receive, snapshot):
+                        def finish_checks(deferred_hosts):
+                            try:
+                                decision = snapshot(deferred_hosts)
+                            except OSError as error:
+                                decision = deepcopy(self.live_readiness_partial.get(key, result))
+                                if not decision['eligible_host_ids']:
+                                    decision['reasons'] = [str(error)]
+                            finish(decision)
+
+                        self._dispatch_live_checks(key, participants, check_host, receive, finish_checks)
+
+                    def check():
+                        try:
+                            options = dict(dispatch=dispatch, targets=targets) if self.controller_parallel else {}
+                            decision = probe(self, request, job_id, deepcopy(result), publish=publish, **options)
+                        except (OSError, KeyError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
+                            decision = dict(result, reasons=[*result['reasons'], str(exc)])
+                        if decision is not None:
+                            finish(decision)
 
                     future = self.live_readiness_pool.submit(check)
                     self.live_readiness_inflight[key] = future
+                    if self.controller_parallel:
+                        self.live_readiness_planning.add(key)
             if not blocking or future is None or eligible['eligible_host_ids']:
                 return deepcopy(eligible)
             while key in self.live_readiness_inflight and not self._user_stop_requested():
@@ -1906,7 +2016,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.cv.wait(.25)
             if self._user_stop_requested():
                 return deepcopy(result)
-        return deepcopy(future.result())
+            return deepcopy(cache[key][2])
 
     def _enqueue_demand(self, proposal):
         return self._enqueue(proposal, demand=True,
@@ -1924,7 +2034,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 with self.state.cv:
                     if (self.state.closed or self._user_stop_requested() or self._budget_reserved()
                             or checked >= self._live_readiness_window()
-                            or len(self.live_readiness_inflight) >= self._live_readiness_window()):
+                            or not self._live_readiness_has_room()):
                         break
                 if self.has_job(proposal) or not self._candidate_preparation_ready(proposal):
                     continue
@@ -2670,6 +2780,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 key = (job.name, eligibility['request_sha256'])
                 if key in self.live_readiness_inflight:
                     return _CHECK_PENDING
+                if eligibility.get('deferred_hosts'):
+                    return _CHECK_PENDING
                 if eligibility['reasons'] in (['NO_REQUEST_SPECIFIC_HOST_EVIDENCE'],
                                               ['HOST_ELIGIBILITY_CHANGED_REQUEST_SHA256']):
                     cached = self.eligibility_policy_cache.get('live_checks', {}).get(key)
@@ -3408,8 +3520,7 @@ class DistributedExecutor(ConcurrentExecutor):
                          owner_preserved=True,automatic_retry=False)
             self.state.cv.notify_all()
         super().finish()
-        if self.live_readiness_pool:
-            self.live_readiness_pool.shutdown(wait=False, cancel_futures=True)
+        self._close_live_readiness()
         if self.pbs_manager:
             retain = (self.pbs_manager.retain_between_batches and not self.state.failure
                       and not self._user_stop_requested())

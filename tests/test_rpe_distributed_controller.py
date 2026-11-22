@@ -3,6 +3,7 @@
 No adapter is launched: outcomes stand in for already completed artificial jobs.
 """
 import base64
+from copy import deepcopy
 import errno
 from fractions import Fraction
 import json
@@ -553,6 +554,19 @@ class ControllerFailures(unittest.TestCase):
             self.assertEqual(initial['eligibility_challenges'], [])
             with patch('trottertracks.rpe_live_q3_readiness.probe', side_effect=check):
                 view._eligibility_for(request, job.name, blocking=True)
+                with executor.state.cv:
+                    pending = executor.pbs_q3_check_queue[host]
+                    first_received = pending[job.name][0]
+                    second = self.proposal('later-pbs-preflight')
+                    second_job = view.job_dir(second)
+                    second_request = view.request(second, second_job, view.route(second['configuration_id']))
+                    subsequent = dict(pending[job.name][2], request_sha256=Q.digest(second_request))
+                    with patch.object(view, '_live_readiness_window', return_value=2):
+                        view._plan_pbs_q3_checks(second_job.name, second_request, subsequent)
+                        view._plan_pbs_q3_checks(job.name, request, pending[job.name][2])
+                    self.assertEqual(list(pending), [job.name, second_job.name])
+                    self.assertEqual(pending[job.name][0], first_received)
+                    pending.pop(second_job.name)
                 challenge, = poll('preflight')['eligibility_challenges']
                 self.assertEqual(challenge['request_sha256'], Q.digest(request))
                 self.assertNotIn('attempt_id', challenge)
@@ -670,6 +684,64 @@ class ControllerFailures(unittest.TestCase):
             self.assertEqual(executor._live_readiness_window(), 8)
             executor.state.ready_cpu_supply['pbs-0']['missing_cpu'] = 0
             self.assertEqual(executor._live_readiness_window(), executor.live_readiness_workers)
+
+    def test_parallel_readiness_reuses_fast_host_lane_while_other_host_times_out(self):
+        ex = self.executor(capacity=4, controller_parallel=True, live_readiness_max_workers=1,
+            live_q3_readiness=True, host_eligibility=dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))
+        view = ex.for_method('PR_PAULI')
+        gate, slow_started = threading.Event(), threading.Event()
+        observed = []
+
+        def probe(view, request, job, decision, *, publish, dispatch, targets):
+            def check(item):
+                host, _ = item
+                observed.append((job, host))
+                if host == 'slow':
+                    slow_started.set()
+                    gate.wait(5)
+                return host, dict(facts=host)
+
+            def receive(host, result):
+                decision['eligible_host_ids'].append(host)
+                decision.setdefault('host_fingerprints', {})[host] = Q.digest(result)
+                decision.setdefault('host_decisions', {})[host] = dict(status='PASS')
+                publish(deepcopy(decision))
+
+            def finish(deferred):
+                return dict(decision, deferred_hosts=sorted(deferred))
+
+            dispatch([(host, None) for host in ('server1', 'slow') if targets is None or host in targets],
+                     check, receive, finish)
+
+        def wait_for_pass(proposal):
+            job = view.job_dir(proposal)
+            with ex.state.cv:
+                self.assertTrue(ex.state.cv.wait_for(lambda: any(
+                    key[0] == job.name and 'server1' in decision['eligible_host_ids']
+                    for key, decision in ex.live_readiness_partial.items()) or any(
+                    key[0] == job.name and 'server1' in cached[2]['eligible_host_ids']
+                    for key, cached in ex.eligibility_policy_cache['live_checks'].items()), timeout=3))
+            return view._enqueue(proposal, defer_readiness=True)
+
+        with patch('trottertracks.rpe_live_q3_readiness.probe', side_effect=probe):
+            try:
+                first = self.proposal('first-with-slow-host')
+                view._enqueue(first, defer_readiness=True)
+                self.assertTrue(slow_started.wait(3))
+                self.assertIsNotNone(wait_for_pass(first))
+                following = self.proposal('follows-on-fast-host')
+                view._enqueue(following, defer_readiness=True)
+                task = wait_for_pass(following)
+                self.assertIsNotNone(ex.store.row(task.job.name))
+                self.assertEqual(ex.live_readiness_host_counts['slow'], 1)
+                self.assertNotIn((task.job.name, 'slow'), observed)
+                assignment, = ex.rpc('/v1/poll', dict(host_id='server1', slots=1, source_sha=self.source,
+                    host_fingerprints={task.job.name: {'facts': 'server1'}}))['assignments']
+                self.assertEqual(assignment['job_id'], task.job.name)
+            finally:
+                gate.set()
+                with ex.state.cv:
+                    self.assertTrue(ex.state.cv.wait_for(lambda: not ex.live_readiness_inflight, timeout=3))
 
     def test_standby_dry_checks_roll_while_slow_request_is_pending(self):
         from concurrent.futures import ThreadPoolExecutor

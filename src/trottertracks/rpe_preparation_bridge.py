@@ -693,6 +693,8 @@ class DistributedPreparationBridge:
     def hold_evidence(self, directory, reason):
         prefix, _, payload = reason.partition(':')
         stage, _, detail = payload.partition(':')
+        if prefix == 'PREPARATION_RESULT_ARTIFACTS_MISSING':
+            return self.recovery_evidence(directory, stage, detail.split(':', 1)[0])
         if prefix == 'STAGE_FAILED':
             _, _, detail = detail.partition(':NO_AUTOMATIC_RETRY:')
         elif prefix != 'DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD':
@@ -761,6 +763,20 @@ class DistributedPreparationBridge:
     def received_after_reservation_stop(self, directory, reason):
         prefix, _, payload = reason.partition(':')
         stage, _, detail = payload.partition(':')
+        if prefix == 'PREPARATION_RESULT_ARTIFACTS_MISSING':
+            job_id = detail.split(':', 1)[0]
+            if not self.received_stage(directory, stage, job_id):
+                return False
+            wait = directory/(stage+'.IMPORT_WAIT.json')
+            if wait.is_file():
+                evidence = read(wait)
+                if (evidence.get('job_id') != job_id or not evidence.get('missing_path')
+                        or not Path(evidence['missing_path']).exists()):
+                    return False
+            # The missing artifact is recoverable only when the original
+            # accepted result and its declared blobs are available again.
+            result = self.executor.preparation_result(job_id, adopt=False)
+            return bool(result and result.get('status') == 'PREPARATION_COMPLETE')
         if prefix != 'DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD' or stage not in STAGES:
             return False
         if not detail.startswith("{'status':"):
@@ -769,10 +785,14 @@ class DistributedPreparationBridge:
             result = ast.literal_eval(detail)
         except (SyntaxError, ValueError):
             return False
-        return (isinstance(result, dict) and result.get('status') in (
-                    'PREPARATION_STOPPED_BEFORE_RESERVATION', 'PREPARATION_RESULT_ARTIFACTS_MISSING',
+        if not isinstance(result, dict) or not self.received_stage(directory, stage, result.get('job_id')):
+            return False
+        if result.get('status') == 'PREPARATION_RESULT_ARTIFACTS_MISSING':
+            recovered = self.executor.preparation_result(result['job_id'], adopt=False)
+            return bool(recovered and recovered.get('status') == 'PREPARATION_COMPLETE')
+        return result.get('status') in (
+                    'PREPARATION_STOPPED_BEFORE_RESERVATION',
                     'UNKNOWN', 'HOST_ELIGIBILITY_HOLD', 'PREPARATION_DEPENDENCY_HOLD')
-                and self.received_stage(directory, stage, result.get('job_id')))
 
     def _blob(self, raw):
         sha = hashlib.sha256(raw).hexdigest()
@@ -1604,6 +1624,7 @@ class DistributedPreparationBridge:
             else:
                 self._import_result(result, request, inherited_workspace=inherited_workspace)
         except FileNotFoundError as error:
+            put(directory/(stage+'.IMPORT_WAIT.json'), dict(job_id=job_id, missing_path=error.filename))
             raise PreparationWait('PREPARATION_RESULT_ARTIFACTS_MISSING:'+stage+':'+job_id+':'+str(error)) from error
         except ValueError as error:
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':'+str(error)) from error

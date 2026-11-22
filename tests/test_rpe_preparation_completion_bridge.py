@@ -28,6 +28,25 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_missing_received_artifact_resumes_the_original_stage_when_available(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stage = 'DF_CALIBRATION'
+            job = 'prep-' + 'a'*24
+            missing = root/'price-result.json'
+            bridge = B.DistributedPreparationBridge.__new__(B.DistributedPreparationBridge)
+            bridge.executor = SimpleNamespace(preparation_result=unittest.mock.Mock(
+                return_value={'status': 'PREPARATION_COMPLETE'}))
+            C.put(root/(stage+'.IMPORT_WAIT.json'), dict(job_id=job, missing_path=str(missing)))
+            reason = 'PREPARATION_RESULT_ARTIFACTS_MISSING:'+stage+':'+job+':missing result'
+            with patch.object(bridge, 'received_stage', return_value=True) as evidence:
+                self.assertFalse(bridge.received_after_reservation_stop(root, reason))
+                bridge.executor.preparation_result.assert_not_called()
+                missing.write_text('{}')
+                self.assertTrue(bridge.received_after_reservation_stop(root, reason))
+                evidence.assert_called_with(root, stage, job)
+                bridge.executor.preparation_result.assert_called_once_with(job, adopt=False)
+
     def test_unclaimed_stage_reopens_only_with_an_available_budget(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

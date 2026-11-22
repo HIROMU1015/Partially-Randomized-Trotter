@@ -270,7 +270,7 @@ def controller_scope_hold(request, profile):
     return None
 
 
-def probe(executor, request, job_id, decision, *, publish=None):
+def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, targets=None):
     """Obtain real-input dry checks for new jobs before reserving a slot."""
     assignment = dict(job_id=job_id, method=request['method'], request=request,
                       request_sha256=Q.digest(request), source_manifest=executor.source_manifest)
@@ -316,6 +316,8 @@ def probe(executor, request, job_id, decision, *, publish=None):
                             and accepting(worker['host_id'])
                             and (not executor._host_admission(worker['host_id'], policy, error)['optional']
                                  or executor.hosts.get(worker['host_id'], {}).get('accepting_new_jobs') is True))
+    if targets is not None:
+        participants = [item for item in participants if item[0] in targets]
 
     def check_host(item):
         host, worker = item
@@ -377,31 +379,46 @@ def probe(executor, request, job_id, decision, *, publish=None):
 
     observations = {}
     record = executor.run_dir/'distributed'/'q3-readiness'/job_id/'READINESS.json'
+    previous = {}
+    if targets is not None and record.is_file():
+        saved = json.loads(record.read_bytes())
+        if saved.get('assignment') == assignment:
+            previous = saved.get('observations', {})
 
     def save(complete):
         with executor.state.cv:
             if not executor.state.closed:
                 record.parent.mkdir(parents=True, exist_ok=True)
-                Q.atomic_json(record, dict(assignment=assignment, observations=observations, complete=complete))
+                Q.atomic_json(record, dict(assignment=assignment, observations={**previous, **observations},
+                                           complete=complete))
 
     decision.update(input_hashes=assignment['input_hashes'], execution_profiles={}, host_decisions={})
+
+    def receive(host, result):
+        observations[host] = result
+        fingerprint = result.get('fingerprint') or {}
+        current = result.get('status') == 'PASS' and result.get('request_sha256') == assignment['request_sha256']
+        if current and fingerprint.get('source_manifest') == executor.source_manifest:
+            decision['eligible_host_ids'].append(host)
+            decision['host_fingerprints'][host] = Q.digest(fingerprint)
+            decision['execution_profiles'][host] = result['profile']
+            decision['host_decisions'][host] = dict(status='PASS', reasons=[])
+            if result.get('evaluator'):
+                decision['host_decisions'][host]['evaluator'] = result['evaluator']
+            if publish is not None:
+                save(complete=False)
+                publish(snapshot())
+        else:
+            decision['host_decisions'][host] = dict(status='HOLD', reasons=[result.get('reason', 'Fingerprint differs')])
+
+    def finish(deferred=()):
+        save(complete=not deferred)
+        return dict(snapshot(), deferred_hosts=sorted(deferred)) if deferred else snapshot()
+
+    if dispatch is not None:
+        dispatch(participants, check, receive, finish)
+        return None
     with ThreadPoolExecutor(max_workers=max(1, len(participants))) as pool:
         for future in as_completed(pool.submit(check, item) for item in participants):
-            host, result = future.result()
-            observations[host] = result
-            fingerprint = result.get('fingerprint') or {}
-            current = result.get('status') == 'PASS' and result.get('request_sha256') == assignment['request_sha256']
-            if current and fingerprint.get('source_manifest') == executor.source_manifest:
-                decision['eligible_host_ids'].append(host)
-                decision['host_fingerprints'][host] = Q.digest(fingerprint)
-                decision['execution_profiles'][host] = result['profile']
-                decision['host_decisions'][host] = dict(status='PASS', reasons=[])
-                if result.get('evaluator'):
-                    decision['host_decisions'][host]['evaluator'] = result['evaluator']
-                if publish is not None:
-                    save(complete=False)
-                    publish(snapshot())
-            else:
-                decision['host_decisions'][host] = dict(status='HOLD', reasons=[result.get('reason', 'Fingerprint differs')])
-    save(complete=True)
-    return snapshot()
+            receive(*future.result())
+    return finish()
