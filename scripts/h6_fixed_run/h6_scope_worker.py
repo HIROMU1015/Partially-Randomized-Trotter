@@ -124,7 +124,9 @@ def signal(cell):
 
 
 def price(cell, index, cohort):
-    from h6_price_acceleration import PriceFingerprints, fingerprint_context, hadamard_wrapper, reuse_sampled_events
+    from h6_price_acceleration import (
+        PriceFingerprints, event_receipts, fingerprint_context, hadamard_wrapper, reuse_sampled_events,
+    )
     from trotterlib.rte import CompilerSettings
     from trotterlib.rte_compiled_cost import transpile_and_measure_cost
 
@@ -150,7 +152,7 @@ def price(cell, index, cohort):
             result[axis] = dict(rz=cost.rz_count, fingerprint=fp.axes[native],
                 metrics={key: getattr(cost, key) for key in ("rz_depth", "cx_count", "cx_depth", "total_depth", "circuit_size")})
             del cost, wrapper
-    events = [[item.to_dict() for item in request.rte_occurrence.events] for request in requests]
+    events = [event_receipts(request.rte_occurrence.events) for request in requests]
     return dict(candidate=cell, index=index, cohort=cohort, axes=result, compiler=STATE.compiler,
                 preparation_hash=prep.preparation_hash, seeds=seeds, laws=laws, events=events)
 

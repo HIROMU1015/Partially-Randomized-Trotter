@@ -124,7 +124,8 @@ def test_pr_reuses_only_flanks_across_paths(original, monkeypatch):
 
 
 def test_rte_event_reuse_preserves_legacy_seed_and_law(original):
-    from h6_price_acceleration import reuse_sampled_events
+    import json
+    from h6_price_acceleration import event_receipts, reuse_sampled_events
     from trotterlib import rte
 
     components = (rte.RTEComponent("a", .7, .7, 1), rte.RTEComponent("b", .3, .3, -1))
@@ -140,7 +141,9 @@ def test_rte_event_reuse_preserves_legacy_seed_and_law(original):
     assert rte._make_event is original_make
     assert actual == expected
     assert len({id(event) for event in actual[0]}) < 5
-    assert [event.to_dict() for event in actual[1]] == [event.to_dict() for event in expected[1]]
+    entries = event_receipts(actual[1])
+    assert json.dumps(entries) == json.dumps([event.to_dict() for event in expected[1]])
+    assert len({id(receipt) for receipt in entries}) == len({id(event) for event in actual[1]})
 
 
 def test_same_compiler_metrics_and_receipts(original, tmp_path, monkeypatch):

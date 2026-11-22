@@ -55,6 +55,18 @@ def reuse_sampled_events():
         yield
 
 
+def event_receipts(events):
+    """Serialize each shared event once, retaining every position in order."""
+    serialized = {}
+    receipts = []
+    for event in events:
+        key = id(event)
+        if key not in serialized:
+            serialized[key] = event.to_dict()
+        receipts.append(serialized[key])
+    return receipts
+
+
 def hadamard_wrapper(evolution, axis, *, shell=False):
     if axis not in ("cosine", "sine"):
         raise ValueError("Expected a cosine or sine wrapper")
