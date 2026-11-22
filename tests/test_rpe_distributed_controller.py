@@ -289,6 +289,22 @@ class ControllerFailures(unittest.TestCase):
         assigned, = executor.rpc('/v1/poll', dict(host_id='other', slots=1, source_sha=self.source))['assignments']
         self.assertEqual(assigned['job_id'], other.job.name)
 
+    def test_shared_spool_outside_run_notification_creates_no_owner(self):
+        executor = self.executor()
+        old = dict(host_id='server1', job_id='prep-older-run', attempt_id='saved-attempt',
+                   state='UNKNOWN')
+        self.assertEqual(executor.rpc('/v1/state', old),
+                         dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN'))
+        self.assertIsNone(executor.store.row(old['job_id']))
+        with self.assertRaisesRegex(ValueError, 'Different execution host/attempt'):
+            executor.rpc('/v1/complete', old)
+        queued = self.enqueue(executor, 'current-request')
+        assignment, = self.poll(executor)['assignments']
+        with self.assertRaisesRegex(ValueError, 'Different execution host/attempt'):
+            executor.rpc('/v1/state', dict(old, job_id=queued.job.name))
+        self.assertEqual(executor.store.row(queued.job.name)['attempt_id'], assignment['attempt_id'])
+        self.assertEqual(executor.store.row(queued.job.name)['state'], 'ASSIGNED')
+
     def test_existing_queue_with_explicit_auto_round_keeps_auto_capacity(self):
         from trottertracks.rpe_q3_store import JobStore
 

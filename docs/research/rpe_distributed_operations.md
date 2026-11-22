@@ -292,6 +292,8 @@ python3 scripts/archive_rpe_preparation_inputs.py \
 
 配送キャッシュを整理した旧runは、RomuTailの通常Resumeで、起動・終了記録とSTOPの既存判定を通った後に復元する。対象runの回収記録 `*.reclaimed.json` と `ARCHIVE.json` を照合し、正式に除いたbundleのうち不足する同一SHAを復元する。すでに同一SHAが存在すれば再利用する。復元後に通常の§10.5照合を行い、開始時の固定版に渡す。復元件数は `DUPLICATE_PREFLIGHT.json` の `preparation_archive_recovery` に記録する。復元が失敗した場合はResume応答に `preparation_archives` の理由を返す。
 
+共有spoolから現runの台帳にないjobの状態通知が届いた場合は、`STATE_OUTSIDE_CURRENT_RUN` を返し、workerが同じ状態を送り直すのを止める。元のattemptと未回収ファイルはspoolに保持する。現runにあるjobのhost／attempt照合と、成果回収時の所有照合は引き続き必須とする。
+
 作業領域やアーカイブを単独で点検する際は、次の復元コマンドを使える。
 
 ```bash
