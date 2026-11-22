@@ -1167,7 +1167,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     self.state.owner_clock.get(task.owner, -1), task.enqueue)
 
         return sorted((task for task in self.state.tasks.values() if task.status == 'QUEUED'
-                       and self._task_ready(task)), key=priority)
+                       and (task.rule['kind'] != 'preparation' or self._task_ready(task))), key=priority)
 
     def _budget_reserved(self):
         cap = self.state.budgets.get(self.method)
@@ -1179,8 +1179,9 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_pbs_worker import runtime_cpu_footprint
 
         manager = self.pbs_manager
-        rows = [self.store.row(task.job.name) for task in ready]
-        owned_rows = [self.store.row(row['job_id']) for row in owned]
+        snapshot = self.store.rows_for([task.job.name for task in ready] + [row['job_id'] for row in owned])
+        rows = [snapshot[task.job.name] for task in ready]
+        owned_rows = [snapshot[row['job_id']] for row in owned]
         supply = {}
         eligible = {}
         for host, info in self.hosts.items():
@@ -1517,12 +1518,16 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _match_ready_jobs(self, queue, available):
         """One request per usable host slot, preserving candidate order."""
+        if not available:
+            return set()
         owners = {h:[] for h in available}
         compatible = {};skipped = {h:False for h in available}
         policy, error = (self._host_admission_policy() if self.distributed.get('preparation_host_preference')
                          else (None, None))
+        queue = list(queue)
+        rows = self.store.rows_for(task.job.name for task in queue)
         for task in queue:
-            row = self.store.row(task.job.name)
+            row = rows[task.job.name]
             compatible[task.job.name] = []
             for h in available:
                 if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
@@ -1624,9 +1629,12 @@ class DistributedExecutor(ConcurrentExecutor):
                     and observed.get('accepting_new_jobs', True) and storage.get('accepting_new_jobs', True)
                     and not self._user_stop_requested() and not self.state.failure and not self.state.closed)
         queue = self._ready_queue() if class_admission else self.state.tasks.values()
-        for task in queue:
-            if not can_plan or task.status != 'QUEUED' or not self._task_ready(task): continue
-            row = self.store.row(task.job.name)
+        pending = [task for task in queue if can_plan and task.status == 'QUEUED']
+        rows = self.store.rows_for(task.job.name for task in pending)
+        for task in pending:
+            row = rows.get(task.job.name)
+            if row is not None and task.rule['kind'] == 'preparation' and not self._task_ready(task, row):
+                continue
             if row is None or not self._host_supports_stage(host, row['request']) or not self._fits_host_walltime(host, row['request']):
                 continue
             eligibility = row['eligibility'] or {}
@@ -1734,6 +1742,20 @@ class DistributedExecutor(ConcurrentExecutor):
                                           host=host, prefetch=prefetch)
         return result
 
+    def _publish_queued_readiness(self, job_id, request, decision):
+        """Make an additional host visible to dispatch and PBS demand immediately."""
+        hosts = frozenset(decision['eligible_host_ids'])
+        task = self.state.tasks.get(self.run_dir/'jobs'/request['method']/job_id)
+        if (not hosts or task is None or task.status != 'QUEUED' or self.state.closed
+                or self._user_stop_requested() or hosts <= (task.supply_hosts or frozenset())):
+            return
+        row = self.store.row(job_id)
+        if (row is not None and row['state'] == 'QUEUED'
+                and row['request_sha256'] == decision['request_sha256']
+                and row['detail'].get('prelaunch_recovery') is not True
+                and self.store.set_eligibility(job_id, decision)):
+            task.supply_hosts = hosts
+
     def _live_eligibility(self, request, job_id, result, *, blocking, previous, host, prefetch=False):
         """Share a probe per REQUEST and admit hosts as their independent checks pass."""
         from .rpe_live_q3_readiness import probe
@@ -1784,6 +1806,7 @@ class DistributedExecutor(ConcurrentExecutor):
                             decision.pop('decision_sha256', None)
                             decision['decision_sha256'] = digest(decision)
                             self.live_readiness_partial[key] = decision
+                            self._publish_queued_readiness(job_id, request, decision)
                             self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
                             self.state.cv.notify_all()
 
@@ -1800,6 +1823,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                 self.live_readiness_inflight.pop(key, None)
                                 self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
                                 self.state.cv.notify_all()
+                                self._publish_queued_readiness(job_id, request, decision)
                         return decision
 
                     future = self.live_readiness_pool.submit(check)
@@ -1861,8 +1885,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 manifest[target] = sha
         return manifest
 
-    def _task_ready(self, task):
-        request = self.store.row(task.job.name)['request']
+    def _task_ready(self, task, row=None):
+        request = (self.store.row(task.job.name) if row is None else row)['request']
         preparation = self._preparation_request(request)
         if preparation is None: return True
         for predecessor in preparation.get('dependencies', []):
@@ -2558,6 +2582,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 if row['state'] == 'QUEUED':
                     return self._restore_task(row, proposal, demand)
                 raise ValueError('Scientific request changed during host readiness')
+            if eligibility and 'input_hashes' in eligibility:
+                # A faster host may have published before the reservation existed.
+                key = (job.name, eligibility['request_sha256'])
+                cached = self.eligibility_policy_cache.get('live_checks', {}).get(key)
+                latest = self.live_readiness_partial.get(key) or (cached and cached[2])
+                if latest and set(latest['eligible_host_ids']) > set(eligibility['eligible_host_ids']):
+                    eligibility = latest
             if defer_readiness and eligibility and not eligibility['eligible_host_ids']:
                 key = (job.name, eligibility['request_sha256'])
                 if key in self.live_readiness_inflight:
@@ -2815,8 +2846,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 if s.failure or s.closed: return reply(assignments=assignments, stop=False, host_admission=admission)
                 eligible, challenges = [], []
                 skipped = False
+                rows = self.store.rows_for(task.job.name for task in queue)
                 for task in queue:
-                    row = self.store.row(task.job.name)
+                    row = rows[task.job.name]
                     if not self._host_supports_stage(host, row['request']):
                         skipped = True
                         continue
@@ -2826,7 +2858,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     decision = (row['eligibility'] if row['detail'].get('prelaunch_recovery') is True
                                 else self._eligibility_for(row['request'], row['job_id'], blocking=False,
                                                            previous=row['eligibility'], host=host))
-                    if not self.store.set_eligibility(row['job_id'], decision):
+                    unchanged = decision == row['eligibility'] and self.store.eligible(row['request'], decision)
+                    if not unchanged and not self.store.set_eligibility(row['job_id'], decision):
                         self.eligibility_holds[row['job_id']] = decision
                         task.error = 'HOST_ELIGIBILITY_HOLD'
                         ConcurrentExecutor._cancel(self, task)

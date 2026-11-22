@@ -116,6 +116,21 @@ class JobStore:
         with self._connection() as db:
             return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
 
+    def rows_for(self, job_ids):
+        """Read one queue snapshot for a scheduling pass."""
+        ids = list(dict.fromkeys(job_ids))
+        if not ids:
+            return {}
+        with self._connection() as db:
+            db.execute('BEGIN')
+            result = {}
+            for start in range(0, len(ids), 500):
+                group = ids[start:start+500]
+                what = ','.join('?' for _ in group)
+                result.update((row['job_id'], self._decoded(row)) for row in db.execute(
+                    f'SELECT * FROM jobs WHERE job_id IN ({what})', group))
+            return result
+
     def accepted_host(self, job_id, method):
         """Read the host for reuse telemetry without opening the saved request."""
         with self._connection() as db:

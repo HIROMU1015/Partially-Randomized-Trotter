@@ -443,6 +443,38 @@ class ControllerFailures(unittest.TestCase):
             executor.rpc('/v1/complete', self.completion(assignment))
         self.assertEqual(executor.store.counts('PR_PAULI', started_only=True), 1)
 
+    def test_late_host_pass_is_visible_to_scheduler_before_that_host_polls(self):
+        executor = self.executor(live_q3_readiness=True,
+                                 host_eligibility=dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))
+        release = threading.Event()
+        view = executor.for_method('PR_PAULI')
+
+        def check(_, request, job, decision, *, publish):
+            def ready(hosts):
+                return dict(decision, eligible_host_ids=hosts,
+                            host_fingerprints={h: Q.digest({'host': h}) for h in hosts},
+                            host_decisions={h: {'status': 'PASS'} for h in hosts}, execution_profiles={})
+            publish(ready(['server1']))
+            if not release.wait(4):
+                raise AssertionError('Expected the first host before the late PASS')
+            return ready(['server1', 'pbs-0'])
+
+        with patch('trottertracks.rpe_live_q3_readiness.probe', side_effect=check):
+            try:
+                task = view._enqueue(self.proposal('late-host'))
+                original = executor.store.row(task.job.name)
+                self.assertEqual(original['eligibility']['eligible_host_ids'], ['server1'])
+            finally:
+                release.set()
+            with executor.state.cv:
+                self.assertTrue(executor.state.cv.wait_for(lambda: not executor.live_readiness_inflight, 3))
+        row = executor.store.row(task.job.name)
+        self.assertEqual(row['eligibility']['eligible_host_ids'], ['server1', 'pbs-0'])
+        self.assertEqual(task.supply_hosts, frozenset({'server1', 'pbs-0'}))
+        self.assertEqual(row['request_sha256'], original['request_sha256'])
+        self.assertEqual(row['state'], 'QUEUED')
+        self.assertIsNone(row['attempt_id'])
+
     def test_first_verified_host_claims_before_other_host_finishes_its_probe(self):
         executor = self.executor(capacity=2, live_q3_readiness=True,
                                  host_eligibility=dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))

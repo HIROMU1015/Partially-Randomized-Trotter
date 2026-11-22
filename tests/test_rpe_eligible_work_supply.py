@@ -47,7 +47,8 @@ def test_ready_cpu_counts_only_work_that_can_be_sent_to_the_worker():
     rows = {value['job_id']: value for value in (
         row('running', 3, True), row('q3', 2, True), row('audit', 1, True, 'audit'),
         row('wrong-host', 20, False, 'compile'))}
-    executor.store = SimpleNamespace(row=rows.__getitem__, eligible=lambda request, eligibility, *_: eligibility['eligible'])
+    executor.store = SimpleNamespace(rows_for=lambda jobs: {job: rows[job] for job in jobs},
+                                     eligible=lambda request, eligibility, *_: eligibility['eligible'])
     ready = [SimpleNamespace(job=Path(job)) for job in ('q3', 'audit', 'wrong-host')]
     supply = executor._ready_cpu_supply(ready, [rows['running']], {}, None)['worker']
     assert supply['available_cpu'] == 5
@@ -78,7 +79,8 @@ def test_pbs_keeps_replacement_work_that_fits_after_a_running_job_finishes():
     }
     rows = {name: dict(job_id=name, host_id='pbs-0', request=request, eligibility={})
             for name, request in jobs.items()}
-    executor.store = SimpleNamespace(row=rows.__getitem__, eligible=lambda *_: True)
+    executor.store = SimpleNamespace(rows_for=lambda jobs: {job: rows[job] for job in jobs},
+                                     eligible=lambda *_: True)
     with patch.object(rpe_pbs, 'resource_need',
                       side_effect=lambda request, *_: (request['cpus'], request['gib'] * rpe_pbs.GIB)), \
          patch.object(rpe_pbs, 'task_estimate', return_value=20):
@@ -138,5 +140,7 @@ def test_portable_pf_request_ships_verified_wrapper_and_snapshot(tmp_path):
         runtime = producer._pf_native_runtime(script, inputs, bindings, checks)
     assert runtime['runtime'] == dict(input_config='/fixed/config', provider_root='/fixed/provider')
     assert inputs['private/pf-native/snapshot'] == sha
-    assert bindings[str(script)] == '@WORK@/private/pf-transport/scripts/run_pf_preparation_stage.py'
+    assert bindings[str(script)] == '@WORK@/private/pf-transport/scripts/rpe_pf_shared_fingerprints.py'
+    assert 'private/pf-transport/scripts/run_pf_preparation_stage.py' in inputs
+    assert 'private/pf-transport/scripts/rpe_pf_shared_fingerprints.py' in inputs
     assert {row['path']:row['sha256'] for row in checks} == inputs

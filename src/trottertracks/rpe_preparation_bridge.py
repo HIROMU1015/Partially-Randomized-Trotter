@@ -800,15 +800,17 @@ class DistributedPreparationBridge:
         # request inputs, together with the exact native configuration.
         helper = Path(__file__).resolve().with_name('rpe_preparation_paths.py')
         adapter = helper.parents[2] / 'scripts/run_pf_preparation_stage.py'
+        accelerated = adapter.with_name('rpe_pf_shared_fingerprints.py')
         constants = runpy.run_path(str(helper))
         origin = constants['PF_NATIVE_ORIGIN_CONFIG']
         for file, relative in ((adapter, 'scripts/run_pf_preparation_stage.py'),
+                               (accelerated, 'scripts/rpe_pf_shared_fingerprints.py'),
                                (helper, 'src/trottertracks/rpe_preparation_paths.py')):
             destination = 'private/pf-transport/'+relative
             sha = self._blob(file.read_bytes())
             inputs[destination] = sha
             working_hashes.append(dict(path=destination, sha256=sha))
-        bindings[str(script)] = '@WORK@/private/pf-transport/scripts/run_pf_preparation_stage.py'
+        bindings[str(script)] = '@WORK@/private/pf-transport/scripts/rpe_pf_shared_fingerprints.py'
 
         controller_paths = self.settings.get('controller_paths') or {}
         configured = controller_paths.get(origin, {})

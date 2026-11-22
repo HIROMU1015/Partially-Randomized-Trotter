@@ -1,5 +1,6 @@
 from contextlib import nullcontext
 import multiprocessing as mp
+from pathlib import Path
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -13,6 +14,82 @@ from trotterlib.df_partial_s2 import DFDeterministicFragmentSpec, DFDeterministi
 from trottertracks import pr_candidate_completion as completion
 from trottertracks import rpe_df_price_flanks as df, rpe_q3_round_tables as q3
 from trottertracks.resource_applicability import ax2b_native_df_v5 as native
+from rpe_pf_shared_fingerprints import shared_fingerprints, use_shared_fingerprints
+
+
+@pytest.mark.parametrize('axes', [('cosine',), ('sine',), ('cosine', 'sine')])
+def test_pf_shared_canonical_hashes_keep_postcompile_mutation_check(axes, monkeypatch):
+    from trotterlib.rte import CompilerSettings
+    from trotterlib.rte_compiled_cost import transpile_and_measure_cost
+    from trottertracks import resource_applicability
+
+    fixed = (Path(__file__).resolve().parents[1] / 'artifacts/resource_applicability/pr_pf_s2_recomputed'
+             / '2026-10-22/fixed_provider/src/trottertracks/resource_applicability')
+    monkeypatch.setattr(resource_applicability, '__path__', [*resource_applicability.__path__, str(fixed)])
+    from h46_b3_fast_fingerprint import FingerprintSession
+
+    evo = QuantumCircuit(3, global_phase=-.19)
+    for i in range(7):
+        evo.append(XXPlusYYGate(.22, -.31), (0, 1))
+        evo.cp(-.23, 2, 1)
+        evo.rz(.017 * i, 0)
+    expected = native.canonical_qiskit_circuit_fingerprint(evo)
+    model = native.NativeEvolution(evo, 2, .5, 3, '2nd', 'symmetric_directional', 100, expected)
+    expected_wrappers = {axis: native.canonical_qiskit_circuit_fingerprint(
+        native.build_native_hadamard_wrapper(model, axis=axis, max_instructions=100)) for axis in axes}
+    assert shared_fingerprints(evo, axes) == (expected, expected_wrappers)
+
+    session = FingerprintSession()
+    compiler = CompilerSettings(('rz', 'sx', 'x', 'cx'), None, None, 1, None, None, 17, '1.3.0')
+    names = ('rz_count', 'rz_depth', 'cx_count', 'cx_depth', 'total_depth', 'circuit_size')
+
+    def metrics(wrapper, fingerprint):
+        value = transpile_and_measure_cost(wrapper, compiler, actual_circuit_fingerprint=fingerprint)
+        return tuple(getattr(value, name) for name in names)
+
+    original_prices = {axis: metrics(native.build_native_hadamard_wrapper(model, axis=axis,
+                                     max_instructions=100), expected_wrappers[axis]) for axis in axes}
+
+    def compose(row, preparation, requests, scalar, fingerprint):
+        assert fingerprint(evo) == expected
+        return model
+
+    provider = SimpleNamespace(compose=compose)
+    with use_shared_fingerprints(provider, axes):
+        actual = provider.compose(None, None, (), 0., session.fingerprint)
+        for axis in axes:
+            wrapper = native.build_native_hadamard_wrapper(actual, axis=axis, max_instructions=100)
+            hash_before = session.fingerprint(wrapper)
+            assert hash_before == expected_wrappers[axis]
+            assert metrics(wrapper, hash_before) == original_prices[axis]
+            assert session.fingerprint(wrapper) == hash_before
+            wrapper.x(0)
+            assert session.fingerprint(wrapper) != expected_wrappers[axis]
+        evo.x(1)
+        with pytest.raises(ValueError, match='mutated'):
+            native.build_native_hadamard_wrapper(actual, axis=axes[0], max_instructions=100)
+    assert provider.compose is compose
+
+
+def test_df_sampled_event_reuse_keeps_order_and_resets_for_new_law():
+    calls = []
+
+    def original(indices, components, distribution, order):
+        value = tuple(indices), components, distribution, order
+        calls.append(value)
+        return value
+
+    rte = SimpleNamespace(_make_event=original)
+    components, old, new = object(), object(), object()
+    choices = [([0], 0), ([1, 2, 0], 1), ([0], 0), ([1, 2, 0], 1)]
+    expected = [(tuple(indices), components, old, order) for indices, order in choices]
+    with df.reuse_df_price_events(rte):
+        assert [rte._make_event(indices, components, old, order) for indices, order in choices] == expected
+        assert calls == expected[:2]
+        assert rte._make_event([0], components, new, 0)[2] is new
+        assert rte._make_event([0], components, old, 0)[2] is old
+    assert rte._make_event is original
+    assert len(calls) == 4
 
 
 def test_df_price_flanks_are_shared_before_fork_and_keep_each_tail():

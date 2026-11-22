@@ -1,5 +1,6 @@
 """Reuse the fixed DF provider's deterministic S2 flanks within one price task."""
 from contextlib import ExitStack, contextmanager
+from functools import lru_cache
 from unittest.mock import patch
 
 
@@ -52,6 +53,27 @@ class Flanks:
 
 
 @contextmanager
+def reuse_df_price_events(rte):
+    """Reuse immutable events after each original sampling decision."""
+    make = rte._make_event
+    active_components = active_distribution = None
+
+    @lru_cache(maxsize=4096)
+    def event(indices, order):
+        return make(indices, active_components, active_distribution, order)
+
+    def cached(indices, components, distribution, order):
+        nonlocal active_components, active_distribution
+        if components is not active_components or distribution is not active_distribution:
+            event.cache_clear()
+            active_components, active_distribution = components, distribution
+        return event(tuple(map(int, indices)), order)
+
+    with patch.object(rte, '_make_event', cached):
+        yield
+
+
+@contextmanager
 def reuse_df_price_flanks(runner):
     """Warm templates after the existing input checks and before the workers fork."""
     load_runtime = runner.runtime
@@ -59,9 +81,14 @@ def reuse_df_price_flanks(runner):
         patched = set()
         caches = {}
         warmed = {}
+        event_modules = set()
 
         def runtime():
             provider = load_runtime()
+            from trotterlib import rte
+            if rte not in event_modules:
+                stack.enter_context(reuse_df_price_events(rte))
+                event_modules.add(rte)
             runtime_type = provider.D.NativeRuntime
             if runtime_type in patched:
                 return provider
