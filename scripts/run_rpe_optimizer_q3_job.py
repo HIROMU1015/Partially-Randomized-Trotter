@@ -560,7 +560,7 @@ def main():
         EVIDENCE.export(out / label, a.evidence_directory)
         return 0
     out.mkdir(parents=True, exist_ok=True)
-    if request['route']['kind'] == 'h6_df19_fixed_q3':
+    if request['route']['kind'] in ('h6_df19_fixed_q3', 'h6_df19_scoped_q3'):
         adapter = Path(__file__).resolve().parent / 'h6_fixed_run/q3-pilot/h6_q3_adapter.py'
         return subprocess.call([sys.executable, '-B', str(adapter),
                                '--request', str(a.request), '--output', str(out), '--mode', a.mode])

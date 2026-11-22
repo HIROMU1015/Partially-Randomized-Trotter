@@ -3,6 +3,7 @@
 from functools import cache
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
+import os
 import resource
 
 from qiskit import ClassicalRegister, QuantumCircuit, qpy
@@ -17,7 +18,8 @@ from trottertracks.resource_applicability import ax2b_stream_fingerprint_v5 as c
 
 @cache
 def fast_fingerprint_module():
-    source = Path(__file__).resolve().parent / "optimizer-source/scripts/h46_b3_fast_fingerprint.py"
+    local = Path(__file__).resolve().parent / "optimizer-source/scripts/h46_b3_fast_fingerprint.py"
+    source = Path(os.environ.get("H6_SCOPED_FINGERPRINT_SOURCE", local))
     spec = spec_from_file_location("h46_b3_fast_fingerprint", source)
     module = module_from_spec(spec)
     spec.loader.exec_module(module)

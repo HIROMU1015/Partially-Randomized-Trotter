@@ -46,6 +46,16 @@ H6 PR-DF用に通常の `ROUND.json` へ `hchain_price_preparation` を設定で
 - 準備が済んだ同じrunの再開では、保存済みの価格表をSHA-256で照合する。準備済みの価格表から始める場合は、`hchain_price_registry` に `path`・`sha256`・`route` を指定する。`--plan-only` は新しい較正を開始しない。
 - 人工価格と保存H6信号を用い、通常入口のモデル生成・全26軸の費用計算・Q3要求生成・固定評価器の入力照合まで確認した。同じrunの再開で価格表の再生成は0件。
 
+## PBSでのH6範囲指定
+
+[範囲ファイル](h6_scope_example.json)で方式、公式、要求幅、分割位置、PR-DFの絶対κ、RPEの最終ラウンドを指定する。例の `h=0.1`、`M=12` ではFull PF 12件、B0I 48件、PR-DF 70件を列挙する。候補のRPE信号と価格を揃え、配分の選択とQ3結果の採否にはH4と共通の探索器を使用する。
+
+[PBS入口](h6_scope.pbs)に `H6_OPTIMIZER_CHECKOUT`、`H6_ASSETS`、`H6_PYTHON`、`H6_SCOPE_FILE`、`H6_SCOPE_OUTPUT` を絶対パスで渡す。`H6_ASSETS` は `payload-bound`、`representatives`、`optimizer-source`、`q3-pilot/risk-source` を含む既存のH6実行領域。既定は `--plan-only` で、候補表と固定入力の照合を行う。`H6_SCOPE_ACTION=--prepare-only` では信号・較正・価格表を準備し、`--execute` では共通のQ3探索まで進む。`H6_PREPARATION_WORKERS` と `H6_Q3_SLOTS` で割当内の同時実行数を調整できる。
+
+直接コンパイルは例の `calibration_max_m: 5` までとする。実ステップ、公式、分割位置をそろえてX/Yを独立に較正し、全13ラウンドに価格を付ける。PR-DFで外側イベント数を変えるときは切片、`q`、`qR` を使い、短いラウンドで必要な独立点を確保する。得られる総額は価格モデルを仮定した条件付きの値。保存した有限経路の平均と、乱択分布全体の期待価格の資格を区別する。未完了の信号や価格は `HELD_CANDIDATES.json` で確認できる。
+
+同じ範囲と固定入力で同じ出力先を指定すると、完了済みの信号・較正・Q3を再利用する。過去の信号束を指定する場合は `H6_SAVED_SIGNALS` で渡し、科学入力の来歴と物理スケジュールが一致した点を受け入れる。起動記録だけが残る処理は調査対象として記録する。
+
 ## 確認記録
 
 - RomuTailで、保存したFull PF m7の入力（T=12.8、q=8）から計算した元回路、X、Yの正準SHA-256が、PBSのジョブ `267857.CPUcluster-PRISM` の保存値とそれぞれ一致した。共通走査は88.89秒。従来の高速ライターで同じ入力のXとYを個別に走査すると83.45秒と84.06秒。計測区間は指紋計算部分。m7の再コンパイルは0件。

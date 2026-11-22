@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -N H6Scope
+#PBS -j oe
+#PBS -r n
+#PBS -l select=1:ncpus=96:mem=350gb
+
+set -euo pipefail
+umask 077
+code="${H6_OPTIMIZER_CHECKOUT:?Path to the deployed common optimizer checkout}"
+scope="${H6_SCOPE_FILE:?Path to the approved H6 scope JSON}"
+run="${H6_SCOPE_OUTPUT:?Independent output directory for the scope}"
+assets="${H6_ASSETS:?Path to the fixed H6 input and evaluator tree}"
+python="${H6_PYTHON:?Path to the fixed PBS Python runtime}"
+
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export QISKIT_PARALLEL=FALSE RAYON_NUM_THREADS=1
+unset PYTHONPATH
+options=()
+if [[ -n "${H6_PREPARATION_WORKERS:-}" ]]; then options+=(--preparation-workers "$H6_PREPARATION_WORKERS"); fi
+if [[ -n "${H6_Q3_SLOTS:-}" ]]; then options+=(--q3-slots "$H6_Q3_SLOTS"); fi
+if [[ -n "${H6_SAVED_SIGNALS:-}" ]]; then options+=(--saved-signals "$H6_SAVED_SIGNALS"); fi
+exec "$python" -B -u "$code/scripts/h6_fixed_run/run_h6_scope.py" \
+    --scope "$scope" --assets "$assets" --run "$run" "${H6_SCOPE_ACTION:---plan-only}" "${options[@]}"

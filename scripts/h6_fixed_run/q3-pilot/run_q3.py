@@ -42,7 +42,7 @@ def write(path, record, *, replace=False):
             pending.unlink(missing_ok=True)
 
 
-def check_registered_prices(path, signal_sha, compiler, method=None, *, expected_sha=None):
+def check_registered_prices(path, signal_sha, compiler, method=None, *, expected_sha=None, M=12):
     payload = path.read_bytes()
     if expected_sha is not None and hashlib.sha256(payload).hexdigest() != expected_sha:
         raise ValueError("Registered prices changed after the Q3 request was prepared")
@@ -52,13 +52,13 @@ def check_registered_prices(path, signal_sha, compiler, method=None, *, expected
     if (registry["signal_packet_sha256"] != signal_sha or registry["compiler"] != compiler
             or not expected_labels):
         raise ValueError("Registered prices are for a different signal packet or compiler")
-    expected = [(m, axis) for m in range(13) for axis in ("X", "Y")]
+    expected = [(m, axis) for m in range(M + 1) for axis in ("X", "Y")]
     names = METHODS if method is None else (method,)
     for name in names:
         entry = registry["methods"][name]
         axes = entry["axes"]
         if [(row["m"], row["axis"]) for row in axes] != expected:
-            raise ValueError(f"{name} requires all 26 registered physical-axis prices in X/Y round order")
+            raise ValueError(f"{name} requires all {2 * (M + 1)} registered physical-axis prices in X/Y round order")
         for row in axes:
             price = exact_price(row["unit_price_RZ"])
             if price <= 0 or not row.get("price_evidence") or row.get("status") != "ADMITTED":
@@ -110,7 +110,7 @@ def compute(job):
     threshold = Fraction(EPSILON) ** 2
     loss_cap, _ = R.loss_range(h_exact, target)
     entry = dict(
-        prepared=dict(M=12, h=D.a.exact_value(h_exact), decoder=D.S.DECODER,
+        prepared=dict(M=len(rows) - 1, h=D.a.exact_value(h_exact), decoder=D.S.DECODER,
                       input_complete=True, physical_qualification_complete=False,
                       rows=[dict(m=r["m"], mean=dict(raw=r["signal"]["raw"]),
                                  shots=dict(N_X=n, N_Y=n), law_binding=dict(definition=dict(model=law)))

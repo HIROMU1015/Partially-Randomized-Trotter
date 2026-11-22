@@ -17,7 +17,8 @@ def request_inputs(request):
     route = request["route"]
     name = METHODS[request["method"]]
     cid = request["configuration_id"]
-    if route["kind"] != "h6_df19_fixed_q3" or route["view_commit"] != q3.Q3_SOURCE:
+    scoped = route["kind"] == "h6_df19_scoped_q3"
+    if route["kind"] not in ("h6_df19_fixed_q3", "h6_df19_scoped_q3") or route["view_commit"] != q3.Q3_SOURCE:
         raise ValueError("Wrong route for the H6 fixed Q3 adapter")
     entry = route["configurations"][cid]
     config_path = Path(entry["configuration"])
@@ -28,14 +29,21 @@ def request_inputs(request):
     signal_sha = hashlib.sha256(signals_file.read_bytes()).hexdigest()
     signals = q3.read(signals_file)
     target = signals["target"]
+    M = signals["M"]
+    if scoped:
+        if (type(M) is not int or not 1 <= M <= 12 or not 0 < signals["h"] < math.inf
+                or route["scope_owner"] != signals.get("scope_owner")):
+            raise ValueError("Invalid scoped H6 horizon or owner")
+    elif (M, signals["h"]) != (12, .1):
+        raise ValueError("Fixed H6 route requires M=12 and h=0.1")
     if (config["id"] != cid or config["spec"]["binding"]["system"] != "H6"
             or config["spec"]["binding"]["rank"] != 19 or target != q3.TARGET
-            or signals["status"] != "SIGNAL_PACKETS_READY" or signals["M"] != 12 or signals["h"] != .1
-            or config["spec"]["M"] != 12 or signal_sha != entry["signal_packet_sha256"]):
+            or signals["status"] != "SIGNAL_PACKETS_READY"
+            or config["spec"]["M"] != M or signal_sha != entry["signal_packet_sha256"]):
         raise ValueError("H6 canonical configuration, H/state binding or saved raw packet differs")
     method_rows = signals["methods"][name]
-    if [row["m"] for row in method_rows] != list(range(13)):
-        raise ValueError("H6 input must cover all 13 rounds")
+    if [row["m"] for row in method_rows] != list(range(M + 1)):
+        raise ValueError("H6 input must cover all requested rounds")
     for config_round, row in zip(config["rounds"], method_rows, strict=True):
         candidate = row.get("candidate")
         mean = row["signal"]["raw"]
@@ -47,14 +55,14 @@ def request_inputs(request):
                      or candidate["prefix"] != config["spec"]["L_D"])):
             raise ValueError("H6 signal schedule disagrees with the canonical candidate")
     nx, ny = request["N_X"], request["N_Y"]
-    if len(nx) != 13 or nx != ny or any(type(n) is not int or n <= 0 for n in nx):
-        raise ValueError("The fixed H6 route requires a positive symmetric 13-round allocation")
-    if request.get("origin", {}).get("M", 12) != 12:
-        raise ValueError("H6 fixed test horizon is M=12")
+    if len(nx) != M + 1 or nx != ny or any(type(n) is not int or n <= 0 for n in nx):
+        raise ValueError("The fixed H6 route requires a positive symmetric allocation")
+    if request.get("origin", {}).get("M", M) != M:
+        raise ValueError("H6 shot allocation horizon differs from the signal")
     if request["expected"]["configuration_id"] != cid:
         raise ValueError("Expected Q3 request identity differs")
     registry = q3.check_registered_prices(Path(route["registered_prices"]), signal_sha, signals["compiler"],
-                                         name, expected_sha=route.get("registered_prices_sha256"))
+                                         name, expected_sha=route.get("registered_prices_sha256"), M=M)
     price = registry["methods"][name]
     if (price["configuration_id"] != cid or price["configuration_sha256"] != entry["configuration_sha256"]
             or Path(price["configuration"]).resolve() != config_path.resolve()):
@@ -65,7 +73,7 @@ def request_inputs(request):
         raise ValueError("Registered prices do not reproduce the H6 request cost")
     source = dict(view_commit=q3.Q3_SOURCE, source_job=signals["run_id"],
         signal_packet_sha256=signal_sha, configuration_id=cid, evaluator="rpe_total_risk", route=route["kind"])
-    identity = dict(configuration_id=cid, M=12, contract_matches=True,
+    identity = dict(configuration_id=cid, M=M, contract_matches=True,
         allocation=[dict(m=m, N_X=n, N_Y=n) for m, n in enumerate(nx)])
     return name, signals, method_rows, nx, source, identity
 
