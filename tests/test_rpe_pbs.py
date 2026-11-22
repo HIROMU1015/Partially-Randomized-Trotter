@@ -220,6 +220,38 @@ class AdmissionTests(unittest.TestCase):
 
 
 class ManagerTests(unittest.TestCase):
+    def test_q3_worker_proofs_expire_and_are_invalidated_by_failure_or_worker_restart(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, _, _ = self.manager(directory)
+            worker = dict(accepting=True, job_id='allocated', hostname='node', pid=1, source_sha='fixed',
+                          start_clock=dict(clock_id='node-boot', monotonic=1.0))
+            facts = dict(schema='RPE_Q3_CURRENT_HOST_FINGERPRINT_V1', request_sha256='fixed-request')
+            proof = dict(host_fingerprints={'job': facts, 'prep': dict(schema='PREPARATION')})
+            clock = dict(clock_id='node-boot', monotonic=2.0)
+
+            def poll(payload, *, at=10.0, current=worker, token='original', sent=clock):
+                with patch.object(P.time, 'monotonic', return_value=at):
+                    reused = manager._reuse_q3_worker_proofs(token, current, sent, payload)
+                return reused, payload.get('host_fingerprints', {})
+
+            self.assertEqual(poll(deepcopy(proof))[0], set())
+            self.assertEqual(poll({}, at=11), ({'job'}, {'job': facts}))
+            self.assertEqual(poll({}, token='other-allocation'), (set(), {}))
+            self.assertEqual(poll({}, at=10 + P.Q3_WORKER_PROOF_SECONDS), (set(), {}))
+            poll(deepcopy(proof))
+            self.assertEqual(poll(dict(readiness_errors={'job': 'changed source'})), (set(), {}))
+            self.assertEqual(poll({}), (set(), {}))
+            poll(deepcopy(proof))
+            self.assertEqual(poll({}, current=dict(worker, accepting=False)), (set(), {}))
+            self.assertEqual(poll({}), (set(), {}))
+            poll(deepcopy(proof), current=dict(worker, monotonic=clock['monotonic']+P.Q3_WORKER_PROOF_SECONDS))
+            self.assertEqual(poll({}), (set(), {}))
+            poll(deepcopy(proof))
+            self.assertEqual(poll(deepcopy(proof), current=dict(worker, pid=2,
+                start_clock=dict(clock_id='node-boot', monotonic=3.0)))[0], set())
+            self.assertEqual(poll({}, current=dict(worker, pid=2),
+                                  sent=dict(clock, monotonic=4.0)), (set(), {}))
+
     def test_prefetch_checks_worker_visibility_and_keeps_other_poll_work(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, gateway = self.manager(directory)

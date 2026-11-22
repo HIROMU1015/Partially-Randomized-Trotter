@@ -715,6 +715,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self.eligibility_policy_cache = {}
         self.live_readiness_inflight = {}
         self.live_readiness_partial = {}
+        self.pbs_q3_check_queue = {}
         self.live_readiness_workers = max(1, len(kwargs.get('problem', args[4] if len(args)>4 else {}).get('methods', {})))
         self.live_readiness_max_workers = distributed.get('live_readiness_max_workers')
         self.live_readiness_refill_seconds = distributed.get('live_readiness_refill_seconds', 5)
@@ -1756,6 +1757,61 @@ class DistributedExecutor(ConcurrentExecutor):
                 and self.store.set_eligibility(job_id, decision)):
             task.supply_hosts = hosts
 
+    def _plan_pbs_q3_checks(self, job_id, request, decision):
+        """Let the allocated worker check shortlisted requests before reservation."""
+        if self.pbs_manager is None or self.state.closed:
+            return
+        for host in self.pbs_manager.configured:
+            if host not in decision['eligible_host_ids']:
+                if host in decision.get('host_decisions', {}):
+                    self.pbs_q3_check_queue.get(host, {}).pop(job_id, None)
+                continue
+            pending = self.pbs_q3_check_queue.setdefault(host, {})
+            pending.pop(job_id, None)
+            pending[job_id] = (time.monotonic(), request, decision)
+            while len(pending) > self._live_readiness_window():
+                del pending[next(iter(pending))]
+
+    def _pbs_q3_challenges(self, host, fingerprints, existing, slots):
+        from .rpe_pbs import Q3_WORKER_PROOF_SECONDS
+
+        pending = self.pbs_q3_check_queue.get(host, {})
+        limit = min(slots, self._live_readiness_window()) - len(existing)
+        if not pending or limit <= 0:
+            return []
+        rows = self.store.rows_for(pending)
+        now = time.monotonic()
+        result = []
+        unreserved = []
+        for job_id, (checked, request, decision) in list(pending.items()):
+            row = rows.get(job_id)
+            if (now - checked >= Q3_WORKER_PROOF_SECONDS
+                    or row is not None and (row['state'] != 'QUEUED'
+                        or row['request_sha256'] != decision['request_sha256'])):
+                del pending[job_id]
+                continue
+            if (job_id in existing or not self._host_supports_stage(host, request)
+                    or not self._fits_host_walltime(host, request)
+                    or self.store.eligible(request, decision, host, fingerprints, job_id)):
+                continue
+            try:
+                challenge = self._assignment(dict(job_id=job_id, method=request['method'],
+                    request=request, request_sha256=decision['request_sha256'], attempt_id=None),
+                    host_id=host, eligibility=decision)
+            except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
+                del pending[job_id]
+                self.log(event='PBS_Q3_PREFLIGHT_UNAVAILABLE', job=job_id, host_id=host, reason=str(error))
+                continue
+            challenge.pop('attempt_id', None)
+            result.append(challenge)
+            if row is None:
+                unreserved.append(job_id)
+            if len(result) == limit:
+                break
+        if unreserved:
+            self.log(event='PBS_Q3_PREFLIGHT_BEFORE_RESERVATION', host_id=host, jobs=unreserved)
+        return result
+
     def _live_eligibility(self, request, job_id, result, *, blocking, previous, host, prefetch=False):
         """Share a probe per REQUEST and admit hosts as their independent checks pass."""
         from .rpe_live_q3_readiness import probe
@@ -1807,6 +1863,7 @@ class DistributedExecutor(ConcurrentExecutor):
                             decision['decision_sha256'] = digest(decision)
                             self.live_readiness_partial[key] = decision
                             self._publish_queued_readiness(job_id, request, decision)
+                            self._plan_pbs_q3_checks(job_id, request, decision)
                             self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
                             self.state.cv.notify_all()
 
@@ -1824,6 +1881,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                 self.state.probe_revision = getattr(self.state, 'probe_revision', 0) + 1
                                 self.state.cv.notify_all()
                                 self._publish_queued_readiness(job_id, request, decision)
+                                self._plan_pbs_q3_checks(job_id, request, decision)
                         return decision
 
                     future = self.live_readiness_pool.submit(check)
@@ -2826,7 +2884,11 @@ class DistributedExecutor(ConcurrentExecutor):
                     pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
                 def reply(**fields):
                     existing=fields.get('eligibility_challenges',[])
-                    fields['eligibility_challenges']=list({item['job_id']:item for item in existing+pending_challenges}.values())
+                    challenges = {item['job_id']:item for item in existing+pending_challenges}
+                    if may_probe and new_slots and self.pbs_manager is not None and host in self.pbs_manager.configured:
+                        for challenge in self._pbs_q3_challenges(host, fingerprints, challenges, new_slots):
+                            challenges[challenge['job_id']] = challenge
+                    fields['eligibility_challenges'] = list(challenges.values())
                     return dict(fields, capacity_feedback=self._capacity_feedback(host))
                 # A lost response is reconciled with its original owner even
                 # if current readiness changed or another host is offline.

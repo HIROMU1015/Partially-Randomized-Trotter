@@ -511,6 +511,71 @@ class ControllerFailures(unittest.TestCase):
             self.assertEqual(answer['assignments'], [])
         self.assertEqual(executor.store.counts('PR_PAULI', started_only=True), 1)
 
+    def test_pbs_checks_standby_on_compute_worker_before_reserving(self):
+        from trottertracks.rpe_pbs import PbsManager, stamp
+
+        executor = self.executor(capacity='auto', live_q3_readiness=True,
+                                 host_eligibility=dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))
+        host, token, allocation_id = 'pbs-0', 'owned-allocation', 'artificial.pbs'
+        worker = dict(host_id=host, profile={'host_id': host})
+        settings = dict(remote_root='/unused', workers=[worker])
+        manager = PbsManager(executor, settings, gateway=SimpleNamespace())
+        executor.pbs_manager = manager
+        try:
+            manager.state['allocations'][token] = dict(
+                spec=dict(profile=worker['profile'], reason={}), status='R', submitted_clock=stamp())
+            observed = dict(accepting=True, job_id=allocation_id, hostname='compute-node',
+                            pid=123, source_sha='fixed-worker', start_clock=stamp(), remaining_seconds=300)
+            manager.allocations = [dict(token=token, host_id=host, job_id=allocation_id,
+                                        status='R', worker=observed)]
+            view = executor.for_method('PR_PAULI')
+            proposal = self.proposal('prefetched-on-compute-node')
+            job = view.job_dir(proposal)
+            request = view.request(proposal, job, view.route(proposal['configuration_id']))
+            facts = dict(schema='RPE_Q3_CURRENT_HOST_FINGERPRINT_V1', request_sha256=Q.digest(request))
+
+            def check(_, rq, job_id, decision, *, publish):
+                ready = dict(decision, eligible_host_ids=[host], host_decisions={host: {'status': 'PASS'}},
+                             host_fingerprints={host: Q.digest(facts)}, execution_profiles={})
+                publish(ready)
+                return ready
+
+            def poll(rpc_id, **payload):
+                call = dict(request_id=rpc_id, endpoint='/v1/poll', clock=stamp(),
+                            payload=dict(host_id=host, slots=2, capacity=2, source_sha=self.source,
+                                resource_report=dict(pbs=dict(job_id=allocation_id, accepting=True,
+                                    remaining_seconds=300, minimum_task_seconds=1)), **payload))
+                response = manager._dispatch(token, call)
+                self.assertTrue(response['ok'], response)
+                return response['result']
+
+            initial = poll('initial')
+            self.assertEqual(initial['eligibility_challenges'], [])
+            with patch('trottertracks.rpe_live_q3_readiness.probe', side_effect=check):
+                view._eligibility_for(request, job.name, blocking=True)
+                challenge, = poll('preflight')['eligibility_challenges']
+                self.assertEqual(challenge['request_sha256'], Q.digest(request))
+                self.assertNotIn('attempt_id', challenge)
+                self.assertIsNone(executor.store.row(job.name))
+                self.assertEqual(poll('proof', host_fingerprints={job.name: facts})['assignments'], [])
+                self.assertIsNone(executor.store.row(job.name))
+                task = view._enqueue(proposal, demand=True)
+                self.assertEqual(task.job, job)
+                assignment, = poll('next')['assignments']
+                self.assertEqual(assignment['job_id'], job.name)
+                replay, = poll('replay')['assignments']
+                self.assertEqual(replay, assignment)
+                receipt = dict(self.completion(assignment), host_id=host)
+                executor.rpc('/v1/complete', receipt)
+                self.assertEqual(poll('after-completion')['assignments'], [])
+                self.assertEqual(executor.store.counts('PR_PAULI', started_only=True), 1)
+                events = [json.loads(line) for line in (manager.directory/'EVENTS.jsonl').read_text().splitlines()]
+                self.assertTrue(any(e['event']=='PBS_Q3_ASSIGNED_WITH_PREFETCHED_PROOF' and job.name in e['jobs']
+                                    for e in events))
+        finally:
+            executor.pbs_manager = None
+            manager.lock.close()
+
     def test_standby_refills_after_another_polling_host_joins_and_finishes(self):
         executor = DistributedExecutor(ROOT, self.run, self.routes, {}, self.problem,
             optimizer_source=self.source, max_concurrent='auto', budgets={'PR_PAULI': 4},

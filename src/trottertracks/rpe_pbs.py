@@ -25,6 +25,8 @@ from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED'}
 GIB = 1024**3
+# Use the existing live dry-check time window for speculative PBS proofs.
+Q3_WORKER_PROOF_SECONDS = 120
 
 # Measure the same shared paths from the gateway, where directory walks do
 # not occupy a PBS compute slot or depend on a compute node's NFS latency.
@@ -504,6 +506,7 @@ class PbsManager:
         self.artifact_pool = None
         self.artifact_transfers = {}
         self.prefetched_inputs = {}
+        self.q3_worker_proofs = {}
         self.controls = {}
         self.storage_checks = {}
         self.last_error = None
@@ -625,6 +628,37 @@ class PbsManager:
             self.state.setdefault('storage', {})[host] = report
         return report['accepting_new_jobs']
 
+    def _reuse_q3_worker_proofs(self, token, worker, request_clock, payload):
+        """Reuse recent facts from this exact compute worker, never the gateway."""
+        starts = worker.get('start_clock') or {}
+        identity = (worker.get('job_id'), worker.get('hostname'), worker.get('pid'),
+                    worker.get('source_sha'), starts.get('clock_id'), starts.get('monotonic'))
+        sent = request_clock.get('monotonic')
+        if (not worker.get('accepting') or not payload.get('accepting_new_jobs', True) or None in identity
+                or request_clock.get('clock_id') != starts.get('clock_id') or sent is None
+                or sent < starts['monotonic']):
+            self.q3_worker_proofs.pop(token, None)
+            return set()
+        previous, proofs = self.q3_worker_proofs.get(token, (None, {}))
+        if previous != identity:
+            proofs = {}
+        now = time.monotonic()
+        observed = worker.get('monotonic')
+        elapsed = max(0, observed - sent) if observed is not None else 0
+        received = payload.get('host_fingerprints') or {}
+        errors = payload.get('readiness_errors') or {}
+        proofs = {job: entry for job, entry in proofs.items()
+                  if now - entry[0] < Q3_WORKER_PROOF_SECONDS and job not in errors and job not in received}
+        reused = set(proofs)
+        if elapsed < Q3_WORKER_PROOF_SECONDS:
+            for job, facts in received.items():
+                if (isinstance(facts, dict) and facts.get('schema') == 'RPE_Q3_CURRENT_HOST_FINGERPRINT_V1'
+                        and job not in errors):
+                    proofs[job] = now - elapsed, facts
+        self.q3_worker_proofs[token] = identity, proofs
+        payload['host_fingerprints'] = {**{job: facts for job, (_, facts) in proofs.items()}, **received}
+        return reused
+
     def _dispatch(self, token, request):
         host = self.state['allocations'][token]['spec']['profile']['host_id']
         if request['payload'].get('host_id') != host:
@@ -664,8 +698,20 @@ class PbsManager:
                 # A delayed file survives worker/PBS termination; it cannot
                 # constitute a current free-slot offer.
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
+            reused = set()
+            if request['endpoint'] == '/v1/poll':
+                reused = self._reuse_q3_worker_proofs(
+                    token, (allocation or {}).get('worker') or {}, request.get('clock') or {}, payload)
             result = self.executor.rpc(request['endpoint'], payload)
             if request['endpoint'] == '/v1/poll':
+                assignments = {item['job_id'] for item in result.get('assignments', [])}
+                claimed = assignments & reused
+                if claimed:
+                    self.log('PBS_Q3_ASSIGNED_WITH_PREFETCHED_PROOF', host_id=host, jobs=sorted(claimed))
+                cached = self.q3_worker_proofs.get(token)
+                if cached:
+                    for job_id in assignments:
+                        cached[1].pop(job_id, None)
                 result = self._prefetch_preparation_inputs(token, payload, result)
                 record = self.state['allocations'][token]
                 storage = (payload.get('resource_report') or {}).get('storage') or {}
@@ -1109,6 +1155,8 @@ class PbsManager:
                 if first.get('clock_id') != now['clock_id']:
                     record['first_accepting_clock'] = now
             record.update(status=allocation['status'], observed=allocation, clock=now)
+            if allocation['status'] != 'R':
+                self.q3_worker_proofs.pop(token, None)
             if not self.selective_harvest and (
                     allocation['status'] in TERMINAL or allocation['status'] == 'HISTORY_MISSING_RECONCILE_SPOOL'):
                 self._harvest(allocation)
