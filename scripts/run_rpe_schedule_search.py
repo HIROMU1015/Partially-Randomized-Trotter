@@ -248,6 +248,26 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         path = Path(__file__).resolve().with_name('run_rpe_method_optimizer.py')
         if hashlib.sha256(path.read_bytes()).hexdigest() != trial['width_report_sha256']:
             raise ValueError('Selected width report formatter differs')
+    if 'local_q3_horizon_adapter' in trial:
+        from trottertracks.rpe_host_profiles import route_matches, select_host_profile, validate_adapter_profile
+        selection = trial['local_q3_horizon_adapter']
+        local = distributed['local_worker']
+        adapter = dict(adapter_root=selection['root'], adapter_manifest=selection['manifest'])
+        validate_adapter_profile(adapter)
+        view = Path(selection['risk_view'])
+        view_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=view, text=True).strip()
+        for route in selection['routes']:
+            risk = route['horizon_risk_source']
+            if view_commit != risk['commit'] or hashlib.sha256((view/risk['path']).read_bytes()).hexdigest() != risk['sha256']:
+                raise ValueError('Selected horizon risk view differs from the fixed Q3 route')
+            base_route = {key: route[key] for key in ('kind', 'view_commit')}
+            profile = select_host_profile(local, {'request': {'route': base_route}})
+            profile.update(adapter)
+            profile['route_views'][risk['commit']] = str(view)
+            assignment = {'request': {'route': route}}
+            local['route_profiles'] = [r for r in local.get('route_profiles', ()) if not route_matches(r, assignment)]
+            local['route_profiles'].append(dict(route_kind=route['kind'], view_commit=route['view_commit'],
+                horizon_risk_commit=risk['commit'], profile=profile))
     for field in ('ready_queue_waves', 'live_readiness_max_workers', 'live_readiness_refill_seconds'):
         if field in trial:
             distributed[field] = trial[field]
