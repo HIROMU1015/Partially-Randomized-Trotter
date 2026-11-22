@@ -47,13 +47,17 @@ def published(config):
     head=git('ls-remote','origin',ref).decode().split()[0]
     if subprocess.run(['git','cat-file','-e',head+'^{commit}'],cwd=repo,capture_output=True).returncode:
         git('fetch','--no-tags','origin',head)
+    use_sftp = config.get('transfer_mode') == 'sftp'
     manifest={};buffer=io.BytesIO();changed=[]
     with zipfile.ZipFile(buffer,'w',zipfile.ZIP_DEFLATED)as archive:
         for name,source in config['files'].items():
             oid=git('rev-parse',head+':'+source).decode().strip()
             manifest[name]=dict(source_path=source,git_blob=oid)
             if config.get('known',{}).get(name)!=oid:
-                raw=git('cat-file','blob',oid);archive.writestr(name,raw);changed.append(name)
+                raw=git('cat-file','blob',oid)
+                if not use_sftp:
+                    archive.writestr(name,raw)
+                changed.append(name)
                 manifest[name].update(sha256=sha(raw),bytes=len(raw))
     target=config.get('target');final=dict(status='NOT_REQUESTED')
     if target:
@@ -80,6 +84,9 @@ def published(config):
                     if sha(raw)!=expected['sha256']and canonical(value)!=expected['json_sha256']:continue
                     final=dict(status='FINAL_RESULT_PUBLISHED',message='最終結果を公開版で確認',run_id=target['run_id'],source=locator,issues=row.get('issues',[]),missing=row.get('missing',[]))
                 except (KeyError,ValueError,subprocess.CalledProcessError):continue
+    if use_sftp:
+        return dict(commit=head,branch=config['branch'],manifest=manifest,changed=changed,
+                    transfer_mode='sftp',transfer_bytes=sum(manifest[n]['bytes'] for n in changed),final=final)
     data=buffer.getvalue()
     return dict(commit=head,branch=config['branch'],manifest=manifest,changed=changed,
         archive_base64=base64.b64encode(data).decode(),archive_sha256=sha(data),transfer_bytes=len(data)if changed else 0,

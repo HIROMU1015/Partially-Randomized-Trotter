@@ -95,6 +95,24 @@ def recover(destination,allowed):
         elif path.exists():path.unlink()
     journal.unlink();clean_transaction(tx)
 
+def download_members(config,publication):
+    ssh=P(config.get('ssh_executable') or 'ssh')
+    scp=str(ssh.with_name('scp'+ssh.suffix))
+    contents={}
+    with tempfile.TemporaryDirectory() as directory:
+        for name in publication['changed']:
+            source=pathlib.PurePosixPath(config['files'][name])
+            if (source.is_absolute() or '..' in source.parts or
+                    source.as_posix()!=publication['manifest'][name]['source_path']):
+                raise ValueError('Unexpected publication source path')
+            remote_path=pathlib.PurePosixPath(config['repository'])/source
+            target=P(directory)/name
+            subprocess.run([scp,'-q','-o','BatchMode=yes','-o','ConnectTimeout=20',
+                            config['ssh_alias']+':'+str(remote_path),str(target)],
+                           check=True,stdin=subprocess.DEVNULL,timeout=config.get('publication_timeout_seconds',600))
+            contents[name]=target.read_bytes()
+    return contents
+
 def sync_once(config,target=None,reason='MANUAL'):
     destination=P(config['destination']).resolve();destination.mkdir(parents=True,exist_ok=True)
     allowed=set(config['files'])
@@ -103,18 +121,24 @@ def sync_once(config,target=None,reason='MANUAL'):
         recover(destination,allowed)
         known={n:blob((destination/n).read_bytes())for n in allowed if(destination/n).exists()}
         payload=dict(action='publication',repository=config['repository'],branch=config['branch'],files=config['files'],known=known,target=target)
+        if os.name=='nt' and config.get('provider')!='fixture':
+            payload['transfer_mode']='sftp'
         publication=fixture_publication(config,known,target)if config.get('provider')=='fixture'else remote(config,payload)
         if set(publication['manifest'])!=allowed:raise ValueError('Publication member set differs')
-        archive=base64.b64decode(publication['archive_base64'])
-        if sha(archive)!=publication['archive_sha256']:raise ValueError('Publication archive hash differs')
-        changed=publication['changed'];contents={}
-        with zipfile.ZipFile(io.BytesIO(archive))as z:
-            if len(z.namelist())!=len(set(z.namelist()))or set(z.namelist())!=set(changed):raise ValueError('Publication archive members differ')
-            for n in changed:
-                if n not in allowed:raise ValueError('Unsafe publication member')
-                raw=z.read(n);row=publication['manifest'][n]
-                if blob(raw)!=row['git_blob']or sha(raw)!=row['sha256']:raise ValueError('Publication member hash differs: '+n)
-                contents[n]=raw
+        changed=publication['changed']
+        if len(changed)!=len(set(changed)) or not set(changed)<=allowed:
+            raise ValueError('Unexpected changed member list')
+        if publication.get('transfer_mode')=='sftp':
+            contents=download_members(config,publication)
+        else:
+            archive=base64.b64decode(publication['archive_base64'])
+            if sha(archive)!=publication['archive_sha256']:raise ValueError('Publication archive hash differs')
+            with zipfile.ZipFile(io.BytesIO(archive))as z:
+                if len(z.namelist())!=len(set(z.namelist()))or set(z.namelist())!=set(changed):raise ValueError('Publication archive members differ')
+                contents={n:z.read(n) for n in changed}
+        for n, raw in contents.items():
+            row=publication['manifest'][n]
+            if blob(raw)!=row['git_blob']or sha(raw)!=row['sha256']:raise ValueError('Publication member hash differs: '+n)
         for n in allowed-set(changed):
             if known.get(n)!=publication['manifest'][n]['git_blob']:raise ValueError('Untransferred member differs: '+n)
             raw=(destination/n).read_bytes()

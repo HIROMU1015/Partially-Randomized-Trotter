@@ -403,3 +403,5 @@ PBSでは価格compile 1件の失敗結果も受領した。固定Gitコミッ�
 運用branchの集計処理も、永続ログから初回にホストごとの再利用件数を復元し、同じcontrollerの次の集計から追記分を読むよう変更した。実runの約1.28 GBのログで件数が一致した。記録した時間はこの部分だけの読取り時間で、探索全体の短縮時間ではない。
 
 公開用の巨大な結果JSONは厳密な数値を再変換せず空白を省き、Cの単体HTMLは埋め込みデータを可逆圧縮する。2 runの公開を復旧し、Cの探索マップを更新した。公開版はチェックポイント時点の情報で、その後の採用数は中央台帳で確認する。[公開スナップショット](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/8e398c582512bb7906ee3dea08b8e998fd2c7a50)・[Cの同期版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/802c7bacb47586045892eb8f63eee9b3f14730b4)
+
+Windowsの通常Syncで大きい応答が停止した。同じSSH接続でSFTPを使うと公開HTML 53,432,959バイトの転送が5.45秒で終わった。observerは公開commitの各Git blobとSHA-256を返し、Windowsは変更された閲覧ファイルだけをSFTPで受け取り、全件の照合後に従来のトランザクションで設置する。照合失敗時に旧ファイルが残ることを人工入力で確認した。実際のOneDrive閲覧先のHTML・INDEX.json・同期receiptもCの `802c7bacb4` と一致した。[実閲覧ファイルの照合値](rpe_fleet_efficiency_20261122/DF_RECOVERY.json)
