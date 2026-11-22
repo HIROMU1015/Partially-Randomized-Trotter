@@ -449,4 +449,7 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
     def yield_watcher():
         return stop_requested() or (refresh_requested is not None and refresh_requested())
 
-    runtime.follow_preparations(pending.items(), advance, yield_watcher)
+    # Feed new work before re-publishing the saved READY entries. A new
+    # optimizer view can reuse those receipts while the missing stages run.
+    ordered = sorted(pending.items(), key=lambda item: saved.get(item[0], {}).get('status') == 'READY')
+    runtime.follow_preparations(ordered, advance, yield_watcher)

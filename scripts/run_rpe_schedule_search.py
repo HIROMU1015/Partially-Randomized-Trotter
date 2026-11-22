@@ -1837,6 +1837,8 @@ class WidthDriver:
                         parent_revision = 0
                         regular_done = False
                         producer_failed = threading.Event()
+                        registry_changed = threading.Event()
+                        producers_done = threading.Event()
                         if extend_pf:
                             from trottertracks import pf_horizon_preparation as horizon_operations
                             from trottertracks.pf_optimizer_connection import registry_routes
@@ -1850,11 +1852,11 @@ class WidthDriver:
 
                             parents = parent_evidence(initial_context)
 
-                        def include_terminal(pf_context, pf_routes):
-                            if not terminal_entries:
+                        def include_terminal(pf_context, pf_routes, entries):
+                            if not entries:
                                 return pf_context, pf_routes
                             registry = deepcopy(pf_context['pf_evidence_registry'])
-                            registry['configurations'].update(terminal_entries)
+                            registry['configurations'].update(entries)
                             updated = pf_candidate_selection._refresh(ROOT, dict(problem, search=search),
                                 pf_context, self.methods, registry, registry.get('artificial',False))
                             return updated, registry_routes(pf_routes, registry)
@@ -1868,7 +1870,10 @@ class WidthDriver:
                                     parent_revision += 1
                                     changed.notify_all()
                                 if self.live_ready_refill:
-                                    subscriber.announce_pf(*include_terminal(*latest))
+                                    if extend_pf:
+                                        registry_changed.set()
+                                    else:
+                                        subscriber.announce_pf(*latest)
 
                         def terminal_ready(cid, entry):
                             with lock:
@@ -1876,7 +1881,26 @@ class WidthDriver:
                                     return
                                 terminal_entries[cid] = entry
                                 if self.live_ready_refill:
-                                    subscriber.announce_pf(*include_terminal(*latest))
+                                    registry_changed.set()
+
+                        def publish_ready_snapshots():
+                            try:
+                                while not stopped() and not producer_failed.is_set():
+                                    if not registry_changed.wait(.5):
+                                        continue
+                                    with lock:
+                                        registry_changed.clear()
+                                        snapshot = latest
+                                        entries = dict(terminal_entries)
+                                        finished = producers_done.is_set()
+                                    # Route/optimizer hydration can be expensive. Publish the
+                                    # newest snapshot while both preparation producers keep working.
+                                    subscriber.announce_pf(*include_terminal(*snapshot, entries))
+                                    if finished:
+                                        return
+                            except BaseException:
+                                producer_failed.set()
+                                raise
 
                         def regular():
                             if self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill':
@@ -1914,19 +1938,26 @@ class WidthDriver:
                                     stop_requested=terminal_stopped, on_ready=terminal_ready,
                                     refresh_requested=lambda: parent_revision != seen)
 
-                        with ThreadPoolExecutor(max_workers=1,thread_name_prefix='pf-terminal-producer') as pool:
+                        with ThreadPoolExecutor(max_workers=2,thread_name_prefix='pf-terminal-producer') as pool:
                             work = pool.submit(complete_extensions)
+                            publisher = pool.submit(publish_ready_snapshots) if self.live_ready_refill else None
                             try:
-                                result = regular()
+                                try:
+                                    result = regular()
+                                finally:
+                                    with changed:
+                                        regular_done = True
+                                        changed.notify_all()
+                                work.result()
                             except BaseException:
                                 producer_failed.set()
                                 raise
                             finally:
-                                with changed:
-                                    regular_done = True
-                                    changed.notify_all()
-                            work.result()
-                        return (*include_terminal(*result[:2]), result[2])
+                                producers_done.set()
+                                registry_changed.set()
+                            if publisher is not None:
+                                publisher.result()
+                        return (*include_terminal(*result[:2], terminal_entries), result[2])
                     pf_future=preparation_pool.submit(prepare_pf)
 
                 def install_pf():
