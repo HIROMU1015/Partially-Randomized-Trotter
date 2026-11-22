@@ -86,6 +86,21 @@ class SavedHistoryDeltas(unittest.TestCase):
         self.assertEqual(refused[0]['reason'], 'DIFFERENT_JOB_KEY_OR_ROUTE')
         self.assertEqual(stats['context_changes'], {'entry': 1})
 
+    def test_validator_relocation_preserves_hits_and_changed_bytes_revalidate(self):
+        self.evidence(4)
+        selected = 'src/trottertracks/rpe_method_optimizer.py'
+        with patch('trottertracks.rpe_plan_history_cache._validator', return_value={'/first/'+selected: 'a'*64}):
+            cold = self.cache.prior_records(self.executor, self.candidates)
+        with patch('trottertracks.rpe_plan_history_cache._validator', return_value={'/second/'+selected: 'a'*64}):
+            relocated = self.cache.prior_records(self.executor, self.candidates)
+        self.assertEqual(relocated[:2], cold[:2])
+        self.assertEqual((relocated[2]['cache_hits'], relocated[2]['validated_jobs']), (1, 0))
+        with patch('trottertracks.rpe_plan_history_cache._validator', return_value={'/second/'+selected: 'b'*64}):
+            changed = self.cache.prior_records(self.executor, self.candidates)
+        self.assertEqual(changed[:2], cold[:2])
+        self.assertEqual((changed[2]['cache_hits'], changed[2]['validated_jobs']), (0, 1))
+        self.assertEqual(changed[2]['context_changes'], {'validator': 1})
+
     def test_late_ready_subset_skips_unrelated_exact_payloads_until_request_changes(self):
         job = self.evidence(4)
         self.cache.prior_records(self.executor, self.candidates, details=False)

@@ -92,6 +92,11 @@ def _validator(executor):
     return {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 
 
+def _validator_sources(paths):
+    # A fixed overlay may be installed under a new deployment directory.
+    return sorted((Path(path).parent.name, Path(path).name, sha) for path, sha in paths.items())
+
+
 def _context(executor, cid):
     route = executor.route(cid) or {}
     result = dict(executor.prior_route_fields(route, cid), executor_root=str(Path(executor.root).resolve()),
@@ -257,22 +262,28 @@ class HistoryCache:
                     proposal = dict(configuration_id=cid, vector=O.interleave(request['N_X'], request['N_Y']),
                                     origin=request.get('origin', {}))
                     hit = cached.get('record') is not None and saved is not None and saved[1] == context
+                    if not hit and saved is not None and cached.get('record') is not None and saved[1]:
+                        pair = cid, saved[1]
+                        if pair not in comparisons:
+                            old, new = json.loads(saved[1]), json.loads(context)
+                            old_context, new_context = old['context'], new['context']
+                            changed = [field for field in old_context.keys() | new_context.keys()
+                                       if field not in old_context or field not in new_context
+                                       or _json(old_context[field]) != _json(new_context[field])]
+                            if old['schema'] != new['schema']:
+                                changed.append('schema')
+                            if _validator_sources(old['validator']) != _validator_sources(new['validator']):
+                                changed.append('validator')
+                            comparisons[pair] = changed
+                        hit = not comparisons[pair]
+                        for field in comparisons[pair]:
+                            stats['context_changes'][field] = stats['context_changes'].get(field, 0) + 1
                     if hit:
                         record = cached['record']
                         stats['cache_hits'] += 1
                     else:
                         if saved is not None:
                             stats['invalidated_jobs'] += 1
-                        if saved is not None and cached.get('record') is not None and saved[1] and saved[1] != context:
-                            pair = cid, saved[1]
-                            if pair not in comparisons:
-                                old, new = json.loads(saved[1]), json.loads(context)
-                                comparisons[pair] = [
-                                    field for field in old['context'].keys() | new['context'].keys()
-                                    if old['context'].get(field) != new['context'].get(field)
-                                ] + [field for field in ('schema', 'validator') if old[field] != new[field]]
-                            for field in comparisons[pair]:
-                                stats['context_changes'][field] = stats['context_changes'].get(field, 0) + 1
                         if executor.job_dir(proposal).name != job.name or not executor.same_route(job, cid, request=request):
                             refused.append(dict(job=str(job), reason='DIFFERENT_JOB_KEY_OR_ROUTE'))
                             continue
