@@ -168,16 +168,36 @@ class PreparationRoundTests(unittest.TestCase):
     def test_cli_continuation_retains_fatal_stop_when_another_method_needs_inputs(self):
         context,spec,problem,executor=self.inputs()
         executor.launched=lambda method:0
-        for stop in ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'):
+        with tempfile.TemporaryDirectory()as tmp:
+            completion=Completion(tmp,{})
+            result={method:dict(stop_reason='UNKNOWN_RESULT' if method=='FULL_PF'else'NEEDS_INPUTS',
+                new_calls=0,input_requests=[{'ARTIFICIAL':'another missing candidate'}])for method in METHODS}
+            with patch.object(PR,'prepare_for_search')as producer:
+                optimizer=unittest.mock.Mock(side_effect=AssertionError('Q3 after fatal STOP'))
+                got=PR.continue_selected_preparation(ROOT,problem,context,spec,Path(tmp),
+                    completion,executor,result,optimizer=optimizer)
+            self.assertIs(got,result);producer.assert_not_called();optimizer.assert_not_called()
+
+    def test_cli_continues_other_preparations_after_task_hold(self):
+        context,spec,problem,executor=self.inputs()
+        executor.launched=lambda method:0
+        for stop in ('STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'):
             with self.subTest(stop=stop),tempfile.TemporaryDirectory()as tmp:
                 completion=Completion(tmp,{})
-                result={method:dict(stop_reason=stop if method=='FULL_PF'else'NEEDS_INPUTS',
-                    new_calls=0,input_requests=[{'ARTIFICIAL':'another missing candidate'}])for method in METHODS}
-                with patch.object(PR,'prepare_for_search')as producer:
-                    optimizer=unittest.mock.Mock(side_effect=AssertionError('Q3 after fatal STOP'))
+                result={method:dict(stop_reason=stop if method=='FULL_PF' else 'NEEDS_INPUTS',
+                    new_calls=0,input_requests=[{'ARTIFICIAL':'another missing candidate'}]
+                    if method=='PR_DF' else []) for method in METHODS}
+                def prepare(*args, **kwargs):
+                    self.assertTrue(kwargs['selection_results']['PR_DF']['input_requests'])
+                    completion.state['records']['independent'] = dict(
+                        status='READY_FOR_SEARCH', configuration_id='independent')
+                    return context, {}, completion
+                final = {m:dict(r, input_requests=[]) for m,r in result.items()}
+                with patch.object(PR,'prepare_for_search',side_effect=prepare) as producer:
+                    optimizer=unittest.mock.Mock(return_value=final)
                     got=PR.continue_selected_preparation(ROOT,problem,context,spec,Path(tmp),
                         completion,executor,result,optimizer=optimizer)
-                self.assertIs(got,result);producer.assert_not_called();optimizer.assert_not_called()
+                self.assertIs(got,final);producer.assert_called_once();optimizer.assert_called_once()
 
     def test_pf_wave_resolves_price_when_receipt_arrives_and_replays_no_work(self):
         from trottertracks import pf_candidate_selection as selection

@@ -48,6 +48,35 @@ def proposals(instance):
 
 
 class IndependentMethodLaunchContract(unittest.TestCase):
+    def test_task_hold_and_one_exhausted_method_do_not_preempt_the_other_method(self):
+        instance = driver(['PR_PAULI', 'PR_DF'])
+        with tempfile.TemporaryDirectory() as temporary:
+            instance.run = Path(temporary)
+            instance.a = SimpleNamespace(max_cycles=None, plan_only=False)
+            instance.spec = dict(science_approved=True,
+                max_new_q3_per_method={'PR_PAULI': 1, 'PR_DF': 'UNLIMITED'})
+            instance.rule_stop = True
+            instance.log = lambda **row: None
+            instance.save = lambda: None
+            instance.bootstrap_families = lambda: None
+            instance.complete_points = lambda: None
+            instance.plan = lambda: ([], {})
+            calls = []
+
+            def batch():
+                calls.append(True)
+                if len(calls) > 2:
+                    self.fail('No additional work remains after the second wave')
+                instance.state['q3_launched'] = {'PR_PAULI': 1}
+                return {'PR_PAULI': dict(stop_reason='NO_ROUTE_ADAPTER', new_calls=0),
+                        'PR_DF': dict(stop_reason='WORK_SLICE_YIELDED' if len(calls) == 1
+                                      else 'NO_CANDIDATE_LEFT_IN_RANGE', new_calls=0)}
+
+            instance.batch = batch
+            instance.loop()
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(instance.state['stop']['reason'], 'SCOPE_HELD_Q3')
+
     def test_unlimited_wave_yields_past_old_cap_and_stops_on_held_scope(self):
         instance=driver(['PR_DF'])
         with tempfile.TemporaryDirectory() as tmp:

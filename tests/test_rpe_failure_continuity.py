@@ -180,7 +180,7 @@ class FailureContinuity(unittest.TestCase):
 
     def test_stage_boundary_yield_reuses_success_and_never_retries_failure(self):
         with tempfile.TemporaryDirectory()as tmp:
-            root=pathlib.Path(tmp);comp=C.Completion.__new__(C.Completion);comp.source='ARTIFICIAL';events=[]
+            root=pathlib.Path(tmp);comp=C.Completion.__new__(C.Completion);comp.source='ARTIFICIAL';comp.settings={};events=[]
             flag=[False];comp.stop_requested=lambda:flag[0];comp.log=lambda **row:events.append(row)
             cmd=[sys.executable,'-c','print("artificial stage")']
             with patch.object(C,'ROOT',root):

@@ -621,7 +621,11 @@ class ConcurrentExecutor(O.Executor):
         with s.cv:
             if s.closed and s.driver.closed:return
             for t in s.tasks.values():
-                if t.status=='QUEUED'and(self.method is None or t.view.method==self.method):self._cancel(t)
+                if t.status=='QUEUED'and(self.method is None or t.view.method==self.method):
+                    if (self.method is None and getattr(s, 'retain_queued_preparation', False)
+                            and t.demand and t.rule['kind'] == 'preparation'):
+                        continue
+                    self._cancel(t)
             while (any(t.status=='RUNNING'and(self.method is None or t.view.method==self.method)for t in s.tasks.values())
                    or (self.wait_for_running and any(self.method is None or job.parent.name==self.method for job in s.external))):
                 s.cv.wait(.1)
@@ -2651,13 +2655,12 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _timing_queue(self):
         """Observe queue causes under the existing claim lock; never reorder."""
-        s=self.state;reasons={};required=self.distributed.get('required_hosts',[])
+        s=self.state;reasons={}
         admission=None;admission_error=None
         # Use the newer optional-host policy when supplied by the integration;
         # do not copy or change its dispatch/admission implementation here.
         if hasattr(self,'_host_admission_policy'):
             admission,admission_error=self._host_admission_policy()
-            required=[h for h in required if not self._host_admission(h,admission,admission_error)['optional']]
         # Compact operational columns only: do not deserialize every saved REQUEST.
         with self.store._connection() as db:
             snapshot={r['job_id']:dict(r)for r in db.execute(
@@ -2682,7 +2685,6 @@ class DistributedExecutor(ConcurrentExecutor):
                 return min(value,maximum)if value is not None and maximum is not None else value
             if self._preparation_request(self.store.row(task.job.name)['request']) and not self._task_ready(task):reason='PREPARATION_DEPENDENCY_OR_ARTIFACT_WAIT'
             elif admission_error or(admission is not None and not allowed):reason='HOST_ADMISSION_HOLD'
-            elif any(h not in self.hosts for h in required):reason='REQUIRED_HOST_PARTICIPATION_WAIT'
             elif s.active>=self.capacity:reason='ALL_ELIGIBLE_SLOTS_BUSY'
             elif allowed and all(h in self.hosts and capacity(h) is not None and
                     owned[h]>=capacity(h) for h in allowed):reason='ALL_ELIGIBLE_SLOTS_BUSY'
@@ -2804,11 +2806,6 @@ class DistributedExecutor(ConcurrentExecutor):
                     return reply(assignments=assignments, stop=False,
                                  host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
                 self._timing_queue()
-                required = [name for name in self.distributed.get('required_hosts', [])
-                            if not self._host_admission(name, admission_policy, admission_error)['optional']]
-                if any(name not in self.hosts for name in required):
-                    return reply(assignments=assignments, stop=False, host_admission=admission,
-                                waiting_for_hosts=[name for name in required if name not in self.hosts])
                 if not new_slots:
                     return reply(assignments=assignments, stop=False, host_admission=admission,
                                 eligibility_challenges=[])
@@ -2882,19 +2879,22 @@ class DistributedExecutor(ConcurrentExecutor):
                 if s.allocation_auto and rank > 0 and eligible:
                     higher = [h for group in self.allocation_config['priority_groups'][:rank] for h in group]
                     unknown = [h for h in higher if h not in self.hosts]
-                    relevant = any((self.store.row(task.job.name)['eligibility'] is None or
-                        h in self.store.row(task.job.name)['eligibility']['eligible_host_ids'])
-                        for h in unknown for task in eligible)
                     # Start once at this host's first eligible poll, rather
                     # than at controller startup (planning/placement can be
                     # slow). Any higher-group observation ends discovery:
                     # an absent third host cannot delay known surplus work.
                     now = time.monotonic()
                     since = s.allocation_discovery.setdefault(host, now)
-                    if (relevant and not any(h in self.hosts for h in higher) and
+                    if (unknown and not any(h in self.hosts for h in higher) and
                             now-since < self.allocation_config['discovery_grace_seconds']):
-                        return reply(assignments=assignments, stop=False, eligibility_challenges=challenges,
-                                     host_admission=admission, waiting_for_discovery=unknown)
+                        def needs_discovery(task):
+                            decision = self.store.row(task.job.name)['eligibility']
+                            return decision is None or bool(set(unknown).intersection(decision['eligible_host_ids']))
+
+                        eligible = [task for task in eligible if not needs_discovery(task)]
+                        if not eligible:
+                            return reply(assignments=assignments, stop=False, eligibility_challenges=challenges,
+                                         host_admission=admission, waiting_for_discovery=unknown)
                 # Prefix locality is considered only among eligible hosts for
                 # the same first dispatchable task, never an unsupported host.
                 if eligible and not self._preparation_request(self.store.row(eligible[0].job.name)['request']) and time.monotonic()-eligible[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
@@ -2911,7 +2911,8 @@ class DistributedExecutor(ConcurrentExecutor):
                             and self._fits_host_task_class(h, first)
                             and self.store.eligible(first['request'], first['eligibility'], h,
                                                    info.get('host_fingerprints'), first['job_id'])]
-                        if preferred: return reply(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)
+                        if preferred:
+                            eligible = eligible[1:]
                 unresolved = len(self._owned_attempts())
                 remaining = max(0, min(slots-len(assignments), new_slots,
                     self.capacity-max(s.active, unresolved)-len(reserved_for_preferred)))
@@ -3085,6 +3086,31 @@ class DistributedExecutor(ConcurrentExecutor):
                 return
         super()._adopt_answer(job, proposal, answer)
 
+    def scope_unknown(self, job, proposal, answer):
+        answer = super().scope_unknown(job, proposal, answer)
+        if (answer is None or answer['status'] != 'UNKNOWN' or self.state.failure
+                or answer.get('failure_scope') == 'CONFIGURATION'):
+            return answer
+        # A transferred result is checked before publication. Only isolate a
+        # failure at the job directory that owns the exact durable request.
+        if job != self.job_dir(proposal):
+            return answer
+        row = self.store.row(job.name)
+        if not row or not row['attempt_id'] or not row['host_id'] or row['method'] != self.method:
+            return answer
+        request = row['request']
+        if (request['configuration_id'] != proposal['configuration_id']
+                or request['optimizer_source'] != self.computation_source
+                or O.interleave(request['N_X'], request['N_Y']) != tuple(proposal['vector'])
+                or not self.same_route(job, proposal['configuration_id'], request=request)):
+            return answer
+        reason = answer.get('reason')
+        if (row['state'] not in ('UNKNOWN', 'ACCEPTED')
+                and reason not in ('WORKER_CONTACT_LOST', 'WORKER_RESULT_MISMATCH')):
+            return answer
+        return dict(answer, failure_scope='CONFIGURATION',
+                    reason=reason or row['detail'].get('reason') or 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED')
+
     def answer(self, proposal, allow_new=True):
         blocked = self._wait_candidate_preparation(proposal)
         if blocked is not None: return blocked
@@ -3100,19 +3126,7 @@ class DistributedExecutor(ConcurrentExecutor):
             return answer  # a concurrent transfer is not adoption by this selector
         if answer and answer.get('status') == 'BUDGET_EXHAUSTED' and job.name in self.eligibility_holds:
             return self._held_answer(proposal)
-        if answer:
-            current = self.store.row(job.name)
-            task_hold = answer.get('reason') in ('WORKER_CONTACT_LOST', 'WORKER_RESULT_MISMATCH')
-            if (answer['status'] == 'UNKNOWN' and current
-                    and not self.state.failure and current['attempt_id'] and current['host_id']
-                    and (task_hold or
-                         current['state'] == 'UNKNOWN' and current['detail'].get('automatic_retry') is False)):
-                # The durable worker report identifies this unresolved attempt.
-                # Retain its ownership and isolate proposals that depend on it.
-                answer = dict(answer, failure_scope='CONFIGURATION',
-                              reason=(answer['reason'] if task_hold
-                                      else current['detail'].get('reason') or 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED'))
-        return answer
+        return self.scope_unknown(job, proposal, answer)
 
     def record_prior_result_reuse(self, job):
         job = Path(job)
@@ -3217,6 +3231,8 @@ class DistributedExecutor(ConcurrentExecutor):
         # stopping a polling daemon below never signals scientific children.
         # A subsequent controller reconciles the same rows, without retry.
         with self.state.cv:
+            if self.state.failure or self._user_stop_requested():
+                self.state.retain_queued_preparation = False
             for job, task in list(self.state.tasks.items()):
                 if not getattr(task, 'optional_price_validation', False): continue
                 if task.status == 'RUNNING': self.state.active -= 1
@@ -3238,6 +3254,20 @@ class DistributedExecutor(ConcurrentExecutor):
             self._finish_local_worker()
         finally:
             self._close_worker_rpc()
+
+    def queued_preparation_count(self):
+        with self.store._connection() as db:
+            return db.execute("SELECT count(*) FROM jobs WHERE state='QUEUED' "
+                              "AND method LIKE 'PREPARATION:%' "
+                              "AND NOT coalesce(json_extract(request,'$.preparation.optional_price_validation'),0)").fetchone()[0]
+
+    def await_dispatchable_preparation(self):
+        with self.state.cv:
+            policy, error = self._host_admission_policy()
+            offers = {host: self._offer_free(host, policy, error) for host in self.hosts}
+            ready = [task for task in self._ready_queue() if task.rule['kind'] == 'preparation' and task.demand]
+            jobs = self._match_ready_jobs(ready, {host: slots for host, slots in offers.items() if slots})
+        return self.ready_preparations(jobs, wait=True, stop_requested=self._user_stop_requested)
 
     def _close_worker_rpc(self):
         if self.rpc_server is not None:
@@ -3291,10 +3321,13 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     """Parallel methods; each retains O.optimize/run_method's own adoption order."""
     methods=list(methods or problem['methods'])
     finalizers = {}
+    ready_source = kwargs.get('ready_source')
+    keep_active = (not close_executor and ready_source is not None
+                   and isinstance(executor, DistributedExecutor)
+                   and executor.distributed.get('work_conserving_search'))
     try:
         if kwargs.get('context') is None:kwargs['context']=O.prepare(root,problem,methods=methods)
         with ThreadPoolExecutor(max_workers=max(1,len(methods)))as pool:
-            ready_source = kwargs.get('ready_source')
             def report_failure(method,future):
                 if future.cancelled():return
                 error=future.exception()
@@ -3327,7 +3360,7 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
                 state = executor.state
 
                 def idle_ready():
-                    if not executor.has_spare_slot():
+                    if not keep_active and not executor.has_spare_slot():
                         return []
                     return [m for m in out if m not in futures and ready_source.has_new(m)]
 
@@ -3352,7 +3385,7 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
         raise
     finally:
         if close_executor:executor.finish()
-        else:
+        elif not keep_active or executor.state.failure or executor._user_stop_requested():
             for method in methods:executor.for_method(method).finish()
     for method, finalize in finalizers.items():
         finalize(out[method])

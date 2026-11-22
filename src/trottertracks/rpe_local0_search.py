@@ -806,13 +806,18 @@ class Gateway:
             outcomes=load(run/'ROUND_RESULT.json')['methods']
             reasons={v['stop_reason'] for v in outcomes.values()}
             holds={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
-            if reasons & holds:raise RequestError('run','existing scientific hold/STOP is preserved: '+','.join(sorted(reasons & holds)))
+            stop_file = run/'KAPPA_STATE.json'
+            stop = (load(stop_file).get('stop') or {}).get('reason') if stop_file.is_file() else None
+            unresolved_tasks_only = stop in ('SCOPE_HELD_Q3', 'SCOPE_HELD_INPUTS', 'WAITING_FOR_INPUTS')
+            fatal = (reasons & {'UNKNOWN_RESULT'}) if unresolved_tasks_only else (reasons & holds)
+            if fatal:raise RequestError('run','existing scientific hold/STOP is preserved: '+','.join(sorted(fatal)))
             settings=load(run/'ROUND.requested.json')
             if settings.get('search_to_rule_stop'):
                 final=run/'SEARCH_TERMINATION.json'
                 if final.exists() and not user_interrupted:
                     # Older schedule drivers wrote this marker even for a suspended run.
-                    if request['action'] != 'resume' or load(final).get('reason') not in ('SCOPE_HELD_INPUTS', 'MAX_CYCLES'):
+                    if request['action'] != 'resume' or load(final).get('reason') not in (
+                            'SCOPE_HELD_INPUTS', 'SCOPE_HELD_Q3', 'MAX_CYCLES'):
                         return 'REUSED_COMPLETED'
                     suspended_marker = final
             elif not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED','SCALED_SHOT_GRID_COMPLETE'}:

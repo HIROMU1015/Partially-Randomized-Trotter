@@ -13,7 +13,6 @@ from threading import Event
 
 PF_METHODS=frozenset(('FULL_PF','TRUNCATED_PF'))
 PR_METHODS=frozenset(('PR_PAULI','PR_DF'))
-FATAL_STOPS=frozenset(('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD','PREPARATION_HOLD'))
 
 
 def snapshot_context(context):
@@ -119,7 +118,7 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
             stop.set()
             raise
         early_result.update(results)
-        fatal=any(result.get('stop_reason')in FATAL_STOPS for result in results.values())
+        fatal=O.shared_stop(results)
         if fatal:
             stop.set()
 

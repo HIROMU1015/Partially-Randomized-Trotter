@@ -1405,16 +1405,11 @@ class WidthDriver:
                                 backlog.clear()
                             busy = set(active.values())
                             used = Counter(method for method, _ in busy)
-                            priced_waiting = any(id(point) in priced_points for point in backlog)
-                            priced_active = any(isinstance(split, tuple) for _, split in busy)
                             for _ in range(len(backlog)):
                                 if len(active) >= max_active:
                                     break
                                 point = backlog.popleft()
                                 method, split = by_point[id(point)]
-                                if method == 'PR_PAULI' and id(point) not in priced_points and (priced_waiting or priced_active):
-                                    backlog.append(point)
-                                    continue
                                 if used[method] >= lanes[method] or (method, split) in busy:
                                     backlog.append(point)
                                     continue
@@ -1722,6 +1717,8 @@ class WidthDriver:
                 work_conserving_search=self.work_conserving_search)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
+        self.queued_preparation = 0
+        self.preparation_queue_advanced = False
         manager = getattr(executor, 'pbs_manager', None)
         if manager is not None and manager.hold_node:
             manager.retain_between_batches = True
@@ -1737,7 +1734,10 @@ class WidthDriver:
                     scaled_settings(search['scaled_shots']), problem['rpe']['M'])
                 if early:
                     save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', early, runtime.executor.store)
-            def prepare_df(scope, notify=None, stop_requested=executor._user_stop_requested):
+            def user_stopped():
+                return (self.run/'STOP_REQUESTED.json').exists()
+
+            def prepare_df(scope, notify=None, stop_requested=user_stopped):
                 if (runtime is None or 'PR_DF' not in self.methods or self.spec.get('science_approved') is not True
                         or search.get('rule') != 'RPE_SCALED_SHOTS_V1' or context.get('artificial')
                         or problem.get('problem',{}).get('system') != 'H4'
@@ -1754,7 +1754,6 @@ class WidthDriver:
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
                 prepare_during = executor.replay_prior_q3() and prepare_during
             interim=None
-            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
             if prepare_during:
                 # Snapshot/install happens before starting preparation. While
                 # it owns Completion state, Q3 only reads this frozen context.
@@ -1768,7 +1767,6 @@ class WidthDriver:
                         stop_preparation.set()
                         executor.state.cv.notify_all()
 
-                preparation_pool=ThreadPoolExecutor(max_workers=2 if pf_enabled else 1)
                 executor.state.failure_callback=lambda error:stop_preparing()
                 comp.stop_requested=stop_preparation.is_set
                 supports_stop='stop_requested'in inspect.signature(self.complete_points).parameters
@@ -1785,6 +1783,15 @@ class WidthDriver:
                               if runtime is not None and 'PR_DF' in self.methods and
                               search.get('rule') == 'RPE_SCALED_SHOTS_V1' and
                               13 in scaled_settings(search['scaled_shots'])['M'] else None)
+                preparation_pool=ThreadPoolExecutor(max_workers=1 + bool(pf_enabled) + (df_context is not None))
+                stopped = lambda: stop_preparation.is_set() or user_stopped()
+                notify_df = prepare_options.get('announce_ready')
+                df_future = None
+                if df_context is not None:
+                    # Older READY parents can advance while ordinary candidate
+                    # preparation is waiting for its own signal or price.
+                    df_future = preparation_pool.submit(prepare_df, df_context['candidates'], notify_df, stopped)
+                    original_df_parents = {c.get('configuration_id') for c in df_context['candidates']}
                 initial_keys = {p.get('completion', {}).get('key') for p in self.state['points']
                                 if p['status'] in ('REGISTERED', 'EVALUATED')}
                 def prepare():
@@ -1792,11 +1799,11 @@ class WidthDriver:
                         self.bootstrap_families()
                     if not stop_preparation.is_set():
                         self.complete_points(**prepare_options)
-                    stopped = lambda: stop_preparation.is_set() or executor._user_stop_requested()
-                    if df_context is not None and not stopped():
-                        if changed := ready_keys() - initial_keys - horizon_keys:
-                            comp.install_snapshot(df_context, dict(problem, execution_routes=routes), changed)
-                        prepare_df(df_context['candidates'], prepare_options.get('announce_ready'), stopped)
+                    if df_context is not None and not stopped() and (changed := ready_keys() - initial_keys - horizon_keys):
+                        fresh = snapshot_context(df_context)
+                        comp.install_snapshot(fresh, dict(problem, execution_routes=routes), changed)
+                        prepare_df([c for c in fresh['candidates']
+                                    if c.get('configuration_id') not in original_df_parents], notify_df, stopped)
                 pf_future=None
                 self.pf_more=False
                 if pf_enabled:
@@ -1890,6 +1897,9 @@ class WidthDriver:
                 pending=preparation_pool.submit(prepare)
                 can_search=any(c['ready']for c in context['candidates'])
                 while True:
+                    if df_future is not None and df_future.done():
+                        df_future.result()
+                        df_future = None
                     if pf_future is not None and pf_future.done():
                         install_pf()
                         can_search=any(c['ready']for c in context['candidates'])
@@ -1899,11 +1909,15 @@ class WidthDriver:
                             interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
                                 initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True,
                                 **search_options)
-                        if any(r['stop_reason']in fatal for r in interim.values()):
-                            stop_preparing();pending.result();break
+                        if O.shared_stop(interim):
+                            stop_preparing()
+                            pending.result()
+                            if df_future is not None:
+                                df_future.result()
+                            break
                     if pending.done():
                         pending.result()
-                        if pf_future is None: break
+                        if pf_future is None and df_future is None: break
                     ready=ready_keys()
                     changed=ready-installed
                     # Extend an internal batch only inside the same adopted
@@ -1927,7 +1941,7 @@ class WidthDriver:
                     pf_ready = self.live_ready_refill and any(subscriber.has_new(m) for m in self.methods)
                     can_search=bool(changed or replenished or remaining_ready_work or pf_ready)
                     if not can_search:
-                        producers=[f for f in (pending,pf_future) if f is not None and not f.done()]
+                        producers=[f for f in (pending,pf_future,df_future) if f is not None and not f.done()]
                         wait(producers,timeout=1,return_when=FIRST_COMPLETED)
                 # No other thread now changes Completion or its registry.
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
@@ -1940,7 +1954,7 @@ class WidthDriver:
                     routes=install_ready(routes)
                     executor.routes=routes;executor.expected=context['expected']
                     O.apply_published(context['candidates'],routes)
-            if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
+            if interim and O.shared_stop(interim):result=interim
             else:
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
                     result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
@@ -1948,18 +1962,25 @@ class WidthDriver:
                         science_approved=self.spec.get('science_approved')is True)
             actionable = any(req['kind'] != 'HORIZON_INPUTS_MISSING'
                              for r in result.values() for req in r.get('input_requests', []))
-            if not any(r['stop_reason'] in fatal for r in result.values()) and actionable:
+            if not O.shared_stop(result) and actionable:
                 from trottertracks.pr_candidate_completion import continue_selected_preparation
                 with K.CLI.round_phase(self.run,'WIDTH_PREPARATION_CONTINUATION'):
                     result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
                         active_spec,self.run,comp,executor,result,optimizer=optimize)
-            if runtime is not None and not any(r['stop_reason'] in fatal for r in result.values()):
+            if runtime is not None and not O.shared_stop(result):
                 from trottertracks.rpe_preparation_queue import save_horizon_preparation, submit_horizon_preparation
                 requests = [req for r in result.values() for req in r.get('input_requests', [])
                             if req['kind'] == 'HORIZON_INPUTS_MISSING']
                 if requests or (self.run/'HORIZON_PREPARATION.json').is_file():
                     reports = submit_horizon_preparation(runtime, requests)
                     save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', reports, runtime.executor.store)
+                settle = getattr(executor, 'await_dispatchable_preparation', None)
+                if (settle is not None and self.work_conserving_search and not getattr(self, 'pf_more', False)
+                        and not any(r['new_calls'] or r['stop_reason'] == 'WORK_SLICE_YIELDED' for r in result.values())
+                        and not any(p['status'] in ('COMPLETION', 'REGISTERED') for p in self.state['points'])):
+                    # Give eligible work a chance to return its receipt before a
+                    # no-action planning cycle closes the worker connections.
+                    self.preparation_queue_advanced = bool(settle())
         except BaseException as error:
             if preparation_pool is not None:stop_preparing()
             O.record_runtime_error(self.run,error,'WIDTH_BATCH')
@@ -1970,6 +1991,11 @@ class WidthDriver:
             raise
         finally:
             original_error=sys.exc_info()[1];cleanup_error=None
+            preparation_count = getattr(executor, 'queued_preparation_count', None)
+            if (original_error is None and preparation_count is not None and self.work_conserving_search
+                    and not O.shared_stop(result)):
+                # The next planning cycle uses the same durable queue.
+                executor.state.retain_queued_preparation = True
             actions=[] if preparation_pool is None else [('PREPARATION_DRAIN',lambda:preparation_pool.shutdown(wait=True))]
             actions.append(('EXECUTOR_DRAIN',executor.finish))
             for phase,close in actions:
@@ -1981,6 +2007,8 @@ class WidthDriver:
                 try:self.save()  # the preparation producer has now drained
                 except BaseException as error:O.record_runtime_error(self.run,error,'FAILED_STATE_SAVE')
             if original_error is None and cleanup_error is not None:raise cleanup_error
+        if preparation_count is not None:
+            self.queued_preparation = preparation_count()
         with K.CLI.round_phase(self.run, 'WIDTH_CONFIRM_COMPLETED'):
             self.confirm_completed(context,executor,result)
         launched_now={m:executor.launched(m)for m in self.methods}
@@ -2195,9 +2223,8 @@ class WidthDriver:
             result=self.batch(prepare_during=True)if overlap else self.batch()
             self.save();self.log(event='V2_BATCH_END',wall_seconds=time.monotonic()-started,
                 methods={m:dict(stop=r['stop_reason'],new_calls=r['new_calls'])for m,r in result.items()})
-            failed={m:r['stop_reason']for m,r in result.items()if r['stop_reason']in
-                    ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD')}
-            if failed:
+            if O.shared_stop(result):
+                failed={m:r['stop_reason']for m,r in result.items()if r['stop_reason']=='UNKNOWN_RESULT'}
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
             caps=self.spec.get('max_new_q3_per_method',{})
             launched=self.state.get('q3_launched',{})
@@ -2205,10 +2232,10 @@ class WidthDriver:
             budget_remaining = {m for m in budget_stops
                                 if type(caps.get(m)) is not int or launched.get(m, 0) < caps[m]}
             unresolved = next(iter(result.values()), {}).get('executor_metrics', {}).get('unresolved_q3_attempts', [])
-            held_q3 = bool(unresolved) or any(r.get('prior_q3_holds') or
+            held_q3 = bool(unresolved) or any(r.get('prior_q3_holds') or r['stop_reason'] in O.TASK_HOLD_STOPS or
                 any(h['status']=='UNKNOWN' for h in r.get('execution_holds', [])) for r in result.values())
             if (any(launched.values()) and
-                    all(type(caps.get(m)) is int and launched[m] >= caps[m] for m in launched)):
+                    all(type(caps.get(m)) is int and launched.get(m, 0) >= caps[m] for m in result)):
                 self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'Q3_BUDGET_EXHAUSTED',
                     UTC=K.now(),launched=launched,unresolved_q3_attempts=unresolved)
                 self.save();return
@@ -2224,7 +2251,8 @@ class WidthDriver:
             waiting_inputs=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
                      any(r.get('input_requests') for r in result.values()))
-            waiting = waiting_inputs or any(r.get('prior_q3_holds') for r in result.values())
+            queued_preparation = getattr(self, 'queued_preparation', 0)
+            waiting = waiting_inputs or queued_preparation or any(r.get('prior_q3_holds') for r in result.values())
             pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
             if getattr(self,'rule_stop',False):
                 if any(r['stop_reason']=='STEP_LIMIT' for r in result.values()):
@@ -2233,6 +2261,8 @@ class WidthDriver:
                 if getattr(self,'pf_more',False) or any(r['stop_reason']=='WORK_SLICE_YIELDED' for r in result.values()):
                     continue
                 pending=any(p['status'] in ('COMPLETION','REGISTERED') for p in self.state['points'])
+            if getattr(self, 'preparation_queue_advanced', False):
+                continue
             pf_status_path = self.run/'PF_PREPARATION_STATUS.json'
             pf_status = O.load_json(pf_status_path) if pf_status_path.is_file() else {}
             pf_records = list(pf_status.get('records', {}).values()) or [pf_status]
@@ -2259,19 +2289,20 @@ class WidthDriver:
                 elif scaled and not blocked and budget_stops:
                     reason = 'Q3_BUDGET_EXHAUSTED'
                 waits = []
-                if waiting_inputs or any(row.get('status') == 'PREPARATION_WAITING' for row in pf_records):
+                if waiting_inputs or queued_preparation or any(row.get('status') == 'PREPARATION_WAITING' for row in pf_records):
                     waits.append('PREPARATION_OR_INPUT')
                 if any(row.get('status') in ('PRICE_RECHECK_AVAILABLE', 'PRICE_OWNER_WAITING')
                        for row in pf_records):
                     waits.append('PF_PRICE_RECHECK')
-                if ('PR_DF' in self.methods and auto_recheck and
+                if (auto_recheck and 'PR_DF' in result and
                         getattr(self.completion_api(), 'df_price_waiting_for_owner', lambda: False)()):
                     waits.append('DF_PRICE_ORIGINAL_ATTEMPT')
                 if unresolved or any(h.get('status') == 'IN_PROGRESS' for r in result.values()
                                      for h in r.get('held', ())):
                     waits.append('OWNED_ATTEMPT')
-                if any(h.get('reason') == 'NO_MATCHING_ELIGIBLE_HOST' or h.get('status') == 'HOST_ELIGIBILITY_HOLD'
-                       for r in result.values() for h in r.get('held', ())):
+                if any(r['stop_reason'] == 'HOST_ELIGIBILITY_HOLD' or any(
+                       h.get('reason') == 'NO_MATCHING_ELIGIBLE_HOST' or h.get('status') == 'HOST_ELIGIBILITY_HOLD'
+                       for h in r.get('held', ())) for r in result.values()):
                     waits.append('ELIGIBLE_HOST')
                 if auto_recheck and waits and reason in ('WAITING_FOR_INPUTS', 'SCOPE_HELD_INPUTS', 'SCOPE_HELD_Q3'):
                     self.wait_for_recovery(waits, recheck_delay)
@@ -2285,12 +2316,32 @@ class WidthDriver:
             UTC=K.now(),unresolved_q3_attempts=unresolved);self.save()
 
     def wait_for_recovery(self, reasons, seconds):
+        def revision():
+            paths = (
+                self.run/'distributed'/'QUEUE.sqlite3',
+                self.run/'distributed'/'QUEUE.sqlite3-wal',
+                self.run/'HOST_ADMISSION.json',
+                self.run/'completion'/'STEP_PRICE_RULES.json',
+                self.run/'completion'/'PRICE_RULES.json',
+            )
+            result = []
+            for path in paths:
+                try:
+                    stat = path.stat()
+                    result.append((stat.st_ino, stat.st_size, stat.st_mtime_ns))
+                except FileNotFoundError:
+                    result.append(None)
+            return result
+
+        baseline = revision()
         self.state['recovery_wait'] = dict(reasons=reasons, recheck_epoch=time.time()+seconds)
         self.save()
         self.log(event='WAITING_FOR_RECOVERY', **self.state['recovery_wait'])
         deadline = time.monotonic() + seconds
         stop = self.run/'STOP_REQUESTED.json'
         while not stop.exists() and (remaining := deadline - time.monotonic()) > 0:
+            if revision() != baseline:
+                return
             time.sleep(min(1, remaining))
 
 

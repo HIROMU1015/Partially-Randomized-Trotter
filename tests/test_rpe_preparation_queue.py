@@ -34,6 +34,21 @@ class PreparationQueue(Base.ControllerFailures):
         return dict(host_id=row['host_id'],job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],request_sha256=assignment['request_sha256'],
             files={name:base64.b64encode(json.dumps(value).encode()).decode() for name,value in files.items()})
 
+    def test_planning_boundary_retains_preparation_and_reuses_reservation(self):
+        first = self.executor()
+        job = self.submit(first, 'signal', 'independent', budget=1)
+        first.state.retain_queued_preparation = True
+        self.close_one(first)
+        self.assertEqual(first.queued_preparation_count(), 1)
+        second = self.executor()
+        self.assertEqual(self.submit(second, 'signal', 'independent', budget=1), job)
+        assignment, = self.poll_host(second, 'server1')['assignments']
+        self.assertEqual(assignment['job_id'], job)
+        second.rpc('/v1/complete', self.prep_complete(second, assignment))
+        self.assertEqual(second.queued_preparation_count(), 0)
+        self.assertEqual(second.store.preparation_reservations(), {'signal': 1})
+        self.assertEqual(sum(row['event'] == 'ASSIGN' for row in second.store.events()), 1)
+
     def test_horizon_round_shares_existing_queue_and_stage_budgets(self):
         from trottertracks.rpe_preparation_queue import submit_horizon_preparation, submit_registered_horizons
         from trottertracks.rpe_scaled_shots import projection_id

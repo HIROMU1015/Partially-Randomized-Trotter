@@ -12,7 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from trottertracks import rpe_method_optimizer as O
 from trottertracks import rpe_q3_coordinator as Q
+from trottertracks import rpe_optimizer_concurrent as C
 from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+from types import SimpleNamespace
+from unittest.mock import patch
 
 
 class EligibilityQueue(unittest.TestCase):
@@ -156,6 +159,45 @@ class EligibilityQueue(unittest.TestCase):
         acquired = self.poll(ex,'a',current,slots=1)['assignments']
         self.assertEqual([row['job_id']for row in acquired],[task.job.name])
         self.assertEqual(acquired[0]['request_sha256'],waiting['request_sha256'])
+
+    def test_missing_host_never_blocks_an_independent_assignment_or_retries_unknown(self):
+        ex = self.executor(required_hosts=['offline-host'])
+        view = ex.for_method('METHOD')
+        lost, ready = self.proposal('lost'), self.proposal('independent')
+        facts = self.policy(ex, [(lost, ['a']), (ready, ['b'])])
+        owned = view._enqueue(lost, demand=True)
+        first, = self.poll(ex, 'a', {owned.job.name: facts[owned.job.name]['a']})['assignments']
+        ex.rpc('/v1/state', dict(host_id='a', job_id=first['job_id'], attempt_id=first['attempt_id'],
+                                 state='UNKNOWN', detail=dict(reason='ARTIFICIAL_EXIT_MISSING')))
+        status = view.answer(lost)
+        self.assertEqual((status['status'], status['failure_scope']), ('UNKNOWN', 'CONFIGURATION'))
+        self.assertEqual(view.scope_unknown(view.job_dir(ready), ready, status)['failure_scope'], 'GLOBAL')
+        independent = view._enqueue(ready, demand=True)
+        second, = self.poll(ex, 'b', {independent.job.name: facts[independent.job.name]['b']})['assignments']
+        self.assertEqual(second['job_id'], independent.job.name)
+        self.assertEqual(self.poll(ex, 'a', {owned.job.name: facts[owned.job.name]['a']})['assignments'], [])
+        self.assertEqual(ex.store.row(owned.job.name)['attempt_id'], first['attempt_id'])
+        self.assertEqual(ex.store.row(owned.job.name)['state'], 'UNKNOWN')
+
+    def test_interim_selector_yield_keeps_queue_until_user_stop(self):
+        ex = self.executor(work_conserving_search=True)
+        view = ex.for_method('METHOD')
+        proposal = self.proposal('still-ready')
+        self.policy(ex, [(proposal, ['a'])])
+        task = view._enqueue(proposal, demand=True)
+        ready = SimpleNamespace(has_new=lambda method: False)
+
+        def select(*args, **kwargs):
+            return {'METHOD': dict(stop_reason='WORK_SLICE_YIELDED', new_calls=0, budget={})}
+
+        with patch.object(O, 'optimize', side_effect=select):
+            C.optimize(ROOT, self.problem, executor=ex, methods=['METHOD'], context={},
+                       ready_source=ready, close_executor=False)
+            self.assertEqual(ex.store.row(task.job.name)['state'], 'QUEUED')
+            (self.run/'STOP_REQUESTED.json').touch()
+            C.optimize(ROOT, self.problem, executor=ex, methods=['METHOD'], context={},
+                       ready_source=ready, close_executor=False)
+        self.assertEqual(ex.store.row(task.job.name)['state'], 'CANCELLED')
 
     def test_assigned_recovery_bypasses_new_readiness_and_duplicate_acceptance_stays_once(self):
         ex = self.executor();view = ex.for_method('METHOD');p = self.proposal('owned')

@@ -349,8 +349,7 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         if executor_setup and not executor_initialized:
             executor_setup(executor,context)
         with round_phase(run, 'SEARCH_AND_Q3'):
-            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
-            if early_result and any(r.get('stop_reason')in fatal for r in early_result.values()):
+            if early_result and O.shared_stop(early_result):
                 result=early_result
                 missing=[m for m in spec['methods']if m not in result]
                 if missing:

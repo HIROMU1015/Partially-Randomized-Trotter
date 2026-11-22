@@ -456,6 +456,12 @@ def proposals(candidates, knowledge, threshold, search, generate):
 
 HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW',
         'HOST_ELIGIBILITY_HOLD': 'HOST_ELIGIBILITY_HOLD'}
+TASK_HOLD_STOPS = frozenset(HOLD.values())
+
+
+def shared_stop(result):
+    """The optimizer reports UNKNOWN_RESULT only if it cannot isolate the fault."""
+    return any(row.get('stop_reason') == 'UNKNOWN_RESULT' for row in result.values())
 
 
 def hold_candidate(candidate, proposal, answer, backend):

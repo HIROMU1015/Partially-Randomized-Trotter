@@ -2393,7 +2393,7 @@ def continue_selected_preparation(root,problem,context,spec,run,completion,execu
         put(completion.directory/'SEARCH_CYCLES.json',dict(cycles=cycles,cumulative_budget=spec['max_new_q3_per_method']))
         # Continuation shares the original search's STOP, including a fatal
         # answer returned by an early READY candidate or a later cycle.
-        if any(r.get('stop_reason')in {'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}for r in result.values()):
+        if O.shared_stop(result):
             break
         remaining=[]
         for method in spec['methods']:
