@@ -907,7 +907,20 @@ class DistributedPreparationBridge:
         """Derive one successor from a failed, fully returned preparation."""
         from .rpe_q3_coordinator import digest as request_digest
 
-        row = self.executor.store.row(job)
+        owner = self.executor.run_dir
+        if plan.get('prior_run'):
+            from contextlib import closing
+            from .rpe_q3_store import JobStore
+
+            owner = Path(plan['prior_run']).resolve()
+            if owner not in {path.resolve() for path in self.executor.prior_run_dirs}:
+                raise ValueError('Preparation predecessor is outside the fixed prior runs: '+job)
+            database = owner/'distributed'/'QUEUE.sqlite3'
+            with closing(sqlite3.connect(database.as_uri()+'?mode=ro', uri=True)) as db:
+                db.row_factory = sqlite3.Row
+                row = JobStore._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job,)).fetchone())
+        else:
+            row = self.executor.store.row(job)
         if (not row or row['state'] != 'ACCEPTED' or not row['completion_sha256']
                 or not row['attempt_id'] or row['attempt_id'] != plan['attempt_id']
                 or row['request_sha256'] != plan['request_sha256']
@@ -915,7 +928,7 @@ class DistributedPreparationBridge:
             raise ValueError('Original preparation has no matching terminal attempt: '+job)
         request = deepcopy(row['request'])
         preparation = request['preparation']
-        root = self.executor.run_dir/'jobs'/row['method']/job
+        root = owner/'jobs'/row['method']/job
         launch = read(root/'LAUNCH.json')
         receipt = read(root/'PROCESS_RETURN.json')
         outcome = read(root/'OUTCOME.json')
@@ -925,7 +938,8 @@ class DistributedPreparationBridge:
                 or outcome.get('request_sha256') != row['request_sha256']
                 or outcome.get('status') != 'PREPARATION_FAILED' or outcome.get('artifacts')
                 or receipt.get('automatic_retry') is not False
-                or not (receipt.get('returncode') or receipt.get('signal'))):
+                or not (receipt.get('returncode') or receipt.get('signal'))
+                or (plan.get('prior_run') and preparation['dependencies'])):
             raise ValueError('Original preparation needs ownership or partial-result reconciliation: '+job)
         reason = plan['reason']
         if not isinstance(reason, str) or not reason.strip():
