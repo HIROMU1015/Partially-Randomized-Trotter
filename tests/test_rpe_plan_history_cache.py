@@ -73,6 +73,20 @@ class SavedHistoryDeltas(unittest.TestCase):
         self.assertEqual(repriced[0][('cfg', (4, 4))]['cost'], 20)
         self.assertEqual(repriced[2]['validated_jobs'], 0)
 
+    def test_stop_commits_verified_prefix_and_resume_checks_the_rest(self):
+        self.evidence(4)
+        self.evidence(5)
+        with patch.object(self.executor, '_user_stop_requested', create=True, side_effect=[False, True]):
+            known, _, part = self.cache.prior_records(self.executor, self.candidates, details=False)
+        self.assertTrue(part['interrupted'])
+        self.assertEqual(len(known), 1)
+        self.assertEqual(part['validated_jobs'], 1)
+        with patch.object(self.executor, '_user_stop_requested', create=True, return_value=False):
+            known, _, resumed = self.cache.prior_records(self.executor, self.candidates, details=False)
+        self.assertFalse(resumed['interrupted'])
+        self.assertEqual(len(known), 2)
+        self.assertEqual((resumed['cache_hits'], resumed['validated_jobs']), (1,1))
+
     def test_projected_route_cache_tracks_only_its_actual_source_binding(self):
         self.rule['horizon_projection'] = dict(source_configuration_id='source', source_M=1, M=0)
         self.rule['configurations'] = {'source': {'signal_packet': 'fixed'}, 'other': {'signal_packet': 'unrelated'}}

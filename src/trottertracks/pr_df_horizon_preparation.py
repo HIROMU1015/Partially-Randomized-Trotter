@@ -18,26 +18,28 @@ def references(root, runtime, prior_runs):
         path='docs/research/rpe_m13_real_validation_20261122/run01/FULL_PF/signal/REFERENCE.json',
         sha256='84d354c05b567353161cd6ff03ba5ebe3948ddf0057591ef1ad643aa8ea4d8fd')
     declared = list(runtime.settings.get('horizon_references', ()))
+    frozen = []
     collected = []
     catalog = runtime.settings.get('horizon_extensions', {})
     for task in catalog.get('tasks', {}).values():
         for loc in task['request']['preparation'].get('input_hashes', ()):
             if Path(loc['path']).name == 'REFERENCE.json':
                 declared.append({k:loc[k] for k in ('commit','path','sha256')})
-    for run in dict.fromkeys([runtime.executor.run_dir, *map(Path, prior_runs)]):
+    current = runtime.executor.run_dir.resolve()
+    for run in dict.fromkeys([current, *(Path(run).resolve() for run in prior_runs)]):
         for path in (run/'completion'/'horizons').glob('*/REQUEST.json'):
             if loc := read(path).get('terminal_reference'):
-                collected.append(loc)
+                (frozen if run == current else collected).append(loc)
         for path in (run/'pf_auto'/'horizon').glob('*/LEAF.json'):
             if loc := read(path).get('terminal_reference'):
                 collected.append(loc)
     by_binding = {}
     seen = set()
-    # Resolve each binding using the highest-priority available source.
-    # Preserve conflicts within that tier. The published fallback is a
-    # separate experiment and cannot override the run's declared reference.
+    # Keep this run's reference stable for each binding and time. A later PF
+    # result can supply missing evidence but cannot select a different numeric
+    # reference once PR-DF requests have fixed one. Explicit inputs come first.
     tiers = {}
-    for tier, loc in ((tier,loc) for tier,group in enumerate((declared,collected,[published])) for loc in group):
+    for tier, loc in ((tier,loc) for tier,group in enumerate((declared,frozen,collected,[published])) for loc in group):
         identity = (loc['commit'], loc['path'], loc['sha256'])
         if identity in seen:
             continue
@@ -104,7 +106,7 @@ def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_re
         return []
     catalog = runtime.settings.get('horizon_extensions') or {}
     root = Path(root)
-    refs = references(root, runtime, prior_runs)
+    refs = None
     reader = GitReader(root)
     prior_owners = {}
     for directory in dict.fromkeys(map(Path, prior_runs)):
@@ -124,6 +126,7 @@ def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_re
                 packets.append(packet)
     records = []
     def advance(item):
+        nonlocal refs
         parent, c = item
         if parent in native:
             return None
@@ -145,6 +148,8 @@ def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_re
                 if request['horizon_parent'] != source:
                     raise ValueError('Fixed horizon parent differs on Resume')
             else:
+                if refs is None:
+                    refs = references(root, runtime, prior_runs)
                 ref = select_reference(config, refs)
                 request = dict(method='PR_DF',configuration=source['configuration'],M=13,
                                horizon_parent=source,terminal_reference=ref,

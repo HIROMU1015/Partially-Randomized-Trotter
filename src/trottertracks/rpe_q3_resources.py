@@ -255,9 +255,15 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
     target = max(1, int(state.get('target_slots', initial)))
     feedback = deepcopy(feedback or state.get('feedback') or {})
     unmeasured_class = False
+    offered_classes = None
+    measured_demand = feedback.get('capacity_ready_jobs', feedback.get('ready_jobs', 0))
+    isolated = None
     if policy.get('separate_task_resources'):
         peaks = state.setdefault('task_resource_peaks', {})
         active = set(feedback.get('ready_task_classes', ()))
+        occupied_classes = {job.get('resource_class') for job in jobs if job['state'] in OCCUPIED}
+        cold_running = {kind for kind in occupied_classes if kind is not None and
+                        not peaks.get(kind, {}).get('peak_rss_bytes')}
         for job in jobs:
             kind = job.get('resource_class')
             if kind is None:
@@ -269,6 +275,25 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
                 entry[metric] = max(entry.get(metric, 0), job.get(metric, 0))
         active = sorted(active) or state.get('task_resource_classes', [])
         state['task_resource_classes'] = active
+        if 'ready_task_class_order' in feedback:
+            waiting = feedback['ready_task_class_order']
+            previous_trial = state.get('isolated_resource_class')
+            if previous_trial is not None and previous_trial in occupied_classes:
+                isolated = previous_trial
+            elif cold_running:
+                isolated = min(cold_running)
+            elif waiting and not peaks.get(waiting[0], {}).get('peak_rss_bytes'):
+                # Give the highest-priority cold request a turn after current
+                # work drains. Do not use a measured offer to start it.
+                isolated = waiting[0]
+            if isolated is not None:
+                offered_classes = [isolated]
+                state['isolated_resource_class'] = isolated
+            else:
+                state.pop('isolated_resource_class', None)
+                offered_classes = sorted({k for k in waiting if peaks.get(k, {}).get('peak_rss_bytes')})
+                measured_demand = sum(k in offered_classes for k in waiting)
+            active = sorted(set(offered_classes).union(k for k in occupied_classes if k is not None))
         selected = [peaks.get(kind, {}) for kind in active]
         peak = max((job.get('peak_rss_bytes', 0) for job in selected), default=0)
         # Keep every relevant measured peak even if another class is new.
@@ -297,6 +322,8 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
     ceiling = min(limits)
     if resources.get('allocation_bounds_complete') is False or unmeasured_class:
         ceiling = min(ceiling, initial)
+    if isolated is not None:
+        ceiling = min(ceiling, 1)
     reasons = []; stage = state.get('stage', 'COLD_START_UNMEASURED')
     if ceiling < target:
         target = ceiling; state.pop('trial', None); stage = 'RESOURCE_REDUCTION_DRAIN'
@@ -333,8 +360,7 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
             stage='MEASURED_THROUGHPUT_AND_WAIT' if latency is not None else 'MEASURED_THROUGHPUT_WAIT_UNMEASURED'
         # A one-slot trial establishes the next measurement, rather than using
         # machine-wide free CPU as evidence that more Q3s are useful.
-        demand = feedback.get('capacity_ready_jobs', feedback.get('ready_jobs', 0))
-        if not trial and peak and target < ceiling and int(demand) > target and rate:
+        if not trial and peak and target < ceiling and int(measured_demand) > target and rate:
             state['trial']=dict(from_slots=target, rate=rate, decision_wait_per_result=latency)
             target += 1; stage='RESOURCE_BOUNDED_EXPLORATORY_TRIAL'
             reasons.append('One extra slot trial after usable completion with resource headroom and READY work')
@@ -343,6 +369,9 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         state['rate_anchor'] = deepcopy(feedback)
     if resources.get('allocation_bounds_complete') is False:
         reasons.append('Allocation boundary detection incomplete; do not grow above the initial offer')
+    if isolated is not None:
+        stage = 'ISOLATED_RESOURCE_CLASS_TRIAL'
+        reasons.append('A class without a resource sample runs without other work on the host')
     if not reasons:
         reasons.append('Insufficient new usable completions for another slot trial' if peak else 'Cold start: per-job memory and useful throughput not measured')
     state.update(schema='RPE_Q3_SLOT_STATE_V1', target_slots=target, peak_job_rss_bytes=peak, peak_job_cpu_cores=observed_cpu,
@@ -353,4 +382,8 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
                 dp_workers_per_q3=dp, peak_job_rss_bytes=peak, peak_job_cpu_cores=observed_cpu, feedback=feedback,
                 memory_estimate_scope='SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE',
                 trial=state.get('trial'), running_jobs_may_exceed_reduced_capacity=occupied>target)
+    if offered_classes is not None:
+        report['admitted_task_classes'] = offered_classes
+    if isolated is not None:
+        report['isolated_resource_class'] = isolated
     return state, report

@@ -113,6 +113,24 @@ class ControllerFailures(unittest.TestCase):
         assignments = ex.rpc('/v1/poll', dict(poll, host_id='local0-wsl'))['assignments']
         self.assertEqual([item['job_id'] for item in assignments], [job])
 
+    def test_slot_offer_cannot_claim_a_different_resource_class(self):
+        server = SimpleNamespace(server_address=('127.0.0.1', 1), shutdown=lambda: None,
+                                 server_close=lambda: None)
+        with patch.object(Q, 'serve', return_value=(server, SimpleNamespace(join=lambda: None))):
+            ex = self.executor()
+        jobs = {}
+        for provider in ('COLD', 'MEASURED_A', 'MEASURED_B'):
+            request = dict(method='ARTIFICIAL', route=dict(kind='preparation'),
+                preparation=dict(stage='audit', provider=provider, artificial=True,
+                                 command=['ARTIFICIAL_ONLY'], outputs=['receipt.json']))
+            jobs[provider] = ex.submit_preparation(request, approved=True, budget=3)
+        value = dict(host_id='local', slots=2, capacity=2, source_sha=self.source,
+                     resource_report=dict(admitted_task_classes=['preparation:audit:MEASURED_A',
+                                                                 'preparation:audit:MEASURED_B']))
+        assignments = ex.rpc('/v1/poll', value)['assignments']
+        self.assertEqual({item['job_id'] for item in assignments}, {jobs['MEASURED_A'], jobs['MEASURED_B']})
+        self.assertEqual(ex.store.row(jobs['COLD'])['state'], 'QUEUED')
+
     def close_one(self, executor):
         # The fixture starts no processes, so release only its synthetic tasks
         # to avoid hanging test teardown when testing a missing _finished call.

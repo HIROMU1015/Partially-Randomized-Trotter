@@ -1522,7 +1522,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
                     skipped[h] = True
                     continue
-                if (self._wait_for_preparation_preference(h, row, policy, error)
+                if (not self._fits_host_task_class(h, row)
+                        or self._wait_for_preparation_preference(h, row, policy, error)
                         or not self._local_calibration_pair_allows(h, row['request'])):
                     skipped[h] = True
                     continue
@@ -1574,6 +1575,21 @@ class DistributedExecutor(ConcurrentExecutor):
         return fits_request(request, self.hosts.get(host, {}).get('resource_report'),
                             self.distributed.get('pbs') or {}, host)
 
+    @staticmethod
+    def _task_resource_class(row, host):
+        from .rpe_q3_resources import measured_resource_class, resource_class
+        eligibility = row['eligibility'] or {}
+        decision = eligibility.get('host_decisions', {}).get(host, {})
+        runtime = eligibility.get('execution_profiles', {}).get(host)
+        if runtime is not None:
+            return measured_resource_class(row['request'], decision.get('evaluator'), runtime)
+        return resource_class(row['request'], decision.get('evaluator'))
+
+    def _fits_host_task_class(self, host, row):
+        report = self.hosts.get(host, {}).get('resource_report') or {}
+        classes = report.get('admitted_task_classes')
+        return classes is None or self._task_resource_class(row, host) in classes
+
     def _capacity_feedback(self, host):
         with self.store._connection() as database:
             own = [dict(row) for row in database.execute(
@@ -1586,11 +1602,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 if starts: totals[job] = totals.get(job, 0)+sum(now-start for start in starts)
         selected = [totals[row['job_id']] for row in own if row['job_id'] in totals]
         classify = self.distributed.get('live_readiness_max_workers') is not None
-        if classify:
-            from .rpe_q3_resources import measured_resource_class, resource_class
+        local = self.distributed.get('local_worker') or {}
+        class_admission = (classify and host == local.get('host_id')
+                           and (local.get('slot_policy') or {}).get('separate_task_resources'))
         ready = 0
         capacity_ready = 0
         ready_classes = set()
+        class_order = []
         observed = self.hosts.get(host, {})
         fingerprints = observed.get('host_fingerprints') or {}
         rejected = observed.get('readiness_errors') or {}
@@ -1599,7 +1617,8 @@ class DistributedExecutor(ConcurrentExecutor):
         can_plan = (admission.get('accepting', True) and admission.get('max_slots') != 0
                     and observed.get('accepting_new_jobs', True) and storage.get('accepting_new_jobs', True)
                     and not self._user_stop_requested() and not self.state.failure and not self.state.closed)
-        for task in self.state.tasks.values():
+        queue = self._ready_queue() if class_admission else self.state.tasks.values()
+        for task in queue:
             if not can_plan or task.status != 'QUEUED' or not self._task_ready(task): continue
             row = self.store.row(task.job.name)
             if row is None or not self._host_supports_stage(host, row['request']) or not self._fits_host_walltime(host, row['request']):
@@ -1615,10 +1634,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 continue
             capacity_ready += 1
             if classify:
-                decision = eligibility.get('host_decisions', {}).get(host, {})
-                runtime = eligibility.get('execution_profiles', {}).get(host)
-                ready_classes.add(measured_resource_class(row['request'], decision.get('evaluator'), runtime)
-                                  if runtime else resource_class(row['request'], decision.get('evaluator')))
+                kind = self._task_resource_class(row, host)
+                ready_classes.add(kind)
+                if class_admission:
+                    class_order.append(kind)
         ready_now = ready
         if self.distributed.get('work_conserving_search'):
             recent = getattr(self.state, 'host_ready_backlog', {})
@@ -1639,7 +1658,8 @@ class DistributedExecutor(ConcurrentExecutor):
             decision_wait_seconds=sum(selected) if selected else None,
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
             ready_jobs=ready, ready_jobs_now=ready_now, capacity_ready_jobs=capacity_ready,
-            ready_task_classes=sorted(ready_classes), capacity=self.capacity)
+            ready_task_classes=sorted(ready_classes), capacity=self.capacity,
+            **({'ready_task_class_order': class_order} if class_admission else {}))
 
     def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None, prefetch=False):
         """Bind a prepared host decision to this exact scientific request."""
@@ -2827,6 +2847,9 @@ class DistributedExecutor(ConcurrentExecutor):
                             challenges.append(challenge)
                         skipped = True
                         continue
+                    if not self._fits_host_task_class(host, dict(row, eligibility=decision)):
+                        skipped = True
+                        continue
                     conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
                     if skipped and conditional and not task.demand:
                         continue
@@ -2885,6 +2908,7 @@ class DistributedExecutor(ConcurrentExecutor):
                             and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']
                             and self._host_supports_stage(h, first['request'])
                             and self._fits_host_walltime(h, first['request'])
+                            and self._fits_host_task_class(h, first)
                             and self.store.eligible(first['request'], first['eligibility'], h,
                                                    info.get('host_fingerprints'), first['job_id'])]
                         if preferred: return reply(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)

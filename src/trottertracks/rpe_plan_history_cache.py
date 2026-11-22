@@ -194,6 +194,7 @@ class HistoryCache:
         held = {(Path(row['parent_directory'])/'jobs'/row['method']/row['job_id']).resolve()
                 for row in getattr(executor, 'prior_q3_holds', ())}
         record_reuse = None if details else getattr(executor, 'record_prior_result_reuse', None)
+        stopped = None if details else getattr(executor, '_user_stop_requested', None)
         request_configurations = executor.prior_request_configurations
         validator = _validator(executor)
         contexts, comparisons = {}, {}
@@ -201,7 +202,8 @@ class HistoryCache:
         stats = dict(cache_schema=SCHEMA, cache_path=str(self.path), scanned_jobs=0,
                      cache_hits=0, request_cache_hits=0, unrelated_request_hits=0,
                      parsed_jobs=0, validated_jobs=0, invalidated_jobs=0,
-                     context_changes={}, current_unresolved=[], evidence=[], scientific_calls=0, collection_calls=0)
+                     context_changes={}, current_unresolved=[], evidence=[], scientific_calls=0, collection_calls=0,
+                     interrupted=False)
         for base in executor.prior_run_dirs:
             directory = Path(base) / 'jobs' / executor.method
             if not directory.exists():
@@ -209,6 +211,9 @@ class HistoryCache:
             jobs = (sorted(p for p in directory.iterdir() if p.is_dir()) if details else
                     [outcome.parent for outcome in sorted(directory.glob('*/OUTCOME.json'))])
             for job in jobs:
+                if stopped is not None and stopped():
+                    stats['interrupted'] = True
+                    break
                 request_path = job / 'REQUEST.json'
                 previous = request_configurations.get(request_path)
                 if not details and previous is not None and previous[1] not in ready and (not held or job.resolve() not in held):
@@ -342,6 +347,8 @@ class HistoryCache:
                                                           cost=O.cost(proposal['vector'], candidate['prices']))
                 except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
                     refused.append(dict(job=str(job), reason='HISTORY_METADATA_ERROR:' + str(exc)))
+            if stats['interrupted']:
+                break
         self.db.commit()
         stats.update(known_records=len(known), refused_records=len(refused), wall_seconds=time.monotonic() - started)
         self.stats_by_method[executor.method] = stats

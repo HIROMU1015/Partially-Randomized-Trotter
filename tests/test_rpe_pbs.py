@@ -183,6 +183,62 @@ class AdmissionTests(unittest.TestCase):
 
 
 class ManagerTests(unittest.TestCase):
+    def test_prefetch_checks_worker_visibility_and_keeps_other_poll_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            manager.settings.update(stage_artifacts_over_ssh=True, request_timeout_seconds=20)
+            raw = b'x' * (1024 * 1024)
+            sha = hashlib.sha256(raw).hexdigest()
+            blob = base64.b64encode(raw).decode()
+            executor.artifact_cache.put({sha: blob})
+            target = Path(directory) / 'shared-cache'
+            token = 'owned-allocation'
+            manager.state['allocations'][token] = dict(status='R', submitted_clock=P.stamp(), spec=dict(profile=dict(
+                host_id='pbs-0', artifact_cache_directory=str(target))))
+            manager.allocations = [dict(token=token, status='R', worker=dict(accepting=True))]
+            done = threading.Event()
+            self.addCleanup(done.set)
+            transfers = []
+
+            def transfer(source, destination, identity):
+                transfers.append((destination, identity))
+                if not done.wait(3):
+                    raise TimeoutError('test transport was not released')
+
+            gateway.stage_artifact = transfer
+            needs_bundle = [dict(job_id=f'prep-{n}', request=dict(preparation=dict(
+                workspaces={'input':dict(input_git_bundles=[dict(sha256=sha)])}))) for n in range(2)]
+            ready = dict(job_id='independent', request=dict())
+            assignment = dict(job_id='already-claimed')
+
+            def rpc(endpoint, payload):
+                executor.calls.append((endpoint, payload))
+                return (dict(stop=False, assignments=[assignment], eligibility_challenges=[*needs_bundle, ready])
+                        if endpoint == '/v1/poll' else dict(blobs={sha:blob}))
+
+            executor.rpc = rpc
+            def poll(rpc_id, visible=()):
+                return manager._dispatch_ready(token, dict(request_id=rpc_id, endpoint='/v1/poll',
+                    payload=dict(host_id='pbs-0', slots=1, cached_artifact_sha256=list(visible))))['result']
+
+            initial = poll('first')
+            self.assertEqual(initial['assignments'], [assignment])
+            self.assertEqual(initial['eligibility_challenges'], [ready])
+            done.set()
+            manager.prefetched_inputs[token,sha]['future'].result(3)
+            self.assertEqual(poll('gateway-acked')['eligibility_challenges'], [ready])
+            self.assertEqual(poll('worker-visible', [sha])['eligibility_challenges'], [*needs_bundle, ready])
+            self.assertEqual(poll('first'), initial)
+            manager.prefetched_inputs[token,sha]['worker_visibility_deadline'] = 0.
+            self.assertEqual(poll('worker-missing')['eligibility_challenges'], [*needs_bundle, ready])
+            request = dict(request_id='worker-get', endpoint='/v1/artifacts/get',
+                           payload=dict(host_id='pbs-0', hashes=[sha]))
+            self.assertEqual(manager._dispatch_ready(token, request)['result'], dict(blobs={sha:blob}))
+            self.assertEqual(manager._dispatch_ready(token, request)['result'], dict(blobs={sha:blob}))
+            self.assertEqual(transfers, [(ArtifactCache(target).path(sha), sha)])
+            self.assertEqual(sum(endpoint == '/v1/artifacts/get' for endpoint, _ in executor.calls), 1)
+            self.assertEqual(executor.state.reserved['PR_DF'], 0)
+
     def test_shared_artifact_transfer_leaves_poll_available_and_replays_ack(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, gateway = self.manager(directory)

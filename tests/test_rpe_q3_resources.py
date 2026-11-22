@@ -107,6 +107,27 @@ class ResourceTests(unittest.TestCase):
         _, offer = R.decide_slots(p, state, resources(), [heavy, q3], demand)
         self.assertEqual(offer['capacity'], 2)
 
+    def test_cold_queued_class_cannot_limit_or_consume_a_measured_offer(self):
+        p = profile(separate_task_resources=True)
+        measured, cold = 'q3:count_dp:known', 'q3:count_dp:new'
+        jobs = [dict(resource_class=measured, state='TRANSFERRED', peak_rss_bytes=1000000)]
+        facts = feedback(0, 0, ready_task_classes=[measured, cold],
+                         ready_task_class_order=[measured, cold, measured, measured, measured])
+        state, offer = R.decide_slots(p, {}, resources(), jobs, facts)
+        state, offer = R.decide_slots(p, state, resources(), jobs,
+                                     dict(facts, usable_results=1, measurement_seconds=10))
+        self.assertEqual((offer['capacity'], offer['admitted_task_classes']), (2, [measured]))
+        cold_first = dict(facts, usable_results=1, measurement_seconds=11,
+                          ready_task_class_order=[cold, measured, measured])
+        running = dict(jobs[0], state='RUNNING')
+        state, offer = R.decide_slots(p, state, resources(), [running], cold_first)
+        self.assertEqual((offer['slots'], offer['admitted_task_classes']), (0, [cold]))
+        state, offer = R.decide_slots(p, state, resources(), jobs, cold_first)
+        self.assertEqual((offer['slots'], offer['admitted_task_classes']), (1, [cold]))
+        first_sample = dict(resource_class=cold, state='RUNNING', peak_rss_bytes=2000000)
+        state, offer = R.decide_slots(p, state, resources(), jobs + [first_sample], facts)
+        self.assertEqual((offer['slots'], offer['isolated_resource_class']), (0, cold))
+
     def test_v1_cpu_cpuset_and_memory_ancestors_are_honoured(self):
         with tempfile.TemporaryDirectory()as temporary:
             base=Path(temporary);proc=base/'proc';group=base/'cgroup'

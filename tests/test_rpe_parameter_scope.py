@@ -1,6 +1,8 @@
 """Scope recovery and native horizon dispatch with no scientific calls."""
 from copy import deepcopy
 from fractions import Fraction
+from hashlib import sha256
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -92,7 +94,6 @@ def test_scoped_pf_completion_collects_new_parents_and_resumes(tmp_path, monkeyp
 
 def test_df_shares_only_a_matching_terminal_reference():
     config = dict(spec=dict(M=12,binding={k:k for k in BINDING_KEYS}),rounds=[{'m':12,'T':'5/2'}])
-    import json
     key = json.dumps(config['spec']['binding'],sort_keys=True), Fraction(5)
     refs = {key:[({'commit':'a'}, {'reference':42,'source':'a'}),({'commit':'b'}, {'reference':42,'source':'b'})]}
     assert df.select_reference(config,refs)=={'commit':'a'}
@@ -100,6 +101,51 @@ def test_df_shares_only_a_matching_terminal_reference():
     with pytest.raises(ValueError,match='missing'):df.select_reference(altered,refs)
     refs[key][1][1]['reference']=43
     with pytest.raises(ValueError,match='disagree'):df.select_reference(config,refs)
+
+
+def test_df_reference_selection_preserves_frozen_run_binding(tmp_path, monkeypatch):
+    binding = dict.fromkeys(BINDING_KEYS, 'shared')
+    config = dict(spec=dict(M=12, binding=binding), rounds=[dict(m=12, T='4')])
+    other_time = dict(config, rounds=[dict(m=12, T='6')])
+    blobs = {}
+
+    def locator(name, numeric, terminal_time='8'):
+        value = dict(kind='NEW_D2_TWO_EXPONENTIAL_PATHS', reference_state_actions=2,
+                     binding=binding, T=terminal_time, reference=numeric, source=name)
+        path = name+'/REFERENCE.json'
+        blob = json.dumps(value).encode()
+        blobs[name+':'+path] = blob
+        return dict(commit=name, path=path, sha256=sha256(blob).hexdigest())
+
+    frozen = locator('frozen', 1)
+    later_pf = locator('later-pf', 2)
+    another_time = locator('another-time', 3, '12')
+    other_frozen = locator('other-frozen', 4)
+    declared = locator('declared', 5)
+    run = tmp_path/'current'
+    prior = tmp_path/'prior'
+    write(run/'completion/horizons/a/REQUEST.json', {'terminal_reference': frozen})
+    write(prior/'completion/horizons/b/REQUEST.json', {'terminal_reference': other_frozen})
+    write(run/'pf_auto/horizon/a/LEAF.json', {'terminal_reference': later_pf})
+    write(run/'pf_auto/horizon/b/LEAF.json', {'terminal_reference': another_time})
+
+    def git_show(cmd, **kwargs):
+        if cmd[-1] not in blobs:
+            raise df.subprocess.CalledProcessError(1, cmd)
+        return blobs[cmd[-1]]
+
+    monkeypatch.setattr(df.subprocess, 'check_output', git_show)
+    rt = fixture_bridge(run)
+    refs = df.references(tmp_path, rt, [prior])
+    assert df.select_reference(config, refs) == frozen
+    assert df.select_reference(other_time, refs) == another_time
+
+    write(run/'completion/horizons/b/REQUEST.json', {'terminal_reference': other_frozen})
+    with pytest.raises(ValueError, match='disagree'):
+        df.select_reference(config, df.references(tmp_path, rt, [prior]))
+
+    rt.settings['horizon_references'] = [declared]
+    assert df.select_reference(config, df.references(tmp_path, rt, [prior])) == declared
 
 
 def test_unsupported_horizon_does_not_block_supported_horizon_or_create_work():
@@ -149,7 +195,6 @@ def test_index_derives_truncation_from_its_own_fixed_conditions():
 
 
 def test_df_completion_uses_scope_and_recovers_the_owned_parent_only(tmp_path, monkeypatch):
-    import json
     from trottertracks.pr_price_rules import GitReader
     candidates = [dict(method='PR_DF', configuration_id=cid, configuration_source={'path':cid},
                        signal_source={'path':'prefix/'+cid}, M=12) for cid in ('owned','fresh','unmatched')]
@@ -166,7 +211,7 @@ def test_df_completion_uses_scope_and_recovers_the_owned_parent_only(tmp_path, m
     about = []
     def complete(request, *, existing_signal_only, saved_packets):
         cid=request['selection']['source_configuration_id']
-        about.append((cid,existing_signal_only,request['horizon_parent']))
+        about.append((cid,existing_signal_only,request['horizon_parent'],request['terminal_reference']))
         return dict(key=cid,status='READY_FOR_SEARCH')
     recovered = []
     def recover_signal(record):
@@ -175,7 +220,10 @@ def test_df_completion_uses_scope_and_recovers_the_owned_parent_only(tmp_path, m
     completion = SimpleNamespace(complete=complete, recover_horizon_signal=recover_signal)
     number=lambda:len(about)
     for iteration in range(2):
-        records=df.prepare(tmp_path,rt,completion,candidates,[13],[],lambda:False)
+        if iteration:
+            monkeypatch.setattr(df,'references',lambda *_:pytest.fail('Resume discovers no new reference'))
+        scoped = candidates[:2] if iteration else candidates
+        records=df.prepare(tmp_path,rt,completion,scoped,[13],[],lambda:False)
         assert [r['key'] for r in records] == ['owned','fresh']
         assert all(r['verified_parent'] for r in records)
         assert number() == (iteration+1)*2

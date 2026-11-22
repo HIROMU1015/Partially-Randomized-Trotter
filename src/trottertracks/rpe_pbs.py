@@ -458,6 +458,7 @@ class PbsManager:
         self.responses = {}
         self.artifact_pool = None
         self.artifact_transfers = {}
+        self.prefetched_inputs = {}
         self.controls = {}
         self.storage_checks = {}
         self.last_error = None
@@ -620,6 +621,7 @@ class PbsManager:
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
             result = self.executor.rpc(request['endpoint'], payload)
             if request['endpoint'] == '/v1/poll':
+                result = self._prefetch_preparation_inputs(token, payload, result)
                 record = self.state['allocations'][token]
                 storage = (payload.get('resource_report') or {}).get('storage') or {}
                 ready = payload['slots'] > 0 and payload.get('accepting_new_jobs', True)
@@ -649,26 +651,93 @@ class PbsManager:
         atomic(saved, dict(request_sha256=identity, response=response, clock=stamp()))
         return response
 
+    def _shared_artifact(self, profile, sha):
+        cache = profile.get('artifact_cache_directory')
+        if not cache or not self.settings.get('stage_artifacts_over_ssh'):
+            return None
+        source = self.executor.artifact_cache.path(sha)
+        try:
+            if source.is_symlink() or not source.is_file() or source.stat().st_size < 1024 * 1024:
+                return None
+        except OSError:
+            return None  # the usual worker transfer will report a missing source
+        return source, Path(cache) / sha[:2] / sha
+
+    def _start_artifact_transfer(self, paths, sha):
+        if self.artifact_pool is None:
+            self.artifact_pool = ThreadPoolExecutor(max_workers=len(self.configured),
+                                                    thread_name_prefix='pbs-artifact')
+        return self.artifact_pool.submit(self.gateway.stage_artifact, *paths, sha)
+
+    def _prefetch_preparation_inputs(self, token, payload, result):
+        """Wait only the affected challenge until its inputs reach the worker cache."""
+        if ('cached_artifact_sha256' not in payload or result.get('stop')
+                or not payload.get('accepting_new_jobs', True)
+                or not self.settings.get('stage_artifacts_over_ssh')
+                or not result.get('eligibility_challenges')):
+            return result
+        from .rpe_preparation_worker import metadata_bundle_hashes
+
+        reported = set(payload['cached_artifact_sha256'])
+        profile = self.state['allocations'][token]['spec']['profile']
+        ready = []
+        for challenge in result['eligibility_challenges']:
+            request = challenge['request']
+            pending = False
+            if request.get('preparation'):
+                for sha in metadata_bundle_hashes(challenge):
+                    if sha in reported:
+                        continue
+                    paths = self._shared_artifact(profile, sha)
+                    if paths is None:
+                        continue
+                    key = token, sha
+                    entry = self.prefetched_inputs.get(key)
+                    if entry is None:
+                        entry = dict(future=self._start_artifact_transfer(paths, sha))
+                        self.prefetched_inputs[key] = entry
+                    future = entry['future']
+                    if not future.done():
+                        pending = True
+                        continue
+                    if 'worker_visibility_deadline' not in entry:
+                        try:
+                            future.result()
+                        except (OSError, ValueError, subprocess.SubprocessError) as error:
+                            entry['worker_visibility_deadline'] = 0.
+                            self.log('PBS_SHARED_INPUT_PREFETCH_FALLBACK', token=token, sha256=sha,
+                                     error=type(error).__name__)
+                        else:
+                            entry['worker_visibility_deadline'] = time.monotonic() + self.settings.get(
+                                'request_timeout_seconds', 20)
+                            self.log('PBS_SHARED_INPUT_PREFETCHED', token=token, sha256=sha)
+                    pending |= time.monotonic() < entry['worker_visibility_deadline']
+            if not pending:
+                ready.append(challenge)
+        return dict(result, eligibility_challenges=ready)
+
     def _dispatch_ready(self, token, request):
         """Bulk inputs use the worker's shared cache, leaving the poll lane free."""
         if (not self.settings.get('stage_artifacts_over_ssh')
                 or request['endpoint'] != '/v1/artifacts/get'):
             return self._dispatch(token, request)
         from .rpe_preparation_artifacts import artifact_hash
-
         profile = self.state['allocations'][token]['spec']['profile']
         payload = request['payload']
         if payload.get('host_id') != profile['host_id']:
             raise ValueError('PBS artifact request host differs from its allocation')
         hashes = payload.get('hashes')
-        if not profile.get('artifact_cache_directory') or not isinstance(hashes, list) or len(hashes) != 1:
+        if not isinstance(hashes, list) or len(hashes) != 1:
             return self._dispatch(token, request)
         sha = artifact_hash(hashes[0])
-        source = self.executor.artifact_cache.path(sha)
-        if source.is_symlink() or not source.is_file() or source.stat().st_size < 1024 * 1024:
+        if (token, sha) in self.prefetched_inputs:
+            # A GET for an already prefetched digest is the compute node's
+            # direct observation of a miss. Return bytes through the ordinary
+            # hash-checked transfer path instead of another empty ACK.
             return self._dispatch(token, request)
-        cache_root = Path(profile['artifact_cache_directory'])
-        destination = cache_root / sha[:2] / sha
+        paths = self._shared_artifact(profile, sha)
+        if paths is None:
+            return self._dispatch(token, request)
         ident = (token, request['request_id'])
         saved = self.directory / 'responses' / token / (ident[1] + '.json')
         if saved.exists():
@@ -676,10 +745,7 @@ class PbsManager:
         fingerprint = digest(request)
         transfer = self.artifact_transfers.get(ident)
         if transfer is None:
-            if self.artifact_pool is None:
-                self.artifact_pool = ThreadPoolExecutor(max_workers=len(self.configured),
-                                                        thread_name_prefix='pbs-artifact')
-            future = self.artifact_pool.submit(self.gateway.stage_artifact, source, destination, sha)
+            future = self._start_artifact_transfer(paths, sha)
             self.artifact_transfers[ident] = (fingerprint, future)
             return None
         observed, future = transfer
@@ -697,7 +763,7 @@ class PbsManager:
         saved.parent.mkdir(parents=True, exist_ok=True)
         atomic(saved, dict(request_sha256=fingerprint, response=response, clock=stamp()))
         self.log('PBS_SHARED_ARTIFACT_STAGED', token=token, sha256=sha,
-                 bytes=source.stat().st_size)
+                 bytes=paths[0].stat().st_size)
         return response
 
     def _fetch_harvest(self, gateway, token, owners=None):
@@ -1189,6 +1255,7 @@ class PbsManager:
             self.artifact_pool.shutdown(wait=True, cancel_futures=True)
             self.artifact_pool = None
             self.artifact_transfers.clear()
+            self.prefetched_inputs.clear()
         try:
             if retain_allocation:
                 if self.responses:
