@@ -19,7 +19,7 @@ import uuid
 
 from .rpe_q3_timing import stamp, append
 from .rpe_q3_worker import atomic, digest, read
-from .rpe_pbs_worker import request_cpu_footprint, task_cpu_footprint
+from .rpe_pbs_worker import runtime_cpu_footprint, task_cpu_footprint
 from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
@@ -306,7 +306,28 @@ def usable_memory(profile, settings):
     return min(memory, limit) // GIB * GIB - GIB
 
 
+def measured_q3_memory(request, runtime, host, estimates):
+    """Match a measured envelope to the fixed evaluator route and shot range."""
+    if not estimates or request.get('preparation'):
+        return None
+    x, y = request.get('N_X', ()), request.get('N_Y', ())
+    if not x or len(x) != len(y):
+        return None
+    route = request['route']
+    risk = (route.get('horizon_risk_source') or {}).get('commit')
+    adapter = (runtime.get('adapter_manifest') or {}).get('commit')
+    peak_shots = max(max(x), max(y))
+    return max((row['memory_bytes'] for row in estimates
+                if (row['host'], row['method'], row['route_kind'], row['view_commit'],
+                    row['horizon_risk_commit'], row['adapter_source'], row['dp_workers'], row['rounds'])
+                == (host, request['method'], route['kind'], route.get('view_commit'),
+                    risk, adapter, runtime.get('dp_workers'), len(x))
+                and row['min_peak_shots'] <= peak_shots <= row['max_peak_shots']), default=None)
+
+
 def resource_need(request, profile, settings, host):
+    from .rpe_q3_worker import select_host_profile
+
     memory = task_memory_estimate(request, settings, host)
     if memory is None:
         # An unmeasured preparation stage runs alone from the memory pool.
@@ -319,7 +340,11 @@ def resource_need(request, profile, settings, host):
     if profile.get('route_profiles'):
         profile = dict(profile, route_profiles=[row for row in profile['route_profiles']
                        if row.get('horizon_risk_commit') == horizon])
-    return (request_cpu_footprint(profile, request),
+    runtime = select_host_profile(profile, {'request': request})
+    measured = measured_q3_memory(request, runtime, host, settings.get('q3_measured_memory'))
+    if measured is not None:
+        memory = measured
+    return (runtime_cpu_footprint(profile, runtime),
             max(1, memory, (profile.get('pbs') or {}).get('task_memory_bytes') or 0))
 
 
@@ -383,6 +408,22 @@ def apply_preparation_resources(distributed, overrides):
         if len(estimates) != 1:
             raise ValueError('PBS preparation walltime rule is missing or ambiguous: '+provider)
         estimates[0]['memory_bytes'] = memory
+
+
+def apply_q3_measured_memory(distributed, estimates):
+    pbs = distributed['pbs']
+    profiles = {row['host_id']: row['profile'] for row in pbs['workers']}
+    integers = ('dp_workers', 'rounds', 'min_peak_shots', 'max_peak_shots', 'memory_bytes')
+    sources = ('view_commit', 'horizon_risk_commit', 'adapter_source')
+    for row in estimates:
+        if (row['host'] not in profiles or not row['method'] or not row['route_kind']
+                or any(not re.fullmatch('[0-9a-f]{40}', row[key]) for key in sources)
+                or any(type(row[key]) is not int or row[key] <= 0 for key in integers)
+                or row['min_peak_shots'] > row['max_peak_shots']
+                or row['memory_bytes'] > usable_memory(profiles[row['host']], pbs)):
+            raise ValueError('Invalid measured Q3 memory envelope')
+    distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
+    pbs['q3_measured_memory'] = deepcopy(estimates)
 
 
 def fits_request(request, report, settings, host_id=None):

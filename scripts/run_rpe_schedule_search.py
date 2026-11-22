@@ -533,6 +533,9 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     if trial.get('pbs_q3_horizon'):
         from trottertracks.rpe_pbs import apply_q3_horizon
         apply_q3_horizon(distributed, trial['pbs_q3_horizon'])
+    if trial.get('pbs_q3_measured_memory'):
+        from trottertracks.rpe_pbs import apply_q3_measured_memory
+        apply_q3_measured_memory(distributed, trial['pbs_q3_measured_memory'])
     if 'pf_price_recheck_provider' in trial:
         bind_pf_continuation_release(distributed, provider, root)
     if trial.get('pbs_stage_artifacts_over_ssh'):

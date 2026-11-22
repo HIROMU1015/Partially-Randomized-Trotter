@@ -149,13 +149,36 @@ class AdmissionTests(unittest.TestCase):
         request['route']['horizon_risk_source'] = {'commit': 'risk'}
         self.assertEqual(select_host_profile(profile, {'request': request}), alternate)
         self.assertEqual(P.task_estimate(request, pbs, host), 60)
-        def old_footprint(selected, _):
+        def old_selector(selected, _):
             # The original run's selector has no horizon key.
             route, = selected['route_profiles']
             self.assertEqual(route['profile'], alternate)
-            return route['profile']['dp_workers']
-        with patch.object(P, 'request_cpu_footprint', side_effect=old_footprint):
+            return route['profile']
+        with patch('trottertracks.rpe_q3_worker.select_host_profile', side_effect=old_selector):
             self.assertEqual(P.resource_need(request, profile, pbs, host), (3, 4096))
+
+    def test_pbs_packs_more_measured_q3_without_changing_cpu_or_larger_request(self):
+        host = 'pbs-0'
+        adapter, view, risk = ('a'*40, 'b'*40, 'c'*40)
+        runtime = {'dp_workers': 2, 'adapter_manifest': {'commit': adapter}}
+        request = dict(method='PR_DF', route=dict(kind='prdf_d2_common_entry', view_commit=view,
+                       horizon_risk_source={'commit': risk}), N_X=[53]*14, N_Y=[53]*14)
+        settings = dict(resources={'ncpus': 96, 'mem': '350gb'}, workers=[dict(host_id=host, profile=runtime)],
+                        allocation_sizing={'q3_startup_memory_bytes_per_task': 8*P.GIB})
+        original = deepcopy(settings)
+        distributed = dict(pbs=settings)
+        estimate = dict(host=host, method='PR_DF', route_kind=request['route']['kind'],
+                        view_commit=view, horizon_risk_commit=risk, adapter_source=adapter,
+                        dp_workers=2, rounds=14, min_peak_shots=8, max_peak_shots=53, memory_bytes=4*P.GIB)
+        with patch('trottertracks.rpe_q3_worker.select_host_profile', return_value=runtime) as select:
+            self.assertEqual(P.packed_resources([request]*48, runtime, settings, host), (86, 345, 43))
+            P.apply_q3_measured_memory(distributed, [estimate])
+            self.assertEqual(P.packed_resources([request]*48, runtime, settings, host), (96, 193, 48))
+            self.assertEqual(P.resource_need(dict(request, N_X=[54]*14), runtime, settings, host), (2, 8*P.GIB))
+            self.assertEqual(P.resource_need(dict(request, N_X=[53]*13, N_Y=[53]*13), runtime, settings, host), (2, 8*P.GIB))
+            select.return_value = dict(runtime, adapter_manifest={'commit': 'd'*40})
+            self.assertEqual(P.resource_need(request, runtime, settings, host), (2, 8*P.GIB))
+        self.assertEqual(distributed['pbs_pinned_settings'], original)
 
     def test_release_q3_estimate_binds_the_route_and_worker_and_can_be_disabled(self):
         route = dict(route_kind='pauli', view_commit='view', adapter_source='new-adapter')
