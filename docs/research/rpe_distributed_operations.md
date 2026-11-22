@@ -364,3 +364,5 @@ Full PF・B0Iで終端ラウンドを要求した場合、中央は範囲内の�
 受付済みjobは元run・attempt・入力を照合する。PFの進行は `HORIZON_PREPARATION.json`、`pf_auto/horizon/<親構成ID>/PREPARATION.json` と `pf_auto/TERMINAL_PRICES.json`、PR-DFは `completion/horizons/<親構成ID>/STATUS.json` と同じrunの準備台帳で確認する。現行の実H₄用14ラウンド評価器の対象はFull PF・B0I・PR-DF。未検証の方式・ラウンドを指定した場合は、当該評価器の対応範囲を記録する。
 
 検収では、過去に登録した構成に加え、同じ方式で分割・幅・公式等が異なる構成を通常入口に与える。後着の準備結果が親候補に戻ること、元のattemptがあるときに重複起動しないこと、未評価の指定範囲が残るときに完了扱いにならないことを確認する。[範囲照合の回帰テスト](../../tests/test_rpe_parameter_scope.py)・[通常StartとResumeの人工テスト](../../tests/test_rpe_scaled_shots.py)
+
+2026-11-22に制御SOURCE `3a56ea3a05` を人工入力と保存入力で照合した。外部ネットワークを切った環境で `test_rpe_parameter_scope.py`、`test_pf_discrete_scope.py`、`test_pr_df_descriptor_extension.py`、`test_rpe_scaled_shots.py` の39テストと6サブテストが通った。保存B0Iの4構成（p=8,9、4次公式2種、幅4h・16hのうち4組）で終端1ラウンドの配布入力を構築した。保存PR-DFの L_D=6,7,9、κ=1ではそれぞれ先行13ラウンドを再利用し、終端のみを要求する計画を確認した。Full PF・B0I・PR-DFは保存済み14ラウンド入力を通常Q3アダプターのdry-checkに通した。新規の実信号・compile・Q3は各0件。本番採用時には、新版を明示した通常入口から各workerに配送し、結果が同じ親構成へ戻ることを確認する。
