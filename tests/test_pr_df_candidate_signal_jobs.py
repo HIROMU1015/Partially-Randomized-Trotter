@@ -85,6 +85,7 @@ class ExecutionTests(unittest.TestCase):
                 runtime={'signal_view': requested_view}))
             sources[E.CALLER] = (ROOT / E.CALLER).read_text()
             sources[str(input_file.relative_to(ROOT))] = input_file.read_text()
+            updated = (ROOT / E.PROVIDER_PATH).read_bytes()
             aliases = {'RPE_PREPARATION_PATH_MAP': json.dumps({requested_view: str(view)})}
             argv = [E.CALLER, '--input', str(input_file), '--inputs-commit', 'fixture-inputs',
                     '--source', E.PROVIDER_COMMIT, '--workers', '2']
@@ -92,13 +93,21 @@ class ExecutionTests(unittest.TestCase):
                 sys.modules, {'trottertracks.pr_rpe_signal_provider': foreign,
                     'numpy': SimpleNamespace(__version__='1.26.4'), 'scipy': SimpleNamespace(__version__='1.14.1')}
             ), patch.object(E.subprocess, 'check_output', return_value=E.PROVIDER_COMMIT + '\n'), patch.object(
-                E, 'read_git', side_effect=lambda _commit, path: sources[path].encode()
+                E, 'read_git', side_effect=lambda commit, path: (
+                    updated if commit == E.NORMALIZER_REVISION and path == E.PROVIDER_PATH else sources[path].encode())
             ), patch.dict(os.environ, aliases), patch.object(sys, 'argv', argv), redirect_stdout(io.StringIO()):
                 provider, _, b = E.fixed_runtime(view)
                 self.assertEqual(Path(provider.__file__), view / E.PROVIDER_PATH)
                 self.assertIs(sys.modules['trottertracks.pr_rpe_signal_provider'], foreign)
                 self.assertEqual(list(original.__path__), original_path)
                 self.assertEqual(b.release, E.B_RELEASE)
+                patched, _, _ = E.fixed_runtime(view, normalizer_revision=E.NORMALIZER_REVISION)
+                self.assertEqual(patched.normalizer_revision, E.NORMALIZER_REVISION)
+                self.assertEqual(patched.evaluate.__code__, provider.evaluate.__code__)
+                self.assertIn('_normalizer_log', patched.evaluate.__globals__)
+                self.assertNotIn('_normalizer_log', provider.evaluate.__globals__)
+                with self.assertRaisesRegex(ValueError, 'Unknown fixed DF normalizer revision'):
+                    E.fixed_runtime(view, normalizer_revision='0' * 40)
                 for name in ('numerical_recipe', 'saved_h4_reference', 'load_h4_context'):
                     setattr(provider, name, getattr(fake, name))
                 provider.fixture = fake.evaluate

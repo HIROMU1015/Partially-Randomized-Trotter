@@ -27,6 +27,7 @@ from trottertracks.rpe_preparation_paths import resolve as resolve_runtime_path
 CALLER = 'scripts/run_pr_df_candidate_signal_jobs.py'
 PROVIDER_COMMIT = 'fefd548ecd56f60d72031b3d385f6f5e6ee95d06'
 PROVIDER_PATH = 'src/trottertracks/pr_rpe_signal_provider.py'
+NORMALIZER_REVISION = '197422ecee45f1b4ece18f7b407224b096c7cb08'
 B_RELEASE = '437ba4acdb82708b6fc98e3cd119a2a734f7cf64'
 LOCAL = 'LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED'
 IMPLEMENTATION = dict(commit=PROVIDER_COMMIT, path=PROVIDER_PATH,
@@ -57,7 +58,7 @@ def event(output, stage, **values):
         f.write(json.dumps(dict(stage=stage, epoch=time.time(), pid=os.getpid(), **values), default=str) + '\n')
 
 
-def fixed_runtime(view):
+def fixed_runtime(view, *, normalizer_revision=None):
     """Keep pinned relative imports separate from the worker's own package."""
     view = Path(view).resolve()
     if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=view, text=True).strip() != PROVIDER_COMMIT:
@@ -85,6 +86,22 @@ def fixed_runtime(view):
         if Path(module.__file__).resolve() != (view / path).resolve():
             raise ValueError('Fixed signal import came from a foreign package: ' + path)
     provider, metadata, fixed = modules
+    if normalizer_revision is not None:
+        if normalizer_revision != NORMALIZER_REVISION:
+            raise ValueError('Unknown fixed DF normalizer revision')
+        tree = ast.parse(read_git(normalizer_revision, PROVIDER_PATH))
+        names = {'_macros', '_normalizer_log'}
+        functions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in names]
+        if {node.name for node in functions} != names:
+            raise ValueError('Fixed normalizer functions are absent')
+        namespace = dict(vars(provider))
+        exec(compile(ast.Module(body=functions, type_ignores=[]),
+                     normalizer_revision + ':' + PROVIDER_PATH, 'exec'), namespace)
+        # Keep the fixed provider's identity and all its other gates.
+        from types import FunctionType, SimpleNamespace
+        namespace['evaluate'] = FunctionType(provider.evaluate.__code__, namespace)
+        namespace['normalizer_revision'] = normalizer_revision
+        provider = SimpleNamespace(**namespace)
     node = next(n for n in ast.parse((view / paths[2]).read_bytes()).body
                 if isinstance(n, ast.FunctionDef) and n.name == 'b_metadata')
     namespace = dict(vars(fixed), B_RELEASE=B_RELEASE)
@@ -144,6 +161,8 @@ def one(job_and_reference):
     event(output, 'ROUND_START', m=m)
     try:
         record = STATE['provider'].evaluate(STATE['context'], job, reference, root=ROOT)
+        if revision := getattr(STATE['provider'], 'normalizer_revision', None):
+            record['normalizer_revision'] = revision
         # Preserve the provider's complete failure record too; never retry it.
         write_new(output / 'raw' / ('m' + str(m) + '.json'), record)
         value = dict(m=m, status='VALID' if valid_record(record, job) else 'NUMERICAL_OR_INPUT_GATE_FAILED',
@@ -274,8 +293,10 @@ def main():
             raise ValueError('DF terminal reference helper differs from fixed SOURCE')
         if [row['m'] for row in request['plan']['rounds'] if row['decision'] == 'REQUEST'] != [13]:
             raise ValueError('Terminal transport may request only the new last round')
-    provider, metadata, b = fixed_runtime(resolve_runtime_path(str(request.get('runtime', {}).get('signal_view',
-        ROOT.parent / 'd2-pr-df-ld7-signal-source-fefd-20261116'))))
+    runtime = request.get('runtime', {})
+    provider, metadata, b = fixed_runtime(resolve_runtime_path(str(runtime.get('signal_view',
+        ROOT.parent / 'd2-pr-df-ld7-signal-source-fefd-20261116'))),
+        normalizer_revision=runtime.get('normalizer_revision'))
     import numpy, scipy
     if (numpy.__version__, scipy.__version__) != ('1.26.4', '1.14.1'):
         raise ValueError('Fixed NumPy1.26.4/SciPy1.14.1 runtime required')

@@ -128,7 +128,7 @@ def resolve(config, request):
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
     keys(scope, {'system', 'methods', 'per_method', 'shots', 'stop', 'preparation_budgets', 'scaled_shots',
-                 'pbs_walltime_overrides', 'execution_hosts'}, 'scope')
+                 'pbs_walltime_overrides', 'execution_hosts', 'exploration_order'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
     if 'system' in scope and scope['system'] != problem.get('problem', {}).get('system'):
         raise RequestError('scope.system', 'system is unavailable on the selected release')
@@ -220,7 +220,9 @@ def resolve(config, request):
             if key not in values: continue
             if (key == 'L_D') != (current['family'] == 'PR'):
                 raise RequestError(method + '.' + key, 'parameter does not belong to this method')
-            allowed = integers(values[key], method + '.' + key, 1 if key == 'L_D' else 0, fragment_count if method=='FULL_PF' else fragment_count-1)
+            lo = 1 if key == 'L_D' and not (method == 'PR_DF' and config.get('entry') == 'schedule'
+                 and 'delta_over_h_values' in values) else 0
+            allowed = integers(values[key], method + '.' + key, lo, fragment_count if method=='FULL_PF' else fragment_count-1)
             override['L_D_values' if key == 'L_D' else 'p_values'] = allowed; observed[key] = allowed
             if key == 'L_D':
                 override['L_D_range'] = dict(min=min(allowed), max_offset_from_fragment_count=max(allowed)-fragment_count)
@@ -324,6 +326,24 @@ def resolve(config, request):
             observed['kappa'] = (dict(mode=mode, values=discrete) if discrete is not None else
                                  dict(mode=mode, min=str(a), max=str(b)))
         canonical['per_method'][method] = observed
+    if 'exploration_order' in scope:
+        if scope['exploration_order'] != 'coarse_then_intermediate' or config.get('entry') != 'schedule':
+            raise RequestError('scope.exploration_order', 'use coarse_then_intermediate with the schedule entry')
+        from .rpe_schedule_search import coarse_axes
+        axes = {}
+        for method, selected in canonical['per_method'].items():
+            coordinates = {k: selected[k] for k in ('p', 'L_D', 'delta_over_h_values') if k in selected}
+            if 'delta_over_h_values' in coordinates:
+                widths = coordinates.pop('delta_over_h_values')
+                if method.startswith('PR_'):
+                    coordinates['delta_pf'] = spec['search_overrides']['requested_widths'][method]
+                else:
+                    coordinates['delta_over_h'] = widths
+            if selected.get('kappa', {}).get('values'):
+                coordinates['kappa'] = selected['kappa']['values']
+            axes[method] = coordinates
+        canonical['exploration_order'] = scope['exploration_order']
+        spec.setdefault('search_overrides', {})['coarse_axes'] = coarse_axes(axes)
     shots = scope.get('shots', 'auto')
     if config.get('scaled_shots_default') is True or 'scaled_shots' in scope:
         from . import rpe_scaled_shots as scaled
@@ -746,7 +766,8 @@ class Gateway:
                 if self.config.get('release'):immutable(run/'RELEASE.json',self.config['release'])
                 registry[run_id]=dict(run_directory=str(run),evaluation_identity=evaluation,signature=signature)
                 write(registry_path, registry)
-            write(current, dict(run_id=run_id,run_directory=str(run)))
+            if not self.config.get('keep_current_target'):
+                write(current, dict(run_id=run_id,run_directory=str(run)))
             if request['action']=='planonly':return self.result(run,self.plan_only(run))
             if request['action']=='prepare':return self.result(run,'PREPARED_NO_EXECUTION_GRANT')
             status=self.start(run, request)

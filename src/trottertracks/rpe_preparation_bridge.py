@@ -1049,6 +1049,7 @@ class DistributedPreparationBridge:
 
     def failed_preparation_request(self, job, plan):
         """Derive one successor from a failed, fully returned preparation."""
+        from .pr_candidate_completion import _DF_PRICE_BOOTSTRAP, _LEGACY_DF_PRICE_BOOTSTRAP
         from .rpe_q3_coordinator import digest as request_digest
 
         owner = self.executor.run_dir
@@ -1076,7 +1077,12 @@ class DistributedPreparationBridge:
         launch = read(root/'LAUNCH.json')
         receipt = read(root/'PROCESS_RETURN.json')
         outcome = read(root/'OUTCOME.json')
-        if (preparation.get('supersedes_preparation') or preparation.get('optional_price_validation')
+        command = preparation['command']
+        repair_loader = (plan.get('repair_legacy_price_loader') is True
+                         and preparation['provider'] in ('DF_CALIBRATION', 'DF_HOLDOUT')
+                         and command[2:4] == ['-c', _LEGACY_DF_PRICE_BOOTSTRAP])
+        if ((preparation.get('supersedes_preparation') and not repair_loader)
+                or preparation.get('optional_price_validation')
                 or read(root/'REQUEST.json') != request
                 or (launch['host_id'], launch['attempt_id']) != (row['host_id'], row['attempt_id'])
                 or outcome.get('request_sha256') != row['request_sha256']
@@ -1088,6 +1094,10 @@ class DistributedPreparationBridge:
         reason = plan['reason']
         if not isinstance(reason, str) or not reason.strip():
             raise ValueError('Missing reason for preparation recalculation: '+job)
+        if plan.get('repair_legacy_price_loader') and not repair_loader:
+            raise ValueError('Original preparation does not use the legacy DF price loader: '+job)
+        if repair_loader:
+            command[3] = _DF_PRICE_BOOTSTRAP
         request.pop('request_id')
         preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=row['attempt_id'], reason=reason)
         return request
@@ -1547,8 +1557,11 @@ class DistributedPreparationBridge:
             raise ValueError('Preparation leaf requires an explicit fixed script')
         script = script.resolve()
         df_terminal = None
+        df_normalizer = None
         if stage == 'DF_SIGNALS' and script.name == 'run_pr_df_candidate_signal_jobs.py' and '--input' in command:
-            df_plan = read(Path(command[command.index('--input')+1])).get('plan', {})
+            df_input = read(Path(command[command.index('--input')+1]))
+            df_plan = df_input.get('plan', {})
+            df_normalizer = df_input.get('runtime', {}).get('normalizer_revision')
             if df_plan.get('terminal_reference') is not None:
                 requested = [row for row in df_plan['rounds'] if row['decision'] == 'REQUEST']
                 if (len(requested) != 1 or requested[0]['m'] != 13
@@ -1558,12 +1571,13 @@ class DistributedPreparationBridge:
                 df_terminal = requested[0]['job']['physical_context']['physical_candidate']['id']
         if script.name in ('run_pr_pauli_candidate_signals.py','run_pr_pauli_candidate_prices.py')and'--no-push'not in command:
             command.append('--no-push')
-        if script.is_relative_to(root) or df_terminal:
-            script_relative = ('scripts/run_pr_df_candidate_signal_jobs.py' if df_terminal
+        df_transport = df_terminal or df_normalizer
+        if script.is_relative_to(root) or df_transport:
+            script_relative = ('scripts/run_pr_df_candidate_signal_jobs.py' if df_transport
                                else script.relative_to(root).as_posix())
             expected = subprocess.check_output(['git', 'show', source + ':' + script_relative], cwd=root)
             source_files = {script_relative: hashlib.sha256(expected).hexdigest()}
-            if not df_terminal and expected != script.read_bytes():
+            if not df_transport and expected != script.read_bytes():
                 raise ValueError('Preparation leaf script differs from its declared SOURCE')
             for name in ('src/trottertracks/rpe_preparation_paths.py',
                          'scripts/run_pr_pauli_candidate_signals.py',
@@ -1607,10 +1621,11 @@ class DistributedPreparationBridge:
         snapshot = self.settings.get('df_snapshot_directory')
         pf_terminal_signal = stage == 'PF_SIGNALS' and script.name == 'run_rpe_pf_horizon_signal.py'
         pf_signal = stage == 'PF_SIGNALS' and (script.name == 'run_pf_preparation_stage.py' or pf_terminal_signal)
-        if df_terminal:
-            if not snapshot or not re.fullmatch(r'[0-9a-f]{20}', df_terminal):
+        if df_transport:
+            if not snapshot or (df_terminal and not re.fullmatch(r'[0-9a-f]{20}', df_terminal)):
                 raise ValueError('DF terminal signal requires a fixed physical round and snapshot')
-            caller = completion.settings.get('df_terminal_transport_source') or self.settings.get('horizon_transport_source')
+            caller = (completion.settings['df_signal_caller_source'] if df_normalizer else
+                      completion.settings.get('df_terminal_transport_source') or self.settings.get('horizon_transport_source'))
             if caller is None:
                 caller = subprocess.check_output(['git','rev-parse','HEAD'],cwd=script.parents[1],text=True).strip()
             if not isinstance(caller, str) or not re.fullmatch(r'[0-9a-f]{40}', caller):
@@ -1624,7 +1639,12 @@ class DistributedPreparationBridge:
                 df_inputs.append(dict(path=destination, sha256=sha))
                 df_locators.append(dict(commit=caller, path=name))
             bindings[str(script)] = '@WORK@/private/df-terminal-transport/' + script_relative
-            command.extend(('--transport-source', caller))
+            if '--transport-source' not in command:
+                command.extend(('--transport-source', caller))
+            elif command[command.index('--transport-source') + 1] != caller:
+                raise ValueError('DF signal command differs from the fixed caller SOURCE')
+            if df_normalizer:
+                df_locators.append(dict(commit=df_normalizer, path='src/trottertracks/pr_rpe_signal_provider.py'))
         if pf_terminal_signal:
             if not snapshot:
                 raise ValueError('Terminal PF signal requires the fixed H4 snapshot')
@@ -1834,7 +1854,7 @@ class DistributedPreparationBridge:
                     packages[name] = version
             if pauli_signals:
                 requirements['imports'] = sorted(set(requirements.get('imports', ())) | {'openfermionpyscf'})
-        if (stage == 'DF_SIGNALS' and not df_terminal and script.name == 'run_pr_df_candidate_signal_jobs.py'
+        if (stage == 'DF_SIGNALS' and not df_transport and script.name == 'run_pr_df_candidate_signal_jobs.py'
                 and not getattr(completion, 'settings', {}).get('df_signal_source')):
             position = command.index(str(script))
             command[position:position] = ['-c', _DF_SIGNAL_BOOTSTRAP]

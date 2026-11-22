@@ -526,11 +526,14 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         # Widths of the same prefix/formula can share early physical rounds.
         # New independent work gets a turn even if a saved wait is unchanged.
         tiers = {}
+        from .rpe_schedule_search import coarse_priority
+        axes = spec.get('search_overrides', {}).get('coarse_axes', {})
         for row in selection['candidates']:
             cid = row['configuration_id']
             if row['ready'] or not row['needs'] or (cid in records and cid not in revisit and cid not in waiting):
                 continue
-            priority = (cid not in records or 'previous_preparation_hold' not in records[cid],
+            priority = (coarse_priority(axes, row['method'], row['key']),
+                        cid not in records or 'previous_preparation_hold' not in records[cid],
                         cid in waiting, cid in revisit)
             tiers.setdefault(priority, {}).setdefault(row['key'].get('delta_over_h'), []).append(row)
         from itertools import zip_longest

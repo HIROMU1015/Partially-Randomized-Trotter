@@ -1043,7 +1043,9 @@ class WidthDriver:
                                 status='NEEDS_FAMILY_CONFIGURATION_SOURCE',
                                 reason='No same-method saved template: fixed H/state/snapshot/h/M and metadata kappa are required')
                             self.state['families'][key]=f
-                            if templates:
+                            if method == 'PR_DF' and ld == 0:
+                                f.update(status='UNSUPPORTED_MAPPER', reason='NONEMPTY_DF_HEAD_TAIL_REQUIRED')
+                            elif templates:
                                 source=templates[0];template=reader.read(source);template=template.get('configuration',template)
                                 f.update(status='FAMILY_PREPARATION_PENDING',template_source=source,template=template,
                                     preparation_request=dict(method=method,template_source=source,
@@ -1378,6 +1380,13 @@ class WidthDriver:
             selected.sort(key=lambda point: id(point) not in priced_points)
         else:
             priced_points = set()
+        axes = self.spec.get('search_overrides', {}).get('coarse_axes', {})
+        if axes:
+            selected.sort(key=lambda p: (
+                id(p) not in priced_points,
+                W.coarse_priority(axes, p['method'], dict(L_D=p['L_D'],
+                    delta_pf=self.state['families'][p['family']]['requested_delta_pf'],
+                    kappa=p['kappa']))))
         reason = ('CONTINUOUS_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if continuous else
                   'PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search else
                   'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')

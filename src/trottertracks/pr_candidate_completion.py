@@ -69,6 +69,16 @@ if '--input' in sys.argv and ('freeze' in sys.argv[1:] or 'compare-holdout' in s
     module.write = write_audit
 raise SystemExit(module.main())
 """
+_LEGACY_DF_PRICE_BOOTSTRAP = (
+    _DF_PRICE_BOOTSTRAP.split('# Pool jobs resolve functions', 1)[0]
+    .replace('import importlib.util, json, sys', 'import json, runpy, sys')
+    .replace("    fixed_inputs = json.loads(document.read_bytes())\n"
+             "    provider = resolve(fixed_inputs['runtime']['provider_root'])",
+             "    provider = resolve(json.loads(document.read_bytes())['runtime']['provider_root'])")
+    + "main = runpy.run_path(runner)['main']\n"
+      "main.__globals__['FIXED_VIEW'] = Path(view)\n"
+      "raise SystemExit(main())\n"
+)
 
 DF_PRICE_FLANKS = Path(__file__).resolve().with_name('rpe_df_price_flanks.py')
 
@@ -1506,8 +1516,11 @@ class Completion:
             obtained, obtained_request, result = (repair[k] for k in ('obtained','obtained_request','result'))
         elif recovering or any(row['decision']=='REQUEST' for row in plan['rounds']):
             source=self.stage_source('DF_SIGNALS')
+            normalizer = self.settings.get('df_normalizer_revision')
             request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=source,
                          output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
+            if normalizer:
+                request['runtime']['normalizer_revision'] = normalizer
             inp = d/'DF_SIGNAL_REQUEST.json'
             frozen_path = rel(inp)
             if recovering:
@@ -1525,9 +1538,11 @@ class Completion:
                 input_commit=publish([d],'Fix missing DF round jobs')
             output=d/'df_signals/RESULT.json'
             transport_root = (Path(globals()['FIXED_RUN_PR_PRICE_SERVICE']).parents[1]
-                              if terminal and globals().get('FIXED_RUN_PR_PRICE_SERVICE') else ROOT)
+                              if (terminal or normalizer) and globals().get('FIXED_RUN_PR_PRICE_SERVICE') else ROOT)
             result=self.call([self.path('NATIVE'),'-B',str(transport_root/'scripts/run_pr_df_candidate_signal_jobs.py'),
-                '--input',str(inp),'--inputs-commit',input_commit,'--source',source],d,'DF_SIGNALS',output,science=True,
+                '--input',str(inp),'--inputs-commit',input_commit,'--source',source,
+                *(['--transport-source', self.settings['df_signal_caller_source']] if normalizer else [])],
+                d,'DF_SIGNALS',output,science=True,
                 **({'poll':True} if terminal else {}))
             if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
             raw=publish([d],'Publish missing DF round signals')

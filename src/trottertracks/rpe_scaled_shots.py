@@ -161,6 +161,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
     """Search the fixed allocation grid, with no assumed MSE monotonicity."""
     from decimal import DecimalException
     from . import rpe_method_optimizer as O
+    from .rpe_schedule_search import coarse_priority
 
     if threshold != Fraction(EPSILON)**2:
         raise ValueError('Scaled search must use the exact saved R08 MSE threshold')
@@ -217,7 +218,11 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                 if (key[0] == c['method'] and key[2] == M and pending_candidate.get('horizon_preparation')
                         and pending_candidate.get('source_configuration_id') == parent and not pending_candidate['ready']):
                     del groups[key]
-        group = dict(candidate=c, rows=[])
+        coordinates = dict(c.get('key') or {})
+        if c.get('kappa_value') is not None:
+            coordinates['kappa'] = c['kappa_value']
+        priority = coarse_priority(search.get('coarse_axes', {}), name, coordinates)
+        group = dict(candidate=c, rows=[], scope_priority=priority)
         groups[c['method'], cid or c['name'], M] = group
         if c.get('unsupported_horizon'):
             return
@@ -255,7 +260,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                    key=lambda r: (r['cost'], r['smallest_grid_k'] or 0, r['vector']), default=None)
 
     def allocation_order(row):
-        return (row['cost'] is None, row['cost'] if row['cost'] is not None else sum(row['vector']),
+        return (groups[name, row['configuration_id'], row['M']]['scope_priority'],
+                row['cost'] is None, row['cost'] if row['cost'] is not None else sum(row['vector']),
                 row['M'], row['configuration_id'])
 
     def pending_allocations(group, limit=1):

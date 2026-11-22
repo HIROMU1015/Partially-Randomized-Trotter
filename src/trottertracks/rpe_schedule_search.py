@@ -39,6 +39,24 @@ DEFAULTS = dict(ladder_ratio='4', explore_ratio='2', refine_ratio='33/32', explo
 TINY = Fraction(1, 10 ** 12)
 
 
+def coarse_axes(scope):
+    """Initial alternating coordinates and the final endpoint for each axis."""
+    axes = {}
+    for method, requested in scope.items():
+        axes[method] = {}
+        for name, values in requested.items():
+            ordered = sorted({KS._frac(value) for value in values})
+            if ordered:
+                axes[method][name] = [str(value) for value in sorted(set(ordered[::2]) | {ordered[-1]})]
+    return axes
+
+
+def coarse_priority(axes, method, coordinates):
+    """Rank a ready candidate without excluding intermediate coordinates."""
+    return int(any(coordinates.get(name) is None or str(KS._frac(coordinates[name])) not in values
+                   for name, values in axes.get(method, {}).items()))
+
+
 def requested_widths(problem, spec):
     """Absolute requested PF widths, preserving exact JSON numbers.
 
