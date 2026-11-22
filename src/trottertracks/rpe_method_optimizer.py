@@ -128,7 +128,7 @@ def hamiltonian_facts(problem):
     arrays = receipt['arrays']
     fragments, orbitals, _ = arrays['g_matrices']['shape']
     states = arrays['state_vector']['shape'][0]
-    if problem['problem']['system'] == 'H6' and 'rank' not in receipt:
+    if 'rank' not in receipt:
         metadata = receipt['metadata']
         identity = dict(rank=metadata['hamiltonian_metadata']['df_rank_actual'],
                         hamiltonian_hash=metadata['hamiltonian_hash'], state_hash=metadata['state_hash'])
@@ -1678,19 +1678,23 @@ def prepare(root, problem, generate_configurations=True, methods=None, preparati
     artificial_pf = problem.get('artificial_pf_evidence') is True
     pf_registry = PF.load_registry(root, reader, problem.get('pf_evidence_registry'),allow_artificial=artificial_pf)
     pf_expected = PF.hydrate(root, reader, problem, candidates, pf_registry, facts,allow_artificial=artificial_pf)
+    hchain_expected, hchain_routes = {}, {}
+    if problem.get('hchain_price_registry'):
+        from .rpe_hchain_prices import hydrate
+        hchain_expected, hchain_routes = hydrate(problem, facts, candidates, problem['hchain_price_registry'])
     prices = {c['configuration_id']: c['prices'] for c in candidates if c['prices'] is not None}
     saved = SavedBackend(catalog['candidates'], prices)
     expected = {}
     for point in catalog['candidates']:
         expected.setdefault(point['configuration_id'], dict(total_configuration_id=point.get('total_configuration_id'),
                                                             binding_id=point.get('binding_id'), signal_source=point.get('signal_source')))
-    for cid, entry in pf_expected.items():
+    for cid, entry in (pf_expected | hchain_expected).items():
         if cid in expected:
             for key in ('total_configuration_id', 'binding_id'):
                 if expected[cid].get(key) is not None and entry.get(key) is not None and expected[cid][key] != entry[key]:
                     raise ValueError('PF registry conflicts with saved Q3 binding: ' + key)
         expected[cid] = dict(expected.get(cid) or {}, **{k: v for k, v in entry.items() if v is not None})
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
-                expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation,
+                expected=expected, hchain_routes=hchain_routes, generate=pinned_function(reader, problem['generator']), generation=generation,
                 price_rules=price_rules, preparation_dir=preparation_dir, pf_evidence_registry=pf_registry,
                 scope_excluded=scope.get('scope_excluded', []))

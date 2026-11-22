@@ -35,6 +35,17 @@ H6_ALLOCATED_CPUS=1 "$h6_python" -B "$h6_run_tree/q3-pilot/run_h6_continuation.p
 
 上記は入力照合用。価格取得には別途出力先の指定が必要で、Q3は `--dry-check` で照合結果だけを書く。現行の価格登録はPBSの元ジョブと出力を照合する。別ホストで新しく取得した価格を登録する経路と、H6の中央worker自動配分は今後の接続範囲。
 
+## HChainの通常探索との接続
+
+共通入口 `scripts/run_rpe_schedule_search.py` は `PROBLEM.json` の `problem.system` で対象の原子数を受け取り、登録済み候補にも `n_atoms` を保持する。候補の単価・信号・Q3はその原子数、snapshot、Hamiltonian、状態に結び付く。通常入口は従来のQ3候補選択・予算・結果取り込みを使う。
+
+H6 PR-DF用に通常の `ROUND.json` へ `hchain_price_preparation` を設定できる。値はH6実行領域の絶対パス `root`、`initial`、`signals`、対象の `method: PR_DF`、必要なら `pr_calibration_max_m` と `route`。対象の構成と範囲は `PROBLEM.json` の `methods.PR_DF` に指定する。Q3の `route` は `kind: h6_df19_fixed_q3`、`view_commit: cbc471c913072de45c25a0ed22d51dff8a9b7034`、実機の `interpreter` と固定評価器の `risk_source` を受け取る。
+
+- 実行可能な通常開始では、保存済みの軸価格で不足があると [共通のPR-DF価格較正](../../src/trottertracks/pr_df_price_completion.py) を使う。較正上限の既定はm5。実ステップを分け、同じ構成・準備・コンパイラ内でX/Yを独立に較正する。固定外側イベント数では切片＋q、外側イベント数を変える方式では切片＋q＋qRを使う。既存の実測価格を優先し、不足軸にモデル予測を入れる。
+- 各モデルの係数、較正点、較正に使わなかった保存点との記述的比較、軸別の実測／モデルの出所が `HCHAIN_REGISTERED_PRICES.json` に入る。モデル価格は条件付き総額に使う。外挿精度や全乱択分布の期待価格の資格は別に評価する。必要な実測が無い実ステップ群は、価格不足として扱う。
+- 準備が済んだ同じrunの再開では、保存済みの価格表をSHA-256で照合する。準備済みの価格表から始める場合は、`hchain_price_registry` に `path`・`sha256`・`route` を指定する。`--plan-only` は新しい較正を開始しない。
+- 人工価格と保存H6信号を用い、通常入口のモデル生成・全26軸の費用計算・Q3要求生成・固定評価器の入力照合まで確認した。同じrunの再開で価格表の再生成は0件。
+
 ## 確認記録
 
 - RomuTailで、保存したFull PF m7の入力（T=12.8、q=8）から計算した元回路、X、Yの正準SHA-256が、PBSのジョブ `267857.CPUcluster-PRISM` の保存値とそれぞれ一致した。共通走査は88.89秒。従来の高速ライターで同じ入力のXとYを個別に走査すると83.45秒と84.06秒。計測区間は指紋計算部分。m7の再コンパイルは0件。

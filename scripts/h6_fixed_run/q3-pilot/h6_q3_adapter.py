@@ -82,15 +82,20 @@ def main():
     if args.mode == "collect":
         # A collection invocation can read already completed evidence only.
         return 0 if (out / "OUTCOME.json").is_file() else 3
-    sys.path.insert(0, str(q3.ROOT / "risk-source/src"))
     request = q3.read(args.request)
+    risk_source = Path(request["route"].get("risk_source", q3.ROOT / "risk-source/src"))
+    if not (risk_source / "trottertracks/rpe_total_risk.py").is_file():
+        raise ValueError("H6 Q3 risk source is unavailable")
+    sys.path.insert(0, str(risk_source))
     name, signal, rows, shots, source, identity = request_inputs(request)
     if args.mode == "dry-check":
         from trottertracks.rpe_total_dp_parallel import Accelerator
         Accelerator(workers=1)
         q3.write(out / "DRY_CHECK.json", dict(status="DRY_CHECK_PASS", source=source, identity=identity))
         return 0
-    workers = max(1, min(len(os.sched_getaffinity(0)), int(os.environ["H6_ALLOCATED_CPUS"])) - 1)
+    affinity = len(os.sched_getaffinity(0))
+    allocated = int(os.environ.get("H6_ALLOCATED_CPUS", request["route"].get("allocated_cpus", affinity)))
+    workers = max(1, min(affinity, allocated) - 1)
     q3.write(out / "H6_STARTED.json", dict(source=source, identity=identity, request_id=request["request_id"]))
     result = q3.compute((name, rows, shots, source, workers, signal["h"], signal["target"]))
     q3.write(out / "H6_RESULT.json", result)

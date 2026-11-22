@@ -560,6 +560,10 @@ def main():
         EVIDENCE.export(out / label, a.evidence_directory)
         return 0
     out.mkdir(parents=True, exist_ok=True)
+    if request['route']['kind'] == 'h6_df19_fixed_q3':
+        adapter = Path(__file__).resolve().parent / 'h6_fixed_run/q3-pilot/h6_q3_adapter.py'
+        return subprocess.call([sys.executable, '-B', str(adapter),
+                               '--request', str(a.request), '--output', str(out), '--mode', a.mode])
     kind = request['route']['kind'];stage(out, 'JOB_START', mode=a.mode, kind=kind, pid=os.getpid())
     name = 'OUTCOME.json' if a.mode != 'dry-check' else 'DRY_CHECK.json'
     M = horizon_of(request)

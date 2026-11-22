@@ -3,6 +3,7 @@
 import argparse
 from fractions import Fraction
 from pathlib import Path
+import sys
 
 from collect_h6_prices import AXES, COMPILER, read, sha
 from register_full_m7_prices import write
@@ -121,7 +122,7 @@ def merge_closure(root, label, direct, signal_sha):
     return direct + [qualified[key] for key in sorted(missing)]
 
 
-def assemble(root, initial, signals_path, *, use_closure=False, method=None):
+def assemble(root, initial, signals_path, *, use_closure=False, method=None, pr_calibration_max_m=None):
     signals = read(signals_path)
     signal_sha = sha(signals_path)
     selected = METHODS if method is None else {method: METHODS[method]}
@@ -146,6 +147,18 @@ def assemble(root, initial, signals_path, *, use_closure=False, method=None):
             rows = merge_closure(root, "Full" if label == "Full PF" else label, rows, signal_sha)
         config_path = initial / f"{name}-CONFIGURATION.json"
         config = read(config_path)
+        models = []
+        if label == "PR-DF" and pr_calibration_max_m is not None:
+            # Published checkout or a paired deployment with the common optimizer source.
+            code = Path(__file__).resolve().parents[2] / "src"
+            if not (code / "trottertracks/pr_df_price_completion.py").is_file():
+                code = Path(__file__).resolve().parent / "optimizer-source/src"
+            sys.path.insert(0, str(code))
+            from trottertracks.pr_df_price_completion import complete
+
+            ids = {row["m"]: row["candidate"]["id"] for row in signals["methods"][label]}
+            rows, models = complete(config, rows, ids, compiler=COMPILER,
+                                    calibration_max_m=pr_calibration_max_m)
         rows.sort(key=lambda row: (row["m"], row["axis"]))
         keys = [(row["m"], row["axis"]) for row in rows]
         if keys != expected:
@@ -160,8 +173,10 @@ def assemble(root, initial, signals_path, *, use_closure=False, method=None):
             row.update(status="ADMITTED", physical_id=physical)
         methods[label] = dict(configuration_id=config["id"], configuration=str(config_path),
                               configuration_sha256=sha(config_path), axes=rows)
+        if models:
+            methods[label]["conditional_price_models"] = models
     return dict(scope="H6_FIXED_REPRESENTATIVES_FINITE_PR_PRICE_SCENARIO", compiler=COMPILER,
-                signal_packet_sha256=signal_sha, methods=methods)
+                signal_packet=str(signals_path), signal_packet_sha256=signal_sha, methods=methods)
 
 
 if __name__ == "__main__":
@@ -170,6 +185,8 @@ if __name__ == "__main__":
         parser.add_argument(argument, type=Path)
     parser.add_argument("--deterministic-closure", action="store_true")
     parser.add_argument("--method", choices=METHODS)
+    parser.add_argument("--pr-model-calibration-max-m", type=int)
     args = parser.parse_args()
     write(args.output, assemble(args.root.resolve(), args.initial.resolve(), args.signals.resolve(),
-                                use_closure=args.deterministic_closure, method=args.method))
+                                use_closure=args.deterministic_closure, method=args.method,
+                                pr_calibration_max_m=args.pr_model_calibration_max_m))

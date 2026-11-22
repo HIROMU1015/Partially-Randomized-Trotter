@@ -23,8 +23,10 @@ from contextlib import contextmanager
 from fractions import Fraction
 import inspect
 import json
+import os
 from pathlib import Path
 import subprocess
+import tempfile
 import sys
 import time
 
@@ -137,6 +139,8 @@ def price_overrides(problem, spec):
     """Round-level price-rule settings (e.g. registry_file: a B2-extended registry with newly calibrated split entries)."""
     if spec.get('price_rules_overrides'):
         problem = json.loads(json.dumps(problem));problem['price_rules'].update(spec['price_rules_overrides'])
+    if spec.get('hchain_price_registry'):
+        problem = dict(problem, hchain_price_registry=spec['hchain_price_registry'])
     if spec.get('pf_evidence_registry'):
         problem = dict(problem, pf_evidence_registry=spec['pf_evidence_registry'])
     return problem
@@ -265,6 +269,54 @@ def preparation_budgets(spec):
     return {stage:settings.get('budgets',{}).get(stage,0)for stage in ('signal','compile','audit')}
 
 
+ROUND_IDENTITY_KEYS = (
+    'round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides',
+    'pf_completion', 'pf_evidence_registry', 'hchain_price_registry', 'hchain_price_preparation',
+)
+
+
+def prepare_hchain_prices(spec, run, *, plan_only):
+    """Resolve a saved table, or build it once from verified acquisition receipts."""
+    settings = spec.get('hchain_price_preparation')
+    if not settings:
+        return spec
+    stored = run / 'ROUND.json'
+    previous = O.load_json(stored) if stored.exists() else {}
+    identity_fields = [key for key in ROUND_IDENTITY_KEYS if key != 'hchain_price_registry']
+    if previous and (any(previous.get(key) != spec.get(key) for key in identity_fields)
+                     or preparation_budgets(previous) != preparation_budgets(spec)):
+        raise ValueError('H-chain price preparation changed on resume')
+    if previous.get('hchain_price_registry'):
+        return dict(spec, hchain_price_registry=previous['hchain_price_registry'])
+    if spec.get('hchain_price_registry'):
+        raise ValueError('Select H-chain price preparation or an already registered table')
+    if plan_only or spec.get('science_approved') is not True:
+        return spec
+    registry = run / 'HCHAIN_REGISTERED_PRICES.json'
+    if not registry.exists():
+        with tempfile.TemporaryDirectory(prefix='.hchain-prices-', dir=run) as scratch:
+            pending = Path(scratch) / registry.name
+            args = [sys.executable, '-B', str(ROOT / 'scripts/h6_fixed_run/finish_h6_registry.py'),
+                    settings['root'], settings['initial'], settings['signals'], str(pending),
+                    '--method', settings['method']]
+            if settings['method'] == 'PR_DF':
+                args += ['--pr-model-calibration-max-m', str(settings.get('pr_calibration_max_m', 5))]
+            if settings.get('deterministic_closure'):
+                args += ['--deterministic-closure']
+            subprocess.run(args, cwd=ROOT, check=True)
+            try:
+                os.link(pending, registry)
+            except FileExistsError:
+                if O.sha256(pending) != O.sha256(registry):
+                    raise ValueError('Conflicting H-chain price preparation results')
+    source = dict(path=str(registry), sha256=O.sha256(registry))
+    if settings.get('route'):
+        source['route'] = settings['route']
+    if previous:
+        write(stored, dict(previous, hchain_price_registry=source))
+    return dict(spec, hchain_price_registry=source)
+
+
 def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None, result_callback=None):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
@@ -276,6 +328,7 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         raise ValueError('Unknown plan_output')
     if compact:
         compact_plan_scope(spec)
+    spec = prepare_hchain_prices(spec, run, plan_only=getattr(a, 'plan_only', False))
     problem = price_overrides(scoped(problem, spec.get('method_overrides')), spec)
     for m in spec['methods']:
         g = problem['methods'][m].get('generation') or {}
@@ -292,7 +345,7 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         old = previous_round
         if compact and old.get('plan_output') != 'compact':
             raise ValueError('Compact plan output requires a new or existing compact-plan run directory')
-        for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
+        for key in ROUND_IDENTITY_KEYS:
             if old.get(key) != spec.get(key):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
         if preparation_budgets(old)!=preparation_budgets(spec):
@@ -300,6 +353,8 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
     else:
         write(stored, spec)
     routes = merged_routes(problem, spec)
+    for method, rules in context.get('hchain_routes', {}).items():
+        routes[method] = [*routes.get(method, []), *rules]
     from trottertracks import pf_optimizer_connection as PFConnection
     if context.get('pf_evidence_registry'):
         routes = PFConnection.registry_routes(routes, context['pf_evidence_registry'])
@@ -517,12 +572,15 @@ def interrupted_mode(a, problem, extra):
     """
     spec = O.load_json(a.round);run = a.run_dir.resolve();start = time.perf_counter()
     old = O.load_json(run / 'ROUND.json')
-    for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
+    spec = prepare_hchain_prices(spec, run, plan_only=True)
+    for key in ROUND_IDENTITY_KEYS:
         if old.get(key) != spec.get(key):
             raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
     stop = O.load_json(a.interrupted)
     problem = scoped(problem, spec.get('method_overrides'));context = O.prepare(ROOT, problem, methods=spec['methods'])
-    routes = dict(problem['execution_routes']);routes.update(spec.get('routes_override', {}))
+    routes = merged_routes(problem, spec)
+    for method, rules in context.get('hchain_routes', {}).items():
+        routes[method] = [*routes.get(method, []), *rules]
     search = dict(problem['search'], max_steps_per_method=100000);search.update(spec.get('search_overrides', {}))
     O.apply_published(context['candidates'], routes)
     executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head(), launch_disabled=True)

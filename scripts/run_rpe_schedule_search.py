@@ -1360,9 +1360,10 @@ def main(argv=None, *, driver_factory=None):
     problem=O.load_json(a.problem);spec=O.load_json(a.round)
     if a.max_cycles is None and not spec.get('search_to_rule_stop'):a.max_cycles=200
     declared=W.requested_widths(problem,spec)
-    if driver_factory is None and declared is None and not spec.get('search_to_rule_stop') and any(m in('FULL_PF','TRUNCATED_PF')for m in spec.get('methods',[])):
-        # PF selection and shot/Q3 remain owned by the existing method CLI.
-        # This is the same public entry, not another PF driver/optimizer.
+    registered_hchain = spec.get('hchain_price_registry') or spec.get('hchain_price_preparation')
+    if (driver_factory is None and declared is None and not spec.get('search_to_rule_stop')
+            and (registered_hchain or any(m in ('FULL_PF', 'TRUNCATED_PF') for m in spec.get('methods', [])))):
+        # Registered candidates and PF selection use the existing method and Q3 executor.
         from types import SimpleNamespace
         a.run_dir.mkdir(parents=True,exist_ok=True)
         K.CLI.round_mode(a,problem,[])

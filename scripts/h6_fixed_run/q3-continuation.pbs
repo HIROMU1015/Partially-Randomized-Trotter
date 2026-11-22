@@ -37,6 +37,9 @@ elif [[ ! -f "$registry" ]]; then
     if [[ "${H6_Q3_DETERMINISTIC_CLOSURE:-0}" == 1 ]]; then
         price_options+=(--deterministic-closure)
     fi
+    if [[ "$method" == PR_DF ]]; then
+        price_options+=(--pr-model-calibration-max-m "${H6_PR_MODEL_CALIBRATION_MAX_M:-5}")
+    fi
     "$python" -B -u "$code_root/finish_h6_registry.py" . initial-evidence "$signals" "$registry" \
         --method "$method" "${price_options[@]}"
 fi
