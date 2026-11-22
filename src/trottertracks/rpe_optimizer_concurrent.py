@@ -1192,6 +1192,14 @@ class DistributedExecutor(ConcurrentExecutor):
         cap = self.state.budgets.get(self.method)
         return type(cap) is int and self.store.counts(self.method) >= cap
 
+    @staticmethod
+    def _uses_pbs_task_resources(row):
+        # This worker state follows adapter exit and local receipt validation.
+        # Ownership stays in the ledger until the collection is acknowledged.
+        # Preparation can still assemble large artifacts during collection.
+        return (row.get('state') != 'COMPLETED_PENDING_TRANSFER'
+                or row['method'].startswith('PREPARATION:'))
+
     def _ready_cpu_supply(self, ready, owned, policy, error):
         """Measure compatible waiting work against each fresh worker's CPU offer."""
         from .rpe_pbs import GIB, resource_need, task_estimate
@@ -1225,7 +1233,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 return runtime_cpu_footprint(profile, runtime), 0
 
             try:
-                running = [footprint(row) for row in owned_rows if row['host_id'] == host]
+                running = [footprint(row) for row in owned_rows if row['host_id'] == host
+                           and (pool is None or self._uses_pbs_task_resources(row))]
                 if None in running:
                     continue
                 # A job that fits after a running task completes is useful
@@ -3177,7 +3186,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     free_cpu = resource_pool['cpu_count']
                     free_memory = resource_pool['memory_bytes'] - GIB
                     for owned in self._owned_attempts():
-                        if owned['host_id'] == host:
+                        if owned['host_id'] == host and self._uses_pbs_task_resources(owned):
                             cpu, memory = resource_need(self.store.row(owned['job_id'])['request'],
                                                         worker['profile'], settings, host)
                             free_cpu -= cpu

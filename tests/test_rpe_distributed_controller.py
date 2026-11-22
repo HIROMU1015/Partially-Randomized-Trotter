@@ -673,6 +673,32 @@ class ControllerFailures(unittest.TestCase):
                 ex.rpc('/v1/complete', dict(self.completion(assignment), host_id=host))
         self.assertEqual(len(delivered), 8)
 
+    def test_pbs_refills_after_q3_exit_before_transfer_ack(self):
+        from trottertracks.rpe_pbs import GIB
+        executor = self.executor(capacity=3)
+        executor.distributed['pbs'] = dict(workers=[dict(host_id='pbs-0', profile=dict(dp_workers=2))],
+            task_seconds=dict(q3=1), allocation_sizing=dict(q3_startup_memory_bytes_per_task=2*GIB))
+        first = self.enqueue(executor, 'awaiting-transfer')
+        second = self.enqueue(executor, 'replacement')
+        poll = dict(host_id='pbs-0', source_sha=self.source, slots=3, capacity=3,
+            resource_report=dict(pbs=dict(remaining_seconds=120, accepting=True,
+                resource_pool=dict(cpu_count=2, memory_bytes=3*GIB))))
+        owned, = executor.rpc('/v1/poll', poll)['assignments']
+        self.assertEqual(owned['job_id'], first.job.name)
+        identity = dict(host_id='pbs-0', job_id=owned['job_id'], attempt_id=owned['attempt_id'])
+        executor.rpc('/v1/state', dict(identity, state='RUNNING'))
+        self.assertFalse(executor.rpc('/v1/poll', poll)['assignments'])
+        executor.rpc('/v1/state', dict(identity, state='UNKNOWN'))
+        self.assertFalse(executor.rpc('/v1/poll', poll)['assignments'])
+        executor.rpc('/v1/state', dict(identity, state='COMPLETED_PENDING_TRANSFER'))
+        replacement, = executor.rpc('/v1/poll', poll)['assignments']
+        self.assertEqual(replacement['job_id'], second.job.name)
+        self.assertEqual(executor.store.row(first.job.name)['attempt_id'], owned['attempt_id'])
+        self.assertEqual(executor.store.row(first.job.name)['state'], 'COMPLETED_PENDING_TRANSFER')
+        completion = dict(self.completion(owned), host_id='pbs-0')
+        self.assertFalse(executor.rpc('/v1/complete', completion)['duplicate'])
+        self.assertTrue(executor.rpc('/v1/complete', completion)['duplicate'])
+
     def test_readiness_window_uses_fresh_cpu_deficit_and_check_time(self):
         executor = self.executor(capacity='auto', live_q3_readiness=True,
                                  live_readiness_max_workers=8)
