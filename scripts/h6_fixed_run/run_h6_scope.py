@@ -51,7 +51,8 @@ def price_models(plan, run):
     models, errors = {}, {}
     for design in plan["designs"]:
         first = design["anchors"][0]
-        key = group_key(first)
+        key = group_key(dict(first, actual_step=design["target_step"]))
+        calibration_step = design["calibration_step"]
         names = ("one", "q", "qR") if design["mode"] == "AFFINE_QR" else ("one", "q")
         for axis in AXES:
             try:
@@ -64,7 +65,7 @@ def price_models(plan, run):
                     models[key, axis] = dict(direct=direct, estimate=None, holdout=None)
                     continue
                 route = dict(binding=plan["binding"], mode=key[0], formula=key[1], prefix=key[2],
-                             actual_step=enc(key[3]), K=key[4])
+                             actual_step=calibration_step, K=key[4])
                 pr = key[0] == "PR"
                 records = [
                     linear.record(cell_id=cell["id"], role="CALIBRATION", route=route, axis=axis,
@@ -77,7 +78,10 @@ def price_models(plan, run):
                     for cell in design["anchors"]
                 ]
                 estimate = linear.fit(records, features=names,
-                                      design_source={"maximum_direct_round": plan["scope"]["calibration_max_m"]})
+                                      design_source={"maximum_direct_round": plan["scope"]["calibration_max_m"],
+                                                     "target_step": design["target_step"]})
+                estimate["extrapolation_scope"] = ("CONDITIONAL_SAME_STEP" if calibration_step == design["target_step"]
+                                                   else "CONDITIONAL_STEP_TRANSFER")
                 comparison = None
                 if holdout is not None:
                     try:
@@ -125,9 +129,12 @@ def candidate_inputs(run, plan, case, models):
                 kind, evidence = "DIRECT_COMPILED_RZ", axis_price["source"]
             else:
                 price = linear.predict(model["estimate"], features(cell))
-                kind = "CONDITIONAL_COMPILED_PRICE_MODEL"
+                step_transfer = model["estimate"]["extrapolation_scope"] == "CONDITIONAL_STEP_TRANSFER"
+                kind = "CONDITIONAL_STEP_TRANSFER_PRICE" if step_transfer else "CONDITIONAL_COMPILED_PRICE_MODEL"
                 proof = run / "price_models" / f"{digest(str((group_key(cell), axis)))}.json"
-                evidence = dict(path=str(proof), sha256=sha(proof), direct_observation=False)
+                evidence = dict(path=str(proof), sha256=sha(proof), direct_observation=False,
+                                calibration_step=model["estimate"]["domain"]["route"]["actual_step"],
+                                target_step=cell["actual_step"])
             if price <= 0:
                 raise ValueError(f"Nonpositive H6 price prediction at {m}/{axis}")
             axes.append(dict(m=m, axis=axis, kind=kind, status="ADMITTED", qualified_E_C=False,

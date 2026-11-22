@@ -31,7 +31,7 @@ def request_inputs(request):
     target = signals["target"]
     M = signals["M"]
     if scoped:
-        if (type(M) is not int or not 1 <= M <= 12 or not 0 < signals["h"] < math.inf
+        if (type(M) is not int or M < 0 or not 0 < signals["h"] < math.inf
                 or route["scope_owner"] != signals.get("scope_owner")):
             raise ValueError("Invalid scoped H6 horizon or owner")
     elif (M, signals["h"]) != (12, .1):

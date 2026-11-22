@@ -104,14 +104,16 @@ def signal(cell):
     core = STATE.helpers["core"]
     weights = core.weights(cell["formula"])
     r = cell["R_outer"]
-    counts = core.allocation(weights, r) if r is not None else [None] * len(weights)
+    counts = [None] * len(weights)
+    if r is not None:
+        counts = (r,) if len(weights) == 1 else core.allocation(weights, r)
     for weight, count in zip(weights, counts, strict=True):
         t = T * weight / q
         forward, reverse = head_blocks(prefix, t)
         part = forward
         if count is not None:
             lam = STATE.lambdas[prefix]
-            scaled = lam * t / count
+            scaled = lam * (t / count)
             norm = finite_rte_distribution(scaled, cell["K"]).exact_finite_distribution
             step = finite_taylor_operator(STATE.tail[prefix] / lam, scaled, cell["K"])
             part = np.linalg.matrix_power(step / norm, count) @ forward
@@ -180,7 +182,7 @@ def collect_owned(scope, assets, run, workers, saved_signal_path):
     global STATE
     STATE = startup(assets, scope)
     cases, binding, target, compiler = STATE.cases, STATE.binding, STATE.target, STATE.compiler
-    designs = calibration_design(cases, scope["calibration_max_m"])
+    designs = calibration_design(cases, scope)
     sources = {name: digest(Path(__file__).with_name(name).read_text()) for name in (
         "h6_scope_worker.py", "h6_scope.py", "run_h6_scope.py", "h6_price_acceleration.py",
     )}
@@ -192,7 +194,6 @@ def collect_owned(scope, assets, run, workers, saved_signal_path):
     if plan_path.exists() and read(plan_path) != plan:
         raise ValueError("PBS work belongs to a different frozen H6 scope")
     write(plan_path, plan)
-    jobs = []
     for directory in ("signals", "prices"):
         (run / directory).mkdir(exist_ok=True)
     cells = {cell["id"]: cell for case in cases for cell in case["rounds"]}
@@ -215,11 +216,16 @@ def collect_owned(scope, assets, run, workers, saved_signal_path):
                 if not path.exists() and not path.with_suffix(".started").exists():
                     write(path, dict(candidate=cell, signal=row["signal"], owner=owner,
                                      reused_source=str(saved_signal_path)))
-    jobs += [("signal", c, 0, run / "signals" / f"{c['id']}.json", owner) for c in cells.values()]
+    jobs = [("signal", c, 0, run / "signals" / f"{c['id']}.json", owner) for c in cells.values()]
+    price_cells = {}
     for design in designs.values():
-        for cell in [*design["anchors"], *([design["holdout"]] if design["holdout"] else [])]:
-            paths = scope["price_paths"] if cell["method"] == "PR" else 1
-            jobs.extend(("price", cell, i, run / "prices" / f"{cell['id']}-{i}.json", owner) for i in range(paths))
+        price_cells.update((cell["id"], cell) for cell in design["anchors"])
+        if design["holdout"] is not None:
+            holdout = design["holdout"]
+            price_cells[holdout["id"]] = holdout
+    for cell in price_cells.values():
+        paths = scope["price_paths"] if cell["method"] == "PR" else 1
+        jobs.extend(("price", cell, i, run / "prices" / f"{cell['id']}-{i}.json", owner) for i in range(paths))
     errors = {}
     with ProcessPoolExecutor(max_workers=min(workers, len(jobs)), mp_context=mp.get_context("fork")) as pool:
         tasks = {pool.submit(execute, job): job[3] for job in jobs}

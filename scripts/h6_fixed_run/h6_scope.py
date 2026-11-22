@@ -42,8 +42,12 @@ def case_rows(scope, rank):
     """Enumerate every requested point; preserve requested widths and absolute kappa."""
     h = float(exact(scope["h"]))
     M = scope["M"]
-    if not math.isfinite(h) or h <= 0 or type(M) is not int or not 1 <= M <= 12:
-        raise ValueError("H6 requires positive h and an RPE horizon within 1..12")
+    if not math.isfinite(h) or h <= 0 or type(M) is not int or M < 0:
+        raise ValueError("H6 requires positive finite h and a nonnegative integer RPE horizon")
+    try:
+        math.ldexp(h, M)
+    except OverflowError as error:
+        raise ValueError("The last H6 round time exceeds binary64") from error
     cap = scope["calibration_max_m"]
     if type(cap) is not int or not 0 <= cap <= M:
         raise ValueError("Invalid maximum direct-compilation round")
@@ -55,17 +59,20 @@ def case_rows(scope, rank):
     for method, scope_method in methods.items():
         pr = method == "PR_DF"
         prefixes = [rank] if method == "FULL_PF" else scope_method["prefixes"]
+        if prefixes == "all":
+            prefixes = range(rank)
         kappas = [exact(x) for x in scope_method["kappas"]] if pr else [None]
         widths = [exact(x) for x in scope_method["width_over_h"]]
         formulas = scope_method["formulas"]
-        k_order = scope_method.get("K", 2) if pr else None
+        order = scope_method.get("K", 2) if pr else None
+        orders = order if isinstance(order, list) else [order]
         if (not formulas or not set(formulas) <= FORMULAS.keys() or not prefixes or not widths or not kappas
                 or any(type(p) is not int or not 0 <= p <= rank or (p == rank) != (method == "FULL_PF")
                        for p in prefixes)
                 or any(width <= 0 for width in widths) or pr and any(k <= 0 for k in kappas)
-                or pr and (type(k_order) is not int or k_order < 0 or k_order % 2)):
+                or pr and (not orders or any(type(k) is not int or k < 0 or k % 2 for k in orders))):
             raise ValueError(f"Invalid H6 range for {method}")
-        for formula, prefix, width, kappa in dict.fromkeys(product(formulas, prefixes, widths, kappas)):
+        for formula, prefix, width, kappa, k_order in dict.fromkeys(product(formulas, prefixes, widths, kappas, orders)):
             yield dict(method=method, formula=formula, prefix=prefix, width_over_h=enc(width),
                        kappa=None if kappa is None else enc(kappa), K=k_order)
 
@@ -99,35 +106,51 @@ def grouped_rows(cases):
     return grouped
 
 
-def calibration_design(cases, cap):
-    """Short physical anchors and, if needed, an independent event-count calibration cell."""
+def calibration_design(cases, scope):
+    """Find independent short price probes for every requested physical step."""
+    cap = scope["calibration_max_m"]
+    max_time = Fraction(float(exact(scope["h"]))) * (1 << cap)
+    candidate_cells = {cell["id"]: cell for case in cases for cell in case["rounds"]}
+
+    def probe(template, step, q, r):
+        row = dict(template, m=None, T=float(step * q), delta=float(step), q=q, R_outer=r,
+                   actual_step=enc(step), calibration_only=True)
+        row["id"] = physical_id(row)
+        return candidate_cells.get(row["id"], row)
+
     designs = {}
     for key, cells in grouped_rows(cases).items():
         observed = sorted((c for c in cells.values() if c["m"] <= cap),
                           key=lambda c: (c["q"], c["R_outer"] or 0, c["id"]))
         future = [c for c in cells.values() if c["m"] > cap]
+        design = dict(target_step=enc(key[3]), calibration_step=enc(key[3]))
         if not future:
-            designs[key] = dict(mode="DIRECT", anchors=observed, holdout=None)
+            designs[key] = dict(design, mode="DIRECT", anchors=observed, holdout=None)
             continue
-        if not observed or observed[0]["q"] == observed[-1]["q"]:
-            raise ValueError(f"Need two short q values at the same actual step for {key}")
-        lo = observed[0]
-        # Compile the least expensive independent repetitions first. Later
-        # short rounds remain available as validation points for the model.
-        hi = next(c for c in observed if c["q"] != lo["q"])
+        lo = observed[0] if observed else future[0]
+        hi = next((c for c in observed if c["q"] != lo["q"]), None)
+        step = key[3]
+        pr = key[0] == "PR"
+        if hi is None:
+            # q=1 and q=2 identify repetition cost independently of the RPE grid.
+            # Keep both probes inside the maximum direct duration.
+            step = min(step, max_time / 2)
+            r = FORMULAS[lo["formula"]] if pr else None
+            lo, hi = (probe(lo, step, q, r) for q in (1, 2))
+            design["calibration_step"] = enc(step)
         anchors = [lo, hi]
         mode = "AFFINE_Q"
-        if key[0] == "PR" and len({c["R_outer"] for c in cells.values()}) > 1:
+        if pr and len({c["R_outer"] for c in (*cells.values(), *anchors)}) > 1:
             mode = "AFFINE_QR"
             def determinant(c):
                 # Linear independence of (1,q,qR).
                 return ((hi["q"] - lo["q"]) * (c["q"] * c["R_outer"] - lo["q"] * lo["R_outer"])
                         - (c["q"] - lo["q"]) * (hi["q"] * hi["R_outer"] - lo["q"] * lo["R_outer"]))
-            third = next((c for c in observed if determinant(c)), None)
+            third = next((c for c in observed if exact(c["actual_step"]) == step and determinant(c)), None)
             if third is None:
-                third = dict(lo, R_outer=lo["R_outer"] + 1, calibration_only=True)
-                third["id"] = physical_id(third)
+                third = probe(lo, step, lo["q"], lo["R_outer"] + 1)
             anchors.append(third)
-        holdout = next((c for c in observed if c["id"] not in {a["id"] for a in anchors}), None)
-        designs[key] = dict(mode=mode, anchors=anchors, holdout=holdout)
+        anchor_ids = {cell["id"] for cell in anchors}
+        holdout = next((c for c in observed if c["id"] not in anchor_ids), None)
+        designs[key] = dict(design, mode=mode, anchors=anchors, holdout=holdout)
     return designs
