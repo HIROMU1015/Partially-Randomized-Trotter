@@ -1,10 +1,14 @@
 from copy import deepcopy
+from hashlib import sha256
+import sqlite3
 from types import SimpleNamespace
 
 import pytest
 
 from trottertracks import pf_horizon_preparation as pf
 from trottertracks import pf_optimizer_connection as pf_routes
+from trottertracks.rpe_preparation_queue import normalize_preparation_request
+from trottertracks.rpe_q3_coordinator import digest
 from trottertracks.rpe_release_registry import write
 
 
@@ -112,6 +116,91 @@ def test_q3_template_block_preserves_collected_signal(monkeypatch, tmp_path):
                         lambda root, parent, entry, routes, interpreter, leaf, *args: dict(leaf, signal_only=False))
     assert not pf.produce(root, runtime, 'parent', entry, {}, 'python', lambda: False)['signal_only']
     assert calls == ['PF_SIGNALS']
+
+
+def test_collected_parent_signal_is_usable_while_price_is_pending(monkeypatch, tmp_path):
+    documents, parent, _, _ = saved_inputs()
+    cid = 'parent'
+    run = tmp_path/'run'
+    relative = 'docs/research/distributed_selected_pf/'+cid
+    folder = run/'pf_auto'/'candidates'/cid/'pf_auto/pf_completion/provider_workspace'/relative
+    plan = locator(relative+'/PLAN.json')
+    packet = dict(commit='signal-publication', path=relative+'/signal_run01/MEAN_HANDOFF.json')
+    arguments = folder/'PF_SIGNALS.INPUT.json'
+    result = folder/'PF_SIGNALS.RESULT.json'
+    write(arguments, {'source': {'input_plan': plan}})
+    write(result, dict(status='SIGNALS_READY', publication=packet['commit']))
+    source = dict(commit='provider', files={})
+    request = normalize_preparation_request(dict(route=dict(kind='preparation'),
+        preparation=dict(stage='signal', provider='PF_SIGNALS', source=source, inputs={
+            f'workspace/{relative}/{arguments.name}': sha256(arguments.read_bytes()).hexdigest()})))
+    job = request['request_id']
+    write(folder/'PF_SIGNALS.DISTRIBUTED.json', dict(job_id=job, request=request))
+    original = run/'jobs'/'PREPARATION:signal'/job
+    write(original/'OUTCOME.json', dict(request_id=job, request_sha256=digest(request),
+        status='PREPARATION_COMPLETE', source_manifest=source,
+        artifacts={f'workspace/{relative}/{result.name}': sha256(result.read_bytes()).hexdigest()}))
+    write(original/'PROCESS_RETURN.json', dict(returncode=0))
+    db = run/'distributed'/'QUEUE.sqlite3'
+    db.parent.mkdir()
+    with sqlite3.connect(db) as db_conn:
+        db_conn.execute('CREATE TABLE jobs (job_id, method, state, attempt_id, request_sha256)')
+        db_conn.execute('INSERT INTO jobs VALUES (?, ?, ?, ?, ?)',
+                        (job, 'PREPARATION:signal', 'ACCEPTED', 'original-attempt', digest(request)))
+    monkeypatch.setattr(pf, 'GitReader', lambda _: SimpleNamespace(read=lambda loc:
+        deepcopy({plan['path']: documents['configuration'], packet['path']: documents['signal']}[loc['path']])))
+    candidate = dict(method='FULL_PF', configuration_id=cid, configuration_body=documents['configuration'],
+                     key=dict(p=10, formula='2nd', delta_over_h='1'))
+    admitted = pf.saved_parent_signals(tmp_path, run, [candidate], ('FULL_PF',))
+    assert admitted[cid]['signal_packet'] == packet
+    assert not admitted[cid].get('prices')
+    assert pf.parents([candidate], ('FULL_PF',), [13], {}, {}, admitted) == admitted
+    assert not pf.parents([candidate], ('FULL_PF',), [12], {}, {}, admitted)
+
+    result.write_text('{}')
+    assert not pf.saved_parent_signals(tmp_path, run, [candidate], ('FULL_PF',))
+    write(result, dict(status='SIGNALS_READY', publication=packet['commit']))
+    with sqlite3.connect(db) as db_conn:
+        db_conn.execute("UPDATE jobs SET state='UNKNOWN'")
+    assert not pf.saved_parent_signals(tmp_path, run, [candidate], ('FULL_PF',))
+
+
+def test_scoped_producer_hands_off_signal_before_prices_and_resumes(monkeypatch, tmp_path):
+    from trottertracks import pf_distributed_preparation
+
+    _, parent, _, _ = saved_inputs()
+    entry = dict(parent, method='FULL_PF', p=10, formula='2nd', delta_over_h='1')
+    candidate = dict(method='FULL_PF', configuration_id='parent')
+    produced, registered = [], []
+
+    def produce(root, runtime, parent_id, request, *args, bind_q3):
+        assert parent_id == 'parent'
+        produced.append(bind_q3)
+        return dict(entry=dict(horizon_parent=parent, price_scope='price-scope'), signal_only=not bind_q3)
+
+    def complete(root, runtime, parents, *, selected, stop_requested, on_ready):
+        if selected:
+            registered.extend(parents)
+
+    monkeypatch.setattr(pf, 'saved_parent_signals', lambda *args: {'parent': entry})
+    monkeypatch.setattr(pf, 'produce', produce)
+    monkeypatch.setattr(pf_distributed_preparation, 'complete_terminal_prices', complete)
+    runtime = SimpleNamespace(executor=SimpleNamespace(run_dir=tmp_path), settings={},
+                              follow_preparations=lambda items, advance, _: [advance(item) for item in items])
+    options = dict(stop_requested=lambda: False, on_ready=lambda *_: None)
+
+    pf.complete_scoped(tmp_path, runtime, [candidate], ('FULL_PF',), [13], {}, 'python', (), **options)
+    assert produced == [False]
+    assert registered == []
+    leaf = tmp_path/'pf_auto'/'horizon'/'parent'
+    assert pf.read(leaf/'PREPARATION.json')['status'] == 'WAITING_FOR_PARENT_PRICES'
+    assert pf.read(leaf/'LEAF.json')['signal_only'] is True
+
+    candidate['pf_evidence'] = dict(entry, prices=locator('prices'))
+    pf.complete_scoped(tmp_path, runtime, [candidate], ('FULL_PF',), [13], {}, 'python', (), **options)
+    assert produced == [False, True]
+    assert registered == ['parent']
+    assert pf.read(leaf/'LEAF.json')['signal_only'] is False
 
 
 def test_new_parent_evidence_yields_watcher_without_stopping_preparation(monkeypatch, tmp_path):

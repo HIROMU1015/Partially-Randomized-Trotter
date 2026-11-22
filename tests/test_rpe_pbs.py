@@ -871,6 +871,31 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(executor.calls[0][1]['state'], 'UNKNOWN')
             self.assertFalse(executor.calls[0][1]['detail']['automatic_retry'])
 
+    def test_changed_collector_rechecks_only_unresolved_prelaunch_receipts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            token = self.submit(manager)
+            manager.settings['gateway_sha256'] = 'new-collector'
+            manager.state['allocations'][token]['harvested'] = True
+            manager.allocations = [dict(token=token, host_id='pbs-0', status='F')]
+            manager.harvest_gateway = gateway
+            gateway.harvest = dict(host_id='pbs-0', attempts=[], incomplete=[], artifact_hashes=[])
+            with patch.object(executor.store, '_connection', create=True) as connection:
+                connection.return_value.__enter__.return_value.execute.return_value = [
+                    dict(job_id='failed-dry', host_id='pbs-0', attempt_id='attempt', needs_prelaunch_proof=True),
+                    dict(job_id='uncertain', host_id='pbs-0', attempt_id='other', needs_prelaunch_proof=False)]
+                try:
+                    manager._advance_harvest()
+                    manager.harvest_pending[-1].result(timeout=3)
+                    manager._advance_harvest()
+                    manager._advance_harvest()
+                    calls = [c for c in gateway.calls if c['action'] == 'harvest']
+                    self.assertEqual(len(calls), 1)
+                    self.assertEqual(calls[0]['owners'], [dict(job_id='failed-dry', attempt_id='attempt')])
+                    self.assertEqual(manager.state['allocations'][token]['harvest_gateway_sha256'], 'new-collector')
+                finally:
+                    manager.close()
+
     def test_admission_exit_releases_capacity_without_completing_or_retrying(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, _ = self.manager(directory)
@@ -991,6 +1016,34 @@ class GatewayTests(unittest.TestCase):
             G.atomic(later/'WORKER_PROFILE.json', dict(pbs=dict(allocation_dir=str(root/'active-allocation'))))
             result = G.harvest(allocation, owners=[dict(job_id='new-session', attempt_id='attempt')])
             self.assertEqual(result['incomplete'], [])
+
+    def test_selective_harvest_proves_old_dry_check_without_session_marker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            allocation = root/'allocation'
+            work = root/'worker'
+            G.atomic(allocation/'SPEC.json', dict(profile=dict(host_id='pbs-0')))
+            G.atomic(allocation/'PROFILE.json', dict(work_dir=str(work)))
+            owner = dict(job_id='old-preparation', attempt_id='attempt')
+            attempt = work/owner['job_id']/owner['attempt_id']
+            G.atomic(attempt/'ASSIGNMENT.json', dict(owner, request_sha256='fixed'))
+            G.atomic(attempt/'WORKER_PROFILE.json', dict(work_dir=str(work)))
+            G.atomic(attempt/'WORKER_STATE.json', dict(state='UNKNOWN', detail={
+                'automatic_retry': False, 'reason': 'ValueError: Existing adapter dry-check failed'}))
+            G.atomic(attempt/'SUPERVISOR_STARTED.json', dict(pid=30))
+            G.atomic(attempt/'SUPERVISOR_LAUNCH.json', dict(pid=30))
+            G.atomic(attempt/'WORKER_DRY-CHECK_RETURN.json', dict(returncode=1, signal=None))
+            (attempt/'WORKER_PROCESS.lock').touch()
+            result = G.harvest(allocation, owners=[owner])
+            item, = result['incomplete']
+            proof = item['state']['detail']['prelaunch_rejection']
+            self.assertEqual(proof['kind'], 'FAILED_DRY_CHECK_BEFORE_EXECUTION')
+            self.assertEqual(proof['attempt_id'], owner['attempt_id'])
+            self.assertEqual(result['attempts'], [])
+
+            (attempt/'PREPARATION_STARTED.json').touch()
+            self.assertEqual(G.harvest(allocation, owners=[owner])['incomplete'], [])
+            self.assertNotIn('prelaunch_rejection', G.read(attempt/'WORKER_STATE.json')['detail'])
 
     def test_ended_session_can_prove_an_unlaunched_attempt_with_a_route_profile(self):
         with tempfile.TemporaryDirectory() as directory:

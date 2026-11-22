@@ -68,7 +68,7 @@ def test_scoped_pf_completion_collects_new_parents_and_resumes(tmp_path, monkeyp
         candidates.append(dict(method=method,configuration_id=name,pf_evidence=entry))
     routes = {m:[dict(kind='pf_b_pf6')] for m in methods}
     started, ready = set(), []
-    def signal(root, runtime, parent, entry, route, interpreter, stopped, owners):
+    def signal(root, runtime, parent, entry, route, interpreter, stopped, owners, *, bind_q3=True):
         if parent not in started:
             started.add(parent)
             raise PreparationWait('owned')

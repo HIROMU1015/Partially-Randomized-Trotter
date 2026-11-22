@@ -30,7 +30,7 @@ def parent_entry(candidate):
                 prices=candidate.get('price_registry_source'), q3_inputs=candidate.get('q3_template_source'))
 
 
-def parents(candidates, methods, horizons, bindings, existing):
+def parents(candidates, methods, horizons, bindings, existing, saved_signals=None):
     """Only consider parents present in this optimizer's scoped candidate list."""
     from run_rpe_optimizer_q3_job import M13_ROUTES
     if 13 not in horizons:
@@ -40,12 +40,108 @@ def parents(candidates, methods, horizons, bindings, existing):
     selected = {}
     for c in candidates:
         cid, method, entry = c.get('configuration_id'), c['method'], parent_entry(c)
+        entry = entry or (saved_signals or {}).get(cid, {})
         if (method in methods and (method, 'pf_b_pf6') in M13_ROUTES and cid
                 and c.get('M', 12) == 12 and not c.get('source_configuration_id')
                 and cid not in bindings and cid not in existing and cid not in native
                 and entry.get('method') == method and entry.get('configuration') and entry.get('signal_packet')):
             selected[cid] = entry
     return selected
+
+
+def saved_parent_signals(root, run, candidates, methods, prior_runs=()):
+    """Find collected PF signal packets even when their price stage is unfinished."""
+    from contextlib import closing
+    from .rpe_preparation_artifacts import ArtifactCache
+    from .pf_saved_prices import candidate_roots
+    from .rpe_preparation_queue import normalize_preparation_request
+    from .rpe_q3_coordinator import digest
+
+    unresolved = {row['configuration_id']: row for row in candidates
+                  if row['method'] in methods and row['method'] in ('FULL_PF', 'TRUNCATED_PF')
+                  and row.get('M', 12) == 12 and not row.get('source_configuration_id')
+                  and row.get('configuration_body') and row.get('configuration_id')
+                  and not parent_entry(row)}
+    if not unresolved:
+        return {}
+    reader = GitReader(root)
+    collected = {}
+    conflicts = set()
+    for origin in dict.fromkeys(Path(p).resolve() for p in (run, *prior_runs)):
+        db = origin/'distributed'/'QUEUE.sqlite3'
+        bases = [base for base in candidate_roots(origin/'pf_auto') if base.is_dir()]
+        if not db.is_file() or not bases:
+            continue
+        artifacts = ArtifactCache(origin/'distributed'/'artifacts')
+
+        def verified_input(folder, name, checksum):
+            try:
+                content = (folder/name).read_bytes()
+            except FileNotFoundError:
+                content = artifacts.path(checksum).read_bytes()
+            if sha256(content).hexdigest() != checksum:
+                raise ValueError('Collected PF signal input or output differs: '+name)
+            return json.loads(content)
+
+        with closing(sqlite3.connect(db.as_uri()+'?mode=ro', uri=True)) as conn:
+            for base in bases:
+                for cid, candidate in unresolved.items():
+                    relative = f'docs/research/distributed_selected_pf/{cid}'
+                    folder = base/cid/'pf_auto'/'pf_completion'/'provider_workspace'/relative
+                    marker = folder/'PF_SIGNALS.DISTRIBUTED.json'
+                    if not marker.is_file() or cid in conflicts:
+                        continue
+                    try:
+                        record = read(marker)
+                        request = normalize_preparation_request(record['request'])
+                        job = record['job_id']
+                        if (job != request['request_id']
+                                or request['preparation']['provider'] != 'PF_SIGNALS'):
+                            continue
+                        prefix = 'workspace/'+relative+'/'
+                        original_input = verified_input(folder, 'PF_SIGNALS.INPUT.json',
+                            request['preparation']['inputs'][prefix+'PF_SIGNALS.INPUT.json'])
+                        row = conn.execute(
+                            "SELECT state, attempt_id, request_sha256 FROM jobs "
+                            "WHERE job_id=? AND method='PREPARATION:signal'", (job,)).fetchone()
+                        checksum = digest(request)
+                        if not row or row[0] != 'ACCEPTED' or not row[1] or row[2] != checksum:
+                            continue
+                        directory = origin/'jobs'/'PREPARATION:signal'/job
+                        outcome = read(directory/'OUTCOME.json')
+                        receipt = read(directory/'PROCESS_RETURN.json')
+                        if (outcome['request_id'] != job or outcome['request_sha256'] != checksum
+                                or outcome['status'] != 'PREPARATION_COMPLETE'
+                                or outcome['source_manifest'] != request['preparation']['source']
+                                or receipt['returncode'] != 0 or receipt.get('signal') is not None):
+                            continue
+                        saved = verified_input(folder, 'PF_SIGNALS.RESULT.json',
+                            outcome['artifacts'][prefix+'PF_SIGNALS.RESULT.json'])
+                        if saved['status'] != 'SIGNALS_READY':
+                            continue
+                        plan = original_input['source']['input_plan']
+                        if plan['path'] != relative+'/PLAN.json':
+                            continue
+                        config = dict(plan, selector=['configuration'])
+                        packet = dict(commit=saved['publication'], path=relative+'/signal_run01/MEAN_HANDOFF.json')
+                        if reader.read(config) != candidate['configuration_body']:
+                            continue
+                        means = reader.read(packet)
+                        if (means['configuration_id'] != cid
+                                or [row['m'] for row in means['means']] != list(range(13))):
+                            continue
+                        if cid in collected:
+                            if not _same_saved_document(reader, collected[cid]['signal_packet'], packet):
+                                collected.pop(cid)
+                                conflicts.add(cid)
+                            continue
+                        key = candidate['key']
+                        collected[cid] = dict(method=candidate['method'], p=key['p'], formula=key['formula'],
+                                              delta_over_h=key['delta_over_h'], configuration=config,
+                                              signal_packet=packet)
+                    except (OSError, KeyError, TypeError, ValueError, sqlite3.Error, subprocess.CalledProcessError):
+                        continue
+    return collected
 
 
 def eligible_route(routes, method, parent):
@@ -244,7 +340,7 @@ def bind_terminal_q3(root, parent, entry, routes, interpreter, leaf, reader, con
     return dict(leaf, entry=extension, signal_only=False)
 
 
-def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, owners=()):
+def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, owners=(), *, bind_q3=True):
     """Run one qualified missing signal. Reconcile the same marker on Resume."""
     from run_rpe_pf_horizon_signal import ENTRY, PROVIDER
     from run_rpe_optimizer_q3_job import M13_RISK
@@ -266,7 +362,7 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
         leaf = read(checkpoint)
         if leaf['entry']['horizon_parent'] != parent_locs:
             raise ValueError('Collected horizon has different fixed parent inputs')
-        if leaf.get('signal_only') is not True:
+        if leaf.get('signal_only') is not True or not bind_q3:
             return leaf
         if job := leaf.get('current_run_signal_job'):
             runtime.executor.adopt_preparation(job)
@@ -358,6 +454,8 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
     write(checkpoint, leaf)
     if job := leaf.get('current_run_signal_job'):
         runtime.executor.adopt_preparation(job)
+    if not bind_q3:
+        return leaf
     if stop_requested():
         raise Held('STOP_REQUESTED')
     return bind_terminal_q3(root, parent, entry, routes, interpreter, leaf, reader, config)
@@ -376,7 +474,8 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
               and c.get('configuration_id') and (entry := parent_entry(c))}
     complete_terminal_prices(root, runtime, scoped, selected=explicit,
                              stop_requested=stop_requested, on_ready=on_ready)
-    pending = parents(candidates, methods, horizons, {}, explicit)
+    saved_signals = saved_parent_signals(root, run, candidates, methods, prior_runs) if 13 in horizons else {}
+    pending = parents(candidates, methods, horizons, {}, explicit, saved_signals)
     state_path = run/'pf_auto'/'TERMINAL_PRICES.json'
     saved = read(state_path) if state_path.exists() else {}
     inherited = []
@@ -390,18 +489,26 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
             inherited.append((prior, read(receipts) if receipts.is_file() else {}))
             catalog = prior/'HORIZON_PREPARATION.json'
             owners.append((prior,read(catalog) if catalog.is_file() else []))
+
+    def parent_matches(actual, expected):
+        if actual == expected:
+            return True
+        reader = GitReader(root)
+        return actual.keys() == expected.keys() and all(
+            _same_saved_document(reader, actual[key], expected[key]) for key in actual)
+
     def advance(item):
         parent, entry = item
         report = base/parent/'PREPARATION.json'
         try:
+            locs = {k:entry[k] for k in ('configuration','signal_packet')}
             if parent in saved and saved[parent]['status'] == 'READY':
                 record = saved[parent]
-                if (record['entry']['horizon_parent'] != {k:entry[k] for k in ('configuration','signal_packet')}
+                if (not parent_matches(record['entry']['horizon_parent'], locs)
                         or record.get('parent_prices') != entry.get('prices')):
                     raise Held('Previously adopted terminal prices have different parent inputs')
                 on_ready(record['configuration_id'], record['entry'])
                 return None
-            locs = {k:entry[k] for k in ('configuration','signal_packet')}
             carried = next((states[parent] for _,states in inherited if states.get(parent, {}).get('status') == 'READY'
                          and states[parent]['entry'].get('horizon_parent') == locs
                          and states[parent].get('parent_prices') == entry.get('prices')), None)
@@ -420,12 +527,22 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
                 selected_owners = [(run,catalog_rows), *owners]
             leaf_file = base/parent/'LEAF.json'
             leaf = read(leaf_file) if leaf_file.is_file() else None
-            if leaf is None or leaf.get('signal_only') is True:
-                leaf = produce(root, runtime, parent, entry, routes, interpreter, stop_requested, selected_owners)
-                write(leaf_file, leaf)
-            else:
-                if leaf['entry']['horizon_parent'] != locs:
+            if leaf and leaf['entry']['horizon_parent'] != locs:
+                original = leaf['entry']['horizon_parent']
+                if not parent_matches(original, locs):
                     raise ValueError('Collected horizon has different fixed parent inputs')
+                entry = dict(entry, **original)
+            elif leaf is None:
+                plan_file = base/parent/'plan'/'PLAN.json'
+                if plan_file.is_file():
+                    original = read(plan_file)['parent']
+                    if not parent_matches(original, locs):
+                        raise ValueError('Existing terminal signal request has different fixed parent inputs')
+                    entry = dict(entry, **original)
+            if leaf is None or leaf.get('signal_only') is True:
+                leaf = produce(root, runtime, parent, entry, routes, interpreter, stop_requested, selected_owners,
+                               bind_q3=bool(entry.get('prices')) or parent not in saved_signals)
+                write(leaf_file, leaf)
             if entry.get('prices'):
                 if 'price_scope' not in leaf['entry']:
                     leaf = dict(leaf, entry=dict(leaf['entry'],price_scope=GitReader(root).read(entry['prices'])['scope']))

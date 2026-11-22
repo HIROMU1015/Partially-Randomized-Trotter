@@ -171,6 +171,9 @@ def save_horizon_preparation(path, reports, store):
     previous = json.loads(path.read_bytes()) if path.is_file() else []
     terminal_path = path.parent/'pf_auto'/'TERMINAL_PRICES.json'
     terminal_prices = json.loads(terminal_path.read_bytes()) if terminal_path.is_file() else {}
+    pf_preparation_path = path.parent/'PF_PREPARATION_STATUS.json'
+    pf_parents = (json.loads(pf_preparation_path.read_bytes()).get('records', {})
+                  if pf_preparation_path.is_file() else {})
     rows = {(row['source_configuration_id'], row['M']): row for row in previous}
     rows.update(((row['source_configuration_id'], row['M']), row) for row in reports)
     for row in rows.values():
@@ -208,6 +211,16 @@ def save_horizon_preparation(path, reports, store):
                         roles['signal'] = job
                 elif pf_detail.is_file():
                     row['preparation_detail'] = json.loads(pf_detail.read_bytes())
+                    if row['preparation_detail']['status'] == 'WAITING_FOR_PARENT_PRICES':
+                        row['status'] = 'WAITING_FOR_PARENT_PRICES'
+                        row.get('incomplete', {}).get(str(horizon), {}).pop('signal', None)
+                elif (row.get('status') in ('HORIZON_PROVIDER_NOT_CONFIGURED', 'WAITING_FOR_PARENT_SIGNAL')
+                        and parent in pf_parents
+                        and pf_parents[parent]['status'] != 'READY_RETURNED_TO_SAME_OPTIMIZER'):
+                    parent_row = pf_parents[parent]
+                    row['status'] = 'WAITING_FOR_PARENT_SIGNAL'
+                    reason = (parent_row.get('reason') or '').split(':{', 1)[0]
+                    row['preparation_detail'] = dict(status=parent_row['status'], reason=reason)
                 leaf = folder/parent/'LEAF.json'
                 if not row.get('terminal_physical_id') and leaf.is_file():
                     row['terminal_physical_id'] = json.loads(leaf.read_bytes())['physical_id']

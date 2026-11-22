@@ -281,6 +281,11 @@ def harvest(directory, wanted=None, owners=None):
         recovery = importlib.util.module_from_spec(module_spec)
         module_spec.loader.exec_module(recovery)
         observe_rejection = recovery.dry_check_rejection
+    elif Path(__file__).parent.is_file():  # Packed PBS pilot zipapp.
+        try:
+            from rpe_dry_check_recovery import dry_check_rejection as observe_rejection
+        except ImportError:
+            pass
     paths = work.glob('*/*/ASSIGNMENT.json') if owners is None else (
         work/safe_id(owner['job_id'])/safe_id(owner['attempt_id'])/'ASSIGNMENT.json'
         for owner in owners)
@@ -301,11 +306,15 @@ def harvest(directory, wanted=None, owners=None):
                 if proof:
                     state['detail'].update(resource_released=True, pbs_admission_exit=proof)
                     same_session = True  # route profiles in older workers omitted the PBS directory
+            if (observe_rejection and state.get('state') == 'UNKNOWN'
+                    and (owners is None or same_session or not allocation_directory)):
+                # The original lock and dry-check exit receipt prove that the
+                # exact attempt never started, even on older route profiles.
+                proof = observe_rejection(path.parent, assignment)
+                if proof:
+                    state['detail'].update(resource_released=True, prelaunch_rejection=proof)
+                    same_session = True
             if state.get('state') != 'TRANSFERRED' and (owners is None or same_session):
-                if observe_rejection and state.get('state') == 'UNKNOWN':
-                    proof = observe_rejection(path.parent, assignment)
-                    if proof:
-                        state['detail'].update(resource_released=True, prelaunch_rejection=proof)
                 incomplete.append(dict(assignment=assignment, state=state))
             continue
         names = ('OUTCOME.json','PROCESS_RETURN.json','ARTIFACT_MANIFEST.json','PREPARATION_RECEIPT.json',

@@ -1967,6 +1967,9 @@ class WidthDriver:
                                     result = regular()
                                 finally:
                                     with changed:
+                                        # A signal receipt can arrive without a new
+                                        # price-qualified candidate in the snapshot.
+                                        parent_revision += 1
                                         regular_done = True
                                         changed.notify_all()
                                 work.result()

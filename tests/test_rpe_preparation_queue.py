@@ -165,6 +165,25 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(result['terminal_prices']['status'], 'READY')
         self.assertEqual(result['incomplete'], {'13': {'signal': 'WAITING'}})
 
+    def test_horizon_ledger_distinguishes_missing_parent_and_collected_signal(self):
+        from trottertracks.rpe_preparation_queue import save_horizon_preparation
+        from trottertracks.rpe_release_registry import write
+
+        output = self.run/'HORIZON_PREPARATION.json'
+        write(self.run/'PF_PREPARATION_STATUS.json', {'records': {'parent': {
+            'status': 'PREPARATION_WAITING', 'reason': 'Original stage still owned'}}})
+        row = dict(source_configuration_id='parent', M=13, jobs={},
+                   status='HORIZON_PROVIDER_NOT_CONFIGURED')
+        save_horizon_preparation(output, [row], None)
+        result, = json.loads(output.read_bytes())
+        self.assertEqual(result['status'], 'WAITING_FOR_PARENT_SIGNAL')
+        self.assertEqual(result['preparation_detail']['reason'], 'Original stage still owned')
+
+        write(self.run/'pf_auto/horizon/parent/PREPARATION.json', dict(status='WAITING_FOR_PARENT_PRICES'))
+        save_horizon_preparation(output, [row], None)
+        result, = json.loads(output.read_bytes())
+        self.assertEqual(result['status'], 'WAITING_FOR_PARENT_PRICES')
+
     def test_shared_q3_and_preparation_slot_cannot_be_claimed_twice(self):
         ex=self.executor(capacity=1)
         prep=self.submit(ex,'compile','cell')

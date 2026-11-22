@@ -866,9 +866,10 @@ class PbsManager:
         blobs = gateway.call(dict(request, hashes=missing))['blobs'] if missing else {}
         return data, blobs
 
-    def _harvest(self, allocation, *, fetched=None, owners=None):
+    def _harvest(self, allocation, *, fetched=None, owners=None, revisit=False):
         token = allocation['token']
-        if self.state['allocations'][token].get('harvested'):
+        record = self.state['allocations'][token]
+        if record.get('harvested') and not revisit:
             return
         data, blobs = fetched if fetched is not None else self._fetch_harvest(self.gateway, token)
         if owners is not None and data['host_id'] != allocation['host_id']:
@@ -918,18 +919,20 @@ class PbsManager:
                     self.executor.rpc('/v1/state',dict(host_id=row['host_id'], job_id=row['job_id'],
                         attempt_id=row['attempt_id'], state='UNKNOWN',detail=dict(
                             reason='PBS_ENDED_WITHOUT_COMPLETE_ORIGINAL_ATTEMPT',automatic_retry=False)))
-        self.state['allocations'][token]['harvested'] = ended
+        record['harvested'] = ended
+        if ended and self.settings.get('gateway_sha256'):
+            record['harvest_gateway_sha256'] = self.settings['gateway_sha256']
         self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=len(data['attempts']))
 
     def _advance_harvest(self):
         """Keep remote archive reads out of the live worker exchange."""
         if self.harvest_pending is not None:
-            allocation, owners, future = self.harvest_pending
+            allocation, owners, revisit, future = self.harvest_pending
             if not future.done():
                 return
             self.harvest_pending = None
             try:
-                self._harvest(allocation, fetched=future.result(), owners=owners)
+                self._harvest(allocation, fetched=future.result(), owners=owners, revisit=revisit)
             except Exception as error:
                 token = allocation['token']
                 self.harvest_retry_after[token] = time.monotonic() + self.settings.get('request_timeout_seconds', 20)
@@ -941,17 +944,27 @@ class PbsManager:
         # recoverability. Read ownership from the ledger independently.
         with self.executor.store._connection() as db:
             owned = [dict(row) for row in db.execute(
-                "SELECT job_id, host_id, attempt_id FROM jobs WHERE host_id IS NOT NULL "
+                "SELECT job_id, host_id, attempt_id, "
+                "(state='UNKNOWN' AND completion_sha256 IS NULL AND started_epoch IS NULL "
+                "AND json_extract(detail,'$.reason')='ValueError: Existing adapter dry-check failed' "
+                "AND json_type(detail,'$.prelaunch_rejection') IS NULL) AS needs_prelaunch_proof "
+                "FROM jobs WHERE host_id IS NOT NULL "
                 "AND attempt_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")]
+        revision = self.settings.get('gateway_sha256')
         for allocation in self.allocations:
             token = allocation['token']
             record = self.state['allocations'][token]
-            if (record.get('harvested') or allocation['status'] not in TERMINAL | {'HISTORY_MISSING_RECONCILE_SPOOL'}
+            revisit = bool(record.get('harvested'))
+            if (allocation['status'] not in TERMINAL | {'HISTORY_MISSING_RECONCILE_SPOOL'}
+                    or (revisit and (not revision or record.get('harvest_gateway_sha256') == revision))
                     or time.monotonic() < self.harvest_retry_after.get(token, 0)):
                 continue
             owners = {(row['job_id'], row['attempt_id']) for row in owned
-                      if row['host_id'] == allocation['host_id']}
+                      if row['host_id'] == allocation['host_id']
+                      and (not revisit or row['needs_prelaunch_proof'])}
             if not owners:
+                if revisit:
+                    continue
                 ended = allocation['status'] in TERMINAL or (allocation.get('worker') or {}).get('state') == 'EXITED'
                 if ended:
                     record['harvested'] = True
@@ -960,7 +973,7 @@ class PbsManager:
             if self.harvest_pool is None:
                 self.harvest_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-pbs-harvest')
             future = self.harvest_pool.submit(self._fetch_harvest, self.harvest_gateway, token, owners)
-            self.harvest_pending = (allocation, owners, future)
+            self.harvest_pending = (allocation, owners, revisit, future)
             break
 
     def _demand(self):
