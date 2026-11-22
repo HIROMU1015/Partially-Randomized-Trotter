@@ -89,6 +89,13 @@ class EvidenceTests(unittest.TestCase):
         path=output/('COLLECTED_OUTCOME.json' if mode=='collect' else 'OUTCOME.json')
         return code,json.loads(path.read_bytes()) if path.is_file() else None
 
+    def test_compact_only_profile_checks_sqlite_before_execution(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(sys.modules, {'sqlite3': None}):
+            out = Path(tmp)/'compact'
+            with self.assertRaisesRegex(ImportError, 'sqlite3'):
+                self.exercise(out, 'prdf_d2_common_entry', True, mode='dry-check')
+            self.assertFalse((out/'SOURCE.json').exists())
+
     def test_existing_raw_df_route_can_execute_and_collect_without_sqlite(self):
         with tempfile.TemporaryDirectory() as tmp, patch.dict(sys.modules, {'sqlite3':None}):
             output = Path(tmp)/'raw'

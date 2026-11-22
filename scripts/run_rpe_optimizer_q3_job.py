@@ -881,9 +881,9 @@ def main():
                     # route's actual runtime without running its evaluation.
                     with prefix_cache_context(request, case, inputs, out):
                         outcome['prefix_runtime_check'] = 'PASS'
-                    if profile.get('compact_q3_evidence') is True and getattr(r, 'evidence_writer', None) is not None:
-                        with EVIDENCE.capture(r.evidence_writer, out / case['label']):
-                            outcome['compact_runtime_check'] = 'PASS'
+                if profile.get('compact_q3_evidence') is True and getattr(r, 'evidence_writer', None) is not None:
+                    with EVIDENCE.capture(r.evidence_writer, out / case['label']):
+                        outcome['compact_runtime_check'] = 'PASS'
                 if getattr(r, 'source_resolution', None) is not None:
                     outcome['source_resolution'] = r.source_resolution
             elif a.mode == 'collect':

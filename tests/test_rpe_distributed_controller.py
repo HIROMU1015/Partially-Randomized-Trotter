@@ -37,6 +37,23 @@ class ControllerFailures(unittest.TestCase):
             artificial=dict(weights=[1, 1], scale='1/1000', tau='1'))]}
         self.problem = dict(accuracy=dict(e=1), target=dict(energy_ha=0), rpe=dict(M=1))
 
+    def test_historical_reuse_count_follows_append_and_log_replacement(self):
+        self.run.mkdir()
+        log = self.run / 'PROGRESS.jsonl'
+        row = b'{"event":"RESULT_REUSE","host_id":"server1"}'
+        log.write_bytes(row + b'\n' + row[:8])
+        executor = SimpleNamespace(run_dir=self.run, state=SimpleNamespace(), lock=threading.Lock())
+        count = lambda: dict(DistributedExecutor._reuse_counts(executor))
+        self.assertEqual(count(), {'server1': 1})
+        with log.open('ab') as stream:
+            stream.write(row[8:] + b'\n')
+        self.assertEqual(count(), {'server1': 2})
+        self.assertEqual(count(), {'server1': 2})
+        replacement = log.with_suffix('.new')
+        replacement.write_bytes(row.replace(b'server1', b'server2') + b'\n')
+        replacement.replace(log)
+        self.assertEqual(count(), {'server2': 1})
+
     def executor(self, capacity=2, **distributed):
         result = DistributedExecutor(ROOT, self.run, self.routes, {}, self.problem,
             optimizer_source=self.source, max_concurrent=capacity, budgets={'PR_PAULI': 8},

@@ -393,3 +393,13 @@ PBSでは価格compile 1件の失敗結果も受領した。固定Gitコミッ�
 06:08:23 JSTまでに新規Q3はFull PF 156件、B0I 244件が採用された。05:02以降の準備工程の採用はaudit分類40件、compile分類15件。06:05:50〜06:07:49の次のPBS会計区間は平均20.5 CPU（21.35%）。RomuTailの常設監視は中央原本と一致する390コピー（16,206,221,312バイト）を解放し、実測35.00 GiBでworker受付が再開した。再開後、同じrunでRomuTailのB0I Q3と価格compileの実行も確認した。
 
 価格compileの固定入力を含む制御版 `5cc241e4e1` はこのrunの次回通常Resume用に配置した。固定driver・SOURCE・探索範囲・予算の検査はPASS。稼働中の制御版 `052f02939b` からも参照するPBS共有入力を補い、実際に失敗したworkspace・固定Pythonで価格providerを読めることを確認した。この修復検査はimportのみで科学compileを含まない。
+
+## 2026年11月22日　保存descriptorからPR-DFの探索を再開
+
+同じrun `search-29795d0e2e2593819e27` に制御版 `29c7d803aa` を通常Resumeで適用した。PR-DFの旧版と移設対応版について、固定入力・導出コード・λ・物理内容を比較した。旧descriptorの10件が一致し、λを変えた反例10件をすべて拒否した。価格を含む照合も通った9候補が同じ探索へ戻った。残る1候補は価格モデルの適用証拠が一意に決まっていない。PFの旧停止表示2件には既存の終了コード2を反映した。
+
+5ホストで新規PR-DF Q3の開始・結果受領・採用を確認した。server1の専用PythonでSQLite拡張が欠けていたため、同じABIの拡張を配置して読書きと後続Q3を確認した。元の6 attemptはすべてSQLiteのimport失敗、OUTCOMEなし、枠解放済み、自動再試行禁止だった。PBSでは同一予約のCPU時間の差を測った。非PBSはこのrunの科学プロセスと子を対象とした短時間サンプルで、サンプル間で終了した子は過少計上し得る。今回確認した改善は候補の復帰と全ホストでの採用、PBSの区間利用率の上昇である。全ホストの長時間の飽和には至っていない。[ホスト別の実測と元attempt](rpe_fleet_efficiency_20261122/DF_RECOVERY.json)
+
+運用branchの集計処理も、永続ログから初回にホストごとの再利用件数を復元し、同じcontrollerの次の集計から追記分を読むよう変更した。実runの約1.28 GBのログで件数が一致した。記録した時間はこの部分だけの読取り時間で、探索全体の短縮時間ではない。
+
+公開用の巨大な結果JSONは厳密な数値を再変換せず空白を省き、Cの単体HTMLは埋め込みデータを可逆圧縮する。2 runの公開を復旧し、Cの探索マップを更新した。公開版はチェックポイント時点の情報で、その後の採用数は中央台帳で確認する。[公開スナップショット](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/8e398c582512bb7906ee3dea08b8e998fd2c7a50)・[Cの同期版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/802c7bacb47586045892eb8f63eee9b3f14730b4)

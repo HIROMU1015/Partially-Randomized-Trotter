@@ -2909,9 +2909,30 @@ class DistributedExecutor(ConcurrentExecutor):
         with self.state.cv:
             return self._metrics_locked()
 
+    def _reuse_counts(self):
+        # All method views share the progress log and this cursor. A fresh
+        # controller rebuilds counts from the durable log on its first query.
+        with self.lock, (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
+            stat = os.fstat(progress.fileno())
+            identity = (stat.st_dev, stat.st_ino)
+            previous, offset, counts = getattr(self.state, 'reuse_cursor', (None, 0, None))
+            if previous != identity or stat.st_size < offset:
+                offset, counts = 0, Counter()
+            progress.seek(offset)
+            for line in progress:
+                if not line.endswith(b'\n'):
+                    break
+                if b'RESULT_REUSE' in line:
+                    row = json.loads(line)
+                    if row.get('event') == 'RESULT_REUSE' and row.get('host_id'):
+                        counts[row['host_id']] += 1
+                offset += len(line)
+            self.state.reuse_cursor = (identity, offset, counts)
+            return counts
+
     def _metrics_locked(self):
         result = super().metrics()
-        rows = self.store.rows(); by_host = {}
+        rows = self.store.metric_rows(); by_host = {}
         for row in rows:
             if row['host_id'] is None: continue
             counts = by_host.setdefault(row['host_id'], dict(assigned=0, launched=0, completed=0, adopted=0, reused=0))
@@ -2919,13 +2940,9 @@ class DistributedExecutor(ConcurrentExecutor):
             counts['launched'] += row['started_epoch'] is not None
             counts['completed'] += row['state'] == 'ACCEPTED'
             counts['adopted'] += row['adopted_epoch'] is not None
-        with self.lock, (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
-            # Historical per-host reuse counts include earlier invocations.
-            for line in progress:
-                if b'RESULT_REUSE' in line:
-                    event = json.loads(line)
-                    if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
-                        by_host[event['host_id']]['reused'] += 1
+        for host, count in self._reuse_counts().items():
+            if host in by_host:
+                by_host[host]['reused'] = count
         admission_policy, admission_error = self._host_admission_policy()
         admissions = {host:self._host_admission(host, admission_policy, admission_error)
                       for host in sorted(set(self.hosts) | set(admission_policy['hosts']))}
@@ -2937,7 +2954,7 @@ class DistributedExecutor(ConcurrentExecutor):
                       unresolved_owned_attempts=len(self._owned_attempts()),
                       unresolved_q3_attempts=[
                           {key: row[key] for key in ('method', 'job_id', 'attempt_id', 'host_id')}
-                          for row in rows if not self._preparation_request(row['request'])
+                          for row in rows if not row['is_preparation']
                           and (row['state'] == 'UNKNOWN' or
                                getattr(self.state.tasks.get(self.run_dir/'jobs'/row['method']/row['job_id']),
                                        'error', None) == 'WORKER_CONTACT_LOST')],

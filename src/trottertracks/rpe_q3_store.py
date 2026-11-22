@@ -118,6 +118,17 @@ class JobStore:
         with self._connection() as db:
             return [self._decoded(row) for row in db.execute('SELECT * FROM jobs ORDER BY enqueued_epoch,job_id')]
 
+    def metric_rows(self):
+        # Requests and scientific evidence can be large. The driver only
+        # needs routing and accounting fields when taking a progress snapshot.
+        with self._connection() as db:
+            return db.execute("""
+                SELECT job_id, method, host_id, attempt_id, state, started_epoch, adopted_epoch,
+                       (CASE WHEN json_extract(request, '$.route.kind') = 'preparation'
+                             THEN json_type(request, '$.preparation') = 'object' ELSE 0 END) AS is_preparation
+                FROM jobs ORDER BY enqueued_epoch, job_id
+            """).fetchall()
+
     def unadopted_results(self, method):
         with self._connection() as db:
             return [row['job_id'] for row in db.execute(
