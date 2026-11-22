@@ -53,6 +53,13 @@ class SavedHistoryDeltas(unittest.TestCase):
         (job / 'OUTCOME.json').write_text(json.dumps(result))
         (job / 'PROCESS_RETURN.json').write_text(json.dumps(dict(returncode=0, signal=None)))
 
+    def test_outcome_reads_signed_exact_json_integers(self):
+        job = self.root / 'large'
+        job.mkdir()
+        (job / 'OUTCOME.json').write_text('{"lower": -' + '9' * 20000 + ', "upper": ' + '9' * 20001 + '}')
+        outcome, _ = O.job_outcome(job)
+        self.assertEqual(outcome, dict(lower=1 - 10**20000, upper=10**20001 - 1))
+
     def test_persistent_warm_results_exact_and_current_prices(self):
         self.evidence(4)
         self.evidence(5, O.FAIL)
@@ -147,6 +154,8 @@ class SavedHistoryDeltas(unittest.TestCase):
         with patch.object(ConcurrentExecutor, 'same_route', changed):
             self.assertIn(hash_path, _validator(distributed))
         with patch.object(DistributedExecutor, 'ingest', changed):
+            self.assertIn(hash_path, _validator(distributed))
+        with patch.object(DistributedExecutor, 'scope_unknown', changed):
             self.assertIn(hash_path, _validator(distributed))
 
     def test_late_ready_subset_skips_unrelated_exact_payloads_until_request_changes(self):

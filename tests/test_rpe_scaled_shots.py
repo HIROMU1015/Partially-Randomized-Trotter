@@ -266,6 +266,12 @@ class ScaleTests(unittest.TestCase):
                 self.assertEqual(waves[-1], [])  # retire unclaimed, obsolete allocations at exhaustion
 
     def test_active_series_runs_while_late_candidate_history_is_being_checked(self):
+        self._check_active_series_during_history(initial=False)
+
+    def test_first_series_runs_while_other_initial_history_is_being_checked(self):
+        self._check_active_series_during_history(initial=True)
+
+    def _check_active_series_during_history(self, *, initial):
         from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, optimize
 
         method = 'FULL_PF'
@@ -273,15 +279,17 @@ class ScaleTests(unittest.TestCase):
         problem['rpe'] = {'M': 0}
         problem['search'].update(rule=S.RULE, scaled_shots=dict(
             M=[0], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
+        if initial:
+            problem['search']['work_conserving_search'] = True
         context['saved'].table.clear()
         context['tau'] = TAU
         first, late = context['candidates']
         for candidate in (first, late):
             candidate['prices'] = [F(1), F(1)]
-        context['candidates'] = [first]
+        context['candidates'] = [first, late] if initial else [first]
         routes[method][0]['artificial'].update(weights=[1], scale='1/1000000000', tau=str(TAU))
         head_done, history_started = threading.Event(), threading.Event()
-        notifications = [late]
+        notifications = [] if initial else [late]
         ready_source = SimpleNamespace(
             subscribe=lambda *args: (lambda: bool(notifications), lambda: (list(notifications), None)
                                      if not history_started.is_set() else ([], None)),

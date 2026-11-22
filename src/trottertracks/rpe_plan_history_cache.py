@@ -36,6 +36,9 @@ def ingest(self, job, proposal, calls):
         self.record_prior_result_reuse(job)
     return answer
 '''
+# This implementation only adds scope to UNKNOWN records, which the cache
+# never accepts. A changed implementation falls back to full source hashing.
+DISTRIBUTED_UNKNOWN_SCOPE_SHA256 = '92f6f5e832b03e5e323d594c7eab4e8a0ae10d2bcfd3543d91a3b0d66459547c'
 
 
 def _json(value):
@@ -107,12 +110,15 @@ def _validator(executor):
             # ordinary Executor still decides which exact result is valid.
             if cls.__name__ == 'ConcurrentExecutor' and not hooks:
                 continue
-            if cls.__name__ == 'DistributedExecutor' and hooks == {'ingest'}:
+            if cls.__name__ == 'DistributedExecutor' and hooks in ({'ingest'}, {'ingest', 'scope_unknown'}):
                 try:
                     wrapper = textwrap.dedent(inspect.getsource(cls.ingest))
+                    scope = (textwrap.dedent(inspect.getsource(cls.scope_unknown))
+                             if 'scope_unknown' in hooks else None)
                 except (TypeError, OSError):
                     wrapper = None
-                if wrapper == DISTRIBUTED_INGEST_WRAPPER:
+                if wrapper == DISTRIBUTED_INGEST_WRAPPER and (scope is None or
+                        hashlib.sha256(scope.encode()).hexdigest() == DISTRIBUTED_UNKNOWN_SCOPE_SHA256):
                     continue
         paths.add(path)
     return {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}

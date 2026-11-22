@@ -3347,8 +3347,9 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
                         executor.state.cv.notify_all()
 
             def submit(method):
+                options = dict(kwargs, close_executor=False) if keep_active else kwargs
                 future = pool.submit(O.optimize, root, problem, executor=executor.for_method(method),
-                                     methods=[method], scaled_finalizers=finalizers, **kwargs)
+                                     methods=[method], scaled_finalizers=finalizers, **options)
                 future.add_done_callback(lambda done: finished(method, done))
                 return future
 
