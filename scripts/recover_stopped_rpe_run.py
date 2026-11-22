@@ -8,6 +8,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shlex
 import sqlite3
 import subprocess
 import sys
@@ -93,9 +94,12 @@ def check_assignment(row, assignment):
         raise ValueError('Saved worker request differs from the central request')
 
 
+DRY_CHECK_OBSERVER = (Path(__file__).resolve().parents[1] /
+                      'src/trottertracks/rpe_dry_check_recovery.py').read_text()
+
 # This probe is intentionally independent from mailbox status. That action
 # can start a detached supervisor for previously delivered ASSIGNED work.
-PROBE = (Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dry_check_recovery.py').read_text() + r"""
+PROBE = DRY_CHECK_OBSERVER + r"""
 import json, os, sys
 from pathlib import Path
 profile = json.loads(Path(sys.argv[1]).read_bytes())
@@ -132,6 +136,30 @@ if state.get('state') == 'UNKNOWN' and not live:
     if proof:
         result['prelaunch_detail'] = dict(state['detail'], resource_released=True, prelaunch_rejection=proof)
 print(json.dumps(result))
+"""
+
+PBS_PRELAUNCH_PROBE = DRY_CHECK_OBSERVER + r"""
+import json, sys
+from pathlib import Path
+payload = json.load(sys.stdin)
+verified = {}
+for owner in payload['owners']:
+    for work in payload['work_dirs']:
+        attempt = Path(work)/owner['job_id']/owner['attempt_id']
+        marker = attempt/'ASSIGNMENT.json'
+        if not marker.is_file() or attempt.is_symlink() or marker.is_symlink():
+            continue
+        assignment = _read_saved(marker)
+        if any(assignment.get(k) != v for k,v in owner.items() if k != 'host_id'):
+            continue
+        if assignment.get('host_id', owner['host_id']) != owner['host_id']:
+            continue
+        proof = dry_check_rejection(attempt, assignment)
+        if proof:
+            detail = _read_saved(attempt/'WORKER_STATE.json')['detail']
+            verified[owner['job_id']] = dict(detail, resource_released=True, prelaunch_rejection=proof)
+            break
+print(json.dumps(verified))
 """
 
 
@@ -240,6 +268,36 @@ def pbs_results(run, rows, cache):
             pending[job] = dict(state='PBS_RECOVERY_PENDING', reason=str(error)[:450])
     finally:
         gateway.close()
+    # Old gateway archives may only preserve the common worker spool, or
+    # omit a prelaunch rejection from terminal harvest. Inspect its original
+    # assigned files directly using the same read-only evidence checks.
+    pending_rejections = {job: rows[job] for job, status in pending.items()
+                          if rows[job]['state'] == 'UNKNOWN' and not status.get('prelaunch_detail')}
+    if pending_rejections and configured.get('ssh_alias') and configured.get('gateway_python'):
+        for host in sorted({row['host_id'] for row in pending_rejections.values()}):
+            work_dirs = {profile['work_dir'] for allocation in saved_allocations.values()
+                         if allocation.get('status') in ('F', 'X', 'FINISHED_SAVED_WORKER')
+                         for profile in [allocation.get('spec', {}).get('profile', {})]
+                         if profile.get('host_id') == host and profile.get('work_dir')}
+            selected = [owner(row) for row in pending_rejections.values() if row['host_id'] == host]
+            if not work_dirs:
+                continue
+            try:
+                for item in selected:
+                    safe_name(item['job_id'])
+                    safe_name(item['attempt_id'])
+                command = [*(configured.get('ssh_command') or ['ssh']), '-T', '-o', 'BatchMode=yes',
+                           '-o', 'ConnectTimeout=8', configured['ssh_alias'],
+                           shlex.join([configured['gateway_python'], '-B', '-c', PBS_PRELAUNCH_PROBE])]
+                raw = subprocess.check_output(command, input=json.dumps(dict(
+                    owners=selected, work_dirs=sorted(work_dirs))), text=True, timeout=20, stderr=subprocess.PIPE)
+                verified = json.loads(raw)
+                for item in selected:
+                    if item['job_id'] in verified:
+                        pending[item['job_id']].update(prelaunch_detail=verified[item['job_id']])
+            except (ValueError, KeyError, OSError, subprocess.SubprocessError) as error:
+                for item in selected:
+                    pending[item['job_id']]['prelaunch_observation_error'] = str(error)[-450:]
     for job, status in pending.items():
         yield rows[job], status, None
 

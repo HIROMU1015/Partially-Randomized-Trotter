@@ -2,6 +2,7 @@ import base64
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -9,7 +10,8 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT/'src'), str(ROOT/'scripts')]
-from recover_stopped_rpe_run import accept, check_assignment, owner, pbs_results, probe_local, publish_received, read_rows, repair_dependencies
+from recover_stopped_rpe_run import (PBS_PRELAUNCH_PROBE, accept, check_assignment, owner,
+                                    pbs_results, probe_local, publish_received, read_rows, repair_dependencies)
 from run_rpe_central_maintenance import archive_candidates, wait_summary
 from trottertracks.rpe_completion_acceptance import validate_preparation_result
 from trottertracks.rpe_local0_search import supervise_run
@@ -120,6 +122,38 @@ class CentralMaintenanceTests(unittest.TestCase):
               reasons={'signal':'PREPARATION_BUDGET_HOLD'},hosts={'pbs-0':{'idle_reason':'PREPARATION_BUDGET_HOLD'}}))+'\n')
         self.assertEqual(wait_summary(self.run,{})['queue_wait_reasons'],{'PREPARATION_BUDGET_HOLD':1})
         self.assertEqual(archive_candidates([self.run],None,{self.run:read_rows(self.run)})['count'],0)
+
+    def test_old_pbs_archive_observes_original_prelaunch_receipt_without_launch(self):
+        self.reserve('audit','audit')
+        row, = self.store.claim('pbs-0', 1)
+        root = self.run/'distributed/pbs'
+        spool = self.run/'pbs-spool'
+        write(root/'SETTINGS.json',dict(gateway_command=['artificial'], ssh_alias='artificial',
+                                        gateway_python=sys.executable))
+        write(root/'STATE.json',dict(allocations={'allocation': {'status':'F',
+             'spec': {'profile': {'host_id':'pbs-0', 'work_dir':str(spool)}}}}))
+        detail = dict(automatic_retry=False, resource_released=True,
+                      reason='ValueError: Existing adapter dry-check failed')
+        attempt = spool/'audit'/row['attempt_id']
+        write(attempt/'ASSIGNMENT.json', dict(owner(row), request=row['request']))
+        write(attempt/'WORKER_STATE.json',dict(state='UNKNOWN',detail=detail))
+        write(attempt/'WORKER_DRY-CHECK_RETURN.json',dict(returncode=2,signal=None))
+        for name in ('SUPERVISOR_STARTED.json','SUPERVISOR_LAUNCH.json'):
+            write(attempt/name,dict(pid=314))
+        (attempt/'WORKER_PROCESS.lock').touch()
+        self.store.update('pbs-0', 'audit', row['attempt_id'], 'UNKNOWN', detail)
+        row = self.store.row('audit')
+        run_python = subprocess.check_output
+        with (patch('trottertracks.rpe_pbs.Gateway') as gateway,
+              patch('recover_stopped_rpe_run.subprocess.check_output', side_effect=lambda _, **kw:
+                    run_python([sys.executable,'-B','-c',PBS_PRELAUNCH_PROBE], **kw))):
+            gateway.return_value.call.side_effect = [
+                {'allocations':[{'token':'allocation','status':'F'}]},
+                {'host_id':'pbs-0','attempts':[],'incomplete':[]}]
+            (_, observed, files), = pbs_results(self.run, [row], self.cache)
+            self.assertIsNone(files)
+            self.assertEqual(observed['prelaunch_detail']['prelaunch_rejection']['attempt_id'], row['attempt_id'])
+        self.assertEqual(self.store.row('audit'), row)
 
     def test_supervisor_uses_the_actual_child_wait_status(self):
         state = self.run.parent/'state'
