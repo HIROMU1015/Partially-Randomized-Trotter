@@ -66,6 +66,55 @@ def test_price_pool_prioritizes_larger_circuits_in_the_same_memory_group(tmp_pat
     assert [read(path)["index"] for path in completed] == [1000, 800, 600]
 
 
+def test_scoped_price_archive_preserves_events_and_price_reuse(tmp_path, monkeypatch):
+    import hashlib
+    import json
+    import lzma
+    from types import SimpleNamespace
+
+    import h6_scope_worker as worker
+    from run_h6_scope import observation
+
+    price_dir = tmp_path / "prices"
+    price_dir.mkdir()
+    cell = {"id": "path", "method": "PR"}
+    path = price_dir / "path-0.json"
+    event_a = {"application_sequence": ["rotación"] * 500, "phase": {"real": 1.0, "imag": 0.0}}
+    event_b = {"application_sequence": ["identity"] * 150, "phase": {"real": -1.0, "imag": 0.0}}
+    a = SimpleNamespace(to_dict=lambda: event_a)
+    b = SimpleNamespace(to_dict=lambda: event_b)
+    data = dict(candidate=cell, index=0, compiler="artificial", axes={"X": {"rz": 42}, "Y": {"rz": 43}},
+                events=[(a, b, a), (), (b, a)])
+    calls = []
+
+    def artificial_price(*args):
+        calls.append(args)
+        return data
+
+    monkeypatch.setattr(worker, "price", artificial_price)
+    job = ("price", cell, 0, path, "fixture")
+    worker.execute(job)
+    summary = read(path)
+    archive = price_dir / summary["events"]["file"]
+    events = [[event_a, event_b, event_a], [], [event_b, event_a]]
+    assert lzma.decompress(archive.read_bytes()) == (json.dumps(events) + "\n").encode()
+    assert summary["events"]["size_bytes"] == archive.stat().st_size
+    assert summary["events"]["sha256"] == hashlib.sha256(archive.read_bytes()).hexdigest()
+    plan = dict(scope={"price_paths": 1}, owner="fixture", compiler="artificial")
+    assert observation(plan, cell, tmp_path, "X")[0] == 42
+    assert observation(plan, cell, tmp_path, "Y")[0] == 43
+    worker.execute(job)
+    archive.unlink()
+    with pytest.raises(FileNotFoundError):
+        worker.execute(job)
+    with pytest.raises(FileNotFoundError):
+        observation(plan, cell, tmp_path, "X")
+    write(path, dict(summary, events=events))
+    assert observation(plan, cell, tmp_path, "X")[0] == 42
+    worker.execute(job)
+    assert len(calls) == 1
+
+
 def artificial_plan(run, scope=None):
     scope = scope or read(RUNNER / "h6_scope_example.json")
     scope["scaled_shots"]["grid"].update(min_k=0, max_k=0)

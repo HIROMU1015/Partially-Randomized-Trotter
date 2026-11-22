@@ -11,7 +11,7 @@ import subprocess
 import sys
 
 from h6_scope import AXES, LABELS, case_rows, digest, enc, exact, group_key, read
-from h6_scope_worker import write
+from h6_scope_worker import read_price, write
 from h6_preparation_pool import GIB
 
 
@@ -37,7 +37,7 @@ def observation(plan, cell, run, axis):
     values, sources = [], []
     for i in range(n_paths):
         path = run / "prices" / f"{cell['id']}-{i}.json"
-        receipt = read(path)
+        receipt = read_price(path)
         if (receipt["candidate"]["id"] != cell["id"] or receipt["index"] != i
                 or receipt["owner"] != plan["owner"] or receipt["compiler"] != plan["compiler"]
                 or receipt["candidate"] != cell

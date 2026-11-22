@@ -2,7 +2,9 @@
 
 import argparse
 from functools import lru_cache
+import hashlib
 import json
+import lzma
 import math
 import os
 from pathlib import Path
@@ -17,6 +19,49 @@ def write(path, data):
     tmp = path.with_suffix(f".{os.getpid()}.tmp")
     tmp.write_text(json.dumps(data, allow_nan=False) + "\n")
     tmp.replace(path)
+
+
+def write_price(path, data):
+    events = data["events"]
+    if events:
+        archive = path.with_suffix(".events.json.xz")
+        tmp = archive.with_suffix(f".{os.getpid()}.tmp")
+        encoded = {}
+        try:
+            with tmp.open("xb") as raw, lzma.LZMAFile(raw, "wb", preset=1) as out:
+                out.write(b"[")
+                for batch_index, batch in enumerate(events):
+                    out.write(b", [" if batch_index else b"[")
+                    for event_index, event in enumerate(batch):
+                        key = id(event)
+                        if key not in encoded:
+                            if len(encoded) == 256:
+                                encoded.clear()
+                            encoded[key] = json.dumps(event.to_dict(), allow_nan=False).encode("ascii")
+                        if event_index:
+                            out.write(b", ")
+                        out.write(encoded[key])
+                    out.write(b"]")
+                out.write(b"]\n")
+            with tmp.open("rb") as stream:
+                checksum = hashlib.file_digest(stream, "sha256").hexdigest()
+            info = dict(file=archive.name, size_bytes=tmp.stat().st_size, sha256=checksum)
+            tmp.replace(archive)
+        finally:
+            tmp.unlink(missing_ok=True)
+        data = dict(data, events=info)
+    # Publish the small receipt last so consumers only see a completed pair.
+    write(path, data)
+
+
+def read_price(path):
+    receipt = read(path)
+    events = receipt.get("events")
+    if isinstance(events, dict):
+        archive = path.with_suffix(".events.json.xz")
+        if events["file"] != archive.name or archive.stat().st_size != events["size_bytes"]:
+            raise ValueError(f"H6 price event archive differs for {path.name}")
+    return receipt
 
 
 def fixed_inputs(assets):
@@ -124,9 +169,7 @@ def signal(cell):
 
 
 def price(cell, index, cohort):
-    from h6_price_acceleration import (
-        PriceFingerprints, event_receipts, fingerprint_context, hadamard_wrapper, reuse_sampled_events,
-    )
+    from h6_price_acceleration import PriceFingerprints, fingerprint_context, hadamard_wrapper, reuse_sampled_events
     from trotterlib.rte import CompilerSettings
     from trotterlib.rte_compiled_cost import transpile_and_measure_cost
 
@@ -152,7 +195,7 @@ def price(cell, index, cohort):
             result[axis] = dict(rz=cost.rz_count, fingerprint=fp.axes[native],
                 metrics={key: getattr(cost, key) for key in ("rz_depth", "cx_count", "cx_depth", "total_depth", "circuit_size")})
             del cost, wrapper
-    events = [event_receipts(request.rte_occurrence.events) for request in requests]
+    events = [request.rte_occurrence.events for request in requests]
     return dict(candidate=cell, index=index, cohort=cohort, axes=result, compiler=STATE.compiler,
                 preparation_hash=prep.preparation_hash, seeds=seeds, laws=laws, events=events)
 
@@ -160,15 +203,17 @@ def price(cell, index, cohort):
 def execute(job):
     kind, cell, index, path, owner = job
     if path.exists():
-        old = read(path)
+        old = read_price(path) if kind == "price" else read(path)
         if old["owner"] != owner or old["candidate"]["id"] != cell["id"]:
             raise ValueError("Saved H6 preparation receipt belongs to a different input")
         return
     # Ownership stays visible if PBS ends before the receipt is committed.
     with path.with_suffix(".started").open("x") as marker:
         json.dump(dict(owner=owner, job=os.environ.get("PBS_JOBID"), candidate=cell["id"]), marker)
-    data = price(cell, index, "H6_SCOPE_" + owner) if kind == "price" else signal(cell)
-    write(path, dict(data, owner=owner))
+    if kind == "price":
+        write_price(path, dict(price(cell, index, "H6_SCOPE_" + owner), owner=owner))
+    else:
+        write(path, dict(signal(cell), owner=owner))
 
 
 def collect(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path=None):
