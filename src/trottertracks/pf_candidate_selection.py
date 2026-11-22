@@ -371,6 +371,13 @@ def reconcile_received_preparation(run, records, stage_executor):
         inspect = getattr(stage_executor, 'hold_evidence', None)
         if inspect is not None and (evidence := inspect(folder, reason)) is not None:
             row['preparation_recovery'] = evidence
+            if (reason.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:')
+                    and evidence['action'] == 'PRESERVE_FAILED_ATTEMPT'):
+                stage = reason.split(':', 2)[1]
+                row['previous_preparation_hold'] = reason
+                row['reason'] = (f'STAGE_FAILED:{stage}:DISTRIBUTED_PREPARATION_FAILED:NO_AUTOMATIC_RETRY:'
+                                 + str({'job_id': evidence['job_id'], 'attempt_id': evidence['attempt_id']}))
+                continue
         if reason.startswith('STAGE_FAILED:'):
             continue
         if (leaf/'RESPONSE.json').exists() or (folder/'STOP.json').exists():

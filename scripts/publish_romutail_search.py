@@ -6,9 +6,45 @@ The execution SOURCE and the publication checkout are separate.
 import argparse
 import json
 from pathlib import Path
+import os
 import shutil
+import sqlite3
+from tempfile import NamedTemporaryFile
 import subprocess
 from publish_h4_search_run import prepare, FILES
+
+
+GIT_BLOB_LIMIT = 100 * 1024**2
+
+
+def copy_metadata(source, target, *, limit=GIT_BLOB_LIMIT):
+    """Strip only JSON line whitespace if needed. Preserve exact numeric tokens."""
+    with source.open('rb') as reader, NamedTemporaryFile(dir=target.parent, delete=False) as writer:
+        pending = Path(writer.name)
+        try:
+            if os.fstat(reader.fileno()).st_size <= limit:
+                shutil.copyfileobj(reader, writer)
+            else:
+                for line in reader:
+                    writer.write(line.strip(b' \n\r\t'))
+                writer.write(b'\n')
+            if writer.tell() > limit:
+                raise ValueError(f'{source.name} exceeds publication size limit after compaction')
+            writer.flush()
+            os.fchmod(writer.fileno(), 0o644)
+            os.replace(pending, target)
+        finally:
+            pending.unlink(missing_ok=True)
+
+
+def execution_hosts(run):
+    ledger = run/'distributed/QUEUE.sqlite3'
+    if not ledger.is_file():
+        return ()
+    from contextlib import closing
+    with closing(sqlite3.connect(ledger.as_uri()+'?mode=ro', uri=True)) as conn:
+        return [host for host, in conn.execute(
+            "SELECT DISTINCT host_id FROM jobs WHERE state='ACCEPTED' AND host_id IS NOT NULL")]
 
 
 def publish(repository, run, *, branch, controller_source=None, push=False):
@@ -30,9 +66,9 @@ def publish(repository, run, *, branch, controller_source=None, push=False):
     target.mkdir(parents=True,exist_ok=True)
     for name in FILES+('KAPPA_STATE.json','APPLIED_SCOPE.json','RELEASE.json'):
         source=run/name
-        if source.is_file():shutil.copyfile(source,target/name)
+        if source.is_file():copy_metadata(source,target/name)
     status,manifest=prepare(repository,target,target/'SEARCH_PUBLICATION.json',run_id=run.name,
-                            execution_hosts=('local','server2','server1','local0-wsl'))
+                            execution_hosts=execution_hosts(run))
     relative=target.relative_to(repository).as_posix()
     git('add','--sparse','--',relative)
     if git('diff','--cached','--name-only','--',relative):

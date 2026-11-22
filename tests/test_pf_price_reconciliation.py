@@ -178,6 +178,20 @@ class PFPriceReconciliationTests(unittest.TestCase):
         self.assertEqual(reduced['maximum_new_compile'], 1)
         self.assertEqual(original['new_compile_cells'][0]['axes'], ['X', 'Y'])
 
+    def test_terminal_failure_supersedes_old_reservation_message(self):
+        reason = "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:PF_COMPILE:{'job_id': 'job'}"
+        evidence = dict(action='PRESERVE_FAILED_ATTEMPT', job_id='job', attempt_id='old')
+        records = {'candidate': dict(status='PREPARATION_INCOMPLETE', reason=reason)}
+        runtime = SimpleNamespace(hold_evidence=lambda *_: evidence,
+                                  received_after_reservation_stop=lambda *_: self.fail('Retried terminal attempt'))
+        for _ in range(2):
+            selection.reconcile_received_preparation(Path('/unused'), records, runtime)
+        row = records['candidate']
+        self.assertEqual(row['previous_preparation_hold'], reason)
+        self.assertEqual(row['preparation_recovery'], evidence)
+        self.assertTrue(row['reason'].startswith('STAGE_FAILED:PF_COMPILE:'))
+        self.assertEqual(row['status'], 'PREPARATION_INCOMPLETE')
+
     def test_received_stage_reopens_the_exact_pf_leaf(self):
         with tempfile.TemporaryDirectory() as tmp:
             run = Path(tmp)

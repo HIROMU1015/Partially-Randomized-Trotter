@@ -55,6 +55,36 @@ def read_loc(loc):
     return x
 
 
+def equivalent_df_descriptor(config, base):
+    """Recognize the original H4 descriptor runner and its input-path port."""
+    import re
+    from trottertracks.pr_df_descriptor_extension import validate
+
+    # The port moves the input paths and retains the fixed loader, hashed inputs
+    # and matrix_only_tail_coefficients. Do not extend this to unknown runners.
+    runners = {'194e00a8a058a7a009e186bcd03b38c7329ec2f7',
+               'b0c04ae1915661af8de4f34957304e2cb0e7aed9'}
+    compared = []
+    for candidate in (config, base):
+        split = candidate['spec']['split']
+        loc = split.get('lambda_source')
+        if (not isinstance(loc, dict) or not re.fullmatch('[0-9a-f]{40}', loc.get('commit', ''))
+                or not loc.get('path') or set(loc) - {'commit', 'path', 'selector'}):
+            return False
+        try:
+            document = read_loc(loc)
+            descriptor = validate(document, loc, candidate)
+            caller = document['execution_source']
+            if (caller.get('path') != 'scripts/derive_pr_df_candidate_descriptor.py'
+                    or caller.get('commit') not in runners
+                    or KS._frac(split['lambda_R']) != Fraction(descriptor['lambda_R'])):
+                return False
+            compared.append({k: v for k, v in document.items() if k not in ('resources', 'execution_source')})
+        except (ValueError, TypeError, KeyError, OSError, subprocess.CalledProcessError):
+            return False
+    return json.dumps(compared[0], sort_keys=True) == json.dumps(compared[1], sort_keys=True)
+
+
 def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
     import fcntl
 
@@ -1109,9 +1139,27 @@ class WidthDriver:
         comp=self.completion_api()
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
         if hasattr(comp,'reconcile_committed_df_holdout'):
+            from trottertracks.pr_candidate_completion import Held
             for point in self.state['points']:
                 completion = point.get('completion') or {}
                 record = comp.state['records'].get(completion.get('key'))
+                if (point['status'] == 'HELD' and point.get('reason') ==
+                        'COMPLETED_CONFIGURATION_MISMATCH:DIFFERENT_SPLIT_LAMBDA_SOURCE'
+                        and record and record['status'] == 'READY_FOR_SEARCH' and record['method'] == 'PR_DF'
+                        and record['request'] == point.get('completion_request')):
+                    try:
+                        self.check_completed_configuration(point, record)
+                        comp.verify_continuation_inputs(record)
+                    except (Held, ValueError, KeyError, TypeError, OSError, subprocess.CalledProcessError) as error:
+                        point['descriptor_recheck'] = str(error)
+                        continue
+                    point.update(status='REGISTERED', previous_hold=point.pop('reason'),
+                                 configuration_id=record['configuration_id'])
+                    self.log(event='CONTINUATION_INPUT_READY', family=point['family'], key=record['key'],
+                             configuration_id=record['configuration_id'])
+                    if announce_ready is not None:
+                        announce_ready(point['method'], record)
+                    continue
                 if point['status'] == 'HELD' and record and comp.reconcile_committed_df_holdout(record):
                     point.update(status='WAITING_INPUTS',reason=record['reason'])
         # INIT may expose a whole far-kappa ladder at once. Distributed
@@ -1335,7 +1383,11 @@ class WidthDriver:
         for section in('binding','law','profile'):
             if s.get(section)!=base.get(section):raise ValueError('DIFFERENT_'+section.upper())
         for field in('scalar','one_body_policy','tail_dictionary','lambda_source'):
-            if s['split'].get(field)!=base['split'].get(field):raise ValueError('DIFFERENT_SPLIT_'+field.upper())
+            if s['split'].get(field) == base['split'].get(field):
+                continue
+            if field == 'lambda_source' and point['method'] == 'PR_DF' and equivalent_df_descriptor(config, f['configuration']):
+                continue
+            raise ValueError('DIFFERENT_SPLIT_'+field.upper())
 
     def context(self, problem):
         return O.prepare(ROOT,problem,methods=self.methods,generate_configurations=False,

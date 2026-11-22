@@ -11,6 +11,29 @@ import check_pr_width_search as W
 import run_rpe_schedule_search as E
 
 class Isolation(unittest.TestCase):
+    def test_df_path_port_preserves_descriptor_inputs_and_exact_lambda(self):
+        from trottertracks import pr_df_descriptor_extension as df
+        from fractions import Fraction
+        loc_a = dict(commit='a'*40, path='descriptor.json')
+        loc_b = dict(commit='b'*40, path='descriptor.json')
+        source = dict(path='scripts/derive_pr_df_candidate_descriptor.py', commit='194e00a8a058a7a009e186bcd03b38c7329ec2f7')
+        doc = dict(schema='PR_DF_TAIL_DESCRIPTOR_V1', prefix=6, descriptor=dict(lambda_R=0.25, scalar=0),
+                   execution_source=source, binding={k: 'fixture' for k in df.BINDING_KEYS},
+                   input_source={'input': 'original'}, saved_index=df.INDEX, derivation_source=df.DERIVATION)
+        other = deepcopy(doc)
+        other['execution_source']['commit'] = 'b0c04ae1915661af8de4f34957304e2cb0e7aed9'
+        other['resources'] = {'wall_seconds': 3}
+        def config(loc):
+            return dict(spec=dict(L_D=6, split=dict(lambda_R=Fraction(1,4), lambda_source=loc),
+                                  binding=doc['binding']))
+        with patch.object(E, 'read_loc', side_effect=lambda loc: doc if loc == loc_a else other):
+            self.assertTrue(E.equivalent_df_descriptor(config(loc_a),config(loc_b)))
+            other['input_source']['input'] = 'changed'
+            self.assertFalse(E.equivalent_df_descriptor(config(loc_a),config(loc_b)))
+            other['input_source'] = doc['input_source']
+            other['execution_source']['commit'] = 'c'*40
+            self.assertFalse(E.equivalent_df_descriptor(config(loc_a),config(loc_b)))
+
     def test_step_limit_continues_with_remaining_budget_while_producer_waits(self):
         import threading,test_pr_width_overlap as V
         released=threading.Event();passes=[];Base,_=V.classes(True)
