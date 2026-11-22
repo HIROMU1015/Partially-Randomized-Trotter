@@ -495,8 +495,17 @@ class Completion:
                 or not record['status'].startswith(('HELD', 'WAITING'))):
             return False
         directory = (ROOT/record['directory']).resolve()
-        return (directory.is_relative_to(self.directory.resolve())
-                and check(directory, record.get('reason') or ''))
+        if directory.is_relative_to(self.directory.resolve()):
+            return check(directory, record.get('reason') or '')
+        return self.inherited_metadata_repair(record) is not None
+
+    def inherited_metadata_repair(self, record):
+        """Replan a proved metadata failure in this run, keeping the old owner intact."""
+        directory = self.directory/'candidates'/record['key']
+        if (not directory.exists() and record.get('configuration')
+                and self.metadata_path_failure(record, directory)):
+            return directory
+        return None
 
     def price_evidence_unchanged(self, record, registry_digest):
         if record.get('registry_at_hold') != registry_digest:
@@ -942,6 +951,9 @@ class Completion:
             df_recheck = False
             received_preparation = bool(old and not getattr(self, 'stop_requested', lambda: False)()
                                         and self.recoverable_transport(old))
+            metadata_repair = self.inherited_metadata_repair(old) if received_preparation else None
+            if metadata_repair is not None:
+                d = metadata_repair
             recovered_terminal = (old and request.get('horizon_parent') and old.get('scientific_failure')
                                   and old['status'] == 'HELD_WITH_REASON'
                                   and str(old.get('reason')).startswith('STAGE_FAILED:df-stage:')
@@ -999,6 +1011,8 @@ class Completion:
                            deferred_configuration=old.get('deferred_configuration') or old['configuration'],
                            deferred_tail_descriptor=old.get('deferred_tail_descriptor') or
                                                     old['request'].get('tail_descriptor'))
+            if metadata_repair is not None:
+                rec.update(directory=rel(d), deferred_configuration=old['configuration'])
             if recovered_input or recheck:
                 previous_hold = old.get('previous_hold') or {}
                 if not str(previous_hold.get('reason')).startswith('A_PREPARATION:NEEDS_INPUT_SOURCE:'):

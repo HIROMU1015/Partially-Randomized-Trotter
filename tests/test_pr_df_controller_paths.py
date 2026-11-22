@@ -45,6 +45,13 @@ class ControllerPaths(unittest.TestCase):
             C.put(parent/'EXIT.json',dict(invocation_id='same',returncode=0))
             C.put(parent/'distributed/relay/STATUS.json',dict(stopped=True))
             self.assertTrue(C.Completion.metadata_path_failure(record,root/'new/completion/candidates/fixed'))
+            controller = C.Completion.__new__(C.Completion)
+            controller.directory = root/'new/completion'
+            carried = dict(record, key='fixed', directory=str(p), configuration=configuration)
+            successor = controller.directory/'candidates/fixed'
+            self.assertEqual(controller.inherited_metadata_repair(carried), successor)
+            successor.mkdir(parents=True)
+            self.assertIsNone(controller.inherited_metadata_repair(carried))
             C.put(p/'DF_TAIL_DESCRIPTOR.STOP.json',dict(reason='FAILED'))
             self.assertFalse(C.Completion.metadata_path_failure(record,p))
             self.assertFalse(C.Completion.metadata_path_failure(record,root/'new/completion/candidates/fixed'))
