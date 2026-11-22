@@ -558,6 +558,7 @@ class ScaleTests(unittest.TestCase):
             driver.methods, driver.widths = ['FULL_PF', 'PR_DF'], {}
             driver.rule_stop = driver.scaled_shots = driver.work_conserving_search = True
             driver.spec = dict(science_approved=True, executor=dict(distributed=dict(port=0)))
+            driver.completion = SimpleNamespace(df_price_waiting_for_owner=lambda: False)
             driver.bootstrap_families = driver.complete_points = lambda: None
             driver.plan = lambda: ([], {})
             completed = dict(stop_reason='SCALED_SHOT_GRID_COMPLETE', new_calls=0)

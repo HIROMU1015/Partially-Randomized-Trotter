@@ -1008,6 +1008,14 @@ class DistributedPreparationBridge:
         pauli_locators = []
         df_inputs = []
         df_locators = []
+        if script.name == 'run_pr_df_candidate_prices.py' and stage in ('DF_CALIBRATION', 'DF_HOLDOUT'):
+            from .pr_candidate_completion import DF_PRICE_FLANKS, accelerate_df_price_command
+            command = accelerate_df_price_command(command, stage, DF_PRICE_FLANKS)
+            if command[-1] == str(DF_PRICE_FLANKS):
+                destination = 'private/df-price-transport/' + DF_PRICE_FLANKS.name
+                inputs[destination] = sha = self._blob(DF_PRICE_FLANKS.read_bytes())
+                df_inputs.append(dict(path=destination, sha256=sha))
+                bindings[str(DF_PRICE_FLANKS)] = '@WORK@/' + destination
         snapshot = self.settings.get('df_snapshot_directory')
         pf_terminal_signal = stage == 'PF_SIGNALS' and script.name == 'run_rpe_pf_horizon_signal.py'
         pf_signal = stage == 'PF_SIGNALS' and (script.name == 'run_pf_preparation_stage.py' or pf_terminal_signal)

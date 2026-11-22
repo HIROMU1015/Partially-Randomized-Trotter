@@ -70,6 +70,24 @@ if '--input' in sys.argv and ('freeze' in sys.argv[1:] or 'compare-holdout' in s
 raise SystemExit(module.main())
 """
 
+DF_PRICE_FLANKS = Path(__file__).resolve().with_name('rpe_df_price_flanks.py')
+
+
+def accelerate_df_price_command(command, stage, helper):
+    """Wrap newly owned native acquisition commands, leaving audits and saved owners intact."""
+    if stage not in ('DF_CALIBRATION', 'DF_HOLDOUT') or _DF_PRICE_BOOTSTRAP not in command:
+        return command
+    position = command.index(_DF_PRICE_BOOTSTRAP)
+    command = list(command)
+    command[position] = _DF_PRICE_BOOTSTRAP.removesuffix('raise SystemExit(module.main())\n') + """
+import runpy
+helper = sys.argv.pop()
+with runpy.run_path(helper)['reuse_df_price_flanks'](module):
+    raise SystemExit(module.main())
+"""
+    command.append(str(helper))
+    return command
+
 
 def git(*args,cwd=ROOT):return subprocess.check_output(['git',*args],cwd=cwd,text=True).strip()
 def read(p):return json.loads(Path(p).read_text())
@@ -529,6 +547,7 @@ class Completion:
             self.log(event='STAGE_YIELDED_AFTER_ORCHESTRATOR_FAILURE',stage=stage,directory=rel(d))
             raise PreparationYield(stage)
         source=self.stage_source(stage)
+        cmd = accelerate_df_price_command(cmd, stage, DF_PRICE_FLANKS)
         put(started,dict(command=cmd,source=source,science=science,automatic_retry=False))
         self.log(event='STAGE_START',stage=stage,science=science,directory=rel(d));t=time.time()
         environment=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')

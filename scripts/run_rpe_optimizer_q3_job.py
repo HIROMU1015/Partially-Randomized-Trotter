@@ -45,6 +45,10 @@ _evidence_path=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_q3_evi
 _evidence_spec=importlib.util.spec_from_file_location('_q3_output_evidence',_evidence_path)
 EVIDENCE=importlib.util.module_from_spec(_evidence_spec);_evidence_spec.loader.exec_module(EVIDENCE)
 
+_tables_path=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_q3_round_tables.py'
+_tables_spec=importlib.util.spec_from_file_location('_q3_round_tables',_tables_path)
+TABLES=importlib.util.module_from_spec(_tables_spec);_tables_spec.loader.exec_module(TABLES)
+
 if hasattr(sys, 'set_int_max_str_digits'):
     sys.set_int_max_str_digits(0)
 PASS = 'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD'
@@ -907,7 +911,10 @@ def main():
                 storage = (EVIDENCE.capture(writer, out / case['label'])
                            if writer is not None and request.get('execution_profile', {}).get('compact_q3_evidence') is True
                            else nullcontext())
-                with install_risk_bound(extension), horizon_inputs(case.get('horizon_projection')), prefix_cache_context(request, case, inputs, out), TIMING.body_context(
+                risk = r.binding.Q.D
+                with install_risk_bound(extension), TABLES.reuse_round_tables(
+                        risk, extension[1] if extension else None), horizon_inputs(
+                        case.get('horizon_projection')), prefix_cache_context(request, case, inputs, out), TIMING.body_context(
                         sys.modules.get('trottertracks.rpe_total_dp_parallel'),out), r.installed(out), storage:
                     supervision = r.supervise([case], inputs, source, out)
                 stage(out, 'SCIENTIFIC_ROUTE_RETURNED')
