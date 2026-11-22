@@ -13,11 +13,14 @@ import json
 import os
 from pathlib import Path
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
 import time
-from .rpe_preparation_artifacts import ArtifactCache, artifact_path, artifact_hash, input_manifest, worker_cache
+from .rpe_preparation_artifacts import (
+    ArtifactCache, artifact_path, artifact_hash, df_calibration_receipt, input_manifest, worker_cache,
+)
 from .rpe_q3_timing import append as timing_append
 
 STAGES = ('signal', 'compile', 'audit')
@@ -577,7 +580,14 @@ def execute(assignment, base_profile, directory):
         cache.materialize(artifact_inputs,directory/'inputs')
     elif cache.missing(artifact_inputs.values()):
         raise ValueError('Missing fixed preparation input artifact')
-    source,owned=_clone_owned_workspaces(spec,profile,fingerprint['views'],directory,cache)
+    outcome=dict(route='preparation',request_id=request['request_id'],task_id=request['request_id'],
+                 request_sha256=assignment['request_sha256'],stage=spec['stage'],source=spec['source'],
+                 source_manifest=spec['source'],execution_profile_sha256=digest(preparation_profile_core(profile)),
+                 automatic_retry=False)
+    try:
+        source,owned=_clone_owned_workspaces(spec,profile,fingerprint['views'],directory,cache)
+    except subprocess.CalledProcessError as error:
+        return failed_git_workspace(directory, outcome, 'git owned workspace', error)
     # Transport releases may change without changing the verified provider
     # wrapper that a preparation command actually imports or executes.
     provider_transport=profile.get('preparation_adapter_root') or Path(__file__).resolve().parents[2]
@@ -603,22 +613,13 @@ def execute(assignment, base_profile, directory):
     if spec.get('provider') == 'DF_SIGNALS' and profile.get('task_cpu_count') is not None:
         command = bind_df_signal_workers(command, profile['task_cpu_count'])
     if command[0]!=profile['interpreter'] and command[0]not in {t['path']for t in fingerprint['tools'].values()}:raise ValueError('Command does not use verified Python/compiler')
-    outcome=dict(route='preparation',request_id=request['request_id'],task_id=request['request_id'],
-                 request_sha256=assignment['request_sha256'],stage=spec['stage'],source=spec['source'],
-                 source_manifest=spec['source'],execution_profile_sha256=digest(preparation_profile_core(profile)),
-                 resolved_path_bindings=bindings,automatic_retry=False)
+    outcome['resolved_path_bindings'] = bindings
     try:
         _include_declared_outputs(owned,directory,list(spec['outputs'])+list(spec.get('optional_outputs',[])))
     except subprocess.CalledProcessError as error:
         # Git has already exited and the provider has not started. Return the
         # failure with the original attempt so recovery need not infer it.
-        outcome.update(status='PREPARATION_FAILED',artifacts={},git_bundles=[],
-                       workspace_error=dict(step='git sparse-checkout add',returncode=error.returncode,
-                                            scientific_body_started=False))
-        print(str(error),error.stderr or '',file=sys.stderr)
-        put(directory/'ARTIFACT_MANIFEST.json',{})
-        put(directory/'OUTCOME.json',outcome)
-        return outcome
+        return failed_git_workspace(directory, outcome, 'git sparse-checkout add', error)
     # Inputs may contain prior owned workspace outputs. Materialize after clone.
     target_inputs=spec.get('materialize_inputs')
     if target_inputs is None:
@@ -674,6 +675,8 @@ def execute(assignment, base_profile, directory):
             return outcome
     timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_END',stage=spec['stage'],returncode=process.returncode)
     receipt=dict(command=command,source=spec['source'],runtime=fingerprint['runtime'],tools=fingerprint['tools'],returncode=process.returncode if process.returncode>=0 else None,signal=-process.returncode if process.returncode<0 else None,wall_seconds=time.monotonic()-start,automatic_retry=False)
+    if process.returncode == -signal.SIGTERM and spec.get('provider') == 'DF_CALIBRATION':
+        receipt['provider_session_drained'] = calibration_session_drained(directory)
     put(directory/'PREPARATION_RECEIPT.json',receipt)
     outputs=list(spec['outputs']);bundles=[]
     for name in spec.get('optional_outputs',[]):
@@ -687,11 +690,63 @@ def execute(assignment, base_profile, directory):
                 if 'path' in bundle:outputs.append(path.name)
                 bundles.append(bundle)
         artifacts=cache.capture(directory,outputs)
-    else:artifacts={}
+    else:
+        artifacts = cache.capture(directory, failed_preparation_outputs(directory, spec))
+        if spec.get('provider') in ('DF_CALIBRATION', 'DF_SIGNALS', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
+            with (directory/'PREPARATION_BODY.log').open('rb') as body:
+                body.seek(-min(os.fstat(body.fileno()).st_size, 4096), os.SEEK_END)
+                tail = body.read().decode(errors='replace').strip().splitlines()
+            if tail:
+                outcome['failure_summary'] = tail[-1][:600]
     outcome.update(status='PREPARATION_COMPLETE'if process.returncode==0 else'PREPARATION_FAILED',
                    artifacts=artifacts,git_bundles=bundles)
     put(directory/'ARTIFACT_MANIFEST.json',artifacts);put(directory/'OUTCOME.json',outcome)
     return outcome
+
+
+def failed_git_workspace(directory, outcome, step, error):
+    outcome.update(status='PREPARATION_FAILED', artifacts={}, git_bundles=[],
+                   workspace_error=dict(step=step, returncode=error.returncode,
+                                        scientific_body_started=False))
+    print(str(error), error.stderr or '', file=sys.stderr)
+    put(directory/'ARTIFACT_MANIFEST.json', {})
+    put(directory/'OUTCOME.json', outcome)
+    return outcome
+
+
+def calibration_session_drained(directory):
+    """The adapter and its detached supervisor may remain after the provider."""
+    from .rpe_q3_worker import session_has_live_members
+
+    try:
+        supervisor = read(directory/'SUPERVISOR_STARTED.json')
+        owner = supervisor['pid']
+        session = os.getsid(0)
+        if (owner != os.getppid() or session != owner or supervisor['session_id'] != session):
+            return False
+        return not session_has_live_members(session, exclude=(owner, os.getpid()))
+    except (OSError, ValueError, KeyError, IndexError, TypeError):
+        return False
+
+
+def failed_preparation_outputs(directory, spec):
+    """Return small failure evidence from owned output paths. Keep it unadmitted."""
+    provider = spec.get('provider')
+    paths = set()
+    for output in spec['outputs']:
+        base = directory/artifact_path(output)
+        if provider == 'DF_CALIBRATION':
+            acquisition = base/'df_prices/calibration/acquisition'
+            for receipt in acquisition.glob('m*/p*/**/PATH_RECEIPT.json'):
+                if not df_calibration_receipt(receipt.relative_to(directory).as_posix(), output):
+                    continue
+                paths.update((receipt, receipt.with_name('cosine.json'), receipt.with_name('sine.json')))
+            paths.add(acquisition/'RESULT.json')
+        elif provider == 'DF_SIGNALS':
+            paths.update((base/'df_signals/RESULT.json', base/'df_signals/STOP.json'))
+            paths.update((base/'df_signals/raw').glob('m[0-9]*.json'))
+    return sorted(path.relative_to(directory).as_posix() for path in paths
+                  if path.is_file() and not path.is_symlink() and path.resolve().is_relative_to(directory))
 
 
 def collect(assignment, profile, directory):

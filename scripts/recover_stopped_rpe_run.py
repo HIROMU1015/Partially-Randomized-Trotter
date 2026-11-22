@@ -8,6 +8,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+from queue import Empty
 import shlex
 import sqlite3
 import subprocess
@@ -238,34 +239,50 @@ def pbs_results(run, rows, cache):
             candidates = {job:row for job,row in rows.items() if row['host_id'] == host}
             if not candidates:
                 continue
-            # Harvest exchanges saved bytes only. No ensure, control or qdel.
-            data = gateway.call({'action':'harvest','token':token})
-            if data['host_id'] != host:
-                raise ValueError('PBS harvest returned a different fixed host')
-            for item in data.get('incomplete', []):
-                row = candidates.get(item['assignment']['job_id'])
-                if row is None or item['assignment']['attempt_id'] != row['attempt_id']:
+            try:
+                # Harvest exchanges saved bytes only. No ensure, control or qdel.
+                query = dict(action='harvest', token=token,
+                    owners=[dict(job_id=job, attempt_id=row['attempt_id'])
+                            for job, row in sorted(candidates.items()) if job in pending])
+                if not query['owners']:
                     continue
-                check_assignment(row, item['assignment'])
-                state = item.get('state', {})
-                pending[row['job_id']] = dict(state=state.get('state','INCOMPLETE'),
-                                              allocation=token, pbs_state=allocation['status'], exit_receipt=False)
-                if allocation['status'] in ('F', 'X') and state.get('detail', {}).get('prelaunch_rejection'):
-                    pending[row['job_id']]['prelaunch_detail'] = state['detail']
-            for item in data.get('attempts', []):
-                row = candidates.get(item['assignment']['job_id'])
-                if row is None or item['assignment']['attempt_id'] != row['attempt_id'] or row['job_id'] not in pending:
-                    continue
-                check_assignment(row, item['assignment'])
-                manifest = json.loads(base64.b64decode(item['files']['OUTCOME.json'])).get('artifacts', {})
-                for sha in cache.missing(manifest.values()):
-                    recovered = gateway.call({'action':'harvest','token':token,'hashes':[sha]})
-                    cache.put({sha:recovered['blobs'][sha]})
-                del pending[row['job_id']]
-                yield row, dict(state='SAVED_COMPLETION', allocation=token, pbs_state=allocation['status']), item['files']
-    except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError) as error:
+                data = gateway.call(query)
+                if data['host_id'] != host:
+                    raise ValueError('PBS harvest returned a different fixed host')
+                for item in data.get('incomplete', []):
+                    row = candidates.get(item['assignment']['job_id'])
+                    if row is None or item['assignment']['attempt_id'] != row['attempt_id']:
+                        continue
+                    check_assignment(row, item['assignment'])
+                    state = item.get('state', {})
+                    pending[row['job_id']] = dict(state=state.get('state','INCOMPLETE'),
+                                                  allocation=token, pbs_state=allocation['status'], exit_receipt=False)
+                    if allocation['status'] in ('F', 'X') and state.get('detail', {}).get('prelaunch_rejection'):
+                        pending[row['job_id']]['prelaunch_detail'] = state['detail']
+                for item in data.get('attempts', []):
+                    row = candidates.get(item['assignment']['job_id'])
+                    if row is None or item['assignment']['attempt_id'] != row['attempt_id'] or row['job_id'] not in pending:
+                        continue
+                    check_assignment(row, item['assignment'])
+                    manifest = json.loads(base64.b64decode(item['files']['OUTCOME.json'])).get('artifacts', {})
+                    for sha in cache.missing(manifest.values()):
+                        recovered = gateway.call(dict(query, hashes=[sha]))
+                        cache.put({sha:recovered['blobs'][sha]})
+                    del pending[row['job_id']]
+                    yield row, dict(state='SAVED_COMPLETION', allocation=token, pbs_state=allocation['status']), item['files']
+            except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError, Empty) as error:
+                # Fixed older gateways expose queue.Empty and may leave a
+                # late response on the connection. Reconnect for the next
+                # allocation and keep ownership of this one unchanged.
+                gateway.close()
+                reason = str(error) or 'PBS harvest response timed out'
+                for job in candidates.keys() & pending.keys():
+                    pending[job] = dict(state='PBS_RECOVERY_PENDING', allocation=token,
+                                        reason=reason[:450])
+    except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError, Empty) as error:
+        reason = str(error) or 'PBS snapshot response timed out'
         for job in pending:
-            pending[job] = dict(state='PBS_RECOVERY_PENDING', reason=str(error)[:450])
+            pending[job] = dict(state='PBS_RECOVERY_PENDING', reason=reason[:450])
     finally:
         gateway.close()
     # Old gateway archives may only preserve the common worker spool, or

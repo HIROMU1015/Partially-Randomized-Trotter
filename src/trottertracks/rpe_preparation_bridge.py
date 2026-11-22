@@ -18,7 +18,7 @@ import tempfile
 import threading
 import runpy
 
-from .rpe_preparation_artifacts import artifact_path
+from .rpe_preparation_artifacts import artifact_path, df_calibration_receipt
 
 
 _DF_SIGNAL_BOOTSTRAP = """
@@ -604,7 +604,9 @@ class DistributedPreparationBridge:
         job = submitted.get('job_id')
         recovery = self.settings.get('pf_stage_audit_recoveries', {}).get(job, {})
         if recovery.get('kind') != 'PF_PORTABLE_INPUT_DELIVERY':
-            return None
+            recovery = self.pf_delivery_failure(directory, stage, job)
+            if recovery is None:
+                return None
         proof = self.recovery_evidence(directory, stage, job)
         owner = self.executor.store.row(job)
         stage_input = directory/(stage+'.INPUT.json')
@@ -626,9 +628,50 @@ class DistributedPreparationBridge:
                 or owner['request']['original_contract'] != request['original_contract']
                 or 'private/pf-transport/scripts/run_pf_preparation_stage.py' not in replacement['inputs']):
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job+':PF_SCIENTIFIC_SOURCE')
+        if recovery.get('automatic') and all(
+                original.get(field) == replacement.get(field)
+                for field in ('inputs', 'input_git_bundles', 'path_bindings', 'required_paths', 'workspaces')):
+            return None  # No workspace repair was found.
         replacement['supersedes_preparation'] = dict(job_id=job, attempt_id=proof['attempt_id'],
             reason=recovery.get('reason', 'PORTABLE_FIXED_INPUT_DELIVERY'))
         return dict(request=request, source=submitted['source'], automatic_retry=False)
+
+    def pf_delivery_failure(self, directory, stage, job):
+        """Recognize a proved pre-provider Git failure from an older workspace."""
+        if (stage not in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE') or not self.approved
+                or (directory/'STOP.json').exists() or self.executor._user_stop_requested()
+                or job in self.settings.get('failed_preparation_recalculations', {})):
+            return None
+        proof = self.recovery_evidence(directory, stage, job)
+        if proof['action'] != 'PRESERVE_FAILED_ATTEMPT':
+            return None
+        owner = self.executor.store.row(job)
+        preparation = owner['request']['preparation']
+        if ('private/pf-transport/scripts/run_pf_preparation_stage.py' in preparation['inputs']
+                and any(bundle.get('workspace_objects') for bundle in preparation.get('input_git_bundles', ()))):
+            return None  # Already using the complete portable delivery path.
+        job_dir = self.executor.run_dir/'jobs'/owner['method']/job
+        try:
+            launch = read(job_dir/'LAUNCH.json')
+            failure = read(job_dir/'OUTCOME.json').get('workspace_error') or {}
+            stage_input = directory/(stage+'.INPUT.json')
+            raw = stage_input.read_bytes()
+            configuration_id = json.loads(raw)['value']['configuration']['id']
+        except (OSError, ValueError, TypeError, KeyError):
+            return None
+        if (preparation.get('supersedes_preparation') or preparation.get('artificial')
+                or (launch['host_id'], launch['attempt_id']) != (owner['host_id'], proof['attempt_id'])
+                or failure.get('step') not in ('git sparse-checkout add', 'git owned workspace')
+                or failure.get('scientific_body_started') is not False
+                or type(failure.get('returncode')) is not int or failure['returncode'] == 0):
+            return None
+        sha = hashlib.sha256(raw).hexdigest()
+        if {digest for name, digest in preparation['inputs'].items()
+                if name.endswith('/'+stage_input.name)} != {sha}:
+            return None
+        return dict(audit_attempt=proof['attempt_id'], request_sha256=owner['request_sha256'],
+                    input_sha256=sha, configuration_id=configuration_id,
+                    reason='FIXED_GIT_WORKSPACE_PRELAUNCH_FAILURE', automatic=True)
 
     def recovered_holdout_prices(self, directory, stage_input):
         """Rebind C-verified wrapper results produced before a packaging failure."""
@@ -715,6 +758,12 @@ class DistributedPreparationBridge:
                         return unmatched
                     result.update(returncode=receipt.get('returncode'), signal=receipt.get('signal'),
                                   partial_artifacts=len(artifacts))
+                    if isinstance(outcome.get('failure_summary'), str):
+                        result['failure_summary'] = outcome['failure_summary']
+                    if stage == 'DF_SIGNALS' and artifacts:
+                        numerical = self.df_signal_failure_rounds(request['preparation']['outputs'], artifacts)
+                        if numerical:
+                            result['failed_signal_rounds'] = numerical
                     action = ('CHECK_FAILED_ATTEMPT_ARTIFACTS' if artifacts else 'PRESERVE_FAILED_ATTEMPT')
             elif row['attempt_id']:
                 action = 'RECOVER_ORIGINAL_ATTEMPT'
@@ -723,6 +772,22 @@ class DistributedPreparationBridge:
             return dict(result, action=action)
         except (OSError, KeyError, TypeError, ValueError, sqlite3.Error):
             return unmatched
+
+    def df_signal_failure_rounds(self, outputs, artifacts):
+        failures = []
+        cache = self.executor.artifact_cache
+        for output in outputs:
+            raw = output+'/df_signals/raw/'
+            for name, sha in sorted(artifacts.items()):
+                if not name.startswith(raw) or not re.fullmatch(r'm\d+\.json', name[len(raw):]):
+                    continue
+                if cache.missing([sha]):
+                    continue
+                record = read(cache.path(sha))
+                if record.get('status') == 'NUMERICAL_FAILURE':
+                    failures.append(dict(m=record['m'], artifact=name, sha256=sha,
+                                         error=record.get('error'), reasons=record.get('numerical_failure_reasons', [])))
+        return sorted(failures, key=lambda item: item['m'])
 
     def _exec_rejected(self, row):
         """Require positive evidence that the kernel never started the provider."""
@@ -834,10 +899,90 @@ class DistributedPreparationBridge:
                 return None
             preparation['path_bindings'] = compact
             reason = 'EXEC_REJECTED_UNUSED_PATH_ALIASES'
+        elif (stage == 'DF_CALIBRATION' and self.approved and not self.executor._user_stop_requested()
+                and proof['action'] == 'CHECK_FAILED_ATTEMPT_ARTIFACTS' and proof.get('signal') == 15
+                and job not in self.settings.get('failed_preparation_recalculations', {})):
+            plan = self.settings.get('interrupted_calibrations', {}).get(job)
+            if plan is None:
+                plan = self.interrupted_calibration_artifacts(row)
+            if plan is None:
+                return None
+            request = self.interrupted_calibration_request(job, plan)
+            return dict(request=request, source=submitted['source'], automatic_retry=False)
         else:
             return None
         preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=proof['attempt_id'], reason=reason)
         return dict(request=request, source=submitted['source'], automatic_retry=False)
+
+    def interrupted_calibration_artifacts(self, row):
+        """Check returned axes against the frozen acquisition input using its normal receipt gate."""
+        job = row['job_id']
+        root = self.executor.run_dir/'jobs'/row['method']/job
+        launch = read(root/'LAUNCH.json')
+        if (launch['host_id'], launch['attempt_id']) != (row['host_id'], row['attempt_id']):
+            raise ValueError('Interrupted calibration launch owner differs: '+job)
+        if read(root/'PREPARATION_RECEIPT.json').get('provider_session_drained') is not True:
+            return None
+        preparation = row['request']['preparation']
+        [output] = preparation['outputs']
+        manifest = read(root/'OUTCOME.json')['artifacts']
+        candidates = [name for name in manifest if df_calibration_receipt(name, output)]
+        if not candidates:
+            return None
+        cache = self.executor.artifact_cache
+        input_name = output+'/df_prices/INPUTS.json'
+        input_sha = preparation['inputs'][input_name]
+        if cache.missing([input_sha, *(manifest[name] for name in candidates)]):
+            return None
+        raw = cache.path(input_sha).read_bytes()
+        command = preparation['command']
+        fixed_commit = command[command.index('--inputs-commit')+1]
+
+        def git_bytes(commit, path):
+            return subprocess.check_output(['git', 'show', commit+':'+path],
+                                           cwd=preparation['controller_root'], stderr=subprocess.PIPE)
+
+        inputs = json.loads(raw)
+        if (input_name != 'workspace/'+inputs['output_directory']+'/INPUTS.json'
+                or raw != git_bytes(fixed_commit, inputs['output_directory']+'/INPUTS.json')):
+            raise ValueError('Interrupted calibration input differs from its fixed request')
+        gate = runpy.run_path(str(Path(__file__).resolve().parents[2]/'scripts/run_pr_df_candidate_prices.py'))
+        cells = {cell['m']: cell for cell in inputs['cells'] if cell['role'] == 'CALIBRATION'}
+        witnesses, reuse = {}, {}
+
+        def read_axis(locator):
+            return read(cache.path(manifest[locator['path']]))
+
+        for name in sorted(candidates):
+            m, index, kind = df_calibration_receipt(name, output).groups()
+            if kind != 'PATH_RECEIPT':
+                continue
+            cell = cells.get(int(m))
+            index = int(index)
+            if cell is None or index not in cell['indices']:
+                raise ValueError('Interrupted calibration returned receipt outside its fixed cells')
+            folder = artifact_path(name).parent
+            for axis, filename in (('X', 'cosine.json'), ('Y', 'sine.json')):
+                axis_path = str(folder/filename)
+                if axis_path not in manifest:
+                    continue
+                axis_key = int(m), index, axis
+                witness = dict(path_receipt=dict(commit='WORKING', path=name),
+                               receipt=dict(commit='WORKING', path=axis_path))
+                validated = gate['validate_axis'](cell, index, axis, witness,
+                                                  reader=read_axis, source_reader=git_bytes)
+                if axis_key in witnesses:
+                    raise ValueError('Interrupted calibration returned more than one receipt for an axis')
+                witnesses[axis_key] = validated
+                reuse.update({name: manifest[name], axis_path: manifest[axis_path]})
+        if not witnesses:
+            return None
+        for m, index, axis in witnesses:
+            other = 'Y' if axis == 'X' else 'X'
+            companion = witnesses.get((m, index, other))
+            if companion is not None and companion['event_digest'] != witnesses[m, index, axis]['event_digest']:
+                raise ValueError('Interrupted calibration X/Y event digest differs')
+        return dict(attempt_id=row['attempt_id'], request_sha256=row['request_sha256'], reused_artifacts=reuse)
 
     def interrupted_calibration_request(self, original_job, recovery):
         """Continue a selected, ended calibration with its verified path receipts."""
@@ -863,17 +1008,16 @@ class DistributedPreparationBridge:
         if preparation['provider'] != 'DF_CALIBRATION' or preparation.get('supersedes_preparation'):
             raise ValueError('Selected predecessor is not an original calibration: '+original_job)
         paths = recovery['reused_artifacts']
-        prefix = preparation['outputs'][0]+'/df_prices/calibration/acquisition/'
-        if any(not name.startswith(prefix) or not re.fullmatch(
-                r'm\d+/p\d+/(?:axes_(?:X|Y|XY)/)?(?:PATH_RECEIPT|cosine|sine)\.json', name[len(prefix):])
-               for name in paths):
+        if any(not df_calibration_receipt(name, preparation['outputs'][0]) for name in paths):
             raise ValueError('Interrupted calibration receipt is outside its original result scope')
         if self.executor.artifact_cache.missing(paths.values()):
             raise ValueError('Interrupted calibration receipt is missing from the fixed input cache')
         for name, sha in paths.items():
             if preparation['inputs'].setdefault(name, sha) != sha:
                 raise ValueError('Interrupted calibration receipt would change a frozen input: '+name)
-            preparation['working_input_hashes'].append(dict(path=name, sha256=sha))
+            binding = dict(path=name, sha256=sha)
+            if binding not in preparation['working_input_hashes']:
+                preparation['working_input_hashes'].append(binding)
         preparation['supersedes_preparation'] = dict(job_id=original_job, attempt_id=row['attempt_id'],
                                                       reason='INTERRUPTED_CALIBRATION_MISSING_WRAPPERS')
         return request
@@ -999,8 +1143,11 @@ class DistributedPreparationBridge:
                     superseded = submitted['request']['preparation'].get('supersedes_preparation', {})
                     if superseded.get('job_id') == job[0]:
                         return True  # Resume the already-recorded successor.
-                    if submitted.get('job_id') == job[0] and self._transport_repair(path.parent, stage, submitted):
-                        return True
+                    if submitted.get('job_id') == job[0]:
+                        if self.pf_delivery_failure(path.parent, stage, job[0]):
+                            return True
+                        if self._transport_repair(path.parent, stage, submitted):
+                            return True
                 except (OSError, KeyError, TypeError, ValueError, subprocess.SubprocessError):
                     continue
         return False

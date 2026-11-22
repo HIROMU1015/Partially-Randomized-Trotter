@@ -264,6 +264,30 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         self.assertFalse((attempt/'JOB_STAGES.jsonl').exists())
         self.assertEqual(P.collect(task,self.profile('server1'),attempt),outcome)
 
+    def test_failed_calibration_returns_only_partial_receipts(self):
+        code = """from pathlib import Path
+base = Path(r'@WORK@/workspace/case/df_prices/calibration/acquisition')
+point = base/'m0/p0/axes_X'
+point.mkdir(parents=True)
+for name in ('PATH_RECEIPT.json', 'cosine.json', 'events_PRIVATE.json'):
+    (point/name).write_text('{}')
+(base/'STARTED_m0_p0_axesX.json').write_text('{}')
+(base/'RESULT.json').write_text('{}')
+raise SystemExit(2)
+"""
+        task = self.task('compile', code, outputs=['workspace/case'])
+        task['request']['preparation']['provider'] = 'DF_CALIBRATION'
+        task['request_sha256'] = P.digest(task['request'])
+        profile = self.profile('local')
+        attempt = self.root/'interrupted-calibration'
+        outcome = P.execute(task, profile, attempt)
+        self.assertEqual(outcome['status'], 'PREPARATION_FAILED')
+        base = 'workspace/case/df_prices/calibration/acquisition/'
+        self.assertEqual(set(outcome['artifacts']),
+                         {base+name for name in ('m0/p0/axes_X/PATH_RECEIPT.json',
+                                                 'm0/p0/axes_X/cosine.json', 'RESULT.json')})
+        self.assertEqual(P.collect(task, profile, attempt), outcome)
+
     def test_worker_readiness_holds_missing_sparse_output_objects(self):
         source = self.root/'source'
         sibling = source/'docs/research/sibling.md'

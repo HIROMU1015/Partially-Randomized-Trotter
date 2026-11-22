@@ -112,6 +112,8 @@ class CentralMaintenanceTests(unittest.TestCase):
             recovered, = pbs_results(self.run,[row],self.cache)
             self.assertEqual(recovered[2],files)
             self.assertEqual([call.args[0]['action'] for call in connection.call.call_args_list],['snapshot','harvest'])
+            self.assertEqual(connection.call.call_args.args[0]['owners'],
+                             [dict(job_id='compile', attempt_id=row['attempt_id'])])
         self.assertEqual(self.store.row('compile')['state'],'ASSIGNED')
 
     def test_wait_summary_and_archiving_reject_incomplete_invocation(self):
@@ -122,6 +124,35 @@ class CentralMaintenanceTests(unittest.TestCase):
               reasons={'signal':'PREPARATION_BUDGET_HOLD'},hosts={'pbs-0':{'idle_reason':'PREPARATION_BUDGET_HOLD'}}))+'\n')
         self.assertEqual(wait_summary(self.run,{})['queue_wait_reasons'],{'PREPARATION_BUDGET_HOLD':1})
         self.assertEqual(archive_candidates([self.run],None,{self.run:read_rows(self.run)})['count'],0)
+
+    def test_legacy_pbs_timeout_does_not_hide_another_allocation_result(self):
+        from queue import Empty
+
+        self.reserve('compile', 'compile')
+        first, = self.store.claim('pbs-0', 1)
+        self.reserve('audit', 'audit')
+        second, = self.store.claim('pbs-1', 1)
+        root = self.run/'distributed/pbs'
+        write(root/'SETTINGS.json', {'gateway_command':['artificial']})
+        write(root/'STATE.json', dict(allocations={
+            'first': {'spec':{'profile':{'host_id':'pbs-0'}}},
+            'second': {'spec':{'profile':{'host_id':'pbs-1'}}},
+        }))
+        files = {'OUTCOME.json':encoded({'artifacts':{}})}
+        assignment = dict(owner(second), request=second['request'])
+        with patch('trottertracks.rpe_pbs.Gateway') as gateway:
+            connection = gateway.return_value
+            connection.call.side_effect = [
+                {'allocations':[{'token':'first','status':'F'}, {'token':'second','status':'F'}]},
+                Empty(),
+                {'host_id':'pbs-1','attempts':[{'assignment':assignment,'files':files}]},
+            ]
+            results = {row['job_id']: (status, result)
+                       for row, status, result in pbs_results(self.run, [first,second], self.cache)}
+            self.assertEqual(results['compile'][0]['state'], 'PBS_RECOVERY_PENDING')
+            self.assertIsNone(results['compile'][1])
+            self.assertEqual(results['audit'][1], files)
+            self.assertEqual(connection.close.call_count, 2)
 
     def test_old_pbs_archive_observes_original_prelaunch_receipt_without_launch(self):
         self.reserve('audit','audit')

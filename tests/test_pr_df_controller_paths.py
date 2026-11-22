@@ -106,6 +106,16 @@ class ControllerPaths(unittest.TestCase):
                 S.main()
             self.assertEqual(json.loads(out.read_text())['status'],'ARTIFICIAL_METADATA')
 
+    def test_df_metadata_skips_known_pauli_packet_and_rejects_malformed_df(self):
+        source = dict(commit='a'*40, path='packet.json')
+        reader = Mock(return_value=dict(kind='A_PAULI_LD5_ALL_ROUND_SIGNAL_HANDOFF'))
+        entry = SimpleNamespace(reader=SimpleNamespace(read=reader), saved_index=Mock())
+        self.assertEqual(S.validated_packet_index(entry, source, None, None, mixed_inventory=True), {})
+        entry.saved_index.assert_not_called()
+        reader.return_value = dict(method='PR_DF', configuration_source={})
+        with self.assertRaisesRegex(ValueError, 'DF_SAVED_BUNDLE_EXPECTED'):
+            S.validated_packet_index(entry, source, None, None, mixed_inventory=True)
+
     def test_descriptor_uses_same_frozen_loader_with_relocated_hashed_inputs(self):
         with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ,{},clear=False):
             p=Path(directory);context=p/'context.json';binding=dict(system='ARTIFICIAL',rank=10)

@@ -114,15 +114,24 @@ def index_reissued_df_packet(entry, source, packet):
         entry.reader.read = reader
 
 
-def validated_packet_index(entry, source, cache_dir, scope):
+def validated_packet_index(entry, source, cache_dir, scope, *, mixed_inventory=False):
     entry.saved = [source]
     entry._index = None
     packet = entry.reader.read(source)
     # DF's fixed validator expects the assembled top-level means bundle.
     # Pauli packets use a different envelope and must not reach that validator
     # (or a cached index) through a mixed-method continuation inventory.
-    labels = ' '.join(str(packet.get(name, '')) for name in ('method', 'kind', 'schema')) if isinstance(packet, dict) else ''
-    if (not isinstance(packet, dict) or 'PAULI' in labels.upper()
+    labels = ''
+    if isinstance(packet, dict):
+        method = packet.get('method')
+        kind = str(packet.get('kind', ''))
+        schema = str(packet.get('schema', ''))
+        labels = ' '.join((str(method), kind, schema)).upper()
+        if mixed_inventory and (method in ('PR_PAULI', 'FULL_PF', 'TRUNCATED_PF')
+                or (method is None and (schema == 'PAULI_SIGNAL_PACKET_V1'
+                    or re.fullmatch(r'A_PAULI_LD\d+_ALL_ROUND_SIGNAL_HANDOFF', kind)))):
+            return {}
+    if (not isinstance(packet, dict) or 'PAULI' in labels
             or packet.get('method') in ('FULL_PF', 'TRUNCATED_PF')
             or not isinstance(packet.get('configuration_source'), dict)
             or not isinstance(packet.get('means'), list)
@@ -168,7 +177,7 @@ def scope_df_saved_index(entry, configuration, *, cache_dir=None, scope=None):
     selected, alternatives, differences, first_records = {}, {}, {}, {}
     try:
         for source in inventory:
-            for key, item in validated_packet_index(entry, source, cache_dir, scope).items():
+            for key, item in validated_packet_index(entry, source, cache_dir, scope, mixed_inventory=True).items():
                 if key not in wanted:
                     continue
                 first = selected.setdefault(key, item)
@@ -234,10 +243,11 @@ def stage_df_signals(entry, configuration, output, obtained, obtained_request=No
     conflicts = {row['m']: row for row in plan.get('saved_signal_conflicts', ())}
     required = dict(obtained)
     duplicates = []
-    for m, source in obtained.items():
+    mismatches = []
+    for m, source in sorted(obtained.items()):
         if m in conflicts:
-            evidence = dict(conflicts[m], obtained=source)
-            raise ValueError('DF_OBTAINED_SIGNAL_CONFLICT: '+json.dumps(evidence, sort_keys=True))
+            mismatches.append(dict(conflicts[m], obtained=source))
+            continue
         prior, row = requested.get(m), current.get(m)
         if (not prior or not row or not fixed_locator(source)
                 or row['decision'] not in ('REQUEST', 'REUSE')
@@ -256,11 +266,14 @@ def stage_df_signals(entry, configuration, output, obtained, obtained_request=No
             raise ValueError(f'Saved DF round m={m} differs from its fixed physical key')
         differences = df_record_differences(record, saved)
         if differences:
-            evidence = dict(m=m, obtained=source, saved=saved_source, differing_fields=sorted(differences))
-            raise ValueError('DF_OBTAINED_SIGNAL_CONFLICT: '+json.dumps(evidence, sort_keys=True))
+            mismatches.append(dict(m=m, physical_key=row['physical_key'], obtained=source,
+                                   saved=saved_source, differing_fields=sorted(differences)))
+            continue
         del required[m]
         duplicates.append(dict(m=m, obtained=source, saved=saved_source, physical_key=row['physical_key']))
 
+    if mismatches:
+        raise ValueError('DF_OBTAINED_SIGNAL_CONFLICT: '+json.dumps(mismatches, sort_keys=True))
     result = entry.stage(configuration, output, obtained=required)
     if duplicates:
         result['exact_obtained_duplicates'] = duplicates

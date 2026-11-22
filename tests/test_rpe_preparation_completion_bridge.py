@@ -1,5 +1,6 @@
 """Preparation concurrency and exact reuse with artificial provider leaves."""
 from concurrent.futures import ThreadPoolExecutor
+import base64
 from copy import deepcopy
 from contextlib import nullcontext
 import importlib.util
@@ -28,6 +29,43 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_pf_redelivery_needs_prelaunch_proof_and_a_changed_delivery(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            stage = 'PF_COMPILE'
+            path = root/(stage+'.INPUT.json')
+            C.put(path, dict(value=dict(configuration=dict(id='fixed-id'))))
+            asset = 'workspace/case/'+path.name
+            adapter = 'private/pf-transport/scripts/run_pf_preparation_stage.py'
+            request = normalize_preparation_request(dict(route=dict(kind='preparation'),
+                original_contract={'calls':2}, preparation=dict(stage='compile', provider=stage,
+                    source=dict(commit='fixed',files={}), inputs={asset:hashlib.sha256(path.read_bytes()).hexdigest()})))
+            job = request['request_id']
+            row = dict(request=request, request_sha256=W.digest(request), state='ACCEPTED',
+                       attempt_id='previous', host_id='assigned', method='PREPARATION:compile',
+                       completion_sha256='accepted', detail={'outcome_status':'PREPARATION_FAILED'})
+            marker = dict(job_id=job, request=request, source='fixed')
+            C.put(root/(stage+'.DISTRIBUTED.json'), marker)
+            result = root/'jobs'/row['method']/job
+            C.put(result/'LAUNCH.json', dict(host_id='assigned', attempt_id='previous'))
+            C.put(result/'PROCESS_RETURN.json', dict(returncode=2, signal=None))
+            failure = dict(status='PREPARATION_FAILED', request_sha256=row['request_sha256'], artifacts={},
+                           workspace_error=dict(step='git sparse-checkout add',returncode=2,scientific_body_started=False))
+            C.put(result/'OUTCOME.json', failure)
+            bridge = B.DistributedPreparationBridge(SimpleNamespace(run_dir=root,
+                store=SimpleNamespace(row=lambda _:row), _user_stop_requested=lambda:False), root, approved=True)
+            newer = deepcopy(request)
+            newer.pop('request_id')
+            newer['preparation']['inputs'][adapter] = 'a'*64
+            with patch.object(bridge, 'build_request', return_value=newer):
+                self.assertTrue(bridge.recoverable_transport(root, 'STAGE_FAILED:'+stage+':'+job))
+                replacement = bridge.redeliver_pf_compile(None, [], root, stage, None, marker)
+                self.assertEqual(replacement['request']['original_contract'], request['original_contract'])
+                self.assertEqual(replacement['request']['preparation']['supersedes_preparation']['job_id'], job)
+                failure['workspace_error']['scientific_body_started'] = True
+                C.put(result/'OUTCOME.json', failure)
+                self.assertIsNone(bridge.redeliver_pf_compile(None, [], root, stage, None, marker))
+
     def test_failed_preparation_recalculates_only_the_returned_attempt(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -94,6 +132,82 @@ class CompletionBridgeTests(unittest.TestCase):
             row['state'] = 'UNKNOWN'
             with self.assertRaisesRegex(ValueError, 'terminal ownership'):
                 bridge.interrupted_calibration_request(job, plan)
+
+    def test_interrupted_calibration_automatically_verifies_returned_axes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            cache = ArtifactCache(root/'artifacts')
+            loc = dict(commit='a'*40, path='provider.py')
+            context = dict(physical_candidate=dict(prefix=1), structure={}, binding=dict(rank=2),
+                split=dict(lambda_R=1), one_body_policy='fixed', law={}, price_profile=dict(compiler='fixed'),
+                implementation='fixed', expected_scalar=0, execution_source=loc, input_source=loc)
+            physical_request = dict(physical_context=context, context_key=W.digest(context), m=0, axes=['X', 'Y'])
+            physical_request['request_id'] = W.digest(physical_request)
+            fixed_input = dict(output_directory='case/df_prices', cells=[dict(role='CALIBRATION', m=0,
+                indices=[0], cohort='fixed', seeds=[[11]], request=physical_request)])
+            input_bytes = json.dumps(fixed_input).encode()
+
+            def put_blob(raw):
+                sha = hashlib.sha256(raw).hexdigest()
+                cache.put({sha:base64.b64encode(raw).decode()})
+                return sha
+
+            stage = 'DF_CALIBRATION'
+            request = normalize_preparation_request(dict(route=dict(kind='preparation'),
+                original_contract={'calls': 2}, preparation=dict(stage='compile', provider=stage,
+                    source=dict(commit='fixed',files={}), controller_root=str(root),
+                    command=['python','--inputs-commit',loc['commit']],
+                    working_input_hashes=[], outputs=['workspace/case'],
+                    inputs={'workspace/case/df_prices/INPUTS.json':put_blob(input_bytes)})))
+            job = request['request_id']
+            row = dict(job_id=job, request=request, request_sha256=W.digest(request), state='ACCEPTED',
+                       attempt_id='original', host_id='assigned', method='PREPARATION:compile',
+                       completion_sha256='accepted', detail={'outcome_status':'PREPARATION_FAILED'})
+            result = root/'jobs'/row['method']/job
+            marker = dict(job_id=job, request=request, source='fixed')
+            C.put(root/(stage+'.DISTRIBUTED.json'), marker)
+            C.put(result/'LAUNCH.json', dict(host_id='assigned', attempt_id='original'))
+            receipt = dict(returncode=None, signal=15, automatic_retry=False)
+            C.put(result/'PROCESS_RETURN.json', receipt)
+            C.put(result/'PREPARATION_RECEIPT.json', dict(receipt, provider_session_drained=True))
+            metrics = dict(rz_count=10, rz_depth=2, cx_count=0, cx_depth=0, total_depth=2, circuit_size=10)
+            resolved = dict(deterministic_fragments=[0], randomized_fragments=[1], lambda_R=1,
+                            scalar=0, preparation_hash='prep', tail_hash='tail')
+            record = dict(request=physical_request, cohort='fixed', index=0, seeds=[11], event_digest='events',
+                records=[dict(axis='X', C=10, S=6, D=4, metrics=metrics, fingerprint='wrapper')],
+                source=dict(execution=loc, input=loc), resolved_context=resolved,
+                resolved_context_key=W.digest(dict(context=context, resolved=resolved)))
+            raw = dict(status='VALID', gate_status='INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED',
+                       m=0, index=0, record=record)
+            path = 'workspace/case/df_prices/calibration/acquisition/m0/p0/axes_X/'
+            artifacts = {path+'PATH_RECEIPT.json':put_blob(json.dumps(raw).encode()),
+                         path+'cosine.json':put_blob(json.dumps(
+                             dict(metrics=metrics, fingerprint='wrapper', compiler='fixed')).encode())}
+            C.put(result/'OUTCOME.json', dict(status='PREPARATION_FAILED', request_sha256=row['request_sha256'],
+                                            artifacts=artifacts))
+            bridge = B.DistributedPreparationBridge(SimpleNamespace(
+                run_dir=root, store=SimpleNamespace(row=lambda _:row), artifact_cache=cache,
+                _user_stop_requested=lambda:False), root, approved=True)
+
+            def fixed_bytes(argv, **kwargs):
+                return input_bytes if argv[-1].endswith('INPUTS.json') else b'fixed provider'
+
+            with patch.object(B.subprocess, 'check_output', side_effect=fixed_bytes):
+                C.put(result/'PREPARATION_RECEIPT.json', receipt)
+                self.assertIsNone(bridge._transport_repair(root, stage, marker))
+                C.put(result/'PREPARATION_RECEIPT.json', dict(receipt, provider_session_drained=True))
+                successor = bridge._transport_repair(root, stage, marker)['request']
+                self.assertEqual(successor, bridge._transport_repair(root, stage, marker)['request'])
+                self.assertEqual(successor['preparation']['inputs'], request['preparation']['inputs'] | artifacts)
+                self.assertEqual(successor['original_contract'], request['original_contract'])
+                raw['record']['seeds'] = [12]
+                artifacts[path+'PATH_RECEIPT.json'] = put_blob(json.dumps(raw).encode())
+                C.put(result/'OUTCOME.json', dict(status='PREPARATION_FAILED', request_sha256=row['request_sha256'],
+                                                artifacts=artifacts))
+                with self.assertRaisesRegex(ValueError, 'COHORT_INDEX_OR_SEED_MISMATCH'):
+                    bridge._transport_repair(root, stage, marker)
+                bridge.executor._user_stop_requested = lambda: True
+                self.assertIsNone(bridge._transport_repair(root, stage, marker))
 
     def test_exec_rejection_repairs_only_unused_aliases_and_keeps_the_frozen_contract(self):
         with tempfile.TemporaryDirectory() as temp:

@@ -673,7 +673,8 @@ class Completion:
         metadata_entry = globals().get('FIXED_RUN_PR_PRICE_SERVICE')
         terminal_request = (request.get('terminal_reference') is not None
                             or (mode in ('df-generate','intake') and request.get('M') == 13))
-        if metadata_entry and (mode in ('df-plan', 'df-price-design') or terminal_request):
+        obtained_signal_stage = mode == 'df-stage' and request.get('obtained_request') is not None
+        if metadata_entry and (mode in ('df-plan', 'df-price-design') or terminal_request or obtained_signal_stage):
             command = [python, '-B', '-c',
                        'import runpy,sys\n'
                        'root,entry=sys.argv[1:3]\n'
@@ -1498,8 +1499,9 @@ class Completion:
         obtained_request = None
         terminal = plan.get('terminal_reference')
         marker = d/'DF_SIGNALS.DISTRIBUTED.json'
-        recovering = terminal and marker.is_file()
-        repair = self.terminal_df_stage_recovery(d) if recovering else None
+        local_marker = d/'DF_SIGNALS.STARTED.json'
+        recovering = marker.is_file() or local_marker.is_file()
+        repair = self.terminal_df_stage_recovery(d) if terminal and recovering else None
         if repair is not None:
             obtained, obtained_request, result = (repair[k] for k in ('obtained','obtained_request','result'))
         elif recovering or any(row['decision']=='REQUEST' for row in plan['rounds']):
@@ -1507,13 +1509,17 @@ class Completion:
             request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=source,
                          output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
             inp = d/'DF_SIGNAL_REQUEST.json'
+            frozen_path = rel(inp)
             if recovering:
-                frozen = read(inp)
+                command = (read(marker)['request']['preparation']['command']
+                           if marker.is_file() else read(local_marker)['command'])
+                input_commit = command[command.index('--inputs-commit')+1]
+                frozen_path = rel(Path(command[command.index('--input')+1]))
+                frozen = value(dict(commit=input_commit, path=frozen_path))
                 if (frozen['execution_source'] != source
                         or frozen['plan'].get('terminal_reference') != terminal
-                        or value(frozen['configuration']) != config):
-                    raise Held('Existing DF terminal attempt has different physical inputs')
-                input_commit = git('log','-1','--format=%H','--',rel(inp))
+                        or value(frozen['configuration']) != config or frozen != read(inp)):
+                    raise Held('Existing DF signal attempt has different fixed inputs')
             else:
                 put(inp,request)
                 input_commit=publish([d],'Fix missing DF round jobs')
@@ -1526,8 +1532,8 @@ class Completion:
             if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
             raw=publish([d],'Publish missing DF round signals')
             obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
-            if terminal and obtained:
-                obtained_request = dict(commit=input_commit, path=rel(inp))
+            if obtained:
+                obtained_request = dict(commit=input_commit, path=frozen_path)
         if repair:
             staged, stage_tag = d/'df_carrier-reconciled', 'DF_TERMINAL_STAGE_RECONCILED'
         elif horizon_parent:

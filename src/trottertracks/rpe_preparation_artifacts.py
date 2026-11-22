@@ -8,6 +8,7 @@ import errno
 import hashlib
 import os
 from pathlib import Path, PurePosixPath
+import re
 import uuid
 
 
@@ -24,6 +25,16 @@ def artifact_path(value):
     if path.parts[0] == '.git' or '.git' in path.parts:
         raise ValueError('Git metadata is transferred as a bundle, not paths')
     return path
+
+
+def df_calibration_receipt(name, output):
+    """Identify a path receipt or axis receipt inside one declared calibration."""
+    base = artifact_path(output)/'df_prices/calibration/acquisition'
+    path = artifact_path(name)
+    if path.is_relative_to(base):
+        return re.fullmatch(r'm(\d+)/p(\d+)/(?:axes_(?:XY|X|Y)/)?(PATH_RECEIPT|cosine|sine)\.json',
+                            path.relative_to(base).as_posix())
+    return None
 
 
 class ArtifactCache:

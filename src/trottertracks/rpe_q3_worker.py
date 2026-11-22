@@ -102,6 +102,19 @@ def process_alive(pid, marker):
         return False
 
 
+def session_has_live_members(session_id, *, exclude=()):
+    for stat in Path('/proc').glob('[0-9]*/stat'):
+        if int(stat.parent.name) in exclude:
+            continue
+        try:
+            fields = stat.read_text().rsplit(')', 1)[1].split()
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        if int(fields[3]) == session_id and fields[0] not in ('Z', 'X'):
+            return True
+    return False
+
+
 def supervisor_session_ended(attempt):
     """A matching detached session with no live members cannot consume a slot."""
     try:
@@ -118,14 +131,7 @@ def supervisor_session_ended(attempt):
             return False
         with (attempt / 'WORKER_PROCESS.lock').open('rb') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            for stat in Path('/proc').glob('[0-9]*/stat'):
-                try:
-                    fields = stat.read_text().rsplit(')', 1)[1].split()
-                except (FileNotFoundError, ProcessLookupError):
-                    continue
-                if int(fields[3]) == pid and fields[0] not in ('Z', 'X'):
-                    return False
-        return True
+            return not session_has_live_members(pid)
     except (OSError, ValueError, KeyError, IndexError, TypeError):
         return False
 
