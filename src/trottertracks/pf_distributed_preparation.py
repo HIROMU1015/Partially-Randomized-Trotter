@@ -429,8 +429,62 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     put(output,dict(response,items=items,registry_file=registry_output))
 
 
+def terminal_model_prices(parent, config, method, table, model, physical_id):
+    """Extend the parent's adopted width-specific affine model without refitting."""
+    from .pf_optimizer_connection import AXES
+    from .price_model_validation import predict
+    from .saved_rpe_cost_catalog import enc, frac
+
+    scope = 'CONDITIONAL_COMPARISON_MODEL_WITH_EXPLICIT_LONG_Q_UNKNOWN'
+    kind = 'CONDITIONAL_AFFINE_PRICE_REFERENCE'
+    gate = 'MODEL_REFERENCE_LONG_Q_UNCERTAINTY_UNKNOWN'
+    if (table.get('scope') != scope or table.get('configuration_id') != parent['id']
+            or table.get('qualified_for_candidate') is not False
+            or model['configuration_id'] != parent['id'] or model['holdout_refit'] is not False
+            or model['long_q_error_bound'] is not None):
+        raise ValueError('Terminal PF has no matching adopted long-q model')
+    terminal = config['rounds'][-1]
+    prior = parent['rounds'][-1]
+    width = frac(parent['spec']['delta_pf'])
+    q = terminal['q_PF']
+    if (terminal['m'] != config['spec']['M'] or terminal['structure'] != prior['structure']
+            or frac(terminal['T']) != q * width or frac(terminal['actual_delta_pf']) != width
+            or q <= prior['q_PF']):
+        raise ValueError('Terminal PF round differs from the adopted model schedule')
+    prefix = {(row['m'], row['axis']): row for row in table['axes']}
+    holdouts = {row['axis']: row for row in table['holdout']}
+    prices = []
+    for axis in AXES:
+        axis_model = model['models'][axis]
+        domain = axis_model['domain']
+        evidence = dict(source=table['model'], axis=axis)
+        reference = prefix[prior['m'], axis]
+        holdout = holdouts[axis]
+        observed = prefix[model['holdout_round'], axis]
+        if (axis_model['model'] != 'PRICE_LINEAR_FEATURE_MODEL_V1'
+                or axis_model['features'] != ['one', 'q']
+                or domain['route'] != method or domain['axis'] != axis
+                or domain['kind'] != 'DIRECT_COMPILED_DETERMINISTIC'
+                or domain['profile'] != parent['spec']['profile']
+                or reference['kind'] != kind or reference['gate'] != gate
+                or reference['price_evidence'] != evidence or reference['q'] != prior['q_PF']
+                or frac(reference['actual_delta_pf']) != width
+                or holdout['m'] != model['holdout_round'] or holdout['q'] >= q
+                or observed['gate'] != 'C_IMPLEMENTATION_GUARD_PASS'
+                or observed['price_evidence'] != holdout['receipt']):
+            raise ValueError('Terminal PF model, admitted prefix or holdout mismatch for '+axis)
+        estimate = predict(axis_model, dict(one=1, q=q))
+        if estimate <= 0:
+            raise ValueError('Terminal PF model produced a nonpositive price for '+axis)
+        prices.append(dict(m=terminal['m'], axis=axis, physical_id=physical_id,
+            unit_price_RZ=enc(estimate), kind=kind, price_evidence=evidence, gate=gate,
+            q=q, T=terminal['T'], actual_delta_pf=terminal['actual_delta_pf'],
+            unvalidated_extrapolation=True, model_error_bound_RZ=None))
+    return prices
+
+
 def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, on_ready):
-    """Run the fixed terminal price leaves and register their full 14-round evidence."""
+    """Register 14-round evidence using the same price rule as the admitted parent."""
     from concurrent.futures import ThreadPoolExecutor, as_completed
     from hashlib import sha256
     from .pf_optimizer_connection import AXES, physical_ids
@@ -438,7 +492,6 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
     from .rpe_release_registry import write
 
     selected = runtime.settings.get('pf_terminal_price_leaves', {})
-    adapter = Path(root)/'scripts/run_pf_preparation_stage.py'
     state_path = runtime.executor.run_dir/'pf_auto'/'TERMINAL_PRICES.json'
     states = read(state_path) if state_path.is_file() else {}
 
@@ -463,47 +516,29 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
         ids = physical_ids(workspace, cfg)
         if ids[13] != leaf['physical_id'] or {m:ids[m] for m in range(13)} != physical_ids(root, parent):
             raise ValueError('Terminal PF physical schedule differs from its fixed receipt')
-        axes = deepcopy(fixed(root, parent_entry['prices'])['axes'])
+        parent_table = fixed(root, parent_entry['prices'])
+        axes = parent_table['axes']
         if ({(x['m'],x['axis']) for x in axes if ids[x['m']]==x['physical_id']}
                 != {(m,axis) for m in range(13) for axis in AXES} or len(axes)!=26):
             raise ValueError('Terminal PF needs 26 matching prefix prices')
-        for row in axes:
-            if 'configuration_id' in row:
-                row['configuration_id'] = cfg['id']
         if stop_requested():
             return dict(status='WAITING_STOP')
         plan_path = folder/'PLAN.json'
         if sha256(plan_path.read_bytes()).hexdigest() != leaf['plan_sha256']:
-            raise ValueError('Terminal PF compile plan changed')
-        value = read(plan_path)
-        manifest = leaf['provider']
-        source = leaf['execution_source']
-        if value['configuration'] != cfg or {cell['m']:cell['axes'] for cell in value['new_compile_cells']} != {13:['X','Y']}:
-            raise ValueError('Terminal PF request must compile only the fixed X/Y pair')
-        context = SimpleNamespace(directory=folder, settings={'selected_axis_compile':True},
-            source=manifest['commit'], preparation_root=workspace,
-            preparation_source_manifest=manifest, log=lambda **row:None)
-        def stage(kind, name, fields):
-            input_path = folder/(name+'.INPUT.json')
-            output = folder/(name+'.RESULT.json')
-            body = dict(value=value, relative_output=leaf['relative_output'], phase=kind, source=source, **fields)
-            if input_path.exists() and read(input_path) != body:
-                raise ValueError('Terminal PF stage request changed on resume')
-            if not input_path.exists():
-                put(input_path, body)
-            command=[leaf['interpreter'],'-B',str(adapter),'--provider-root',str(workspace),
-                '--input',str(input_path),'--output',str(output)]
-            return runtime.call(context, command, folder, name, output, science=True)
-        compiled = stage('compile', 'PF_HOLDOUT_COMPILE', dict(cohort='terminal', rounds=[13], axes_by_round={'13':['X','Y']}))
-        track_collected_prices(workspace, compiled)
-        audited = stage('audit', 'PF_HOLDOUT_AUDIT', dict(compiled=compiled))
-        prices = audited['prices']
-        if (audited['status'] != 'AUDIT_PASS' or len(prices)!=2
-                or {(row['m'],row['axis'],row['physical_id'],row['gate']) for row in prices} !=
-                    {(13,axis,ids[13],'C_IMPLEMENTATION_GUARD_PASS') for axis in AXES}):
-            raise ValueError('Terminal audit did not confirm both fixed axes')
-        out = folder/'AXIS_PRICES.json'
-        table = dict(axes=axes+prices)
+            raise ValueError('Terminal PF plan changed')
+        if read(plan_path)['configuration'] != cfg:
+            raise ValueError('Terminal PF plan differs from the fixed configuration')
+        if leaf['entry']['price_scope'] != parent_table.get('scope'):
+            raise ValueError('Terminal PF price scope differs from the admitted parent')
+        if not parent_table.get('model'):
+            raise ValueError('Terminal PF requires the adopted parent price model')
+        model = fixed(root, parent_table['model'])
+        prices = terminal_model_prices(parent, cfg, parent_entry['method'], parent_table, model, ids[13])
+        for row in axes:
+            if 'configuration_id' in row:
+                row['configuration_id'] = cfg['id']
+        out = folder/'AXIS_PRICES_MODEL.json'
+        table = dict(parent_table, configuration_id=cfg['id'], axes=axes+prices)
         if out.exists():
             if read(out) != table:
                 raise ValueError('Previously registered terminal PF price table differs')
@@ -512,7 +547,7 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
         relative = str(out.relative_to(workspace))
         git(workspace, 'add', '--sparse', '--', relative)
         if git(workspace,'diff','--cached','--name-only','--',relative):
-            git(workspace,'commit','-m','Record admitted PF terminal X/Y prices','--',relative)
+            git(workspace,'commit','-m','Record PF terminal prices from the adopted parent model','--',relative)
         tip=git(workspace,'log','-1','--format=%H','--',relative)
         subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),
                         tip+':refs/rpe-preparation/pf-terminal/'+cfg['id']],
@@ -528,7 +563,7 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
         except (Held, ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
             return parent_id, dict(status='WAITING', reason=str(error))
 
-    pending = [(key, item) for key,item in selected.items() if key in parent_entries and
+    pending = [(key, item) for key,item in selected.items() if parent_entries.get(key, {}).get('prices') and
                states.get(key,{}).get('status')!='READY']
     if not pending:
         return

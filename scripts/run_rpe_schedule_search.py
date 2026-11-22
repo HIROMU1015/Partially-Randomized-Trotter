@@ -1795,7 +1795,8 @@ class WidthDriver:
                         # A parent can become READY while the initial terminal
                         # wave is running. Submit its fixed extension this pass.
                         late = {cid: entry for cid, entry in result[0]['pf_evidence_registry']['configurations'].items()
-                                if cid in terminal and cid not in entries}
+                                if cid in terminal and entry.get('prices')
+                                and entry['prices'] != entries.get(cid, {}).get('prices')}
                         if late and not stopped():
                             complete_terminal_prices(ROOT, runtime, late,
                                                      stop_requested=stopped, on_ready=terminal_ready)

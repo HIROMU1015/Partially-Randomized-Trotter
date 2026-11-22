@@ -22,6 +22,47 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_terminal_reuses_frozen_model_and_preserves_price_provenance(self):
+        from trottertracks.pf_distributed_preparation import terminal_model_prices
+        from trottertracks.saved_rpe_cost_catalog import enc
+
+        scope = 'CONDITIONAL_COMPARISON_MODEL_WITH_EXPLICIT_LONG_Q_UNKNOWN'
+        kind = 'CONDITIONAL_AFFINE_PRICE_REFERENCE'
+        gate = 'MODEL_REFERENCE_LONG_Q_UNCERTAINTY_UNKNOWN'
+        model_source = dict(commit='a'*40, path='FROZEN_MODEL.json')
+        profile = dict(compiler='fixed')
+        spec = dict(M=12, delta_pf='1/2', profile=profile)
+        previous = dict(m=12, q_PF=8, T=4, actual_delta_pf='1/2', structure={'formula_id': 'fixed'})
+        terminal = dict(previous, m=13, q_PF=16, T=8)
+        parent = dict(id='parent', spec=spec, rounds=[previous])
+        target = dict(id='target', spec=dict(spec, M=13), rounds=[previous, terminal])
+        receipt = dict(source={'commit': 'b'*40, 'path': 'PRICES.json'})
+        table = dict(configuration_id='parent', model=model_source, qualified_for_candidate=False,
+                     scope=scope, holdout=[], axes=[])
+        model = dict(configuration_id='parent', holdout_refit=False, long_q_error_bound=None,
+                     holdout_round=6, models={})
+        for axis, slope in (('X', 2), ('Y', 3)):
+            model['models'][axis] = dict(model='PRICE_LINEAR_FEATURE_MODEL_V1', features=['one', 'q'],
+                coefficients=dict(one=enc(1), q=enc(slope)),
+                domain=dict(route='TRUNCATED_PF', axis=axis, profile=profile, kind='DIRECT_COMPILED_DETERMINISTIC'))
+            table['holdout'].append(dict(m=6, axis=axis, q=2, receipt=receipt))
+            table['axes'].append(dict(m=6, axis=axis, price_evidence=receipt, gate='C_IMPLEMENTATION_GUARD_PASS'))
+            table['axes'].append(dict(m=12, axis=axis, q=8, actual_delta_pf='1/2', kind=kind, gate=gate,
+                                      price_evidence=dict(source=model_source, axis=axis)))
+
+        rows = terminal_model_prices(parent, target, 'TRUNCATED_PF', table, model, 'terminal')
+        self.assertEqual([row['unit_price_RZ'] for row in rows], [enc(33), enc(49)])
+        for row in rows:
+            self.assertEqual(row['price_evidence'], dict(source=model_source, axis=row['axis']))
+            self.assertEqual((row['m'], row['physical_id'], row['kind'], row['gate']), (13, 'terminal', kind, gate))
+            self.assertTrue(row['unvalidated_extrapolation'])
+            self.assertIsNone(row['model_error_bound_RZ'])
+        with self.assertRaisesRegex(ValueError, 'model, admitted prefix or holdout mismatch'):
+            terminal_model_prices(parent, target, 'FULL_PF', table, model, 'terminal')
+        terminal['actual_delta_pf'] = '1/4'
+        with self.assertRaisesRegex(ValueError, 'adopted model schedule'):
+            terminal_model_prices(parent, target, 'TRUNCATED_PF', table, model, 'terminal')
+
     def test_selected_provider_dispatches_signal_with_owned_price_and_replays_response(self):
         from trottertracks import pf_distributed_preparation as distributed
         from trottertracks.pf_optimizer_connection import complete_selected

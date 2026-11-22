@@ -67,6 +67,29 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(sum(row['event'] == 'ASSIGN' for row in restarted.store.events()), 2)
         self.assertTrue(all(restarted.store.row(job)['state'] == 'ACCEPTED' for job in set(jobs.values())))
 
+    def test_model_priced_pf_horizon_queues_signal_only(self):
+        from trottertracks.rpe_preparation_queue import submit_horizon_preparation
+
+        executor = self.executor(capacity=2)
+        tasks = {}
+        for name, stage, axes in (('signal', 'signal', []), ('pair', 'compile', ['X', 'Y'])):
+            task = self.request(stage, name)
+            task['original_contract'] = dict(round=13, physical_id='terminal')
+            task['preparation'].update(horizon_round={'m': 13, 'physical_id': 'terminal'}, price_axes=axes)
+            tasks[name] = {'request': task}
+        binding = {'source_M': 12, 'rounds': {'13': {'physical_id': 'terminal',
+                   'signal': 'signal', 'X': 'pair', 'Y': 'pair'}}}
+        spec = dict(horizon_extensions=dict(bindings={'parent': binding}, tasks=tasks),
+                    pf_terminal_price_leaves={'parent': {'physical_id': 'terminal'}},
+                    budgets={'signal': 1, 'compile': 1})
+        runtime = SimpleNamespace(settings=spec, executor=executor, approved=True)
+        extension = dict(source_configuration_id='parent', configuration_id='extended',
+                         M=13, source_M=12, extension_rounds=[13])
+        report, = submit_horizon_preparation(runtime, [extension])
+        self.assertEqual(set(report['jobs']['13']), {'signal'})
+        self.assertEqual(report['incomplete']['13'], dict.fromkeys(('X', 'Y'), 'HORIZON_PRICE_FROM_ADOPTED_PARENT_MODEL'))
+        self.assertEqual(executor.store.preparation_reservations(), {'signal': 1})
+
     def test_horizon_signal_can_run_with_missing_or_invalid_price_axis(self):
         from trottertracks.rpe_preparation_queue import submit_horizon_preparation
 

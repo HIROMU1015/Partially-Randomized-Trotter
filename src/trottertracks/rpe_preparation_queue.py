@@ -66,6 +66,7 @@ def submit_horizon_preparation(runtime, requests):
     """
     catalog = runtime.settings.get('horizon_extensions') or {}
     bindings, tasks = catalog.get('bindings', {}), catalog.get('tasks', {})
+    pf_terminal_prices = runtime.settings.get('pf_terminal_price_leaves', {})
     submitted = {}
     budgets = runtime.settings.get('budgets', {})
 
@@ -124,6 +125,12 @@ def submit_horizon_preparation(runtime, requests):
             successes, failures = {}, {}
             for role, allowed in (('signal', ('signal',)), ('X', ('compile', 'audit')), ('Y', ('compile', 'audit'))):
                 try:
+                    if m == 13 and role != 'signal' and configuration in pf_terminal_prices:
+                        leaf = pf_terminal_prices[configuration]
+                        if leaf['physical_id'] != entry['physical_id']:
+                            raise ValueError('PF model price and horizon provider bind different physical rounds')
+                        failures[role] = 'HORIZON_PRICE_FROM_ADOPTED_PARENT_MODEL'
+                        continue
                     name = entry.get(role)
                     if name is None:
                         failures[role] = 'HORIZON_ROLE_PROVIDER_NOT_CONFIGURED'
