@@ -46,6 +46,26 @@ def test_preparation_pools_separate_cpu_slots_and_memory(tmp_path):
     assert metrics[-1]["peak_worker_rss_bytes"] > 0
 
 
+def test_price_pool_starts_more_than_one_unmeasured_job_when_memory_fits(tmp_path):
+    import h6_preparation_pool as pool
+
+    jobs = [("price", {}, i, tmp_path / f"price-{i}.json", "fixture") for i in range(4)]
+    metrics = []
+    memory = 8 * pool.GIB
+    assert not pool.prices(jobs, artificial_preparation, 4, memory, lambda _: (1024, 0), metrics.append)
+    assert metrics[-1]["done"] == metrics[-1]["peak_workers"] == 4
+    assert metrics[-1]["peak_reserved_bytes"] <= memory
+
+
+def test_price_pool_prioritizes_larger_circuits_in_the_same_memory_group(tmp_path):
+    import h6_preparation_pool as pool
+
+    jobs = [("price", {"size": (n, 0)}, n, tmp_path / f"price-{n}.json", "fixture") for n in (600, 1000, 800)]
+    assert not pool.prices(jobs, artificial_preparation, 1, 4 * pool.GIB, lambda c: c["size"], lambda _: None)
+    completed = sorted((task[3] for task in jobs), key=lambda path: path.stat().st_mtime_ns)
+    assert [read(path)["index"] for path in completed] == [1000, 800, 600]
+
+
 def artificial_plan(run, scope=None):
     scope = scope or read(RUNNER / "h6_scope_example.json")
     scope["scaled_shots"]["grid"].update(min_k=0, max_k=0)

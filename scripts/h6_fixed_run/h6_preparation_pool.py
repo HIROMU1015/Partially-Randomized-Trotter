@@ -14,11 +14,15 @@ GIB = 1 << 30
 CONTEXT = mp.get_context("fork")
 
 
-def price_profile(cell, block_bound, stages):
+def price_size(cell, block_bound, stages):
     head = cell["q"] * stages * block_bound
     tail = cell["q"] * (cell["R_outer"] or 0) * ((cell["K"] or 0) + 1)
+    return head, tail
+
+
+def price_profile(size):
     # Round to powers of two so observations apply to similarly sized circuits.
-    return tuple(0 if count == 0 else 1 << (count - 1).bit_length() for count in (head, tail))
+    return tuple(0 if count == 0 else 1 << (count - 1).bit_length() for count in size)
 
 
 def estimated_bytes(profile):
@@ -60,10 +64,15 @@ def current_rss(process):
         return 0
 
 
-def prices(jobs, execute, slots, memory, profile_for, checkpoint):
-    pending = defaultdict(deque)
+def prices(jobs, execute, slots, memory, size_for, checkpoint):
+    grouped = defaultdict(list)
     for job in jobs:
-        pending[profile_for(job[1])].append(job)
+        size = size_for(job[1])
+        grouped[price_profile(size)].append((estimated_bytes(size), job))
+    pending = {
+        profile: deque(job for _, job in sorted(group, key=lambda entry: entry[0], reverse=True))
+        for profile, group in grouped.items()
+    }
     profiles = sorted(pending, key=estimated_bytes, reverse=True)
     observed = defaultdict(int)
     active = {}
@@ -85,10 +94,14 @@ def prices(jobs, execute, slots, memory, profile_for, checkpoint):
                 selected = None
                 for profile in profiles:
                     measured = observed[profile]
-                    # Initially admit one per profile. Later results can raise
-                    # the budget based on the observed peak, with 25% headroom.
-                    need = max(estimated_bytes(profile), math.ceil(measured * 1.25))
-                    if (need <= free and (measured or not in_profile[profile])) or not active:
+                    forecast = estimated_bytes(profile)
+                    # Allow multiple early jobs when they fit a conservative
+                    # forecast. Compare newly permitted jobs against measured RSS.
+                    if measured:
+                        need = max(forecast, math.ceil(measured * 1.25))
+                    else:
+                        need = forecast * (2 if in_profile[profile] else 1)
+                    if need <= free or not active:
                         selected = profile, min(need, memory)
                         break
                 if selected is None:

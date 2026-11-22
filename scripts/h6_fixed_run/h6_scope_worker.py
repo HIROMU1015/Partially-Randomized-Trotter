@@ -233,11 +233,11 @@ def collect_owned(scope, assets, run, signal_workers, price_workers, price_memor
     def checkpoint(metrics):
         write(run / f"{metrics['phase'].upper()}_PREPARATION_METRICS.json", metrics)
 
-    def profile(cell):
-        return pool.price_profile(cell, STATE.pieces[cell["prefix"]].bound, FORMULAS[cell["formula"]])
+    def size(cell):
+        return pool.price_size(cell, STATE.pieces[cell["prefix"]].bound, FORMULAS[cell["formula"]])
 
     errors = pool.signals(signal_jobs, execute, signal_workers, checkpoint)
-    errors.update(pool.prices(price_jobs, execute, price_workers, price_memory, profile, checkpoint))
+    errors.update(pool.prices(price_jobs, execute, price_workers, price_memory, size, checkpoint))
     write(run / "PREPARATION_ERRORS.json", errors)
     return 0
 
