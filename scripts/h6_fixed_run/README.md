@@ -50,7 +50,11 @@ H6 PR-DF用に通常の `ROUND.json` へ `hchain_price_preparation` を設定で
 
 [範囲ファイル](h6_scope_example.json)で方式、公式、要求幅、分割位置、PR-DFの絶対κ、RPEの最終ラウンドを指定する。例の `h=0.1`、`M=12` ではFull PF 12件、B0I 48件、PR-DF 70件を列挙する。候補のRPE信号と価格を揃え、配分の選択とQ3結果の採否にはH4と共通の探索器を使用する。
 
-保存DF19では、B0Iの `p` とPR-DFの `L_D` に0〜18の任意の整数を指定できる。`"prefixes": [1]` は1だけ、`"prefixes": "all"` は0〜18を指定する。全19項を保持する点はFull PFで扱う。要求幅 `width_over_h` と絶対κは正の数を列挙し、`"3/2"` のような分数も使える。PR-DFの `K` は単一の非負の偶数かその一覧を指定できる。最終ラウンド `M` は0以上を受け付け、指定した全ラウンドをQ3へ渡す。
+[全分割位置・幅h〜10hのH6設定](h6_scope_h_to_10h.json)では、3方式とも要求幅をh刻みの10点にする。B0IとPR-DFは全分割位置を使い、Full PF 30件、B0I 570件、PR-DF 1,330件を列挙する。PR-DFはS2、K=2、絶対κは1・2・4・8・16・32・64。
+
+保存DF19では、B0Iの `p` とPR-DFの `L_D` に0〜18の任意の整数を指定できる。`"prefixes": [1]` は1だけ、`"prefixes": "all"` は0〜18を指定する。全19項を保持する点はFull PFで扱う。要求幅 `width_over_h` と絶対κは正の数を列挙し、`"3/2"` のような分数も使える。PR-DFの `K` は単一の非負の偶数かその一覧を指定できる。計画モードは0以上の最終ラウンド `M` を受け付ける。固定Q3評価器でMSEを評価できる範囲は `M=0..12`。
+
+ショット数は各ラウンドで `N_X = N_Y = ceil(s * (11 + 4 * (M - m)))` とする。`scaled_shots.grid` が共通倍率 `s = 2^(k/divisor)` の範囲を決める。幅h〜10hの設定では `k=-12..16`、`divisor=4` なので、倍率は1/8〜16の29点。`compare_paper: false` のため、PR-DFの論文比較用倍率 `exp(2/κ)` は配分候補に加えない。
 
 [PBS入口](h6_scope.pbs)に `H6_OPTIMIZER_CHECKOUT`、`H6_ASSETS`、`H6_PYTHON`、`H6_SCOPE_FILE`、`H6_SCOPE_OUTPUT` を絶対パスで渡す。`H6_ASSETS` は `payload-bound`、`representatives`、`optimizer-source`、`q3-pilot/risk-source` を含む既存のH6実行領域。既定は `--plan-only` で、候補表と固定入力の照合を行う。`H6_SCOPE_ACTION=--prepare-only` では信号・較正・価格表を準備し、`--execute` では共通のQ3探索まで進む。`H6_PREPARATION_WORKERS` と `H6_Q3_SLOTS` で割当内の同時実行数を調整できる。
 
