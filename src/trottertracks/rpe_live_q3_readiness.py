@@ -43,6 +43,18 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
     if not payload.get('profile_path'):
         profile.write_text(json.dumps(payload['profile']))
     configured = json.loads(profile.read_text())
+    if (assignment.get('required_release') and payload.get('deployment') and
+            'input_objects' not in payload and 'input_pack' not in payload):
+        try:
+            from trottertracks import rpe_release_deployment
+            prepare = getattr(rpe_release_deployment, 'prepare_worker_assignment', None)
+            if prepare is not None:
+                prepare(configured, assignment, payload['deployment'])
+        except ImportError:
+            pass  # An older worker can still check assets already placed for its fixed release.
+        except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
+            print(json.dumps(dict(status='HOLD', reason='WORKER_DEPLOYMENT_HOLD: '+str(error))))
+            raise SystemExit(0)
     effective = select_host_profile(configured, assignment)
     route = assignment['request']['route']
     repositories = {Path(effective['root']).resolve()}
@@ -246,10 +258,14 @@ def probe(executor, request, job_id, decision, *, publish=None):
     """Obtain real-input dry checks for new jobs before reserving a slot."""
     assignment = dict(job_id=job_id, method=request['method'], request=request,
                       request_sha256=Q.digest(request), source_manifest=executor.source_manifest)
+    if executor.distributed.get('required_release'):
+        assignment['required_release'] = executor.distributed['required_release']
     local = executor.distributed.get('local_worker') or {}
     policy, error = executor._host_admission_policy()
     hold = controller_scope_hold(request, local)
-    if hold is not None:
+    horizon_can_differ = (hold and hold['reason']=='OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN'
+                          and request['route'].get('horizon_risk_source'))
+    if hold is not None and not horizon_can_differ:
         decision.update(reasons=[hold['reason']], execution_profiles={}, host_decisions={}, controller_scope=hold)
         record = executor.run_dir/'distributed'/'q3-readiness'/job_id/'READINESS.json'
         # Keep host observations already saved by an earlier controller version.
@@ -261,9 +277,16 @@ def probe(executor, request, job_id, decision, *, publish=None):
     assignment['input_hashes'] = controller_input_hashes(executor, request)
     participants = []
     pbs = executor.distributed.get('pbs') or {}
+    def accepting(host):
+        admission=executor._host_admission(host,policy,error)
+        observed=executor.hosts.get(host,{})
+        return (admission['accepting'] and admission.get('max_slots') != 0
+                and observed.get('accepting_new_jobs',True)
+                and ((observed.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs',True))
+
     pbs_workers = {worker['host_id']: worker for worker in pbs.get('workers', [])
-                   if pbs.get('walltime_policy') and executor._host_admission(worker['host_id'], policy, error)['accepting']}
-    if local and executor._host_admission(local['host_id'], policy, error)['accepting']:
+                   if pbs.get('walltime_policy') and accepting(worker['host_id'])}
+    if local and accepting(local['host_id']):
         participants.append((local['host_id'], None))
     participants.extend((host, None) for host in pbs_workers)
     relay = executor.run_dir/'distributed'/'relay'/'CONFIG.json'
@@ -274,7 +297,7 @@ def probe(executor, request, job_id, decision, *, publish=None):
         bridge.config['request_timeout_seconds'] = 120
         participants.extend((worker['host_id'], worker) for worker in bridge.config.get('workers', [])
                             if worker.get('enabled', True)
-                            and executor._host_admission(worker['host_id'], policy, error)['accepting']
+                            and accepting(worker['host_id'])
                             and (not executor._host_admission(worker['host_id'], policy, error)['optional']
                                  or executor.hosts.get(worker['host_id'], {}).get('accepting_new_jobs') is True))
 
@@ -291,7 +314,10 @@ def probe(executor, request, job_id, decision, *, publish=None):
                     return host, dict(status='HOLD', reason='PBS_WALLTIME_ESTIMATE_UNAVAILABLE')
                 # The gateway and compute nodes share the deployed fixed views.
                 # The worker repeats the normal fingerprint on the allocated node.
-                payload.update(profile=pbs_workers[host]['profile'], worker_root=pbs['transport_root'])
+                declared=pbs_workers[host]
+                payload.update(profile=declared['profile'], worker_root=pbs['transport_root'],
+                    deployment=dict(deployment=declared.get('deployment') or pbs.get('deployment'),
+                                    task_deployments=declared.get('task_deployments',{})))
                 command = ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
                            pbs['ssh_alias'], shlex.join([pbs['gateway_python'], '-B', '-c', _HOST_PROBE])]
                 def invoke(data):
@@ -300,6 +326,10 @@ def probe(executor, request, job_id, decision, *, publish=None):
                     return json.loads(checked.stdout)
             elif worker is None:
                 payload.update(profile=local, worker_root=str(executor.worker_script.parent.parent))
+                distributed=executor.distributed
+                if distributed.get('local_deployment_layout') and distributed.get('release_manifest'):
+                    payload['deployment']=dict(deployment=dict(manifest=distributed['release_manifest'],
+                                                              layout=distributed['local_deployment_layout']))
                 def invoke(data):
                     return json.loads(subprocess.check_output([sys.executable, '-B', '-c', _HOST_PROBE],
                                                               input=json.dumps(data), text=True, timeout=120))
@@ -307,6 +337,7 @@ def probe(executor, request, job_id, decision, *, publish=None):
                 # Keep Windows argv short even as the metadata checker grows.
                 payload.update(worker_root=worker['root'], profile_path=worker['profile'],
                                probe_code=base64.b64encode(zlib.compress(_HOST_PROBE.encode())).decode())
+                payload['deployment']={key:worker[key] for key in ('deployment','task_deployments') if key in worker}
                 def invoke(data):
                     return bridge.remote_command(worker, [worker.get('python', 'python3'), '-B', '-c', _REMOTE_PROBE],
                                                  'q3-readiness', data)[0]

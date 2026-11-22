@@ -91,6 +91,22 @@ class ResourceTests(unittest.TestCase):
         self.assertEqual(report['peak_job_cpu_cores'], 1.5)
         self.assertEqual(report['peak_job_rss_bytes'], 1000000)
 
+    def test_verified_q3_backlog_recovers_from_stale_compile_memory_class(self):
+        p = profile(separate_task_resources=True)
+        compile_class, q3_class = 'preparation:compile:TEST', 'q3:finite_support'
+        heavy = dict(resource_class=compile_class, state='TRANSFERRED', peak_rss_bytes=14000000)
+        first = dict(feedback(0, 0), ready_jobs=0, capacity_ready_jobs=0)
+        state, offer = R.decide_slots(p, dict(task_resource_classes=[compile_class]), resources(), [heavy], first)
+        self.assertEqual(offer['capacity'], 0)
+        demand = dict(first, capacity_ready_jobs=4, ready_task_classes=[q3_class])
+        state, offer = R.decide_slots(p, state, resources(), [heavy], demand)
+        self.assertEqual(offer['capacity'], 1)
+        self.assertEqual(state['task_resource_peaks'][compile_class]['peak_rss_bytes'], 14000000)
+        q3 = dict(resource_class=q3_class, state='TRANSFERRED', peak_rss_bytes=1000000)
+        demand.update(usable_results=1, measurement_seconds=10)
+        _, offer = R.decide_slots(p, state, resources(), [heavy, q3], demand)
+        self.assertEqual(offer['capacity'], 2)
+
     def test_v1_cpu_cpuset_and_memory_ancestors_are_honoured(self):
         with tempfile.TemporaryDirectory()as temporary:
             base=Path(temporary);proc=base/'proc';group=base/'cgroup'

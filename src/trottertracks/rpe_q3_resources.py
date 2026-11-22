@@ -254,6 +254,7 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
             slots=max(0,capacity-occupied), occupied=occupied, stage='EXPLICIT_FIXED_PROFILE', reasons=['Legacy/explicit worker slots retained'])
     target = max(1, int(state.get('target_slots', initial)))
     feedback = deepcopy(feedback or state.get('feedback') or {})
+    unmeasured_class = False
     if policy.get('separate_task_resources'):
         peaks = state.setdefault('task_resource_peaks', {})
         active = set(feedback.get('ready_task_classes', ()))
@@ -270,10 +271,8 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         state['task_resource_classes'] = active
         selected = [peaks.get(kind, {}) for kind in active]
         peak = max((job.get('peak_rss_bytes', 0) for job in selected), default=0)
-        # An unmeasured stage is tried on its own, including after a change
-        # of evaluator. Never borrow the memory footprint of another stage.
-        if any(not job.get('peak_rss_bytes') for job in selected):
-            peak = 0
+        # Keep every relevant measured peak even if another class is new.
+        unmeasured_class = any(not job.get('peak_rss_bytes') for job in selected)
         observed_cpu = max((job.get('observed_cpu_cores', 0) for job in selected), default=0)
         dp = max([int(profile.get('dp_workers') or 1)] + [int(job.get('dp_workers') or 1) for job in selected])
     else:
@@ -296,7 +295,7 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         if type(explicit) is not int or explicit < 1: raise ValueError('Positive max_slots required')
         limits.append(explicit)
     ceiling = min(limits)
-    if resources.get('allocation_bounds_complete') is False:
+    if resources.get('allocation_bounds_complete') is False or unmeasured_class:
         ceiling = min(ceiling, initial)
     reasons = []; stage = state.get('stage', 'COLD_START_UNMEASURED')
     if ceiling < target:
@@ -334,7 +333,8 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
             stage='MEASURED_THROUGHPUT_AND_WAIT' if latency is not None else 'MEASURED_THROUGHPUT_WAIT_UNMEASURED'
         # A one-slot trial establishes the next measurement, rather than using
         # machine-wide free CPU as evidence that more Q3s are useful.
-        if not trial and peak and target < ceiling and int(feedback.get('ready_jobs',0)) > 0 and rate:
+        demand = feedback.get('capacity_ready_jobs', feedback.get('ready_jobs', 0))
+        if not trial and peak and target < ceiling and int(demand) > target and rate:
             state['trial']=dict(from_slots=target, rate=rate, decision_wait_per_result=latency)
             target += 1; stage='RESOURCE_BOUNDED_EXPLORATORY_TRIAL'
             reasons.append('One extra slot trial after usable completion with resource headroom and READY work')

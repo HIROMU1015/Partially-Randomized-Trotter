@@ -53,7 +53,8 @@ def bind_df_signal_workers(command, workers):
 
 
 def preparation_profile_core(profile):
-    excluded={'work_dir','slots','slot_policy','route_profiles','preparation_profiles','artifact_cache_directory','preparation_metadata_cache_directory','pbs'}
+    excluded={'work_dir','slots','slot_policy','route_profiles','preparation_profiles','artifact_cache_directory',
+              'preparation_metadata_cache_directory','pbs','deployment','task_deployments'}
     return {key:deepcopy(value) for key,value in profile.items() if key not in excluded}
 
 

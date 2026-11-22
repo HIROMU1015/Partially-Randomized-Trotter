@@ -8,10 +8,12 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from zipfile import ZipFile
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
-from trottertracks.rpe_release_deployment import ensure_components,manifest_reference,participation_components,validate_assignment_release
+from trottertracks.rpe_release_deployment import (ensure_components, manifest_reference, participation_components,
+                                                 prepare_worker_assignment, validate_assignment_release)
 from trottertracks.rpe_q3_coordinator import digest
 
 
@@ -121,5 +123,86 @@ class ReleaseDeployment(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'component unavailable'):
             validate_assignment_release(self.manifest,self.layout,assignment,profile)
 
+    def test_q3_preflight_places_registered_view_and_saved_input_without_other_stage(self):
+        root=self.directory/'q3-worktree'
+        view=self.directory/'route-view'
+        self.layout['component_roots'].update(q3=str(root),route=str(view))
+        self.manifest['components']['route']=dict(source=self.source)
+        self.manifest['components']['other']=dict(source=self.source)
+        saved=self.directory/'saved.json'
+        saved.write_text('fixed input')
+        destination=self.directory/'placed.json'
+        self.layout['input_files']={'fixed':dict(path=str(destination),copy_from=str(saved),
+            components=['route'],sha256=hashlib.sha256(saved.read_bytes()).hexdigest())}
+        request=dict(request_id='ARTIFICIAL_JOB',method='FULL_PF',
+            route=dict(kind='pf_b_pf6',view_commit=self.source))
+        assignment=dict(request=request,source_manifest={'commit':self.source},
+                        required_release=manifest_reference(self.manifest))
+        profile=dict(root=str(root),interpreter=sys.executable,host_id='local',route_views={self.source:str(view)})
+        deployment={'deployment':dict(manifest=self.manifest,layout=self.layout)}
+        bad=deepcopy(assignment)
+        bad['required_release']['manifest_sha256']='wrong'
+        with self.assertRaisesRegex(ValueError,'manifest differs'):
+            prepare_worker_assignment(profile,bad,deployment)
+        self.assertFalse(root.exists())
+        prepare_worker_assignment(profile,assignment,deployment)
+        self.assertEqual(destination.read_bytes(),saved.read_bytes())
+        self.assertTrue((root/'scripts/leaf.py').is_file())
+        self.assertTrue((view/'scripts/leaf.py').is_file())
+        self.assertFalse(Path(self.layout['component_roots']['optimizer']).exists())
+        with patch('trottertracks.rpe_release_deployment._ensure_source',side_effect=AssertionError('already installed')):
+            prepare_worker_assignment(profile,assignment,deployment)
+
+    def test_preparation_stages_place_only_their_registered_runtime_and_views(self):
+        root=self.directory/'preparation'
+        view=self.directory/'preparation-view'
+        self.manifest['components'].update(provider=dict(source=self.source),view=dict(source=self.source))
+        self.layout['component_roots'].update(provider=str(root),view=str(view))
+        self.manifest['runtime_contracts']={'local':[]}
+        # A hold in an unrelated runtime must not block the selected stage.
+        self.layout['runtimes']['unrelated']=dict(python='/missing-artificial-python',components=['provider'])
+        self.layout['runtimes']['fixed']=dict(python=sys.executable,modules={'json':None},components=['provider'])
+        for stage in ('signal','compile','audit'):
+            with self.subTest(stage=stage):
+                self.manifest['stage_components'][stage]=['provider']
+                self.manifest['runtime_contracts']['local'].append(dict(
+                    stage=stage,provider='ARTIFICIAL',source=self.source,runtime='fixed'))
+                request=dict(route={'kind':'preparation'},preparation=dict(artificial=True,stage=stage,
+                    provider='ARTIFICIAL',source={'commit':self.source},
+                    required_views={'helper':{'source':{'commit':self.source}}}))
+                assignment=dict(request=request,required_release=manifest_reference(self.manifest))
+                profile=dict(root=str(root),interpreter=sys.executable,host_id='local',
+                             preparation_sources={self.source:{'root':str(view)}})
+                prepare_worker_assignment(profile,assignment,{'deployment':dict(manifest=self.manifest,layout=self.layout)})
+                self.assertTrue((root/'src/provider.py').is_file())
+                self.assertTrue((view/'src/provider.py').is_file())
+
+    def test_offline_runtime_installs_only_the_locked_wheel_into_dedicated_environment(self):
+        package='fixture_runtime'
+        files={
+            package+'/__init__.py':'def ready():\n    print("ready")\n',
+            package+'-1.0.dist-info/METADATA':'Metadata-Version: 2.1\nName: fixture_runtime\nVersion: 1.0\n',
+            package+'-1.0.dist-info/WHEEL':'Wheel-Version: 1.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n',
+            package+'-1.0.dist-info/entry_points.txt':'[console_scripts]\nfixture-ready = fixture_runtime:ready\n',
+        }
+        record=package+'-1.0.dist-info/RECORD'
+        files[record]=''.join(name+',,\n' for name in [*files,record])
+        wheel=self.directory/(package+'-1.0-py3-none-any.whl')
+        with ZipFile(wheel,'w') as archive:
+            for name,body in files.items():archive.writestr(name,body)
+        lock=self.directory/'requirements.txt'
+        lock.write_text(package+'==1.0 --hash=sha256:'+hashlib.sha256(wheel.read_bytes()).hexdigest()+'\n')
+        target=self.directory/'runtime with space/bin/python'
+        runtime=dict(python=str(target),modules={package:'1.0'},components=['q3'],
+            offline_install=dict(base_python=sys.executable,requirements=str(lock),
+                requirements_sha256=hashlib.sha256(lock.read_bytes()).hexdigest(),wheelhouse=str(self.directory)))
+        self.layout['runtimes']['fixture']=runtime
+        self.assertEqual(ensure_components(self.manifest,self.layout,components=['q3'])['status'],'HOLD')
+        first=ensure_components(self.manifest,self.layout,install=True,components=['q3'])
+        self.assertEqual(first['status'],'PASS',first['holds'])
+        self.assertEqual(first['runtimes']['fixture']['modules'],{package:'1.0'})
+        self.assertEqual(subprocess.check_output([str(target.with_name('fixture-ready'))],text=True).strip(),'ready')
+        wheel.unlink()
+        self.assertEqual(ensure_components(self.manifest,self.layout,install=True,components=['q3'])['status'],'PASS')
 
 if __name__=='__main__':unittest.main()

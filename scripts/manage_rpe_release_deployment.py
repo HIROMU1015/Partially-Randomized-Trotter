@@ -7,7 +7,7 @@ import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
-from trottertracks.rpe_release_deployment import ensure_components,read,validate_assignment_release
+from trottertracks.rpe_release_deployment import ensure_assignment_components,ensure_components,read,validate_assignment_release
 
 
 def main():
@@ -27,7 +27,10 @@ def main():
         if not args.profile:parser.error('--assignment requires --profile')
         try:
             assignment=json.load(sys.stdin)if args.assignment_stdin else read(args.assignment)
-            result['assignment']=validate_assignment_release(manifest,layout,assignment,read(args.profile))
+            profile=read(args.profile)
+            if args.install:
+                ensure_assignment_components(manifest,layout,assignment,profile,install=True)
+            result['assignment']=validate_assignment_release(manifest,layout,assignment,profile)
         except Exception as error:
             result['status']='HOLD';result['holds'].append(dict(assignment=str(error),error_type=type(error).__name__))
     if args.output:

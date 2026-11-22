@@ -210,6 +210,10 @@ Full PF・B0Iで大きい `q` の価格に固定アフィンモデルを採用�
 
 ## 空き枠・容量・障害の切り分け
 
+- 配備台帳の `stage_components` とホストprofileに登録した固定SOURCEを、信号・compile・監査・Q3の事前照合で確認する。参加中のホストは、その要求が使うcheckout・adapter・route view・保存入力の不足分を既存の配備処理で補う。ホスト固有のpathと固定runtimeは `HOST.json` に置く。専用Pythonを復元できる場合は、該当runtimeの `offline_install` に `base_python`、`requirements`、`requirements_sha256`、`wheelhouse` を登録する。固定版と一致する環境を再利用し、資材不足や異なる固定版は当該ホスト・工程の理由として記録する。接続できる他ホストは続行する。
+- Q3に終端用などの追加route viewがある場合は、host profileの `route_profiles` に固定adapterとviewを登録する。共通の配備と事前照合は、この対応関係から使用する資材を決める。割当直前の照合と実行所有の管理は従来どおり行う。
+- 自動枠の需要は、ホストが事前照合済みの待機要求を `capacity_ready_jobs` で数える。実際に割り当てられる要求数は最新のworker照合を通った `ready_jobs_now` で見る。CPUとメモリの実績は、割当候補や稼働中の工程・評価方式に対応する値を使う。旧compileのメモリ見積りで0枠になった場合でも、適格なQ3が待機すればQ3の条件で通常の初期枠を再判定し、完了実績と資源の余裕があれば1枠ずつ試す。
+
 - PFのcompileとholdout compileでは、固定providerの子プロセスが読むorigin config、providerのファイル、保存snapshotとreceiptを事前照合に含める。実機で失敗結果を受領した場合は、回路生成の開始有無と元attemptの終了条件を確認し、固定要求と予算台帳を保全する。
 
 - PBSの100 CPUとserver2の30 CPUはCPUの使用上限。PBSは採用版の工程・ルート別見積りを使い、適格な仕事の数と必要CPU・RAM・残りwalltimeから割当要求を決める。RomuTail・Romulaptopには追加CPU上限を置かず、既存autoと実機条件を使う。Romulaptopは起動中で受付ONのとき参加する。ホストのPauseは新規受付に反映する。server1は2026-11-21に固定版と対応工程の検査を通過し、通常Start／Resumeへ復帰した。[server1の復帰記録](rpe_server1_participation_20261121/HANDOFF.md)

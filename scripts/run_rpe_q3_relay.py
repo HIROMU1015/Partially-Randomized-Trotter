@@ -230,6 +230,9 @@ class Relay:
     def remote(self, worker, action, value=None):
         if worker.get('deployment')and(action=='status'or action=='submit'):
             self.ensure_worker_deployment(worker,value if action=='submit'else None)
+        if action=='readiness' and (worker.get('deployment') or worker.get('task_deployments')):
+            deployment={key:worker[key] for key in ('deployment','task_deployments') if key in worker}
+            value=dict(value, deployment=deployment)
         command = [worker.get('python', 'python3'), '-B', worker['root'].rstrip('/')+'/scripts/run_rpe_q3_worker.py',
                    '--profile', worker['profile'], '--mailbox', action]
         return self.remote_command(worker,command,action,value)

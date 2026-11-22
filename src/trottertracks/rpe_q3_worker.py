@@ -233,13 +233,17 @@ def validate_assignment(profile, assignment):
     return resolved
 
 
-def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_parallel=1):
+def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_parallel=1, deployment=None):
     """Read current execution identities; never acquire or launch a job."""
     from .rpe_host_eligibility import current_host_fingerprint
     fingerprints, errors = {}, {}
+    deployment = deployment or profile.get('pbs') or profile
     def check(assignment):
         job = assignment['job_id']
         try:
+            if assignment.get('attempt_id') is None and assignment.get('required_release'):
+                from .rpe_release_deployment import prepare_worker_assignment
+                prepare_worker_assignment(profile, assignment, deployment)
             fact = (Preparation.current_preparation_fingerprint(assignment, profile, check_workspace=True)
                     if Preparation.is_preparation(assignment) else current_host_fingerprint(assignment, profile))
             return job, fact, None
@@ -784,7 +788,8 @@ def mailbox(profile, action, payload=None):
         if action == 'artifacts-get':return dict(blobs=cache.get(payload.get('hashes', [])))
         return dict(ok=True, **cache.put(payload.get('blobs', {})))
     if action == 'readiness':
-        return dict(host_id=profile['host_id'], **host_fingerprints(profile, payload.get('challenges', [])))
+        return dict(host_id=profile['host_id'], **host_fingerprints(profile, payload.get('challenges', []),
+                                                                 deployment=payload.get('deployment')))
     if action == 'result':
         job = safe_id(payload['job_id']); attempt_id = safe_id(payload['attempt_id'])
         attempt = Path(profile['work_dir']).resolve()/job/attempt_id

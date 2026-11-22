@@ -90,15 +90,18 @@ def prepare(source,release_id,service_path,price_profiles,hosts,output):
             contracts.append(dict(stage='worker',component='worker',runtime='worker'))
         def views(p):
             for key in ('route_views','preparation_sources'):
-                for commit,path in p.get(key,{}).items():roots.setdefault(commit,path)
-            manifest=p.get('preparation_adapter_manifest')
-            if manifest and p.get('preparation_adapter_root'):roots.setdefault(manifest['commit'],p['preparation_adapter_root'])
+                for commit,path in p.get(key,{}).items():
+                    roots.setdefault(commit,path['root'] if isinstance(path,dict) else path)
+            for key in ('adapter','preparation_adapter'):
+                manifest=p.get(key+'_manifest')
+                if manifest and p.get(key+'_root'):roots.setdefault(manifest['commit'],p[key+'_root'])
         views(profile)
         for index,rule in enumerate(profile.get('route_profiles',[])):
             p=rule['profile'];views(p);name='q3_route_'+str(index)
             runtimes[name]=dict(python=p['interpreter'],modules={'numpy':None,'scipy':None},components=['q3'])
             contracts.append(dict(stage='q3',route_kind=rule['route_kind'],view_commit=rule.get('view_commit'),
-                runtime=name,fixed_runtime_checks=deepcopy(p.get('runtime_checks',[]))))
+                horizon_risk_commit=rule.get('horizon_risk_commit'), runtime=name,
+                fixed_runtime_checks=deepcopy(p.get('runtime_checks',[]))))
         for index,rule in enumerate(profile.get('preparation_profiles',[])):
             p=rule['profile'];views(p);commit=rule['source_commit'];name='preparation_'+str(index)
             if rule in extras:
@@ -155,6 +158,8 @@ def prepare(source,release_id,service_path,price_profiles,hosts,output):
         manifest_path=output/'RELEASE_COMPONENTS.json'if host=='local'else metadata/'RELEASE_COMPONENTS.json'
         for index,rule in enumerate(profiles[host]['preparation_profiles']):
             runtime_layouts[host]['preparation_'+str(index)]['components']=[names[rule['source_commit']]]
+        for name, provision in defaults.get('offline_runtimes',{}).items():
+            runtime_layouts[host][name]['offline_install']=deepcopy(provision)
         layout=dict(host_id=host,repository=defaults['repository'],seed_repository=defaults['seed_repository'],
             component_roots=roots,runtimes=runtime_layouts[host],input_files={},
             participation_components=participation[host],

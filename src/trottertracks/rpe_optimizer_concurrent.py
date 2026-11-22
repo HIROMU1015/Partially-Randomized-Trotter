@@ -817,6 +817,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 profile = dict(profile)
                 profile.setdefault('root', str(self.computation_root))
                 profile.setdefault('work_dir', str(run/'distributed'/'server2-worker'))
+                if distributed.get('local_deployment_layout') and self.release_manifest:
+                    profile['deployment'] = dict(manifest=distributed['release_manifest'],
+                                                 layout=distributed['local_deployment_layout'])
+                    continuation = distributed.get('local_pf_continuation')
+                    if continuation:
+                        release = continuation['references'][profile['host_id']]['id']
+                        profile['task_deployments'] = {release: {key: continuation[key] for key in ('manifest','layout')}}
                 profile_path = run/'distributed'/'LOCAL_WORKER.json'
                 Q.atomic_json(profile_path, profile)
                 daemon_path = run/'distributed'/'LOCAL_DAEMON.json'
@@ -1564,20 +1571,36 @@ class DistributedExecutor(ConcurrentExecutor):
         if classify:
             from .rpe_q3_resources import measured_resource_class, resource_class
         ready = 0
+        capacity_ready = 0
         ready_classes = set()
+        observed = self.hosts.get(host, {})
+        fingerprints = observed.get('host_fingerprints') or {}
+        rejected = observed.get('readiness_errors') or {}
+        admission = observed.get('host_admission') or {}
+        storage = (observed.get('resource_report') or {}).get('storage') or {}
+        can_plan = (admission.get('accepting', True) and admission.get('max_slots') != 0
+                    and observed.get('accepting_new_jobs', True) and storage.get('accepting_new_jobs', True)
+                    and not self._user_stop_requested() and not self.state.failure and not self.state.closed)
         for task in self.state.tasks.values():
-            if task.status != 'QUEUED' or not self._task_ready(task): continue
+            if not can_plan or task.status != 'QUEUED' or not self._task_ready(task): continue
             row = self.store.row(task.job.name)
-            if row is not None and self._host_supports_stage(host, row['request']) and self.store.eligible(row['request'], row['eligibility'], host,
-                    self.hosts.get(host, {}).get('host_fingerprints'), row['job_id']):
-                ready += 1
-                if classify:
-                    decision = ((row['eligibility'] or {}).get('host_decisions') or {}).get(host, {})
-                    runtime = ((row['eligibility'] or {}).get('execution_profiles') or {}).get(host)
-                    if host == 'local' and self.distributed.get('worker_script'):
-                        ready_classes.add(measured_resource_class(row['request'], decision.get('evaluator'), runtime))
-                    else:
-                        ready_classes.add(resource_class(row['request'], decision.get('evaluator')))
+            if row is None or not self._host_supports_stage(host, row['request']) or not self._fits_host_walltime(host, row['request']):
+                continue
+            eligibility = row['eligibility'] or {}
+            fresh = self.store.eligible(row['request'], row['eligibility'], host, fingerprints, row['job_id'])
+            ready += int(fresh)
+            # A request-specific dry-check establishes demand even while the
+            # busy worker has no claim-time fingerprint in its current poll.
+            if not fresh and (row['job_id'] in fingerprints or row['job_id'] in rejected
+                              or host not in eligibility.get('eligible_host_ids', ())
+                              or not eligibility.get('host_fingerprints', {}).get(host)):
+                continue
+            capacity_ready += 1
+            if classify:
+                decision = eligibility.get('host_decisions', {}).get(host, {})
+                runtime = eligibility.get('execution_profiles', {}).get(host)
+                ready_classes.add(measured_resource_class(row['request'], decision.get('evaluator'), runtime)
+                                  if runtime else resource_class(row['request'], decision.get('evaluator')))
         ready_now = ready
         if self.distributed.get('work_conserving_search'):
             recent = getattr(self.state, 'host_ready_backlog', {})
@@ -1597,7 +1620,8 @@ class DistributedExecutor(ConcurrentExecutor):
             adopted_results=sum((row['adopted_epoch'] or 0) >= epoch for row in own),
             decision_wait_seconds=sum(selected) if selected else None,
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
-            ready_jobs=ready, ready_jobs_now=ready_now, ready_task_classes=sorted(ready_classes), capacity=self.capacity)
+            ready_jobs=ready, ready_jobs_now=ready_now, capacity_ready_jobs=capacity_ready,
+            ready_task_classes=sorted(ready_classes), capacity=self.capacity)
 
     def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None, prefetch=False):
         """Bind a prepared host decision to this exact scientific request."""
@@ -1871,6 +1895,9 @@ class DistributedExecutor(ConcurrentExecutor):
             source_manifest=prep['source'],input_hashes=prep.get('input_hashes',[]),prefix_key='preparation:'+digest(request))
         profile=preparation_profile_core(select_preparation_profile(self._configured_preparation_profile(host),assignment))
         assignment.update(host_execution_profile=profile,host_execution_profile_sha256=digest(profile))
+        reference = self._task_release(request, host)
+        if reference is not None:
+            assignment['required_release'] = reference
         return assignment
 
     def _preparation_probe_targets(self):
@@ -2460,6 +2487,18 @@ class DistributedExecutor(ConcurrentExecutor):
         row = self.store.row(self.job_dir(proposal).name)
         return (row is not None and row['state'] != 'CANCELLED') or super().has_job(proposal)
 
+    def _task_release(self, request, host):
+        reference = self.distributed.get('required_release')
+        continuation = self.distributed.get('local_pf_continuation')
+        preparation = self._preparation_request(request)
+        if (reference and continuation and preparation and preparation['provider'].startswith('PF_')
+                and preparation['source']['commit'] == continuation['source']):
+            if (host not in continuation['references']
+                    or continuation['manifest']['parent_release'] != reference):
+                raise ValueError('PF continuation host or parent release differs')
+            reference = continuation['references'][host]
+        return deepcopy(reference)
+
     def _assignment(self, row, host_id=None, *, eligibility=None):
         from .rpe_q3_coordinator import input_hashes, prefix_key, digest
         from .rpe_host_profiles import profile_core
@@ -2485,20 +2524,14 @@ class DistributedExecutor(ConcurrentExecutor):
                 value['host_execution_profile'] = preparation_profile_core(profile)
             else: value['host_execution_profile'] = profile_core(profile)
             value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
-        if self.distributed.get('required_release'):
-            value['required_release']=deepcopy(self.distributed['required_release'])
+        reference = self._task_release(row['request'], host)
+        if reference is not None:
+            value['required_release'] = reference
             continuation = self.distributed.get('local_pf_continuation')
-            followup = (continuation and preparation and preparation['provider'].startswith('PF_')
-                        and preparation['source']['commit'] == continuation['source'])
-            if followup:
-                if (host not in continuation['references']
-                        or continuation['manifest']['parent_release'] != value['required_release']):
-                    raise ValueError('PF continuation host or parent release differs')
-                value['required_release'] = continuation['references'][host]
             local=self.distributed.get('local_worker')or{}
             if host==local.get('host_id')and self.distributed.get('local_deployment_layout'):
                 from .rpe_release_deployment import read,validate_assignment_release
-                if followup:
+                if continuation and reference != self.distributed['required_release']:
                     manifest, layout = continuation['manifest'], continuation['layout']
                 else:
                     manifest, layout = self.release_manifest, read(self.distributed['local_deployment_layout'])
@@ -2633,7 +2666,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                        owned_at_offer=[row['attempt_id'] for row in self._owned_attempts() if row['host_id'] == host],
                                        resource_report=value.get('resource_report'),
                                        cached_prefixes=value.get('cached_prefixes', []),
-                                       host_fingerprints=fingerprints)
+                                       host_fingerprints=fingerprints, readiness_errors=value.get('readiness_errors'))
                 self._refresh_pending_preparation(host,fingerprints,value.get('readiness_errors')or{})
                 self._refresh_capacity(admission_policy, admission_error)
                 s.cv.notify_all()

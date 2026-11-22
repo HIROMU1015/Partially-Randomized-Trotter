@@ -32,6 +32,7 @@ class CapacityIntegralTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             ex = ConcurrentExecutor.__new__(ConcurrentExecutor)
             ex.run_dir=Path(directory);ex.invocation='ARTIFICIAL_EVENT_REPLAY';ex.capacity=1;ex.dp_workers=None
+            ex.lock=threading.RLock();ex.progress_start=0
             ex.state=SimpleNamespace(cv=threading.Condition(),tasks={},metrics=Counter(),by_method={},
                 peak_active=3,peak_RSS_KiB=0,failure=None)
             (ex.run_dir/'PROGRESS.jsonl').write_text(''.join(json.dumps(dict(
@@ -147,6 +148,19 @@ class AutoAllocationTests(unittest.TestCase):
         self.assertEqual(len(self.poll(ex, 'server2', facts)['assignments']), 1)
         self.assertEqual(ex.capacity, 1)
         self.assertEqual(self.poll(ex, WSL, facts)['assignments'], [])
+
+    def test_busy_host_counts_verified_queue_for_capacity_and_still_requires_current_facts(self):
+        ex = self.executor()
+        _, facts = self.jobs(ex, 3, ['server2'])
+        busy = self.poll(ex, 'server2', slots=0, capacity=1)
+        feedback = busy['capacity_feedback']
+        self.assertEqual(feedback['ready_jobs'], 0)
+        self.assertEqual(feedback['capacity_ready_jobs'], 3)
+        self.assertEqual(self.poll(ex, 'server2', slots=2)['assignments'], [])
+        stale = {job: {'server2': dict(row['server2'], runtime='CHANGED')}
+                 for job, row in facts.items()}
+        self.assertEqual(self.poll(ex, 'server2', stale, slots=0)['capacity_feedback']['capacity_ready_jobs'], 0)
+        self.assertEqual(len(self.poll(ex, 'server2', facts, slots=2)['assignments']), 2)
 
     def test_busy_preferred_hosts_do_not_delay_only_free_wsl(self):
         ex = self.executor(); _, facts = self.jobs(ex, 1)
