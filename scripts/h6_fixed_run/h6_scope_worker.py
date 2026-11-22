@@ -124,7 +124,7 @@ def signal(cell):
 
 
 def price(cell, index, cohort):
-    from h6_price_acceleration import PriceFingerprints, fingerprint_context, hadamard_wrapper
+    from h6_price_acceleration import PriceFingerprints, fingerprint_context, hadamard_wrapper, reuse_sampled_events
     from trotterlib.rte import CompilerSettings
     from trotterlib.rte_compiled_cost import transpile_and_measure_cost
 
@@ -132,7 +132,8 @@ def price(cell, index, cohort):
     if cell["R_outer"] is None:
         requests, seeds, laws = [], [], []
     else:
-        requests, seeds, laws = STATE.helpers["sample_requests"](cell, prep, cohort, index)
+        with reuse_sampled_events():
+            requests, seeds, laws = STATE.helpers["sample_requests"](cell, prep, cohort, index)
     compiler = CompilerSettings(("rz", "sx", "x", "cx"), None, None, 1, None, None, 17, "1.3.0")
     result = {}
     with fingerprint_context()() as session:

@@ -1,10 +1,12 @@
 """Reuse native DF circuit pieces and the canonical bytes shared by X and Y."""
 
-from functools import cache
+from contextlib import contextmanager
+from functools import cache, lru_cache
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 import os
 import resource
+from unittest.mock import patch
 
 from qiskit import ClassicalRegister, QuantumCircuit, qpy
 from qiskit.circuit import Gate
@@ -28,6 +30,29 @@ def fast_fingerprint_module():
 
 def fingerprint_context():
     return fast_fingerprint_module().use_fast_fingerprint
+
+
+@contextmanager
+def reuse_sampled_events():
+    """Reuse immutable events within a fixed sampling law and component table."""
+    from trotterlib import rte
+
+    original = rte._make_event
+    active_components = active_distribution = None
+
+    @lru_cache(maxsize=4096)
+    def event(indices, order):
+        return original(indices, active_components, active_distribution, order)
+
+    def make_event(indices, components, distribution, order):
+        nonlocal active_components, active_distribution
+        if components is not active_components or distribution is not active_distribution:
+            event.cache_clear()
+            active_components, active_distribution = components, distribution
+        return event(tuple(map(int, indices)), order)
+
+    with patch.object(rte, "_make_event", make_event):
+        yield
 
 
 def hadamard_wrapper(evolution, axis, *, shell=False):
@@ -251,11 +276,18 @@ class CircuitPieces:
                 tail = builder.build_sequence(request.rte_occurrence, basis_plan=request.rte_basis_plan).circuit
                 native._gate_only(tail, self.n + 1)
                 forward, reverse = self.pr_flanks(time)
-                piece = forward.copy()
-                piece.compose(tail, inplace=True)
-                piece.compose(reverse, inplace=True)
+                # Accumulate phases in the original two-level order. Append the
+                # large, privately owned tail directly to the destination circuit.
+                piece_phase = QuantumCircuit(1, global_phase=forward.global_phase)
+                piece_phase.global_phase += tail.global_phase
+                piece_phase.global_phase += reverse.global_phase
+                total_phase = QuantumCircuit(1, global_phase=circuit.global_phase)
+                total_phase.global_phase += piece_phase.global_phase
+                circuit.compose(forward, inplace=True)
+                circuit.compose(tail, inplace=True, copy=False)
+                circuit.compose(reverse, inplace=True)
+                circuit.global_phase = total_phase.global_phase
                 bound += len(tail.data)
-                circuit.compose(piece, inplace=True)
         else:
             # Flatten one period for gate emission. Replay global phase in
             # the original piece order to keep Qiskit's binary64 accumulation.
