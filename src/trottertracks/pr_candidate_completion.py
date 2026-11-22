@@ -642,7 +642,7 @@ class Completion:
         request=dict(request,controller_paths=self.settings.get("controller_paths",{}))
         request['preparation_path_map'] = dict(self.settings.get('pauli_saved_inputs') or {},
                                               **(self.settings.get('preparation_path_map') or {}))
-        if mode in ('df-plan','df-stage','df-bundle'):
+        if mode in ('df-plan','df-stage','df-bundle','df-rebind-horizon'):
             request['saved_index_cache']=str(self.directory/'cache'/'df-saved-index')
         tag=tag or mode;inp=d/(tag+'.INPUT.json');out=d/(tag+'.json');put(inp,request)
         command = [python, '-B', str(ROOT/'scripts/pr_candidate_services.py')]
@@ -1071,12 +1071,13 @@ class Completion:
                                   'B_VIEW' if request['method']=='PR_PAULI' else 'DF_Q3_VIEW')))
                 if request.get('horizon_parent'):
                     intake['M'] = request['M']
-                return self.service('intake',intake,d)
+                return self.service('intake',intake,d,tag='DF_HORIZON_INTAKE' if request.get('horizon_parent') else None)
             def signal_work():
                 if rec.get('signal') and rec.get('intake'):
                     return rec['signal']
                 return (self.pauli_signals(config,prepared,d)if request['method']=='PR_PAULI'
-                        else self.df_signals(config,cref,d,descriptor,plan=df_plan,bundles=df_bundles))
+                        else self.df_signals(config,cref,d,descriptor,plan=df_plan,bundles=df_bundles,
+                                             horizon_parent=request.get('horizon_parent')))
             # Both branches depend on the frozen configuration, not on each
             # other's numerical result. They share host slots through the
             # executor rather than independently reserving CPU resources.
@@ -1410,7 +1411,7 @@ class Completion:
         except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
             return None
 
-    def df_signals(self,config,cref,d,descriptor,*,plan,bundles):
+    def df_signals(self,config,cref,d,descriptor,*,plan,bundles,horizon_parent=None):
         result=dict(rows=[],new_provider_calls=0);obtained={}
         obtained_request = None
         terminal = plan.get('terminal_reference')
@@ -1445,27 +1446,109 @@ class Completion:
             obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
             if terminal and obtained:
                 obtained_request = dict(commit=input_commit, path=rel(inp))
-        staged = d/('df_carrier-reconciled' if repair else 'df_carrier')
+        if repair:
+            staged, stage_tag = d/'df_carrier-reconciled', 'DF_TERMINAL_STAGE_RECONCILED'
+        elif horizon_parent:
+            staged, stage_tag = d/'df_carrier-horizon', 'DF_HORIZON_STAGE'
+        else:
+            staged, stage_tag = d/'df_carrier', None
         stage_inputs = dict(configuration=cref, directory=rel(staged), obtained=obtained,
                             tail_descriptor=descriptor, saved_bundles=bundles, terminal_reference=terminal)
         if obtained_request is not None:
             stage_inputs['obtained_request'] = obtained_request
-        stage_tag = 'DF_TERMINAL_STAGE_RECONCILED' if repair else None
+        if horizon_parent is not None:
+            stage_inputs['horizon_parent'] = horizon_parent
         st=self.service('df-stage',stage_inputs,d,tag=stage_tag)
         if st['status']!='CARRIERS_READY':raise Held('DF_CARRIER:'+str(st))
         carrier=publish([d],'Fix unified DF raw carrier')
         configref=dict(commit=carrier,path=rel(staged/'CONFIGURATION.json'))
-        self.service('df-bundle',dict(configuration_source=configref,tail_descriptor=descriptor,
+        bundle_inputs = dict(configuration_source=configref,tail_descriptor=descriptor,
             saved_bundles=bundles,terminal_reference=terminal,
             raw_sources={str(row['m']):dict(commit=carrier,path=rel(staged/'raw'/('m'+str(row['m'])+'.json')))
-                         for row in config['rounds']}),d)
+                         for row in config['rounds']})
+        bundle_tag = 'DF_HORIZON_BUNDLE' if horizon_parent else 'df-bundle'
+        if horizon_parent:
+            bundle_inputs['horizon_parent'] = horizon_parent
+        self.service('df-bundle',bundle_inputs,d,tag=bundle_tag)
         pub=publish([d],'Assemble DF bundle for normal intake')
         signals = dict(status='SIGNALS_READY', configuration_source=configref,
-                       packet_source=dict(commit=pub,path=rel(d/'df-bundle.json')),
+                       packet_source=dict(commit=pub,path=rel(d/(bundle_tag+'.json'))),
                        new_signal_calls=0 if repair else result.get('new_provider_calls'))
         if repair:
             signals['reused_signal_job_id'] = repair['job_id']
         return signals
+
+    @staticmethod
+    def horizon_parent_bound(record):
+        parent = record.get('request', {}).get('horizon_parent')
+        if not parent:
+            return True
+        packet = value(record['intake']['signal_packet'])
+        prefix = value(parent['signal_packet'])
+        return len(packet['means']) == len(prefix['means'])+1 and all(
+            old['m'] == new['m'] and (
+                old['normalization']['source'] == new['normalization']['source']
+                or (new.get('horizon_origin') == old['source']
+                    and new['normalization']['source'] == new['source']))
+            for old, new in zip(prefix['means'], packet['means']))
+
+    def horizon_q3_owner(self, configuration_id):
+        executor = self.stage_executor.executor
+        for run in dict.fromkeys((Path(executor.run_dir), *map(Path, getattr(executor, 'prior_run_dirs', ())))):
+            database = run/'distributed/QUEUE.sqlite3'
+            if database.is_file():
+                try:
+                    with sqlite3.connect(database.resolve().as_uri()+'?mode=ro', uri=True, timeout=2) as db:
+                        if db.execute("""SELECT 1 FROM jobs WHERE method='PR_DF' AND
+                                  (state != 'CANCELLED' OR attempt_id IS NOT NULL) AND
+                                  json_extract(request, '$.configuration_id')=? LIMIT 1""",
+                                      (configuration_id,)).fetchone():
+                            return True
+                except sqlite3.Error as error:
+                    raise Held(f'DF_HORIZON_Q3_OWNERSHIP_UNAVAILABLE:{run.name}:{error}') from error
+            for launcher in (run/'jobs/PR_DF').glob('*/LAUNCH.json'):
+                if read(launcher.with_name('REQUEST.json')).get('configuration_id') == configuration_id:
+                    return True
+        return False
+
+    def recover_horizon_signal(self, record):
+        """Rebind a saved ready packet to its own parent without invoking a provider."""
+        if self.horizon_parent_bound(record):
+            return record
+        directory = (ROOT/record['directory']).resolve()
+        if (not directory.is_relative_to(self.directory.resolve())
+                or self.horizon_q3_owner(record['configuration_id'])):
+            raise Held('DF_HORIZON_PREFIX_UNBOUND_EXISTING_Q3_OWNER')
+        request = record['request']
+        parent = request['horizon_parent']
+        configuration, packet = intake_locators(record)
+        d = directory/'horizon-prefix-rebind'
+        carrier = d/'carrier'
+        args = dict(horizon_parent=parent, tail_descriptor=record.get('deferred_tail_descriptor'),
+                    terminal_reference=request['terminal_reference'])
+        stage = self.service('df-rebind-horizon', dict(args, configuration_source=configuration,
+                             packet=packet, directory=rel(carrier)), d)
+        if stage['status'] != 'CARRIERS_READY':
+            raise Held('DF_HORIZON_PREFIX_REBIND_INCOMPLETE')
+        source = publish([d], 'Fix saved DF horizon carrier provenance')
+        config = dict(commit=source, path=rel(carrier/'CONFIGURATION.json'))
+        raw = {str(m):dict(commit=source, path=rel(carrier/'raw'/f'm{m}.json'))
+               for m in range(request['M']+1)}
+        self.service('df-bundle', dict(args, configuration_source=config, raw_sources=raw), d)
+        bundle = publish([d], 'Bind saved DF horizon packet to its fixed parent')
+        signals = dict(record['signal'], configuration_source=config,
+                       packet_source=dict(commit=bundle, path=rel(d/'df-bundle.json')), new_signal_calls=0)
+        intake = self.service('intake', dict(method='PR_DF', configuration=config,
+                              packet=signals['packet_source'], view=str(self.path('DF_Q3_VIEW')), M=request['M']), d)
+        revised = dict(record, signal=signals, intake=intake,
+                       previous_horizon_intake=dict(signal=record['signal'], intake=record['intake']))
+        if not self.horizon_parent_bound(revised):
+            raise Held('DF_HORIZON_PREFIX_REBIND_DOES_NOT_MATCH_PARENT')
+        revised.pop('installation_hold', None)
+        with self.lock:
+            self.state['records'][record['key']] = revised
+            self.save()
+        return revised
 
     def initial_quote(self,config,cref,d):
         registry=d/'PRICE_RULES.json'
@@ -2134,6 +2217,8 @@ class Completion:
                 continue
             try:
                 configuration, packet = intake_locators(rec)
+                if not self.horizon_parent_bound(rec):
+                    raise ValueError('DF_HORIZON_PREFIX_REBIND_REQUIRED')
             except (KeyError, ValueError, subprocess.CalledProcessError) as error:
                 rec['installation_hold'] = str(error)
                 continue

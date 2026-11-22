@@ -152,6 +152,8 @@ def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_re
                 write(path,request)
             record = completion.complete(request, existing_signal_only=existing_owner,
                                          saved_packets=prior_owners.get(parent, ()))
+            if record['status'] == 'READY_FOR_SEARCH':
+                record = completion.recover_horizon_signal(record)
             job_id = record.get('pending_preparation_job')
             report = dict(status=record['status'], reason=record.get('reason'), key=record['key'])
             if signal_job := record.get('horizon_signal_job') or job_id:

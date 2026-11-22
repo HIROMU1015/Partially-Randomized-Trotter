@@ -78,14 +78,14 @@ DF_DECLARATION_FIELDS = frozenset({
 })
 
 
+def df_exact_json(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
+
+
 def df_record_differences(left, right):
     fields = (left.keys() | right.keys()) - DF_DECLARATION_FIELDS
-
-    def exact(value):
-        return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
-
     return {key for key in fields if key not in left or key not in right
-            or exact(left[key]) != exact(right[key])}
+            or df_exact_json(left[key]) != df_exact_json(right[key])}
 
 
 def fixed_locator(ref):
@@ -267,6 +267,127 @@ def stage_df_signals(entry, configuration, output, obtained, obtained_request=No
     return result
 
 
+def checked_df_packet_records(entry, configuration, packet):
+    """Check every saved mean against its own canonical job and immutable raw."""
+    from trottertracks.pr_df_signal_entry import mean_from_record
+
+    jobs = entry.runtime.jobs(configuration)
+    if (packet['configuration_id'] != configuration['id']
+            or [mean['m'] for mean in packet['means']] != list(range(len(jobs)))):
+        raise ValueError('DF packet differs from its fixed configuration')
+    records = {}
+    for job, physical_round, mean in zip(jobs, configuration['rounds'], packet['means']):
+        source = mean['source']
+        if not fixed_locator(source):
+            raise ValueError(f"DF packet round {job['m']} lacks a fixed raw source")
+        record = entry.reader.read(source)
+        entry._check_record(record, job)
+        numeric = mean_from_record(physical_round, record, source, packet['target'])
+        if (df_exact_json({k: value for k, value in mean.items() if k != 'horizon_origin'}) != df_exact_json(numeric)
+                or mean.get('horizon_origin') != record.get('horizon_origin')):
+            raise ValueError(f"DF packet round {job['m']} differs from its raw record")
+        records[job['m']] = (source, record)
+    return records
+
+
+def checked_df_horizon_parent(entry, configuration, horizon_parent):
+    parent_locator = horizon_parent['configuration']
+    packet_locator = horizon_parent['signal_packet']
+    if not all(map(fixed_locator, (parent_locator, packet_locator))):
+        raise ValueError('DF horizon needs fixed parent configuration and signal locators')
+    parent = entry.reader.read(parent_locator)
+    packet = entry.reader.read(packet_locator)
+    comparable = deepcopy(configuration['spec'])
+    if comparable.get('M') != 13 or parent['spec']['M'] != 12:
+        raise ValueError('DF horizon requires the twelve-to-thirteen round extension')
+    comparable['M'] = 12
+    if comparable.get('A_input', {}).get('M') == 13:
+        comparable['A_input']['M'] = 12
+    if df_exact_json(comparable) != df_exact_json(parent['spec']) or configuration['id'] == parent['id']:
+        raise ValueError('DF horizon changed its declared parent configuration')
+    prefix = checked_df_packet_records(entry, parent, packet)
+    jobs = entry.runtime.jobs(configuration)
+    if (list(prefix) != list(range(13)) or [job['m'] for job in jobs] != list(range(14))
+            or any(entry.physical_key(record) != entry.physical_key(jobs[m])
+                   for m, (_, record) in prefix.items())):
+        raise ValueError('DF horizon changed its declared parent physical prefix')
+    return packet, prefix
+
+
+def stage_df_horizon(entry, configuration, output, obtained, obtained_request, horizon_parent, saved_child=None):
+    parent_packet, prefix = checked_df_horizon_parent(entry, configuration, horizon_parent)
+    original_plan = entry.plan
+    plan = original_plan(configuration)
+    origin = {}
+    child = None
+    if saved_child is not None:
+        if not fixed_locator(saved_child):
+            raise ValueError('DF horizon repair needs a fixed saved child packet')
+        packet = entry.reader.read(saved_child)
+        if df_exact_json(packet['target']) != df_exact_json(parent_packet['target']):
+            raise ValueError('Saved DF horizon changed the parent target')
+        child = checked_df_packet_records(entry, configuration, packet)
+    for row in plan['rounds']:
+        m = row['m']
+        if m not in prefix:
+            if child is None:
+                continue
+            source, record = child[m]
+            if row['decision'] == 'UNSUPPORTED' or row['physical_key'] != entry.physical_key(record):
+                raise ValueError('Saved DF terminal round no longer matches its fixed physical request')
+            if row['decision'] == 'REUSE' and row['saved']['source'] != source:
+                saved_source = row['saved']['source']
+                differences = df_record_differences(record, entry.reader.read(saved_source))
+                if differences:
+                    evidence = dict(m=m, child=source, saved=saved_source, differing_fields=sorted(differences))
+                    raise ValueError('DF_HORIZON_TERMINAL_CONFLICT: '+json.dumps(evidence, sort_keys=True))
+        else:
+            source, record = prefix[m]
+            if row['decision'] == 'UNSUPPORTED' or row['physical_key'] != entry.physical_key(record):
+                raise ValueError(f'Unsupported or changed DF prefix round m={m}')
+            saved = child[m] if child is not None else (
+                (row['saved']['source'], entry.reader.read(row['saved']['source']))
+                if row['decision'] == 'REUSE' and row['saved']['source'] != source else None)
+            if saved is not None:
+                differences = df_record_differences(record, saved[1])
+                if differences or saved[1].get('horizon_origin', source) != source:
+                    evidence = dict(m=m, parent=source, saved=saved[0], differing_fields=sorted(differences))
+                    raise ValueError('DF_HORIZON_PREFIX_CONFLICT: '+json.dumps(evidence, sort_keys=True))
+            origin[(source['commit'], source['path'])] = source
+        row.update(decision='REUSE', saved=dict(source=source))
+        row.pop('request', None)
+    plan['counts'] = {name: sum(row['decision'] == name for row in plan['rounds']) for name in plan['counts']}
+    entry.plan = lambda _: deepcopy(plan)
+    reader = entry.reader.read
+
+    def read_carrier(source):
+        record = reader(source)
+        key = (source['commit'], source['path'])
+        return dict(record, horizon_origin=source) if origin.get(key) == source else record
+
+    entry.reader.read = read_carrier
+    try:
+        return stage_df_signals(entry, configuration, output, obtained, obtained_request)
+    finally:
+        entry.reader.read = reader
+        entry.plan = original_plan
+
+
+def assemble_df_horizon(entry, configuration_source, raw_sources, horizon_parent):
+    configuration = entry.reader.read(configuration_source)
+    parent, prefix = checked_df_horizon_parent(entry, configuration, horizon_parent)
+    packet = entry.assemble(configuration_source, raw_sources)
+    if df_exact_json(packet['target']) != df_exact_json(parent['target']):
+        raise ValueError('DF horizon changed the parent target')
+    for mean in packet['means'][:13]:
+        source, original = prefix[mean['m']]
+        carrier = entry.reader.read(mean['source'])
+        if carrier.get('horizon_origin') != source or df_record_differences(carrier, original):
+            raise ValueError(f"DF horizon carrier differs from its declared parent at m={mean['m']}")
+        mean['horizon_origin'] = source
+    return packet
+
+
 def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=None,terminal_reference=None):
     # Same fixed entry as326fe; no source edits to its canonical/provider contracts.
     sys.path.insert(0,str(DF_VIEW/'src'))
@@ -445,7 +566,7 @@ def df_price_disposition(config, quote, runner):
 
 def main():
     global DF_VIEW,SIGNAL_VIEW
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=('df-generate','df-plan','df-stage','df-bundle','df-price-design','pauli-price-plan','quote','intake'))
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=('df-generate','df-plan','df-stage','df-rebind-horizon','df-bundle','df-price-design','pauli-price-plan','quote','intake'))
     p.add_argument('--input',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();r=json.loads(a.input.read_text())
     # Deployment paths only. Existing provider SOURCE/hash/runtime guards still
     # validate each relocated checkout and descriptor before scientific work.
@@ -463,11 +584,20 @@ def main():
         config=read(r['configuration']);value=signal_entry(config).plan(config)
     elif a.mode=='df-stage':
         config = read(r['configuration'])
-        value = stage_df_signals(signal_entry(config), config, ROOT/r['directory'],
-                                 {int(m):v for m,v in r.get('obtained',{}).items()},
-                                 r.get('obtained_request'))
+        obtained = {int(m): source for m, source in r.get('obtained', {}).items()}
+        arguments = (signal_entry(config), config, ROOT/r['directory'], obtained, r.get('obtained_request'))
+        parent = r.get('horizon_parent')
+        value = stage_df_horizon(*arguments, parent) if parent else stage_df_signals(*arguments)
+    elif a.mode=='df-rebind-horizon':
+        config = read(r['configuration_source'])
+        value = stage_df_horizon(signal_entry(config), config, ROOT/r['directory'], {}, None,
+                                 r['horizon_parent'], saved_child=r['packet'])
     elif a.mode=='df-bundle':
-        config=read(r['configuration_source']);value=signal_entry(config).assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
+        configuration = r['configuration_source']
+        entry = signal_entry(read(configuration))
+        raw = {int(m): source for m, source in r['raw_sources'].items()}
+        parent = r.get('horizon_parent')
+        value = assemble_df_horizon(entry, configuration, raw, parent) if parent else entry.assemble(configuration, raw)
     elif a.mode=='df-price-design':
         spec=importlib.util.spec_from_file_location('_df_candidate_price_design',ROOT/'scripts/run_pr_df_candidate_prices.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)

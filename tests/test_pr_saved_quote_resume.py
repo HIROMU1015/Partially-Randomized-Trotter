@@ -128,6 +128,53 @@ class SavedQuotes(unittest.TestCase):
             service.stage_df_signals(entry, config, None, {13: obtained}, loc('request'))
         self.assertEqual(calls, [{}])
 
+    def test_df_horizon_repair_keeps_all_parent_origins_and_the_saved_terminal(self):
+        spec = importlib.util.spec_from_file_location('_df_prefix_service', ROOT/'scripts/pr_candidate_services.py')
+        service = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(service)
+
+        def source(path):
+            return dict(commit='a'*40, path=path)
+
+        parent = {m: (source(f'parent-{m}'), dict(key=str(m), signal=m)) for m in range(13)}
+        child = {m: (source(f'child-{m}'), dict(record)) for m, (_, record) in parent.items()}
+        child[13] = (source('child-13'), dict(key='13', signal=13))
+        config = dict(id='M13')
+        plan = dict(counts={'REUSE': 0, 'REQUEST': 14, 'UNSUPPORTED': 0},
+                    rounds=[dict(m=m, decision='REQUEST', physical_key=str(m)) for m in range(14)])
+        values = {loc['path']: record for loc, record in (*parent.values(), *child.values())}
+        values.update(packet=dict(target='same'), configuration=config)
+        staged = {}
+
+        def stage(configuration, output, *, obtained):
+            self.assertFalse(obtained)
+            for row in entry.plan(configuration)['rounds']:
+                self.assertEqual(row['decision'], 'REUSE')
+                original = row['saved']['source']
+                staged[row['m']] = entry.reader.read(original)
+            return dict(status='CARRIERS_READY')
+
+        entry = SimpleNamespace(reader=SimpleNamespace(read=lambda loc: values[loc['path']]),
+                                plan=lambda _: deepcopy(plan), physical_key=lambda record: record['key'],
+                                stage=stage)
+        with patch.object(service, 'checked_df_horizon_parent', return_value=(dict(target='same'), parent)), \
+             patch.object(service, 'checked_df_packet_records', return_value=child):
+            result = service.stage_df_horizon(entry, config, None, {}, None, {}, saved_child=source('packet'))
+            self.assertEqual(result['status'], 'CARRIERS_READY')
+            self.assertEqual([staged[m]['horizon_origin'] for m in parent], [parent[m][0] for m in parent])
+            self.assertEqual(staged[13], child[13][1])
+            for m, record in staged.items():
+                values[f'staged-{m}'] = record
+            entry.assemble = lambda *args: dict(target='same', means=[
+                dict(m=m, source=source(f'staged-{m}')) for m in range(14)])
+            packet = service.assemble_df_horizon(entry, source('configuration'), {}, {})
+            self.assertEqual([mean['horizon_origin'] for mean in packet['means'][:13]],
+                             [parent[m][0] for m in parent])
+            self.assertNotIn('horizon_origin', packet['means'][13])
+            values['staged-0']['horizon_origin'] = child[0][0]
+            with self.assertRaisesRegex(ValueError, 'carrier differs from its declared parent at m=0'):
+                service.assemble_df_horizon(entry, source('configuration'), {}, {})
+
     def test_df_alias_reuses_only_strictly_matching_scientific_records(self):
         spec=importlib.util.spec_from_file_location('_scoped_df_service',ROOT/'scripts/pr_candidate_services.py')
         service=importlib.util.module_from_spec(spec);spec.loader.exec_module(service)
