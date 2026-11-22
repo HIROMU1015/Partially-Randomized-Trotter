@@ -3,6 +3,7 @@
 from collections import defaultdict, deque
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import contextmanager
+from dataclasses import dataclass
 import math
 import multiprocessing as mp
 from multiprocessing.connection import wait
@@ -13,7 +14,22 @@ import time
 
 GIB = 1 << 30
 CONTEXT = mp.get_context("fork")
+AXIS_OPEN, AXIS_RESERVED, AXIS_SERIAL, AXIS_PARALLEL = range(4)
 _price_phases = None
+_axis_slot = None
+
+
+@dataclass
+class ActivePrice:
+    process: object
+    connection: object
+    profile: tuple
+    memory: int
+    path: Path
+    axis_slot: object
+    pair_memory: int
+    extra_memory: int = 0
+    extra_cpu: int = 0
 
 
 def price_size(cell, block_bound, stages):
@@ -38,6 +54,24 @@ def reserved_bytes(forecast, measured, successful, running):
     return max(forecast * (2 if running and not successful else 1), math.ceil(measured * 1.5))
 
 
+def peak_rss():
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
+
+
+def record_price_phase(name, seconds, rss):
+    if _price_phases is not None:
+        _price_phases[name] = (seconds, rss)
+
+
+def use_spare_axis():
+    if _axis_slot is None:
+        return False
+    with _axis_slot.get_lock():
+        parallel = _axis_slot.value == AXIS_RESERVED
+        _axis_slot.value = AXIS_PARALLEL if parallel else AXIS_SERIAL
+        return parallel
+
+
 @contextmanager
 def price_phase(name):
     if _price_phases is None:
@@ -45,12 +79,13 @@ def price_phase(name):
         return
     began = time.monotonic()
     yield
-    _price_phases[name] = (time.monotonic() - began, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024)
+    record_price_phase(name, time.monotonic() - began, peak_rss())
 
 
-def measured_price(connection, execute, task):
-    global _price_phases
+def measured_price(connection, execute, task, axis_slot):
+    global _price_phases, _axis_slot
     _price_phases = {}
+    _axis_slot = axis_slot
     with connection:
         cpu_start = time.process_time()
         error = None
@@ -58,8 +93,9 @@ def measured_price(connection, execute, task):
             execute(task)
         except Exception as failure:
             error = f"{type(failure).__name__}: {failure}"[:1024]
-        rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
-        connection.send((error, rss, time.process_time() - cpu_start, _price_phases))
+        child = resource.getrusage(resource.RUSAGE_CHILDREN)
+        cpu = time.process_time() - cpu_start + child.ru_utime + child.ru_stime
+        connection.send((error, peak_rss(), cpu, _price_phases))
 
 
 def result(process, connection):
@@ -75,16 +111,21 @@ def result(process, connection):
         process.close()
 
 
-def current_rss(process):
+def current_rss(pid, include_children=False):
+    rss = 0
+    directory = Path(f"/proc/{pid}")
     try:
-        value = next(line for line in Path(f"/proc/{process.pid}/status").read_text().splitlines()
-                     if line.startswith("VmRSS:"))
-        return int(value.split()[1]) * 1024
+        value = next(line for line in (directory / "status").read_text().splitlines() if line.startswith("VmRSS:"))
+        rss = int(value.split()[1]) * 1024
+        if include_children:
+            children = (directory / "task" / str(pid) / "children").read_text().split()
+            rss += sum(current_rss(child, True) for child in children)
     except (OSError, StopIteration):
-        return 0
+        pass
+    return rss
 
 
-def prices(jobs, execute, slots, memory, size_for, checkpoint):
+def prices(jobs, execute, slots, memory, size_for, checkpoint, pair_memory_for=None):
     grouped = defaultdict(list)
     for job in jobs:
         size = size_for(job[1])
@@ -105,16 +146,17 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
     reserved = 0
     errors = {}
     completed = 0
-    peak_workers = peak_reserved = 0
+    peak_workers = peak_reserved = peak_worker_rss = 0
+    extra_cpu = parallel_completed = 0
     cpu_seconds = 0.
     begin = time.monotonic()
     next_checkpoint = begin
 
     try:
         while profiles or active:
-            overrun = sum(max(0, current_rss(process) - need)
-                          for process, _, _, need, _ in active.values())
-            while profiles and len(active) < slots:
+            overrun = sum(max(0, current_rss(job.process.pid, bool(job.extra_cpu))
+                              - job.memory - job.extra_memory) for job in active.values())
+            while profiles and len(active) + extra_cpu < slots:
                 free = memory - reserved - overrun
                 selected = None
                 active_short = sum(in_profile[profile] for profile in short)
@@ -134,8 +176,10 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
                 task = pending[profile].popleft()
                 if not pending[profile]:
                     profiles.remove(profile)
+                pair_memory = pair_memory_for(task[1]) if pair_memory_for else 0
+                axis_slot = CONTEXT.Value("b", AXIS_OPEN) if pair_memory else None
                 read_end, write_end = CONTEXT.Pipe(duplex=False)
-                process = CONTEXT.Process(target=measured_price, args=(write_end, execute, task))
+                process = CONTEXT.Process(target=measured_price, args=(write_end, execute, task, axis_slot))
                 try:
                     process.start()
                 except BaseException:
@@ -143,21 +187,45 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
                     raise
                 finally:
                     write_end.close()
-                active[process.sentinel] = process, read_end, profile, need, task[3]
+                active[process.sentinel] = ActivePrice(process, read_end, profile, need, task[3], axis_slot, pair_memory)
                 in_profile[profile] += 1
                 reserved += need
                 peak_workers = max(peak_workers, len(active))
                 peak_reserved = max(peak_reserved, reserved)
 
+            # All ordinary work is in flight before reserving a second axis.
+            # That keeps the extra CPU and its memory out of the path queue.
+            if not profiles and len(active) + extra_cpu < slots:
+                for job in active.values():
+                    if job.axis_slot is None or len(active) + extra_cpu >= slots:
+                        continue
+                    extra = max(0, job.pair_memory - job.memory)
+                    if extra + reserved + overrun > memory:
+                        continue
+                    with job.axis_slot.get_lock():
+                        if job.axis_slot.value == AXIS_OPEN:
+                            job.extra_memory, job.extra_cpu = extra, 1
+                            reserved += extra
+                            extra_cpu += 1
+                            peak_reserved = max(peak_reserved, reserved)
+                            job.axis_slot.value = AXIS_RESERVED
+
             for sentinel in wait(active, timeout=10):
-                process, connection, profile, need, path = active.pop(sentinel)
-                error, rss, cpu, phases = result(process, connection)
-                reserved -= need
-                in_profile[profile] -= 1
+                job = active.pop(sentinel)
+                error, rss, cpu, phases = result(job.process, job.connection)
+                reserved -= job.memory + job.extra_memory
+                extra_cpu -= job.extra_cpu
+                in_profile[job.profile] -= 1
                 cpu_seconds += cpu
-                observed[profile] = max(observed[profile], rss)
+                peak_worker_rss = max(peak_worker_rss, rss, max((p for _, p in phases.values()), default=0))
+                parallel = job.axis_slot is not None and job.axis_slot.value == AXIS_PARALLEL
+                if not parallel:
+                    observed[job.profile] = max(observed[job.profile], rss)
                 if error is None:
-                    successes[profile] += 1
+                    if parallel:
+                        parallel_completed += 1
+                    else:
+                        successes[job.profile] += 1
                     for name, (seconds, peak) in phases.items():
                         stats = by_phase.setdefault(name, dict(tasks=0, wall_seconds=0., peak_rss_bytes=0))
                         stats["tasks"] += 1
@@ -165,19 +233,19 @@ def prices(jobs, execute, slots, memory, size_for, checkpoint):
                         stats["peak_rss_bytes"] = max(stats["peak_rss_bytes"], peak)
                     completed += 1
                 else:
-                    errors[path.name] = error
+                    errors[job.path.name] = error
 
             now = time.monotonic()
             if now >= next_checkpoint or not active and not profiles:
                 checkpoint(dict(phase="price", done=completed, errors=len(errors), active=len(active),
                     worker_limit=slots, peak_workers=peak_workers, cpu_seconds=cpu_seconds,
                     wall_seconds=now-begin, memory_budget=memory, reserved_bytes=reserved,
-                    peak_reserved_bytes=peak_reserved, peak_worker_rss_bytes=max(observed.values(), default=0),
-                    phase_metrics=by_phase))
+                    peak_reserved_bytes=peak_reserved, peak_worker_rss_bytes=peak_worker_rss,
+                    extra_axis_cpus=extra_cpu, completed_parallel_prices=parallel_completed, phase_metrics=by_phase))
                 next_checkpoint = now + 30
     finally:
-        for process, connection, _, _, _ in active.values():
-            result(process, connection)
+        for job in active.values():
+            result(job.process, job.connection)
     return errors
 
 

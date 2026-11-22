@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 import sys
+import time
 
 import h6_preparation_pool as pool
 from h6_scope import FORMULAS, calibration_design, case_rows, digest, exact, read, rounds
@@ -169,6 +170,14 @@ def signal(cell):
     return dict(candidate=cell, signal={"raw": {"real": z.real, "imag": z.imag}})
 
 
+def measured_pair_memory(cell):
+    # The separate PBS comparison measured these two PR-DF circuit shapes.
+    settings = (cell["method"], cell["formula"], cell["prefix"], cell["K"], cell["q"], cell["T"])
+    if settings == ("PR", "2nd", 4, 2, 7, 3.2) and cell["R_outer"] in (169, 337):
+        return 8 * pool.GIB  # 4.98 GiB observed peak plus 50% headroom, rounded up.
+    return 0
+
+
 def price(cell, index, cohort):
     from h6_price_acceleration import PriceFingerprints, fingerprint_context, hadamard_wrapper, reuse_sampled_events
     from trotterlib.rte import CompilerSettings
@@ -188,16 +197,29 @@ def price(cell, index, cohort):
             evolution = STATE.pieces[cell["prefix"]].assemble(
                 cell, STATE.helpers["core"], requests, scalar(cell), fp.prepare,
             )
-        for axis, native in (("X", "cosine"), ("Y", "sine")):
-            with pool.price_phase(f"compile_{axis}"):
-                wrapper = hadamard_wrapper(evolution.circuit, native)
-                cost = transpile_and_measure_cost(wrapper, compiler, actual_circuit_fingerprint=fp.axes[native])
-                if (cost.compiler_settings_hash != STATE.compiler or session.fingerprint(wrapper) != fp.axes[native]
-                        or cost.rz_count <= 0):
-                    raise ValueError("Compiled H6 receipt fails compiler, fingerprint or price binding")
-                result[axis] = dict(rz=cost.rz_count, fingerprint=fp.axes[native],
-                    metrics={key: getattr(cost, key) for key in ("rz_depth", "cx_count", "cx_depth", "total_depth", "circuit_size")})
-                del cost, wrapper
+        def compile_axis(native, _directory, evolution, fp):
+            began = time.monotonic()
+            wrapper = hadamard_wrapper(evolution.circuit, native)
+            cost = transpile_and_measure_cost(wrapper, compiler, actual_circuit_fingerprint=fp.axes[native])
+            if (cost.compiler_settings_hash != STATE.compiler or session.fingerprint(wrapper) != fp.axes[native]
+                    or cost.rz_count <= 0):
+                raise ValueError("Compiled H6 receipt fails compiler, fingerprint or price binding")
+            receipt = dict(rz=cost.rz_count, fingerprint=fp.axes[native],
+                metrics={key: getattr(cost, key) for key in ("rz_depth", "cx_count", "cx_depth", "total_depth", "circuit_size")})
+            return receipt, time.monotonic() - began, pool.peak_rss()
+
+        axes = (("X", "cosine"), ("Y", "sine"))
+        if pool.use_spare_axis():
+            from unittest.mock import patch
+            import run_h6_df19_price_v2_q4 as fork_axes
+
+            with patch.object(fork_axes, "price_axis", compile_axis):
+                prices = fork_axes.parallel_axes(None, evolution, fp)
+        else:
+            prices = {native: compile_axis(native, None, evolution, fp) for _, native in axes}
+        for axis, native in axes:
+            result[axis], seconds, rss = prices[native]
+            pool.record_price_phase(f"compile_{axis}", seconds, rss)
     events = [request.rte_occurrence.events for request in requests]
     return dict(candidate=cell, index=index, cohort=cohort, axes=result, compiler=STATE.compiler,
                 preparation_hash=prep.preparation_hash, seeds=seeds, laws=laws, events=events)
@@ -373,7 +395,8 @@ def collect_owned(scope, assets, run, signal_workers, price_workers, price_memor
         return pool.price_size(cell, STATE.pieces[cell["prefix"]].bound, FORMULAS[cell["formula"]])
 
     errors = pool.signals(signal_jobs, execute, signal_workers, checkpoint)
-    errors.update(pool.prices(price_jobs, execute, price_workers, price_memory, size, checkpoint))
+    errors.update(pool.prices(price_jobs, execute, price_workers, price_memory, size, checkpoint,
+                              pair_memory_for=measured_pair_memory))
     write(run / "PREPARATION_ERRORS.json", errors)
     return 0
 

@@ -100,6 +100,32 @@ def test_price_memory_learning_requires_two_successful_measurements():
     assert pool.reserved_bytes(forecast, high, 2, 1) == 12 * pool.GIB
 
 
+@pytest.mark.parametrize(("slots", "memory_gib", "pair_gib", "grant"), [
+    (4, 12, 8, True),
+    (3, 12, 8, False),
+    (4, 5, 8, False),
+    (8, 4, 2, False),
+])
+def test_second_axis_uses_only_spare_cpu_and_memory(tmp_path, slots, memory_gib, pair_gib, grant):
+    import time
+    import h6_preparation_pool as pool
+
+    jobs = [("price", {"size": shape, "eligible": i == 0}, i, tmp_path / f"{i}.json", "fixture")
+            for i, shape in enumerate(((0, 1 << 13), (1024, 0), (512, 0)))]
+    memory = memory_gib * pool.GIB
+    metrics = []
+
+    def execute(job):
+        time.sleep(0.08 if job[1]["eligible"] else 0.18)
+        write(job[3], {"pair": pool.use_spare_axis()})
+
+    assert not pool.prices(jobs, execute, slots, memory, lambda c: c["size"], metrics.append,
+                           pair_memory_for=lambda c: pair_gib * pool.GIB if c["eligible"] else 0)
+    assert [read(job[3])["pair"] for job in jobs] == [grant, False, False]
+    assert metrics[-1]["completed_parallel_prices"] == int(grant)
+    assert metrics[-1]["peak_reserved_bytes"] <= memory
+
+
 def test_scoped_price_archive_preserves_events_and_price_reuse(tmp_path, monkeypatch):
     import hashlib
     import json
@@ -181,7 +207,7 @@ def test_scope_continuation_keeps_old_events_and_seeds_without_rerunning_complet
         seen.append((candidate, index, cohort))
         return dict(original, index=index, cohort=cohort, events=[])
 
-    def execute_all(jobs, execute, *args):
+    def execute_all(jobs, execute, *args, **kwargs):
         for job in jobs:
             execute(job)
         return {}
