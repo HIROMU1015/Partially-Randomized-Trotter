@@ -1,4 +1,5 @@
 """Extend admitted PF parents through the normal signal queue and price registry."""
+from copy import deepcopy
 from hashlib import sha256
 import json
 import os
@@ -11,6 +12,9 @@ from types import SimpleNamespace
 from .pf_distributed_preparation import git, read
 from .pr_price_rules import GitReader
 from .rpe_release_registry import write
+
+PF_Q3_CONTRACT = ('b4296b110b129d226dbef2743c14f725a27c3bf6',
+                  'docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json')
 
 
 def parent_entry(candidate):
@@ -127,6 +131,119 @@ def collected_signal(owners, parent, output):
     return prior, job
 
 
+def _same_saved_document(reader, left, right):
+    """Require exact selected JSON, including type and numeric representation."""
+    if dict(left, selector=left.get('selector', [])) == dict(right, selector=right.get('selector', [])):
+        return True
+    return json.dumps(reader.read(left), sort_keys=True) == json.dumps(reader.read(right), sort_keys=True)
+
+
+def parent_q3_contract(reader, route, entry, config):
+    """Reuse an admitted case's evaluator or the ordinary PF template contract."""
+    from run_rpe_optimizer_q3_job import CONTRACT, DROP, git_json
+
+    fields = ('kernel_source', 'C_source', 'acceleration') + CONTRACT
+    parent = config['id']
+    radii = [1.0] * len(config['rounds'])
+
+    def fixed_inputs(template, *, price_policy):
+        if template['options']['phase_radii'] != radii:
+            raise ValueError('Parent Q3 template differs from its fixed phase radii')
+        inputs = {key: deepcopy(template[key]) for key in fields}
+        if price_policy and 'price_policy' in template:
+            inputs['price_policy'] = deepcopy(template['price_policy'])
+        return inputs
+
+    template_loc = entry.get('q3_inputs')
+    if template_loc:
+        templates = [reader.read(template_loc)]
+    else:
+        templates = [git_json(Path(route['view']), loc) for loc in route['templates']]
+    matches = []
+    for template in templates:
+        for case in template['cases']:
+            ids = {case[key] for key in ('configuration_id', 'original_configuration_id') if case.get(key)}
+            if parent not in ids:
+                continue
+            if ids != {parent} or any(not _same_saved_document(reader, case[key], entry[key])
+                                      for key in ('configuration', 'signal_packet')):
+                raise ValueError('Parent Q3 template refers to different fixed candidate evidence')
+            scientific_case = {key: val for key, val in case.items()
+                               if key not in DROP | {'configuration', 'signal_packet', 'original_configuration_id'}}
+            scientific_case['configuration_id'] = parent
+            matches.append((fixed_inputs(template, price_policy=True), scientific_case))
+    if matches:
+        first = matches[0]
+        if any(match != first for match in matches[1:]):
+            raise ValueError('Saved parent Q3 cases disagree on their fixed evaluator')
+        return first[0], first[1]['evaluation_target']
+    if template_loc:
+        raise ValueError('Registered Q3 template has no case for its fixed parent')
+
+    # This is the same contract used by the native PF provider when registering
+    # a new configuration. It must already be offered by this fixed route.
+    for loc, template in zip(route['templates'], templates):
+        if (loc['commit'], loc['path']) != PF_Q3_CONTRACT or loc.get('inputs_selector'):
+            continue
+        packet = reader.read(entry['signal_packet'])
+        original = packet['target']
+        if (config['spec']['law']['model'] != 'deterministic' or packet['configuration_id'] != parent
+                or original['binding'] != config['spec']['binding']
+                or [row['m'] for row in packet['means']] != list(range(len(radii)))):
+            raise ValueError('Cannot bind the PF evaluator to a different scope or signal law')
+        targets = [case['evaluation_target'] for case in template['cases']]
+        if not targets:
+            break
+        target = targets[0]
+        if (any(other != target for other in targets)
+                or target['binding'] != original['binding']
+                or target['energy_ha'] != original['reference_solver_energy_ha']
+                or not _same_saved_document(reader, target['original_target_source'], original['source'])):
+            raise ValueError('Fixed PF evaluator target differs from the admitted signal')
+        return fixed_inputs(template, price_policy=False), deepcopy(target)
+    raise ValueError('No saved template case or registered evaluator contract for this PF parent')
+
+
+def bind_terminal_q3(root, parent, entry, routes, interpreter, leaf, reader, config):
+    """Attach the preserved terminal signal to the fixed PF evaluator."""
+    route = eligible_route(routes, entry['method'], parent)
+    view = Path(route['view'])
+    if git(view, 'rev-parse', 'HEAD') != route['view_commit']:
+        raise ValueError('Parent binding runtime differs from its fixed route')
+    template, evaluation_target = parent_q3_contract(reader, route, entry, config)
+    vault = Path(leaf['workspace'])
+    cfg_loc = leaf['configuration']
+    cfg = reader.read(cfg_loc)
+    binding_script = ('import json,sys;sys.path.insert(0,"src");'
+                      'from trottertracks import rpe_total_binding as b;'
+                      'cfg,loc=json.load(sys.stdin);v=b.create(".",cfg,original_source=loc);'
+                      'print(json.dumps([v["id"],v["total_configuration"]["id"]]))')
+    env = dict(os.environ)
+    alternate = json.dumps(str(vault/'.git'/'objects'))
+    env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(filter(None, (
+        alternate, env.get('GIT_ALTERNATE_OBJECT_DIRECTORIES'))))
+    res = subprocess.run([interpreter, '-B', '-c', binding_script], cwd=view, env=env,
+                         input=json.dumps([cfg, cfg_loc]), text=True, capture_output=True, check=True)
+    binding, total = json.loads(res.stdout)
+    template['options']['phase_radii'].append(1.0)
+    # As in the native PF register path, the optimizer replaces the displayed
+    # template allocation with the selected shot vector before Q3.
+    allocation = dict(allocation_id='UNUSED_TEMPLATE_REPLACED_BY_OPTIMIZER', shot_policy='USER_SUPPLIED',
+                      shots=[dict(m=row['m'], N_X=1, N_Y=1) for row in cfg['rounds']])
+    template.update(cases=[dict(label='PF_SEARCH_TEMPLATE_'+cfg['id'][:12], configuration=cfg_loc,
+                                configuration_id=cfg['id'], signal_packet=leaf['entry']['signal_packet'],
+                                binding_id=binding, total_view_id=total, evaluation_target=evaluation_target,
+                                allocation=allocation)],
+                    concurrent_configurations=1, maximum_scientific_calls=1)
+    tpl = vault/'Q3_INPUTS.json'
+    if tpl.exists() and read(tpl) != template:
+        raise ValueError('Previously prepared terminal Q3 template differs')
+    write(tpl, template)
+    q3 = publish(vault, root, tpl)
+    extension = dict(leaf['entry'], q3_inputs=q3, binding_id=binding, total_configuration_id=total)
+    return dict(leaf, entry=extension, signal_only=False)
+
+
 def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, owners=()):
     """Run one qualified missing signal. Reconcile the same marker on Resume."""
     from run_rpe_pf_horizon_signal import ENTRY, PROVIDER
@@ -144,6 +261,18 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
     if config['id'] != parent or config['spec']['M'] != 12 or config['spec']['binding']['system'] != 'H4':
         raise ValueError('Parent differs from qualified H4 PF horizon domain')
     parent_locs = {k:entry[k] for k in ('configuration','signal_packet')}
+    checkpoint = base/'LEAF.json'
+    if checkpoint.is_file():
+        leaf = read(checkpoint)
+        if leaf['entry']['horizon_parent'] != parent_locs:
+            raise ValueError('Collected horizon has different fixed parent inputs')
+        if leaf.get('signal_only') is not True:
+            return leaf
+        if job := leaf.get('current_run_signal_job'):
+            runtime.executor.adopt_preparation(job)
+        if stop_requested():
+            raise Held('STOP_REQUESTED')
+        return bind_terminal_q3(root, parent, entry, routes, interpreter, leaf, reader, config)
     shared = run/'pf_auto'/'horizon'/'signal-provider'
     # Called serially by the terminal producer. All parents share an immutable
     # science checkout. Each queued request has its own stable payload path.
@@ -215,49 +344,23 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
     reference = dict(publish(vault, root, ref_file), sha256=sha256(raw_reference).hexdigest())
     cfg_loc = publish(vault, root, vault/'CONFIGURATION.json')
     sig_loc = publish(vault, root, vault/'MEAN_HANDOFF.json')
-    route = eligible_route(routes, entry['method'], parent)
-    view = Path(route['view'])
-    if git(view,'rev-parse','HEAD') != route['view_commit']:
-        raise ValueError('Parent binding runtime differs from its fixed route')
-    binding_script = ('import json,sys;sys.path.insert(0,"src");'
-                      'from trottertracks import rpe_total_binding as b;'
-                      'cfg,loc=json.load(sys.stdin);v=b.create(".",cfg,original_source=loc);'
-                      'print(json.dumps([v["id"],v["total_configuration"]["id"]]))')
-    env = dict(os.environ)
-    alternate = json.dumps(str(vault/'.git'/'objects'))
-    env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(filter(None, (
-        alternate, env.get('GIT_ALTERNATE_OBJECT_DIRECTORIES'))))
-    res = subprocess.run([interpreter,'-B','-c',binding_script],cwd=view,env=env,
-        input=json.dumps([cfg,cfg_loc]),text=True,capture_output=True,check=True)
-    binding,total = json.loads(res.stdout)
-    template_loc = entry.get('q3_inputs')
-    if not template_loc:
-        from run_rpe_optimizer_q3_job import template as resolve_template
-        _, template, _ = resolve_template(view, dict(route=route, configuration_id=parent))
-    else:
-        template = reader.read(template_loc)
-    cases = [c for c in template['cases'] if (c.get('configuration_id') or c.get('original_configuration_id')) == parent]
-    radii = template['options']['phase_radii']
-    if (len(cases) != 1 or cases[0]['signal_packet'] != entry['signal_packet']
-            or cases[0]['configuration'] != entry['configuration'] or radii != [1.0]*len(config['rounds'])):
-        raise ValueError('Parent Q3 template differs from its fixed configuration, signal or radii')
-    template['options']['phase_radii'] = [*radii,1.0]
-    template['cases'] = [dict(cases[0], configuration=cfg_loc, configuration_id=cfg['id'],
-                               signal_packet=sig_loc, binding_id=binding, total_view_id=total)]
-    tpl = vault/'Q3_INPUTS.json'
-    write(tpl, template)
-    q3 = publish(vault, root, tpl)
     extension = {k:entry[k] for k in ('method','p','formula','delta_over_h')}
     if entry.get('price_scope') is not None:
         extension['price_scope'] = entry['price_scope']
-    extension.update(configuration=cfg_loc,signal_packet=sig_loc,q3_inputs=q3,binding_id=binding,
-                     total_configuration_id=total,horizon_parent=parent_locs,horizon_risk_source=M13_RISK,
+    extension.update(configuration=cfg_loc,signal_packet=sig_loc,
+                     horizon_parent=parent_locs,horizon_risk_source=M13_RISK,
                      horizon_source_configuration_id=parent)
+    leaf = dict(workspace=str(vault), relative_output='.', configuration=cfg_loc, physical_id=physical,
+                plan_sha256=sha256((vault/'PLAN.json').read_bytes()).hexdigest(), entry=extension,
+                terminal_reference=reference, signal_only=True)
     if recovered and recovered[0].resolve() == run.resolve():
-        runtime.executor.adopt_preparation(recovered[1])
-    return dict(workspace=str(vault),relative_output='.',configuration=cfg_loc,physical_id=physical,
-                plan_sha256=sha256((vault/'PLAN.json').read_bytes()).hexdigest(),entry=extension,
-                terminal_reference=reference)
+        leaf['current_run_signal_job'] = recovered[1]
+    write(checkpoint, leaf)
+    if job := leaf.get('current_run_signal_job'):
+        runtime.executor.adopt_preparation(job)
+    if stop_requested():
+        raise Held('STOP_REQUESTED')
+    return bind_terminal_q3(root, parent, entry, routes, interpreter, leaf, reader, config)
 
 
 def complete_scoped(root, runtime, candidates, methods, horizons, routes, interpreter, prior_runs,
@@ -316,11 +419,11 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
                     raise Held('Waiting for the catalog-owned terminal request')
                 selected_owners = [(run,catalog_rows), *owners]
             leaf_file = base/parent/'LEAF.json'
-            if not leaf_file.is_file():
+            leaf = read(leaf_file) if leaf_file.is_file() else None
+            if leaf is None or leaf.get('signal_only') is True:
                 leaf = produce(root, runtime, parent, entry, routes, interpreter, stop_requested, selected_owners)
                 write(leaf_file, leaf)
             else:
-                leaf = read(leaf_file)
                 if leaf['entry']['horizon_parent'] != locs:
                     raise ValueError('Collected horizon has different fixed parent inputs')
             if entry.get('prices'):

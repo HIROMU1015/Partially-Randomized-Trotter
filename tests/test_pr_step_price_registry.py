@@ -202,6 +202,22 @@ class ScopedPriceTests(unittest.TestCase):
             self.assertIsNone(rows[3,axis]['unit_price_RZ'])
             self.assertEqual(rows[3,axis]['needs'],dict(reasons=[PRICE_EXTRAPOLATION_HOLD],entry_ids=[qr],extrapolation={qr:['R']}))
             self.assertEqual(rows[4,axis]['needs']['extrapolation'],{r1:['q'],qr:['q']})
+        entry = reg.state['entries'][1]
+        price, _ = reg.api['PriceRules']._model(None, dict(entry, family=entry['domain']['family']),
+                                               reg.api['point'](cfg['rounds'][0]), 'X')
+        provenance = entry['provenance']
+        preferred = dict(registered_rule='ACTUAL_STEP:'+qr, source=provenance,
+                         unit_price_RZ=exact(price), quote=dict(commit='PARENT', path='QUOTE.json'))
+        # The prior quote only breaks a tie between currently admissible rules.
+        resolved = {(row['m'], row['axis']):row for row in reg.quote(cfg,imp,base,
+                    preferred_models={(0,'X'):preferred, (3,'X'):preferred})['rows']}
+        self.assertEqual(resolved[0,'X']['unit_price_RZ'],exact(price))
+        self.assertEqual(resolved[0,'X']['parent_price_quote'],preferred['quote'])
+        self.assertIsNone(resolved[0,'Y']['unit_price_RZ'])
+        self.assertEqual(resolved[3,'X']['needs']['reasons'],[PRICE_EXTRAPOLATION_HOLD])
+        mismatched = reg.quote(cfg,imp,base,
+            preferred_models={(0,'X'):dict(preferred,unit_price_RZ=exact(price+1))})
+        self.assertEqual(mismatched['rows'][0]['needs']['reasons'],[PRICE_SOURCE_CONFLICT])
         # Previous single-entry quotes still carry their explicit extrapolation.
         single=StepPriceRegistry(Documents(),state=dict(reg.state,entries=reg.state['entries'][1:]))
         row=single.quote(cfg,imp,base)['rows'][6]

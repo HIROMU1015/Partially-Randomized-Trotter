@@ -215,6 +215,58 @@ def bind_df_conflicts(entry, conflicts):
     entry.plan = plan
 
 
+def stage_df_signals(entry, configuration, output, obtained, obtained_request=None):
+    """Keep a saved carrier if a completed requested round proves identical."""
+    if not obtained or obtained_request is None:
+        return entry.stage(configuration, output, obtained=obtained)
+    if not fixed_locator(obtained_request):
+        raise ValueError('Obtained DF signals need their original fixed request')
+    plan = entry.plan(configuration)
+    frozen_request = entry.reader.read(obtained_request)
+    frozen_plan = frozen_request['plan']
+    if (entry.reader.read(frozen_request['configuration']) != configuration
+            or frozen_plan['configuration_id'] != plan['configuration_id']
+            or frozen_plan.get('terminal_reference') != plan.get('terminal_reference')):
+        raise ValueError('Obtained DF signals differ from their original configuration or reference')
+
+    requested = {row['m']: row for row in frozen_plan['rounds'] if row['decision'] == 'REQUEST'}
+    current = {row['m']: row for row in plan['rounds']}
+    conflicts = {row['m']: row for row in plan.get('saved_signal_conflicts', ())}
+    required = dict(obtained)
+    duplicates = []
+    for m, source in obtained.items():
+        if m in conflicts:
+            evidence = dict(conflicts[m], obtained=source)
+            raise ValueError('DF_OBTAINED_SIGNAL_CONFLICT: '+json.dumps(evidence, sort_keys=True))
+        prior, row = requested.get(m), current.get(m)
+        if (not prior or not row or not fixed_locator(source)
+                or row['decision'] not in ('REQUEST', 'REUSE')
+                or prior['physical_key'] != row['physical_key']):
+            raise ValueError(f'Unexpected obtained DF round m={m}; preserve original evidence')
+        record = entry.reader.read(source)
+        entry._check_record(record, prior['job'])
+        if (entry.physical_key(record) != prior['physical_key']
+                or record['reference_source'] != prior['request']['reference']['source']):
+            raise ValueError(f'Obtained DF round m={m} differs from its fixed physical request or reference')
+        if row['decision'] == 'REQUEST':
+            continue
+        saved_source = row['saved']['source']
+        saved = entry.reader.read(saved_source)
+        if entry.physical_key(saved) != row['physical_key']:
+            raise ValueError(f'Saved DF round m={m} differs from its fixed physical key')
+        differences = df_record_differences(record, saved)
+        if differences:
+            evidence = dict(m=m, obtained=source, saved=saved_source, differing_fields=sorted(differences))
+            raise ValueError('DF_OBTAINED_SIGNAL_CONFLICT: '+json.dumps(evidence, sort_keys=True))
+        del required[m]
+        duplicates.append(dict(m=m, obtained=source, saved=saved_source, physical_key=row['physical_key']))
+
+    result = entry.stage(configuration, output, obtained=required)
+    if duplicates:
+        result['exact_obtained_duplicates'] = duplicates
+    return result
+
+
 def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=None,terminal_reference=None):
     # Same fixed entry as326fe; no source edits to its canonical/provider contracts.
     sys.path.insert(0,str(DF_VIEW/'src'))
@@ -410,7 +462,10 @@ def main():
     elif a.mode=='df-plan':
         config=read(r['configuration']);value=signal_entry(config).plan(config)
     elif a.mode=='df-stage':
-        config=read(r['configuration']);value=signal_entry(config).stage(config,ROOT/r['directory'],obtained={int(m):v for m,v in r.get('obtained',{}).items()})
+        config = read(r['configuration'])
+        value = stage_df_signals(signal_entry(config), config, ROOT/r['directory'],
+                                 {int(m):v for m,v in r.get('obtained',{}).items()},
+                                 r.get('obtained_request'))
     elif a.mode=='df-bundle':
         config=read(r['configuration_source']);value=signal_entry(config).assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
     elif a.mode=='df-price-design':

@@ -248,9 +248,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         path = Path(__file__).resolve().with_name('run_rpe_method_optimizer.py')
         if hashlib.sha256(path.read_bytes()).hexdigest() != trial['width_report_sha256']:
             raise ValueError('Selected width report formatter differs')
+    horizon_adapters = list(trial.get('local_q3_horizon_adapters', ()))
     if 'local_q3_horizon_adapter' in trial:
+        horizon_adapters.insert(0, trial['local_q3_horizon_adapter'])
+    if horizon_adapters:
         from trottertracks.rpe_host_profiles import route_matches, select_host_profile, validate_adapter_profile
-        selection = trial['local_q3_horizon_adapter']
+    for selection in horizon_adapters:
         local = distributed['local_worker']
         adapter = dict(adapter_root=selection['root'], adapter_manifest=selection['manifest'])
         validate_adapter_profile(adapter)

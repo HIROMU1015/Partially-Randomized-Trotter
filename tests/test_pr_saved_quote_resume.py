@@ -83,6 +83,51 @@ class SavedQuotes(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Reissued DF carrier differs'):
             service.validated_packet_index(entry, locator, None, None)
 
+    def test_df_obtained_round_preserves_exact_later_saved_carrier(self):
+        spec = importlib.util.spec_from_file_location('_df_stage_service', ROOT/'scripts/pr_candidate_services.py')
+        service = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(service)
+
+        def loc(path):
+            return dict(commit='a'*40, path=path)
+
+        config = dict(id='canonical', spec=dict(M=13))
+        reference = loc('reference')
+        obtained, saved = loc('obtained'), loc('saved')
+        prior = dict(m=13, decision='REQUEST', physical_key='physical', job=dict(B_configuration_id='canonical'),
+                     request=dict(reference=dict(source=reference)))
+        frozen = dict(configuration=loc('configuration'),
+                      plan=dict(configuration_id='canonical', terminal_reference=reference, rounds=[prior]))
+        current = dict(configuration_id='canonical', terminal_reference=reference,
+                       rounds=[dict(m=13, decision='REUSE', physical_key='physical', saved=dict(source=saved))])
+        record = dict(key='physical', B_configuration_id='canonical', reference_source=reference, signal={'raw': 0.5})
+        values = {'request': frozen, 'configuration': config, 'obtained': record,
+                  'saved': dict(record, B_configuration_id='other-declaration')}
+        calls = []
+
+        def check_record(record, job):
+            self.assertEqual(record['B_configuration_id'], job['B_configuration_id'])
+
+        def stage(configuration, output, *, obtained):
+            calls.append(obtained)
+            return dict(status='CARRIERS_READY')
+
+        entry = SimpleNamespace(reader=SimpleNamespace(read=lambda ref: values[ref['path']]),
+                                plan=lambda _: current, physical_key=lambda value: value['key'],
+                                _check_record=check_record, stage=stage)
+        result = service.stage_df_signals(entry, config, None, {13: obtained}, loc('request'))
+        self.assertEqual(calls, [{}])
+        self.assertEqual(result['exact_obtained_duplicates'],
+                         [dict(m=13, obtained=obtained, saved=saved, physical_key='physical')])
+
+        values['saved']['signal'] = {'raw': 0.5000000000000001}
+        with self.assertRaisesRegex(ValueError, 'DF_OBTAINED_SIGNAL_CONFLICT.*signal'):
+            service.stage_df_signals(entry, config, None, {13: obtained}, loc('request'))
+        prior['decision'] = 'REUSE'
+        with self.assertRaisesRegex(ValueError, 'Unexpected obtained DF round'):
+            service.stage_df_signals(entry, config, None, {13: obtained}, loc('request'))
+        self.assertEqual(calls, [{}])
+
     def test_df_alias_reuses_only_strictly_matching_scientific_records(self):
         spec=importlib.util.spec_from_file_location('_scoped_df_service',ROOT/'scripts/pr_candidate_services.py')
         service=importlib.util.module_from_spec(spec);spec.loader.exec_module(service)

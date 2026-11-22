@@ -19,7 +19,7 @@ SCHEMA = 'PR_ACTUAL_STEP_PRICE_REGISTRY_V1'
 AXES = ('X', 'Y')
 PRICE_SOURCE_CONFLICT = 'MULTIPLE_SCOPED_MODELS_CHOOSE_SOURCE_NO_POOLING'
 PRICE_EXTRAPOLATION_HOLD = 'SCOPED_MODEL_EXTRAPOLATION_REQUIRES_EVIDENCE'
-QUOTE_POLICY_REVISION = 3
+QUOTE_POLICY_REVISION = 4
 
 
 def frac(value):
@@ -390,7 +390,7 @@ class StepPriceRegistry:
             terms.append((one,slope))
         return tuple(terms) if len(terms)==26 else None
 
-    def _scoped_price(self, row, point, matching, family):
+    def _scoped_price(self, row, point, matching, family, preferred=None):
         axis = row['axis']
         direct = []
         models = []
@@ -428,8 +428,15 @@ class StepPriceRegistry:
                     extrapolation={entry['id']: axes for entry, _, axes in models})
                 return
             if len(choices) > 1:
-                row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[entry['id'] for entry, _, _ in choices])
-                return
+                agreement = [item for item in choices
+                             if preferred and preferred['registered_rule'] == 'ACTUAL_STEP:'+item[0]['id']
+                             and same(preferred['source'], item[0]['provenance'])
+                             and frac(preferred['unit_price_RZ']) == item[1]]
+                if len(agreement) != 1:
+                    row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[entry['id'] for entry, _, _ in choices])
+                    return
+                choices = agreement
+                row['parent_price_quote'] = deepcopy(preferred['quote'])
             entry, value, extrapolation = choices[0]
             row.update(unit_price_RZ=exact(value), classification='MODEL_REFERENCE', source=deepcopy(entry['provenance']),
                        registered_rule='ACTUAL_STEP:'+entry['id'], qualified_E_C=False, CI=None,
@@ -460,7 +467,7 @@ class StepPriceRegistry:
                                          path_witnesses=deepcopy(cell['paths'])))
         return alternatives
 
-    def quote(self, configuration, implementation, base_quote=None):
+    def quote(self, configuration, implementation, base_quote=None, *, preferred_models=None):
         config=configuration;family=self.api['family'](config,implementation)
         if base_quote is None:
             base_quote=self.api['PriceRules'](self.reader,self.registry).quote(dict(configuration=config,implementation=implementation,policy='MODEL'))
@@ -483,7 +490,8 @@ class StepPriceRegistry:
                 if family['method'] != 'PR_DF' and len(matching) > 1:
                     row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[e['id'] for e in matching])
                     continue
-                self._scoped_price(row, p, matching, family)
+                preferred = (preferred_models or {}).get((round_row['m'], axis))
+                self._scoped_price(row, p, matching, family, preferred)
                 if family['method'] == 'PR_DF' and row.get('unit_price_RZ') is None:
                     measured = self._df_calibration_alternatives(round_row, axis, matching)
                     if measured:

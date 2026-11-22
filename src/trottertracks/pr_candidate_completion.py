@@ -498,6 +498,61 @@ class Completion:
             if path.exists():raise  # preserve actual-step application guards
             return quote  # optional metadata cannot invalidate an existing quote
 
+    def quote_horizon_prefix(self, config, request, quote):
+        """Resolve a scoped model conflict for an identical, accepted parent round."""
+        parent = request.get('horizon_parent')
+        if not parent or request.get('method') != 'PR_DF' or quote['complete']:
+            return quote
+        conflicts = {(row['m'], row['axis']) for row in quote['rows']
+                     if PRICE_SOURCE_CONFLICT in row.get('needs', {}).get('reasons', ())}
+        if not conflicts:
+            return quote
+        from .pr_price_rules import family, point
+        from .pr_step_price_registry import same
+        with self.lock:
+            originals = [(r['quote'], r['prices']) for r in self.state['records'].values()
+                         if r['status'] == 'READY_FOR_SEARCH' and r['method'] == 'PR_DF'
+                         and r.get('configuration') == parent['configuration']
+                         and parent['signal_packet'] in (
+                             r.get('intake', {}).get('signal_packet'), r.get('signal', {}).get('packet_source'))]
+        if not originals:
+            return quote
+        previous = value(parent['configuration'])
+        implementation = quote['implementation']
+        if not same(family(previous, implementation), family(config, implementation)):
+            return quote
+        prefix = {row['m']: row for row in previous['rounds']}
+        wanted = {row['m']: row for row in config['rounds']}
+        identical = {m for m, _ in conflicts if m in prefix and same(point(prefix[m]), point(wanted[m]))}
+        preferences = {}
+        disagreements = set()
+        for locator, prices in originals:
+            saved = value(locator)
+            rows = saved['rows']
+            if (saved['configuration_id'] != previous['id'] or saved['policy'] != 'MODEL' or not saved['complete']
+                    or not same(saved['implementation'], implementation)
+                    or [row['unit_price_RZ'] for row in rows] != prices):
+                continue
+            for row in rows:
+                m, axis = index = row['m'], row['axis']
+                if (m not in identical or index not in conflicts
+                        or row['physical_id'] != prefix[m]['candidate']['id']
+                        or row['q'] != prefix[m]['q_PF'] or row['R'] != prefix[m]['R_outer']):
+                    continue
+                if (row['classification'] != 'MODEL_REFERENCE'
+                        or not row.get('registered_rule', '').startswith('ACTUAL_STEP:')):
+                    disagreements.add(index)
+                    continue
+                model = {field: row[field] for field in ('registered_rule', 'source', 'unit_price_RZ')}
+                if index in preferences and not same(preferences[index][0], model):
+                    disagreements.add(index)
+                else:
+                    preferences.setdefault(index, (model, locator))
+        preferences = {index: dict(model, quote=locator) for index, (model, locator) in preferences.items()
+                       if index not in disagreements}
+        return (self._step_rules().quote(config, implementation, base_quote=quote, preferred_models=preferences)
+                if preferences else quote)
+
     def save(self):
         with self.lock:put(self.state_path,self.state)
 
@@ -645,6 +700,7 @@ class Completion:
             configuration=record['configuration'], view=str(self.path('D2_VIEW')),
             registry_file=str(registry), policy='MODEL'), directory, python=self.path('PRICE'))
         current = self.quote_with_steps(config, current)
+        current = self.quote_horizon_prefix(config, record.get('request', {}), current)
         saved = value(record['quote'])
         if (not current.get('complete') or current.get('rows') != saved.get('rows')
                 or [row['unit_price_RZ'] for row in current['rows']] != record['prices']):
@@ -663,7 +719,9 @@ class Completion:
         registry=d/'PRICE_RULES.json';put(registry,read(self.registry))
         quote=self.service('quote',dict(configuration=record['configuration'],view=str(self.path('D2_VIEW')),
             registry_file=str(registry),policy='MODEL'),d,tag='AVAILABLE_EVIDENCE_QUOTE',python=self.path('PRICE'))
-        quote=self.quote_with_steps(value(record['configuration']),quote)
+        config=value(record['configuration'])
+        quote=self.quote_with_steps(config,quote)
+        quote=self.quote_horizon_prefix(config,record.get('request',{}),quote)
         put(d/'AVAILABLE_EVIDENCE_QUOTE.json',quote)
         if record.get('method') == 'PR_DF':
             holds = price_source_holds(quote)
@@ -676,7 +734,6 @@ class Completion:
         if not quote.get('complete'):
             record['registry_at_hold']=digest;self.save();return None
         fixed=publish([d],'Reuse newly available candidate prices without scientific retry')
-        config=value(record['configuration'])
         record.update(previous_hold=dict(status=record['status'],reason=record.get('reason')),
             status='READY_FOR_SEARCH',reason=None,price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],
             quote=dict(commit=fixed,path=rel(d/'AVAILABLE_EVIDENCE_QUOTE.json')),
@@ -848,8 +905,12 @@ class Completion:
                 d = d/'saved-input-recheck'
             df_recheck = False
             received_preparation = False
+            recovered_terminal = (old and request.get('horizon_parent') and old.get('scientific_failure')
+                                  and old['status'] == 'HELD_WITH_REASON'
+                                  and str(old.get('reason')).startswith('STAGE_FAILED:df-stage:')
+                                  and self.terminal_df_stage_recovery(d))
             if old and (old['status'].startswith(('HELD','STOP','WAITING')) or
-                        old['status'] in DF_PRICE_RECHECK_STATES) and not (recovered_input or recheck):
+                        old['status'] in DF_PRICE_RECHECK_STATES) and not (recovered_input or recheck or recovered_terminal):
                 if old.get('scientific_failure'):return dict(old,resumed=True)
                 if not old.get('recoverable_preparation') and old['status'] == 'HELD_WITH_REASON':
                     bridge = getattr(self, 'stage_executor', None)
@@ -890,7 +951,8 @@ class Completion:
                     else:
                         return dict(self.refresh_price_hold(old)or old,resumed=True)
             rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
-                      reason=None,recoverable_preparation=False)if old and (old.get('recoverable_preparation') or received_preparation or df_recheck) else
+                      reason=None,recoverable_preparation=False,scientific_failure=False)
+                 if old and (old.get('recoverable_preparation') or received_preparation or df_recheck or recovered_terminal) else
                  dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
             if df_recheck:
                 rec.update(directory=rel(d), signal_deferred_for_price=False,
@@ -995,7 +1057,9 @@ class Completion:
                         rec['conflicting_signal_rounds']=conflicts
                         rounds=','.join(str(row['m']) for row in conflicts)
                         raise Held('DF_SAVED_SIGNAL_CONFLICT:rounds='+rounds)
-                    if existing_signal_only and any(row['decision'] != 'REUSE' for row in df_plan['rounds']):
+                    recovered_rounds = set(recovered_terminal['obtained']) if recovered_terminal else set()
+                    if existing_signal_only and any(row['decision'] != 'REUSE' and str(row['m']) not in recovered_rounds
+                                                    for row in df_plan['rounds']):
                         raise PreparationWait('AWAIT_ORIGINAL_DF_HORIZON_SIGNAL_OR_SAVED_PACKET')
                     if df_plan.get('unsupported_rounds') or any(row['decision']=='UNSUPPORTED' for row in df_plan['rounds']):
                         raise Held('DF_PROVIDER_UNSUPPORTED:'+str(df_plan))
@@ -1277,12 +1341,85 @@ class Completion:
         if result['status']!='SIGNALS_READY':raise Held('PAULI_SIGNAL:'+str(result.get('reason')or result['status']))
         return result
 
+    def terminal_df_stage_recovery(self, directory):
+        """Identify the metadata-only staging failure using its original signal receipt."""
+        d = Path(directory)
+        if not d.resolve().is_relative_to(self.directory.resolve()):
+            return None
+        bridge = getattr(self, 'stage_executor', None)
+        if bridge is None or not (d/'df-stage.RETURN.json').is_file():
+            return None
+        try:
+            stage = read(d/'df-stage.RETURN.json')
+            start = read(d/'df-stage.STARTED.json')
+            if (stage['returncode'] != 1 or stage.get('signal') is not None
+                    or start.get('science') is not False or start.get('automatic_retry') is not False
+                    or stage['source'] != start['source']
+                    or (d/'df-stage.json').exists() or (d/'df_carrier'/'STAGING.json').exists()
+                    or not (d/'df-stage.log').read_text().rstrip().endswith(
+                        'ValueError: Unexpected obtained round; do not replace saved evidence')):
+                return None
+            original = d/'DF_SIGNAL_REQUEST.json'
+            frozen = read(original)
+            frozen_plan = frozen['plan']
+            staged = read(d/'df_carrier'/'PLAN.json')
+            frozen_request = read(d/'df-stage.INPUT.json')
+            terminal = frozen_plan.get('terminal_reference')
+            final_round = max(row['m'] for row in frozen_plan['rounds'])
+            requested = [row for row in frozen_plan['rounds'] if row['decision'] == 'REQUEST']
+            reused = [row for row in staged['rounds'] if row['m'] == final_round and row['decision'] == 'REUSE']
+            if (not terminal or terminal != staged.get('terminal_reference')
+                    or terminal != frozen_request.get('terminal_reference')
+                    or frozen_plan['configuration_id'] != staged['configuration_id']
+                    or [row['m'] for row in requested] != [final_round] or len(reused) != 1
+                    or requested[0]['physical_key'] != reused[0]['physical_key']):
+                return None
+            receipt = read(d/'DF_SIGNALS.RETURN.json')
+            job_id = receipt['job_id']
+            proof = bridge.recovery_evidence(d, 'DF_SIGNALS', job_id)
+            if (receipt['returncode'] != 0 or receipt.get('signal') is not None
+                    or receipt.get('automatic_retry') is not False or receipt.get('transport') != 'distributed'
+                    or receipt['source'] != frozen['execution_source']
+                    or proof['action'] != 'IMPORT_SUCCESSFUL_STAGE'):
+                return None
+            result_file = d/'df_signals'/'RESULT.json'
+            result = read(result_file)
+            obtained = frozen_request['obtained']
+            round_key = str(final_round)
+            raw_file = d/'df_signals'/'raw'/f'm{final_round}.json'
+            if (result['status'] != 'REQUESTED_ROUNDS_COMPLETE'
+                    or result['configuration_id'] != frozen_plan['configuration_id']
+                    or result['requested_rounds'] != [final_round]
+                    or len(result['rows']) != 1 or result['rows'][0]['status'] != 'VALID'
+                    or result['rows'][0]['m'] != final_round or result['rows'][0]['raw_path'] != rel(raw_file)
+                    or set(obtained) != {round_key} or obtained[round_key]['path'] != rel(raw_file)):
+                return None
+            accepted_job = bridge.executor.run_dir/'jobs'/'PREPARATION:signal'/job_id
+            accepted = read(accepted_job/'OUTCOME.json')
+            accepted_receipt = read(accepted_job/'PROCESS_RETURN.json')
+            if (accepted['status'] != 'PREPARATION_COMPLETE' or accepted_receipt['returncode'] != 0
+                    or accepted_receipt.get('signal') is not None
+                    or any(accepted['artifacts'].get('workspace/'+rel(path)) != hashlib.sha256(path.read_bytes()).hexdigest()
+                           for path in (original, result_file, raw_file))):
+                return None
+            locator = dict(commit=git('log', '-1', '--format=%H', '--', rel(original)), path=rel(original))
+            for source, path in ((locator, original), (obtained[round_key], raw_file)):
+                if subprocess.check_output(['git','show',source['commit']+':'+source['path']], cwd=ROOT) != path.read_bytes():
+                    return None
+            return dict(obtained=obtained, obtained_request=locator, result=result)
+        except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
+            return None
+
     def df_signals(self,config,cref,d,descriptor,*,plan,bundles):
         result=dict(rows=[],new_provider_calls=0);obtained={}
+        obtained_request = None
         terminal = plan.get('terminal_reference')
         marker = d/'DF_SIGNALS.DISTRIBUTED.json'
         recovering = terminal and marker.is_file()
-        if recovering or any(row['decision']=='REQUEST' for row in plan['rounds']):
+        repair = self.terminal_df_stage_recovery(d) if recovering else None
+        if repair is not None:
+            obtained, obtained_request, result = (repair[k] for k in ('obtained','obtained_request','result'))
+        elif recovering or any(row['decision']=='REQUEST' for row in plan['rounds']):
             source=self.stage_source('DF_SIGNALS')
             request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=source,
                          output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
@@ -1306,9 +1443,15 @@ class Completion:
             if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
             raw=publish([d],'Publish missing DF round signals')
             obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
-        staged=d/'df_carrier'
-        st=self.service('df-stage',dict(configuration=cref,directory=rel(staged),obtained=obtained,
-            tail_descriptor=descriptor,saved_bundles=bundles,terminal_reference=terminal),d)
+            if terminal and obtained:
+                obtained_request = dict(commit=input_commit, path=rel(inp))
+        staged = d/('df_carrier-reconciled' if repair else 'df_carrier')
+        stage_inputs = dict(configuration=cref, directory=rel(staged), obtained=obtained,
+                            tail_descriptor=descriptor, saved_bundles=bundles, terminal_reference=terminal)
+        if obtained_request is not None:
+            stage_inputs['obtained_request'] = obtained_request
+        stage_tag = 'DF_TERMINAL_STAGE_RECONCILED' if repair else None
+        st=self.service('df-stage',stage_inputs,d,tag=stage_tag)
         if st['status']!='CARRIERS_READY':raise Held('DF_CARRIER:'+str(st))
         carrier=publish([d],'Fix unified DF raw carrier')
         configref=dict(commit=carrier,path=rel(staged/'CONFIGURATION.json'))
@@ -1356,6 +1499,7 @@ class Completion:
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
         registry_digest=self.price_registry_digest()
         quote=self.quote_with_steps(config,quote)
+        quote=self.quote_horizon_prefix(config,r,quote)
         if r['method']=='PR_PAULI' and price_source_holds(quote):
             quote['price_registry_at_quote'] = registry_digest
             put(d/'FINAL_QUOTE.json',quote)
@@ -1364,6 +1508,16 @@ class Completion:
             # The terminal extension inherits the parent's model policy. A
             # missing model quote does not request a large direct circuit here.
             quote['price_registry_at_quote'] = registry_digest
+            if r['method'] == 'PR_DF':
+                m_max = config['spec']['M']
+                decisions = [dict(m=row['m'], axis=row['axis'], physical_id=row['physical_id'],
+                                  action='RECHECK_REGISTERED_PRICE_EVIDENCE', new_calculation=False,
+                                  reason=('TERMINAL_MODEL_EVIDENCE_REQUIRED' if row['m'] == m_max
+                                          else 'PREFIX_PRICE_EVIDENCE_REQUIRED'),
+                                  quote_needs=row.get('needs'), recheck_on='PRICE_REGISTRY_CHANGED')
+                             for row in quote['rows'] if row.get('unit_price_RZ') is None]
+                put(d/'DF_PRICE_DECISIONS.json', decisions)
+                quote['price_decisions'] = decisions
             put(d/'FINAL_QUOTE.json',quote)
             return quote
         if not quote['complete']:
