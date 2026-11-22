@@ -1,17 +1,16 @@
 """PBS preparation worker for H6 candidates. The planned scope owns every call."""
 
 import argparse
-from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import lru_cache
 import json
 import math
-import multiprocessing as mp
 import os
 from pathlib import Path
 from types import SimpleNamespace
 import sys
 
-from h6_scope import calibration_design, case_rows, digest, exact, read, rounds
+import h6_preparation_pool as pool
+from h6_scope import FORMULAS, calibration_design, case_rows, digest, exact, read, rounds
 
 
 def write(path, data):
@@ -169,16 +168,16 @@ def execute(job):
     write(path, dict(data, owner=owner))
 
 
-def collect(scope, assets, run, workers, saved_signal_path=None):
+def collect(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path=None):
     import fcntl
 
     run.mkdir(parents=True, exist_ok=True)
     with (run / ".preparation.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return collect_owned(scope, assets, run, workers, saved_signal_path)
+        return collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path)
 
 
-def collect_owned(scope, assets, run, workers, saved_signal_path):
+def collect_owned(scope, assets, run, signal_workers, price_workers, price_memory, saved_signal_path):
     global STATE
     STATE = startup(assets, scope)
     cases, binding, target, compiler = STATE.cases, STATE.binding, STATE.target, STATE.compiler
@@ -216,25 +215,26 @@ def collect_owned(scope, assets, run, workers, saved_signal_path):
                 if not path.exists() and not path.with_suffix(".started").exists():
                     write(path, dict(candidate=cell, signal=row["signal"], owner=owner,
                                      reused_source=str(saved_signal_path)))
-    jobs = [("signal", c, 0, run / "signals" / f"{c['id']}.json", owner) for c in cells.values()]
+    signal_jobs = [("signal", c, 0, run / "signals" / f"{c['id']}.json", owner) for c in cells.values()]
     price_cells = {}
     for design in designs.values():
         price_cells.update((cell["id"], cell) for cell in design["anchors"])
         if design["holdout"] is not None:
             holdout = design["holdout"]
             price_cells[holdout["id"]] = holdout
+    price_jobs = []
     for cell in price_cells.values():
         paths = scope["price_paths"] if cell["method"] == "PR" else 1
-        jobs.extend(("price", cell, i, run / "prices" / f"{cell['id']}-{i}.json", owner) for i in range(paths))
-    errors = {}
-    with ProcessPoolExecutor(max_workers=min(workers, len(jobs)), mp_context=mp.get_context("fork")) as pool:
-        tasks = {pool.submit(execute, job): job[3] for job in jobs}
-        for future in as_completed(tasks):
-            path = tasks[future]
-            try:
-                future.result()
-            except Exception as error:
-                errors[path.name] = f"{type(error).__name__}: {error}"
+        price_jobs.extend(("price", cell, i, run / "prices" / f"{cell['id']}-{i}.json", owner) for i in range(paths))
+
+    def checkpoint(metrics):
+        write(run / f"{metrics['phase'].upper()}_PREPARATION_METRICS.json", metrics)
+
+    def profile(cell):
+        return pool.price_profile(cell, STATE.pieces[cell["prefix"]].bound, FORMULAS[cell["formula"]])
+
+    errors = pool.signals(signal_jobs, execute, signal_workers, checkpoint)
+    errors.update(pool.prices(price_jobs, execute, price_workers, price_memory, profile, checkpoint))
     write(run / "PREPARATION_ERRORS.json", errors)
     return 0
 
@@ -245,7 +245,9 @@ if __name__ == "__main__":
     parser.add_argument("--assets", type=Path, required=True)
     parser.add_argument("--run", type=Path)
     parser.add_argument("--saved-signals", type=Path)
-    parser.add_argument("--workers", type=int)
+    parser.add_argument("--signal-workers", type=int)
+    parser.add_argument("--price-workers", type=int)
+    parser.add_argument("--price-memory-bytes", type=int)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     if args.check:
@@ -259,7 +261,7 @@ if __name__ == "__main__":
         CircuitPieces(full)
         print(json.dumps(dict(status="H6_INPUT_CHECK_PASS", binding=inputs["scientific_binding"], runtime=runtime)))
         raise SystemExit(0)
-    if args.scope is None or args.run is None or args.workers is None or args.workers < 1:
-        parser.error("Preparation needs a scope, output directory and positive worker count")
-    raise SystemExit(collect(read(args.scope), args.assets.resolve(), args.run.resolve(),
-                             min(args.workers, len(os.sched_getaffinity(0))), args.saved_signals))
+    resources = (args.signal_workers, args.price_workers, args.price_memory_bytes)
+    if args.scope is None or args.run is None or any(value is None or value < 1 for value in resources):
+        parser.error("Preparation needs a scope, output directory, positive worker counts and a price memory budget")
+    raise SystemExit(collect(read(args.scope), args.assets.resolve(), args.run.resolve(), *resources, args.saved_signals))

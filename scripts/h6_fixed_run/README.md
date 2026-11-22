@@ -58,6 +58,8 @@ H6 PR-DF用に通常の `ROUND.json` へ `hchain_price_preparation` を設定で
 
 [PBS入口](h6_scope.pbs)に `H6_OPTIMIZER_CHECKOUT`、`H6_ASSETS`、`H6_PYTHON`、`H6_SCOPE_FILE`、`H6_SCOPE_OUTPUT` を絶対パスで渡す。`H6_ASSETS` は `payload-bound`、`representatives`、`optimizer-source`、`q3-pilot/risk-source` を含む既存のH6実行領域。既定は `--plan-only` で、候補表と固定入力の照合を行う。`H6_SCOPE_ACTION=--prepare-only` では信号・較正・価格表を準備し、`--execute` では共通のQ3探索まで進む。`H6_PREPARATION_WORKERS` と `H6_Q3_SLOTS` で割当内の同時実行数を調整できる。
 
+準備枠は信号と価格較正で分ける。`H6_SIGNAL_WORKERS` と `H6_PRICE_WORKERS` の既定は割当内で使えるCPU数。従来の `H6_PREPARATION_WORKERS` を渡すと両方の既定値になる。価格較正は決定論回路の規模とPR-DFのイベント数から初期メモリを見積もり、同規模の処理で測ったピークRSSと実行中のRSSを次の割当に反映する。`H6_PRICE_MEMORY_GIB` の既定はPBSの350 GiB要求と一致し、観測できるcgroup上限が小さいときはそちらを使う。PBSのメモリ要求を変えた場合はこの値も合わせる。工程の件数・CPU時間・メモリは `SIGNAL_PREPARATION_METRICS.json` と `PRICE_PREPARATION_METRICS.json` に記録する。
+
 実コンパイルは `calibration_max_m` のラウンド時間（例ではm5）以内に収める。価格モデルには、同じ実ステップ、公式、分割位置での観測を使い、X/Yを独立に較正する。同じ実ステップの短いラウンドで独立点が不足する場合は、同じ実ステップで1・2反復の較正専用回路を作る。その時間が上限を超える場合は、上限内のステップで較正し、対象ステップへの移送を条件とした価格を登録する。価格表に両方のステップと較正の根拠を残す。較正専用回路は探索候補に含めない。PR-DFで外側イベント数を変えるときは切片、`q`、`qR` を使う。得られる総額はモデルを仮定した条件付きの値。未完了の信号や価格は `HELD_CANDIDATES.json` で確認できる。
 
 同じ範囲と固定入力で同じ出力先を指定すると、完了済みの信号・較正・Q3を再利用する。過去の信号束を指定する場合は `H6_SAVED_SIGNALS` で渡し、科学入力の来歴と物理スケジュールが一致した点を受け入れる。起動記録だけが残る処理は調査対象として記録する。

@@ -12,6 +12,7 @@ import sys
 
 from h6_scope import AXES, LABELS, case_rows, digest, enc, exact, group_key, read
 from h6_scope_worker import write
+from h6_preparation_pool import GIB
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -236,6 +237,9 @@ def main():
     parser.add_argument("--saved-signals", type=Path)
     parser.add_argument("--q3-slots", type=int)
     parser.add_argument("--preparation-workers", type=int)
+    parser.add_argument("--signal-workers", type=int)
+    parser.add_argument("--price-workers", type=int)
+    parser.add_argument("--price-memory-gib", type=int, default=350)
     modes = parser.add_mutually_exclusive_group(required=True)
     modes.add_argument("--plan-only", action="store_true")
     modes.add_argument("--prepare-only", action="store_true")
@@ -267,22 +271,35 @@ def main():
     if args.run is None or args.assets is None or not os.environ.get("PBS_JOBID"):
         parser.error("Preparation/execute require --run, --assets and a PBS allocation")
     import fcntl
+    from trottertracks.rpe_q3_resources import resource_snapshot
 
     run = args.run.resolve()
     assets = args.assets.resolve()
     run.mkdir(parents=True, exist_ok=True)
     available = min(len(os.sched_getaffinity(0)), int(os.environ.get("NCPUS", len(os.sched_getaffinity(0)))))
-    workers = min(available, args.preparation_workers if args.preparation_workers is not None else available)
+    for count in (args.preparation_workers, args.signal_workers, args.price_workers, args.q3_slots, args.price_memory_gib):
+        if count is not None and count < 1:
+            parser.error("PBS resources and worker counts must be positive")
+    limits = resource_snapshot(dict(slot_policy=dict(resource_limits=dict(
+        cpu_count=available, memory_bytes=args.price_memory_gib * GIB))))
+    available = min(available, int(limits["allowed_cpu_count"]))
+    caps = [limits[k] for k in ("allowed_memory_bytes", "remaining_group_memory_bytes") if limits[k] is not None]
+    # Keep space for the supervisor, shared preparation and RSS growth between samples.
+    price_memory = min(caps) * 9 // 10
+    default_workers = args.preparation_workers or available
+    signal_workers = min(available, args.signal_workers or default_workers, max(1, price_memory // GIB))
+    price_workers = min(available, args.price_workers or default_workers)
     q3_slots = min(available, args.q3_slots if args.q3_slots is not None else max(1, available // 8))
     controlled = scope.get("max_new_q3_per_method", {})
     budgets = {m: controlled.get(m, "UNLIMITED") if args.execute else 0 for m in scope["methods"]}
-    if workers < 1 or q3_slots < 1:
-        parser.error("PBS worker and Q3 slot counts must be positive")
+    if available < 1 or price_memory < 1:
+        parser.error("The current PBS CPU or memory allowance is exhausted")
     with (run / ".h6_scope.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         worker = Path(__file__).resolve().with_name("h6_scope_worker.py")
         command = [sys.executable, "-B", str(worker), "--scope", str(args.scope.resolve()),
-                   "--assets", str(assets), "--run", str(run), "--workers", str(workers)]
+                   "--assets", str(assets), "--run", str(run), "--signal-workers", str(signal_workers),
+                   "--price-workers", str(price_workers), "--price-memory-bytes", str(price_memory)]
         if args.saved_signals:
             command.extend(["--saved-signals", str(args.saved_signals.resolve())])
         subprocess.run(command, check=True)

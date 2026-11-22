@@ -15,6 +15,37 @@ from run_h6_scope import features, optimize, optimizer
 from h6_scope_worker import write
 
 
+def artificial_preparation(job):
+    import time
+
+    kind, cell, index, output, owner = job
+    time.sleep(0.04)
+    if cell.get("fail"):
+        raise ValueError("artificial error " * 2000)
+    write(output, dict(kind=kind, index=index, owner=owner))
+
+
+def test_preparation_pools_separate_cpu_slots_and_memory(tmp_path):
+    import h6_preparation_pool as pool
+
+    signal_jobs = [("signal", {}, i, tmp_path / f"signal-{i}.json", "fixture") for i in range(5)]
+    price_jobs = [("price", {"profile": (0, 1 << 14)}, 0, tmp_path / "heavy.json", "fixture")]
+    price_jobs += [("price", {"profile": (1024, 0), "fail": i == 2}, i, tmp_path / f"light-{i}.json", "fixture")
+                   for i in range(4)]
+    metrics = []
+    assert not pool.signals(signal_jobs, artificial_preparation, 5, metrics.append)
+    assert metrics[-1]["phase"] == "signal" and metrics[-1]["done"] == 5
+    assert metrics[-1]["worker_limit"] == 5
+    memory = 3 * pool.GIB
+    errors = pool.prices(price_jobs, artificial_preparation, 5, memory, lambda c: c["profile"], metrics.append)
+    assert set(errors) == {"light-2.json"}
+    assert (tmp_path / "heavy.json").is_file()
+    assert set(p.name for p in tmp_path.glob("light-*.json")) == {"light-0.json", "light-1.json", "light-3.json"}
+    assert metrics[-1]["done"] == 4 and metrics[-1]["peak_workers"] == 2
+    assert metrics[-1]["peak_reserved_bytes"] <= memory
+    assert metrics[-1]["peak_worker_rss_bytes"] > 0
+
+
 def artificial_plan(run, scope=None):
     scope = scope or read(RUNNER / "h6_scope_example.json")
     scope["scaled_shots"]["grid"].update(min_k=0, max_k=0)
