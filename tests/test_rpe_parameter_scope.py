@@ -168,13 +168,20 @@ def test_df_completion_uses_scope_and_recovers_the_owned_parent_only(tmp_path, m
         cid=request['selection']['source_configuration_id']
         about.append((cid,existing_signal_only,request['horizon_parent']))
         return dict(key=cid,status='READY_FOR_SEARCH')
+    recovered = []
+    def recover_signal(record):
+        recovered.append(record['key'])
+        return dict(record, verified_parent=True)
+    completion = SimpleNamespace(complete=complete, recover_horizon_signal=recover_signal)
     number=lambda:len(about)
     for iteration in range(2):
-        records=df.prepare(tmp_path,rt,SimpleNamespace(complete=complete),candidates,[13],[],lambda:False)
+        records=df.prepare(tmp_path,rt,completion,candidates,[13],[],lambda:False)
         assert [r['key'] for r in records] == ['owned','fresh']
+        assert all(r['verified_parent'] for r in records)
         assert number() == (iteration+1)*2
     assert about[:2] == about[2:]
     assert [v[:2] for v in about[:2]] == [('owned',True),('fresh',False)]
+    assert recovered == ['owned','fresh'] * 2
     assert 'reference' in read(tmp_path/'completion/horizons/unmatched/STATUS.json')['reason']
 
 
