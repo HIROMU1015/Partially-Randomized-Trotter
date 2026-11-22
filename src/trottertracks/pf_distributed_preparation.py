@@ -296,10 +296,13 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 for name in provider_files}))
         if inherited_registry is not None:
             context.inherited_preparation_root = original_folder.parents[3]
+        def stage_input_for(phase, **fields):
+            return dict(value=value, relative_output=str(folder.relative_to(workspace)),
+                        phase=phase, source=source, **fields)
+
         def call(phase,tag,**fields):
             stage_in=folder/(tag+'.INPUT.json');stage_out=folder/(tag+'.RESULT.json')
-            stage_input = dict(value=value, relative_output=str(folder.relative_to(workspace)),
-                               phase=phase, source=source, **fields)
+            stage_input = stage_input_for(phase, **fields)
             if inherited_registry is not None and stage_in.exists():
                 if read(stage_in) != stage_input:
                     raise Held('INHERITED_PF_STAGE_INPUTS_CHANGED:'+tag)
@@ -314,11 +317,14 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 if result is not None:
                     return result
             return runtime.call(context,cmd,folder,tag,stage_out,science=True)
-        def compile_stage(tag, cohort, cells):
-            options = {}
+        def compile_inputs(cohort, cells):
+            fields = dict(cohort=cohort, rounds=[cell['m'] for cell in cells])
             if value.get('selected_axis_compile'):
-                options['axes_by_round'] = {str(cell['m']): cell['axes'] for cell in cells}
-            return call('compile', tag, cohort=cohort, rounds=[cell['m'] for cell in cells], **options)
+                fields['axes_by_round'] = {str(cell['m']): cell['axes'] for cell in cells}
+            return fields
+
+        def compile_stage(tag, cohort, cells):
+            return call('compile', tag, **compile_inputs(cohort, cells))
 
         def prices():
             values=deepcopy(value['direct_prices'])
@@ -350,6 +356,13 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             holdout_cells=[r for r in value['new_compile_cells']if r['role']=='HOLDOUT']
             holdout=[r['m'] for r in holdout_cells]
             if holdout:
+                recover = getattr(runtime, 'recovered_holdout_prices', None)
+                recovered = recover(folder, stage_input_for('compile', **compile_inputs('holdout', holdout_cells))) if recover else None
+                if recovered is not None:
+                    commits = sorted({row['price_evidence']['source']['commit'] for row in recovered})
+                    subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),*commits],
+                                   cwd=workspace,check=True,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+                    return call('finish','PF_FINISH',prices=values+recovered,model=frozen)['prices']
                 saved=saved_for_configuration(spec['pf_completion'],'saved_holdout_compile',value['configuration']['id'])
                 compiled=(reuse_calibration(root,workspace,folder,value,holdout,saved,phase='holdout') if saved else
                           compile_stage('PF_HOLDOUT_COMPILE','holdout',holdout_cells))
@@ -414,3 +427,114 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     registry = read(registry_path) if registry_path.exists() else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
     put(registry_output,registry)
     put(output,dict(response,items=items,registry_file=registry_output))
+
+
+def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, on_ready):
+    """Run the fixed terminal price leaves and register their full 14-round evidence."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from hashlib import sha256
+    from .pf_optimizer_connection import AXES, physical_ids
+    from .pr_candidate_completion import Held
+    from .rpe_release_registry import write
+
+    selected = runtime.settings.get('pf_terminal_price_leaves', {})
+    adapter = Path(root)/'scripts/run_pf_preparation_stage.py'
+    state_path = runtime.executor.run_dir/'pf_auto'/'TERMINAL_PRICES.json'
+    states = read(state_path) if state_path.is_file() else {}
+
+    def fixed(root, loc):
+        raw = subprocess.check_output(['git','show',loc['commit']+':'+loc['path']],cwd=root,stderr=subprocess.PIPE)
+        value = json.loads(raw)
+        for key in loc.get('selector', ()):
+            value = value[key]
+        return value
+
+    def run(parent_id, leaf):
+        workspace = Path(leaf['workspace']).resolve()
+        if not workspace.is_relative_to(runtime.executor.run_dir.resolve()):
+            raise ValueError('Terminal PF workspace leaves the current run')
+        folder = workspace/leaf['relative_output']
+        cfg = fixed(workspace, leaf['configuration'])
+        parent_entry = parent_entries[parent_id]
+        parent = fixed(root, parent_entry['configuration'])
+        if (parent['id'] != parent_id or cfg['spec']['M'] != 13
+                or dict(cfg['spec'], M=12) != parent['spec']):
+            raise ValueError('Terminal PF scope differs from the admitted parent')
+        ids = physical_ids(workspace, cfg)
+        if ids[13] != leaf['physical_id'] or {m:ids[m] for m in range(13)} != physical_ids(root, parent):
+            raise ValueError('Terminal PF physical schedule differs from its fixed receipt')
+        axes = deepcopy(fixed(root, parent_entry['prices'])['axes'])
+        if ({(x['m'],x['axis']) for x in axes if ids[x['m']]==x['physical_id']}
+                != {(m,axis) for m in range(13) for axis in AXES} or len(axes)!=26):
+            raise ValueError('Terminal PF needs 26 matching prefix prices')
+        for row in axes:
+            if 'configuration_id' in row:
+                row['configuration_id'] = cfg['id']
+        if stop_requested():
+            return dict(status='WAITING_STOP')
+        plan_path = folder/'PLAN.json'
+        if sha256(plan_path.read_bytes()).hexdigest() != leaf['plan_sha256']:
+            raise ValueError('Terminal PF compile plan changed')
+        value = read(plan_path)
+        manifest = leaf['provider']
+        source = leaf['execution_source']
+        if value['configuration'] != cfg or {cell['m']:cell['axes'] for cell in value['new_compile_cells']} != {13:['X','Y']}:
+            raise ValueError('Terminal PF request must compile only the fixed X/Y pair')
+        context = SimpleNamespace(directory=folder, settings={'selected_axis_compile':True},
+            source=manifest['commit'], preparation_root=workspace,
+            preparation_source_manifest=manifest, log=lambda **row:None)
+        def stage(kind, name, fields):
+            input_path = folder/(name+'.INPUT.json')
+            output = folder/(name+'.RESULT.json')
+            body = dict(value=value, relative_output=leaf['relative_output'], phase=kind, source=source, **fields)
+            if input_path.exists() and read(input_path) != body:
+                raise ValueError('Terminal PF stage request changed on resume')
+            if not input_path.exists():
+                put(input_path, body)
+            command=[leaf['interpreter'],'-B',str(adapter),'--provider-root',str(workspace),
+                '--input',str(input_path),'--output',str(output)]
+            return runtime.call(context, command, folder, name, output, science=True)
+        compiled = stage('compile', 'PF_HOLDOUT_COMPILE', dict(cohort='terminal', rounds=[13], axes_by_round={'13':['X','Y']}))
+        track_collected_prices(workspace, compiled)
+        audited = stage('audit', 'PF_HOLDOUT_AUDIT', dict(compiled=compiled))
+        prices = audited['prices']
+        if (audited['status'] != 'AUDIT_PASS' or len(prices)!=2
+                or {(row['m'],row['axis'],row['physical_id'],row['gate']) for row in prices} !=
+                    {(13,axis,ids[13],'C_IMPLEMENTATION_GUARD_PASS') for axis in AXES}):
+            raise ValueError('Terminal audit did not confirm both fixed axes')
+        out = folder/'AXIS_PRICES.json'
+        table = dict(axes=axes+prices)
+        if out.exists():
+            if read(out) != table:
+                raise ValueError('Previously registered terminal PF price table differs')
+        else:
+            put(out, table)
+        relative = str(out.relative_to(workspace))
+        git(workspace, 'add', '--sparse', '--', relative)
+        if git(workspace,'diff','--cached','--name-only','--',relative):
+            git(workspace,'commit','-m','Record admitted PF terminal X/Y prices','--',relative)
+        tip=git(workspace,'log','-1','--format=%H','--',relative)
+        subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),
+                        tip+':refs/rpe-preparation/pf-terminal/'+cfg['id']],
+                       cwd=root,check=True,capture_output=True)
+        entry=dict(leaf['entry'], prices=dict(commit=tip,path=relative))
+        return dict(status='READY', configuration_id=cfg['id'], entry=entry)
+
+    def process(item):
+        parent_id, leaf = item
+        try:
+            return parent_id, run(parent_id, leaf)
+        except (Held, ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
+            return parent_id, dict(status='WAITING', reason=str(error))
+
+    pending = [(key, item) for key,item in selected.items() if key in parent_entries and
+               states.get(key,{}).get('status')!='READY']
+    if not pending:
+        return
+    with ThreadPoolExecutor(max_workers=len(pending),thread_name_prefix='pf-terminal-prices') as pool:
+        for future in as_completed(pool.submit(process,item) for item in pending):
+            parent_id, state = future.result()
+            states[parent_id] = state
+            write(state_path,states)
+            if state['status']=='READY':
+                on_ready(state['configuration_id'], state['entry'])

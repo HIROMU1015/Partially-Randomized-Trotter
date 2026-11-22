@@ -168,10 +168,11 @@ def compile_receipts(value,out,phase,ms,source,*,axes_by_round=None):
     write(folder/'JOB.json',job);started=time.perf_counter()
     child = [sys.executable, '-B', str(Path(__file__).resolve()), '--provider-root', str(ROOT),
              '--native-child', str(folder/'JOB.json')]
-    # The historical p7/p10 preparations carry exact floating-point hashes.
-    # Match the saved kernel before importing NumPy in the native child.
+    # Match the historical kernel before importing NumPy. For p8 the
+    # saved tail identity itself is bit-sensitive even when the total
+    # scalar rounds to the same binary64 value.
     env = dict(os.environ)
-    if p in (7, 10):
+    if p in (7, 8, 10):
         env.update(OPENBLAS_CORETYPE='HASWELL', OPENBLAS_NUM_THREADS='1',
                    OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
     with (private/'child.log').open('x') as log:

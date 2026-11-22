@@ -536,6 +536,75 @@ class DistributedPreparationBridge:
         write(directory/(stage+'.RECOVERED_AUDIT.json'), recovery)
         return result
 
+    def repair_compile_context(self, directory, stage, submitted):
+        """Use the selected transport revision after a proved pre-wrapper failure."""
+        from .pr_candidate_completion import Held
+        from .rpe_release_registry import write
+
+        job_id = submitted.get('job_id')
+        repair = self.settings.get('pf_stage_audit_recoveries', {}).get(job_id)
+        if not repair or repair.get('kind') != 'PF_KERNEL_CONTEXT_REPAIR':
+            return submitted
+        original = self.recovery_evidence(directory, stage, job_id)
+        owner = self.executor.store.row(job_id)
+        path = 'private/pf-transport/scripts/run_pf_preparation_stage.py'
+        if (stage not in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
+                or original['action'] != 'PRESERVE_FAILED_ATTEMPT'
+                or original.get('attempt_id') != repair['audit_attempt']
+                or owner['request_sha256'] != repair['request_sha256']
+                or submitted['request']['preparation']['inputs'].get(path) != repair['original_adapter_sha256']):
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':CONTEXT_REPAIR')
+        body = (Path(__file__).resolve().parents[2]/'scripts/run_pf_preparation_stage.py').read_bytes()
+        if hashlib.sha256(body).hexdigest() != repair['replacement_adapter_sha256']:
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':REPAIR_ADAPTER')
+        request = deepcopy(submitted['request'])
+        request.pop('request_id', None)
+        preparation = request['preparation']
+        preparation['inputs'][path] = self._blob(body)
+        pins = [record for record in preparation['working_input_hashes'] if record['path'] == path]
+        if len(pins) != 1 or pins[0]['sha256'] != repair['original_adapter_sha256']:
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':ORIGINAL_ADAPTER')
+        pins[0]['sha256'] = repair['replacement_adapter_sha256']
+        request['preparation']['supersedes_preparation'] = dict(
+            job_id=job_id, attempt_id=repair['audit_attempt'], reason='FIXED_NUMERICAL_KERNEL_BEFORE_WRAPPER')
+        write(directory/(stage+'.ORIGINAL_CONTEXT_ATTEMPT.json'), submitted)
+        return dict(request=request, source=submitted['source'], automatic_retry=False)
+
+    def recovered_holdout_prices(self, directory, stage_input):
+        """Rebind C-verified wrapper results produced before a packaging failure."""
+        from .pr_candidate_completion import Held
+        from .rpe_q3_coordinator import digest
+        from .rpe_release_registry import write
+
+        stage = 'PF_HOLDOUT_COMPILE'
+        marker = directory/(stage+'.DISTRIBUTED.json')
+        if not marker.is_file():
+            return None
+        job_id = read(marker)['job_id']
+        recovery = self.settings.get('pf_stage_audit_recoveries', {}).get(job_id)
+        if not recovery or recovery.get('kind') != 'VERIFIED_ORIGINAL_HOLDOUT_PRICES':
+            return None
+        original = self.recovery_evidence(directory, stage, job_id)
+        owner = self.executor.store.row(job_id)
+        if (original.get('attempt_id') != recovery['audit_attempt']
+                or original['action'] != 'PRESERVE_FAILED_ATTEMPT'
+                or owner['request_sha256'] != recovery['request_sha256']
+                or digest(stage_input) != recovery['input_sha256']
+                or (directory/'PF_HOLDOUT_AUDIT.DISTRIBUTED.json').exists()):
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':HOLDOUT_RECOVERY')
+        value = stage_input['value']
+        wanted = {(row['m'], axis, row['physical_candidate']['id'])
+                  for row in value['prepared']['pending']['requests'] if row['m'] in stage_input['rounds']
+                  for axis in stage_input.get('axes_by_round', {}).get(str(row['m']), ('X', 'Y'))}
+        prices = recovery['result']['prices']
+        if (value['configuration']['id'] != recovery['configuration_id']
+                or len(prices) != len(wanted)
+                or {(row['m'], row['axis'], row['physical_id']) for row in prices} != wanted
+                or any(row['gate'] != 'C_IMPLEMENTATION_GUARD_PASS' for row in prices)):
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':RAW_PRICE_AXES')
+        write(directory/(stage+'.RECOVERED_PRICES.json'), recovery)
+        return prices
+
     def recovery_evidence(self, directory, stage, job_id):
         """Classify an exact owned attempt without starting or mutating it."""
         from .rpe_preparation_queue import normalize_preparation_request
@@ -1387,7 +1456,7 @@ class DistributedPreparationBridge:
         marker = directory / (stage + '.DISTRIBUTED.json')
         inherited_workspace = None
         if marker.exists():
-            submitted = read(marker)
+            submitted = self.repair_compile_context(directory, stage, read(marker))
             request = submitted['request']
             original = getattr(completion, 'inherited_preparation_root', None)
             if original is not None and Path(request['preparation']['controller_root']).resolve() == original.resolve():

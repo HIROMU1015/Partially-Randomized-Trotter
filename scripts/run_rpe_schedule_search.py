@@ -414,6 +414,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if hashlib.sha256(raw).hexdigest() != selection['sha256']:
             raise ValueError('Recovered PF audit package changed')
         distributed['preparation']['pf_stage_audit_recoveries'] = json.loads(raw)
+    if 'pf_terminal_price_leaves' in trial:
+        terminal = trial['pf_terminal_price_leaves']
+        raw = Path(terminal['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != terminal['sha256']:
+            raise ValueError('Fixed PF terminal price plan changed')
+        distributed['preparation']['pf_terminal_price_leaves'] = json.loads(raw)
     if 'horizon_preparation_catalog' in trial:
         catalog = trial['horizon_preparation_catalog']
         raw = Path(catalog['path']).read_bytes()
@@ -1722,17 +1728,68 @@ class WidthDriver:
                     args = (ROOT, problem, snapshot_context(context), active_spec, self.run, deepcopy(routes), runtime)
                     def prepare_pf():
                         stopped = lambda: stop_preparation.is_set() or executor._user_stop_requested()
-                        if (self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill'):
-                            return pf_candidate_selection.prepare_available(*args, stop_requested=stopped,
-                                                                           announce=subscriber.announce_pf,
-                                                                           wait_for_work=wait_for_preparation,
-                                                                           refill_requested=getattr(executor, 'preparation_needs_refill', None))
-                        result = pf_candidate_selection.prepare_next(
-                            *args, stop_requested=stopped,
-                            refill_requested=getattr(executor, 'preparation_needs_refill', None))
-                        if self.live_ready_refill:
-                            subscriber.announce_pf(*result[:2])
-                        return result
+                        terminal = (runtime.settings.get('pf_terminal_price_leaves', {}) if runtime is not None else {})
+                        if 13 not in search.get('scaled_shots', {}).get('M', ()):
+                            terminal = {}
+                        initial_context, initial_routes = args[2], args[5]
+                        latest = (initial_context, initial_routes)
+                        terminal_entries = {}
+                        lock = threading.RLock()
+                        if terminal:
+                            from trottertracks.pf_distributed_preparation import complete_terminal_prices
+                            from trottertracks.pf_optimizer_connection import registry_routes
+                            adopted = self.run/'pf_auto'/'TERMINAL_PRICES.json'
+                            if adopted.is_file():
+                                saved = json.loads(adopted.read_bytes())
+                                terminal_entries.update({row['configuration_id']:row['entry']
+                                    for parent,row in saved.items() if parent in terminal and row['status']=='READY'})
+
+                        def include_terminal(pf_context, pf_routes):
+                            if not terminal_entries:
+                                return pf_context, pf_routes
+                            registry = deepcopy(pf_context['pf_evidence_registry'])
+                            registry['configurations'].update(terminal_entries)
+                            updated = pf_candidate_selection._refresh(ROOT, dict(problem, search=search),
+                                pf_context, self.methods, registry, registry.get('artificial',False))
+                            return updated, registry_routes(pf_routes, registry)
+
+                        def announce_pf(pf_context, pf_routes):
+                            nonlocal latest
+                            with lock:
+                                latest = (pf_context, pf_routes)
+                                if self.live_ready_refill:
+                                    subscriber.announce_pf(*include_terminal(*latest))
+
+                        def terminal_ready(cid, entry):
+                            with lock:
+                                terminal_entries[cid] = entry
+                                announce_pf(*latest)
+
+                        def regular():
+                            if self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill':
+                                return pf_candidate_selection.prepare_available(
+                                    *args, stop_requested=stopped, announce=announce_pf,
+                                    wait_for_work=wait_for_preparation,
+                                    refill_requested=getattr(executor, 'preparation_needs_refill', None))
+                            result = pf_candidate_selection.prepare_next(
+                                *args, stop_requested=stopped,
+                                refill_requested=getattr(executor, 'preparation_needs_refill', None))
+                            announce_pf(*result[:2])
+                            return result
+
+                        if not terminal:
+                            return regular()
+                        entries = dict(initial_context['pf_evidence_registry']['configurations'])
+                        waves_path = self.run/'pf_auto'/'WAVES.json'
+                        if waves_path.is_file():
+                            for row in json.loads(waves_path.read_bytes()).values():
+                                entries.update(row.get('configurations', {}))
+                        with ThreadPoolExecutor(max_workers=1,thread_name_prefix='pf-terminal-producer') as pool:
+                            work = pool.submit(complete_terminal_prices, ROOT, runtime, entries,
+                                               stop_requested=stopped, on_ready=terminal_ready)
+                            result = regular()
+                            work.result()
+                        return (*include_terminal(*result[:2]), result[2])
                     pf_future=preparation_pool.submit(prepare_pf)
 
                 def install_pf():
