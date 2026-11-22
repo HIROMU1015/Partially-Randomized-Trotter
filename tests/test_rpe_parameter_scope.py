@@ -9,9 +9,15 @@ from trottertracks import pf_horizon_preparation as pf, pr_df_horizon_preparatio
 from trottertracks import rpe_scaled_shots as scaled
 from trottertracks.rpe_local0_scope_plan import verified_scope
 from trottertracks.rpe_local0_search import RequestError, request_service
+from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
 from trottertracks.rpe_release_registry import read, write
 from trottertracks.pr_df_descriptor_extension import BINDING_KEYS
 
+
+def fixture_bridge(tmp_path, settings=None):
+    executor = SimpleNamespace(run_dir=tmp_path, state=SimpleNamespace(failure=None),
+                               ready_preparations=lambda *args, **kwargs: [])
+    return DistributedPreparationBridge(executor, tmp_path, settings, approved=False)
 
 def test_known_candidates_do_not_prove_completion_of_declared_scope():
     tau = Fraction(scaled.EPSILON)**2
@@ -51,7 +57,7 @@ def test_df_only_and_mixed_plan_respect_independent_splits_and_grids():
 def test_scoped_pf_completion_collects_new_parents_and_resumes(tmp_path, monkeypatch):
     import trottertracks.pf_distributed_preparation as prices
     from trottertracks.pr_candidate_completion import PreparationWait
-    rt = SimpleNamespace(settings={},executor=SimpleNamespace(run_dir=tmp_path))
+    rt = fixture_bridge(tmp_path)
     methods = ['FULL_PF','TRUNCATED_PF']
     candidates = []
     for i, method in enumerate(methods*2):
@@ -155,8 +161,8 @@ def test_df_completion_uses_scope_and_recovers_the_owned_parent_only(tmp_path, m
     monkeypatch.setattr(GitReader,'read',configuration)
     refs = {(json.dumps(bindings,sort_keys=True),Fraction(8)):[({'commit':'ref'},{'reference':1})]}
     monkeypatch.setattr(df,'references',lambda *_:refs)
-    rt = SimpleNamespace(settings={'horizon_extensions':{'bindings':{'owned':{'rounds':{'13':{'signal':'existing'}}}}}},
-                         executor=SimpleNamespace(run_dir=tmp_path))
+    rt = fixture_bridge(tmp_path, {'horizon_extensions':{'bindings':{
+        'owned':{'rounds':{'13':{'signal':'existing'}}}}}})
     about = []
     def complete(request, *, existing_signal_only, saved_packets):
         cid=request['selection']['source_configuration_id']
@@ -178,3 +184,23 @@ def test_saved_catalog_parent_can_prepare_signal_before_prices_or_q3():
     selected=pf.parents([c],['TRUNCATED_PF'],[13],{}, {})
     assert selected['parent']['configuration'] == c['configuration_source']
     assert selected['parent']['prices'] is None and selected['parent']['q3_inputs'] is None
+
+
+def test_completed_df_stage_restores_missing_output_without_launch(tmp_path):
+    from trottertracks.pr_candidate_completion import Completion, PreparationWait
+
+    completion = Completion.__new__(Completion)
+    output = tmp_path/'result.json'
+    marker = tmp_path/'DF_SIGNALS.DISTRIBUTED.json'
+    write(marker, {'job_id': 'same-job'})
+    write(tmp_path/'DF_SIGNALS.RETURN.json', {'returncode': 0})
+
+    def restore(owner, original, stage):
+        assert (owner, original, stage) == (completion, marker, 'DF_SIGNALS')
+        write(output, {'status': 'SIGNALS_READY'})
+        return True
+
+    completion.stage_executor = SimpleNamespace(import_received_stage=restore)
+    assert completion.call([], tmp_path, 'DF_SIGNALS', output, science=True)['status'] == 'SIGNALS_READY'
+    with pytest.raises(PreparationWait, match='RESULT_ARTIFACTS_MISSING'):
+        completion.call([], tmp_path, 'DF_SIGNALS', tmp_path/'absent.json', science=True)

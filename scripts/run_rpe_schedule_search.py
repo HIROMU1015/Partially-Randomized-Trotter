@@ -340,6 +340,7 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             ('trottertracks.pf_horizon_preparation', 'src/trottertracks/pf_horizon_preparation.py'),
             ('trottertracks.pr_df_horizon_preparation', 'src/trottertracks/pr_df_horizon_preparation.py'),
             ('trottertracks.rpe_preparation_round', 'src/trottertracks/rpe_preparation_round.py'),
+            ('trottertracks.rpe_price_validation', 'src/trottertracks/rpe_price_validation.py'),
         ):
             path = deployment / relative
             if hashlib.sha256(path.read_bytes()).hexdigest() != assets.get(relative):
@@ -1669,7 +1670,13 @@ class WidthDriver:
         if pf_enabled:
             from trottertracks import pf_optimizer_connection as PF
             routes=PF.registry_routes(routes,context['pf_evidence_registry'])
+        search=dict(problem['search'], **self.spec.get('search_overrides',{}))
         horizon_keys = set()
+        if 'PR_DF' in self.methods and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+            from trottertracks.pr_df_horizon_preparation import ready_keys as saved_horizon_keys
+            from trottertracks.rpe_scaled_shots import settings as horizon_settings
+            horizon_keys.update(saved_horizon_keys(context['candidates'], comp.state['records'].values(),
+                                                  horizon_settings(search['scaled_shots'])['M']))
         def install_ready(current_routes, snapshot=False):
             accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
             accepted.update(horizon_keys.copy())
@@ -1693,7 +1700,6 @@ class WidthDriver:
             maximum=self.spec.get('max_new_q3_per_method',{}).get(method)
             if maximum=='UNLIMITED' and getattr(self,'rule_stop',False):budgets[method]='UNLIMITED'
             elif maximum not in(None,'UNLIMITED'):budgets[method]=min(budget,maximum)
-        search=dict(problem['search'],**self.spec.get('search_overrides',{}))
         if getattr(self,'rule_stop',False):
             search['max_steps_per_method']=self.spec.get('max_steps_per_method')
             search['work_slice_steps']=W.settings(self.wide)['per_decision']
@@ -1728,7 +1734,7 @@ class WidthDriver:
                     scaled_settings(search['scaled_shots']), problem['rpe']['M'])
                 if early:
                     save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', early, runtime.executor.store)
-            def prepare_df(scope, notify=None):
+            def prepare_df(scope, notify=None, stop_requested=executor._user_stop_requested):
                 if (runtime is None or 'PR_DF' not in self.methods or self.spec.get('science_approved') is not True
                         or search.get('rule') != 'RPE_SCALED_SHOTS_V1' or context.get('artificial')
                         or problem.get('problem',{}).get('system') != 'H4'
@@ -1741,7 +1747,7 @@ class WidthDriver:
                         notify('PR_DF',record)
                 prepare_df_horizons(ROOT,runtime,comp,scope,scaled_settings(search['scaled_shots'])['M'],
                                     active_spec['executor'].get('prior_run_dirs', ()),
-                                    executor._user_stop_requested, on_ready=ready)
+                                    stop_requested, on_ready=ready)
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
                 prepare_during = executor.replay_prior_q3() and prepare_during
             interim=None
@@ -1751,6 +1757,7 @@ class WidthDriver:
                 # it owns Completion state, Q3 only reads this frozen context.
                 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
                 import inspect,threading
+                from trottertracks.rpe_preparation_round import snapshot_context, _merge_pf
                 stop_preparation=threading.Event()
 
                 def stop_preparing():
@@ -1771,19 +1778,26 @@ class WidthDriver:
                     prepare_options.update(announce_ready=announce, stop_on_error=stop_preparing,
                                            wait_for_preparation=wait_for_preparation, continuous=continuous)
                     search_options['ready_source'] = subscriber
-                df_scope = [c.copy() for c in context['candidates'] if c['method']=='PR_DF']
+                df_context = (snapshot_context(context)
+                              if runtime is not None and 'PR_DF' in self.methods and
+                              search.get('rule') == 'RPE_SCALED_SHOTS_V1' and
+                              13 in scaled_settings(search['scaled_shots'])['M'] else None)
+                initial_keys = {p.get('completion', {}).get('key') for p in self.state['points']
+                                if p['status'] in ('REGISTERED', 'EVALUATED')}
                 def prepare():
                     if runtime is not None and not stop_preparation.is_set():
                         self.bootstrap_families()
                     if not stop_preparation.is_set():
                         self.complete_points(**prepare_options)
-                    if not stop_preparation.is_set():
-                        prepare_df(df_scope, prepare_options.get('announce_ready'))
+                    stopped = lambda: stop_preparation.is_set() or executor._user_stop_requested()
+                    if df_context is not None and not stopped():
+                        if changed := ready_keys() - initial_keys - horizon_keys:
+                            comp.install_snapshot(df_context, dict(problem, execution_routes=routes), changed)
+                        prepare_df(df_context['candidates'], prepare_options.get('announce_ready'), stopped)
                 pf_future=None
                 self.pf_more=False
                 if pf_enabled:
                     from trottertracks import pf_candidate_selection
-                    from trottertracks.rpe_preparation_round import snapshot_context,_merge_pf
                     trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
                     if trial.get('recover_saved_price_rounds') and not active_spec.get('pf_completion'):
                         active_spec = dict(active_spec, pf_completion=dict(problem['pf_completion'],

@@ -156,7 +156,8 @@ def scope_coverage(method_scope, horizons, rows):
 
 def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spent=0, free=None,
         science_approved=True, refresh_ready=None, submit_standby=None, held=(), flagged_stop=None,
-        read_completed=None, after_drain=None, await_ready=None, method_scope=None):
+        read_completed=None, after_drain=None, await_ready=None, method_scope=None,
+        refresh_completions=None):
     """Prove local grid minima by exact price order, with no MSE monotonicity."""
     from decimal import DecimalException
     from . import rpe_method_optimizer as O
@@ -293,12 +294,16 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
 
     for c in candidates:
         register(c)
+    if refresh_completions is not None:
+        refresh_completions({cid for cid, _ in registered})
     while True:
         if refresh_ready is not None:
             added, values = refresh_ready()
             known.update(values)
             for c in added:
                 register(c)
+            if added and refresh_completions is not None:
+                refresh_completions({c['configuration_id'] for c in added})
         collect_completed()
         if fatal:
             break

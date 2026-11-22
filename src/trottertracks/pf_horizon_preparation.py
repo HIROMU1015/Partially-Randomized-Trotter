@@ -124,7 +124,7 @@ def collected_signal(owners, parent, output):
             raise ValueError('Previously recovered terminal evidence differs: '+name)
         if not destination.exists():
             destination.write_bytes(raw)
-    return True
+    return prior, job
 
 
 def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, owners=()):
@@ -184,7 +184,8 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
     result = directory/'result'
     if stop_requested():
         raise Held('STOP_REQUESTED')
-    if not collected_signal(owners, parent, result):
+    recovered = collected_signal(owners, parent, result)
+    if not recovered:
         runtime.call(context, [*args,'--output',str(result),'--mode','execute'], directory, 'PF_SIGNALS', wait=False)
     plan = read(result/'PLAN.json')
     cfg = plan['configuration']
@@ -252,6 +253,8 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
     extension.update(configuration=cfg_loc,signal_packet=sig_loc,q3_inputs=q3,binding_id=binding,
                      total_configuration_id=total,horizon_parent=parent_locs,horizon_risk_source=M13_RISK,
                      horizon_source_configuration_id=parent)
+    if recovered and recovered[0].resolve() == run.resolve():
+        runtime.executor.adopt_preparation(recovered[1])
     return dict(workspace=str(vault),relative_output='.',configuration=cfg_loc,physical_id=physical,
                 plan_sha256=sha256((vault/'PLAN.json').read_bytes()).hexdigest(),entry=extension,
                 terminal_reference=reference)
@@ -260,7 +263,7 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
 def complete_scoped(root, runtime, candidates, methods, horizons, routes, interpreter, prior_runs,
                     *, stop_requested, on_ready):
     from .pf_distributed_preparation import complete_terminal_prices
-    from .pr_candidate_completion import Held
+    from .pr_candidate_completion import Held, PreparationWait
 
     explicit = runtime.settings.get('pf_terminal_price_leaves', {})
     owned = (runtime.settings.get('horizon_extensions') or {}).get('bindings', {})
@@ -284,9 +287,8 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
             inherited.append((prior, read(receipts) if receipts.is_file() else {}))
             catalog = prior/'HORIZON_PREPARATION.json'
             owners.append((prior,read(catalog) if catalog.is_file() else []))
-    for parent, entry in pending.items():
-        if stop_requested():
-            return
+    def advance(item):
+        parent, entry = item
         report = base/parent/'PREPARATION.json'
         try:
             if parent in saved and saved[parent]['status'] == 'READY':
@@ -295,7 +297,7 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
                         or record.get('parent_prices') != entry.get('prices')):
                     raise Held('Previously adopted terminal prices have different parent inputs')
                 on_ready(record['configuration_id'], record['entry'])
-                continue
+                return None
             locs = {k:entry[k] for k in ('configuration','signal_packet')}
             carried = next((states[parent] for _,states in inherited if states.get(parent, {}).get('status') == 'READY'
                          and states[parent]['entry'].get('horizon_parent') == locs
@@ -306,7 +308,7 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
                 latest[parent] = carried
                 write(state_path, latest)
                 on_ready(carried['configuration_id'], carried['entry'])
-                continue
+                return None
             selected_owners = owners
             if (owned.get(parent, {}).get('rounds', {}).get('13') or {}).get('signal'):
                 if not any(row.get('source_configuration_id') == parent and row.get('M') == 13
@@ -331,5 +333,14 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
                                    configuration_id=parent, reason=latest.get('reason')))
             else:
                 write(report, dict(status='WAITING_FOR_PARENT_PRICES',configuration_id=parent))
+        except PreparationWait as error:
+            fields = dict(status='WAITING_DISTRIBUTED_PREPARATION', configuration_id=parent, reason=str(error))
+            if error.job_id:
+                fields['job_id'] = error.job_id
+            write(report, fields)
+            return error.job_id
         except (Held, ValueError, KeyError, OSError, sqlite3.Error, subprocess.CalledProcessError) as error:
             write(report, dict(status='PREPARATION_INCOMPLETE',configuration_id=parent,reason=str(error)))
+        return None
+
+    runtime.follow_preparations(pending.items(), advance, stop_requested)

@@ -93,6 +93,7 @@ class ConcurrentExecutor(O.Executor):
             failure=None,owner_clock={},clock=0,budgets=budgets or {},approved=science_approved,existing=existing,
             reserved=Counter(),metrics=Counter(),by_method={},pids={},driver=driver,peak_RSS_KiB=0,peak_active=0,adopted_jobs=set(),observations=defaultdict(list),external={},monitor_stop=threading.Event())
         self.state.scaled_completions = defaultdict(dict)
+        self.state.unmatched_scaled_completions = defaultdict(dict)
         self.state.scaled_recovered = set()
         self.invocation=str(os.getpid())+'-'+str(time.time_ns())
         progress = self.run_dir/'PROGRESS.jsonl'
@@ -434,11 +435,21 @@ class ConcurrentExecutor(O.Executor):
 
     def _note_scaled_completion(self, method, job, origin):
         from .rpe_scaled_shots import RULE
-        if origin.get('kind') == RULE and job not in self.state.adopted_jobs:
+        if (origin.get('kind') == RULE and job not in self.state.adopted_jobs
+                and job not in self.state.unmatched_scaled_completions[method]):
             self.state.scaled_completions[method][job] = None
 
     def scaled_completion_pending(self):
         return bool(self.state.scaled_completions[self.method])
+
+    def refresh_scaled_completions(self, configuration_ids):
+        """Reoffer early results only when their candidate becomes visible."""
+        with self.state.cv:
+            deferred = self.state.unmatched_scaled_completions[self.method]
+            for job, configuration in tuple(deferred.items()):
+                if configuration in configuration_ids:
+                    del deferred[job]
+                    self.state.scaled_completions[self.method][job] = None
 
     def read_scaled_completions(self, proposal_for):
         """Read only published completions for the selector's current allocations."""
@@ -452,7 +463,13 @@ class ConcurrentExecutor(O.Executor):
             cid = request['configuration_id']
             key = cid, O.interleave(request['N_X'], request['N_Y'])
             proposal = proposal_for(key)
-            if (proposal is None or self.job_dir(proposal) != job or not self.same_route(job, cid)
+            if proposal is None:
+                with self.state.cv:
+                    if job not in self.state.adopted_jobs:
+                        self.state.scaled_completions[self.method].pop(job, None)
+                        self.state.unmatched_scaled_completions[self.method][job] = cid
+                continue
+            if (self.job_dir(proposal) != job or not self.same_route(job, cid)
                     or request.get('cost') is None or O.frac(request['cost']) != proposal['cost']):
                 continue
             receipt = O.load_json(job/'PROCESS_RETURN.json')
@@ -584,6 +601,7 @@ class ConcurrentExecutor(O.Executor):
         s = self.state
         with s.cv:
             s.scaled_completions[self.method].pop(job, None)
+            s.unmatched_scaled_completions[self.method].pop(job, None)
             task = s.tasks.get(job)
             first=job not in s.adopted_jobs
             if first:
@@ -2184,8 +2202,69 @@ class DistributedExecutor(ConcurrentExecutor):
             self.state.cv.notify_all()
         return job_id
 
-    def preparation_result(self, job_id, *, wait=False, adopt=True):
+    def ready_preparations(self, job_ids, *, wait, stop_requested):
+        """Wait for a watched job's result or its terminal eligibility decision."""
+        if not job_ids:
+            return []
+        with self.state.cv:
+            while not (self.state.closed or self.state.failure or stop_requested()):
+                states = self.store.preparation_states(job_ids)
+                ready = []
+                can_progress = False
+                for job in job_ids:
+                    method, state = states.get(job, (None, None))
+                    task = self.state.tasks.get(self.run_dir/'jobs'/method/job) if method else None
+                    if state == 'UNKNOWN' or (state == 'ACCEPTED' and
+                            (self.run_dir/'jobs'/method/job/'OUTCOME.json').is_file()) or (task and task.error):
+                        ready.append(job)
+                    if state == 'QUEUED':
+                        row = self.store.row(job)
+                        if self._preparation_dependency_hold(row):
+                            ready.append(job)
+                        elif wait:
+                            eligibility = (row.get('eligibility') or {}).get('eligible_host_ids')
+                            if eligibility is None:  # Artificial queues may have no readiness policy.
+                                can_progress = True
+                            else:
+                                targets = self._preparation_probe_targets()
+                                policy, error = self._host_admission_policy()
+                                manager = self.pbs_manager
+                                can_progress |= any(host in targets or (
+                                    manager is not None and host in manager.configured
+                                    and self._host_admission(host, policy, error)['accepting'])
+                                    for host in eligibility)
+                    elif state not in (None, 'CANCELLED'):
+                        can_progress = True
+                    if state not in (None, 'CANCELLED'):
+                        continue
+                    pending = self.preparation_pending.get(job)
+                    hold = self.preparation_holds.get(job, {})
+                    if (hold.get('status') == 'PREPARATION_BUDGET_OR_PERMISSION_HOLD'
+                            or (pending is not None and self._preparation_probe_hold(pending) is not None)
+                            or (pending is None and hold)):
+                        ready.append(job)
+                    else:
+                        can_progress |= pending is not None
+                if ready or not wait or not can_progress:
+                    return ready
+                # Some admission deadlines and STOPs are set outside this
+                # process. Result publication and local eligibility wake us.
+                self.state.cv.wait(.5)
+        return []
+
+    def _preparation_dependency_hold(self, row):
+        for dependency in row['request']['preparation'].get('dependencies', []):
+            result = self.preparation_result(dependency, adopt=False, materialize=False)
+            if result is not None and result.get('status') != 'PREPARATION_COMPLETE':
+                return dict(status='PREPARATION_DEPENDENCY_HOLD', reason='PREDECESSOR_NOT_COMPLETE',
+                            dependency=dependency, predecessor=result, job_id=row['job_id'],
+                            calls=0, preparation_calls=0)
+        return None
+
+    def preparation_result(self, job_id, *, wait=False, adopt=True, materialize=True):
         row = self.store.row(job_id)
+        if row is not None and row['state'] == 'CANCELLED':
+            row = None
         if wait and row is None and job_id in self.preparation_pending:
             self.log(event='DEPENDENCY_WAIT_START',job=job_id)
             try:
@@ -2198,6 +2277,8 @@ class DistributedExecutor(ConcurrentExecutor):
                         if self._preparation_probe_hold(pending)is not None:break
                         if pending['decision']['eligible_host_ids'] and job_id in self.preparation_holds and self.preparation_holds[job_id].get('status')=='PREPARATION_BUDGET_OR_PERMISSION_HOLD':break
                         self.state.cv.wait(.1);row=self.store.row(job_id)
+                        if row is not None and row['state'] == 'CANCELLED':
+                            row = None
             finally:self.log(event='DEPENDENCY_WAIT_END',job=job_id)
         if row is None:
             if job_id in self.preparation_pending:
@@ -2208,20 +2289,25 @@ class DistributedExecutor(ConcurrentExecutor):
                 hold=self._preparation_probe_hold(self.preparation_pending[job_id])
             return None if hold is None else dict(hold,job_id=job_id,calls=0,preparation_calls=0)
         if self._preparation_request(row['request']) is None: raise ValueError('Not a preparation task')
+        if row['state'] == 'QUEUED' and (hold := self._preparation_dependency_hold(row)):
+            return hold
         task = self.state.tasks.get(self.run_dir/'jobs'/row['method']/job_id)
         if wait and row['state'] != 'ACCEPTED' and task is not None and not task.event.is_set():
             self.for_method(row['method']).log(event='DEPENDENCY_WAIT_START',job=job_id)
             try:
                 while not task.event.wait(.1):
-                    for dependency in row['request']['preparation'].get('dependencies', []):
-                        result = self.preparation_result(dependency,adopt=False)
-                        if result is not None and result.get('status') != 'PREPARATION_COMPLETE':
-                            return dict(status='PREPARATION_DEPENDENCY_HOLD',reason='PREDECESSOR_NOT_COMPLETE',dependency=dependency,predecessor=result,job_id=job_id,calls=0,preparation_calls=0)
+                    if hold := self._preparation_dependency_hold(row):
+                        return hold
             finally: self.for_method(row['method']).log(event='DEPENDENCY_WAIT_END',job=job_id)
             row = self.store.row(job_id)
         if row['state'] == 'ACCEPTED':
             job = self.run_dir/'jobs'/row['method']/job_id
-            outcome = json.loads((job/'OUTCOME.json').read_text())
+            try:
+                outcome = json.loads((job/'OUTCOME.json').read_text())
+            except FileNotFoundError:
+                return None  # ACCEPTED precedes transfer publication; OUTCOME is published last.
+            if not materialize:
+                return dict(status=outcome['status'], job_id=job_id)
             artifacts = job/'artifacts'
             manifest = outcome.get('artifacts', {})
             if not adopt and self.artifact_cache.missing(manifest.values()):

@@ -481,7 +481,7 @@ class Service:
             job=self.executor.submit_preparation(row['request'],budget=row['compile_budget'],approved=True,
                 contract=dict(model_id=mid,one_representative_only=True,automatic_retry=False))
         if job!=row['job_id']:raise ValueError('Frozen validation task ID changed')
-        result=self.executor.preparation_result(row['job_id'],wait=False)
+        result=self.executor.preparation_result(row['job_id'],wait=False,adopt=False)
         if result is None:return
         if result.get('status')=='PREPARATION_COMPLETE':
             from .rpe_preparation_bridge import DistributedPreparationBridge
@@ -506,6 +506,7 @@ class Service:
                 checks['observations']+=[dict(path_id=str(p['path_index']),axis=a,compiled_RZ=p['compiled_RZ'],source=p.get('receipt')or p['source'])for p in axis['paths']]
             if set(checks['predicted_RZ'])!=set(AXES)or checks['independent_paths']!=(2 if self.descriptions[mid][1]['family']=='PR'else 1):raise ValueError('Validation independent X/Y paths incomplete')
             self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=[checks],result_source=row['result_path']))
+            self.executor.adopt_preparation(row['job_id'])
         elif result.get('status')in('PREPARATION_FAILED','UNKNOWN'):
             self.store.change(mid,lambda r:r.update(status='INCOMPLETE',failure=result,automatic_retry=False))
     @staticmethod

@@ -346,8 +346,13 @@ def registry_routes(routes, registry):
         base_rules = [rule for rule in rules if not rule.get('horizon_risk_source')]
         if not base_rules:
             raise ValueError('Published PF candidate has no base route')
+        parent = entry.get('horizon_source_configuration_id')
         rule = next((r for r in base_rules if r.get('configuration_ids') in (None, '*')
-                     or cid in r['configuration_ids']), base_rules[0])
+                     or (parent or cid) in r['configuration_ids']), None)
+        if rule is None:
+            if parent:
+                raise ValueError('Extended PF candidate has no route for its fixed parent')
+            rule = base_rules[0]
         loc = deepcopy(entry['q3_inputs'])
         if loc.get('selector'):
             loc['inputs_selector'] = loc.pop('selector')

@@ -116,6 +116,13 @@ class JobStore:
         with self._connection() as db:
             return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
 
+    def preparation_states(self, job_ids):
+        """Read scheduling states without deserializing preparation payloads."""
+        with self._connection() as db:
+            return {job: (method, state) for job, method, state in db.execute(
+                "SELECT job_id, method, state FROM jobs WHERE job_id IN (SELECT value FROM json_each(?))",
+                (json.dumps(list(job_ids)),))}
+
     def rows(self):
         with self._connection() as db:
             return [self._decoded(row) for row in db.execute('SELECT * FROM jobs ORDER BY enqueued_epoch,job_id')]

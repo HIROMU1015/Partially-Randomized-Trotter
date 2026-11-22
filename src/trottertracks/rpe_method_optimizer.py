@@ -1631,11 +1631,13 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     ex.prefetch_standby(None if choice is None or saved(choice) else choice, [p for p in proposals if not saved(p)])
             if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                 read_completed = None
+                refresh_completions = None
                 if executor is not None and hasattr(ex, 'read_scaled_completions'):
                     if hasattr(ex, 'recover_scaled_completions'):
                         ex.recover_scaled_completions()
                     ex.completion_pending = ex.scaled_completion_pending
                     read_completed = ex.read_scaled_completions
+                    refresh_completions = getattr(ex, 'refresh_scaled_completions', None)
 
                 def after_drain(finalize):
                     def update(summary):
@@ -1669,12 +1671,16 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                         spent=spent, free=free, science_approved=science_approved,
                                         method_scope=method_scope, refresh_ready=refresh_ready, submit_standby=submit_standby,
                                         await_ready=await_ready if parallel_history else None,
-                                        read_completed=read_completed,
+                                        read_completed=read_completed, refresh_completions=refresh_completions,
                                         after_drain=after_drain if scaled_finalizers is not None else None,
                                         held=prior_q3_holds,
                                         flagged_stop=(lambda: (ex.run_dir/'STOP_REQUESTED.json').exists()) if executor is not None else None)
+                    if executor is not None and (ex.run_dir/'STOP_REQUESTED.json').exists():
+                        for future in ready_history:
+                            future.cancel()
                     for future in ready_history:
-                        future.result()
+                        if not future.cancelled():
+                            future.result()
             else:
                 result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                         baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),

@@ -629,6 +629,27 @@ class ControllerFailures(unittest.TestCase):
         executor.rpc('/v1/complete', payload)
         self.assertEqual(executor.state.metrics['finished'], 1)
 
+    def test_scaled_completion_arriving_before_registration_is_reoffered_once(self):
+        executor = self.executor()
+        view = executor.for_method('PR_PAULI')
+        proposal = dict(self.proposal('early'), origin=dict(kind=S.RULE, M=1))
+        task = view._enqueue(proposal, demand=True)
+        assignment, = self.poll(executor)['assignments']
+        receipt = self.completion(assignment)
+        executor.rpc('/v1/complete', receipt)
+
+        self.assertEqual(list(view.read_scaled_completions(lambda key: None)), [])
+        self.assertFalse(view.scaled_completion_pending())
+        view.refresh_scaled_completions({'other'})
+        self.assertFalse(view.scaled_completion_pending())
+        view.refresh_scaled_completions({'early'})
+        accepted, = view.read_scaled_completions(lambda key: proposal)
+        self.assertEqual(accepted[0][0], 'early')
+        self.assertIsNotNone(executor.store.row(task.job.name)['adopted_epoch'])
+        executor.rpc('/v1/complete', receipt)
+        view.refresh_scaled_completions({'early'})
+        self.assertEqual(list(view.read_scaled_completions(lambda key: proposal)), [])
+
     def test_scaled_adoption_with_two_hosts_and_resume(self):
         from run_rpe_method_optimizer import make_executor
 

@@ -437,9 +437,55 @@ class PreparationQueue(Base.ControllerFailures):
         one=self.submit(ex,'compile','no-permission',budget=0)
         request=self.request('audit','requires-one')
         two=ex.submit_preparation(request,approved=True,budget=8,dependencies=[one])
-        result=ex.preparation_result(two,wait=True)
-        self.assertEqual(result['status'],'PREPARATION_DEPENDENCY_HOLD')
+        for wait in (False, True):
+            result=ex.preparation_result(two,wait=wait)
+            self.assertEqual(result['status'],'PREPARATION_DEPENDENCY_HOLD')
         self.assertEqual(self.poll_host(ex,'server1')['assignments'],[])
+
+    def test_follow_preparation_resumes_on_published_result_while_sibling_runs(self):
+        from threading import Event, Thread
+        from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
+
+        executor = self.executor(capacity=2)
+        bridge = DistributedPreparationBridge(executor, ROOT)
+        jobs = {name: self.submit(executor, 'signal', name) for name in ('a', 'b')}
+        assignments = {item['job_id']: item for item in self.poll_host(executor, 'server1', 2)['assignments']}
+        observed = Event()
+        watching = Event()
+        stopped = Event()
+        landed = []
+
+        def advance(candidate):
+            job = jobs[candidate]
+            result = executor.preparation_result(job, adopt=False)
+            if result is None:
+                if candidate == 'b':
+                    watching.set()
+                return job
+            self.assertEqual(result['status'], 'PREPARATION_COMPLETE')
+            executor.adopt_preparation(job)
+            landed.append(candidate)
+            observed.set()
+
+        waiter = Thread(target=bridge.follow_preparations,
+                        args=(('a', 'b'), advance, stopped.is_set))
+        waiter.start()
+        try:
+            self.assertTrue(watching.wait(3))
+            receipt = self.prep_complete(executor, assignments[jobs['b']])
+            executor.rpc('/v1/complete', receipt)
+            self.assertTrue(observed.wait(3))
+            self.assertEqual(landed, ['b'])
+            self.assertIsNone(executor.store.row(jobs['a'])['completed_epoch'])
+            self.assertTrue(executor.rpc('/v1/complete', receipt)['duplicate'])
+        finally:
+            stopped.set()
+            executor.rpc('/v1/complete', self.prep_complete(executor, assignments[jobs['a']]))
+            waiter.join(3)
+        self.assertFalse(waiter.is_alive())
+        bridge.follow_preparations(('a',), advance, lambda: False)
+        self.assertEqual(landed, ['b', 'a'])
+        self.assertEqual(sum(row['event'] == 'ASSIGN' for row in executor.store.events()), 2)
 
 
 # Base fixture's existing tests already have their own coverage; inherited

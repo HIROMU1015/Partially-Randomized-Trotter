@@ -486,6 +486,32 @@ class DistributedPreparationBridge:
     def handles(stage):
         return stage in STAGES
 
+    def follow_preparations(self, items, advance, stop_requested):
+        """Resume a candidate on this producer thread after its job changes."""
+        remaining = iter(items)
+        waiting = {}
+        exhausted = False
+        while not stop_requested():
+            ready = self.executor.ready_preparations(waiting, wait=exhausted, stop_requested=stop_requested)
+            if stop_requested() or self.executor.state.failure is not None:
+                break
+            if ready:
+                job_id = ready[0]
+                candidates = waiting[job_id]
+                item = candidates.pop(0)
+                if not candidates:
+                    del waiting[job_id]
+            elif not exhausted:
+                try:
+                    item = next(remaining)
+                except StopIteration:
+                    exhausted = True
+                    continue
+            else:
+                break
+            if job_id := advance(item):
+                waiting.setdefault(job_id, []).append(item)
+
     @staticmethod
     def _dependencies(directory, stage):
         jobs = []
@@ -1536,7 +1562,7 @@ class DistributedPreparationBridge:
         put(marker, dict(submitted, job_id=job_id))
         result = self.executor.preparation_result(job_id, wait=wait, adopt=False)
         if result is None and not wait:
-            raise PreparationWait('DISTRIBUTED_PREPARATION_IN_PROGRESS:'+stage+':'+job_id)
+            raise PreparationWait('DISTRIBUTED_PREPARATION_IN_PROGRESS:'+stage+':'+job_id, job_id=job_id)
         if not result or result.get('status') != 'PREPARATION_COMPLETE':
             terminal=result or{}
             while terminal.get('status')=='PREPARATION_DEPENDENCY_HOLD'and isinstance(terminal.get('predecessor'),dict):

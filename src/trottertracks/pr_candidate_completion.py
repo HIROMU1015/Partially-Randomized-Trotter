@@ -163,6 +163,10 @@ class Held(Exception):pass
 class PreparationWait(Held):
     """A stage can be checked again through its original request and owner."""
 
+    def __init__(self, message, *, job_id=None):
+        super().__init__(message)
+        self.job_id = job_id
+
 class DFOriginalPriceAttempt(Held):
     def __init__(self, marker):
         self.marker = marker
@@ -533,11 +537,19 @@ class Completion:
 
     def call(self,cmd,d,stage,output=None,science=False,*,poll=False):
         d=Path(d);d.mkdir(parents=True,exist_ok=True);done=d/(stage+'.RETURN.json');started=d/(stage+'.STARTED.json')
+        runtime=getattr(self,'stage_executor',None)
         if done.exists():
             r=read(done)
             if r['returncode']!=0:raise Held('PRIOR_STAGE_FAILED_NO_RETRY:'+stage)
-            return read(output)if output and Path(output).exists()else r
-        runtime=getattr(self,'stage_executor',None)
+            if output is None:
+                return r
+            if not Path(output).exists():
+                marker = d/(stage+'.DISTRIBUTED.json')
+                if runtime is not None and marker.is_file():
+                    runtime.import_received_stage(self, marker, stage)
+                if not Path(output).exists():
+                    raise PreparationWait('PREPARATION_RESULT_ARTIFACTS_MISSING:'+stage+':'+str(output))
+            return read(output)
         if runtime is not None and science and runtime.handles(stage):
             # Recovery is reconciled with the original host/attempt by the
             # shared executor. A local STARTED marker is never a retry grant.
@@ -894,6 +906,7 @@ class Completion:
             if old and (old.get('signal_deferred_for_price') or old.get('deferred_configuration')):
                 rec.update(deferred_configuration=old.get('deferred_configuration') or old['configuration'],
                            deferred_tail_descriptor=old.get('deferred_tail_descriptor'))
+            rec.pop('pending_preparation_job', None)
             self.state['records'][identifier]=rec;self.save()
         request=deepcopy(request)  # descriptor resolution must not change the caller's stable request key
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
@@ -1060,6 +1073,8 @@ class Completion:
                 rec['preparation_recovery'] = evidence
             waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))
             operational=isinstance(exc, PreparationWait)
+            if operational and exc.job_id:
+                rec['pending_preparation_job'] = exc.job_id
             unavailable = (request['method']=='PR_DF' and text.startswith(DF_PRICE_UNAVAILABLE) or
                            request['method']=='PR_PAULI' and bool(rec.get('price_actions')) and waiting)
             rec.update(status='WAITING_DISTRIBUTED_PREPARATION'if operational else
@@ -1069,6 +1084,10 @@ class Completion:
         except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),scientific_failure=True)
         finally:
             if physical_guard is not None:physical_guard.release()
+        if request.get('horizon_parent'):
+            marker = d/'DF_SIGNALS.DISTRIBUTED.json'
+            if marker.is_file():
+                rec['horizon_signal_job'] = read(marker)['job_id']
         if (rec['status'].startswith(('HELD','STOP','WAITING')) or rec['status'] in DF_PRICE_RECHECK_STATES) and not rec.get('signal_deferred_for_price'):
             rec['registry_at_hold']=quoted_registry or self.price_registry_digest()
             if rec['method'] == 'PR_DF' and rec['status'] in DF_PRICE_RECHECK_STATES:

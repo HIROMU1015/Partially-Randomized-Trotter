@@ -201,6 +201,11 @@ def save_horizon_preparation(path, reports, store):
                 if df_detail.is_file():
                     row['preparation_detail'] = json.loads(df_detail.read_bytes())
                     row['status'] = row['preparation_detail']['status']
+                    if job := row['preparation_detail'].get('job_id'):
+                        roles = row['jobs'].setdefault(str(horizon), {})
+                        if roles.get('signal', job) != job:
+                            raise ValueError('Conflicting horizon preparation owners')
+                        roles['signal'] = job
                 elif pf_detail.is_file():
                     row['preparation_detail'] = json.loads(pf_detail.read_bytes())
                 leaf = folder/parent/'LEAF.json'

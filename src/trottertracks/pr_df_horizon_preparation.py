@@ -74,6 +74,22 @@ def select_reference(config, by_binding):
     return matches[0][0]
 
 
+def ready_keys(candidates, records, horizons):
+    """Reinstall completed terminal candidates scoped by their exact parent."""
+    parents = {c['configuration_id']: (c.get('configuration_source'), c.get('signal_source'))
+               for c in candidates if c['method'] == 'PR_DF' and c.get('configuration_id')}
+    keys = set()
+    for record in records:
+        request = record.get('request') or {}
+        parent = request.get('horizon_parent')
+        cid = (request.get('selection') or {}).get('source_configuration_id')
+        if (record['method'] == 'PR_DF' and record['status'] == 'READY_FOR_SEARCH'
+                and request.get('M') in horizons and parent
+                and parents.get(cid) == (parent['configuration'], parent['signal_packet'])):
+            keys.add(record['key'])
+    return keys
+
+
 def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_requested, on_ready=None):
     from .pr_price_rules import GitReader
     from .pr_candidate_completion import Held
@@ -107,11 +123,10 @@ def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_re
             if packet and packet not in packets:
                 packets.append(packet)
     records = []
-    for parent, c in parents.items():
-        if stop_requested():
-            break
+    def advance(item):
+        parent, c = item
         if parent in native:
-            continue
+            return None
         if Path(parent).name != parent or parent in ('','.','..'):
             raise ValueError('Invalid PR-DF parent configuration ID')
         directory = runtime.executor.run_dir/'completion'/'horizons'/parent
@@ -137,11 +152,19 @@ def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_re
                 write(path,request)
             record = completion.complete(request, existing_signal_only=existing_owner,
                                          saved_packets=prior_owners.get(parent, ()))
-            write(directory/'STATUS.json',dict(status=record['status'],reason=record.get('reason'),key=record['key']))
+            job_id = record.get('pending_preparation_job')
+            report = dict(status=record['status'], reason=record.get('reason'), key=record['key'])
+            if signal_job := record.get('horizon_signal_job') or job_id:
+                report['job_id'] = signal_job
+            write(directory/'STATUS.json', report)
             if record['status'] == 'READY_FOR_SEARCH':
                 records.append(record)
                 if on_ready is not None:
                     on_ready(record)
+            return job_id
         except (Held,ValueError,KeyError,OSError,subprocess.CalledProcessError) as err:
             write(directory/'STATUS.json',dict(status='PREPARATION_INCOMPLETE',reason=str(err)))
+        return None
+
+    runtime.follow_preparations(parents.items(), advance, stop_requested)
     return records

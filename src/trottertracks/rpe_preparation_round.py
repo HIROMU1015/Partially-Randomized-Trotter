@@ -8,6 +8,8 @@ from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from copy import copy,deepcopy
 import json
 from pathlib import Path
+from queue import Empty, SimpleQueue
+from threading import Event
 
 PF_METHODS=frozenset(('FULL_PF','TRUNCATED_PF'))
 PR_METHODS=frozenset(('PR_PAULI','PR_DF'))
@@ -77,6 +79,11 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
         100000 if unlimited else problem['search']['max_steps_per_method']))
     search.update(spec.get('search_overrides',{}))
     pf_status=None;early_result={};fatal=False;seen=None;pf_merged=False;installed_pr_keys=None
+    stop = Event()
+    pf_arrivals = SimpleQueue()
+
+    def stopped():
+        return stop.is_set() or getattr(executor, '_user_stop_requested', lambda: False)()
 
     def install_pr():
         nonlocal routes,installed_pr_keys
@@ -104,11 +111,17 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
         executor.routes=routes;executor.expected=context['expected']
         executor.log(event='ROUND_READY_DURING_PREPARATION',ready_configuration_ids=sorted(cid for method,cid in ready),
             methods=selected,preparation_running=preparing)
-        results=optimize(root,dict(problem,search=search),context=context,methods=selected,
-            initial=spec.get('initial','all'),max_new=spec['max_new_q3_per_method'],executor=executor,
-            extra_results=extra,science_approved=spec.get('science_approved')is True)
+        try:
+            results=optimize(root,dict(problem,search=search),context=context,methods=selected,
+                initial=spec.get('initial','all'),max_new=spec['max_new_q3_per_method'],executor=executor,
+                extra_results=extra,science_approved=spec.get('science_approved')is True)
+        except BaseException:
+            stop.set()
+            raise
         early_result.update(results)
         fatal=any(result.get('stop_reason')in FATAL_STOPS for result in results.values())
+        if fatal:
+            stop.set()
 
     horizon_policy = ()
     if (search.get('rule') == 'RPE_SCALED_SHOTS_V1' and spec.get('science_approved') is True
@@ -117,23 +130,37 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
         from .rpe_scaled_shots import settings
         horizon_policy = settings(search['scaled_shots'])['M']
 
+    def with_terminal_candidates(snapshot, pf_routes, entries):
+        from .pf_optimizer_connection import registry_routes
+        registry = deepcopy(snapshot['pf_evidence_registry'])
+        registry['configurations'].update(entries)
+        return (PF._refresh(root, dict(problem, search=search), snapshot, methods, registry, False),
+                registry_routes(pf_routes, registry))
+
     def prepare_pf_inputs(snapshot, pf_routes):
         after, pf_routes, status = prepare_pf(root,problem,snapshot,spec,run,pf_routes,stage_executor=runtime)
         if 13 in horizon_policy and PF_METHODS.intersection(methods):
             from .pf_horizon_preparation import complete_scoped
-            from .pf_optimizer_connection import registry_routes
             import sys
-            registry = deepcopy(after['pf_evidence_registry'])
+            entries = {}
             def register(cid, entry):
-                registry['configurations'][cid] = entry
+                entries[cid] = entry
+                pf_arrivals.put((cid, entry))
             complete_scoped(root, runtime, after['candidates'], methods, horizon_policy, pf_routes,
                             pf_settings.get('interpreter', sys.executable),
                             spec.get('executor',{}).get('prior_run_dirs', ()),
-                            stop_requested=executor._user_stop_requested, on_ready=register)
-            if registry != after['pf_evidence_registry']:
-                after = PF._refresh(root,dict(problem,search=search),after,methods,registry,False)
-                pf_routes = registry_routes(pf_routes,registry)
+                            stop_requested=stopped, on_ready=register)
+            if entries:
+                after, pf_routes = with_terminal_candidates(after, pf_routes, entries)
         return after, pf_routes, status
+
+    def prepare_pr_inputs(snapshot, pr_routes):
+        after, _, _ = PR.prepare_for_search(root, dict(problem, execution_routes=pr_routes),
+            snapshot, spec, run, completion=completion, stage_executor=runtime)
+        if not stopped() and 13 in horizon_policy and 'PR_DF' in methods:
+            from .pr_df_horizon_preparation import prepare as prepare_df_horizons
+            prepare_df_horizons(root, runtime, completion, after['candidates'], horizon_policy,
+                                 spec.get('executor',{}).get('prior_run_dirs', ()), stopped)
 
     # Keep exact raw history/pinned readers shared; only writable search state
     # needs a snapshot, not another copy of the large catalog and reader cache.
@@ -143,13 +170,23 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
                     not pf_settings.get('selected') and runtime is not None
                     else PF.prepare)
         pf_future=pool.submit(prepare_pf_inputs, snapshot_context(context), deepcopy(routes))
-        pr_future=(pool.submit(PR.prepare_for_search,root,dict(problem,execution_routes=deepcopy(routes)),
-            snapshot_context(context),spec,run,completion=completion,stage_executor=runtime)if completion is not None else None)
+        pr_future=(pool.submit(prepare_pr_inputs, snapshot_context(context), deepcopy(routes))
+                   if completion is not None else None)
         pending={pf_future}|({pr_future}if pr_future is not None else set())
         while True:
             if pf_future.done()and not pf_merged:
                 after,after_routes,pf_status=pf_future.result()
                 context,routes=_merge_pf(context,after,routes,after_routes,methods);pf_merged=True
+            entries = {}
+            while True:
+                try:
+                    cid, entry = pf_arrivals.get_nowait()
+                except Empty:
+                    break
+                entries[cid] = entry
+            if entries and not pf_merged:
+                after, after_routes = with_terminal_candidates(snapshot_context(context), deepcopy(routes), entries)
+                context, routes = _merge_pf(context, after, routes, after_routes, methods)
             install_pr()
             search_ready(any(not future.done()for future in pending))
             pending={future for future in pending if not future.done()}
@@ -163,11 +200,6 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
             after,after_routes,pf_status=pf_future.result()
             context,routes=_merge_pf(context,after,routes,after_routes,methods)
         install_pr()
-        if not fatal and completion is not None and 13 in horizon_policy and 'PR_DF' in methods:
-            from .pr_df_horizon_preparation import prepare as prepare_df_horizons
-            prepare_df_horizons(root, runtime, completion, context['candidates'], horizon_policy,
-                                spec.get('executor',{}).get('prior_run_dirs', ()), executor._user_stop_requested)
-            install_pr()
         search_ready(False)
     executor.routes=routes;executor.expected=context['expected']
     return context,routes,pf_status,completion,early_result or None
