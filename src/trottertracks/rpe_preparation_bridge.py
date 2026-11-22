@@ -597,6 +597,37 @@ class DistributedPreparationBridge:
         write(directory/(stage+'.ORIGINAL_CONTEXT_ATTEMPT.json'), submitted)
         return dict(request=request, source=submitted['source'], automatic_retry=False)
 
+    def redeliver_pf_compile(self, completion, command, directory, stage, output, submitted):
+        """Rebuild transport for a selected failed PF job, keeping native inputs."""
+        from .pr_candidate_completion import Held
+
+        job = submitted.get('job_id')
+        recovery = self.settings.get('pf_stage_audit_recoveries', {}).get(job, {})
+        if recovery.get('kind') != 'PF_PORTABLE_INPUT_DELIVERY':
+            return None
+        proof = self.recovery_evidence(directory, stage, job)
+        owner = self.executor.store.row(job)
+        stage_input = directory/(stage+'.INPUT.json')
+        if (stage not in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE')
+                or proof['action'] != 'PRESERVE_FAILED_ATTEMPT'
+                or proof['attempt_id'] != recovery['audit_attempt']
+                or owner['request_sha256'] != recovery['request_sha256']
+                or hashlib.sha256(stage_input.read_bytes()).hexdigest() != recovery['input_sha256']
+                or (directory/'STOP.json').exists()):
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job+':PF_INPUT_REDELIVERY')
+        original = owner['request']['preparation']
+        request = self.build_request(completion, command, directory, stage, output)
+        replacement = request['preparation']
+        if (original['source']['commit'] != replacement['source']['commit']
+                or any(replacement['source']['files'].get(name) != sha
+                       for name, sha in original['source']['files'].items())
+                or owner['request']['original_contract'] != request['original_contract']
+                or 'private/pf-transport/scripts/run_pf_preparation_stage.py' not in replacement['inputs']):
+            raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job+':PF_SCIENTIFIC_SOURCE')
+        replacement['supersedes_preparation'] = dict(job_id=job, attempt_id=proof['attempt_id'],
+                                                      reason='PORTABLE_FIXED_INPUT_DELIVERY')
+        return dict(request=request, source=submitted['source'], automatic_retry=False)
+
     def recovered_holdout_prices(self, directory, stage_input):
         """Rebind C-verified wrapper results produced before a packaging failure."""
         from .pr_candidate_completion import Held
@@ -806,6 +837,70 @@ class DistributedPreparationBridge:
         preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=proof['attempt_id'], reason=reason)
         return dict(request=request, source=submitted['source'], automatic_retry=False)
 
+    def interrupted_calibration_request(self, original_job, recovery):
+        """Continue a selected, ended calibration with its verified path receipts."""
+        from .rpe_q3_coordinator import digest as request_digest
+
+        row = self.executor.store.row(original_job)
+        if (not row or row['state'] != 'ACCEPTED' or not row['completion_sha256']
+                or row['attempt_id'] != recovery['attempt_id']
+                or row['request_sha256'] != recovery['request_sha256']
+                or request_digest(row['request']) != row['request_sha256']
+                or row['detail'].get('outcome_status') != 'PREPARATION_FAILED'):
+            raise ValueError('Calibration does not have its original terminal ownership: '+original_job)
+        root = self.executor.run_dir/'jobs'/row['method']/original_job
+        outcome = read(root/'OUTCOME.json')
+        receipt = read(root/'PREPARATION_RECEIPT.json')
+        if (outcome.get('request_sha256') != row['request_sha256'] or outcome['status'] != 'PREPARATION_FAILED'
+                or receipt.get('signal') != 15 or receipt.get('returncode') is not None
+                or receipt.get('automatic_retry') is not False):
+            raise ValueError('Calibration predecessor is not a recorded interruption: '+original_job)
+        request = deepcopy(row['request'])
+        request.pop('request_id')
+        preparation = request['preparation']
+        if preparation['provider'] != 'DF_CALIBRATION' or preparation.get('supersedes_preparation'):
+            raise ValueError('Selected predecessor is not an original calibration: '+original_job)
+        paths = recovery['reused_artifacts']
+        prefix = preparation['outputs'][0]+'/df_prices/calibration/acquisition/'
+        if any(not name.startswith(prefix) or not re.fullmatch(
+                r'm\d+/p\d+/(?:axes_(?:X|Y|XY)/)?(?:PATH_RECEIPT|cosine|sine)\.json', name[len(prefix):])
+               for name in paths):
+            raise ValueError('Interrupted calibration receipt is outside its original result scope')
+        if self.executor.artifact_cache.missing(paths.values()):
+            raise ValueError('Interrupted calibration receipt is missing from the fixed input cache')
+        for name, sha in paths.items():
+            if preparation['inputs'].setdefault(name, sha) != sha:
+                raise ValueError('Interrupted calibration receipt would change a frozen input: '+name)
+            preparation['working_input_hashes'].append(dict(path=name, sha256=sha))
+        preparation['supersedes_preparation'] = dict(job_id=original_job, attempt_id=row['attempt_id'],
+                                                      reason='INTERRUPTED_CALIBRATION_MISSING_WRAPPERS')
+        return request
+
+    def reconcile_interrupted_calibrations(self):
+        """Send selected continuations through the normal preparation scheduler."""
+        from .rpe_preparation_queue import preparation_job_id
+        from .rpe_release_registry import write
+
+        plans = self.settings.get('interrupted_calibrations', {})
+        if not plans or not self.approved or self.executor._user_stop_requested():
+            return
+        path = self.executor.run_dir/'preparation'/'INTERRUPTED_CALIBRATIONS.json'
+        states = read(path) if path.is_file() else {}
+        for original, plan in sorted(plans.items()):
+            try:
+                request = self.interrupted_calibration_request(original, plan)
+                job = preparation_job_id(request)
+                states[original] = dict(job_id=job, expected_new_wrappers=plan['missing_wrappers'])
+                write(path, states)
+                self.executor.submit_preparation(request, budget=self.settings['budgets']['compile'],
+                    approved=self.approved, contract=request['original_contract'],
+                    dependencies=request['preparation']['dependencies'], expected_job_id=job)
+                result = self.executor.preparation_result(job, adopt=False, materialize=False)
+                states[original]['status'] = result['status'] if result else 'PENDING'
+            except (OSError, KeyError, TypeError, ValueError, sqlite3.Error) as error:
+                states[original] = dict(status='RECOVERY_INPUT_HOLD', reason=str(error))
+        write(path, states)
+
     def recoverable_transport(self, directory, reason):
         """Use the original marker to identify the failed stage cheaply."""
         if not reason.startswith(('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:', 'STAGE_FAILED:',
@@ -814,7 +909,7 @@ class DistributedPreparationBridge:
         job = re.search(r'\bprep-[0-9a-f]{24}\b', reason)
         if not job:
             return False
-        for stage in ('DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT'):
+        for stage in ('DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
             if stage not in reason and not reason.startswith('PREPARATION_RESULT_MISMATCH:ORIGINAL_AUDIT_OUTPUT_MISSING:'):
                 continue
             for path in directory.rglob(stage+'.DISTRIBUTED.json'):
@@ -1675,7 +1770,10 @@ class DistributedPreparationBridge:
         inherited_workspace = None
         if marker.exists():
             submitted = self.repair_compile_context(directory, stage, read(marker))
-            if submitted.get('job_id') and (repair := self._transport_repair(directory, stage, submitted)):
+            repair = self.redeliver_pf_compile(completion, command, directory, stage, output, submitted)
+            if repair is None and submitted.get('job_id'):
+                repair = self._transport_repair(directory, stage, submitted)
+            if repair is not None:
                 from .rpe_preparation_queue import preparation_job_id
 
                 archive = marker.with_name(stage+'.ORIGINAL_TRANSPORT_ATTEMPT.json')

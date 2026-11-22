@@ -28,6 +28,40 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_interrupted_calibration_preserves_fixed_inputs_and_only_reuses_scoped_receipts(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            request = normalize_preparation_request(dict(route=dict(kind='preparation'),
+                original_contract={'calls': 4}, preparation=dict(stage='compile', provider='DF_CALIBRATION',
+                    source=dict(commit='fixed', files={}), command=['python', 'acquire'],
+                    working_input_hashes=[], outputs=['workspace/candidate'])))
+            job = request['request_id']
+            row = dict(request=request, request_sha256=W.digest(request), state='ACCEPTED',
+                       attempt_id='interrupted', method='PREPARATION:compile', completion_sha256='accepted',
+                       detail={'outcome_status': 'PREPARATION_FAILED'})
+            job_path = root/'jobs'/row['method']/job
+            C.put(job_path/'OUTCOME.json', dict(status='PREPARATION_FAILED', request_sha256=row['request_sha256']))
+            C.put(job_path/'PREPARATION_RECEIPT.json', dict(returncode=None, signal=15, automatic_retry=False))
+            cache = SimpleNamespace(missing=lambda _: [])
+            bridge = B.DistributedPreparationBridge(SimpleNamespace(
+                run_dir=root, store=SimpleNamespace(row=lambda _: row), artifact_cache=cache), root)
+            path = 'workspace/candidate/df_prices/calibration/acquisition/m1/p0/axes_X/cosine.json'
+            plan = dict(attempt_id='interrupted', request_sha256=row['request_sha256'],
+                        reused_artifacts={path: 'a'*64})
+            replacement = bridge.interrupted_calibration_request(job, plan)
+            self.assertEqual(replacement['original_contract'], request['original_contract'])
+            self.assertEqual(replacement['preparation']['command'], request['preparation']['command'])
+            self.assertEqual(replacement['preparation']['source'], request['preparation']['source'])
+            self.assertEqual(replacement['preparation']['inputs'], plan['reused_artifacts'])
+            self.assertEqual(replacement['preparation']['working_input_hashes'], [dict(path=path, sha256='a'*64)])
+            self.assertEqual(request['preparation']['inputs'], {})
+            self.assertEqual(replacement, bridge.interrupted_calibration_request(job, plan))
+            with self.assertRaisesRegex(ValueError, 'outside its original result scope'):
+                bridge.interrupted_calibration_request(job, dict(plan, reused_artifacts={'workspace/replaced.py': 'b'*64}))
+            row['state'] = 'UNKNOWN'
+            with self.assertRaisesRegex(ValueError, 'terminal ownership'):
+                bridge.interrupted_calibration_request(job, plan)
+
     def test_exec_rejection_repairs_only_unused_aliases_and_keeps_the_frozen_contract(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

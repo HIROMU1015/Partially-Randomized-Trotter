@@ -474,6 +474,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if hashlib.sha256(raw).hexdigest() != selection['sha256']:
             raise ValueError('Recovered PF audit package changed')
         distributed['preparation']['pf_stage_audit_recoveries'] = json.loads(raw)
+    if 'interrupted_calibrations' in trial:
+        selection = trial['interrupted_calibrations']
+        raw = Path(selection['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != selection['sha256']:
+            raise ValueError('Interrupted calibration input plan changed')
+        distributed['preparation']['interrupted_calibrations'] = json.loads(raw)
     if 'pf_terminal_price_leaves' in trial:
         terminal = trial['pf_terminal_price_leaves']
         raw = Path(terminal['path']).read_bytes()
@@ -1795,6 +1801,8 @@ class WidthDriver:
         try:
             runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
             if runtime is not None:comp.bind_stage_executor(runtime)
+            if runtime is not None and runtime.settings.get('interrupted_calibrations'):
+                runtime.reconcile_interrupted_calibrations()
             if runtime is not None and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                 from trottertracks.rpe_preparation_queue import save_horizon_preparation, submit_registered_horizons
                 from trottertracks.rpe_scaled_shots import settings as scaled_settings

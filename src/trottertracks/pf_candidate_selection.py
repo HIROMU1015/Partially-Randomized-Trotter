@@ -388,6 +388,9 @@ def reconcile_received_preparation(run, records, stage_executor):
                                  + str({'job_id': evidence['job_id'], 'attempt_id': evidence['attempt_id']}))
                 continue
         if reason.startswith('STAGE_FAILED:'):
+            recover = getattr(stage_executor, 'recoverable_transport', None)
+            if recover is not None and recover(folder, reason):
+                row.update(status='PREPARATION_WAITING', previous_preparation_hold=reason)
             continue
         if (leaf/'RESPONSE.json').exists() or (folder/'STOP.json').exists():
             continue
