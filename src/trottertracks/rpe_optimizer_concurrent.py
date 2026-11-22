@@ -263,6 +263,9 @@ class ConcurrentExecutor(O.Executor):
                         and task.rule['kind']!='preparation':
                     self._cancel(task)
 
+    def _enqueue_demand(self, proposal):
+        return self._enqueue(proposal, demand=True)
+
     def prefetch_standby(self, choice, proposals):
         """Reserve the demand first and retain the rest as unreserved alternatives."""
         with self.state.cv:
@@ -275,7 +278,7 @@ class ConcurrentExecutor(O.Executor):
                 for t in speculative:
                     if t.job not in desired and t.job != demand:
                         self._cancel(t)
-        if choice is not None and self._enqueue(choice, demand=True) is False:
+        if choice is not None and self._enqueue_demand(choice) is False:
             with self.state.cv:
                 # Queued reservations can be reassigned to demand. Running jobs retain theirs.
                 t = (next((t for t in reversed(speculative) if t.status == 'QUEUED'
@@ -283,7 +286,7 @@ class ConcurrentExecutor(O.Executor):
                 if t is not None:
                     self._cancel(t)
             if t is not None:
-                self._enqueue(choice, demand=True)
+                self._enqueue_demand(choice)
         self._fill_standby()
 
     def _budget_reserved(self):
@@ -296,12 +299,14 @@ class ConcurrentExecutor(O.Executor):
     def _standby_headroom(self):
         return 1
 
-    def _standby_can_fill(self):
+    def _standby_has_capacity(self):
         s = self.state
-        return (getattr(self, 'standby', None) and not s.failure and not s.closed and
-                s.active + sum(t.status == 'QUEUED' and t.rule['kind'] != 'preparation'
-                               for t in s.tasks.values()) <
-                self._standby_capacity() + self._standby_headroom())
+        return s.active + sum(t.status == 'QUEUED' and t.rule['kind'] != 'preparation'
+                              for t in s.tasks.values()) < self._standby_capacity() + self._standby_headroom()
+
+    def _standby_can_fill(self):
+        return (getattr(self, 'standby', None) and not self.state.failure and not self.state.closed
+                and self._standby_has_capacity())
 
     def _fill_standby(self):
         # Prepare the next jobs while the current ones run. Advance past
@@ -472,7 +477,8 @@ class ConcurrentExecutor(O.Executor):
                         self.state.unmatched_scaled_completions[self.method][job] = cid
                 continue
             if (self.job_dir(proposal) != job or not self.same_route(job, cid)
-                    or request.get('cost') is None or O.frac(request['cost']) != proposal['cost']):
+                    or (not getattr(self, 'exploratory_cost', False) and
+                        (request.get('cost') is None or O.frac(request['cost']) != proposal['cost']))):
                 continue
             receipt = O.load_json(job/'PROCESS_RETURN.json')
             if receipt.get('returncode') != 0 or receipt.get('signal') is not None:
@@ -717,7 +723,11 @@ class DistributedExecutor(ConcurrentExecutor):
         self.live_readiness_partial = {}
         self.pbs_q3_check_queue = {}
         self.live_readiness_workers = max(1, len(kwargs.get('problem', args[4] if len(args)>4 else {}).get('methods', {})))
+        self.controller_parallel = distributed.get('controller_parallel') is True
         self.live_readiness_max_workers = distributed.get('live_readiness_max_workers')
+        if self.controller_parallel and self.live_readiness_max_workers is None:
+            from .rpe_q3_resources import controller_cpu_count
+            self.live_readiness_max_workers = controller_cpu_count()
         self.live_readiness_refill_seconds = distributed.get('live_readiness_refill_seconds', 5)
         if (self.live_readiness_max_workers is not None and
                 (type(self.live_readiness_max_workers) is not int or self.live_readiness_max_workers < 1)):
@@ -1376,8 +1386,10 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _live_readiness_window(self):
         maximum = self.live_readiness_max_workers or self.live_readiness_workers
-        if maximum <= self.live_readiness_workers or not self.state.allocation_auto:
-            return min(maximum, self.live_readiness_workers)
+        if not self.state.allocation_auto:
+            return maximum if self.controller_parallel else min(maximum, self.live_readiness_workers)
+        if maximum <= self.live_readiness_workers:
+            return maximum
         missing = 0
         for host, supply in getattr(self.state, 'ready_cpu_supply', {}).items():
             if not self._offer_fresh(host):
@@ -1396,8 +1408,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 getattr(self.state, 'probe_revision', 0) and super()._standby_can_fill())
 
     def _fill_standby(self):
-        if not (self.live_readiness_pool and self.ready_queue_waves > 1
-                and self.distributed.get('work_conserving_search')):
+        if not (self.live_readiness_pool and (self.controller_parallel or
+                self.ready_queue_waves > 1 and self.distributed.get('work_conserving_search'))):
             return super()._fill_standby()
         # A selector must be able to adopt its demand result while later
         # requests are still in dry-check. Leave pending proposals unreserved.
@@ -1896,9 +1908,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 return deepcopy(result)
         return deepcopy(future.result())
 
+    def _enqueue_demand(self, proposal):
+        return self._enqueue(proposal, demand=True,
+                             defer_readiness=self.controller_parallel and self.live_readiness_pool is not None)
+
     def prefetch_standby(self, choice, proposals):
         self._awaiting_probe_revision = None
-        if self.distributed.get('controller_queue_first') and self.live_readiness_pool:
+        if (self.controller_parallel or self.distributed.get('controller_queue_first')) and self.live_readiness_pool:
             # Start the fixed-input checks for the demand and independent next
             # candidates together. A check does not create a reservation.
             proposals = list(proposals)
@@ -2477,9 +2493,12 @@ class DistributedExecutor(ConcurrentExecutor):
             if result is None or result.get('status') != 'PREPARATION_COMPLETE': return False
         return True
 
-    def _wait_candidate_preparation(self, proposal):
+    def _wait_candidate_preparation(self, proposal, *, wait=True):
         for job_id in self.preparation_dependencies.get(proposal['configuration_id'], []):
-            result = self.preparation_result(job_id,wait=True)
+            result = self.preparation_result(job_id, wait=wait)
+            if result is None and not wait:
+                return dict(status='DISPATCH_PENDING', reason='CANDIDATE_PREPARATION_RUNNING',
+                            job_id=job_id, calls=0)
             if result is None or result.get('status') != 'PREPARATION_COMPLETE':
                 return dict(status='HOST_ELIGIBILITY_HOLD',reason='CANDIDATE_PREPARATION_NOT_COMPLETE',preparation=result,host_eligibility=dict(preparation_task=job_id,result=result),job_id=job_id,calls=0,MSE_lower=None,MSE_upper=None,job=None)
         return None
@@ -2525,7 +2544,7 @@ class DistributedExecutor(ConcurrentExecutor):
             proposal = dict(configuration_id=row['job_id'], origin=dict(kind='PREPARATION'), cost=0)
         if proposal is None:
             proposal = dict(configuration_id=request['configuration_id'], vector=O.interleave(request['N_X'], request['N_Y']),
-                            cost=O.frac(request['cost']), origin=request['origin'])
+                            cost=None if request['cost'] is None else O.frac(request['cost']), origin=request['origin'])
         running = row['state'] != 'QUEUED'
         task = SimpleNamespace(view=self.for_method(method), job=job, proposal=deepcopy(proposal), rule=request['route'],
             owner=(method, proposal['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
@@ -2559,7 +2578,7 @@ class DistributedExecutor(ConcurrentExecutor):
             view = self.for_method(method)
             cid = request['configuration_id']
             proposal = dict(configuration_id=cid, vector=O.interleave(request['N_X'], request['N_Y']),
-                            origin=request['origin'], cost=O.frac(request['cost']))
+                            origin=request['origin'], cost=None if request['cost'] is None else O.frac(request['cost']))
             row = self.store.row(job_id)
             if (digest(request) != hold['request_sha256']
                     or request['optimizer_source'] != self.computation_source
@@ -3207,6 +3226,55 @@ class DistributedExecutor(ConcurrentExecutor):
             return answer
         return dict(answer, failure_scope='CONFIGURATION',
                     reason=reason or row['detail'].get('reason') or 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED')
+
+    def answer_now(self, proposal):
+        """Advance one independent scaled allocation without waiting for its worker."""
+        if self._user_stop_requested():
+            return dict(status='STOP_REQUESTED', calls=0)
+        blocked = self._wait_candidate_preparation(proposal, wait=False)
+        if blocked is not None:
+            return blocked
+        if self.route(proposal['configuration_id']) is None:
+            return dict(status='NO_ROUTE', calls=0)
+        job = self.job_dir(proposal)
+        with self.state.cv:
+            revision = getattr(self.state, 'probe_revision', 0)
+            if (not self.has_job(proposal) and not self._budget_reserved() and not self._standby_has_capacity()):
+                return dict(status='DISPATCH_PENDING', reason='Q3_QUEUE_WINDOW_FULL', job_id=job.name, calls=0)
+        task = self._enqueue_demand(proposal)
+        if task is _CHECK_PENDING or (task and not task.event.is_set()):
+            return dict(status='DISPATCH_PENDING', reason='Q3_PREFLIGHT_OR_RESULT_PENDING',
+                        job_id=job.name, probe_revision=revision, calls=0)
+        if task is False:
+            if job.name in self.eligibility_holds:
+                return self._held_answer(proposal)
+            return dict(status='BUDGET_EXHAUSTED', calls=0)
+        result = self.answer(proposal, allow_new=False)
+        return result if result is not None else dict(status='TECHNICAL_HOLD', reason='Q3_NOT_AVAILABLE', calls=0)
+
+    def await_dispatch(self, pending):
+        """Wait for a publication or a host proof after checking independent work."""
+        with self.state.cv:
+            if self.state.closed or self.state.failure or self._user_stop_requested():
+                return False
+            ready_pending = getattr(self, 'ready_pending', lambda: False)
+            if self.scaled_completion_pending() or ready_pending():
+                return True
+            q3 = [row for row in pending if row['reason'] == 'Q3_PREFLIGHT_OR_RESULT_PENDING']
+            jobs = {row['job_id'] for row in q3}
+            revision = getattr(self.state, 'probe_revision', 0)
+            if any(revision != row['probe_revision'] for row in q3):
+                return True
+            queue_wait = any(row['reason'] == 'Q3_QUEUE_WINDOW_FULL' for row in pending)
+            if queue_wait or (q3 and self.live_readiness_inflight) or any(
+                    task.job.name in jobs and task.status in ('QUEUED', 'RUNNING', 'DONE')
+                    for task in self.state.tasks.values()):
+                self.state.cv.wait(.25)
+                return True
+        preparation = {row['job_id'] for row in pending if row['reason'] == 'CANDIDATE_PREPARATION_RUNNING'}
+        wait_ended = lambda: self._user_stop_requested() or ready_pending() or self.scaled_completion_pending()
+        return bool(self.ready_preparations(preparation, wait=True, stop_requested=wait_ended)
+                    or ready_pending() or self.scaled_completion_pending())
 
     def answer(self, proposal, allow_new=True):
         blocked = self._wait_candidate_preparation(proposal)

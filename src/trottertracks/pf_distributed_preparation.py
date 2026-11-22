@@ -147,6 +147,9 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         metadata_env['RPE_PF_PREFLIGHT_SNAPSHOT'] = str(snapshot)
     price_args = []
     settings = spec['pf_completion']
+    exploratory = settings.get('exploratory_cost') is True
+    if exploratory and inherited_registry is None:
+        request = dict(request, exploratory_cost=True)
     saved_signals = {}
     if inherited_registry is not None:
         # Resume the exact owner check and plan already bound to this workspace.
@@ -326,6 +329,17 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         def compile_stage(tag, cohort, cells):
             return call('compile', tag, **compile_inputs(cohort, cells))
 
+        def exploratory_prices(values):
+            covered = {(r['m'], r['axis']) for r in values}
+            need = {(m, a) for m in value['calibration_rounds'] for a in ('X', 'Y')}
+            frozen = None
+            if need and need <= covered:
+                try:
+                    frozen = local('freeze', prices=values)['model']
+                except subprocess.CalledProcessError as error:
+                    put(folder/'EXPLORATORY_PRICE_ISSUE.json', dict(stage='PF_MODEL_FREEZE', reason=str(error)))
+            return local('exploratory-prices', prices=values, model=frozen)['prices']
+
         def prices():
             values=deepcopy(value['direct_prices'])
             cells=[r for r in value['new_compile_cells']if r['role']!='HOLDOUT']
@@ -352,6 +366,8 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 else:
                     prices=call('audit','PF_AUDIT',compiled=compiled)['prices']
                 values+=prices
+            if exploratory:
+                return exploratory_prices(values)
             frozen=call('freeze','PF_MODEL_FREEZE',prices=values)['model']
             holdout_cells=[r for r in value['new_compile_cells']if r['role']=='HOLDOUT']
             holdout=[r['m'] for r in holdout_cells]
@@ -378,14 +394,22 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 return None
             return call('signal','PF_SIGNALS')
 
+        def available_prices(get_prices):
+            from .pr_candidate_completion import Held
+            try:
+                return get_prices()
+            except Held as error:
+                if not exploratory:
+                    raise
+                put(folder/'EXPLORATORY_PRICE_ISSUE.json', dict(stage='PF_CALIBRATION', reason=str(error)))
+                return exploratory_prices(deepcopy(value['direct_prices']))
+
         if deferred:
             from .pf_saved_prices import independent_plan
             # Preserve calibration/holdout roles while admitting independently clear work.
             cells = [cell for cell in independent_plan(value,deferred)['new_compile_cells']
                      if cell['role'] != 'HOLDOUT']
-            with ThreadPoolExecutor(max_workers=1) as pool:
-                signal = pool.submit(signals) if value.get('new_signal_means', 0) and not saved_signal else None
-                audited = []
+            def audits():
                 if cells or original_calibration:
                     if original_calibration:
                         compiled = reuse_calibration(root, workspace, folder, value,
@@ -394,8 +418,20 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                     else:
                         compiled = compile_stage('PF_COMPILE', 'calibration', cells)
                     track_collected_prices(workspace, compiled)
-                    audited = call('audit', 'PF_AUDIT', compiled=compiled)['prices']
+                    return call('audit', 'PF_AUDIT', compiled=compiled)['prices']
+                return []
+            with ThreadPoolExecutor(max_workers=1) as pool:
+                signal = pool.submit(signals) if exploratory or value.get('new_signal_means', 0) and not saved_signal else None
+                if exploratory:
+                    prices_source = available_prices(lambda: exploratory_prices(deepcopy(value['direct_prices']) + audits()))
+                else:
+                    audited = audits()
                 saved_signal_result = signal.result() if signal is not None else None
+            if exploratory:
+                items.append(local('register', prices=prices_source,
+                    registry=str(Path(selected['registry_file']).relative_to(workspace)),
+                    binding_view=selected.get('binding_view')))
+                continue
             commits = {row['price_evidence']['source']['commit'] for row in audited}
             if saved_signal_result:
                 commits.add(saved_signal_result['publication'])
@@ -410,12 +446,12 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             continue
         if saved_signal:
             signals()
-            price_source=prices()
+            price_source=available_prices(prices)
         else:
             # The native PF contract has no signal -> calibration dependency.
             with ThreadPoolExecutor(max_workers=2)as pool:
                 signal=pool.submit(signals);price=pool.submit(prices)
-                signal.result();price_source=price.result()
+                signal.result();price_source=available_prices(price.result)
         items.append(local('register',prices=price_source,
             registry=str(Path(selected['registry_file']).relative_to(workspace)),
             binding_view=selected.get('binding_view')))
@@ -438,7 +474,8 @@ def terminal_model_prices(parent, config, method, table, model, physical_id):
     scope = 'CONDITIONAL_COMPARISON_MODEL_WITH_EXPLICIT_LONG_Q_UNKNOWN'
     kind = 'CONDITIONAL_AFFINE_PRICE_REFERENCE'
     gate = 'MODEL_REFERENCE_LONG_Q_UNCERTAINTY_UNKNOWN'
-    if (table.get('scope') != scope or table.get('configuration_id') != parent['id']
+    exploratory = table.get('scope') == 'EXPLORATORY_CALIBRATION_ONLY'
+    if (table.get('scope') not in (scope, 'EXPLORATORY_CALIBRATION_ONLY') or table.get('configuration_id') != parent['id']
             or table.get('qualified_for_candidate') is not False
             or model['configuration_id'] != parent['id'] or model['holdout_refit'] is not False
             or model['long_q_error_bound'] is not None):
@@ -459,6 +496,20 @@ def terminal_model_prices(parent, config, method, table, model, physical_id):
         domain = axis_model['domain']
         evidence = dict(source=table['model'], axis=axis)
         reference = prefix[prior['m'], axis]
+        if exploratory:
+            if (axis_model['model'] != 'PRICE_LINEAR_FEATURE_MODEL_V1'
+                    or axis_model['features'] != ['one', 'q'] or domain['route'] != method
+                    or domain['axis'] != axis or domain['profile'] != parent['spec']['profile']):
+                raise ValueError('Terminal PF calibration model differs from '+axis)
+            estimate = predict(axis_model, dict(one=1, q=q))
+            if estimate <= 0:
+                raise ValueError('Terminal PF model produced a nonpositive price for '+axis)
+            prices.append(dict(m=terminal['m'], axis=axis, physical_id=physical_id,
+                unit_price_RZ=enc(estimate), kind='EXPLORATORY_AFFINE_PRICE_REFERENCE',
+                price_evidence=evidence, gate='CALIBRATION_ONLY', q=q, T=terminal['T'],
+                actual_delta_pf=terminal['actual_delta_pf'], unvalidated_extrapolation=True,
+                model_error_bound_RZ=None))
+            continue
         holdout = holdouts[axis]
         observed = prefix[model['holdout_round'], axis]
         if (axis_model['model'] != 'PRICE_LINEAR_FEATURE_MODEL_V1'

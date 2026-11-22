@@ -28,6 +28,8 @@ def snapshot_context(context):
 def _completion(root,problem,spec,run,runtime):
     from . import pr_candidate_completion as PR
     settings=deepcopy(spec['candidate_completion'])
+    if spec.get('search_overrides', {}).get('exploratory_cost') is True:
+        settings['exploratory_cost'] = True
     if not(settings.get('price_registry_source')or settings.get('price_registry_file')):
         supplied=(problem.get('price_rules')or{}).get('registry_file')
         if supplied:settings['price_registry_file']=str((Path(root)/supplied).resolve())
@@ -148,7 +150,7 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
             complete_scoped(root, runtime, after['candidates'], methods, horizon_policy, pf_routes,
                             pf_settings.get('interpreter', sys.executable),
                             spec.get('executor',{}).get('prior_run_dirs', ()),
-                            stop_requested=stopped, on_ready=register)
+                            stop_requested=stopped, on_ready=register, exploratory=search.get('exploratory_cost') is True)
             if entries:
                 after, pf_routes = with_terminal_candidates(after, pf_routes, entries)
         return after, pf_routes, status

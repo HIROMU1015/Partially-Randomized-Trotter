@@ -46,6 +46,12 @@ def _cpus(value):
     return result
 
 
+def controller_cpu_count():
+    """Use the central process allowance, including any OS quota."""
+    report = resource_snapshot({}, environ={})
+    return max(1, int(report['allowed_cpu_count'] or report['machine_cpu_count'] or 1))
+
+
 def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup', affinity=None, environ=None):
     """Observe process/allocation bounds; do not equate idle host CPUs to a grant."""
     proc, groups = Path(proc_root), Path(cgroup_root)

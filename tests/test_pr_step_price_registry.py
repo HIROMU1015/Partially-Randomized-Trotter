@@ -224,6 +224,21 @@ class ScopedPriceTests(unittest.TestCase):
         self.assertEqual(row['classification'],'MODEL_REFERENCE')
         self.assertEqual(row['model_alternative']['extrapolation'],['R'])
 
+    def test_exploratory_df_model_can_price_a_later_compatible_round(self):
+        reader = Documents()
+        cfg, imp = config(delta=.1, pauli=False), implementation(pauli=False)
+        reg = StepPriceRegistry(reader, exploratory=True)
+        df_model(reg, cfg, imp, 'short', varying=False, q_max=2, rounds=[0, 1])
+        cfg['rounds'] = cfg['rounds'][:3]
+        cfg['spec']['M'] = 2
+        base = missing_quote(cfg, 'PR_DF')
+        legacy = StepPriceRegistry(reader, state=reg.state)
+        self.assertIsNone(legacy.quote(cfg, imp, base)['rows'][-1]['unit_price_RZ'])
+        row = reg.quote(cfg, imp, base)['rows'][-1]
+        self.assertEqual(row['model_alternative']['application'], 'EXPLORATORY_UNVALIDATED_TERMINAL_EXTRAPOLATION')
+        self.assertFalse(row['qualified_E_C'])
+        self.assertIsNone(row['CI'])
+
     def test_df_exact_direct_and_already_accepted_axes_keep_provenance(self):
         reader,cfg,imp,package=df_direct_fixture();reg=StepPriceRegistry(reader);reg.ingest(package)
         model=df_model(reg,cfg,imp,'R1',varying=False,q_max=2,rounds=[0])

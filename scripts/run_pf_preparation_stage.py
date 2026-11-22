@@ -100,6 +100,44 @@ def bind_preflight_snapshot():
     native.duplicate_check.__kwdefaults__ = original.__kwdefaults__
 
 
+PRICE_PLAN_HOLDS = {
+    'At least two distinct-q calibration cells and one later holdout required',
+    'One saved axis only: resolve per-axis native execution before compiling',
+}
+
+
+def use_exploratory_plan():
+    from trottertracks import pf_evidence_preparation as evidence
+    original = evidence.make_plan
+
+    def plan(root, cfg, source, **options):
+        try:
+            value = original(root, cfg, source, **options)
+        except ValueError as error:
+            if str(error) not in PRICE_PLAN_HOLDS:
+                raise
+            prepared = evidence.plan(root, cfg, source)
+            direct = evidence.accepted_direct(root, prepared)
+            pool = evidence.mean_pool(str(root))
+            means = []
+            for item in prepared['pending']['requests']:
+                physical = item['physical_candidate']
+                hits = pool.get(evidence.physical_key(physical), [])
+                means.append(dict(m=item['m'], physical_id=physical['id'],
+                    acquisition='REUSE_SAVED_MEAN' if hits else 'NEW_MEAN_REQUIRED',
+                    saved_source=hits[0]['source'] if hits else None))
+            value = dict(schema='D_PF_SELECTED_EVIDENCE_PLAN_V1', configuration=cfg, prepared=prepared,
+                         direct_prices=direct, signal_rounds=means, new_signal_means=sum(not r['saved_source'] for r in means),
+                         calibration_rounds=[], holdout_round=None, new_compile_cells=[], actual_width=cfg['spec']['delta_pf'],
+                         new_Q3=0, price_plan_issue=str(error))
+        value['new_compile_cells'] = [r for r in value['new_compile_cells'] if r['role'] != 'HOLDOUT']
+        value['maximum_new_compile'] = sum(len(r['axes']) for r in value['new_compile_cells'])
+        value['price_scope'] = 'EXPLORATORY_CALIBRATION_ONLY'
+        return value
+
+    evidence.make_plan = plan
+
+
 def load_provider(root):
     root=Path(root).resolve()
     sys.path[:0]=[str(root/'scripts'),str(root/'src')]
@@ -278,6 +316,47 @@ def run(provider,request):
     if phase=='audit':return dict(status='AUDIT_PASS',prices=audit_receipts(provider,value,out,request['compiled']))
     if phase=='freeze':return dict(status='MODEL_FROZEN',model=provider.freeze(value,request['prices'],out,source))
     if phase=='finish':return dict(status='PRICES_READY',prices=provider.finish(value,request['prices'],out,request['model'],source))
+    if phase == 'exploratory-prices':
+        from fractions import Fraction
+        from trottertracks import price_model_validation as model
+        from trottertracks.saved_rpe_cost_catalog import enc, frac
+
+        cfg = value['configuration']
+        fixed_model = request.get('model')
+        fitted = provider.load(ROOT/fixed_model['path']) if fixed_model else None
+        known = {(r['m'], r['axis']): r for r in request['prices']}
+        calibration = [cfg['rounds'][m] for m in value['calibration_rounds']]
+        structures = [r['structure'] for r in calibration]
+        q_max = max((r['q_PF'] for r in calibration), default=0)
+        rows = []
+        for item in value['prepared']['pending']['requests']:
+            m = item['m']
+            target = cfg['rounds'][m]
+            q = item['q_PF']
+            for axis in ('X', 'Y'):
+                if (m, axis) in known:
+                    rows.append(known[m, axis])
+                    continue
+                if (fitted is None or not structures or any(target['structure'] != s for s in structures)
+                        or frac(target['actual_delta_pf']) != frac(value['actual_width'])
+                        or frac(target['T']) != Fraction(q) * frac(value['actual_width'])):
+                    continue
+                price = model.predict(fitted['models'][axis], dict(one=1, q=q))
+                if price > 0:
+                    rows.append(dict(m=m, axis=axis, physical_id=item['physical_candidate']['id'],
+                                     unit_price_RZ=enc(price), kind='EXPLORATORY_AFFINE_PRICE_REFERENCE',
+                                     price_evidence=dict(source=fixed_model, axis=axis),
+                                     gate='CALIBRATION_ONLY', q=q, T=target['T'],
+                                     actual_delta_pf=target['actual_delta_pf'],
+                                     unvalidated_extrapolation=q > q_max, model_error_bound_RZ=None))
+        path = out/'EXPLORATORY_AXIS_PRICES.json'
+        if not rows:
+            return dict(status='EXPLORATORY_PRICE_UNAVAILABLE', prices=None)
+        write(path, dict(configuration_id=cfg['id'], axes=rows, model=fixed_model,
+                         coverage='PARTIAL_DIRECT_PRICE_EVIDENCE' if len(rows) != 2*len(cfg['rounds']) else 'COMPLETE',
+                         scope='EXPLORATORY_CALIBRATION_ONLY', qualified_for_candidate=False, holdout=[]))
+        commit = publish([path], 'Preserve exploratory PF prices and calibration references')
+        return dict(status='EXPLORATORY_PRICES', prices=dict(commit=commit, path=str(path.relative_to(ROOT))))
     if phase=='register':
         # The central owned clone imports remote objects without switching its
         # HEAD. Bind its newly received signal files before gitref() is used.
@@ -311,6 +390,8 @@ def main():
         p.error('--input and --output are required')
     request=load(a.input)
     if a.plan_signal_index is not None:
+        if request.get('exploratory_cost') is True:
+            use_exploratory_plan()
         if a.saved_price_index is not None:
             saved_price_helpers()['use_saved_prices'](a.saved_price_index)
         cache_mean_pool(a.provider_root,a.plan_signal_index)

@@ -321,7 +321,11 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
             c['needs'] = [n for n in c['needs'] if n != 'Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION']
         elif not c['saved_points'] and 'Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION' not in c['needs']:
             c['needs'].append('Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION')
-        c['ready'] = not c['needs'] and c['prices'] is not None and c['signal_source'] is not None
+        if problem.get('search', {}).get('exploratory_cost'):
+            from .rpe_method_optimizer import science_needs
+            c['ready'] = bool(c['signal_source']) and not science_needs(c['needs'])
+        else:
+            c['ready'] = not c['needs'] and c['prices'] is not None and c['signal_source'] is not None
         expected[cid] = {k: entry.get(k) for k in ('total_configuration_id', 'binding_id')}
         expected[cid]['signal_source'] = c['signal_source']
         if horizon == 13:

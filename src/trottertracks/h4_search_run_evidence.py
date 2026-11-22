@@ -295,7 +295,7 @@ def _run_result(reader, head, path, document, paths):
             for i, row in enumerate(value.get('by_configuration') or []):
                 item = {k: deepcopy(row.get(k)) for k in ('configuration_id', 'source_configuration_id',
                     'M', 'configuration', 'needs', 'minimum_status', 'unresolved_competitors', 'required_rounds',
-                    'best', 'comparison_best', 'comparison_delta_RZ')}
+                    'best', 'comparison_best', 'comparison_delta_RZ', 'mse_feasible', 'cost_status', 'price_source')}
                 item['source'] = dict(source, selector=['methods', method, 'by_configuration', i])
                 item['allocation_states'] = {}
                 item['allocation_reasons'] = {}

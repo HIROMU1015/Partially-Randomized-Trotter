@@ -130,9 +130,10 @@ function showCell(c){let d=E('detail');d.replaceChildren();let h=el('div',null,'
  const ts=(c.target_ids||[]).map(id=>allTargets.get(id)).filter(Boolean);if(ts.length){let x=el('details');x.open=!ps.length;x.append(el('summary','探索対象・選択・不足記録 ('+ts.length+')'));for(const t of ts){let item=el('div',null,'item');field(item,'状態',t.status);field(item,'構成',t.configuration_id);field(item,'不足',t.missing);if(t.source)item.append(link(t.source));x.append(item)}d.append(x)}
 }
 const gridStatus={MINIMUM_WITHIN_REGISTERED_CANDIDATES:'登録済み回路の範囲で格子内確定',GRID_MINIMUM_CONFIRMED:'この回路とMで格子内確定',EVALUATED_MINIMUM:'評価済み最安',
- NO_GRID_POINT_MEETS_LIMIT:'格子内適合なし',NO_CONFIRMED_GRID_POINT:'適合未確認'};
+ PROVISIONAL_GRID_MINIMUM:'概算価格での格子内最安',PROVISIONAL_EVALUATED_MINIMUM:'評価済みの概算最安',
+ MSE_PASS_COST_UNAVAILABLE:'MSE適合・費用未確定',NO_GRID_POINT_MEETS_LIMIT:'格子内適合なし',NO_CONFIRMED_GRID_POINT:'適合未確認'};
 const scaledStops={SCALED_SCOPE_INCLUDES_UNSUPPORTED_HORIZON:'指定範囲に評価器が未対応のMあり',SCALED_SHOT_GRID_COMPLETE:'登録構成の倍率格子を評価済み',
- Q3_BUDGET_EXHAUSTED:'新規Q3の予算上限',STEP_LIMIT:'探索step上限',WORK_SLICE_YIELDED:'次の探索区間に継続',
+ EXPLORATORY_GRID_COMPLETE:'探索用格子の評価完了',Q3_BUDGET_EXHAUSTED:'新規Q3の予算上限',STEP_LIMIT:'探索step上限',WORK_SLICE_YIELDED:'次の探索区間に継続',
  UNRESOLVED_SCALED_SCOPE:'未評価・入力待ち・判定保留が残る', USER_REQUESTED_STOP:'利用者による停止', UNKNOWN_RESULT:'結果照合が必要'};
 const scaledDirections={COST_DOWN:'費用減',COST_UP:'費用増',EQUAL:'同額',UNRESOLVED:'費用差は未確定'};
 function scaledView(view){
@@ -169,6 +170,12 @@ function scaledView(view){
   field(card,'M=12の格子内',s.M12_best?.cost);
   field(card,'全Mの格子内',s.all_M_best?.cost);
   field(card,'集約状態',gridStatus[s.all_M_minimum_status]||s.all_M_minimum_status);
+  if(s.cost_stage==='EXPLORATORY_SHORTLIST'){
+   field(card,'価格未確定のMSE適合構成',s.unpriced_feasible?.length);
+   field(card,'概算順位付きの構成',s.estimated_order?.length);
+   const lead=(s.estimated_order||[]).filter(item=>item.leads_horizon);
+   if(lead.length)field(card,'Mごとの概算首位',lead);
+  }
   field(card,'比較専用の最安／格子内との差',s.comparison_only_best?fmt(s.comparison_only_best.cost)+' / '+fmt(s.comparison_only_delta_RZ):null);
   field(card,'従来の保存配分（参照）',s.legacy_free_allocation_reference?.cost);
   if(horizon_directions?.length){
@@ -189,12 +196,13 @@ function scaledView(view){
    const label=groupLabel(row), c=row.configuration||{}, best=row.best, comp=row.comparison_best;
    if((filter.value&&label!==filter.value)||(q&&!JSON.stringify([label,c.absolute_kappa,row.configuration_id]).toLowerCase().includes(q)))continue;
    const tr=el('tr');tr.append(el('td',run.label+' · '+label),el('td',c.absolute_kappa??'—'));
-   const aliases=(best?.aliases||[]).filter(a=>a.kind==='GRID').map(a=>a.value);
+   const feasible=best||row.mse_feasible;
+   const aliases=(feasible?.aliases||[]).filter(a=>a.kind==='GRID').map(a=>a.value);
    const fit=el('td',aliases[0]||'—');
-   if(best){
+   if(feasible){
     const detail=el('details');detail.append(el('summary','配分・倍率の由来'));
-    for(const [key,value] of [['X',best.N_X],['Y',best.N_Y],['MSE下界',best.MSE_lower],
-       ['MSE上界',best.MSE_upper],['保存・新規',best.evidence],['倍率',best.aliases]])field(detail,key,value);
+    for(const [key,value] of [['X',feasible.N_X],['Y',feasible.N_Y],['MSE下界',feasible.MSE_lower],
+       ['MSE上界',feasible.MSE_upper],['保存・新規',feasible.evidence],['倍率',feasible.aliases]])field(detail,key,value);
     fit.append(detail);
    }
    tr.append(fit,el('td',fmt(best?.cost)),el('td',gridStatus[row.minimum_status]||row.minimum_status));

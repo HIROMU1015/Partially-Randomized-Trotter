@@ -651,6 +651,7 @@ class Executor:
         self.root, self.run_dir, self.routes, self.expected = Path(root), Path(run_dir), routes, expected
         self.adapter, self.optimizer_source, self.contract = Path(root) / adapter, optimizer_source, contract_digest(problem)
         self.method = None
+        self.exploratory_cost = problem.get('search', {}).get('exploratory_cost') is True
         self.lock, self.slots = threading.Lock(), threading.BoundedSemaphore(max(1, max_concurrent))
         self.events, self.waiters, self.uncounted = {}, [], set()
         self.wait_for_running, self.poll_seconds = wait_for_running, poll_seconds
@@ -738,7 +739,7 @@ class Executor:
     def request(self, proposal, job, rule):
         nx, ny = split(proposal['vector'])
         return dict(request_id=job.name, method=self.method, configuration_id=proposal['configuration_id'], N_X=nx, N_Y=ny,
-                    cost=enc(proposal['cost']), origin=proposal['origin'], route=rule,
+                    cost=None if proposal['cost'] is None else enc(proposal['cost']), origin=proposal['origin'], route=rule,
                     expected=self.expected_for(proposal['configuration_id'], rule), optimizer_source=self.optimizer_source)
 
     def run_adapter(self, job, rule, mode):
@@ -859,7 +860,8 @@ class Executor:
                 r = self.ingest(job, proposal, calls=0)
                 if r['status'] not in (PASS, FAIL, 'INCONCLUSIVE'):
                     refused.append(dict(job=str(job), reason=r['status'] + ':' + str(r.get('reason'))));continue
-                known[(c['configuration_id'], proposal['vector'])] = dict(r, source='PRIOR_ROUND_JOB', cost=cost(proposal['vector'], c['prices']))
+                known[(c['configuration_id'], proposal['vector'])] = dict(r, source='PRIOR_ROUND_JOB',
+                    cost=None if c['prices'] is None else cost(proposal['vector'], c['prices']))
         return known, refused
 
     def launch(self, proposal, rule):
@@ -1020,7 +1022,11 @@ class Executor:
         return self.scope_unknown(job, proposal, result)
 
 
-def apply_published(candidates, routes):
+def science_needs(needs):
+    return [need for need in needs if not need.startswith('PRICE_')]
+
+
+def apply_published(candidates, routes, *, exploratory=False):
     """A generated configuration whose configuration, 13-round packet and Q3 route are published becomes searchable.
 
     The route rule's ``configurations`` table (configuration + MEAN_HANDOFF locators, total binding ids) is the
@@ -1038,7 +1044,7 @@ def apply_published(candidates, routes):
             continue
         c['needs'] = [n for n in c['needs'] if n not in cleared and not n.startswith('SIGNAL_ROUNDS:')]
         c['signal_source'] = entry['signal_packet'];c['published_inputs'] = entry
-        c['ready'] = not c['needs'] and c['prices'] is not None
+        c['ready'] = (not science_needs(c['needs']) if exploratory else not c['needs'] and c['prices'] is not None)
     return candidates
 
 
@@ -1424,7 +1430,7 @@ def own_price_comparison(candidates, vectors):
     rows = []
     for label, v in vectors.items():
         for c in candidates:
-            if c['ready']:
+            if c['ready'] and c['prices'] is not None:
                 rows.append(dict(vector_label=label, candidate=c['name'], cost=cost(v, c['prices'])))
     return rows
 
@@ -1548,8 +1554,13 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                             and getattr(ex, 'supports_nonblocking_prefetch', False))
         budget = max_new.get(name, 0) if isinstance(max_new, dict) else max_new
         budget = None if budget in (None, 'UNLIMITED') else budget
+        history_lanes = 1
+        if parallel_history and search.get('controller_parallel') is True:
+            from .rpe_q3_resources import controller_cpu_count
+            history_lanes = max(1, controller_cpu_count() // max(1, len(problem['methods'])))
         stream_initial = (parallel_history and search.get('rule') == 'RPE_SCALED_SHOTS_V1'
-                          and search.get('work_conserving_search') is True and budget is None
+                          and search.get('work_conserving_search') is True
+                          and (budget is None or search.get('controller_parallel') is True)
                           and bool(ex.prior_run_dirs))
         initial_ready = []
         if stream_initial:
@@ -1615,17 +1626,21 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     fresh = {key: value for key, value in prior_saved.items() if key not in saved}
                     if initial_batch:
                         scoped = [row for row in refused if row['reason'] != 'CONFIGURATION_NOT_IN_THIS_ROUND']
-                        prior['loaded'] += len(fresh)
-                        prior['already_known'] += len(prior_saved) - len(fresh)
-                        prior['refused'] += len(scoped)
-                        prior['refused_reasons'] = sorted(set(prior['refused_reasons']) | {row['reason'] for row in scoped})
+                        with ex.state.cv:
+                            prior['loaded'] += len(fresh)
+                            prior['already_known'] += len(prior_saved) - len(fresh)
+                            prior['refused'] += len(scoped)
+                            prior['refused_reasons'] = sorted(set(prior['refused_reasons']) | {row['reason'] for row in scoped})
                     saved.update(fresh)
                     return added, saved
 
+                initial_lanes = [('initial', i) for i in range(history_lanes)]
+                late_lane = ('late', 0)
+
                 def ready_pending():
                     return (any(future.done() for future in ready_history.values())
-                            or ('late' not in ready_history and (bool(late_batches) or pending_ready()))
-                            or ('initial' not in ready_history and bool(initial_batches)))
+                            or (late_lane not in ready_history and (bool(late_batches) or pending_ready()))
+                            or (bool(initial_batches) and any(lane not in ready_history for lane in initial_lanes)))
 
                 def wake_selector(_):
                     with ex.state.cv:
@@ -1634,8 +1649,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 def stage_history(lane, added, saved_snapshot=None):
                     view = ex.for_method(name)
                     view.routes, view.expected = dict(ex.routes), dict(ex.expected)
-                    view.log(event='PRIOR_READY_INGEST_START', configurations=len(added), lane=lane)
-                    future = history_pool.submit(validate_ready, view, added, saved_snapshot, lane == 'initial')
+                    view.log(event='PRIOR_READY_INGEST_START', configurations=len(added), lane=lane[0])
+                    future = history_pool.submit(validate_ready, view, added, saved_snapshot, lane[0] == 'initial')
                     ready_history[lane] = future
                     future.add_done_callback(wake_selector)
 
@@ -1652,14 +1667,14 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
 
                 def refresh_ready():
                     added, saved = [], {}
-                    for lane in ('late', 'initial'):
+                    for lane in (late_lane, *initial_lanes):
                         future = ready_history.get(lane)
                         if future is not None and future.done():
                             del ready_history[lane]
                             checked, known = future.result()
                             added.extend(checked)
                             saved.update(known)
-                    if 'late' not in ready_history and not late_batches and pending_ready():
+                    if late_lane not in ready_history and not late_batches and pending_ready():
                         arrived, saved_snapshot = take_ready()
                         if arrived and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                             arrived = scaled.horizon_candidates(arrived, problem, policy, ex, context.get('catalog'))
@@ -1676,10 +1691,11 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                 late_batches.append((batch, saved_snapshot))
                                 size = min(size * 2, 8)
                     if history_pool is not None:
-                        if 'late' not in ready_history and late_batches:
-                            stage_history('late', *late_batches.popleft())
-                        if 'initial' not in ready_history and initial_batches:
-                            stage_history('initial', initial_batches.popleft())
+                        if late_lane not in ready_history and late_batches:
+                            stage_history(late_lane, *late_batches.popleft())
+                        for lane in initial_lanes:
+                            if lane not in ready_history and initial_batches:
+                                stage_history(lane, initial_batches.popleft())
                     ids = {c['configuration_id'] for c in added}
                     cands[:] = [c for c in cands if c['configuration_id'] not in ids] + added
                     return added, saved
@@ -1701,6 +1717,13 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                 read_completed = None
                 refresh_completions = None
+                answer_now = None
+                await_dispatch = None
+                if search.get('controller_parallel') is True and getattr(executor, 'answer_now', None):
+                    def answer_now(proposal):
+                        cached = context['saved'].answer(proposal)
+                        return cached if cached is not None else ex.answer_now(proposal)
+                    await_dispatch = ex.await_dispatch
                 if executor is not None and hasattr(ex, 'read_scaled_completions'):
                     if hasattr(ex, 'recover_scaled_completions'):
                         ex.recover_scaled_completions()
@@ -1731,12 +1754,13 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     domain = method_scope['L_D_range']
                     upper = context['facts']['fragment_count'] + domain['max_offset_from_fragment_count']
                     method_scope = dict(method_scope, L_D_values=range(domain['min'], upper + 1))
-                with (ThreadPoolExecutor(max_workers=2 if stream_initial else 1, thread_name_prefix='rpe-ready-history')
+                with (ThreadPoolExecutor(max_workers=1 + history_lanes if stream_initial else 1, thread_name_prefix='rpe-ready-history')
                       if parallel_history else nullcontext()) as history_pool:
                     result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
                                         spent=spent, free=free, science_approved=science_approved,
                                         method_scope=method_scope, refresh_ready=refresh_ready, submit_standby=submit_standby,
                                         await_ready=await_ready if parallel_history else None,
+                                        answer_now=answer_now, await_dispatch=await_dispatch,
                                         read_completed=read_completed, refresh_completions=refresh_completions,
                                         after_drain=after_drain if scaled_finalizers is not None else None,
                                         held=prior_q3_holds,
@@ -1771,7 +1795,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         if executor is not None:
             out[name]['execution_holds']=list(executor.execution_holds.get(name,{}).values())
         out[name]['prior_rounds'] = prior
-        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing', 'prior_q3_holds', 'self_price_floor_deferred', 'scaled_shots'):
+        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing', 'prior_q3_holds', 'self_price_floor_deferred', 'scaled_shots', 'dispatch_wait'):
             if key in result:
                 out[name][key] = result[key]
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,
@@ -1885,6 +1909,10 @@ def prepare(root, problem, generate_configurations=True, methods=None, preparati
     artificial_pf = problem.get('artificial_pf_evidence') is True
     pf_registry = PF.load_registry(root, reader, problem.get('pf_evidence_registry'),allow_artificial=artificial_pf)
     pf_expected = PF.hydrate(root, reader, problem, candidates, pf_registry, facts,allow_artificial=artificial_pf)
+    if problem.get('search', {}).get('exploratory_cost') is True:
+        for c in candidates:
+            if c['configuration_id'] and c['signal_source'] and not science_needs(c['needs']):
+                c['ready'] = True
     prices = {c['configuration_id']: c['prices'] for c in candidates if c['prices'] is not None}
     saved = SavedBackend(catalog['candidates'], prices)
     expected = {}

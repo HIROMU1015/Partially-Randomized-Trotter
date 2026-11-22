@@ -78,8 +78,9 @@ def df_validator(root):
 
 
 class StepPriceRegistry:
-    def __init__(self, reader, registry=None, state=None, *, root=None):
+    def __init__(self, reader, registry=None, state=None, *, root=None, exploratory=False):
         self.reader = reader
+        self.exploratory = exploratory
         self.root = str(root or getattr(reader, 'root', Path(__file__).resolve().parents[2]))
         self.registry = registry or dict(entries=[])
         self.api = price_api(self.root)
@@ -243,7 +244,7 @@ class StepPriceRegistry:
         if direct:
             require(hold is None and all(m.get('direct') is True and m.get('coefficients') == {} for m in model['models'].values()),
                     'DF_DIRECT_SCOPE_CONTRACT_DIFFERS')
-        else:
+        elif hold is not None or not self.exploratory:
             require(hold is not None and hold.get('status') in ('DESCRIPTIVE_COMPLETE','DESCRIPTIVE_COMPLETE_RELATIVE_UNDEFINED')
                     and hold.get('refit') is False, 'DF_INDEPENDENT_HOLDOUT_SOURCE_DIFFERS')
             frozen = hold.get('model_commit')
@@ -289,12 +290,12 @@ class StepPriceRegistry:
         step = next(iter(steps)); covered = inputs.get('covered_rounds') or [r['m'] for r in cfg['rounds'] if frac(r['actual_delta_pf']) == step]
         domain = self._domain(cfg, covered, imp)
         require(frac(domain['actual_step']) == step, 'DF_MODEL_ACTUAL_STEP_DIFFERS')
-        require(direct or all(frac(cfg['rounds'][r['m']]['actual_delta_pf']) == step for r in hold['rows']), 'DF_HOLDOUT_STEP_DIFFERS')
+        require(hold is None or all(frac(cfg['rounds'][r['m']]['actual_delta_pf']) == step for r in hold['rows']), 'DF_HOLDOUT_STEP_DIFFERS')
         require(not direct or len(ms) == 1, 'DF_DIRECT_SINGLE_PHYSICAL_POINT_REQUIRED')
         validate = df_validator(self.root)
         source_reader = (lambda c,p:self.reader.blob(c,p)) if hasattr(self.reader,'blob') else lambda c,p:subprocess.check_output(['git','show',c+':'+p],cwd=self.root)
         used_seeds = set(); cal_cohorts = set()
-        for role, records in [('CALIBRATION',calibration)]+([] if direct else [('HOLDOUT',hold['rows'])]):
+        for role, records in [('CALIBRATION',calibration)]+([] if hold is None else [('HOLDOUT',hold['rows'])]):
             require({r['axis'] for r in records} == set(AXES), 'DF_HOLDOUT_AXIS_COVERAGE_DIFFERS')
             for rec in records:
                 cell = next(c for c in inputs['cells'] if c['m']==rec['m'] and c['role']==role)
@@ -347,7 +348,8 @@ class StepPriceRegistry:
             provenance={k:deepcopy(package.get(k))for k in ('inputs_source','model_source','price_source','holdout_source')},
             direct_prices=([dict(axis=c['axis'],point=self.api['physical'](self.api['point'](cfg['rounds'][c['m']])),value=c['mean_C'],paths=c['paths']) for c in calibration] if direct else []),
             request_id=digest(dict(family=domain['family'],step=domain['actual_step'],calibration=calibration)),
-            qualification='DESCRIPTIVE_HOLDOUT_FINITE_COHORT_NOT_EXPECTATION_OR_CI'))
+            qualification=('EXPLORATORY_CALIBRATION_ONLY' if hold is None and not direct
+                           else 'DESCRIPTIVE_HOLDOUT_FINITE_COHORT_NOT_EXPECTATION_OR_CI')))
 
     def common_pauli_model_terms(self, configuration, implementation, rules=None):
         """Return source-bound MODEL terms only for one-piece Pauli families.
@@ -390,7 +392,7 @@ class StepPriceRegistry:
             terms.append((one,slope))
         return tuple(terms) if len(terms)==26 else None
 
-    def _scoped_price(self, row, point, matching, family, preferred=None):
+    def _scoped_price(self, row, point, matching, family, preferred=None, *, extrapolated_time=False):
         axis = row['axis']
         direct = []
         models = []
@@ -418,6 +420,9 @@ class StepPriceRegistry:
                        source=deepcopy(entry['provenance']), registered_rule='ACTUAL_STEP:'+entry['id'],
                        qualified_E_C=False, CI=None, direct_alternatives=[deepcopy(observed)])
         elif models:
+            if extrapolated_time and len(models) != 1:
+                row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[e['id'] for e, _, _ in models])
+                return
             # A previously ambiguous scope may only be resolved with
             # in-range evidence. Keep the existing single-entry policy.
             competing = sum(entry['mode'] != 'DIRECT_FINITE_COHORT' for entry in matching) > 1
@@ -444,7 +449,9 @@ class StepPriceRegistry:
                            actual_step=entry['domain']['actual_step'], covered_rounds=entry['domain']['covered_rounds'],
                            calibration_domain=entry['calibration_domain'], extrapolation=extrapolation,
                            event_step_changed_from_calibration=point['R'] not in entry['calibration_R'],
-                           qualification=entry['qualification'], application='SOURCE_BOUND_ACTUAL_STEP_MODEL'))
+                           qualification=entry['qualification'],
+                           application=('EXPLORATORY_UNVALIDATED_TERMINAL_EXTRAPOLATION' if extrapolated_time
+                                        else 'SOURCE_BOUND_ACTUAL_STEP_MODEL')))
         else:
             if rejected:
                 row['needs'] = dict(reasons=list(dict.fromkeys(rejected)))
@@ -480,7 +487,14 @@ class StepPriceRegistry:
                 and frac(e['domain']['actual_step'])==frac(p['step'])
                 and same(e['domain']['piece_pattern'],p['piece_pattern'])
                 and same(e['domain']['event_recipe'],p['event_recipe'])
-                and any(same(t,p['T'])for t in e['wrapper_times'])]
+                and (self.exploratory or e.get('qualification') != 'EXPLORATORY_CALIBRATION_ONLY')]
+            source_bound = [e for e in matching if any(same(t, p['T']) for t in e['wrapper_times'])]
+            estimate_terminal = (self.exploratory and family['method'] == 'PR_DF'
+                                 and not source_bound)
+            matching = ([e for e in matching if e['mode'] != 'DIRECT_FINITE_COHORT'
+                         and p['R'] in e['calibration_R']
+                         and all(frac(t) < frac(p['T']) for t in e['wrapper_times'])]
+                        if estimate_terminal else source_bound)
             for axis in AXES:
                 row=rows[round_row['m'],axis]
                 require(row.get('physical_id')==round_row['candidate']['id'] and row.get('q')==p['q'] and row.get('R')==p['R'],
@@ -491,7 +505,7 @@ class StepPriceRegistry:
                     row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[e['id'] for e in matching])
                     continue
                 preferred = (preferred_models or {}).get((round_row['m'], axis))
-                self._scoped_price(row, p, matching, family, preferred)
+                self._scoped_price(row, p, matching, family, preferred, extrapolated_time=estimate_terminal)
                 if family['method'] == 'PR_DF' and row.get('unit_price_RZ') is None:
                     measured = self._df_calibration_alternatives(round_row, axis, matching)
                     if measured:

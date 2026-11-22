@@ -203,6 +203,33 @@ def test_scoped_producer_hands_off_signal_before_prices_and_resumes(monkeypatch,
     assert pf.read(leaf/'LEAF.json')['signal_only'] is False
 
 
+def test_exploratory_terminal_signal_is_registered_for_q3_without_price(monkeypatch, tmp_path):
+    from trottertracks import pf_distributed_preparation
+
+    _, parent, _, _ = saved_inputs()
+    entry = dict(parent, method='FULL_PF', p=10, formula='2nd', delta_over_h='1')
+    child = dict(horizon_parent=parent, q3_inputs=locator('q3'))
+    candidate = dict(method='FULL_PF', configuration_id='parent')
+    calls, published = [], []
+
+    def produce(root, runtime, parent_id, request, *args, bind_q3):
+        calls.append(bind_q3)
+        return dict(configuration=locator('child'), entry=child, signal_only=False)
+
+    monkeypatch.setattr(pf, 'saved_parent_signals', lambda *args: {'parent': entry})
+    monkeypatch.setattr(pf, 'produce', produce)
+    monkeypatch.setattr(pf, 'GitReader', lambda _: SimpleNamespace(read=lambda loc: {'id': loc['path']}))
+    monkeypatch.setattr(pf_distributed_preparation, 'complete_terminal_prices', lambda *a, **k: None)
+    runtime = SimpleNamespace(executor=SimpleNamespace(run_dir=tmp_path), settings={},
+                              follow_preparations=lambda items, advance, _: [advance(item) for item in items])
+    for _ in range(2):
+        pf.complete_scoped(tmp_path, runtime, [candidate], ('FULL_PF',), [13], {}, 'python', (),
+                           stop_requested=lambda: False, on_ready=lambda cid, en: published.append((cid, en)),
+                           exploratory=True)
+    assert calls == [True]
+    assert published == [('child', child)] * 2
+
+
 def test_new_parent_evidence_yields_watcher_without_stopping_preparation(monkeypatch, tmp_path):
     from trottertracks import pf_distributed_preparation
 

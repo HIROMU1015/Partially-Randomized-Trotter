@@ -681,3 +681,18 @@ class WidthCompletionTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+def test_exploratory_price_conflict_does_not_fan_out_into_direct_compiles():
+    import pr_candidate_services as services
+    from types import SimpleNamespace
+
+    known = dict(m=0, axis='X', physical_id='axis-x', unit_price_RZ=10)
+    missing = dict(m=0, axis='Y', physical_id='axis-y', unit_price_RZ=None,
+                   needs={'entry_ids': ['competing-model']})
+    plan = dict(groups=[dict(status='CALIBRATION_DESIGN_READY', axis_keys=[missing])],
+                round_actions=[dict(m=0, axis='Y', action='CALIBRATE')])
+    runner = SimpleNamespace(design_groups=lambda config, quote: plan)
+    outcome = services.df_price_disposition({}, dict(rows=[known, missing]), runner, exploratory=True)
+    assert outcome['groups'] == []
+    assert outcome['round_actions'][0]['reasons'] == ['EXPLORATORY_PRICE_NOT_IDENTIFIED']

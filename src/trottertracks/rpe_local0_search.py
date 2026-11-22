@@ -337,6 +337,9 @@ def resolve(config, request):
             raise RequestError('scope.scaled_shots', str(error)) from error
         canonical['scaled_shots'] = policy
         spec.setdefault('search_overrides', {}).update(rule=scaled.RULE, scaled_shots=policy)
+        if problem.get('problem', {}).get('system') == 'H4':
+            spec['search_overrides']['exploratory_cost'] = True
+            problem['search']['exploratory_cost'] = True
     if shots != 'auto':
         if not isinstance(shots, dict): raise RequestError('scope.shots', 'use auto or min/max_per_round')
         keys(shots, {'min', 'max_per_round'}, 'scope.shots')
@@ -394,6 +397,13 @@ def resolve(config, request):
         spec.update(live_ready_refill=True, overlap_ready_batch=True)
         if config.get('work_conserving_search') is True:
             spec.setdefault('search_overrides', {})['work_conserving_search'] = True
+    distributed = spec.get('executor', {}).get('distributed')
+    if (distributed is not None and spec.get('executor', {}).get('scheduler') == 'concurrent'
+            and spec.get('search_overrides', {}).get('exploratory_cost') is True):
+        spec['search_overrides']['controller_parallel'] = True
+        if config.get('entry') == 'schedule':
+            spec.update(live_ready_refill=True, overlap_ready_batch=True)
+            spec['search_overrides']['work_conserving_search'] = True
     if request['action'] in ('start','prepare'):
         spec['science_approved'] = True
     if 'pbs_walltime_overrides' in scope:
@@ -826,7 +836,7 @@ class Gateway:
                             'SCOPE_HELD_INPUTS', 'SCOPE_HELD_Q3', 'MAX_CYCLES'):
                         return 'REUSED_COMPLETED'
                     suspended_marker = final
-            elif not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED','SCALED_SHOT_GRID_COMPLETE'}:
+            elif not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED','SCALED_SHOT_GRID_COMPLETE','EXPLORATORY_GRID_COMPLETE'}:
                 return 'REUSED_COMPLETED'
         spec = load(run/'ROUND.requested.json'); problem = load(run/'PROBLEM.json')
         applied = load(run/'APPLIED_SCOPE.json')

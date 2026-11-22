@@ -363,7 +363,8 @@ class HistoryCache:
                     if updated:
                         save(key, signature, context, cached)
                     known[(cid, proposal['vector'])] = dict(record, source='PRIOR_ROUND_JOB',
-                                                          cost=O.cost(proposal['vector'], candidate['prices']))
+                                                          cost=None if candidate['prices'] is None else
+                                                          O.cost(proposal['vector'], candidate['prices']))
                 except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
                     refused.append(dict(job=str(job), reason='HISTORY_METADATA_ERROR:' + str(exc)))
             if stats['interrupted']:

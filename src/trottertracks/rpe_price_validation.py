@@ -374,6 +374,10 @@ class Service:
         for mid,(desc,c)in pending:
             if self.stopped.is_set():break
             row=self.store.row(mid)
+            if self.spec.get('search_overrides', {}).get('exploratory_cost') is True:
+                if row.get('job_id') and row.get('owner_run') == str(self.run.resolve()):
+                    self._collect(mid,row)
+                continue
             if mid in self.model_holds:
                 # A conflicting description must not trigger a new dispatch.
                 # An already frozen owner can still collect its original job.

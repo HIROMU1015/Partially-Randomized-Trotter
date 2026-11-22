@@ -98,7 +98,12 @@ class ScaleTests(unittest.TestCase):
             with self.subTest(M=horizon):
                 self.normal_start_and_resume_with_large_shot_evidence(horizon)
 
-    def normal_start_and_resume_with_large_shot_evidence(self, horizon):
+    @unittest.skipUnless((DECODER_VIEW/'src/trottertracks/rpe_total_risk.py').is_file(),
+                         'requires the fixed Z1+T1 source view')
+    def test_exploratory_start_and_resume_without_prices(self):
+        self.normal_start_and_resume_with_large_shot_evidence(13, exploratory=True)
+
+    def normal_start_and_resume_with_large_shot_evidence(self, horizon, *, exploratory=False):
         method = 'FULL_PF'
         with tempfile.TemporaryDirectory(prefix='artificial-large-shots-') as tmp:
             root = Path(tmp)
@@ -109,7 +114,7 @@ class ScaleTests(unittest.TestCase):
             problem['accuracy']['epsilon_E_decimal'] = S.EPSILON
             context['saved'].table.clear()
             context['tau'] = TAU
-            context['candidates'][0].update(M=horizon, prices=[1]*(2*(horizon+1)))
+            context['candidates'][0].update(M=horizon, prices=None if exploratory else [1]*(2*(horizon+1)))
             routes[method][0]['artificial'].update(tau=str(TAU), finite_support_fixture=dict(
                 view=str(DECODER_VIEW), commit=DECODER_SOURCE, target=0.0))
             profile = dict(host_id='local',root=str(ROOT),interpreter=sys.executable,
@@ -118,6 +123,8 @@ class ScaleTests(unittest.TestCase):
                         max_new_q3_per_method={method:2},
                         executor=dict(scheduler='concurrent',max_concurrent_jobs=1,large_shot_bounds=True,
                                       distributed=dict(port=0,local_worker=profile)))
+            if exploratory:
+                spec['search_overrides'] = dict(exploratory_cost=True, controller_parallel=True)
             write(root/'PROBLEM.json',problem)
             write(root/'ROUND.json',spec)
             config = dict(problem=str(root/'PROBLEM.json'), round=str(root/'ROUND.json'),
@@ -141,6 +148,12 @@ class ScaleTests(unittest.TestCase):
                 run = Path(result['run_directory'])
                 outcomes = {p: p.read_bytes() for p in run.glob('jobs/*/*/OUTCOME.json')}
                 self.assertTrue(outcomes)
+                if exploratory:
+                    report = load(run/'ROUND_RESULT.json')['methods'][method]
+                    self.assertIsNone(report['best'])
+                    self.assertEqual(report['stop_reason'], 'EXPLORATORY_GRID_COMPLETE')
+                    self.assertEqual(report['by_configuration'][0]['minimum_status'], 'MSE_PASS_COST_UNAVAILABLE')
+                    self.assertTrue(all(load(p.with_name('REQUEST.json'))['cost'] is None for p in outcomes))
                 expected = [16*n for n in S.base_shots(horizon)]
                 large = [load(p) for p in outcomes if load(p)['identity']['allocation'][0]['N_X'] == expected[0]]
                 self.assertEqual(len(large), 1)
@@ -775,3 +788,27 @@ class ScaleTests(unittest.TestCase):
                 self.assertTrue(any(g['required_rounds']==[13] for g in row['by_configuration']))
                 self.assertTrue(any(g['M']==13 and g['best'] for g in row['by_configuration']))
                 self.assertEqual(summary['all_M_minimum_status'],'EVALUATED_MINIMUM')
+
+
+def test_reprice_exact_saved_q3_during_exploratory_search():
+    method = 'PR_DF'
+    scope = small_policy((13,))
+    unpriced = dict(configuration_id='df', method=method, name='df', M=13, key={},
+                    ready=True, needs=['PRICE_AXES:2'], prices=None)
+    priced = dict(unpriced, needs=[], prices=[F(5)]*28)
+    calls = []
+
+    def answer(row):
+        calls.append(row['vector'])
+        return dict(status=O.PASS, MSE_lower=F(0), MSE_upper=TAU, source='ARTIFICIAL', calls=1)
+
+    search = dict(scaled_shots=scope, exploratory_cost=True)
+    knowledge = {}
+    def refresh():
+        return ([priced] if knowledge else []), {}
+    result = S.run(method, [unpriced], knowledge, SimpleNamespace(answer=answer), search, TAU, 2,
+                   refresh_ready=refresh)
+    assert len(calls) == len(set(calls)) == 2
+    assert result['stop_reason'] == 'EXPLORATORY_GRID_COMPLETE'
+    assert result['scaled_shots']['estimated_order'][0]['cost'] == 5*sum(calls[0])
+    assert result['scaled_shots']['unpriced_feasible'] == []

@@ -107,7 +107,8 @@ def build_readiness(root, context, problem, round_, result, output, *,
             rows.append(dict(method=method, status='NO_PENDING_REQUEST'))
             continue
         proposal = deepcopy(pending)
-        proposal['cost'] = O.frac(proposal['cost'])
+        if proposal['cost'] is not None:
+            proposal['cost'] = O.frac(proposal['cost'])
         method_executor = executor.for_method(method)
         rule = method_executor.route(proposal['configuration_id'])
         if rule is None:

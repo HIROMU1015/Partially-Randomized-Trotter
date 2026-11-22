@@ -89,6 +89,8 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
     """
     root=Path(root);run=Path(run);methods=spec['methods']
     settings=deepcopy(spec.get('pf_completion')or problem.get('pf_completion')or{})
+    if settings and problem.get('search', {}).get('exploratory_cost') is True:
+        settings['exploratory_cost'] = True
     automatic_scope=problem.get('methods',{}).get('TRUNCATED_PF',{})
     if not settings and ('TRUNCATED_PF' not in methods or automatic_scope.get('p_values') is None):
         return context,routes,None

@@ -195,7 +195,12 @@ def make_executor(root, run, routes, expected, problem, spec):
         cache=options.get('prefix_cache_directory')
         if cache is not None and not Path(cache).is_absolute():cache=str(run/cache)
         executor_class=C.DistributedExecutor if options.get('distributed') is not None else C.ConcurrentExecutor
-        extra={} if executor_class is C.ConcurrentExecutor else dict(distributed=options['distributed'])
+        extra = {}
+        if executor_class is C.DistributedExecutor:
+            distributed = options['distributed']
+            if spec.get('search_overrides', {}).get('controller_parallel') is True:
+                distributed = dict(distributed, controller_parallel=True)
+            extra['distributed'] = distributed
         executor=executor_class(root,run,routes,expected,problem,**common,**extra,budgets=budgets,
             science_approved=approved,dp_workers=options.get('dp_workers'),prefix_cache_directory=cache,
             prefix_checkpoint_rounds=options.get('prefix_checkpoint_rounds'),
@@ -217,6 +222,9 @@ def make_executor(root, run, routes, expected, problem, spec):
         if not hasattr(executor,'configure_preparation_graph'):
             executor.finish();raise ValueError('Preparation tasks require the shared distributed executor')
         executor.configure_preparation_graph(graph)
+    if spec.get('search_overrides', {}).get('exploratory_cost') is True:
+        executor.exploratory_cost = True
+        spec = dict(spec, price_validation=dict(spec.get('price_validation') or {}, compile_approved=False))
     # Optional diagnostics share models across allocations/runs; never alter readiness.
     from trottertracks.rpe_price_validation import Service
     try:validation=Service(root,run,spec,executor,problem=problem)
@@ -628,11 +636,12 @@ def interrupted_mode(a, problem, extra):
                                         cost=rec['cost'], adopted_by_rule=True, source='SAVED', job=None, origin='C_CATALOG',
                                         label=rec.get('label')))
         for b in r.get('by_configuration') or []:
-            if b['stop_reason'] == budget_stop:
+            if b.get('stop_reason') == budget_stop:
                 b['stop_reason'] = INTERRUPTED
             mine = [e for e in evaluations if e['method'] == name and e['configuration_id'] == b['configuration_id']]
             feas = [e for e in mine if e['status'] == O.PASS]
-            cheapest = min(feas, key=lambda e: (e['cost'], e['N_X'])) if feas else None
+            cheapest = min((e for e in feas if e['cost'] is not None),
+                           key=lambda e: (e['cost'], e['N_X']), default=None)
             b['evaluated'] = dict(total=len(mine), saved=sum(e['source'] == 'SAVED' for e in mine),
                                   round_jobs_adopted=sum(e['source'] == 'ROUND_JOB' and e['adopted_by_rule'] for e in mine),
                                   round_jobs_not_adopted=sum(e['source'] == 'ROUND_JOB' and not e['adopted_by_rule'] for e in mine),
@@ -659,7 +668,7 @@ def interrupted_mode(a, problem, extra):
             'adopted_by_rule', 'source', 'origin', 'job']
     with (run / 'EVALUATIONS.csv').open('w', newline='') as f:
         w = csv.writer(f, lineterminator='\n');w.writerow(keys)
-        for e in sorted(evaluations, key=lambda e: (e['method'], e['L_D'] or 0, Fraction(e['kappa_multiplier']), e['cost'])):
+        for e in sorted(evaluations, key=lambda e: (e['method'], e['L_D'] or 0, Fraction(e['kappa_multiplier']), e['cost'] is None, e['cost'])):
             w.writerow([' '.join(map(str, e[k])) if isinstance(e[k], list) else (O.show(e[k]) if isinstance(e[k], Fraction) else e[k])
                         for k in keys])
     with (run / 'INVOCATIONS.jsonl').open('a') as f:

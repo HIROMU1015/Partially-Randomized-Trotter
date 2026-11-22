@@ -462,7 +462,7 @@ def produce(root, runtime, parent, entry, routes, interpreter, stop_requested, o
 
 
 def complete_scoped(root, runtime, candidates, methods, horizons, routes, interpreter, prior_runs,
-                    *, stop_requested, on_ready, refresh_requested=None):
+                    *, stop_requested, on_ready, refresh_requested=None, exploratory=False):
     from .pf_distributed_preparation import complete_terminal_prices
     from .pr_candidate_completion import Held, PreparationWait
 
@@ -541,8 +541,10 @@ def complete_scoped(root, runtime, candidates, methods, horizons, routes, interp
                     entry = dict(entry, **original)
             if leaf is None or leaf.get('signal_only') is True:
                 leaf = produce(root, runtime, parent, entry, routes, interpreter, stop_requested, selected_owners,
-                               bind_q3=bool(entry.get('prices')) or parent not in saved_signals)
+                               bind_q3=exploratory or bool(entry.get('prices')) or parent not in saved_signals)
                 write(leaf_file, leaf)
+            if exploratory and not leaf.get('signal_only'):
+                on_ready(GitReader(root).read(leaf['configuration'])['id'], leaf['entry'])
             if entry.get('prices'):
                 if 'price_scope' not in leaf['entry']:
                     leaf = dict(leaf, entry=dict(leaf['entry'],price_scope=GitReader(root).read(entry['prices'])['scope']))

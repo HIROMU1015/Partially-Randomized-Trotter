@@ -400,7 +400,8 @@ class Completion:
         from .pr_price_rules import GitReader
         from .pr_step_price_registry import StepPriceRegistry
         path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
-        return StepPriceRegistry(GitReader(ROOT),read(self.registry),state=read(path)if path.exists()else None)
+        return StepPriceRegistry(GitReader(ROOT), read(self.registry), state=read(path) if path.exists() else None,
+                                 exploratory=getattr(self, 'settings', {}).get('exploratory_cost') is True)
 
     def ingest_price_results(self,packages=None):
         """Accept fixed audited results once; never launch a calibration here."""
@@ -462,7 +463,9 @@ class Completion:
             if not waiting:
                 return set()
             digest = self.price_registry_digest()
-            return {record['key'] for record in waiting if self.price_evidence_unchanged(record, digest)}
+            return {record['key'] for record in waiting if self.price_evidence_unchanged(record, digest)
+                    and not (self.settings.get('exploratory_cost') and record.get('intake') and record.get('signal')
+                             and not record.get('scientific_failure'))}
 
     def deferred_stage_keys(self):
         """Check whether saved exact UNKNOWN owners are still unresolved."""
@@ -706,7 +709,7 @@ class Completion:
                 or [row['unit_price_RZ'] for row in current['rows']] != record['prices']):
             raise ValueError('CONTINUATION_PRICE_EVIDENCE_DIFFERS')
 
-    def refresh_price_hold(self,record):
+    def refresh_price_hold(self,record, *, admit_unpriced=False):
         """Requery after a registry or quote policy update, without scientific retry."""
         reason=str(record.get('reason',''))
         if record.get('scientific_failure')or record.get('status','').startswith('STOP')or any(
@@ -714,7 +717,7 @@ class Completion:
             return None
         if not all(record.get(k)for k in ('configuration','signal','intake')):return None
         digest=self.price_registry_digest()
-        if record.get('registry_at_hold')==digest:return None
+        if record.get('registry_at_hold')==digest and not admit_unpriced:return None
         d=self.directory/'refresh'/record['key']/digest
         registry=d/'PRICE_RULES.json';put(registry,read(self.registry))
         quote=self.service('quote',dict(configuration=record['configuration'],view=str(self.path('D2_VIEW')),
@@ -732,16 +735,36 @@ class Completion:
                     record['previous_hold'] = dict(status=record['status'], reason=reason)
                     record['reason'] = updated
         if not quote.get('complete'):
-            record['registry_at_hold']=digest;self.save();return None
+            record['registry_at_hold']=digest
+            if not admit_unpriced:
+                self.save()
+                return None
         fixed=publish([d],'Reuse newly available candidate prices without scientific retry')
         record.update(previous_hold=dict(status=record['status'],reason=record.get('reason')),
-            status='READY_FOR_SEARCH',reason=None,price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],
+            status='READY_FOR_SEARCH',reason=None,price_policy='MODEL',
+            prices=[r['unit_price_RZ']for r in quote['rows']] if quote['complete'] else None,
             quote=dict(commit=fixed,path=rel(d/'AVAILABLE_EVIDENCE_QUOTE.json')),
             design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),delta_pf=config['spec']['delta_pf']),
             schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']],
             recovered_by='METADATA_REQUERY_NO_SCIENTIFIC_RETRY')
-        record.pop('price_actions', None)
+        if quote['complete']:
+            record.pop('price_actions', None)
+            record.pop('price_status', None)
+        else:
+            record['price_status'] = 'EXPLORATORY_PRICE_UNAVAILABLE'
         self.save();return record
+
+    def refresh_exploratory_prices(self):
+        if not self.settings.get('exploratory_cost'):
+            return
+        self.ingest_price_results()
+        for record in self.state['records'].values():
+            if record['status'] == 'READY_FOR_SEARCH' and record.get('prices') is None:
+                try:
+                    self.refresh_price_hold(record)
+                except (Held, ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
+                    record['exploratory_price_reason'] = str(error)
+                    self.save()
 
     def reconcile_committed_df_holdout(self, record):
         """Reopen a publication mismatch only after the original results pass intake."""
@@ -856,6 +879,7 @@ class Completion:
         return ready
 
     def complete(self,request, *, existing_signal_only=False, saved_packets=()):
+        exploratory = getattr(self, 'settings', {}).get('exploratory_cost') is True
         request=deepcopy(request)  # internal descriptor resolution must not change the caller's cache key
         if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
         if request.get('plan_only')or getattr(self,'settings',{}).get('plan_only'):
@@ -931,6 +955,8 @@ class Completion:
                     self.ingest_price_results()
                     price_unresolved = str(old.get('reason','')).startswith(
                         ('PRICE_EVIDENCE_REQUIRED:', 'PRICE_RULE_INCOMPLETE:', DF_PRICE_UNAVAILABLE))
+                    if exploratory and price_unresolved and old.get('signal') and old.get('intake'):
+                        return dict(self.refresh_price_hold(old, admit_unpriced=True) or old, resumed=True)
                     if old.get('signal_deferred_for_price'):
                         digest=self.price_registry_digest()
                         can_prepare_signal = (request['method']=='PR_PAULI' and not old.get('signal')
@@ -1021,14 +1047,23 @@ class Completion:
                 and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if failed_twin is not None:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
-            initial_registry=self.price_registry_digest()
-            initial_quote=self.initial_quote(config,cref,d)
+            initial_registry = self.price_registry_digest()
+            quote_available = True
+            try:
+                initial_quote = self.initial_quote(config, cref, d)
+            except (Held, ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
+                if not exploratory:
+                    raise
+                quote_available = False
+                rec['exploratory_price_reason'] = str(error)
+                initial_quote = dict(configuration_id=config['id'], policy='MODEL', rows=[], complete=False,
+                                     price_registry_at_quote=initial_registry)
             holds=price_source_holds(initial_quote)
             if request['method']=='PR_PAULI':
                 already_started = (bool(old and old.get('signal')) or
                     any(d.glob('PAULI_SIGNALS.*.json')) or any(d.glob('PAULI_COMPILE.*.json')) or
                     any(d.glob('PAULI_PRICES.*.json')) or (d/'PAULI_SIGNAL_REQUEST.json').exists())
-                if holds and not already_started and getattr(self, 'stage_executor', None) is None:
+                if holds and not exploratory and not already_started and getattr(self, 'stage_executor', None) is None:
                     # Another scoped Pauli model cannot resolve the existing
                     # per-axis choice. Ordinary missing axes still calibrate.
                     put(d/'FINAL_QUOTE.json',initial_quote)
@@ -1081,10 +1116,22 @@ class Completion:
             # Both branches depend on the frozen configuration, not on each
             # other's numerical result. They share host slots through the
             # executor rather than independently reserving CPU resources.
+            def available_price():
+                if not quote_available:
+                    return initial_quote
+                try:
+                    return self.price(config, cref, prepared, request, d, initial_quote)
+                except Held as error:
+                    if not exploratory:
+                        raise
+                    rec['exploratory_price_reason'] = str(error)
+                    if isinstance(error, PreparationWait) and error.job_id:
+                        rec['pending_preparation_job'] = error.job_id
+                    return initial_quote
             if getattr(self,'stage_executor',None)is not None:
                 with ThreadPoolExecutor(max_workers=2)as pool:
                     signal_future=pool.submit(signal_work)
-                    price_future=pool.submit(self.price,config,cref,prepared,request,d,initial_quote)
+                    price_future=pool.submit(available_price)
                     signal=signal_future.result();rec.update(signal=signal);self.save()
                     intake=intake_work(signal)
                     rec['intake']=intake;self.save();quote=price_future.result()
@@ -1092,8 +1139,8 @@ class Completion:
                 signal=signal_work();rec.update(signal=signal);self.save()
                 intake=intake_work(signal)
                 rec['intake']=intake;self.save()
-                quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
-            if not quote['complete']:
+                quote=available_price()
+            if not quote['complete'] and not exploratory:
                 quoted_registry = quote.get('price_registry_at_quote', initial_registry)
                 if quote.get('price_decisions'):
                     rec['price_actions']=quote['price_decisions']
@@ -1110,7 +1157,11 @@ class Completion:
                         if row.get('unit_price_RZ') is None and row.get('needs')]
                     raise Held(price_hold_reason(holds))
                 raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
-            quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
+            put(d/'FINAL_QUOTE.json', quote)
+            quote_commit=publish([d],'Publish candidate quote and receipt bindings')
+            if exploratory and not quote['complete']:
+                rec.update(registry_at_hold=quote.get('price_registry_at_quote', initial_registry),
+                           price_status='EXPLORATORY_PRICE_UNAVAILABLE')
             with self.lock:
                 local_registry=d/'PRICE_RULES.json'
                 # DF publishes step rules through the locked registry writer.
@@ -1121,8 +1172,10 @@ class Completion:
                 rec['price_actions'] = quote['price_decisions']
             else:
                 rec.pop('price_actions', None)
+            if exploratory and quote['complete']:
+                rec.pop('price_status', None)
             rec.update(status='READY_FOR_SEARCH',quote=dict(commit=quote_commit,path=rel(d/'FINAL_QUOTE.json')),
-                price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],
+                price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']] if quote['complete'] else None,
                 design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),
                     delta_pf=config['spec']['delta_pf']),schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']])
         except PreparationYield as exc:
@@ -1657,8 +1710,12 @@ class Completion:
         return quote
 
     def df_price_plan(self,config,quote,d):
-        plan = self.service('df-price-design',dict(configuration=config,price_quote=quote,resolve_axes=True),
-                            d,tag='DF_PRICE_PLAN_'+key(quote['rows']))
+        request = dict(configuration=config, price_quote=quote, resolve_axes=True)
+        exploratory = self.settings.get('exploratory_cost') is True
+        if exploratory:
+            request['exploratory_cost'] = True
+        plan = self.service('df-price-design', request, d,
+                            tag='DF_PRICE_PLAN_'+key(request if exploratory else quote['rows']))
         prior = d/'DF_PRICE_GROUPS.json'
         if not prior.is_file():
             return plan
@@ -2067,9 +2124,13 @@ class Completion:
         if not inp.exists():
             raise Held(DF_PRICE_UNAVAILABLE+' PRICE_RULE_OR_RECEIPT_REUSE_REQUIRED:'+str(read(base/'NEEDS.json')))
         frozen_inputs=read(inp)
+        exploratory = self.settings.get('exploratory_cost') is True
+        use_holdout = not exploratory
         compile_axes = {'CALIBRATION': [], 'HOLDOUT': []}
         for cell in frozen_inputs['cells']:
             role = cell.get('role', 'CALIBRATION')
+            if role == 'HOLDOUT' and not use_holdout:
+                continue
             evidence = cell.get('axis_evidence')
             if evidence is not None and any(item['status'] not in ('MISSING','REUSE')
                                             for path in evidence.values() for item in path.values()):
@@ -2119,7 +2180,7 @@ class Completion:
         self.call(args+['freeze',*common,'--raw-commit',raw],d,'DF_MODEL_FREEZE',science=True)
         frozen=publish([d],'Freeze candidate DF full-wrapper model before holdout')
         holdout=None
-        if frozen_inputs['model_design'].get('holdout_round')is not None:
+        if frozen_inputs['model_design'].get('holdout_round') is not None and use_holdout:
             holdout_dispatch = bool(compile_axes['HOLDOUT']) or (d/'DF_HOLDOUT.DISTRIBUTED.json').is_file()
             self.call(args+['acquire',*common,'--stage','holdout','--model-commit',frozen],d,'DF_HOLDOUT',
                       science=holdout_dispatch)
@@ -2276,8 +2337,8 @@ class Completion:
             cand=next(c for c in context['candidates']if c['method']==method and c.get('configuration_id')==installed)
             cand.update(kappa_value=str(dec(config['spec']['kappa']['value'])),ready=True,needs=[],
                 generated=True,generated_configuration=config,configuration_source=rec['configuration'],
-                signal_source=packet,prices=[dec(x)for x in rec['prices']],
-                price_status='MODEL_REFERENCE',price_quote=value(rec['quote']),
+                signal_source=packet,prices=None if rec['prices'] is None else [dec(x)for x in rec['prices']],
+                price_status=rec.get('price_status') or 'MODEL_REFERENCE',price_quote=value(rec['quote']),
                 schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
             rule=self.common_route(method,cid,configuration,packet,binding)
@@ -2285,7 +2346,9 @@ class Completion:
             if parent:
                 from run_rpe_optimizer_q3_job import M13_RISK
                 source_id = value(parent['configuration'])['id']
-                if config['spec']['M'] != 13 or len(cand['prices']) != 2*(config['spec']['M']+1):
+                if config['spec']['M'] != 13:
+                    raise ValueError('Native DF horizon requires a fixed M=13 input')
+                if not self.settings.get('exploratory_cost') and len(cand['prices'] or ()) != 28:
                     raise ValueError('Native DF horizon requires complete per-axis prices')
                 cand.update(M=config['spec']['M'],source_configuration_id=source_id)
                 context['expected'][cid]['M'] = config['spec']['M']
@@ -2304,6 +2367,8 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     """
     from . import rpe_method_optimizer as O
     settings=deepcopy(spec['candidate_completion'])
+    if spec.get('search_overrides', {}).get('exploratory_cost') is True:
+        settings['exploratory_cost'] = True
     if not(settings.get('price_registry_source')or settings.get('price_registry_file')):
         supplied=(problem.get('price_rules')or{}).get('registry_file')
         if supplied:settings['price_registry_file']=str((Path(root)/supplied).resolve())

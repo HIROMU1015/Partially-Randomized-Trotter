@@ -8,13 +8,8 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
-from run_pf_preparation_stage import bind_preflight_snapshot, cache_mean_pool, saved_price_helpers
-
-
-PRICE_PLAN_HOLDS = {
-    'At least two distinct-q calibration cells and one later holdout required',
-    'One saved axis only: resolve per-axis native execution before compiling',
-}
+from run_pf_preparation_stage import (PRICE_PLAN_HOLDS, bind_preflight_snapshot, cache_mean_pool,
+                                      saved_price_helpers, use_exploratory_plan)
 
 
 def inspect(root,request,observations,signal_index=None,saved_price_index=None):
@@ -23,6 +18,9 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
     provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
     source=provider.source_gate();rows=[]
     bind_preflight_snapshot()
+    exploratory = request.get('exploratory_cost') is True
+    if exploratory:
+        use_exploratory_plan()
     helpers, extra = None, None
     for item in request['selected']:
         configuration=provider.selected_configuration(item);cid=configuration['id']
@@ -102,7 +100,7 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             raw_calibration = helpers['original_calibration'](
                 root, plan, deferred, Path('docs/research/distributed_selected_pf')/cid) if deferred else None
             needs_signal = plan.get('new_signal_means', 0) and cid not in request.get('independent_saved_signals', {})
-            if deferred and not available and not needs_signal and not raw_calibration:
+            if deferred and not available and not needs_signal and not raw_calibration and not exploratory:
                 rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
                     reason=('No independently clear wrapper axis' if plan.get('selected_axis_compile')
                             else 'No independently clear pair of X/Y wrappers'), deferred_price_rounds=deferred,

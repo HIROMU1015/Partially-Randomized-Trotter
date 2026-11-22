@@ -439,6 +439,70 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(self.poll_host(ex,'server1')['assignments'],[])
         self.assertEqual(sum(e['event']=='ASSIGN'for e in ex.store.events()),0)
 
+    def test_scaled_selector_dispatches_independent_q3_while_first_candidate_is_waiting(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from fractions import Fraction
+        import time
+
+        from trottertracks import rpe_method_optimizer as optimizer
+        from trottertracks import rpe_scaled_shots as scaled
+
+        ex = self.executor(capacity=2, controller_parallel=True)
+        prep = self.submit(ex, 'signal', 'blocked-candidate')
+        original, = self.poll_host(ex, 'server1')['assignments']
+        self.assertEqual(original['job_id'], prep)
+        ex.preparation_dependencies['blocked'] = [prep]
+        view = ex.for_method('PR_PAULI')
+        tau = Fraction(scaled.EPSILON)**2
+        candidates = [dict(method='PR_PAULI', configuration_id=name, name=name,
+                           M=0, key={}, ready=True, needs=[], prices=[price, price])
+                      for name, price in [('blocked', 1), ('independent', 2)]]
+        policy = scaled.settings(dict(M=[0], grid=dict(min_k=0, max_k=0, divisor=1), compare_paper=False))
+
+        def claim(host):
+            deadline = time.monotonic() + 5
+            while time.monotonic() < deadline:
+                assignments = self.poll_host(ex, host)['assignments']
+                if assignments:
+                    task, = assignments
+                    return task
+                time.sleep(.01)
+            self.fail('No artificial assignment for '+host)
+
+        def complete(task, host):
+            payload = self.completion(task)
+            outcome = json.loads(base64.b64decode(payload['files']['OUTCOME.json']))
+            outcome.update(MSE_lower=optimizer.enc(0), MSE_upper=optimizer.enc(tau/2))
+            payload.update(host_id=host)
+            payload['files']['OUTCOME.json'] = base64.b64encode(json.dumps(outcome).encode()).decode()
+            self.assertFalse(ex.rpc('/v1/complete', payload)['duplicate'])
+            self.assertTrue(ex.rpc('/v1/complete', payload)['duplicate'])
+
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            future = pool.submit(scaled.run, 'PR_PAULI', candidates, {}, view, dict(scaled_shots=policy), tau, 2,
+                                 answer_now=view.answer_now, await_dispatch=view.await_dispatch,
+                                 read_completed=view.read_scaled_completions)
+            try:
+                independent = claim('server2')
+                self.assertEqual(independent['request']['configuration_id'], 'independent')
+                complete(independent, 'server2')
+                self.assertEqual(ex.store.counts('PR_PAULI'), 1)
+                ex.rpc('/v1/complete', self.prep_complete(ex, original))
+                blocked = claim('server1')
+                self.assertEqual(blocked['request']['configuration_id'], 'blocked')
+                complete(blocked, 'server1')
+                result = future.result(timeout=5)
+            finally:
+                if not future.done():
+                    (self.run/'STOP_REQUESTED.json').write_text('{}')
+                    with ex.state.cv:
+                        ex.state.cv.notify_all()
+        self.assertEqual(result['stop_reason'], 'SCALED_SHOT_GRID_COMPLETE')
+        q3_ids = {row['job_id'] for row in (independent, blocked)}
+        for event in ('ASSIGN', 'ADOPT'):
+            self.assertEqual(sum(r['event'] == event and r['job_id'] in q3_ids
+                                 for r in ex.store.events()), 2)
+
     def test_normal_shot_search_returns_existing_hold_for_failed_preparation(self):
         from fractions import Fraction
         from trottertracks import rpe_method_optimizer as O

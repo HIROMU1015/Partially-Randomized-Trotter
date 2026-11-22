@@ -222,6 +222,13 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     import importlib.util
 
     distributed = spec['executor']['distributed']
+    if trial.get('controller_parallel') is True:
+        spec['search_overrides']['controller_parallel'] = True
+        # Derive overlap from CPUs visible to this controller, rather than
+        # carrying forward the old fixed readiness-pool width.
+        distributed.pop('live_readiness_max_workers', None)
+    if trial.get('exploratory_cost') is True:
+        spec['search_overrides']['exploratory_cost'] = True
     if 'large_shot_adapter' in trial:
         selected = trial['large_shot_adapter']
         path = Path(__file__).resolve().with_name('run_rpe_method_optimizer.py')
@@ -303,6 +310,7 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     if any(field in trial for field in preparation_helpers) and not all(field in trial for field in preparation_helpers):
         raise ValueError('Preparation recovery requires both fixed controller helpers')
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
+                               ('rpe_plan_readiness', 'plan_readiness_sha256'),
                                ('pf_saved_prices', 'pf_saved_prices_sha256'),
                                ('pf_distributed_preparation', 'pf_distributed_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
@@ -1070,7 +1078,7 @@ class WidthDriver:
         pending=[f for f in self.state['families'].values()if f['status']=='FAMILY_PREPARATION_PENDING']
         if not pending:return
         comp=self.completion_api();approved=self.spec.get('science_approved')is True and not self.a.plan_only
-        for f in pending:
+        def prepare_family(f):
             request=f['preparation_request'];started=time.monotonic()
             self.log(event='FAMILY_BOOTSTRAP_START',family=request['selection']['family'])
             if hasattr(comp,'prepare_family'):result=comp.prepare_family(request,allow_science=approved)
@@ -1083,7 +1091,7 @@ class WidthDriver:
                 f['reason']=result.get('reason',result['status'])
                 if result['status'] == 'UNSUPPORTED_MAPPER':
                     f['status'] = 'UNSUPPORTED_MAPPER'
-                continue
+                return
             config=config.get('configuration',config);s=config['spec'];template=f['template']['spec']
             try:
                 if (KS._frac(s['delta_pf'])!=KS._frac(f['requested_delta_pf'])or
@@ -1101,6 +1109,27 @@ class WidthDriver:
                 f.pop('reason',None)  # the fulfilled preparation need is no longer a blocking reason
             except(ValueError,KeyError,TypeError)as exc:
                 f.update(status='HELD_FAMILY_MISMATCH',reason=str(exc))
+
+        if self.spec.get('search_overrides', {}).get('controller_parallel') is True:
+            from concurrent.futures import ThreadPoolExecutor
+            from trottertracks.rpe_q3_resources import controller_cpu_count
+            groups = {}
+            for family in pending:
+                groups.setdefault((family['method'], family['L_D']), []).append(family)
+
+            def prepare_split(families):
+                for family in families:
+                    if (self.run/'STOP_REQUESTED.json').exists():
+                        break
+                    prepare_family(family)
+
+            with ThreadPoolExecutor(max_workers=min(len(groups), controller_cpu_count()),
+                                    thread_name_prefix='rpe-family-inputs') as pool:
+                for _ in pool.map(prepare_split, groups.values()):
+                    pass
+        else:
+            for family in pending:
+                prepare_family(family)
 
     def families(self):
         return {key:W.Family(key,rows['rows'])for key,rows in self.state['families'].items()
@@ -1209,6 +1238,9 @@ class WidthDriver:
             from trottertracks.pr_candidate_completion import Completion
             settings=dict(self.spec.get('candidate_completion')or{})
             settings.setdefault('price_registry_file',self.problem.get('price_rules',{}).get('registry_file'))
+            search = dict(self.problem['search'], **self.spec.get('search_overrides', {}))
+            if search.get('exploratory_cost') is True:
+                settings['exploratory_cost'] = True
             settings['plan_only']=self.a.plan_only or self.spec.get('science_approved')is not True
             self.completion=Completion(self.run/'completion',settings)
         return self.completion
@@ -1392,7 +1424,11 @@ class WidthDriver:
                     # and share no signal assignment.
                     split = (split, id(point))
                 groups.setdefault(method, {}).setdefault(split, []).append(point)
-            parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
+            if self.spec.get('search_overrides', {}).get('controller_parallel') is True:
+                from trottertracks.rpe_q3_resources import controller_cpu_count
+                parallel = controller_cpu_count()
+            else:
+                parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
             lane_limit = parallel if continuous else min(limit, parallel)
             lanes = {m: max(1, min(lane_limit, len(splits)) if m in parallel_methods else 1)
                      for m, splits in groups.items()}
@@ -1483,8 +1519,9 @@ class WidthDriver:
             # Prior/free-vector results cannot update a multiplier-grid minimum.
             for method, r in result.items():
                 r.setdefault('rule_adopted_best', r['best'])
-                r['confirmed_all_best'] = r['best']
-                methods[method] = dict(rule_adopted_best=r['rule_adopted_best'], confirmed_all_best=r['best'],
+                r['confirmed_all_best'] = (None if r['scaled_shots'].get('cost_stage') == 'EXPLORATORY_SHORTLIST'
+                                           else r['best'])
+                methods[method] = dict(rule_adopted_best=r['rule_adopted_best'], confirmed_all_best=r['confirmed_all_best'],
                                        scaled_shots=r['scaled_shots'])
             self.state['method_minima'] = methods
             K.CLI.write(self.run/'CONFIRMED_MINIMA.json', K.CLI.slim(dict(
@@ -1597,7 +1634,8 @@ class WidthDriver:
         def subscriber(method, context, candidates, view):
             seen = set()
             pf_seen = 0
-            delivered = {c['configuration_id'] for c in candidates if c['ready']}
+            delivered = {c['configuration_id']: c.get('prices') for c in candidates if c['ready']}
+            exploratory = problem['search'].get('exploratory_cost') is True
 
             def pending():
                 with condition:
@@ -1632,7 +1670,7 @@ class WidthDriver:
                 if pf is None:
                     registered = {r.get('installed_configuration_id', r.get('configuration_id')) for r in records}
                 O.scope_absolute_kappa(scratch, problem)
-                O.apply_published(scratch['candidates'], routes)
+                O.apply_published(scratch['candidates'], routes, exploratory=exploratory)
                 # The installer resolves aliases. Keep existing routes and
                 # bindings, including those of jobs already running.
                 trial = view.for_method(method)
@@ -1643,7 +1681,8 @@ class WidthDriver:
                 for candidate in scratch['candidates']:
                     cid = candidate['configuration_id']
                     if (candidate['method'] != method or not candidate['ready']
-                        or not cid or cid not in registered or cid in delivered):
+                        or not cid or cid not in registered
+                        or (cid in delivered and (not exploratory or delivered[cid] == candidate.get('prices')))):
                         continue
                     route = trial.route(cid)
                     if route is None or trial.refresh_execution_hold(cid):
@@ -1651,7 +1690,7 @@ class WidthDriver:
                     candidate['execution_needs'] = []
                     candidate.pop('execution_hold', None)
                     added.append(candidate)
-                    delivered.add(cid)
+                    delivered[cid] = candidate.get('prices')
                     new_routes.append(dict(route, configuration_ids=[cid]))
                     expected[cid] = trial.expected_for(cid, route)
                 view.routes = dict(view.routes, **{method: new_routes + view.routes.get(method, [])})
@@ -1670,15 +1709,20 @@ class WidthDriver:
         problem=deepcopy(self.problem)
         for method, widths in self.widths.items():
             problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
+        search = dict(problem['search'], **self.spec.get('search_overrides', {}))
+        exploratory = search.get('exploratory_cost') is True
+        if exploratory:
+            problem['search'] = dict(problem['search'], exploratory_cost=True, rule=search['rule'])
         context=self.context(problem);comp=self.completion_api()
         routes=K.CLI.merged_routes(problem,self.spec)
         pf_settings=self.spec.get('pf_completion') or self.problem.get('pf_completion') or {}
-        pf_enabled=getattr(self,'rule_stop',False) and ('TRUNCATED_PF' in self.methods or
-            'FULL_PF' in self.methods and bool(pf_settings))
+        distributed_prep = (self.spec.get('executor', {}).get('distributed') or {}).get('preparation')
+        pf_enabled = (getattr(self, 'rule_stop', False) or search.get('controller_parallel') is True and
+                      bool(distributed_prep)) and ('TRUNCATED_PF' in self.methods or
+                      'FULL_PF' in self.methods and bool(pf_settings))
         if pf_enabled:
             from trottertracks import pf_optimizer_connection as PF
             routes=PF.registry_routes(routes,context['pf_evidence_registry'])
-        search=dict(problem['search'], **self.spec.get('search_overrides',{}))
         horizon_keys = set()
         if 'PR_DF' in self.methods and search.get('rule') == 'RPE_SCALED_SHOTS_V1':
             from trottertracks.pr_df_horizon_preparation import ready_keys as saved_horizon_keys
@@ -1698,8 +1742,10 @@ class WidthDriver:
                 canonical=installed.get(p.get('completion',{}).get('key'))
                 if canonical:p['evaluation_configuration_id']=canonical
             return current_routes
+        if exploratory and hasattr(comp, 'refresh_exploratory_prices'):
+            comp.refresh_exploratory_prices()
         routes=install_ready(routes)
-        O.apply_published(context['candidates'],routes)
+        O.apply_published(context['candidates'],routes, exploratory=exploratory)
         options=self.spec.get('executor',{})
         launched={m:sum((job/'LAUNCH.json').exists()or(job/'STARTING.json').exists()
             for job in(self.run/'jobs'/m).glob('*'))for m in self.methods}
@@ -1726,6 +1772,13 @@ class WidthDriver:
             active_spec['executor']['distributed'] = dict(active_spec['executor']['distributed'], live_ready_refill=True,
                 work_conserving_search=self.work_conserving_search)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
+        if exploratory:
+            active_spec['pf_completion'] = dict(pf_settings, exploratory_cost=True) if pf_settings else {}
+        if search.get('controller_parallel') is True and pf_enabled and pf_settings.get('mode') == 'complete':
+            from trottertracks.rpe_q3_resources import controller_cpu_count
+            active_spec['pf_completion'] = dict(active_spec.get('pf_completion') or pf_settings,
+                                                max_candidates=controller_cpu_count(),
+                                                refill_candidate_preparation=True)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
         self.queued_preparation = 0
         self.preparation_queue_advanced = False
@@ -1741,7 +1794,7 @@ class WidthDriver:
                 from trottertracks.rpe_preparation_queue import save_horizon_preparation, submit_registered_horizons
                 from trottertracks.rpe_scaled_shots import settings as scaled_settings
                 early = submit_registered_horizons(runtime, context['candidates'],
-                    scaled_settings(search['scaled_shots']), problem['rpe']['M'])
+                    dict(scaled_settings(search['scaled_shots']), exploratory_cost=exploratory), problem['rpe']['M'])
                 if early:
                     save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', early, runtime.executor.store)
             def user_stopped():
@@ -1793,7 +1846,9 @@ class WidthDriver:
                               if runtime is not None and 'PR_DF' in self.methods and
                               search.get('rule') == 'RPE_SCALED_SHOTS_V1' and
                               13 in scaled_settings(search['scaled_shots'])['M'] else None)
-                preparation_pool=ThreadPoolExecutor(max_workers=1 + bool(pf_enabled) + (df_context is not None))
+                parallel_families = runtime is not None and search.get('controller_parallel') is True
+                preparation_pool=ThreadPoolExecutor(max_workers=1 + bool(pf_enabled) + (df_context is not None)
+                                                    + parallel_families)
                 stopped = lambda: stop_preparation.is_set() or user_stopped()
                 notify_df = prepare_options.get('announce_ready')
                 df_future = None
@@ -1805,7 +1860,7 @@ class WidthDriver:
                 initial_keys = {p.get('completion', {}).get('key') for p in self.state['points']
                                 if p['status'] in ('REGISTERED', 'EVALUATED')}
                 def prepare():
-                    if runtime is not None and not stop_preparation.is_set():
+                    if runtime is not None and not parallel_families and not stop_preparation.is_set():
                         self.bootstrap_families()
                     if not stop_preparation.is_set():
                         self.complete_points(**prepare_options)
@@ -1924,7 +1979,8 @@ class WidthDriver:
                                 raise
 
                         def regular():
-                            if self.live_ready_refill and continuous and search.get('ready_work_at_slice') == 'refill':
+                            if (self.live_ready_refill and continuous and
+                                    (search.get('controller_parallel') is True or search.get('ready_work_at_slice') == 'refill')):
                                 return pf_candidate_selection.prepare_available(
                                     *args, stop_requested=stopped, announce=announce_pf,
                                     wait_for_work=wait_for_preparation,
@@ -1956,7 +2012,7 @@ class WidthDriver:
                                     ROOT, runtime, pf_context['candidates'], self.methods, horizons,
                                     pf_routes, pf_settings.get('interpreter', sys.executable),
                                     active_spec['executor'].get('prior_run_dirs', ()),
-                                    stop_requested=terminal_stopped, on_ready=terminal_ready,
+                                    stop_requested=terminal_stopped, on_ready=terminal_ready, exploratory=exploratory,
                                     refresh_requested=lambda: parent_revision != seen)
 
                         with ThreadPoolExecutor(max_workers=2,thread_name_prefix='pf-terminal-producer') as pool:
@@ -1989,7 +2045,7 @@ class WidthDriver:
                     pf_context,pf_routes,pf=pf_future.result()
                     context,routes=_merge_pf(context,pf_context,routes,pf_routes,self.methods)
                     executor.routes=routes;executor.expected=context['expected']
-                    O.apply_published(context['candidates'],routes)
+                    O.apply_published(context['candidates'],routes, exploratory=exploratory)
                     self.pf_more=pf['status']=='PREPARATION_WAVE_PROCESSED'
                     K.CLI.write(self.run/'PF_PREPARATION_STATUS.json',pf)
                     pf_future=None
@@ -1998,9 +2054,13 @@ class WidthDriver:
                             if p['status'] in ('REGISTERED', 'EVALUATED') and p.get('completion', {}).get('key')} | horizon_keys.copy()
 
                 installed=ready_keys()
+                bootstrap = preparation_pool.submit(self.bootstrap_families) if parallel_families else None
                 pending=preparation_pool.submit(prepare)
                 can_search=any(c['ready']for c in context['candidates'])
                 while True:
+                    if bootstrap is not None and bootstrap.done():
+                        bootstrap.result()
+                        bootstrap = None
                     if df_future is not None and df_future.done():
                         df_future.result()
                         df_future = None
@@ -2021,7 +2081,7 @@ class WidthDriver:
                             break
                     if pending.done():
                         pending.result()
-                        if pf_future is None and df_future is None: break
+                        if pf_future is None and df_future is None and bootstrap is None: break
                     ready=ready_keys()
                     changed=ready-installed
                     # Extend an internal batch only inside the same adopted
@@ -2040,24 +2100,26 @@ class WidthDriver:
                                 if target>budgets[method]:budgets[method]=target;replenished=True
                     if changed:
                         routes=install_ready(routes,snapshot=True);executor.routes=routes;executor.expected=context['expected']
-                        O.apply_published(context['candidates'],routes);installed=ready
+                        O.apply_published(context['candidates'],routes, exploratory=exploratory);installed=ready
                         self.log(event='LATE_READY_INSTALLED_DURING_PREPARATION',keys=sorted(changed))
                     pf_ready = self.live_ready_refill and any(subscriber.has_new(m) for m in self.methods)
                     can_search=bool(changed or replenished or remaining_ready_work or pf_ready)
                     if not can_search:
-                        producers=[f for f in (pending,pf_future,df_future) if f is not None and not f.done()]
+                        producers=[f for f in (pending,pf_future,df_future,bootstrap) if f is not None and not f.done()]
                         wait(producers,timeout=1,return_when=FIRST_COMPLETED)
                 # No other thread now changes Completion or its registry.
+                if exploratory and hasattr(comp, 'refresh_exploratory_prices'):
+                    comp.refresh_exploratory_prices()
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
                 if pf_future is not None:
                     install_pf()
-                O.apply_published(context['candidates'],routes)
+                O.apply_published(context['candidates'],routes, exploratory=exploratory)
             if not prepare_during:
                 prepare_df(context['candidates'])
                 if horizon_keys:
                     routes=install_ready(routes)
                     executor.routes=routes;executor.expected=context['expected']
-                    O.apply_published(context['candidates'],routes)
+                    O.apply_published(context['candidates'],routes, exploratory=exploratory)
             if interim and O.shared_stop(interim):result=interim
             else:
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
@@ -2076,7 +2138,7 @@ class WidthDriver:
                 requests = [req for r in result.values() for req in r.get('input_requests', [])
                             if req['kind'] == 'HORIZON_INPUTS_MISSING']
                 if requests or (self.run/'HORIZON_PREPARATION.json').is_file():
-                    reports = submit_horizon_preparation(runtime, requests)
+                    reports = submit_horizon_preparation(runtime, requests, exploratory=exploratory)
                     save_horizon_preparation(self.run/'HORIZON_PREPARATION.json', reports, runtime.executor.store)
                 settle = getattr(executor, 'await_dispatchable_preparation', None)
                 if (settle is not None and self.work_conserving_search and not getattr(self, 'pf_more', False)
@@ -2254,7 +2316,7 @@ class WidthDriver:
                 adopted=b.get('best');best=b.get('confirmed_all_best')or adopted
                 p.update(status='EVALUATED',best=None if best is None else best['cost'],
                     rule_adopted_best=None if adopted is None else adopted['cost'],
-                    confirmed_all_best=None if best is None else best['cost'],
+                    confirmed_all_best=None if b.get('cost_status') or best is None else best['cost'],
                     best_N_X=None if best is None else O.split(best['vector'])[0],
                     best_N_Y=None if best is None else O.split(best['vector'])[1],
                     best_MSE_upper=None if best is None else best.get('MSE_upper'),

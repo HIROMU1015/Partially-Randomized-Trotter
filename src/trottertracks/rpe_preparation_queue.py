@@ -57,10 +57,10 @@ def submit_registered_horizons(runtime, candidates, policy, source_M):
                 requests.append(dict(source_configuration_id=cid, source_M=binding['source_M'],
                     configuration_id=projection_id(cid, binding['source_M'], horizon), M=horizon,
                     extension_rounds=rounds))
-    return submit_horizon_preparation(runtime, requests)
+    return submit_horizon_preparation(runtime, requests, exploratory=policy.get('exploratory_cost') is True)
 
 
-def submit_horizon_preparation(runtime, requests):
+def submit_horizon_preparation(runtime, requests, *, exploratory=False):
     """Resolve only the requested extension rounds against a fixed provider catalog.
 
     The catalog belongs to the release's preparation settings. Candidate aliases
@@ -127,6 +127,8 @@ def submit_horizon_preparation(runtime, requests):
                 report['terminal_physical_id'] = entry['physical_id']
             successes, failures = {}, {}
             for role, allowed in (('signal', ('signal',)), ('X', ('compile', 'audit')), ('Y', ('compile', 'audit'))):
+                if exploratory and role != 'signal':
+                    continue
                 try:
                     if (m == request['M'] and role != 'signal' and configuration in pf_terminal_prices
                             and pf_terminal_prices[configuration].get('M', 13) == m):
@@ -146,6 +148,9 @@ def submit_horizon_preparation(runtime, requests):
                         raise ValueError('Horizon task does not bind the selected physical round and axis')
                     ordered = {}
                     validate(name, ordered)
+                    if exploratory and any(task['request']['preparation']['stage'] != 'signal'
+                                           for task in ordered.values()):
+                        raise ValueError('Signal provider depends on detailed price work')
                     for dependency, task in ordered.items():
                         submit(dependency, task)
                     successes[role] = submitted[name]
