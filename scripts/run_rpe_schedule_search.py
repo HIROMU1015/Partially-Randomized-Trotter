@@ -398,10 +398,17 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             atomic_json(admission, policy)
     for host, profile in trial.get('relay_q3_profiles', {}).items():
         workers = [worker for worker in distributed['relay']['workers'] if worker['host_id'] == host]
-        if (len(workers) != 1 or not {'profile'} <= profile.keys() <= {'profile', 'root'}
+        if (len(workers) != 1 or not {'profile'} <= profile.keys() <= {'profile', 'root', 'deployment_entry'}
                 or not all(Path(path).is_absolute() for path in profile.values())):
             raise ValueError('Expected one existing relay host and its fixed profile: '+host)
-        workers[0].update(profile)
+        worker = workers[0]
+        worker.update({key: profile[key] for key in ('profile', 'root') if key in profile})
+        if entry := profile.get('deployment_entry'):
+            if not worker.get('deployment') or Path(entry) != Path(worker['root'])/'scripts/manage_rpe_release_deployment.py':
+                raise ValueError('Expected the deployment entry from the selected relay SOURCE: '+host)
+            # The preflight and mailbox must understand the same route fields.
+            # Keep the original release manifest and worker layout.
+            worker['deployment'] = dict(worker['deployment'], entry=entry)
     if 'local_memory_reserve_bytes' in trial:
         distributed['local_calibration_pair'] = dict(
             memory_reserve_bytes=trial['local_memory_reserve_bytes'],
