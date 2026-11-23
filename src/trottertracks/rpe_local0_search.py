@@ -1194,6 +1194,10 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             hold('the driver and exit records do not agree')
         if relay['stopped'] is not True:
             hold('the relay has not stopped', ownership_wait=True)
+        # An operational overlay can fail during imports, before it creates an
+        # executor. The earlier run's owned attempts can still be reattached.
+        if kind == 'dispatch' and (failure := verify_pre_dispatch_failure(run, history, driver)):
+            return failure
         with (run/'RUNTIME_ERRORS.jsonl').open() as log:
             fault = next((row for row in reversed([json.loads(line) for line in log])
                           if row.get('phase') == 'DRIVER'), {})
@@ -1299,6 +1303,33 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
     except (OSError, ValueError, KeyError, sqlite3.Error) as error:
         hold(str(error))
     return stop
+
+
+def verify_pre_dispatch_failure(run, history, driver):
+    """Return a replayable startup failure only if no new executor took ownership."""
+    import sqlite3
+
+    launched = (history/'LAUNCH.json').stat().st_mtime
+    endpoint = run/'distributed/ENDPOINT.json'
+    progress = run/'PROGRESS.jsonl'
+    if (not endpoint.is_file() or not progress.is_file() or endpoint.stat().st_mtime >= launched
+            or load(endpoint)['pid'] == driver['pid'] or progress.stat().st_mtime >= launched
+            or (run/'STOP_REQUESTED.json').exists()):
+        return None
+    for owner in (load(history/'LAUNCH.json'), driver, load(run/'distributed/relay/STATUS.json')):
+        if Path('/proc', str(owner['pid']), 'cmdline').exists():
+            raise BlockingIOError('a startup or previous relay owner remains active')
+    local_worker_for_reattachment(run)
+    with ExitStack() as locks:
+        for name in ('FAST_DRIVER.lock', 'distributed/relay/RELAY.lock', 'distributed/pbs/MANAGER.lock'):
+            lock = locks.enter_context((run/name).open('rb'))
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        database = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+        with sqlite3.connect(database, uri=True) as db:
+            if db.execute('SELECT 1 FROM events WHERE epoch>=? LIMIT 1', (launched,)).fetchone():
+                return None
+            verify_reattachable_attempts(run, db)
+    return dict(reason='CONTROLLER_STARTUP_EXIT_BEFORE_DISPATCH', invocation_id=history.name)
 
 
 def verify_reattachable_attempts(run, db):

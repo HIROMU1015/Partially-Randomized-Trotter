@@ -19,12 +19,14 @@ import uuid
 
 from .rpe_q3_timing import stamp, append
 from .rpe_q3_worker import atomic, digest, read
-from .rpe_pbs_worker import Q3_WORKER_PROOF_SECONDS, runtime_cpu_footprint, task_cpu_footprint
+from .rpe_pbs_worker import runtime_cpu_footprint, task_cpu_footprint
 from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUPERSEDED_UNSUBMITTED'}
 GIB = 1024**3
+# The controller and the independently pinned worker use the same proof lifetime.
+Q3_WORKER_PROOF_SECONDS = 120
 
 # Measure the same shared paths from the gateway, where directory walks do
 # not occupy a PBS compute slot or depend on a compute node's NFS latency.

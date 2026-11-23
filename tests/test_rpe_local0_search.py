@@ -368,6 +368,54 @@ class Tests(unittest.TestCase):
         with sqlite3.connect(database) as db:
             self.assertEqual(db.execute("SELECT state FROM jobs").fetchone(), ('QUEUED',))
 
+    def test_dispatch_resume_after_startup_exit_reattaches_earlier_assignments(self):
+        import os
+        import sqlite3
+        import time
+        from trottertracks.rpe_q3_store import digest as request_digest
+
+        started = []
+        invocation = '3'*32
+        gateway = Gateway(self.config, preflight=lambda *args: {'status': 'PASS'},
+                          launch=lambda run, *args: started.append(run), resume_dispatch_failure=invocation)
+        result = gateway.handle(dict(request(4, 6), action='prepare'))
+        run = pathlib.Path(result['run_directory'])
+        history = run/'invocations'/invocation
+        launch = dict(invocation_id=invocation, pid=2147483647)
+        ended = dict(invocation_id=invocation, returncode=1)
+        for directory in (run, history):
+            write(directory/'LAUNCH.json', launch)
+            write(directory/'EXIT.json', ended)
+        write(run/'NORMAL_DRIVER.json', launch)
+        write(run/'KAPPA_STATE.json', dict(stop=dict(reason='USER_REQUESTED_STOP')))
+        write(run/'distributed/relay/STATUS.json', dict(stopped=True, pid=2147483646))
+        write(run/'distributed/ENDPOINT.json', dict(pid=2147483645))
+        (run/'PROGRESS.jsonl').touch()
+        original = time.time()-30
+        for path in ('distributed/ENDPOINT.json', 'PROGRESS.jsonl'):
+            os.utime(run/path, (original, original))
+        for lock in ('FAST_DRIVER.lock','distributed/relay/RELAY.lock','distributed/pbs/MANAGER.lock'):
+            (run/lock).parent.mkdir(parents=True, exist_ok=True)
+            (run/lock).touch()
+        job = run/'jobs'/'PR_DF'/'old-job'
+        old_request = dict(artificial=True)
+        write(job/'REQUEST.json', old_request)
+        write(job/'LAUNCH.json', dict(host_id='pbs-0', attempt_id='old-attempt'))
+        database = run/'distributed/QUEUE.sqlite3'
+        with sqlite3.connect(database) as db:
+            db.execute('CREATE TABLE jobs (job_id,method,state,host_id,attempt_id,request_sha256,request)')
+            db.execute('CREATE TABLE events (epoch REAL)')
+            owned = ('old-job', 'PR_DF', 'ASSIGNED', 'pbs-0', 'old-attempt',
+                     request_digest(old_request), json.dumps(old_request))
+            db.execute('INSERT INTO jobs VALUES (?,?,?,?,?,?,?)', owned)
+        self.assertEqual(gateway.start(run, dict(action='resume', instruction='Retry artificial bootstrap')), 'STARTED')
+        self.assertEqual(started, [run])
+        self.assertEqual(load(history/'EXIT.json'), ended)
+        self.assertEqual(load(run/'stop-history'/('dispatch-'+invocation+'.json'))['reason'],
+                         'CONTROLLER_STARTUP_EXIT_BEFORE_DISPATCH')
+        with sqlite3.connect(database) as db:
+            self.assertEqual(db.execute('SELECT * FROM jobs').fetchone(), owned)
+
     def test_pf_request_mismatch_resumes_without_retrying_the_failed_invocation_jobs(self):
         import sqlite3
         from trottertracks.rpe_q3_store import digest as queue_digest
