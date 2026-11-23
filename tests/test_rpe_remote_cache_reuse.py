@@ -55,6 +55,22 @@ class RemoteCacheProof(unittest.TestCase):
         with sqlite3.connect(self.current/'distributed/QUEUE.sqlite3') as db:
             db.execute('INSERT INTO jobs VALUES (?,?,?)', (host, state, json.dumps(payload)))
 
+    def test_uninitialized_or_failed_run_does_not_prevent_other_storage_checks(self):
+        new_run = self.owner('not-initialized', finished=False)
+        broken_run = self.owner('disappearing-spool', finished=False)
+        for run in (new_run, broken_run):
+            put(run/'CONTROLLER_CONFIG.json', {})
+        (broken_run/'distributed').mkdir()
+        put(self.current/'LAUNCH.json', dict(invocation_id='I2'))
+        put(self.state/'RUNS.json', {name: self.index[name] for name in
+                                    ('not-initialized', 'disappearing-spool', 'current')})
+
+        with patch.object(R, 'cleanup', side_effect=[FileNotFoundError(), None]) as cleanup:
+            R.cleanup_active_runs(self.state, 'artificial')
+        self.assertEqual([call.args for call in cleanup.call_args_list],
+                         [(broken_run, 'artificial'), (self.current, 'artificial')])
+        self.assertFalse((new_run/'distributed').exists())
+
     def test_current_and_ended_same_evaluation_are_byte_verified(self):
         prior = self.owner('prior')
         a, na, pa = self.blob(self.current, b'current')

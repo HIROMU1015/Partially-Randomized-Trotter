@@ -357,22 +357,31 @@ def cleanup_stopped_local(state):
             print(json.dumps(dict(epoch=time.time(), host_id='local', storage=result)), flush=True)
 
 
+def cleanup_active_runs(state, source):
+    for run_id, entry in read(state/'RUNS.json').items():
+        try:
+            run = Path(entry['run_directory']).resolve()
+            distributed = run/'distributed'
+            if not distributed.is_dir() or not (run/'CONTROLLER_CONFIG.json').is_file() or not invocation_active(run):
+                continue
+            with (distributed/'STORAGE_RECLAIM.lock').open('a+b') as run_lock:
+                try:
+                    fcntl.flock(run_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    continue
+                cleanup(run, source)
+        except (OSError, KeyError, TypeError, ValueError, sqlite3.Error, subprocess.SubprocessError) as error:
+            print(json.dumps(dict(event='STORAGE_RUN_DEFERRED', run_id=run_id,
+                                  error_type=type(error).__name__)), flush=True)
+
+
 def watch_active_runs(state, source):
     """Follow normal Start and Resume, including after the active run changes."""
     with closing((state/'STORAGE_RECLAIM.lock').open('a+b')) as lock:
         acquire_lock(lock)
         while True:
             try:
-                index = read(state/'RUNS.json')
-                for entry in index.values():
-                    run = Path(entry['run_directory']).resolve()
-                    if (run/'CONTROLLER_CONFIG.json').is_file() and invocation_active(run):
-                        with (run/'distributed'/'STORAGE_RECLAIM.lock').open('a+b') as run_lock:
-                            try:
-                                fcntl.flock(run_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                            except BlockingIOError:
-                                continue
-                            cleanup(run, source)
+                cleanup_active_runs(state, source)
                 cleanup_stopped_local(state)
             except (OSError, KeyError, ValueError, sqlite3.Error, subprocess.SubprocessError) as error:
                 print(json.dumps(dict(event='STORAGE_WATCH_WAIT', error_type=type(error).__name__)), flush=True)
