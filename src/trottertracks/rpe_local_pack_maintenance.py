@@ -180,6 +180,27 @@ def _check_local_jobs(run, spool, host):
     return True
 
 
+def _registered_owner_is_exclusive(state, run, spool, directory):
+    registered = {Path(entry['run_directory']).resolve() for entry in read(state/'RUNS.json').values()}
+    if run not in registered:
+        return False
+    for other in registered - {run}:
+        profile = other/'distributed/LOCAL_WORKER.json'
+        launch = other/'LAUNCH.json'
+        if not profile.is_file() or not launch.is_file():
+            continue
+        exit_path = other/'EXIT.json'
+        if exit_path.is_file() and read(exit_path)['invocation_id'] == read(launch)['invocation_id']:
+            continue
+        options = read(profile)
+        other_spool = Path(options['work_dir']).resolve()
+        other_pool = Path(options.get('preparation_metadata_cache_directory')
+                          or other_spool.parent/'preparation-metadata-cache').resolve()
+        if spool == other_spool or directory.is_relative_to(other_pool):
+            return False
+    return True
+
+
 def _switch(run, profile, scratch, directory, staged, record):
     policy = profile['storage_limit']
     sample = Path(policy['sample_path'])
@@ -189,9 +210,9 @@ def _switch(run, profile, scratch, directory, staged, record):
     with ExitStack() as held:
         lock(held, sample.with_suffix('.lock'))
         lock(held, state/'REGISTRY.lock')
-        if (Path(read(state/'CURRENT_TARGET.json')['run_directory']).resolve() != run
-                or read(run/'distributed/LOCAL_WORKER.json') != profile):
-            return 'PACK_SWITCH_WAIT_TARGET', 0
+        if (read(run/'distributed/LOCAL_WORKER.json') != profile
+                or not _registered_owner_is_exclusive(state, run, spool, directory)):
+            return 'PACK_SWITCH_WAIT_LOCAL_OWNER', 0
         try:
             lock(held, worker_lock)
         except BlockingIOError:

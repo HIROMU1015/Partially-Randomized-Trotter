@@ -24,7 +24,9 @@ class LocalPackMaintenance(unittest.TestCase):
         self.distributed.mkdir()
         JobStore(self.distributed/'QUEUE.sqlite3')
         (root/'REGISTRY.lock').touch()
-        self.write(root/'CURRENT_TARGET.json', dict(run_directory=str(self.run)))
+        self.registry=root/'RUNS.json'
+        self.write(self.registry, {'run':dict(run_directory=str(self.run))})
+        self.write(root/'CURRENT_TARGET.json', dict(run_directory=str(root/'unrelated-selected-run')))
         self.write(self.run/'CONTROLLER_CONFIG.json', dict(state_directory=str(root)))
         self.spool = root/'spool'
         self.spool.mkdir()
@@ -130,4 +132,17 @@ class LocalPackMaintenance(unittest.TestCase):
         self.assertTrue(maintenance._exchange_pack_directories(self.pack, staged))
         result = self.compact(self.idle)
         self.assertEqual(result['metadata_compaction'], 'PACK_COMPACTED')
+        self.assert_objects_preserved()
+
+    def test_other_active_run_with_shared_spool_keeps_staged_pack_uninstalled(self):
+        other=self.run.parent/'another-run'
+        (other/'distributed').mkdir(parents=True)
+        self.write(other/'distributed/LOCAL_WORKER.json', self.profile)
+        self.write(other/'LAUNCH.json', dict(invocation_id='live'))
+        self.write(self.registry, {'run':dict(run_directory=str(self.run)),
+                                   'another-run':dict(run_directory=str(other))})
+        self.assertEqual(self.compact(self.soft)['metadata_compaction'], 'PACK_SWITCH_WAIT_LOCAL_OWNER')
+        self.assertTrue(self.pending.is_dir())
+        self.write(other/'EXIT.json', dict(invocation_id='live'))
+        self.assertEqual(self.compact(self.soft)['metadata_compaction'], 'PACK_COMPACTED')
         self.assert_objects_preserved()
