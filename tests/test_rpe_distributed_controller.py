@@ -317,6 +317,8 @@ class ControllerFailures(unittest.TestCase):
         self.assertEqual(assigned['job_id'], other.job.name)
 
     def test_shared_spool_outside_run_notification_creates_no_owner(self):
+        from trottertracks.rpe_pbs_worker import AllocationWorker
+
         executor = self.executor()
         old = dict(host_id='server1', job_id='prep-older-run', attempt_id='saved-attempt',
                    state='UNKNOWN')
@@ -327,10 +329,29 @@ class ControllerFailures(unittest.TestCase):
             executor.rpc('/v1/complete', old)
         queued = self.enqueue(executor, 'current-request')
         assignment, = self.poll(executor)['assignments']
-        with self.assertRaisesRegex(ValueError, 'Different execution host/attempt'):
-            executor.rpc('/v1/state', dict(old, job_id=queued.job.name))
+        same_job = dict(old, job_id=queued.job.name)
+        for stale in (same_job, dict(same_job, host_id='other', attempt_id=assignment['attempt_id'])):
+            self.assertEqual(executor.rpc('/v1/state', stale),
+                             dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN'))
+            with self.assertRaisesRegex(ValueError, 'Different execution host/attempt'):
+                executor.rpc('/v1/complete', stale)
         self.assertEqual(executor.store.row(queued.job.name)['attempt_id'], assignment['attempt_id'])
         self.assertEqual(executor.store.row(queued.job.name)['state'], 'ASSIGNED')
+
+        worker = AllocationWorker.__new__(AllocationWorker)
+        worker.host_id, worker.reported = same_job['host_id'], {}
+        attempt = self.run/'synthetic-old-attempt'
+        with patch.object(worker, '_reconcile', return_value=dict(state='UNKNOWN', detail={})), \
+                patch.object(worker, 'transport', side_effect=executor.rpc, create=True) as transport:
+            worker._service_attempt(attempt, same_job)
+            worker._service_attempt(attempt, same_job)
+            transport.assert_called_once()
+        self.assertEqual(executor.rpc('/v1/state', dict(same_job, attempt_id=assignment['attempt_id'],
+                                                        state='RUNNING')), dict(ok=True))
+        independent = self.enqueue(executor, 'independent-after-old-state')
+        next_assignment, = executor.rpc('/v1/poll', dict(host_id='other', slots=1,
+                                                         source_sha=self.source))['assignments']
+        self.assertEqual(next_assignment['job_id'], independent.job.name)
 
     def test_existing_queue_with_explicit_auto_round_keeps_auto_capacity(self):
         from trottertracks.rpe_q3_store import JobStore

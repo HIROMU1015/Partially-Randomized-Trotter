@@ -72,7 +72,8 @@ class SpoolTests(unittest.TestCase):
             first = P.SpoolTransport(directory, deadline=time.monotonic()+1,
                                      timeout_seconds=.005, poll_seconds=.001)
             with self.assertRaises(TimeoutError):
-                first('/v1/poll', dict(host_id='ARTIFICIAL', slots=2))
+                first('/v1/poll', dict(host_id='ARTIFICIAL', slots=2,
+                                      readiness_checked_monotonic={'old': 1.}))
             original = next(first.requests.glob('*.json'))
             saved = json.loads(original.read_text())
             restarted = P.SpoolTransport(directory, deadline=time.monotonic()+1,
@@ -82,8 +83,10 @@ class SpoolTests(unittest.TestCase):
             self.assertEqual(list(restarted.requests.glob('*.json')), [original])
             self.assertEqual(json.loads(original.read_text()), saved)
             P.atomic(restarted.responses/original.name, dict(ok=True, result=dict(assignments=['SAME_ORIGINAL_ATTEMPT'])))
-            result = restarted('/v1/poll', dict(host_id='ARTIFICIAL', slots=1))
+            result = restarted('/v1/poll', dict(host_id='ARTIFICIAL', slots=1,
+                                               readiness_checked_monotonic={'new': 2.}))
             self.assertEqual(result['assignments'], ['SAME_ORIGINAL_ATTEMPT'])
+            self.assertEqual(result['submitted_readiness'], {'old': 1.})
             self.assertEqual(list(restarted.requests.glob('*.json')), [])
 
     def test_timeout_retains_request_for_controller_recovery(self):
@@ -143,7 +146,8 @@ class AdmissionTests(unittest.TestCase):
             worker.poll_seconds = 1
             worker.source_sha = 'ARTIFICIAL'
             slow_started, unblock = threading.Event(), threading.Event()
-            slow = dict(job_id='slow', request_sha256='a', request=dict(route=dict(kind='preparation')))
+            slow = dict(job_id='slow', request_sha256='a', request=dict(route=dict(kind='preparation'),
+                        preparation=dict(input_git_bundles=[{'sha256': 'a'*64}])))
             fast = dict(job_id='fast', request_sha256='b', request=dict(route=dict(kind='q3')))
             fast_assignment = dict(fast, attempt_id='existing-attempt')
             polls = []
@@ -193,6 +197,50 @@ class AdmissionTests(unittest.TestCase):
                     self.assertIn('metadata temporarily unavailable', polls[-1]['readiness_errors']['slow'])
                     worker._poll_assignments(True)
                     self.assertNotIn('slow', worker.readiness_running)
+            finally:
+                unblock.set()
+                worker._close_readiness()
+
+    def test_cached_preparation_finishes_while_another_bundle_is_delayed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            worker = self.worker(directory)
+            worker._open_readiness()
+            worker.poll_seconds = 1
+            slow_io, unblock = threading.Event(), threading.Event()
+            contents = b'artificial saved bundle'
+            saved = hashlib.sha256(contents).hexdigest()
+            P.worker_cache(worker.profile).put({saved: base64.b64encode(contents)})
+            challenges = [dict(job_id=name, request_sha256=name, request=dict(route=dict(kind='preparation'),
+                               preparation=dict(input_git_bundles=[{'sha256': sha}])))
+                          for name, sha in (('transfer', 'a'*64), ('compile', saved), ('audit', saved))]
+
+            def prepare(challenges):
+                self.assertEqual([item['job_id'] for item in challenges], ['transfer'])
+                slow_io.set()
+                unblock.wait(3)
+
+            def fingerprint(profile, challenges):
+                return dict(host_fingerprints={item['job_id']: {'proof': 'artificial'} for item in challenges},
+                            readiness_errors={})
+
+            try:
+                with patch.object(worker, 'accepting', return_value=True), \
+                        patch.object(worker, '_prepare_challenge_artifacts', side_effect=prepare), \
+                        patch.object(P, 'host_fingerprints', side_effect=fingerprint):
+                    worker._readiness_delivered(dict(eligibility_challenges=challenges))
+                    # Start the next check while every execution slot is busy.
+                    worker._poll_readiness(dict(slots=0), True)
+                    self.assertTrue(slow_io.wait(1))
+                    worker._poll_readiness(dict(slots=4), True)
+                    for name in ('compile', 'audit'):
+                        worker.readiness_running[name][2].result(timeout=1)
+                    current = worker._poll_readiness(dict(slots=4), True)
+                    self.assertEqual(set(current['host_fingerprints']), {'compile', 'audit'})
+                    worker._readiness_delivered(dict(submitted_readiness={'compile': 0.}))
+                    self.assertEqual(set(worker.readiness_ready), {'compile', 'audit'})
+                    worker._readiness_delivered(dict(submitted_readiness=current['readiness_checked_monotonic']))
+                    self.assertEqual(set(worker.readiness_pending), {'transfer'})
+                    self.assertFalse(worker.readiness_running['transfer'][2].done())
             finally:
                 unblock.set()
                 worker._close_readiness()

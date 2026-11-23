@@ -90,8 +90,8 @@ class EligibilityQueue(unittest.TestCase):
                           resource_released=True)
             if proof:
                 detail['prelaunch_rejection'] = evidence
-            ex.rpc('/v1/state', dict(host_id=host, job_id=job.name, attempt_id=assignment['attempt_id'],
-                                     state='UNKNOWN', detail=detail))
+            return ex.rpc('/v1/state', dict(host_id=host, job_id=job.name, attempt_id=assignment['attempt_id'],
+                                            state='UNKNOWN', detail=detail))
 
         report(first, 'a', proof=False)
         self.assertEqual(self.poll(ex, 'b', {job.name: facts['b']})['assignments'], [])
@@ -104,8 +104,7 @@ class EligibilityQueue(unittest.TestCase):
         self.assertNotEqual(second['attempt_id'], first['attempt_id'])
         self.assertEqual(ex.store.counts('METHOD'), 1)
         self.assertTrue((job/'attempt-history'/first['attempt_id']/'LAUNCH.json').exists())
-        with self.assertRaisesRegex(ValueError, 'Different execution host/attempt'):
-            report(first, 'a')
+        self.assertEqual(report(first, 'a'), dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN'))
         report(second, 'b')
         self.assertEqual(self.poll(ex, 'a', {job.name: facts['a']})['assignments'], [])
         self.assertEqual([event['event'] for event in ex.store.events()].count('REDISPATCH_AFTER_DRY_CHECK'), 1)

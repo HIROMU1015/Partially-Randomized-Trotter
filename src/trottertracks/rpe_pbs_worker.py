@@ -20,6 +20,8 @@ import uuid
 
 from . import rpe_q3_resources as Resources
 from .rpe_host_profiles import check_runtime_profile
+from .rpe_preparation_artifacts import worker_cache
+from .rpe_preparation_worker import metadata_bundle_hashes
 from .rpe_q3_timing import stamp
 from .rpe_q3_worker import Worker, atomic, digest, event, head, host_fingerprints, read, save_state
 
@@ -176,6 +178,7 @@ class SpoolTransport:
         if matching:
             request, saved = matching[0]
             request_id = saved['request_id']
+            payload = saved['payload']
         else:
             request_id = uuid.uuid4().hex
             request = self.requests / (request_id + '.json')
@@ -194,6 +197,10 @@ class SpoolTransport:
                 response.unlink(missing_ok=True)
                 if value.get('ok') is not True:
                     raise ValueError(value.get('error', 'PBS gateway rejected request'))
+                if endpoint == '/v1/poll':
+                    # An overdue response acknowledges the durable request's
+                    # proofs, which may differ from the caller's latest offer.
+                    return dict(value['result'], submitted_readiness=payload.get('readiness_checked_monotonic', {}))
                 return value['result']
             if time.monotonic() >= limit:
                 raise TimeoutError('PBS gateway response remains pending: ' + request_id)
@@ -243,7 +250,7 @@ class AllocationWorker(Worker):
         self.readiness_running = {}
         self.readiness_ready = {}
         self.readiness_retry = {}
-        self.readiness_sent = set()
+        self.readiness_sent = {}
 
     def tick(self, acquire=True):
         if getattr(self, 'collection', None) is None:
@@ -327,11 +334,12 @@ class AllocationWorker(Worker):
                 digest({name: challenge.get(name) for name in
                         ('artifact_manifest', 'q3_evaluator', 'required_release')}))
 
-    def _run_readiness_check(self, challenge):
+    def _run_readiness_check(self, challenge, kind):
         started = time.monotonic()
         job = challenge['job_id']
         try:
-            self._prepare_challenge_artifacts([challenge])
+            if kind == 'transfer':
+                self._prepare_challenge_artifacts([challenge])
             checked = host_fingerprints(self.profile, [challenge])
             proof = checked['host_fingerprints'].get(job)
             error = checked['readiness_errors'].get(job)
@@ -343,11 +351,13 @@ class AllocationWorker(Worker):
         self.readiness_pending.clear()
         self.readiness_ready.clear()
         # A result from before a pause belongs to the previous offer.
-        self.readiness_running = {job: (None, preparation, future)
-                                  for job, (_, preparation, future) in self.readiness_running.items()}
+        self.readiness_running = {job: (None, kind, future)
+                                  for job, (_, kind, future) in self.readiness_running.items()}
 
     def _poll_readiness(self, report, accepting):
         accepting = accepting and self.accepting()
+        # Keep the next check moving even while execution fills the allocation.
+        limit = min(max(1, report['slots']), READINESS_WORKERS)
         now = time.monotonic()
         self.readiness_retry = {key: until for key, until in self.readiness_retry.items() if until > now}
         if not accepting:
@@ -372,27 +382,40 @@ class AllocationWorker(Worker):
         if finished:
             results = [self.readiness_ready[job] for job in finished]
             event(self.profile, 'PBS_READINESS_CHECKED', jobs=finished,
-                  parallel=min(report['slots'], READINESS_WORKERS),
+                  parallel=limit,
                   passed=sum(proof is not None for _, _, _, proof, _ in results),
                   seconds=round(max(end-start for _, start, end, _, _ in results), 6), background=True)
 
-        limit = min(report['slots'], READINESS_WORKERS)
-        preparation_running = any(entry[1] for entry in self.readiness_running.values())
+        preparation_limit = max(1, limit-1)
+        preparation_running = sum(kind != 'q3' for _, kind, _ in self.readiness_running.values())
+        transferring = any(kind == 'transfer' for _, kind, _ in self.readiness_running.values())
+        cache = worker_cache(self.profile)
+        started = {}
         for job, (key, challenge, _) in self.readiness_pending.items():
             if len(self.readiness_running) >= limit:
                 break
             if job in self.readiness_ready or job in self.readiness_running or (job, key) in self.readiness_retry:
                 continue
-            preparation = challenge['request'].get('route', {}).get('kind') == 'preparation'
-            # Only one potentially blocking metadata transfer uses the shared
-            # spool at a time. Independent Q3 checks can still use other lanes.
-            if preparation and preparation_running:
-                continue
-            future = self.readiness_pool.submit(self._run_readiness_check, challenge)
-            self.readiness_running[job] = (key, preparation, future)
-            preparation_running |= preparation
+            kind = 'q3'
+            if challenge['request'].get('route', {}).get('kind') == 'preparation':
+                if preparation_running >= preparation_limit:
+                    continue
+                try:
+                    needs_transfer = any(not cache.path(sha).is_file() for sha in metadata_bundle_hashes(challenge))
+                except (OSError, ValueError, KeyError, TypeError):
+                    # The full input check reports the malformed requirement.
+                    needs_transfer = False
+                if needs_transfer and transferring:
+                    continue
+                kind = 'transfer' if needs_transfer else 'cached'
+                preparation_running += 1
+                transferring |= needs_transfer
+            future = self.readiness_pool.submit(self._run_readiness_check, challenge, kind)
+            self.readiness_running[job] = (key, kind, future)
+            started[job] = kind
+        if started:
+            event(self.profile, 'PBS_READINESS_STARTED', jobs=started, pending=len(self.readiness_pending))
 
-        self.readiness_sent = set(self.readiness_ready)
         facts, errors, checked_at = {}, {}, {}
         for job, (_, _, finished_at, proof, error) in self.readiness_ready.items():
             checked_at[job] = finished_at
@@ -400,6 +423,7 @@ class AllocationWorker(Worker):
                 facts[job] = proof
             else:
                 errors[job] = error
+        self.readiness_sent = checked_at
         return dict(host_fingerprints=facts, readiness_errors=errors, readiness_checked_monotonic=checked_at)
 
     def _readiness_delivered(self, response):
@@ -410,11 +434,14 @@ class AllocationWorker(Worker):
             if checking:
                 event(self.profile, 'PBS_ASSIGNED_DURING_READINESS', jobs=sorted(assigned),
                       checks_in_flight=checking)
-        for job in self.readiness_sent:
+        submitted = response.get('submitted_readiness', self.readiness_sent)
+        reported = {job for job, checked_at in submitted.items()
+                    if job in self.readiness_ready and self.readiness_ready[job][2] == checked_at}
+        for job in reported:
             key, _, _, _, error = self.readiness_ready.pop(job)
             if error is not None:
                 self.readiness_retry[job, key] = now+max(1., self.poll_seconds*2)
-        for job in assigned | self.readiness_sent:
+        for job in assigned | reported:
             self.readiness_pending.pop(job, None)
         if not self.accepting() or response.get('host_admission', {}).get('accepting') is False:
             self._discard_readiness()

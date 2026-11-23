@@ -3313,11 +3313,11 @@ class DistributedExecutor(ConcurrentExecutor):
                 return reply(assignments=assignments, stop=False, probe_rows=challenges, host_admission=admission)
             row = self.store.row(value['job_id'])
             attempt = value['attempt_id']
-            if path == '/v1/state' and row is None:
-                # Workers reuse a spool across runs. A repeat notification
-                # for another run is harmless and creates no ownership.
-                return dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN')
             if row is None or row['host_id'] != host or row['attempt_id'] != attempt:
+                if path == '/v1/state':
+                    # Shared spools can contain an earlier attempt of the
+                    # same job. Acknowledge the notification without adopting it.
+                    return dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN')
                 raise ValueError('Different execution host/attempt')
             job = self.run_dir/'jobs'/row['method']/row['job_id']
             task = s.tasks.get(job)
