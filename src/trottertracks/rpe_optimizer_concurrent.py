@@ -2166,8 +2166,9 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_coordinator import digest
         from .rpe_preparation_worker import select_preparation_profile,preparation_profile_core
         request=record['request'];prep=request['preparation']
-        assignment=dict(job_id=request['request_id'],request=request,request_sha256=digest(request),
-            source_manifest=prep['source'],input_hashes=prep.get('input_hashes',[]),prefix_key='preparation:'+digest(request))
+        request_sha256=digest(request)
+        assignment=dict(job_id=request['request_id'],request=request,request_sha256=request_sha256,
+            source_manifest=prep['source'],input_hashes=prep.get('input_hashes',[]),prefix_key='preparation:'+request_sha256)
         profile=preparation_profile_core(select_preparation_profile(self._configured_preparation_profile(host),assignment))
         assignment.update(host_execution_profile=profile,host_execution_profile_sha256=digest(profile))
         reference = self._task_release(request, host)
@@ -2270,18 +2271,35 @@ class DistributedExecutor(ConcurrentExecutor):
         self.preparation_probe_offsets[host] = (start + examined) % len(candidates)
         return challenges
 
-    def _refresh_pending_preparation(self, host, fingerprints, errors):
+    def _check_pending_preparation_reports(self, host, fingerprints, errors):
         from .rpe_q3_coordinator import digest
         from .rpe_preparation_worker import validate_preparation_fingerprint
-        if host not in self._preparation_probe_targets():return
-        reports = sorted(self.preparation_pending.keys() & (fingerprints.keys() | errors.keys()))
-        if not reports:
+        if host not in (self.distributed.get('preparation_profiles') or {}):
+            return {}
+        reports = {}
+        for job_id in sorted(fingerprints.keys() | errors.keys()):
+            record = self.preparation_pending.get(job_id)
+            if record is None or not self._host_supports_stage(host, record['request']):
+                continue
+            try:
+                if job_id in errors:
+                    raise ValueError(errors[job_id])
+                assignment = self._pending_preparation_assignment(record, host)
+                fingerprint = fingerprints[job_id]
+                selected = validate_preparation_fingerprint(
+                    assignment, self._configured_preparation_profile(host), fingerprint)
+                reports[job_id] = (record, (fingerprint, selected, digest(fingerprint)), None)
+            except (OSError, KeyError, ValueError, TypeError, AttributeError) as exc:
+                reports[job_id] = (record, None, str(exc))
+        return reports
+
+    def _refresh_pending_preparation(self, host, reports):
+        if not reports or host not in self._preparation_probe_targets():
             return
         rows = self.store.rows_for(reports)
         modified = False
-        for job_id in reports:
-            record = self.preparation_pending[job_id]
-            if not self._host_supports_stage(host, record['request']):
+        for job_id, (record, checked, error) in reports.items():
+            if self.preparation_pending.get(job_id) is not record:
                 continue
             old = rows.get(job_id)
             if old is not None and (old['state'] not in ('QUEUED', 'CANCELLED')
@@ -2289,11 +2307,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 continue
             decision=deepcopy(record['decision']);changed=False
             try:
-                assignment=self._pending_preparation_assignment(record,host)
-                if job_id in errors:raise ValueError(errors[job_id])
-                fingerprint=fingerprints[job_id]
-                selected=validate_preparation_fingerprint(assignment,self._configured_preparation_profile(host),fingerprint)
-                current=digest(fingerprint)
+                if error is not None:
+                    raise ValueError(error)
+                fingerprint,selected,current=checked
                 changed=decision['host_fingerprints'].get(host)!=current
                 if host not in decision['eligible_host_ids']:decision['eligible_host_ids'].append(host);changed=True
                 decision['host_fingerprints'][host]=current;decision['execution_profiles'][host]=selected
@@ -3019,24 +3035,34 @@ class DistributedExecutor(ConcurrentExecutor):
             if path == '/v1/artifacts/get': return dict(blobs=self.artifact_cache.get(value.get('hashes', [])))
             if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
             raise ValueError('Unknown artifact RPC endpoint')
+        if path == '/v1/poll':
+            poll_started = time.monotonic()
+            if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
+            slots = value['slots']
+            if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
+            fingerprints = value.get('host_fingerprints') or {}
+            errors = value.get('readiness_errors') or {}
+            if not isinstance(fingerprints, dict) or not isinstance(errors, dict):
+                raise ValueError('Host readiness must map job IDs to current facts or errors')
+            host_capacity = value.get('capacity')
+            if host_capacity is not None and (type(host_capacity) is not int or host_capacity < 0):
+                raise ValueError('Nonnegative host capacity required')
+            # Profile and request validation are independent of queue ownership.
+            preparation_reports = self._check_pending_preparation_reports(host, fingerprints, errors)
         with self._rpc_queue_lock(path, host):
             if path == '/v1/poll':
-                if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
+                observed = self.hosts.get(host, {})
+                if poll_started < observed.get('poll_started', float('-inf')):
+                    return dict(assignments=[], stop=False, host_admission=observed['host_admission'],
+                                eligibility_challenges=[], capacity_feedback=self._capacity_feedback(host))
                 stopping = self._user_stop_requested()
-                slots = value['slots']
-                if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
-                fingerprints = value.get('host_fingerprints') or {}
-                if not isinstance(fingerprints, dict): raise ValueError('Host fingerprints must map job IDs to current facts')
                 admission_policy, admission_error = self._host_admission_policy()
                 admission = self._host_admission(host, admission_policy, admission_error)
                 owned = self._owned_attempts()
                 new_slots = self._host_new_slots(host, slots, admission, owned=owned)
-                host_capacity = value.get('capacity')
-                if host_capacity is not None and (type(host_capacity) is not int or host_capacity < 0):
-                    raise ValueError('Nonnegative host capacity required')
                 if host not in self.hosts:
                     self.log(event='HOST_FIRST_POLL',host_id=host,capacity=value.get('capacity'))
-                self.hosts[host] = dict(epoch=time.time(), slots=new_slots, reported_slots=slots,
+                self.hosts[host] = dict(epoch=time.time(), poll_started=poll_started, slots=new_slots, reported_slots=slots,
                                        capacity=host_capacity, host_admission=admission,
                                        accepting_new_jobs=value.get('accepting_new_jobs', True),
                                        observed_monotonic=time.monotonic(),
@@ -3044,7 +3070,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                        resource_report=value.get('resource_report'),
                                        cached_prefixes=value.get('cached_prefixes', []),
                                        host_fingerprints=fingerprints, readiness_errors=value.get('readiness_errors'))
-                self._refresh_pending_preparation(host,fingerprints,value.get('readiness_errors')or{})
+                self._refresh_pending_preparation(host,preparation_reports)
                 self._refresh_capacity(admission_policy, admission_error)
                 s.cv.notify_all()
                 new_slots = self._offer_free(host, admission_policy, admission_error)

@@ -265,7 +265,11 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(self.poll_host(ex,'server1')['assignments'],[])
 
     def test_new_real_request_gets_metadata_challenge_before_reserving(self):
+        from concurrent.futures import ThreadPoolExecutor
         from copy import deepcopy
+        from threading import Event
+        from unittest.mock import patch
+        from trottertracks import rpe_preparation_worker
         from trottertracks.rpe_preparation_worker import preparation_profile_core,select_preparation_profile
         from trottertracks.rpe_q3_coordinator import digest
         ex=self.executor(capacity=2)
@@ -293,7 +297,29 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertIsNone(ex.store.row(job))
         self.assertEqual(ex.preparation_result(job)['status'],'HOST_ELIGIBILITY_HOLD')
         report['host_fingerprints']={job:fingerprint}
-        assigned=ex.rpc('/v1/poll',report)['assignments']
+        checking = Event()
+        release = Event()
+        validate = rpe_preparation_worker.validate_preparation_fingerprint
+
+        def blocked_validator(*args):
+            checking.set()
+            if not release.wait(5):
+                raise AssertionError('Another host could not poll during preparation verification')
+            return validate(*args)
+
+        with patch.object(rpe_preparation_worker, 'validate_preparation_fingerprint', blocked_validator), ThreadPoolExecutor(3) as pool:
+            pending = pool.submit(ex.rpc, '/v1/poll', report)
+            try:
+                self.assertTrue(checking.wait(2))
+                self.assertEqual(pool.submit(self.poll_host, ex, 'local').result(2)['assignments'], [])
+                # An overlapping poll may finish while the receipt is being
+                # checked. Its newer offer must not be replaced by the old one.
+                self.assertEqual(pool.submit(self.poll_host, ex, 'server1', 0).result(2)['assignments'], [])
+            finally:
+                release.set()
+            self.assertEqual(pending.result(2)['assignments'], [])
+        self.assertIsNone(ex.store.row(job))
+        assigned = ex.rpc('/v1/poll', report)['assignments']
         self.assertEqual([a['job_id']for a in assigned],[job])
         self.assertEqual(ex.store.counts('PREPARATION:compile'),1)
         self.assertEqual(ex.store.counts('PR_PAULI'),0)
