@@ -209,10 +209,15 @@ class Relay:
         self.discovery_pool = None
         self.pending_discovery = {}
         self.pending_ticks = {}
+        windows_workers = sum(item.get('transport') == 'ssh-wsl' for item in self.config['workers'])
+        self.bundle_pool = (ThreadPoolExecutor(max_workers=windows_workers, thread_name_prefix='rpe-wsl-bundles')
+                            if windows_workers else None)
+        self.pending_bundles = {}
         self.log_lock = threading.Lock()
         self.deployed_workers={}
         self.reported_unowned = set()
         self.readiness_probe_counts = {}
+        self.bundle_prefetch_counts = {}
         started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
                           started_epoch=started, heartbeat_epoch=started, stopped=False,
@@ -431,14 +436,15 @@ class Relay:
             self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
             self.log('METADATA_GIT_BUNDLE_DELIVERED',host_id=worker['host_id'],sha256=sha)
 
-    def _readiness_batch(self, worker, challenges, cached=None, *, slots):
+    def _readiness_batch(self, worker, challenges, cached=None, *, slots, prefetch=False):
         # Fill free slots with requests that need no extra bundle delivery.
         # Rotate the first request even when earlier checks keep returning HOLD.
         preparation = [(item, self._readiness_bundle_hashes([item])) for item in challenges
                        if item.get('request', {}).get('route', {}).get('kind') == 'preparation']
         if not preparation:
             return challenges
-        counts = self.readiness_probe_counts.setdefault(worker['host_id'], {})
+        history = self.bundle_prefetch_counts if prefetch else self.readiness_probe_counts
+        counts = history.setdefault(worker['host_id'], {})
         known = cached if cached is not None else set()
         preparation.sort(key=lambda pair: (counts.get(pair[0]['job_id'], 0),
             len(pair[1] - known) if cached is not None else 0))
@@ -449,6 +455,24 @@ class Relay:
         return [item for item in challenges if
                 item.get('request', {}).get('route', {}).get('kind') != 'preparation'
                 or item['job_id'] in selected]
+
+    def _wsl_ready_challenges(self, worker, challenges, cached, slots):
+        """Copy one preparation batch in the background of WSL dispatch."""
+        host = worker['host_id']
+        pending = self.pending_bundles.get(host)
+        if pending is not None and pending.done():
+            del self.pending_bundles[host]
+            try:
+                pending.result()
+            except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                self.log('WSL_BUNDLE_PREFETCH_DEFERRED', host_id=host, error=str(error))
+        ready, missing = [], []
+        for challenge in challenges:
+            (ready if self._readiness_bundle_hashes([challenge]) <= cached else missing).append(challenge)
+        if missing and host not in self.pending_bundles:
+            batch = self._readiness_batch(worker, missing, cached, slots=slots, prefetch=True)
+            self.pending_bundles[host] = self.bundle_pool.submit(self._deliver_challenge_artifacts, worker, batch)
+        return self._readiness_batch(worker, ready, cached, slots=slots)
 
     def _discover(self, worker):
         # Status and current-request checks may run concurrently for independent
@@ -466,7 +490,13 @@ class Relay:
                 and (observed.get('host_admission') or {}).get('accepting', True)):
             cached = status.get('cached_artifact_sha256')
             cached = set(cached) if cached is not None else None
-            challenges = self._readiness_batch(worker, challenges, cached, slots=max(1, status['slots']))
+            slots = max(1, status['slots'])
+            if worker.get('transport') == 'ssh-wsl' and cached is not None:
+                challenges = self._wsl_ready_challenges(worker, challenges, cached, slots)
+            else:
+                challenges = self._readiness_batch(worker, challenges, cached, slots=slots)
+            if not challenges:
+                return status, seconds, started, poll, observed
             # A fresh worker inventory avoids an SSH round trip. The worker
             # still verifies and binds all metadata in its readiness check.
             try:
@@ -636,7 +666,10 @@ class Relay:
             status, _ = self.remote(worker, 'status', dict(metadata_only=True))
             if status['host_id'] != host:
                 raise ValueError('Refreshed mailbox host differs from relay profile')
-            poll = self._poll_value(status)
+            fresh = self._poll_value(status)
+            if worker.get('transport') == 'ssh-wsl' and fresh['source_sha'] == poll['source_sha']:
+                fresh.update({key: poll[key] for key in ('host_fingerprints', 'readiness_errors') if key in poll})
+            poll = fresh
             self.post('/v1/poll', dict(poll, observe_only=True))
         info['phase'] = 'CONTROLLER_POLL'
         # The worker's fresh offer still governs every claim, including Pause.
@@ -801,6 +834,8 @@ class Relay:
             self.log('RELAY_STOP')
             if self.discovery_pool is not None:
                 self.discovery_pool.shutdown(wait=False, cancel_futures=True)
+            if self.bundle_pool is not None:
+                self.bundle_pool.shutdown(wait=False, cancel_futures=True)
             if self.ssh_socket_directory is not None:
                 self.ssh_socket_directory.cleanup()
             lock.close()

@@ -10,6 +10,7 @@ import math
 import os
 from pathlib import Path
 import time
+from collections import Counter
 
 from .rpe_q3_timing import stamp
 
@@ -244,6 +245,40 @@ def measured_resource_class(request, evaluator=None, runtime=None):
                               runtime.get('dp_workers', ''), len(shots), max(shots).bit_length())))
 
 
+def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory, explicit):
+    """One class per offer, with existing attempts charged at their own size."""
+    def footprint(kind):
+        sample = peaks[kind]
+        cpu_need = min(cpu, math.ceil(max(1, sample.get('dp_workers', 0), sample.get('observed_cpu_cores', 0))))
+        return cpu_need, math.ceil(sample['peak_rss_bytes'] * 1.5)
+
+    free_cpu, free_memory = cpu, memory
+    occupied = [job for job in jobs if job['state'] in OCCUPIED]
+    for job in occupied:
+        kind = job.get('resource_class')
+        if not peaks.get(kind, {}).get('peak_rss_bytes'):
+            return 0, [], len(occupied), len(occupied)
+        cpu_need, rss = footprint(kind)
+        free_cpu -= cpu_need
+        free_memory -= rss
+    for key in ('remaining_group_memory_bytes', 'machine_mem_available_bytes'):
+        if resources.get(key) is not None:
+            free_memory = min(free_memory, resources[key])
+    counts = Counter(waiting)
+    for kind in counts:
+        if kind not in offered:
+            continue
+        cpu_need, rss = footprint(kind)
+        cpu_slots = max(0, int(free_cpu // cpu_need))
+        memory_slots = max(0, int(free_memory // rss))
+        fits = min(cpu_slots, memory_slots, counts[kind])
+        if explicit is not None:
+            fits = min(fits, explicit-len(occupied))
+        if fits > 0:
+            return fits, [kind], len(occupied)+cpu_slots, len(occupied)+memory_slots
+    return 0, [], len(occupied), len(occupied)
+
+
 def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None):
     """Pure bounded one-slot trials; reductions drain, and never signal a job."""
     now = time.monotonic() if now is None else float(now)
@@ -264,12 +299,11 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
     offered_classes = None
     measured_demand = feedback.get('capacity_ready_jobs', feedback.get('ready_jobs', 0))
     isolated = None
+    pack_classes = policy.get('pack_measured_task_classes') is True
     if policy.get('separate_task_resources'):
         peaks = state.setdefault('task_resource_peaks', {})
         active = set(feedback.get('ready_task_classes', ()))
         occupied_classes = {job.get('resource_class') for job in jobs if job['state'] in OCCUPIED}
-        cold_running = {kind for kind in occupied_classes if kind is not None and
-                        not peaks.get(kind, {}).get('peak_rss_bytes')}
         for job in jobs:
             kind = job.get('resource_class')
             if kind is None:
@@ -283,12 +317,14 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         state['task_resource_classes'] = active
         if 'ready_task_class_order' in feedback:
             waiting = feedback['ready_task_class_order']
+            cold_running = {kind for kind in occupied_classes if kind is not None and
+                            not peaks.get(kind, {}).get('peak_rss_bytes')}
             previous_trial = state.get('isolated_resource_class')
             if previous_trial is not None and previous_trial in occupied_classes:
                 isolated = previous_trial
             elif cold_running:
                 isolated = min(cold_running)
-            elif waiting and not peaks.get(waiting[0], {}).get('peak_rss_bytes'):
+            elif waiting and not peaks.get(waiting[0], {}).get('peak_rss_bytes') and (not pack_classes or not occupied):
                 # Give the highest-priority cold request a turn after current
                 # work drains. Do not use a measured offer to start it.
                 isolated = waiting[0]
@@ -380,6 +416,14 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         reasons.append('A class without a resource sample runs without other work on the host')
     if not reasons:
         reasons.append('Insufficient new usable completions for another slot trial' if peak else 'Cold start: per-job memory and useful throughput not measured')
+    if (pack_classes and offered_classes is not None and isolated is None and cpu and memory
+            and resources.get('allocation_bounds_complete') is not False and not unmeasured_class):
+        slots, offered_classes, cpu_limit, memory_limit = _measured_class_slots(
+            waiting, offered_classes, peaks, jobs, resources, cpu, memory, explicit)
+        target = occupied + slots
+        state.pop('trial', None)
+        stage = 'MEASURED_TASK_HEADROOM'
+        reasons = ['Offer fitting work by task class after reserving the costs of existing attempts']
     state.update(schema='RPE_Q3_SLOT_STATE_V1', target_slots=target, peak_job_rss_bytes=peak, peak_job_cpu_cores=observed_cpu,
                  stage=stage, feedback=feedback, decision_clock=stamp(), monotonic=now)
     report=dict(schema=SCHEMA, mode='AUTO', capacity=target, slots=max(0,target-occupied),

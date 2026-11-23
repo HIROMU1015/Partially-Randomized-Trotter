@@ -208,6 +208,20 @@ class ResourceTests(unittest.TestCase):
         self.assertEqual(offer['slots'],2)
         self.assertEqual(offer['stage'],'EXPLICIT_FIXED_PROFILE')
 
+    def test_measured_class_offer_uses_spare_cpu_without_charging_light_work_at_heavy_peak(self):
+        p = profile(separate_task_resources=True, pack_measured_task_classes=True)
+        light = dict(resource_class='light', observed_cpu_cores=4, peak_rss_bytes=1_000_000)
+        heavy = dict(resource_class='heavy', observed_cpu_cores=31, peak_rss_bytes=4_000_000)
+        jobs = [dict(light, state='RUNNING'), dict(heavy, state='TRANSFERRED')]
+        order = feedback(0, 1, ready_task_class_order=['heavy'] + ['light']*12)
+        _, offer = R.decide_slots(p, {}, resources(cpu=30), jobs, order)
+        self.assertEqual(offer['admitted_task_classes'], ['light'])
+        self.assertEqual(offer['slots'], 6)
+        self.assertEqual(offer['capacity'], 7)
+        jobs[1]['state'] = 'RUNNING'
+        _, offer = R.decide_slots(p, {}, resources(cpu=30), jobs, order)
+        self.assertEqual(offer['slots'], 0)
+
     def test_mailbox_feedback_persists_and_resume_keeps_slot_state(self):
         with tempfile.TemporaryDirectory()as temporary:
             p=dict(profile(),root=str(ROOT),interpreter=sys.executable,route_views={},work_dir=temporary)

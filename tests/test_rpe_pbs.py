@@ -16,7 +16,7 @@ import tempfile
 import threading
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
@@ -485,6 +485,26 @@ class ManagerTests(unittest.TestCase):
             manager.cycle()
             self.assertEqual(len(manager.state['allocations']), 1)
             self.assertEqual(sum(call['action']=='ensure' for call in gateway.calls), 1)
+
+    def test_full_shared_pilot_drains_only_its_session_after_owned_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            manager.hold_node = True
+            manager._demand = lambda: ([], [], 0, 0)
+            token = self.submit(manager)
+            row = manager.state['allocations'][token]
+            row.update(status='R', worker_storage_hold='STORAGE_LIMIT_REACHED')
+            allocation = dict(token=token, status='R', job_id='SAVED.PBS', host_id='pbs-0',
+                              worker=dict(accepting=False), pilot_token='shared')
+            gateway.call = Mock(return_value=dict(allocations=[allocation], requests={}))
+            executor._owned_attempts = lambda: [dict(host_id='pbs-0')]
+            manager.cycle()
+            self.assertFalse(manager.controls[token]['stop'])
+            executor._owned_attempts = lambda: []
+            manager.cycle()
+            self.assertEqual(manager.controls[token], dict(stop=True, release_when_idle=False))
+            self.assertTrue(P.read(manager.path)['allocations'][token]['storage_maintenance_requested'])
+            self.assertTrue(all(call.args[0]['action']=='exchange' for call in gateway.call.call_args_list))
 
     def test_ready_q3_sizing_uses_fixed_cpu_footprint_and_pins_the_intent(self):
         with tempfile.TemporaryDirectory() as directory:

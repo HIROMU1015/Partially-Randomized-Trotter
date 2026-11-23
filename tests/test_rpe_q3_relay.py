@@ -111,6 +111,50 @@ os.execv(command[0], command)
 
 
 class RelayTests(unittest.TestCase):
+    def test_wsl_can_probe_and_recover_while_preparation_bundle_is_in_flight(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            config = Path(temporary)/'relay.json'
+            worker = dict(host_id='WSL', transport='ssh-wsl')
+            write(config, dict(state_directory=str(Path(temporary)/'relay'),
+                               controller=dict(ssh_alias='qg2'), workers=[worker]))
+            relay = R.Relay(config)
+            release = threading.Event()
+            started = threading.Event()
+            q3 = dict(job_id='q3', request=dict(route=dict(kind='artificial')))
+            prep = dict(job_id='prep', request=dict(route=dict(kind='preparation'),
+                        preparation=dict(input_git_bundles=[dict(sha256='absent')])))
+            status = dict(host_id='WSL', slots=1, cached_prefixes=[], attempts=[],
+                          source_sha='ARTIFICIAL', cached_artifact_sha256=[], metadata_only=True)
+            reply = dict(assignments=[], eligibility_challenges=[prep, q3])
+
+            def deliver(_, challenges):
+                self.assertEqual(challenges, [prep])
+                started.set()
+                self.assertTrue(release.wait(5))
+
+            def remote(_, action, value):
+                if action == 'status':
+                    return status, 0
+                self.assertEqual(action, 'readiness')
+                self.assertEqual(value['challenges'], [q3])
+                return dict(host_id='WSL', host_fingerprints={'q3': {}}, readiness_errors={}), 0
+
+            try:
+                with patch.object(relay, 'post', return_value=reply), patch.object(relay, 'remote', side_effect=remote), \
+                        patch.object(relay, '_deliver_challenge_artifacts', side_effect=deliver), \
+                        patch.object(relay, '_recover_attempts', return_value=False) as recover, \
+                        patch.object(relay, '_claim_and_deliver') as claim:
+                    observed = relay._discover(worker)
+                    self.assertTrue(started.wait(2))
+                    self.assertEqual(observed[3]['host_fingerprints'], {'q3': {}})
+                    relay.tick(worker, observed)
+                    recover.assert_called_once()
+                    claim.assert_called_once()
+                    self.assertFalse(relay.pending_bundles['WSL'].done())
+            finally:
+                release.set()
+                relay.bundle_pool.shutdown()
+
     def test_readiness_timeout_still_reconciles_owned_attempts(self):
         with tempfile.TemporaryDirectory() as temporary:
             config = Path(temporary)/'relay.json'
@@ -250,7 +294,8 @@ class RelayTests(unittest.TestCase):
                     patch.object(relay, 'remote', side_effect=[(status, .01), (facts, .01)]) as remote, \
                     patch.object(relay, '_deliver_challenge_artifacts') as deliver:
                 relay._discover(wsl)
-            deliver.assert_not_called()
+                relay.bundle_pool.shutdown()
+                deliver.assert_called_once_with(wsl, requests[:1])
             self.assertEqual(remote.call_args.args[2]['challenges'], [requests[1]])
             self.assertEqual(relay._readiness_batch(wsl, requests, {'HIT'}, slots=1), [requests[0]])
 

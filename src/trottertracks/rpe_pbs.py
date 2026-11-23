@@ -739,7 +739,8 @@ class PbsManager:
                         admission.pop('resource_pool', None)
             if request['endpoint'] == '/v1/poll' and (allocation is None or allocation['status'] != 'R' or
                     not (allocation.get('worker') or {}).get('accepting', False) or
-                    self.state['allocations'][token].get('resize_requested')):
+                    self.state['allocations'][token].get('resize_requested') or
+                    self.state['allocations'][token].get('storage_maintenance_requested')):
                 # A delayed file survives worker/PBS termination; it cannot
                 # constitute a current free-slot offer.
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
@@ -1324,6 +1325,18 @@ class PbsManager:
                 token, host = allocation['token'], allocation['host_id']
                 record = self.state['allocations'][token]
                 spec = record['spec']
+                if (not stopping and self.hold_node and allocation['status'] == 'R'
+                        and allocation.get('pilot_token') and host not in hosts_with_attempts
+                        and record.get('worker_storage_hold') in ('STORAGE_LIMIT_REACHED', 'FILESYSTEM_SPACE_LOW')
+                        and not record.get('storage_maintenance_requested')):
+                    # A shared pilot keeps its physical node when a session
+                    # exits. The drained worker must release its spool lock
+                    # so the existing storage watcher can recover capacity.
+                    record['storage_maintenance_requested'] = True
+                    self.storage_checks.pop(host, None)
+                    self.save()
+                    self.log('PBS_STORAGE_MAINTENANCE_DRAIN', token=token, host_id=host,
+                             job_id=allocation['job_id'], reason=record['worker_storage_hold'])
                 current_cpus = spec['resources']['ncpus']
                 requested_slots = sum(host in usable for usable, _ in waiting_tasks)
                 cpu_per_task = task_cpu_footprint(spec['profile'])
@@ -1399,7 +1412,8 @@ class PbsManager:
                     self.save()
                     self.log('PBS_QUEUED_ALLOCATION_RESIZE', token=token, host_id=host,
                              previous_cpus=current_cpus, requested_cpus=requested_cpus, reason=resize_reason)
-                self.controls[token] = dict(stop=stopping or record.get('resize_requested', False),
+                self.controls[token] = dict(stop=bool(stopping or record.get('resize_requested')
+                    or record.get('storage_maintenance_requested')),
                     release_when_idle=(stopping or not self.hold_node) and not waiting
                     and not keep_for_preparation and host not in hosts_with_attempts)
                 queued_stop = stopping and allocation['status'] in ('Q', 'H', 'W')
