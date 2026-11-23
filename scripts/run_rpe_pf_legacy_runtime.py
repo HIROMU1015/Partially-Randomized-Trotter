@@ -62,11 +62,15 @@ def main():
         target = Path(trailing[trailing.index('--task-root')+1]).resolve()
     elif entry in ('check_pf_preparation_owner.py', 'run_pf_preparation_stage.py'):
         output = Path(trailing[trailing.index('--output')+1]).resolve()
+        if not output.is_relative_to(scope) or output == scope:
+            raise ValueError('Fixed PF output is outside the configured write root: '+str(output))
         target = scope/output.relative_to(scope).parts[0]
     else:
         raise ValueError('Unsupported fixed PF entry: '+entry)
     if target == scope or not target.is_relative_to(scope) or not target.is_dir():
         raise ValueError('Fixed PF write location is outside the owned workspace')
+    if config.get('run_directory') and target != Path(config['run_directory']).resolve(strict=True):
+        raise ValueError('Fixed PF write location differs from the selected run')
     executable = shutil.which('bwrap')
     if executable is None:
         raise ValueError('Fixed PF runtime requires bubblewrap')

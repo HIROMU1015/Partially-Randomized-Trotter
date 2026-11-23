@@ -1171,6 +1171,7 @@ def local_worker_for_reattachment(run):
 
 def reconcile_runtime_failure(run, launch, ended, invocation, kind):
     """Verify ended ownership after a specifically identified controller error."""
+    import ast
     import fcntl
     import re
     import sqlite3
@@ -1223,18 +1224,36 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             incomplete_recovery_index = (stop['error_type'] == 'KeyError' and message == "'configuration_id'"
                                          and 'pf_optimizer_connection.py' in trace
                                          and "record['configuration_id'] == candidates[0]" in trace)
+            legacy_write_scope = False
+            suffix = "' returned non-zero exit status 1."
+            if (stop['error_type'] == 'CalledProcessError' and 'pf_distributed_preparation.py' in trace
+                    and message.startswith("Command '") and message.endswith(suffix)
+                    and 'check_pf_preparation_owner.py' in message):
+                try:
+                    command = ast.literal_eval(message[len("Command '"):-len(suffix)])
+                    output = Path(command[command.index('--output') + 1]).resolve()
+                except (AttributeError, IndexError, SyntaxError, TypeError, ValueError):
+                    hold('invalid PF launcher command in the failure record')
+                pinned = load(run/'ROUND.json')['pf_completion']['interpreter']
+                if (command[0] == pinned and Path(command[2]).name == 'check_pf_preparation_owner.py'
+                        and output.name == 'ORIGINAL_OWNER_CHECK.json' and output.is_relative_to(run.resolve())):
+                    with (run/'DRIVER.log').open('rb') as log:
+                        log.seek(max(0, log.seek(0, os.SEEK_END) - 2 * 1024**2))
+                        evidence = log.read().decode(errors='replace')
+                    legacy_write_scope = any(str(output) in line and 'is not in the subpath of' in line
+                                             for line in evidence.splitlines() if line.startswith('ValueError:'))
             if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
-                     or saved_axis_encoding or incomplete_recovery_index)
+                     or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope)
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
-            if incomplete_recovery_index and (run/'STOP_REQUESTED.json').exists():
+            if (incomplete_recovery_index or legacy_write_scope) and (run/'STOP_REQUESTED.json').exists():
                 hold('user STOP prevents recovery')
         elif (kind != 'ast' or stop['error_type'] != 'SystemError'
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
-        reattach = kind == 'pf_request' and incomplete_recovery_index
+        reattach = kind == 'pf_request' and (incomplete_recovery_index or legacy_write_scope)
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
         if reattach:

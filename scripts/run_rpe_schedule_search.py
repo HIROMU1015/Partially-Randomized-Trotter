@@ -222,6 +222,16 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     import importlib.util
 
     distributed = spec['executor']['distributed']
+    if binding := trial.get('pf_controller_runtime'):
+        if run_dir is None or Path(binding['run_directory']).resolve() != Path(run_dir).resolve():
+            raise ValueError('PF controller runtime belongs to a different run')
+        for name, expected in binding['files'].items():
+            if hashlib.sha256(Path(name).read_bytes()).hexdigest() != expected:
+                raise ValueError('Fixed PF controller runtime differs: '+name)
+        settings = spec['pf_completion']
+        if settings['interpreter'] != binding['replaces']:
+            raise ValueError('PF controller runtime predecessor differs')
+        settings['interpreter'] = binding['interpreter']
     if trial.get('controller_parallel') is True:
         spec['search_overrides']['controller_parallel'] = True
         # Derive overlap from CPUs visible to this controller, rather than

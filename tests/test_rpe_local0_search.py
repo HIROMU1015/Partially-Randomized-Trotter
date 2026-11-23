@@ -444,6 +444,22 @@ class Tests(unittest.TestCase):
             reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request')
         write(job/'LAUNCH.json', dict(host_id='server2', attempt_id='original-attempt'))
         self.assertEqual(reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request'), redelivery)
+        launcher = '/fixture/old/pf-runtime/python'
+        output = run/'pf_auto/candidate/ORIGINAL_OWNER_CHECK.json'
+        command = [launcher, '-B', 'check_pf_preparation_owner.py', '--output', str(output)]
+        import subprocess
+        scoped = dict(stop, error_type='CalledProcessError',
+                      message=str(subprocess.CalledProcessError(1, command)))
+        write(run/'ROUND.json', {'pf_completion': {'interpreter': launcher}})
+        write(run/'KAPPA_STATE.json', dict(stop=scoped))
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(dict(scoped, phase='DRIVER',
+            traceback='pf_candidate_selection.py\npf_distributed_preparation.py, in complete_selected'))+'\n')
+        (run/'DRIVER.log').write_text('ValueError: unrelated provider failure\n')
+        with self.assertRaisesRegex(RequestError, 'outside the PF candidate request binding'):
+            reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request')
+        (run/'DRIVER.log').write_text(f'ValueError: {str(output)!r} is not in the subpath of /fixture/old\n')
+        self.assertEqual(reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request'), scoped)
+        (run/'ROUND.json').unlink()
         with sqlite3.connect(database) as db:
             self.assertEqual(db.execute("SELECT state,attempt_id FROM jobs WHERE job_id='original-job'").fetchone(),
                              ('RUNNING', 'original-attempt'))
