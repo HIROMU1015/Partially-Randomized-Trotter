@@ -727,6 +727,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self.live_readiness_planning = set()
         self.live_readiness_host_counts = Counter()
         self.live_readiness_host_pools = {}
+        self.poll_probe_offsets = {}
         self.pbs_q3_check_queue = {}
         self.live_readiness_workers = max(1, len(kwargs.get('problem', args[4] if len(args)>4 else {}).get('methods', {})))
         self.controller_parallel = distributed.get('controller_parallel') is True
@@ -2368,7 +2369,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                                      previous=row['eligibility'], prefetch=True)
                     if not decision or host not in decision['eligible_host_ids']:
                         continue
-                    assignment = self._assignment(row, host_id=host, eligibility=decision)
+                    assignment = self._assignment(row, host_id=host, eligibility=decision, metadata_only=True)
                     assignment.pop('attempt_id', None)
                 if facts is None:
                     if len(challenges) < slots:
@@ -2853,7 +2854,7 @@ class DistributedExecutor(ConcurrentExecutor):
             reference = continuation['references'][host]
         return deepcopy(reference)
 
-    def _assignment(self, row, host_id=None, *, eligibility=None):
+    def _assignment(self, row, host_id=None, *, eligibility=None, metadata_only=False):
         from .rpe_q3_coordinator import input_hashes, prefix_key, digest
         from .rpe_host_profiles import profile_core
         preparation = self._preparation_request(row['request'])
@@ -2883,7 +2884,7 @@ class DistributedExecutor(ConcurrentExecutor):
             value['required_release'] = reference
             continuation = self.distributed.get('local_pf_continuation')
             local=self.distributed.get('local_worker')or{}
-            if host==local.get('host_id')and self.distributed.get('local_deployment_layout'):
+            if not metadata_only and host == local.get('host_id') and self.distributed.get('local_deployment_layout'):
                 from .rpe_release_deployment import read,validate_assignment_release
                 if continuation and reference != self.distributed['required_release']:
                     manifest, layout = continuation['manifest'], continuation['layout']
@@ -3054,9 +3055,25 @@ class DistributedExecutor(ConcurrentExecutor):
                 pending_challenges = self._pending_preparation_challenges(host, new_slots) if may_probe else []
                 if may_probe and new_slots:
                     pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
-                def reply(**fields):
+                def reply(*, probe_rows=(), **fields):
                     existing=fields.get('eligibility_challenges',[])
                     challenges = {item['job_id']:item for item in existing+pending_challenges}
+                    if probe_rows:
+                        # Workers verify the exact release during their metadata
+                        # check. Keep a slow host from holding the shared lock
+                        # while the controller validates every waiting request.
+                        start = self.poll_probe_offsets.get(host, 0) % len(probe_rows)
+                        limit = min(len(probe_rows), max(new_slots, self._host_readiness_limit(host)))
+                        for row in (probe_rows[start:]+probe_rows[:start])[:limit]:
+                            try:
+                                challenge = self._assignment(row, host_id=host, metadata_only=True)
+                            except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+                                self.log(event='HOST_PROBE_INPUT_UNAVAILABLE', host_id=host,
+                                         job=row['job_id'], reason=str(error))
+                                continue
+                            challenge.pop('attempt_id', None)
+                            challenges[challenge['job_id']] = challenge
+                        self.poll_probe_offsets[host] = (start+limit) % len(probe_rows)
                     if may_probe and new_slots and self.pbs_manager is not None and host in self.pbs_manager.configured:
                         for challenge in self._pbs_q3_challenges(host, fingerprints, challenges, new_slots):
                             challenges[challenge['job_id']] = challenge
@@ -3119,9 +3136,7 @@ class DistributedExecutor(ConcurrentExecutor):
                         # Metadata challenge only: no attempt ID, reservation
                         # transition, LAUNCH or scientific execution occurs.
                         if row['job_id'] not in self.preparation_pending:
-                            challenge = self._assignment(row, host_id=host)
-                            challenge.pop('attempt_id', None)
-                            challenges.append(challenge)
+                            challenges.append(row)
                         skipped = True
                         continue
                     if not self._fits_host_task_class(host, dict(row, eligibility=decision)):
@@ -3133,7 +3148,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     eligible.append(task)
                 if value.get('observe_only') is True:
                     self._timing_queue()
-                    return reply(assignments=[], stop=False, eligibility_challenges=challenges, host_admission=admission)
+                    return reply(assignments=[], stop=False, probe_rows=challenges, host_admission=admission)
                 if self.pbs_manager is not None:
                     starting = self.pbs_manager.startup_jobs(except_host=host)
                     eligible = [task for task in eligible if task.job.name not in starting]
@@ -3173,7 +3188,7 @@ class DistributedExecutor(ConcurrentExecutor):
 
                         eligible = [task for task in eligible if not needs_discovery(task)]
                         if not eligible:
-                            return reply(assignments=assignments, stop=False, eligibility_challenges=challenges,
+                            return reply(assignments=assignments, stop=False, probe_rows=challenges,
                                          host_admission=admission, waiting_for_discovery=unknown)
                 # Prefix locality is considered only among eligible hosts for
                 # the same first dispatchable task, never an unsupported host.
@@ -3269,7 +3284,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     remaining -= 1
                 self._timing_queue()
                 self._refresh_capacity(admission_policy, admission_error)
-                return reply(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)
+                return reply(assignments=assignments, stop=False, probe_rows=challenges, host_admission=admission)
             row = self.store.row(value['job_id'])
             attempt = value['attempt_id']
             if path == '/v1/state' and row is None:

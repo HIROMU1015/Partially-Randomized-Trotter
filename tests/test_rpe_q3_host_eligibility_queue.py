@@ -145,6 +145,17 @@ class EligibilityQueue(unittest.TestCase):
         self.assertEqual(ex.store.counts('METHOD'),0)
         self.assertEqual(view.answer(p)['status'],'HOST_ELIGIBILITY_HOLD')
 
+    def test_probe_limit_rotates_to_independent_queued_requests(self):
+        ex = self.executor(); view = ex.for_method('METHOD')
+        proposals = [self.proposal(f'probe-{i}') for i in range(4)]
+        self.policy(ex, [(proposal, ['a']) for proposal in proposals])
+        for proposal in proposals:
+            view._enqueue(proposal)
+        replies = [self.poll(ex, 'a') for _ in proposals]
+        self.assertTrue(all(not row['assignments'] and len(row['eligibility_challenges']) == 1 for row in replies))
+        visited = {row['eligibility_challenges'][0]['job_id'] for row in replies}
+        self.assertEqual(visited, {view.job_dir(proposal).name for proposal in proposals})
+
     def test_busy_only_pass_host_waits_without_assigning_unsupported_host(self):
         ex = self.executor();view = ex.for_method('METHOD');p = self.proposal('busy')
         facts = self.policy(ex, [(p,['a'])]);task = view._enqueue(p, demand=True)
