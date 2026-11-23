@@ -138,6 +138,9 @@ def local_duplicate_cache(run, profile):
         with path.open('rb') as stream:
             return hashlib.file_digest(stream, 'sha256').hexdigest()
 
+    def identity(info):
+        return info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_nlink
+
     with sample.with_suffix('.lock').open('r+b') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         measurement = read(sample)
@@ -150,7 +153,8 @@ def local_duplicate_cache(run, profile):
         retained = protected()
         if retained is None:
             return {}
-        removed = {}
+        verified = []
+        verified_bytes = 0
         # Large duplicates restore intake with fewer registry checks.
         for path in sorted(worker.glob('*/*'), key=lambda path: -path.stat().st_size):
             if (path.name in retained or path.parent.name != path.name[:2]
@@ -160,26 +164,44 @@ def local_duplicate_cache(run, profile):
             if stat.st_nlink != 1:
                 continue
             relative = path.relative_to(worker)
-            originals = (cache/relative for cache in canonical)
-            if not any(original.is_file() and not original.is_symlink()
-                       and original.stat().st_size == stat.st_size and sha(original) == path.name
-                       for original in originals) or sha(path) != path.name:
-                continue
-            with (state_dir/'REGISTRY.lock').open('rb') as registry:
-                try:
-                    fcntl.flock(registry, fcntl.LOCK_SH | fcntl.LOCK_NB)
-                except BlockingIOError:
+            for cache in canonical:
+                original = cache/relative
+                if not original.is_file() or original.is_symlink():
+                    continue
+                central_stat = original.stat()
+                if central_stat.st_size == stat.st_size and sha(original) == path.name:
                     break
+            else:
+                continue
+            if sha(path) != path.name:
+                continue
+            size = stat.st_blocks * 512
+            verified.append((path, identity(stat), original, identity(central_stat), size))
+            verified_bytes += size
+            if verified_bytes >= target:
+                break
+        if not verified:
+            return {}
+        try:
+            with (state_dir/'REGISTRY.lock').open('rb') as registry:
+                fcntl.flock(registry, fcntl.LOCK_SH | fcntl.LOCK_NB)
                 current = protected()
                 if current is None:
-                    break
-                if path.name in current:
-                    continue
-                path.unlink()
-            removed[path.name] = stat.st_blocks * 512
-            if sum(removed.values()) >= target:
-                break
-        return removed
+                    return {}
+                removed = {}
+                for path, local_id, original, central_id, size in verified:
+                    if path.name in current or path.is_symlink() or original.is_symlink():
+                        continue
+                    try:
+                        if identity(path.stat()) != local_id or identity(original.stat()) != central_id:
+                            continue
+                        path.unlink()
+                    except FileNotFoundError:
+                        continue
+                    removed[path.name] = size
+                return removed
+        except BlockingIOError:
+            return {}
 
 
 def local_report(run, profile):
