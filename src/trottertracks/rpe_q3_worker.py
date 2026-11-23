@@ -683,7 +683,7 @@ class Worker:
     def _receive_assignment(self, assignment):
         self._acquire(assignment)
 
-    def _service_attempt(self, attempt, assignment):
+    def _service_attempt(self, attempt, assignment, *, transfer=True):
         state = self._reconcile(attempt, assignment)
         if state['state'] == 'ASSIGNED':
             self._launch(attempt); state = read(attempt / 'WORKER_STATE.json')
@@ -693,7 +693,7 @@ class Worker:
                 self._post('/v1/state', payload); self.reported[attempt] = state
             except (OSError, ValueError, urllib.error.URLError) as error:
                 event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(error))
-        if state['state'] == 'COMPLETED_PENDING_TRANSFER':
+        if transfer and state['state'] == 'COMPLETED_PENDING_TRANSFER':
             try:
                 started = time.monotonic()
                 self._upload_artifacts(attempt, assignment)

@@ -536,6 +536,9 @@ class PbsManager:
         self.harvest_gateway = Gateway(self.settings) if self.selective_harvest else None
         self.harvest_pool = None
         self.harvest_pending = None
+        self.live_harvest = bool(self.selective_harvest and dispatch.get('live_harvest'))
+        self.live_harvest_pending = None
+        self.live_harvest_checked = {}
         self.harvest_retry_after = {}
         self.storage_launcher = (getattr(executor, 'distributed', {})
                                  .get('pbs_gateway_storage_launcher'))
@@ -898,14 +901,43 @@ class PbsManager:
                  bytes=paths[0].stat().st_size)
         return response
 
-    def _fetch_harvest(self, gateway, token, owners=None):
+    def _fetch_harvest(self, gateway, token, owners=None, *, live=False):
         request = dict(action='harvest', token=token)
         if owners is not None:
             request['owners'] = [dict(job_id=job, attempt_id=attempt) for job, attempt in sorted(owners)]
+        if live:
+            request['completed_only'] = True
         data = gateway.call(request)
         missing = self.executor.artifact_cache.missing(data.get('artifact_hashes', []))
         blobs = gateway.call(dict(request, hashes=missing))['blobs'] if missing else {}
         return data, blobs
+
+    def _accept_harvested(self, allocation, data, blobs, owners, *, live=False):
+        if owners is not None and data['host_id'] != allocation['host_id']:
+            raise ValueError('PBS harvest belongs to a different worker')
+        if blobs:
+            self.executor.artifact_cache.put(blobs)
+        count = 0
+        for item in data['attempts']:
+            assignment = item['assignment']
+            job, attempt = assignment['job_id'], assignment['attempt_id']
+            if owners is not None and (job, attempt) not in owners:
+                raise ValueError('Unrequested PBS attempt returned by harvest')
+            row = self.executor.store.row(job)
+            if row is not None and row['state'] == 'ACCEPTED':
+                continue
+            if live and item['state'].get('state') != 'COMPLETED_PENDING_TRANSFER':
+                raise ValueError('PBS did not provide a locally verified completion')
+            try:
+                self.executor.rpc('/v1/complete', dict(host_id=data['host_id'], job_id=job, attempt_id=attempt,
+                    request_sha256=assignment['request_sha256'], files=item['files']))
+                count += 1
+            except (OSError, ValueError) as error:
+                if not live:
+                    raise
+                self.log('PBS_LIVE_RESULT_PENDING', token=allocation['token'], job_id=job, attempt_id=attempt,
+                         error=f'{type(error).__name__}: {error}')
+        return count
 
     def _harvest(self, allocation, *, fetched=None, owners=None, revisit=False):
         token = allocation['token']
@@ -913,22 +945,7 @@ class PbsManager:
         if record.get('harvested') and not revisit:
             return
         data, blobs = fetched if fetched is not None else self._fetch_harvest(self.gateway, token)
-        if owners is not None and data['host_id'] != allocation['host_id']:
-            raise ValueError('PBS harvest belongs to a different worker')
-        if blobs:
-            self.executor.artifact_cache.put(blobs)
-        for item in data['attempts']:
-            assignment = item['assignment']
-            row = self.executor.store.row(assignment['job_id'])
-            if owners is not None and (assignment['job_id'], assignment['attempt_id']) not in owners:
-                raise ValueError('Unrequested PBS attempt returned by harvest')
-            if row is not None and row['state'] == 'ACCEPTED':
-                continue
-            # The original durable task/owner/attempt must exist; the normal
-            # completion path checks exit receipt, identities and all outcomes.
-            self.executor.rpc('/v1/complete', dict(host_id=data['host_id'],
-                job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                request_sha256=assignment['request_sha256'], files=item['files']))
+        self._accept_harvested(allocation, data, blobs, owners)
         ended = allocation['status'] in TERMINAL or (allocation.get('worker') or {}).get('state') == 'EXITED'
         for item in data.get('incomplete', []) if ended else []:
             assignment = item['assignment']; row = self.executor.store.row(assignment['job_id'])
@@ -965,6 +982,10 @@ class PbsManager:
             record['harvest_gateway_sha256'] = self.settings['gateway_sha256']
         self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=len(data['attempts']))
 
+    def _collect_live_results(self, allocation, owners):
+        data, blobs = self._fetch_harvest(self.harvest_gateway, allocation['token'], owners, live=True)
+        return self._accept_harvested(allocation, data, blobs, owners, live=True)
+
     def _advance_harvest(self):
         """Keep remote archive reads out of the live worker exchange."""
         if self.harvest_pending is not None:
@@ -979,13 +1000,23 @@ class PbsManager:
                 self.harvest_retry_after[token] = time.monotonic() + self.settings.get('request_timeout_seconds', 20)
                 self.log('PBS_HARVEST_PENDING', token=token, error=f'{type(error).__name__}: {error}')
             self.save()
+        if self.live_harvest_pending is not None:
+            token, future = self.live_harvest_pending
+            if not future.done():
+                return
+            self.live_harvest_pending = None
+            try:
+                if count := future.result():
+                    self.log('PBS_LIVE_RESULTS_COLLECTED', token=token, attempts=count)
+            except Exception as error:
+                self.log('PBS_LIVE_HARVEST_PENDING', token=token, error=f'{type(error).__name__}: {error}')
         if self.stop.is_set():
             return
         # Capacity released for an UNKNOWN attempt is unrelated to its
         # recoverability. Read ownership from the ledger independently.
         with self.executor.store._connection() as db:
             owned = [dict(row) for row in db.execute(
-                "SELECT job_id, host_id, attempt_id, "
+                "SELECT job_id, host_id, attempt_id, method, assigned_epoch, state, "
                 "(state='UNKNOWN' AND completion_sha256 IS NULL AND started_epoch IS NULL "
                 "AND json_extract(detail,'$.reason')='ValueError: Existing adapter dry-check failed' "
                 "AND json_type(detail,'$.prelaunch_rejection') IS NULL) AS needs_prelaunch_proof "
@@ -1015,7 +1046,38 @@ class PbsManager:
                 self.harvest_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-pbs-harvest')
             future = self.harvest_pool.submit(self._fetch_harvest, self.harvest_gateway, token, owners)
             self.harvest_pending = (allocation, owners, revisit, future)
-            break
+            return
+        if self.live_harvest:
+            self._advance_live_harvest(owned)
+
+    def _advance_live_harvest(self, owned):
+        # The worker still uploads normally. If acknowledgements lag, the
+        # gateway can pick up several durable preparation receipts at once.
+        now = time.time()
+        monotonic = time.monotonic()
+        grace = self.settings.get('request_timeout_seconds', 20)
+        checked = self.live_harvest_checked
+        eligible = {}
+        for row in owned:
+            if row['method'].startswith('PREPARATION:') and row['assigned_epoch'] is not None and (
+                    row['state'] == 'COMPLETED_PENDING_TRANSFER' or now-row['assigned_epoch'] >= grace):
+                eligible[(row['job_id'], row['attempt_id'])] = row
+        self.live_harvest_checked = {owner: at for owner, at in checked.items() if owner in eligible}
+        for allocation in self.allocations:
+            if allocation['status'] != 'R':
+                continue
+            candidates = [owner for owner, row in eligible.items()
+                          if row['host_id'] == allocation['host_id'] and monotonic-checked.get(owner, -grace) >= grace]
+            if not candidates:
+                continue
+            candidates.sort(key=lambda owner: (checked.get(owner, 0), eligible[owner]['assigned_epoch'], owner))
+            owners = set(candidates[:16])
+            self.live_harvest_checked.update(dict.fromkeys(owners, monotonic))
+            if self.harvest_pool is None:
+                self.harvest_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-pbs-harvest')
+            future = self.harvest_pool.submit(self._collect_live_results, allocation, owners)
+            self.live_harvest_pending = (allocation['token'], future)
+            return
 
     def _demand(self):
         with self.executor.state.cv:

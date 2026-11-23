@@ -251,11 +251,11 @@ class JobStore:
         return request.get('artificial') is True
 
     @staticmethod
-    def eligible(request, eligibility, host_id=None, host_fingerprints=None, job_id=None):
+    def eligible(request, eligibility, host_id=None, host_fingerprints=None, job_id=None, *, request_sha256=None):
         """Validate persistent membership and a fresh, request-specific host report."""
         if eligibility is None:
             return JobStore.artificial(request)
-        if eligibility.get('request_sha256') != digest(request):
+        if eligibility.get('request_sha256') != (request_sha256 or digest(request)):
             raise ValueError('Host eligibility belongs to a different REQUEST')
         allowed = eligibility.get('eligible_host_ids')
         if not isinstance(allowed, list) or any(not isinstance(h, str) or not h for h in allowed):
@@ -348,8 +348,15 @@ class JobStore:
         if slots == 0:
             return []
         with self._connection(write=True) as db:
-            queued = {row['job_id']: row for row in db.execute("SELECT * FROM jobs WHERE state='QUEUED' ORDER BY enqueued_epoch,job_id")}
-            order = list(queued) if allowed_jobs is None else list(dict.fromkeys(allowed_jobs))
+            if allowed_jobs is None:
+                queued = {row['job_id']: row for row in db.execute(
+                    "SELECT * FROM jobs WHERE state='QUEUED' ORDER BY enqueued_epoch,job_id")}
+                order = list(queued)
+            else:
+                order = list(dict.fromkeys(allowed_jobs))
+                queued = {row['job_id']: row for row in db.execute(
+                    "SELECT * FROM jobs WHERE state='QUEUED' AND job_id IN (SELECT value FROM json_each(?))",
+                    (json.dumps(order),))}
             selected = []
             for job_id in order:
                 if job_id not in queued:
@@ -410,7 +417,10 @@ class JobStore:
         transaction.  Identical retransmissions return ``duplicate=True``;
         changed data under the same attempt is rejected.
         """
-        completion_sha = digest(files)
+        return self.complete_hashed(host_id, job_id, attempt_id, request_sha256, digest(files))
+
+    def complete_hashed(self, host_id, job_id, attempt_id, request_sha256, completion_sha):
+        """Commit a receipt whose bytes the controller already validated and hashed."""
         with self._connection(write=True) as db:
             old = self._owned(db, host_id, job_id, attempt_id)
             if old['request_sha256'] != request_sha256:

@@ -3,6 +3,7 @@
 No adapter is launched: outcomes stand in for already completed artificial jobs.
 """
 import base64
+from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 import errno
 from fractions import Fraction
@@ -54,6 +55,31 @@ class ControllerFailures(unittest.TestCase):
         replacement.write_bytes(row.replace(b'server1', b'server2') + b'\n')
         replacement.replace(log)
         self.assertEqual(count(), {'server2': 1})
+
+    def test_delayed_result_file_write_does_not_block_independent_poll(self):
+        executor = self.executor()
+        self.enqueue(executor, 'slow-transfer')
+        first, = self.poll(executor, slots=1)['assignments']
+        second = self.enqueue(executor, 'ready-on-other-host')
+        entered, release = threading.Event(), threading.Event()
+        install = Q.install_files
+
+        def slower_install(directory, files):
+            entered.set()
+            self.assertTrue(release.wait(5))
+            install(directory, files)
+
+        with ThreadPoolExecutor(max_workers=2) as pool, patch.object(Q, 'install_files', side_effect=slower_install):
+            completion = pool.submit(executor.rpc, '/v1/complete', self.completion(first))
+            try:
+                self.assertTrue(entered.wait(3))
+                poll = pool.submit(executor.rpc, '/v1/poll', dict(host_id='other', slots=1, source_sha=self.source))
+                assigned, = poll.result(timeout=3)['assignments']
+                self.assertEqual(assigned['job_id'], second.job.name)
+                self.assertFalse(completion.done())
+            finally:
+                release.set()
+            self.assertEqual(completion.result(timeout=3), dict(ok=True, duplicate=False))
 
     def executor(self, capacity=2, **distributed):
         result = DistributedExecutor(ROOT, self.run, self.routes, {}, self.problem,

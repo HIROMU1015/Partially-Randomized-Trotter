@@ -1123,6 +1123,12 @@ class GatewayTests(unittest.TestCase):
             self.assertIs(type(value), int)
             self.assertEqual(value, exact)
 
+            owners = [dict(job_id='task', attempt_id='original-attempt')]
+            live = G.harvest(allocation, owners=owners, completed_only=True)
+            self.assertEqual(live['attempts'], result['attempts'])
+            G.atomic(attempt/'WORKER_STATE.json', dict(state='RUNNING'))
+            self.assertEqual(G.harvest(allocation, owners=owners, completed_only=True)['attempts'], [])
+
 
 if __name__ == '__main__':
     unittest.main()

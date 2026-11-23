@@ -229,6 +229,7 @@ class AllocationWorker(Worker):
                            if count else None)
         self.collection_workers = count
         self.collection_inflight = {}
+        self.preparation_transfers = set()
 
     def tick(self, acquire=True):
         if getattr(self, 'collection', None) is None:
@@ -236,14 +237,13 @@ class AllocationWorker(Worker):
         for attempt, future in list(self.collection_inflight.items()):
             if future.done():
                 del self.collection_inflight[attempt]
+                self.preparation_transfers.discard(attempt)
                 future.result()
         # Prefer ready receipts. Every attempt still reports state, transfers,
         # and marks its own ACK in order using the ordinary worker code.
         available = self.collection_workers-len(self.collection_inflight)
         if available:
             candidates = []
-            preparation_busy = any('preparation' in self.records[attempt]['request']
-                                   for attempt in self.collection_inflight)
             for attempt, assignment in self.records.items():
                 if attempt in self.collection_inflight:
                     continue
@@ -255,15 +255,19 @@ class AllocationWorker(Worker):
                     process = self.processes.get(attempt)
                     if process is not None and process.poll() is None:
                         continue
-                candidates.append((state['state'] != 'COMPLETED_PENDING_TRANSFER',
-                                   attempt, assignment))
-            for _, attempt, assignment in sorted(candidates):
+                complete = state['state'] == 'COMPLETED_PENDING_TRANSFER'
+                candidates.append((not complete, attempt, assignment, state))
+            for incomplete, attempt, assignment, state in sorted(candidates):
                 preparation = 'preparation' in assignment['request']
-                if preparation and preparation_busy:
-                    continue  # Large bundle transfers keep one lane.
+                transfer = not preparation or (not incomplete and not self.preparation_transfers)
+                if preparation and not transfer and not incomplete and self.reported.get(attempt) == state:
+                    continue
+                # One bulk transfer need not delay state notifications or the
+                # launch of another preparation. Both use the same attempts.
                 self.collection_inflight[attempt] = self.collection.submit(
-                    self._service_attempt, attempt, assignment)
-                preparation_busy |= preparation
+                    self._service_attempt, attempt, assignment, transfer=transfer)
+                if preparation and transfer:
+                    self.preparation_transfers.add(attempt)
                 available -= 1
                 if available == 0:
                     break

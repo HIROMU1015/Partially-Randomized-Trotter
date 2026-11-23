@@ -6,6 +6,7 @@ launch; running scientific workers are never cancelled to discard lookahead.
 """
 from collections import Counter, defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from copy import deepcopy
 import fcntl
 import json
@@ -718,6 +719,8 @@ class DistributedExecutor(ConcurrentExecutor):
         if type(self.ready_queue_waves) is not int or self.ready_queue_waves < 1:
             raise ValueError('ready_queue_waves must be a positive integer')
         self.eligibility_holds = {}
+        # Serialize retransmissions of the same attempt without blocking other hosts.
+        self.transfer_locks = tuple(threading.Lock() for _ in range(32))
         self.eligibility_policy_cache = {}
         self.live_readiness_inflight = {}
         self.live_readiness_partial = {}
@@ -1194,11 +1197,9 @@ class DistributedExecutor(ConcurrentExecutor):
 
     @staticmethod
     def _uses_pbs_task_resources(row):
-        # This worker state follows adapter exit and local receipt validation.
-        # Ownership stays in the ledger until the collection is acknowledged.
-        # Preparation can still assemble large artifacts during collection.
-        return (row.get('state') != 'COMPLETED_PENDING_TRANSFER'
-                or row['method'].startswith('PREPARATION:'))
+        # Workers publish this state after the adapter and local collection
+        # have both finished. Transfer still owns the attempt and result bytes.
+        return row.get('state') != 'COMPLETED_PENDING_TRANSFER'
 
     def _ready_cpu_supply(self, ready, owned, policy, error):
         """Measure compatible waiting work against each fresh worker's CPU offer."""
@@ -1252,7 +1253,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     request = row['request']
                     if (not self._host_supports_stage(host, request) or not self._fits_host_walltime(host, request)
                             or not self.store.eligible(request, row['eligibility'], host,
-                                                       info.get('host_fingerprints'), row['job_id'])):
+                                                       info.get('host_fingerprints'), row['job_id'],
+                                                       request_sha256=row['request_sha256'])):
                         continue
                     need = footprint(row)
                     if need is None:
@@ -1637,7 +1639,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     skipped[h] = True
                     continue
                 if not self.store.eligible(row['request'], row['eligibility'], h,
-                        self.hosts[h].get('host_fingerprints'), row['job_id']):
+                        self.hosts[h].get('host_fingerprints'), row['job_id'], request_sha256=row['request_sha256']):
                     skipped[h] = True
                     continue
                 conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
@@ -1736,7 +1738,8 @@ class DistributedExecutor(ConcurrentExecutor):
             if row is None or not self._host_supports_stage(host, row['request']) or not self._fits_host_walltime(host, row['request']):
                 continue
             eligibility = row['eligibility'] or {}
-            fresh = self.store.eligible(row['request'], row['eligibility'], host, fingerprints, row['job_id'])
+            fresh = self.store.eligible(row['request'], row['eligibility'], host, fingerprints, row['job_id'],
+                                        request_sha256=row['request_sha256'])
             ready += int(fresh)
             # A request-specific dry-check establishes demand even while the
             # busy worker has no claim-time fingerprint in its current poll.
@@ -2233,10 +2236,12 @@ class DistributedExecutor(ConcurrentExecutor):
     def _pending_preparation_challenges(self, host, free_slots):
         if host not in self._preparation_probe_targets():return []
         candidates = []
+        states = self.store.preparation_states(self.preparation_pending)
         for job_id, record in self.preparation_pending.items():
-            if not self._host_supports_stage(host,record['request']):continue
-            row=self.store.row(job_id)
-            if row is not None and row['state']not in('QUEUED','CANCELLED'):continue
+            if not self._host_supports_stage(host, record['request']):
+                continue
+            if job_id in states and states[job_id][1] not in ('QUEUED', 'CANCELLED'):
+                continue
             candidates.append((job_id, record))
         if not candidates:
             self.preparation_probe_offsets.pop(host, None)
@@ -2246,17 +2251,21 @@ class DistributedExecutor(ConcurrentExecutor):
         # in advance. Advance past failures and rotate through later requests.
         target = max(1, free_slots)
         challenges = []
+        changed = False
         for examined, (job_id, record) in enumerate(candidates[start:]+candidates[:start], 1):
             try:challenges.append(self._pending_preparation_assignment(record,host))
             except (OSError,KeyError,ValueError,TypeError)as exc:
                 failure=str(exc)
                 if record.setdefault('failures',{}).get(host)!=failure:
-                    record['failures'][host]=failure;self._save_preparation_pending()
+                    record['failures'][host] = failure
+                    changed = True
                 hold=self._preparation_probe_hold(record)
                 if hold is not None:self.preparation_holds[job_id]=hold
                 continue
             if len(challenges) == target:
                 break
+        if changed:
+            self._save_preparation_pending()
         self.preparation_probe_offsets[host] = (start + examined) % len(candidates)
         return challenges
 
@@ -2264,12 +2273,19 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_coordinator import digest
         from .rpe_preparation_worker import validate_preparation_fingerprint
         if host not in self._preparation_probe_targets():return
-        for job_id,record in list(self.preparation_pending.items()):
-            if not self._host_supports_stage(host,record['request']):continue
-            old=self.store.row(job_id)
-            if old is not None and old['state']not in('QUEUED','CANCELLED'):continue
-            if old is not None and old['detail'].get('prelaunch_recovery') is True:continue
-            if job_id not in fingerprints and job_id not in errors:continue
+        reports = sorted(self.preparation_pending.keys() & (fingerprints.keys() | errors.keys()))
+        if not reports:
+            return
+        rows = self.store.rows_for(reports)
+        modified = False
+        for job_id in reports:
+            record = self.preparation_pending[job_id]
+            if not self._host_supports_stage(host, record['request']):
+                continue
+            old = rows.get(job_id)
+            if old is not None and (old['state'] not in ('QUEUED', 'CANCELLED')
+                                    or old['detail'].get('prelaunch_recovery') is True):
+                continue
             decision=deepcopy(record['decision']);changed=False
             try:
                 assignment=self._pending_preparation_assignment(record,host)
@@ -2284,7 +2300,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 record['reports'][host]=fingerprint
                 decision['reasons']=[]
                 record['decision']=decision
-                if changed:self._save_preparation_pending()
+                modified |= changed
                 self.preparation_holds.pop(job_id,None)
                 # A verified metadata report enables a normal durable reservation;
                 # readiness itself consumes no attempt or scientific budget.
@@ -2305,12 +2321,14 @@ class DistributedExecutor(ConcurrentExecutor):
                     decision['eligible_host_ids'].remove(host);decision['host_fingerprints'].pop(host,None);decision['execution_profiles'].pop(host,None);changed=True
                 decision['reasons']=['NO_MATCHING_PREPARATION_STAGE_HOST']if not decision['eligible_host_ids']else[]
                 record['decision']=decision
+                modified |= changed
                 if changed:
-                    self._save_preparation_pending()
                     self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='UNCHECKED',stage=record['request']['preparation']['stage'],reason=failure)
                 if old is not None and old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
                 hold=self._preparation_probe_hold(record)
                 if hold is not None:self.preparation_holds[job_id]=hold
+        if modified:
+            self._save_preparation_pending()
         self.state.cv.notify_all()
 
     def _prelaunch_recovery_challenges(self, host, slots, fingerprints):
@@ -2631,26 +2649,6 @@ class DistributedExecutor(ConcurrentExecutor):
             if result is None or result.get('status') != 'PREPARATION_COMPLETE':
                 return dict(status='HOST_ELIGIBILITY_HOLD',reason='CANDIDATE_PREPARATION_NOT_COMPLETE',preparation=result,host_eligibility=dict(preparation_task=job_id,result=result),job_id=job_id,calls=0,MSE_lower=None,MSE_upper=None,job=None)
         return None
-
-    def _complete_preparation(self, row, value, transfer, receipt, outcome, task, started):
-        from .rpe_completion_acceptance import MissingPreparationArtifacts, validate_preparation_result
-        try:
-            validate_preparation_result(row, receipt, outcome, self.artifact_cache)
-        except MissingPreparationArtifacts:
-            raise  # The original attempt can still upload the declared blobs.
-        except ValueError as error:
-            self._hold_result_transfer(row, task, str(error))
-        accepted, duplicate = self.store.complete(row['host_id'],row['job_id'],row['attempt_id'],value['request_sha256'],value['files'])
-        self._publish_transfer(accepted)
-        if not duplicate:
-            self.for_method(row['method']).log(event='TRANSFER_COMPLETE',job=row['job_id'],host_id=row['host_id'],stage=row['request']['preparation']['stage'],transfer_seconds=time.monotonic()-started)
-        if task:
-            task.error = None
-            if task.status == 'RUNNING': self._finished(task,receipt.get('returncode'),row['assigned_epoch'])
-            else: task.event.set()
-        self.state.cv.notify_all()
-        self._timing_queue()
-        return dict(ok=True,duplicate=duplicate)
 
     def _held_answer(self, proposal):
         job = self.job_dir(proposal)
@@ -2992,8 +2990,24 @@ class DistributedExecutor(ConcurrentExecutor):
             s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE', report_seconds=time.monotonic()-started,**payload)
         s.next_queue_timing = time.monotonic() + 2
 
+    @contextmanager
+    def _rpc_queue_lock(self, path, host):
+        waiting = time.monotonic()
+        with self.state.cv:
+            acquired = time.monotonic()
+            if acquired-waiting >= 1:
+                self.log(event='DISTRIBUTED_RPC_LOCK_WAIT', endpoint=path, host_id=host, seconds=acquired-waiting)
+            try:
+                yield
+            finally:
+                held = time.monotonic()-acquired
+        if held >= 1:
+            self.log(event='DISTRIBUTED_RPC_LOCK_HELD', endpoint=path, host_id=host, seconds=held)
+
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
+        if path == '/v1/complete':
+            return self._receive_completion(value)
         s = self.state
         host = value['host_id']
         if not isinstance(host, str) or not host: raise ValueError('Nonempty host_id required')
@@ -3004,11 +3018,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if path == '/v1/artifacts/get': return dict(blobs=self.artifact_cache.get(value.get('hashes', [])))
             if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
             raise ValueError('Unknown artifact RPC endpoint')
-        waiting = time.monotonic()
-        with s.cv:
-            lock_wait = time.monotonic()-waiting
-            if lock_wait >= 1:
-                self.log(event='DISTRIBUTED_RPC_LOCK_WAIT', endpoint=path, host_id=host, seconds=lock_wait)
+        with self._rpc_queue_lock(path, host):
             if path == '/v1/poll':
                 if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
                 stopping = self._user_stop_requested()
@@ -3079,10 +3089,20 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not self._fits_host_walltime(host, row['request']):
                         skipped = True
                         continue
-                    decision = (row['eligibility'] if row['detail'].get('prelaunch_recovery') is True
-                                else self._eligibility_for(row['request'], row['job_id'], blocking=False,
-                                                           previous=row['eligibility'], host=host))
-                    unchanged = decision == row['eligibility'] and self.store.eligible(row['request'], decision)
+                    saved = row['eligibility']
+                    # Live evidence is bound to the immutable request at reservation
+                    # and claim requires this host's current exact fingerprint.
+                    # A host without a stored PASS still goes through live readiness.
+                    if (row['detail'].get('prelaunch_recovery') is True
+                            or (saved and 'input_hashes' in saved and host in saved['eligible_host_ids']
+                                and fingerprints.get(row['job_id']) is not None
+                                and Q.digest(fingerprints[row['job_id']]) == saved['host_fingerprints'].get(host))):
+                        decision = saved
+                    else:
+                        decision = self._eligibility_for(row['request'], row['job_id'], blocking=False,
+                                                         previous=saved, host=host)
+                    unchanged = decision == saved and self.store.eligible(
+                        row['request'], decision, request_sha256=row['request_sha256'])
                     if not unchanged and not self.store.set_eligibility(row['job_id'], decision):
                         self.eligibility_holds[row['job_id']] = decision
                         task.error = 'HOST_ELIGIBILITY_HOLD'
@@ -3094,7 +3114,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     if decision is not None and host not in decision['eligible_host_ids']:
                         skipped = True
                         continue
-                    if not self.store.eligible(row['request'], decision, host, fingerprints, row['job_id']):
+                    if not self.store.eligible(row['request'], decision, host, fingerprints, row['job_id'],
+                                               request_sha256=row['request_sha256']):
                         # Metadata challenge only: no attempt ID, reservation
                         # transition, LAUNCH or scientific execution occurs.
                         if row['job_id'] not in self.preparation_pending:
@@ -3270,44 +3291,101 @@ class DistributedExecutor(ConcurrentExecutor):
                         task.error = 'WORKER_UNKNOWN:'+str(value.get('detail'))
                         self._finished(task, None, row['assigned_epoch'])
                 return dict(ok=True)
-            if path != '/v1/complete': raise ValueError('Unknown Q3 RPC endpoint')
+            raise ValueError('Unknown Q3 RPC endpoint')
+
+    def _receive_completion(self, value):
+        """Verify independent transfers before taking the shared queue lock."""
+        from . import rpe_q3_coordinator as Q
+        from .rpe_completion_acceptance import MissingPreparationArtifacts, validate_preparation_result
+
+        host, job_id, attempt = (value[k] for k in ('host_id', 'job_id', 'attempt_id'))
+        with self.transfer_locks[hash((job_id, attempt)) % len(self.transfer_locks)]:
+            row = self.store.row(job_id)
+            if row is None or (host, attempt) != (row['host_id'], row['attempt_id']):
+                raise ValueError('Different execution host/attempt')
+            if value['request_sha256'] != row['request_sha256']:
+                raise ValueError('Completion request hash differs')
+            files = value['files']
+            completion_sha = Q.digest(files)
+            job = self.run_dir/'jobs'/row['method']/job_id
+            if row['state'] == 'ACCEPTED':
+                if row['completion_sha256'] != completion_sha:
+                    raise ValueError('Duplicate completion changed artifacts')
+                self._publish_transfer(row)
+                receipt = json.loads((job/'PROCESS_RETURN.json').read_text())
+                with self.state.cv:
+                    self._finish_received_task(job, row, receipt)
+                return dict(ok=True, duplicate=True)
+
             started = time.monotonic()
-            self.for_method(row['method']).log(event='RESULT_RECEIVED',job=row['job_id'],host_id=host,attempt_id=row['attempt_id'])
-            if value['request_sha256'] != row['request_sha256']: raise ValueError('Completion request hash differs')
-            transfer = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
+            view = self.for_method(row['method'])
+            view.log(event='RESULT_RECEIVED', job=job_id, host_id=host, attempt_id=attempt)
+            transfer = self.run_dir/'distributed'/'transfers'/job_id/attempt
             transfer.mkdir(parents=True, exist_ok=True)
-            Q.install_files(transfer, value['files'])
-            if not (transfer/'REQUEST.json').exists(): _write(transfer/'REQUEST.json', row['request'])
+            Q.install_files(transfer, files)
+            if not (transfer/'REQUEST.json').exists():
+                _write(transfer/'REQUEST.json', row['request'])
             receipt = json.loads((transfer/'PROCESS_RETURN.json').read_text())
             outcome = json.loads((transfer/'OUTCOME.json').read_text())
             preparation = self._preparation_request(row['request'])
+            validation, rejection = None, None
             if preparation:
-                return self._complete_preparation(row, value, transfer, receipt, outcome, task, started)
-            if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
-                self._hold_result_transfer(row, task, 'Successful outcome without a clean adapter exit')
-            proposal = task.proposal if task else dict(configuration_id=row['request']['configuration_id'],
-                vector=O.interleave(row['request']['N_X'], row['request']['N_Y']))
-            owner = task.view if task and row['request']['route'].get('horizon_projection') else self.for_method(row['method'])
-            validation = owner.ingest(transfer, proposal, calls=0)
-            if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and validation['status'] == 'UNKNOWN':
-                self._hold_result_transfer(row, task, 'Transferred outcome identity mismatch: '+str(validation.get('reason')))
-            accepted, duplicate = self.store.complete(host, row['job_id'], row['attempt_id'], value['request_sha256'], value['files'])
-            self._publish_transfer(accepted)
-            if not duplicate:
-                if self.distributed.get('work_conserving_search'):
-                    self._observe_q3_completion(accepted, transfer, validation)
-                self.for_method(row['method']).log(event='TRANSFER_COMPLETE', job=row['job_id'], host_id=host,
-                    transfer_seconds=time.monotonic()-started, transfer_bytes=sum(len(x)*3//4-x.count('=') for x in value['files'].values()),
-                    worker_transfer_seconds=value.get('transfer_seconds'))
-            if task:
-                task.error = None
-                if task.status == 'RUNNING': self._finished(task, receipt.get('returncode'), row['assigned_epoch'])
-                else: task.event.set()
-            if accepted['adopted_epoch'] is None and receipt.get('returncode') == 0:
-                self._note_scaled_completion(row['method'], job, row['request'].get('origin') or {})
-            self._timing_queue()
-            s.cv.notify_all()
-            return dict(ok=True, duplicate=duplicate)
+                try:
+                    validate_preparation_result(row, receipt, outcome, self.artifact_cache)
+                except MissingPreparationArtifacts:
+                    raise  # Keep the original uploader able to supply missing blobs.
+                except ValueError as error:
+                    rejection = str(error)
+            else:
+                success = outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE')
+                if success and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+                    rejection = 'Successful outcome without a clean adapter exit'
+                else:
+                    with self.state.cv:
+                        task = self.state.tasks.get(job)
+                        proposal = task.proposal if task else dict(configuration_id=row['request']['configuration_id'],
+                            vector=O.interleave(row['request']['N_X'], row['request']['N_Y']))
+                        owner = task.view if task and row['request']['route'].get('horizon_projection') else view
+                    validation = owner.ingest(transfer, proposal, calls=0)
+                    if success and validation['status'] == 'UNKNOWN':
+                        rejection = 'Transferred outcome identity mismatch: '+str(validation.get('reason'))
+            transfer_bytes = sum(len(x)*3//4-x.count('=') for x in files.values())
+            verified = time.monotonic()
+            with self.state.cv:
+                current = self.store.row(job_id)
+                if (host, attempt, row['request_sha256']) != (
+                        current['host_id'], current['attempt_id'], current['request_sha256']):
+                    raise ValueError('Execution owner changed during result verification')
+                task = self.state.tasks.get(job)
+                if rejection is not None:
+                    self._hold_result_transfer(current, task, rejection)
+                accepted, duplicate = self.store.complete_hashed(
+                    host, job_id, attempt, row['request_sha256'], completion_sha)
+                self._publish_transfer(accepted)
+                if not duplicate:
+                    if validation is not None and self.distributed.get('work_conserving_search'):
+                        self._observe_q3_completion(accepted, transfer, validation)
+                    view.log(event='TRANSFER_COMPLETE', job=job_id, host_id=host,
+                        attempt_id=attempt, stage=preparation['stage'] if preparation else 'q3',
+                        transfer_seconds=time.monotonic()-started, validation_seconds=verified-started,
+                        lock_wait_seconds=time.monotonic()-verified,
+                        transfer_bytes=transfer_bytes,
+                        worker_transfer_seconds=value.get('transfer_seconds'))
+                self._finish_received_task(job, accepted, receipt)
+                return dict(ok=True, duplicate=duplicate)
+
+    def _finish_received_task(self, job, row, receipt):
+        task = self.state.tasks.get(job)
+        if task:
+            task.error = None
+            if task.status == 'RUNNING':
+                self._finished(task, receipt.get('returncode'), row['assigned_epoch'])
+            else:
+                task.event.set()
+        if (not self._preparation_request(row['request']) and row['adopted_epoch'] is None
+                and receipt.get('returncode') == 0):
+            self._note_scaled_completion(row['method'], job, row['request'].get('origin') or {})
+        self.state.cv.notify_all()
 
     def _hold_result_transfer(self, row, task, reason):
         # Keep the rejected transfer and its durable execution owner for review.

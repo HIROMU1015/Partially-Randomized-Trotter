@@ -269,8 +269,10 @@ def admission_exit(directory, attempt, assignment, state):
         return None
 
 
-def harvest(directory, wanted=None, owners=None):
-    """Return saved bytes after PBS exits; never reconcile by launching work."""
+def harvest(directory, wanted=None, owners=None, completed_only=False):
+    """Read existing receipts, optionally only finished attempts on a live worker."""
+    if completed_only and owners is None:
+        raise ValueError('Live PBS collection requires exact attempt owners')
     spec = read(directory/'SPEC.json'); profile = read(directory/'PROFILE.json')
     attempts = []; hashes = set(); incomplete = []
     work = Path(profile['work_dir'])
@@ -294,6 +296,8 @@ def harvest(directory, wanted=None, owners=None):
             continue
         assignment = read(path)
         state = read(path.parent/'WORKER_STATE.json', {})
+        if completed_only and state.get('state') != 'COMPLETED_PENDING_TRANSFER':
+            continue
         if not (path.parent/'PROCESS_RETURN.json').exists():
             # The same host directory can contain attempts from several
             # shared-pilot sessions. Only this session's own worker can prove
@@ -324,15 +328,15 @@ def harvest(directory, wanted=None, owners=None):
         omit = {'ASSIGNMENT.json','WORKER_PROFILE.json','WORKER_STATE.json','WORKER_PROCESS.lock',
                 'SUPERVISOR_STARTED.json','SCIENTIFIC_STARTING.json','WORKER_LAUNCH.json','WORKER_SUPERVISOR.log',
                 'SUPERVISOR_LAUNCH.json','STARTING.json','LAUNCH.json','REQUEST.json'}
-        for file in path.parent.rglob('*'):
+        candidates = (path.parent/name for name in names) if preparation else path.parent.rglob('*')
+        for file in candidates:
             relative = str(file.relative_to(path.parent))
             if file.is_symlink():
                 raise ValueError('Symlink in saved worker artifact')
             if file.is_file() and relative not in omit and file.relative_to(path.parent).parts[0] != '_dry_check':
-                if not preparation or relative in names:
-                    files[relative] = base64.b64encode(file.read_bytes()).decode('ascii')
-        if 'OUTCOME.json' in files:
-            hashes.update(read(path.parent/'OUTCOME.json').get('artifacts', {}).values())
+                files[relative] = base64.b64encode(file.read_bytes()).decode('ascii')
+        if 'OUTCOME.json' in files and (not completed_only or 'PROCESS_RETURN.json' in files):
+            hashes.update(json.loads(base64.b64decode(files['OUTCOME.json'])).get('artifacts', {}).values())
             attempts.append(dict(assignment=assignment, state=state, files=files))
     cache = Path(profile.get('artifact_cache_directory') or Path(profile['work_dir'])/'artifacts')
     blobs = {}
@@ -354,7 +358,8 @@ def handle(root, value, finished=None):
     if action == 'snapshot':
         return dict(allocations=snapshot(root, finished))
     if action == 'harvest':
-        return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'), value.get('owners'))
+        return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'), value.get('owners'),
+                       completed_only=value.get('completed_only') is True)
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
         receipt = read(directory/'JOB_ID.json')

@@ -138,6 +138,7 @@ class AdmissionTests(unittest.TestCase):
             worker.collection_workers = 2
             worker.collection = P.ThreadPoolExecutor(max_workers=2)
             worker.collection_inflight, worker.records = {}, {}
+            worker.preparation_transfers, worker.reported = set(), {}
             for name in ('one', 'two', 'three'):
                 attempt = Path(directory)/name
                 attempt.mkdir()
@@ -146,7 +147,7 @@ class AdmissionTests(unittest.TestCase):
             entered = {p: threading.Event() for p in worker.records}
             release = threading.Event()
 
-            def service(attempt, assignment):
+            def service(attempt, assignment, *, transfer):
                 entered[attempt].set()
                 release.wait(2)
 
@@ -162,6 +163,28 @@ class AdmissionTests(unittest.TestCase):
                     self.assertEqual(poll.call_count, 2)
             finally:
                 release.set()
+                worker._close_collection()
+
+    def test_preparation_transfer_does_not_block_another_preparation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            worker = self.worker(directory)
+            worker.collection_workers = 3
+            worker.collection = P.ThreadPoolExecutor(max_workers=3)
+            worker.collection_inflight, worker.records = {}, {}
+            worker.preparation_transfers, worker.reported = set(), {}
+            attempts = [Path(directory)/name for name in ('complete-a', 'complete-b', 'ready')]
+            for attempt, state in zip(attempts, ('COMPLETED_PENDING_TRANSFER', 'COMPLETED_PENDING_TRANSFER', 'ASSIGNED')):
+                attempt.mkdir()
+                P.save_state(attempt, state)
+                worker.records[attempt] = dict(request={'preparation': {}})
+            try:
+                with patch.object(worker, '_service_attempt') as collect, patch.object(worker, '_poll_assignments'):
+                    worker.tick()
+                    for future in worker.collection_inflight.values():
+                        future.result(timeout=2)
+                self.assertEqual({call.args[0]: call.kwargs['transfer'] for call in collect.call_args_list},
+                                 dict(zip(attempts, (True, False, False))))
+            finally:
                 worker._close_collection()
 
     def test_release_validation_waits_for_assignment_bundles(self):
