@@ -428,7 +428,12 @@ class WorkerTests(unittest.TestCase):
             W.atomic(other/'WORKER_STATE.json', {'state': 'UNKNOWN'})
             W.atomic(other/'ASSIGNMENT.json', {'input': files['duplicated'].name})
             self.assertEqual(reclaim_verified_duplicates(profile, proof, spools=[second, spool]), {})
+            W.atomic(attempt/'WORKER_STATE.json', {'state': 'COMPLETED_PENDING_TRANSFER'})
+            self.assertEqual(reclaim_verified_duplicates(profile, proof), {})
+            W.atomic(attempt/'OUTCOME.json', {'artifacts': {'saved': files['unknown'].name}})
+            W.atomic(attempt/'PROCESS_RETURN.json', {'returncode': 0})
             self.assertEqual(set(reclaim_verified_duplicates(profile, proof)), {files['duplicated'].name})
+            self.assertEqual(W.read(attempt/'WORKER_STATE.json')['state'], 'COMPLETED_PENDING_TRANSFER')
             self.assertTrue(files['unknown'].is_file())
             self.assertTrue(files['local-only'].is_file())
 

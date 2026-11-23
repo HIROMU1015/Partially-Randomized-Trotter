@@ -93,7 +93,13 @@ def reclaim_verified_duplicates(profile, proof, *, spools=None):
             status = json.loads(marker.read_bytes())['state']
             if status == 'TRANSFERRED':
                 continue
-            if status != 'UNKNOWN':
+            if status == 'COMPLETED_PENDING_TRANSFER':
+                # An ended task without its final ACK retains all referenced
+                # inputs and outputs. It need not pin unrelated cache copies.
+                if not all(marker.with_name(name).is_file() for name in
+                           ('ASSIGNMENT.json', 'OUTCOME.json', 'PROCESS_RETURN.json')):
+                    return {}
+            elif status != 'UNKNOWN':
                 return {}
             for name in ('ASSIGNMENT.json', 'ARTIFACT_MANIFEST.json', 'OUTCOME.json'):
                 path = marker.with_name(name)
