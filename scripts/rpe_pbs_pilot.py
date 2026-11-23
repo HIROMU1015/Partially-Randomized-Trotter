@@ -59,8 +59,9 @@ def physical(pool, token, finished=None):
     return row
 
 
-def reserve_locked(pool):
+def reserve_locked(pool, *, replace_job_id=None, alongside_search_job_id=None):
     current = read(pool/'CURRENT.json')
+    resources = RESOURCES
     if current:
         token = current['token']
         directory = pool/'allocations'/token
@@ -70,11 +71,24 @@ def reserve_locked(pool):
                 raise ValueError('Explicit release in progress; reconcile this allocation first')
             gateway.submit_once(directory)
             return token
+        if replace_job_id is not None:
+            resources = read(directory/'SPEC.json')['resources']
+            if (observed['job_id'] != replace_job_id or observed['status'] not in ('F', 'X')
+                    or resources not in (RESOURCES, SUCCESSOR_RESOURCES)):
+                raise ValueError('Expected the identified, ended full-node reservation')
+    elif replace_job_id is not None:
+        raise ValueError('No recorded reservation to replace')
     jobs = owned_live_jobs()
-    if any(job.get('Job_Name', '').startswith('RPE') and job.get('job_state') not in TERMINAL
-           for job in jobs.values()):
+    for job_id, job in jobs.items():
+        name = job.get('Job_Name', '')
+        if not name.startswith('RPE') or job.get('job_state') in TERMINAL:
+            continue
+        # An operator may identify one independently managed search. Managed
+        # pilot generations and unclassified scheduler records still block.
+        if job_id == alongside_search_job_id and re.fullmatch(r'RPEsearch-[0-9a-f]{5}', name):
+            continue
         raise ValueError('Another RPE PBS allocation is still present; reconcile it first')
-    token = prepare_generation(pool, RESOURCES)
+    token = prepare_generation(pool, resources)
     atomic(pool/'CURRENT.json', dict(token=token))
     gateway.submit_once(pool/'allocations'/token)
     return token
@@ -366,11 +380,12 @@ def serve(generation):
             end(directory, reason, returncode=returncode)
 
 
-def admin(pool, action):
+def admin(pool, action, *, replace_job_id=None, alongside_search_job_id=None):
     with locked(pool):
         current = read(pool/'CURRENT.json')
-        if action == 'reserve':
-            token = reserve_locked(pool)
+        if action in ('reserve', 'reacquire'):
+            token = reserve_locked(pool, replace_job_id=replace_job_id,
+                                   alongside_search_job_id=alongside_search_job_id)
         elif current:
             token = current['token']
         else:
@@ -397,14 +412,22 @@ def main():
     group.add_argument('--root', type=Path)
     group.add_argument('--serve', type=Path)
     group.add_argument('--pool', type=Path)
-    parser.add_argument('--action', choices=('reserve','status','release','stage-72h'), default='status')
+    parser.add_argument('--action', choices=('reserve','reacquire','status','release','stage-72h'), default='status')
     parser.add_argument('--replace-job-id')
+    parser.add_argument('--alongside-search-job-id')
     args = parser.parse_args()
     os.umask(0o077)
+    if args.alongside_search_job_id and args.action != 'reacquire':
+        parser.error('--alongside-search-job-id is only valid for reacquire')
     if args.action == 'stage-72h':
         if not args.pool or not args.replace_job_id:
             parser.error('stage-72h needs --pool and --replace-job-id')
         print(json.dumps(stage_successor(args.pool.resolve(), args.replace_job_id)))
+    elif args.action == 'reacquire':
+        if not args.pool or not args.replace_job_id:
+            parser.error('reacquire needs --pool and --replace-job-id')
+        print(json.dumps(admin(args.pool.resolve(), args.action, replace_job_id=args.replace_job_id,
+                               alongside_search_job_id=args.alongside_search_job_id)))
     elif args.serve:
         serve(args.serve.resolve())
     elif args.pool:

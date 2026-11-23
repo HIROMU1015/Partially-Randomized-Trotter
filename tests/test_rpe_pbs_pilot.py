@@ -139,6 +139,26 @@ while not (d/'CONTROL.json').is_file():
         self.assertEqual(pilot.admin(self.pool, 'reserve')['status'], 'HISTORY_MISSING_RECONCILE_SPOOL')
         self.assertEqual(self.submissions, [row['token']])
 
+    def test_reacquire_inherits_ended_resources_alongside_identified_search_only(self):
+        token = pilot.prepare_generation(self.pool, pilot.SUCCESSOR_RESOURCES)
+        G.atomic(self.pool/'CURRENT.json', dict(token=token))
+        G.submit_once(self.pool/'allocations'/token)
+        self.jobs['1.prism']['job_state'] = 'F'
+        self.jobs['8.prism'] = dict(job_state='R', Job_Name='RPEsearch-0ee3f')
+        self.jobs['9.prism'] = dict(job_state='Q', Job_Name='RPEabcdef012345')
+
+        with self.assertRaises(ValueError):
+            pilot.admin(self.pool, 'reacquire', replace_job_id='1.prism', alongside_search_job_id='8.prism')
+        del self.jobs['9.prism']
+        with self.assertRaises(ValueError):
+            pilot.admin(self.pool, 'reacquire', replace_job_id='2.prism', alongside_search_job_id='8.prism')
+        self.assertEqual(len(self.submissions), 1)
+        new = pilot.admin(self.pool, 'reacquire', replace_job_id='1.prism', alongside_search_job_id='8.prism')
+        self.assertEqual((new['job_id'], new['resources']), ('2.prism', pilot.SUCCESSOR_RESOURCES))
+        self.assertEqual(pilot.admin(self.pool, 'reserve')['job_id'], '2.prism')
+        self.assertEqual(self.jobs['8.prism']['job_state'], 'R')
+        self.assertEqual(len(self.submissions), 2)
+
     def test_failed_worker_exit_keeps_node_for_next_session(self):
         script = self.base/'code/scripts/run_rpe_pbs_worker.py'
         script.parent.mkdir(parents=True)
