@@ -33,6 +33,23 @@ def fixed_files(config):
     return mounts
 
 
+def managed_pbs_cache(scope, project, target, profile_file):
+    """Use the shared preparation cache selected by the PBS storage policy."""
+    if scope != project / 'runs':
+        return None
+    profile_file = Path(profile_file).resolve(strict=True)
+    if not profile_file.is_relative_to(target):
+        raise ValueError('Fixed PF worker profile is outside the owned workspace')
+    profile = json.loads(profile_file.read_bytes())
+    cache = scope / 'preparation-metadata-cache'
+    if profile.get('preparation_metadata_cache_directory') != str(cache):
+        return None
+    if cache.resolve() != cache:
+        raise ValueError('Fixed PF metadata cache is outside its managed path')
+    cache.mkdir(exist_ok=True)
+    return cache
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
@@ -86,6 +103,11 @@ def main():
         command += ['--tmpfs',str(projects),'--ro-bind',str(project),str(project)]
         cache_scope = project
     caches = [Path(p).resolve(strict=True) for p in config.get('cache_directories', [])]
+    if cache_scope != scope and entry == 'run_rpe_preparation_job.py':
+        profile_file = trailing[trailing.index('--profile')+1]
+        shared_cache = managed_pbs_cache(scope, cache_scope, target, profile_file)
+        if shared_cache is not None and shared_cache not in caches:
+            caches.append(shared_cache)
     for directory in caches:
         if directory == cache_scope or not directory.is_relative_to(cache_scope):
             raise ValueError('Fixed PF cache is outside the configured write root')
