@@ -71,9 +71,10 @@ def resume(central, selection_file, previous_file, instruction):
                         return 1
                     record('WAITING_FOR_RUNTIME_OWNERSHIP', error.reason)
                 else:
-                    if config['schedule_resumes'][run_id] != selection:
+                    resumes = config.setdefault('schedule_resumes', {})
+                    if resumes.get(run_id) != selection:
                         (evidence/'SERVICE.before-switch.json').write_bytes(service.read_bytes())
-                        config['schedule_resumes'][run_id] = selection
+                        resumes[run_id] = selection
                         with tempfile.NamedTemporaryFile(mode='w', dir=central, encoding='utf-8',
                                                          delete=False) as staged:
                             json.dump(config, staged, indent=2, ensure_ascii=False)
