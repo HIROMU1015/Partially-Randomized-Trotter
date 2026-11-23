@@ -23,7 +23,7 @@ from .rpe_pbs_worker import runtime_cpu_footprint, task_cpu_footprint
 from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
-TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED'}
+TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUPERSEDED_UNSUBMITTED'}
 GIB = 1024**3
 # Use the existing live dry-check time window for speculative PBS proofs.
 Q3_WORKER_PROOF_SECONDS = 120
@@ -540,6 +540,7 @@ class PbsManager:
         self.live_harvest_pending = None
         self.live_harvest_checked = {}
         self.harvest_retry_after = {}
+        self.ensure_retry_after = {}
         self.storage_launcher = (getattr(executor, 'distributed', {})
                                  .get('pbs_gateway_storage_launcher'))
         self.storage_launcher_verified = False
@@ -1245,8 +1246,16 @@ class PbsManager:
 
     def cycle(self):
         for token, record in self.state['allocations'].items():
-            if record['status'] == 'INTENT':
-                self.gateway.call(dict(action='ensure', spec=record['spec']))
+            if record['status'] != 'INTENT' or time.monotonic() < self.ensure_retry_after.get(token, 0):
+                continue
+            self.ensure_retry_after[token] = time.monotonic() + self.settings.get('request_timeout_seconds', 20)
+            if (self.live_harvest and self.storage_launcher and record['spec']['python'] != self.storage_launcher['path']
+                    and self.gateway.call(dict(action='intent_present', token=token))['present'] is False):
+                record['status'] = 'SUPERSEDED_UNSUBMITTED'
+                self.save()
+                self.log('PBS_UNSUBMITTED_INTENT_SUPERSEDED', token=token)
+                continue
+            self.gateway.call(dict(action='ensure', spec=record['spec']))
         data = self.gateway.call(dict(action='exchange', responses=self.responses, controls=self.controls))
         self.responses, self.controls = {}, {}
         self.allocations = data['allocations']

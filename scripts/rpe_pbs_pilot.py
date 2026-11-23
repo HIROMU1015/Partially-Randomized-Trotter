@@ -350,17 +350,20 @@ def serve(generation):
             command = [spec['python'], '-B', str(Path(spec['transport_root'])/'scripts/run_rpe_pbs_worker.py'),
                        '--profile', str(directory/'PROFILE.json')]
             with (directory/'PBS.stdout').open('ab') as out, (directory/'PBS.stderr').open('ab') as err:
-                result = subprocess.run(command, stdout=out, stderr=err)
-            if result.returncode:
-                # PBS reaps the job tree. Never lend CPUs while a detached child
-                # might still be running after an abnormal worker exit.
-                raise RuntimeError('Run worker failed: ' + str(result.returncode))
+                try:
+                    returncode = subprocess.run(command, stdout=out, stderr=err).returncode
+                except OSError as error:
+                    err.write((str(error)+'\n').encode())
+                    returncode = 127
+            # Whether or not the worker exited cleanly, reap every detached
+            # child before offering this node to another session.
             while True:
                 try:
                     os.waitpid(-1, 0)
                 except ChildProcessError:
                     break
-            end(directory, 'WORKER_EXIT', returncode=result.returncode)
+            reason = 'WORKER_EXIT' if returncode == 0 else 'WORKER_ERROR'
+            end(directory, reason, returncode=returncode)
 
 
 def admin(pool, action):

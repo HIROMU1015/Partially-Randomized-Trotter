@@ -139,6 +139,29 @@ while not (d/'CONTROL.json').is_file():
         self.assertEqual(pilot.admin(self.pool, 'reserve')['status'], 'HISTORY_MISSING_RECONCILE_SPOOL')
         self.assertEqual(self.submissions, [row['token']])
 
+    def test_failed_worker_exit_keeps_node_for_next_session(self):
+        script = self.base/'code/scripts/run_rpe_pbs_worker.py'
+        script.parent.mkdir(parents=True)
+        script.write_text("import pathlib, sys\nraise SystemExit(int(pathlib.Path(sys.argv[-1]).parent.name == 'a1'))\n")
+        a = self.attach(self.a, 'a1')
+        b = self.attach(self.b, 'b1')
+        generation = self.pool/'allocations'/self.submissions[0]
+        self.jobs['1.prism'].update(job_state='R', resources_used=dict(walltime='01:00:00'))
+        with patch.dict(os.environ, PBS_JOBID='1.prism'), ThreadPoolExecutor(1) as executor:
+            server = executor.submit(pilot.serve, generation)
+            try:
+                end = b/'SESSION_END.json'
+                until = time.monotonic()+5
+                while not end.is_file() and time.monotonic() < until:
+                    time.sleep(.025)
+                self.assertEqual(G.read(a/'SESSION_END.json')['reason'], 'WORKER_ERROR')
+                self.assertEqual(G.read(end)['returncode'], 0)
+                self.assertEqual(G.read(a/'ALLOCATION.json')['job_id'], G.read(b/'ALLOCATION.json')['job_id'])
+                self.assertEqual(len(self.submissions), 1)
+            finally:
+                pilot.admin(self.pool, 'release')
+            server.result(timeout=5)
+
     def test_staged_72h_handoff_waits_for_allocation_and_old_exit(self):
         first = pilot.admin(self.pool, 'reserve')
         self.jobs['1.prism']['job_state'] = 'R'

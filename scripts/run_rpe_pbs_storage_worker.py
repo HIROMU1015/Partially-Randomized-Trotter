@@ -99,6 +99,9 @@ def configure_allocation_worker(profile, launcher):
 
 def main():
     args = sys.argv[1:]
+    check_imports = args[:1] == ['--check-imports']
+    if check_imports:
+        args.pop(0)
     if args and args[0] == '-B':
         sys.dont_write_bytecode = True
         args.pop(0)
@@ -116,6 +119,9 @@ def main():
                               max_age=2*storage.SAMPLE_SECONDS)
     storage.report = observer.report
     configure_allocation_worker(profile, Path(sys.argv[0]).resolve())
+    if check_imports:
+        print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path))))
+        return
     sys.argv = [str(script), *args]
     runpy.run_path(str(script), run_name='__main__')
 

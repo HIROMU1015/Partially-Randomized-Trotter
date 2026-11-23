@@ -72,13 +72,14 @@ class ReadySupplyTests(unittest.TestCase):
         executor._host_rank = Mock(return_value=0)
 
         def job(name, options):
-            return dict(job_id=name, request={}, eligibility=dict(execution_profiles={
+            return dict(job_id=name, request={}, request_sha256=Q.digest({}), eligibility=dict(execution_profiles={
                 host: dict(dp_workers=4) for host in options}))
 
         rows = {'shared': job('shared', executor.hosts),
                 'a': job('a', ['host-a']), 'b': job('b', ['host-b'])}
         executor.store = SimpleNamespace(
-            row=rows.__getitem__, eligible=lambda request, eligibility, host, *_: host in eligibility['execution_profiles'])
+            rows_for=lambda keys: {key: rows[key] for key in keys},
+            eligible=lambda request, eligibility, host, *args, **kwargs: host in eligibility['execution_profiles'])
         rows['a']['host_id'] = 'host-a'
         rows['b']['host_id'] = 'host-b'
         queued = [SimpleNamespace(job=SimpleNamespace(name='shared'))]

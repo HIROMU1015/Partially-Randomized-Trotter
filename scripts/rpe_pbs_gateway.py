@@ -351,6 +351,8 @@ def harvest(directory, wanted=None, owners=None, completed_only=False):
 
 def handle(root, value, finished=None):
     action = value['action']
+    if action == 'intent_present':
+        return dict(present=(root/'allocations'/safe_id(value['token'])).exists())
     if action == 'ensure':
         return ensure(root, value['spec'])
     if action == 'exchange':
