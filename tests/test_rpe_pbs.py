@@ -275,6 +275,16 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(poll({}, current=dict(worker, pid=2),
                                   sent=dict(clock, monotonic=4.0)), (set(), {}))
 
+            # Background checks can finish long before a durable poll is
+            # delivered. The request time must not renew the proof's age.
+            late = dict(clock, monotonic=100.)
+            background = dict(deepcopy(proof), readiness_checked_monotonic={'job': 2.})
+            poll(deepcopy(background), sent=late, current=dict(worker, monotonic=110.))
+            self.assertEqual(poll({}, at=21), ({'job'}, {'job': facts}))
+            self.assertEqual(poll({}, at=22), (set(), {}))
+            self.assertNotIn('job', poll(deepcopy(background), sent=late,
+                                        current=dict(worker, monotonic=123.))[1])
+
     def test_prefetch_checks_worker_visibility_and_keeps_other_poll_work(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, gateway = self.manager(directory)

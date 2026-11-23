@@ -680,6 +680,13 @@ class Worker:
     def _check_challenges(self, challenges, report):
         return host_fingerprints(self.profile, challenges)
 
+    inline_readiness_retry = True
+
+    def _poll_readiness(self, report, accepting):
+        challenges = self.eligibility_challenges if accepting else []
+        self._prepare_challenge_artifacts(challenges)
+        return self._check_challenges(challenges, report)
+
     def _receive_assignment(self, assignment):
         self._acquire(assignment)
 
@@ -726,17 +733,16 @@ class Worker:
                 })
             try:
                 storage_accepting = report.get('storage', {}).get('accepting_new_jobs', True)
-                challenges = self.eligibility_challenges if storage_accepting else []
-                self._prepare_challenge_artifacts(challenges)
                 payload = dict(slots=report['slots'], capacity=self.slots, resource_report=report, cached_prefixes=cached,
                                cached_artifact_sha256=worker_cache(self.profile).hashes(), source_sha=self.source_sha,
-                               accepting_new_jobs=storage_accepting, **self._check_challenges(challenges, report))
+                               accepting_new_jobs=storage_accepting, **self._poll_readiness(report, storage_accepting))
                 response = self._post('/v1/poll', payload)
                 self._capacity_feedback(response)
                 self.eligibility_challenges = response.get('eligibility_challenges', [])
-                if storage_accepting and not response.get('assignments') and self.eligibility_challenges:
-                    self._prepare_challenge_artifacts(self.eligibility_challenges)
-                    payload.update(self._check_challenges(self.eligibility_challenges, report))
+                if not self.inline_readiness_retry:
+                    self._readiness_delivered(response)
+                elif storage_accepting and not response.get('assignments') and self.eligibility_challenges:
+                    payload.update(self._poll_readiness(report, storage_accepting))
                     response = self._post('/v1/poll', payload)
                     self._capacity_feedback(response)
                     self.eligibility_challenges = response.get('eligibility_challenges', self.eligibility_challenges)

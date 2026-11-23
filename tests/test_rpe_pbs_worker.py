@@ -132,6 +132,71 @@ class AdmissionTests(unittest.TestCase):
         worker.profile['work_dir'] = directory
         return worker
 
+    def test_busy_preparation_readiness_does_not_block_q3_assignment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            worker = self.worker(directory)
+            worker._open_readiness()
+            worker.work = Path(directory)
+            worker.eligibility_challenges = []
+            worker.records = {}
+            worker.slots = 8
+            worker.poll_seconds = 1
+            worker.source_sha = 'ARTIFICIAL'
+            slow_started, unblock = threading.Event(), threading.Event()
+            slow = dict(job_id='slow', request_sha256='a', request=dict(route=dict(kind='preparation')))
+            fast = dict(job_id='fast', request_sha256='b', request=dict(route=dict(kind='q3')))
+            fast_assignment = dict(fast, attempt_id='existing-attempt')
+            polls = []
+
+            def prepare(challenges):
+                if challenges == [slow]:
+                    slow_started.set()
+                    unblock.wait(3)
+                    raise TimeoutError('metadata temporarily unavailable')
+
+            def fingerprints(profile, challenges):
+                self.assertEqual(challenges, [fast])
+                return dict(host_fingerprints={'fast': {'proof': 'artificial'}}, readiness_errors={})
+
+            def controller(endpoint, payload):
+                self.assertEqual(endpoint, '/v1/poll')
+                polls.append(payload)
+                if len(polls) == 3:
+                    raise TimeoutError('lost reply')
+                if 'fast' in payload['host_fingerprints']:
+                    return dict(assignments=[fast_assignment], eligibility_challenges=[slow])
+                return dict(assignments=[], eligibility_challenges=[slow, fast])
+
+            report = dict(occupied=0, slots=8)
+            try:
+                with patch.object(worker, '_resource_offer', return_value=report), \
+                        patch.object(worker, 'accepting', return_value=True), \
+                        patch.object(worker, '_prepare_challenge_artifacts', side_effect=prepare), \
+                        patch.object(P, 'host_fingerprints', side_effect=fingerprints), \
+                        patch.object(worker, '_post', side_effect=controller), \
+                        patch.object(worker, '_receive_assignment') as launch:
+                    worker._poll_assignments(True)
+                    worker._poll_assignments(True)
+                    self.assertTrue(slow_started.wait(1))
+                    worker.readiness_running['fast'][2].result(timeout=1)
+                    worker._poll_assignments(True)
+                    launch.assert_not_called()
+                    worker._poll_assignments(True)
+                    launch.assert_called_once_with(fast_assignment)
+                    self.assertFalse(worker.readiness_running['slow'][2].done())
+                    self.assertEqual(polls[2]['host_fingerprints'], polls[3]['host_fingerprints'])
+                    self.assertIn('fast', polls[3]['readiness_checked_monotonic'])
+                    self.assertNotIn('fast', worker.readiness_pending)
+                    unblock.set()
+                    worker.readiness_running['slow'][2].result(timeout=1)
+                    worker._poll_assignments(True)
+                    self.assertIn('metadata temporarily unavailable', polls[-1]['readiness_errors']['slow'])
+                    worker._poll_assignments(True)
+                    self.assertNotIn('slow', worker.readiness_running)
+            finally:
+                unblock.set()
+                worker._close_readiness()
+
     def test_collection_overlaps_distinct_attempts_and_keeps_polling(self):
         with tempfile.TemporaryDirectory() as directory:
             worker = self.worker(directory)

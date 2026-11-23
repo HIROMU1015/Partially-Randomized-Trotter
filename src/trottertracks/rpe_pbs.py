@@ -19,14 +19,12 @@ import uuid
 
 from .rpe_q3_timing import stamp, append
 from .rpe_q3_worker import atomic, digest, read
-from .rpe_pbs_worker import runtime_cpu_footprint, task_cpu_footprint
+from .rpe_pbs_worker import Q3_WORKER_PROOF_SECONDS, runtime_cpu_footprint, task_cpu_footprint
 from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUPERSEDED_UNSUBMITTED'}
 GIB = 1024**3
-# Use the existing live dry-check time window for speculative PBS proofs.
-Q3_WORKER_PROOF_SECONDS = 120
 
 # Measure the same shared paths from the gateway, where directory walks do
 # not occupy a PBS compute slot or depend on a compute node's NFS latency.
@@ -692,14 +690,22 @@ class PbsManager:
         elapsed = max(0, observed - sent) if observed is not None else 0
         received = payload.get('host_fingerprints') or {}
         errors = payload.get('readiness_errors') or {}
+        checked = payload.get('readiness_checked_monotonic') or {}
+        ages = {}
+        for job, facts in received.items():
+            finished = checked.get(job, sent)
+            if type(finished) in (int, float) and starts['monotonic'] <= finished <= sent:
+                age = elapsed + sent - finished
+                if age < Q3_WORKER_PROOF_SECONDS:
+                    ages[job] = age
         proofs = {job: entry for job, entry in proofs.items()
                   if now - entry[0] < Q3_WORKER_PROOF_SECONDS and job not in errors and job not in received}
         reused = set(proofs)
-        if elapsed < Q3_WORKER_PROOF_SECONDS:
-            for job, facts in received.items():
-                if (isinstance(facts, dict) and facts.get('schema') == 'RPE_Q3_CURRENT_HOST_FINGERPRINT_V1'
-                        and job not in errors):
-                    proofs[job] = now - elapsed, facts
+        received = {job: facts for job, facts in received.items() if job in ages}
+        for job, facts in received.items():
+            if (isinstance(facts, dict) and facts.get('schema') == 'RPE_Q3_CURRENT_HOST_FINGERPRINT_V1'
+                    and job not in errors):
+                proofs[job] = now - ages[job], facts
         self.q3_worker_proofs[token] = identity, proofs
         payload['host_fingerprints'] = {**{job: facts for job, (_, facts) in proofs.items()}, **received}
         return reused

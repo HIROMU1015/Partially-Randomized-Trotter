@@ -5,6 +5,7 @@ from pathlib import Path
 import runpy
 import sys
 import time
+import zipfile
 
 
 class GatewayStorage:
@@ -43,14 +44,17 @@ def configure_allocation_worker(profile, launcher):
 
     transport = pbs
     cycle = worker
-    if profile['pbs'].get('collection_workers'):
-        if launcher.suffix == '.pyz':
-            # The deployment bundles only the operational implementation.
-            # SOURCE, adapter and result validation still use the fixed checkout.
-            import trottertracks
-            trottertracks.__path__.append(str(launcher)+'/trottertracks')
-            from trottertracks import _collection_pbs_worker as transport
-            from trottertracks import _collection_q3_worker as cycle
+    bundled = False
+    if launcher.suffix == '.pyz':
+        with zipfile.ZipFile(launcher) as package:
+            bundled = 'trottertracks/_collection_pbs_worker.py' in package.namelist()
+    if bundled:
+        # The deployment bundles only the operational implementation.
+        # SOURCE, adapter and result validation still use the fixed checkout.
+        import trottertracks
+        trottertracks.__path__.append(str(launcher)+'/trottertracks')
+        from trottertracks import _collection_pbs_worker as transport
+        from trottertracks import _collection_q3_worker as cycle
 
     class MeasuredAllocationWorker(transport.AllocationWorker):
         def pending(self):
@@ -92,7 +96,7 @@ def configure_allocation_worker(profile, launcher):
             return report
 
     pbs.AllocationWorker = MeasuredAllocationWorker
-    if profile['pbs'].get('collection_workers'):
+    if bundled:
         MeasuredAllocationWorker._service_attempt = cycle.Worker._service_attempt
         MeasuredAllocationWorker._poll_assignments = cycle.Worker._poll_assignments
 

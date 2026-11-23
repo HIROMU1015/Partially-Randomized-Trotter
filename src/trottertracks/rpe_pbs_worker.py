@@ -21,7 +21,7 @@ import uuid
 from . import rpe_q3_resources as Resources
 from .rpe_host_profiles import check_runtime_profile
 from .rpe_q3_timing import stamp
-from .rpe_q3_worker import Worker, atomic, event, head, host_fingerprints, read, save_state
+from .rpe_q3_worker import Worker, atomic, digest, event, head, host_fingerprints, read, save_state
 
 
 THREAD_VARIABLES = ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS',
@@ -29,6 +29,8 @@ THREAD_VARIABLES = ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS'
                     'NUMBA_NUM_THREADS', 'RAYON_NUM_THREADS', 'QISKIT_NUM_PROCS')
 TRANSPORT_FILES = ('src/trottertracks/rpe_pbs_worker.py',
                    'scripts/run_rpe_pbs_worker.py')
+Q3_WORKER_PROOF_SECONDS = 120
+READINESS_WORKERS = 4
 
 
 def _positive(value, name):
@@ -199,6 +201,8 @@ class SpoolTransport:
 
 
 class AllocationWorker(Worker):
+    inline_readiness_retry = False
+
     """Add PBS admission metadata to the existing worker's unchanged RPC."""
     def __init__(self, profile, *, directory, deadline, resources, poll_seconds=1.):
         self.directory = Path(directory)
@@ -230,6 +234,16 @@ class AllocationWorker(Worker):
         self.collection_workers = count
         self.collection_inflight = {}
         self.preparation_transfers = set()
+        self._open_readiness()
+
+    def _open_readiness(self):
+        self.readiness_pool = ThreadPoolExecutor(max_workers=READINESS_WORKERS,
+                                                thread_name_prefix='pbs-readiness')
+        self.readiness_pending = {}
+        self.readiness_running = {}
+        self.readiness_ready = {}
+        self.readiness_retry = {}
+        self.readiness_sent = set()
 
     def tick(self, acquire=True):
         if getattr(self, 'collection', None) is None:
@@ -274,8 +288,14 @@ class AllocationWorker(Worker):
         return self._poll_assignments(acquire)
 
     def close(self):
+        self._close_readiness()
         self._close_collection()
         super().close()
+
+    def _close_readiness(self):
+        if getattr(self, 'readiness_pool', None) is not None:
+            self.readiness_pool.shutdown(wait=True)
+            self.readiness_pool = None
 
     def _close_collection(self):
         if getattr(self, 'collection', None) is not None:
@@ -301,19 +321,112 @@ class AllocationWorker(Worker):
             validate_assignment_release(read(deployment['manifest']),read(deployment['layout']),
                                         assignment,self.profile)
 
-    def _check_challenges(self, challenges, report):
-        if not challenges:
-            return super()._check_challenges(challenges, report)
+    @staticmethod
+    def _readiness_key(challenge):
+        return (challenge['request_sha256'], challenge.get('host_execution_profile_sha256'),
+                digest({name: challenge.get(name) for name in
+                        ('artifact_manifest', 'q3_evaluator', 'required_release')}))
+
+    def _run_readiness_check(self, challenge):
         started = time.monotonic()
-        parallel = max(1, min(report['slots'], 4))
-        # Metadata import is already serialized per Git repository. Runtime
-        # and input-hash checks after import may proceed on separate reserved CPUs.
-        result = host_fingerprints(self.profile, challenges, q3_parallel=parallel,
-                                   preparation_parallel=parallel)
-        event(self.profile, 'PBS_READINESS_CHECKED', jobs=[item['job_id'] for item in challenges],
-              parallel=parallel, passed=len(result['host_fingerprints']),
-              seconds=time.monotonic()-started)
-        return result
+        job = challenge['job_id']
+        try:
+            self._prepare_challenge_artifacts([challenge])
+            checked = host_fingerprints(self.profile, [challenge])
+            proof = checked['host_fingerprints'].get(job)
+            error = checked['readiness_errors'].get(job)
+        except (OSError, ValueError, KeyError, subprocess.SubprocessError) as exc:
+            proof, error = None, f'{type(exc).__name__}: {exc}'
+        return started, time.monotonic(), proof, error
+
+    def _discard_readiness(self):
+        self.readiness_pending.clear()
+        self.readiness_ready.clear()
+        # A result from before a pause belongs to the previous offer.
+        self.readiness_running = {job: (None, preparation, future)
+                                  for job, (_, preparation, future) in self.readiness_running.items()}
+
+    def _poll_readiness(self, report, accepting):
+        accepting = accepting and self.accepting()
+        now = time.monotonic()
+        self.readiness_retry = {key: until for key, until in self.readiness_retry.items() if until > now}
+        if not accepting:
+            self._discard_readiness()
+        for job, (_, _, touched) in list(self.readiness_pending.items()):
+            if job not in self.readiness_running and now-touched >= Q3_WORKER_PROOF_SECONDS:
+                del self.readiness_pending[job]
+                self.readiness_ready.pop(job, None)
+        for job, (_, _, checked_at, _, _) in list(self.readiness_ready.items()):
+            if now-checked_at >= Q3_WORKER_PROOF_SECONDS:
+                del self.readiness_ready[job]
+        finished = []
+        for job, (key, _, future) in list(self.readiness_running.items()):
+            if not future.done():
+                continue
+            del self.readiness_running[job]
+            pending = self.readiness_pending.get(job)
+            checked = future.result()
+            if pending is not None and pending[0] == key and now-checked[1] < Q3_WORKER_PROOF_SECONDS:
+                self.readiness_ready[job] = (key, *checked)
+                finished.append(job)
+        if finished:
+            results = [self.readiness_ready[job] for job in finished]
+            event(self.profile, 'PBS_READINESS_CHECKED', jobs=finished,
+                  parallel=min(report['slots'], READINESS_WORKERS),
+                  passed=sum(proof is not None for _, _, _, proof, _ in results),
+                  seconds=round(max(end-start for _, start, end, _, _ in results), 6), background=True)
+
+        limit = min(report['slots'], READINESS_WORKERS)
+        preparation_running = any(entry[1] for entry in self.readiness_running.values())
+        for job, (key, challenge, _) in self.readiness_pending.items():
+            if len(self.readiness_running) >= limit:
+                break
+            if job in self.readiness_ready or job in self.readiness_running or (job, key) in self.readiness_retry:
+                continue
+            preparation = challenge['request'].get('route', {}).get('kind') == 'preparation'
+            # Only one potentially blocking metadata transfer uses the shared
+            # spool at a time. Independent Q3 checks can still use other lanes.
+            if preparation and preparation_running:
+                continue
+            future = self.readiness_pool.submit(self._run_readiness_check, challenge)
+            self.readiness_running[job] = (key, preparation, future)
+            preparation_running |= preparation
+
+        self.readiness_sent = set(self.readiness_ready)
+        facts, errors, checked_at = {}, {}, {}
+        for job, (_, _, finished_at, proof, error) in self.readiness_ready.items():
+            checked_at[job] = finished_at
+            if error is None:
+                facts[job] = proof
+            else:
+                errors[job] = error
+        return dict(host_fingerprints=facts, readiness_errors=errors, readiness_checked_monotonic=checked_at)
+
+    def _readiness_delivered(self, response):
+        now = time.monotonic()
+        assigned = {item['job_id'] for item in response.get('assignments', [])}
+        if assigned:
+            checking = sum(not future.done() for _, _, future in self.readiness_running.values())
+            if checking:
+                event(self.profile, 'PBS_ASSIGNED_DURING_READINESS', jobs=sorted(assigned),
+                      checks_in_flight=checking)
+        for job in self.readiness_sent:
+            key, _, _, _, error = self.readiness_ready.pop(job)
+            if error is not None:
+                self.readiness_retry[job, key] = now+max(1., self.poll_seconds*2)
+        for job in assigned | self.readiness_sent:
+            self.readiness_pending.pop(job, None)
+        if not self.accepting() or response.get('host_admission', {}).get('accepting') is False:
+            self._discard_readiness()
+            return
+        for challenge in response.get('eligibility_challenges', []):
+            job = challenge['job_id']
+            if job in assigned:
+                continue
+            key = self._readiness_key(challenge)
+            self.readiness_pending[job] = (key, challenge, now)
+            if job in self.readiness_ready and self.readiness_ready[job][0] != key:
+                del self.readiness_ready[job]
 
     def _receive_assignment(self, assignment):
         # A later request's validation, the next status RPC, or a completed
