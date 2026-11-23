@@ -17,7 +17,7 @@ import sys
 import time
 
 from run_rpe_q3_relay import Relay, acquire_lock
-from trottertracks.rpe_local_pack_maintenance import compact_local_metadata
+from trottertracks.rpe_local_pack_maintenance import compact_local_metadata, registered_storage_owner_is_exclusive
 from trottertracks.rpe_worker_storage import duplicate_reclaim_target, prefix_caches, report
 
 
@@ -114,15 +114,8 @@ def local_duplicate_cache(run, profile):
                  if not central.is_relative_to(worker) and not worker.is_relative_to(central)]
 
     def protected():
-        if Path(read(state_dir/'CURRENT_TARGET.json')['run_directory']).resolve() != run:
+        if not registered_storage_owner_is_exclusive(state_dir, run, spool, worker, artifact_cache=True):
             return None
-        for item in read(state_dir/'RUNS.json').values():
-            other = Path(item['run_directory']).resolve()
-            if other == run or not (other/'LAUNCH.json').is_file():
-                continue
-            if (not (other/'EXIT.json').is_file() or
-                    read(other/'LAUNCH.json')['invocation_id'] != read(other/'EXIT.json')['invocation_id']):
-                return None
         with sqlite3.connect((run/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
             if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
                             ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""",

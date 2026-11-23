@@ -180,23 +180,39 @@ def _check_local_jobs(run, spool, host):
     return True
 
 
-def _registered_owner_is_exclusive(state, run, spool, directory):
+def registered_storage_owner_is_exclusive(state, run, spool, directory, *, artifact_cache=False):
+    """Check only registered runs whose local worker can use this storage."""
     registered = {Path(entry['run_directory']).resolve() for entry in read(state/'RUNS.json').values()}
     if run not in registered:
         return False
     for other in registered - {run}:
         profile = other/'distributed/LOCAL_WORKER.json'
         launch = other/'LAUNCH.json'
-        if not profile.is_file() or not launch.is_file():
+        if not launch.is_file():
             continue
         exit_path = other/'EXIT.json'
         if exit_path.is_file() and read(exit_path)['invocation_id'] == read(launch)['invocation_id']:
             continue
-        options = read(profile)
+        if profile.is_file():
+            options = read(profile)
+        else:
+            frozen = other/'ROUND.json'
+            if not frozen.is_file():
+                return False  # The other run may still be starting.
+            distributed = (read(frozen).get('executor') or {}).get('distributed') or {}
+            options = distributed.get('local_worker')
+            if options is None:
+                continue
+            if not isinstance(options, dict) or not options.get('work_dir'):
+                return False
         other_spool = Path(options['work_dir']).resolve()
-        other_pool = Path(options.get('preparation_metadata_cache_directory')
-                          or other_spool.parent/'preparation-metadata-cache').resolve()
-        if spool == other_spool or directory.is_relative_to(other_pool):
+        if artifact_cache:
+            other_pool = Path(options.get('artifact_cache_directory') or other_spool/'artifacts').resolve()
+        else:
+            other_pool = Path(options.get('preparation_metadata_cache_directory')
+                              or other_spool.parent/'preparation-metadata-cache').resolve()
+        if (spool.is_relative_to(other_spool) or other_spool.is_relative_to(spool)
+                or directory.is_relative_to(other_pool) or other_pool.is_relative_to(directory)):
             return False
     return True
 
@@ -211,7 +227,7 @@ def _switch(run, profile, scratch, directory, staged, record):
         lock(held, sample.with_suffix('.lock'))
         lock(held, state/'REGISTRY.lock')
         if (read(run/'distributed/LOCAL_WORKER.json') != profile
-                or not _registered_owner_is_exclusive(state, run, spool, directory)):
+                or not registered_storage_owner_is_exclusive(state, run, spool, directory)):
             return 'PACK_SWITCH_WAIT_LOCAL_OWNER', 0
         try:
             lock(held, worker_lock)

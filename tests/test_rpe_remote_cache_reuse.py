@@ -163,7 +163,9 @@ class LocalFilesystemPressure(unittest.TestCase):
         unknown = self.state/'spool/old/attempt'
         put(unknown/'WORKER_STATE.json', dict(state='UNKNOWN'))
         put(unknown/'ASSIGNMENT.json', dict(input=retained))
-        put(self.state/'CURRENT_TARGET.json', dict(run_directory=str(self.current)))
+        other = self.owner('selected-pbs-run', evaluation='E2', finished=False)
+        put(other/'ROUND.json', dict(executor=dict(distributed=dict(pbs={'workers': []}))))
+        put(self.state/'CURRENT_TARGET.json', dict(run_directory=str(other)))
         (self.state/'REGISTRY.lock').touch()
         sample = self.state/'usage.json'
         sample.with_suffix('.lock').touch()
@@ -173,6 +175,11 @@ class LocalFilesystemPressure(unittest.TestCase):
         profile = dict(storage_limit=policy, artifact_cache_directory=str(worker),
                        work_dir=str(self.state/'spool'), host_id='local')
         with patch.object(R.shutil, 'disk_usage', return_value=SimpleNamespace(free=1000)):
+            worker_profile = other/'distributed/LOCAL_WORKER.json'
+            put(worker_profile, dict(work_dir=str(self.state/'different-spool'),
+                                     artifact_cache_directory=str(worker)))
+            self.assertEqual(R.local_duplicate_cache(self.current, profile), {})
+            worker_profile.unlink()
             removed = R.local_duplicate_cache(self.current, profile)
         self.assertEqual(set(removed), {sha})
         self.assertFalse((worker/sha[:2]/sha).exists())
