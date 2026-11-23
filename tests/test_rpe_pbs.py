@@ -1129,6 +1129,18 @@ class GatewayTests(unittest.TestCase):
             G.atomic(attempt/'WORKER_STATE.json', dict(state='RUNNING'))
             self.assertEqual(G.harvest(allocation, owners=owners, completed_only=True)['attempts'], [])
 
+    def test_stop_notice_alone_does_not_prove_pbs_submission(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            allocation = root/'allocations'/'pending'
+            request = dict(action='intent_present', token='pending')
+            self.assertEqual(G.handle(root, request), dict(present=False))
+            G.atomic(allocation/'CONTROL.json', dict(stop=True))
+            self.assertEqual(G.handle(root, request), dict(present=False))
+            self.assertEqual(G.read(allocation/'CONTROL.json'), dict(stop=True))
+            G.atomic(allocation/'PILOT.json', dict(token='reserved'))
+            self.assertEqual(G.handle(root, request), dict(present=True))
+
 
 if __name__ == '__main__':
     unittest.main()

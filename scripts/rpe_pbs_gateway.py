@@ -352,7 +352,12 @@ def harvest(directory, wanted=None, owners=None, completed_only=False):
 def handle(root, value, finished=None):
     action = value['action']
     if action == 'intent_present':
-        return dict(present=(root/'allocations'/safe_id(value['token'])).exists())
+        directory = root/'allocations'/safe_id(value['token'])
+        if directory.is_dir() and not directory.is_symlink():
+            # Stop can write a notice before any submission exists. Keep it
+            # as a fence, but it is not evidence of a submitted intent.
+            return dict(present=any(path.name != 'CONTROL.json' for path in directory.iterdir()))
+        return dict(present=directory.exists() or directory.is_symlink())
     if action == 'ensure':
         return ensure(root, value['spec'])
     if action == 'exchange':
