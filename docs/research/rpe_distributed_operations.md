@@ -418,6 +418,8 @@ PBSは、gatewayで事前照合を通ったQ3の先読み要求を、同じ枠�
 
 PBS workerは事前照合を割当照会と並行して行う。個々の照合が完了したら次の通常照会に含め、同じ要求の照合が進行中であれば繰り返さない。準備入力の転送が遅い場合も、他の照合、既存attemptの回収、照合済み仕事の割当を続ける。入力転送や照合に失敗した要求は理由を返し、同じ要求が再送されたときに再確認する。照合時刻はPBSの単調時計で記録し、通信応答が遅れた場合も送信時刻で有効期限を延ばさない。`PBS_READINESS_CHECKED` の `background`、`PBS_ASSIGNED_DURING_READINESS`、通常の起動・受領時刻で実機の挙動を確認する。
 
+共有PBS予約のworkerが終了し、中央で開始記録のない `ASSIGNED` だけが残った場合は、元のPBS予約が稼働中であることを確認して同じrunのworkerセッションを開く。既存の割当応答から同じjob ID・attempt IDを同じspoolへ届ける。予約が失効した場合や `RUNNING`・`UNKNOWN` の所有が残る場合は既存の回収経路で照合する。
+
 2026-11-23に `romutail-pbs-preflight-d847b1127e` を新規run用currentへ採用した。RomuTail・Romulaptop WSL・server1・server2・PBSで最適化器 `d847b1127e` を照合し、PBSの保存B0I要求の固定入力45件を既存の科学SOURCE `28d976b99c` で検査した。切替前の明示版Previewと切替後の既定Previewは、通常CLIとWindowsの両方で同じ新releaseを選んだ。運用証跡はRomuTailの `.rpe-central/deployment/romutail-pbs-preflight-d847b1127e/` にある。
 
 同じ継続runで、PBSのB0I Q3の予約から割当までの中央値は旧版の10分間50件で26.1秒、新版の10分間17件で5.6秒だった。既存96 CPU予約の会計差分では、旧版の観測120秒で3.97%、新版の観測600秒で1.34%だった。新版には待機列が空の時間が含まれ、Q3の配分別の仕事量も異なる。今回確認した効果は割当待ちの短縮であり、持続的な利用率の向上は確認できていない。計測の詳細は `.rpe-central/deployment/romutail-pbs-preflight-d847b1127e/PBS_UTILIZATION.json` にある。

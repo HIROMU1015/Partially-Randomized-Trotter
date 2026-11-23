@@ -445,6 +445,35 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(gateway.calls[0]['spec']['token'], token)
             self.assertEqual(P.read(manager.path)['allocations'][token]['status'], 'INTENT')
 
+    def test_confirmed_shared_pilot_replays_owned_assignment_with_no_queued_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            manager.hold_node = True
+            token = self.submit(manager)
+            owner = dict(job_id='original-task', host_id='pbs-0', attempt_id='original-attempt', state='ASSIGNED')
+            original = dict(owner, started_epoch=None, request=dict(route=dict(kind='artificial')))
+            executor.rows[owner['job_id']] = original
+            closed = dict(token=token, status='F', host_id='pbs-0', pilot_token='held', job_id='41.prism',
+                          scheduler=dict(job_state='R'), worker=dict(state='EXITED'), session_end=dict(epoch=1))
+            manager.state['allocations'][token].update(status='F', harvested=True)
+            call = gateway.call
+
+            def snapshot(value):
+                if value['action'] == 'exchange':
+                    return dict(allocations=[closed], requests={})
+                return call(value)
+
+            with patch.object(executor, '_owned_attempts', return_value=[owner]), \
+                    patch.object(manager, '_demand', return_value=([], [], 0, 0)), \
+                    patch.object(gateway, 'call', side_effect=snapshot):
+                manager.cycle()
+            replay = gateway.calls[-1]['spec']
+            self.assertEqual(replay['reason']['replay_pilot'], dict(token='held', job_id='41.prism'))
+            self.assertNotEqual(replay['token'], token)
+            self.assertEqual(executor.rows[owner['job_id']], original)
+            self.assertEqual(executor.calls, [])
+            self.assertIsNone(manager._assigned_pilot_replay('pbs-0', [dict(owner, state='UNKNOWN')]))
+
     def test_sized_allocation_briefly_keeps_only_its_checked_queue_entries(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, _ = self.manager(directory)

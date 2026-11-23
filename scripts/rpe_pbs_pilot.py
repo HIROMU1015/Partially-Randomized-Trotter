@@ -221,7 +221,18 @@ def attach(root, pool, spec):
                 raise ValueError('Legacy intent without a submit receipt needs reconciliation')
             return dict(token=token, existing=True)
         if binding is None:
-            binding = dict(token=reserve_locked(pool))
+            replay = spec.get('reason', {}).get('replay_pilot')
+            if replay:
+                current = read(pool/'CURRENT.json', {})
+                generation = safe_id(replay['token'])
+                observed = physical(pool, generation)
+                if (current.get('token') != generation or observed['status'] != 'R'
+                        or observed['job_id'] != replay['job_id']
+                        or (pool/'allocations'/generation/'RELEASE.json').exists()):
+                    raise ValueError('Original PBS reservation is unavailable for attempt replay')
+                binding = dict(token=generation)
+            else:
+                binding = dict(token=reserve_locked(pool))
             atomic(directory/'PILOT.json', binding)
         generation = pool/'allocations'/binding['token']
         profile = dict(spec['profile'])

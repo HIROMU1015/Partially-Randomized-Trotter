@@ -48,8 +48,8 @@ class PilotTest(unittest.TestCase):
             ctx.start()
             self.addCleanup(ctx.stop)
 
-    def attach(self, root, token):
-        spec = dict(token=token, resources=pilot.RESOURCES, run_id=root.name, reason={},
+    def attach(self, root, token, reason=None):
+        spec = dict(token=token, resources=pilot.RESOURCES, run_id=root.name, reason=reason or {},
                     profile=dict(host_id='pbs-0', work_dir=str(root/'workers'/'pbs-0')),
                     python=sys.executable, transport_root=str(self.base/'code'))
         pilot.handle(root, dict(action='ensure', spec=spec), {})
@@ -58,6 +58,19 @@ class PilotTest(unittest.TestCase):
     def stop(self, root, token):
         pilot.handle(root, dict(action='exchange', controls={token:dict(stop=True)}), {})
         pilot.handle(root, dict(action='delete', token=token), {})
+
+    def test_attempt_replay_binds_only_to_the_original_live_pilot(self):
+        current = pilot.admin(self.pool, 'reserve')
+        job_id = current['job_id']
+        self.jobs[job_id]['job_state'] = 'R'
+        replay = dict(replay_pilot=dict(token=current['token'], job_id=job_id))
+        directory = self.attach(self.a, 'replay', replay)
+        self.assertEqual(G.read(directory/'PILOT.json')['token'], current['token'])
+        self.attach(self.a, 'replay', replay)
+        self.jobs[job_id]['job_state'] = 'F'
+        with self.assertRaisesRegex(ValueError, 'Original PBS reservation is unavailable'):
+            self.attach(self.a, 'obsoleteReplay', replay)
+        self.assertEqual(len(self.submissions), 1)
 
     def test_prequeue_stop_switch_lost_reply_and_explicit_release(self):
         with ThreadPoolExecutor(2) as executor:

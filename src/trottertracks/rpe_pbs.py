@@ -1251,6 +1251,28 @@ class PbsManager:
         self.gateway.call(dict(action='ensure', spec=spec))
         return spec
 
+    def _assigned_pilot_replay(self, host, owned):
+        """Select a closed session's live node for durable assignment replay only."""
+        if not self.hold_node:
+            return None
+        attempts = [row for row in owned if row['host_id'] == host]
+        if not attempts or any(row['state'] != 'ASSIGNED' for row in attempts):
+            return None
+        closed = [a for a in self.allocations if a['host_id'] == host and a.get('session_end')]
+        if not closed:
+            return None
+        previous = max(closed, key=lambda a: a['session_end']['epoch'])
+        if (previous.get('status') != 'F' or not previous.get('pilot_token') or not previous.get('job_id')
+                or (previous.get('scheduler') or {}).get('job_state') != 'R'
+                or (previous.get('worker') or {}).get('state') != 'EXITED'):
+            return None
+        rows = [self.executor.store.row(row['job_id']) for row in attempts]
+        if any(row is None or row['state'] != 'ASSIGNED' or row['started_epoch'] is not None
+               or (row['host_id'], row['attempt_id']) != (host, attempt['attempt_id'])
+               for row, attempt in zip(rows, attempts)):
+            return None
+        return dict(token=previous['pilot_token'], job_id=previous['job_id']), [row['request'] for row in rows]
+
     def cycle(self):
         for token, record in self.state['allocations'].items():
             if record['status'] != 'INTENT' or time.monotonic() < self.ensure_retry_after.get(token, 0):
@@ -1325,7 +1347,8 @@ class PbsManager:
         keep_for_preparation = (not self.hold_node and not (outstanding or pending) and not stopping and any(
             a['status'] == 'R' and (a.get('worker') or {}).get('accepting') for a in active)
             and self._recent_preparation_completion(self.readiness_wait_seconds()))
-        hosts_with_attempts = {row['host_id'] for row in self.executor._owned_attempts()}
+        owned_attempts = self.executor._owned_attempts()
+        hosts_with_attempts = {row['host_id'] for row in owned_attempts}
         for allocation in self.allocations:
             if allocation['status'] not in TERMINAL:
                 token, host = allocation['token'], allocation['host_id']
@@ -1430,7 +1453,7 @@ class PbsManager:
                         job_id=allocation['job_id'], result=result,
                         reason=('STOP_WITHOUT_OWNED_SCIENTIFIC_ATTEMPTS' if queued_stop
                                 else record.get('resize_reason', 'QUEUED_ALLOCATION_EXCEEDS_COMPATIBLE_DEMAND')))
-        if shortage and not stopping:
+        if not stopping and (shortage or hosts_with_attempts):
             owned_hosts = {a['host_id'] for a in active}
             # A lost remote response may leave an intent absent from this
             # snapshot. It still occupies its prospective allocation.
@@ -1440,20 +1463,26 @@ class PbsManager:
                           max(1, a['spec']['resources']['ncpus']//task_cpu_footprint(a['spec']['profile'])))
                           for a in self.state['allocations'].values() if a['status'] not in TERMINAL)
             for host, worker in self.configured.items():
-                if shortage <= covered: break
                 if host in owned_hosts: continue
                 if any(record['spec']['profile']['host_id'] == host and record['status'] == 'SUBMIT_REJECTED'
                        for record in self.state['allocations'].values()): continue
-                # UNKNOWN/transfer-pending original attempts prevent reuse.
-                if host in hosts_with_attempts: continue
+                replay = self._assigned_pilot_replay(host, owned_attempts) if host in hosts_with_attempts else None
+                if host in hosts_with_attempts and replay is None: continue
+                if shortage <= covered and replay is None: continue
                 # Reserve room for independent preparation tasks whose worker
                 # preflight can only run after PBS starts. Assignment still
                 # requires that task's successful preflight.
                 requests = [request for usable, request in waiting_tasks if host in usable]
+                demand = dict(ready_tasks=queued, existing_host_free_slots=free,
+                              prospective_pbs_task_slots=covered, shortage=shortage)
+                requests = requests[:max(0, shortage-covered)]
+                if replay is not None:
+                    pilot, original_requests = replay
+                    demand['replay_pilot'] = pilot
+                    requests = original_requests + requests
                 if not requests: continue
                 if not self._storage_accepting(worker): continue
-                spec = self._submit(host, worker, dict(ready_tasks=queued, existing_host_free_slots=free,
-                    prospective_pbs_task_slots=covered, shortage=shortage), requests[:shortage-covered])
+                spec = self._submit(host, worker, demand, requests)
                 covered += spec['reason'].get('requested_task_capacity',
                     max(1, spec['resources']['ncpus']//task_cpu_footprint(spec['profile'])))
         self.last_error = None
