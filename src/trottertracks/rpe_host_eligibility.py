@@ -82,7 +82,6 @@ def _fingerprint(assignment, profile, runtime, views=None, actual=None, runtime_
         normalized_views.append(dict(path=selected, commit=route['view_commit'], clean_tracked=True))
     runtime_identity = dict(executable=runtime['executable'], version=runtime['version'])
     if profile.get('runtime_checks'):
-        _verify_runtime_precheck(profile, runtime_precheck)
         runtime_identity = deepcopy(runtime)
     if runtime['executable'] != profile['interpreter']:
         for key in ('interpreter_invocation', 'launcher_sha256', 'actual_executable_realpath', 'actual_binary_sha256'):
@@ -102,7 +101,7 @@ def _fingerprint(assignment, profile, runtime, views=None, actual=None, runtime_
     return result
 
 
-def current_host_fingerprint(assignment, profile):
+def current_host_fingerprint(assignment, profile, *, readiness=None):
     """Read actual source, input, route and interpreter metadata for a poll.
 
     Reuse the existing readiness fingerprint, including its known nested route
@@ -113,25 +112,43 @@ def current_host_fingerprint(assignment, profile):
     from .rpe_host_profiles import select_host_profile, validate_adapter_profile, check_runtime_profile
     assignment, profile = _read(assignment), _read(profile)
     profile = select_host_profile(profile, assignment)
-    adapter_source = validate_adapter_profile(profile)
-    precheck = check_runtime_profile(profile) if profile.get('runtime_checks') else None
-    if precheck is not None:
-        _verify_runtime_precheck(profile, precheck)
-    raw = dry_check_fingerprint(profile['root'], assignment, profile)
+    if readiness is None:
+        adapter_source = validate_adapter_profile(profile)
+        precheck = check_runtime_profile(profile) if profile.get('runtime_checks') else None
+    else:
+        adapter_source = (readiness.get('adapter_source') or {}).get('manifest')
+        precheck = readiness.get('runtime_precheck') if profile.get('runtime_checks') else None
+    # Live checks already compared the view bytes with Git and ran the AST guard.
+    # Revalidate those bytes separately only when importing saved evidence.
+    if profile.get('runtime_checks') and (not precheck or precheck.get('status') != 'PASS'):
+        raise ValueError('Required actual-runtime precheck is absent or did not pass')
+    raw = dry_check_fingerprint(profile['root'], assignment, profile, verified_assignment=readiness is not None,
+                                runtime=precheck['runtime'] if readiness is not None and precheck else None)
     # The older readiness helper labels its fixed source as 28d. Actual HEAD is
     # separate and must be used for a newly fixed worker source as well.
     raw['source'] = dict(raw['source'], commit=raw['source_head'])
-    if raw['runtime']['executable'] != profile['interpreter']:
+    if precheck is not None:
+        raw['runtime'] = precheck['runtime']
+    elif raw['runtime']['executable'] != profile['interpreter']:
         binary = Path(raw['runtime']['executable']).resolve()
         raw['runtime'].update(interpreter_invocation=profile['interpreter'],
             launcher_sha256=_sha(profile['interpreter']), actual_executable_realpath=str(binary),
             actual_binary_sha256=_sha(binary))
-    if precheck is not None:
-        raw['runtime'] = deepcopy(precheck['runtime'])
     result = _fingerprint(assignment, profile, raw['runtime'], raw['views'], actual=raw, runtime_precheck=precheck)
     if adapter_source is not None:
         result['adapter_source'] = adapter_source
     return result
+
+
+def fingerprint_after_dry_check(assignment, profile, readiness):
+    """Reuse evidence from the live probe's immediately preceding local adapter check."""
+    if (readiness.get('status') != 'REAL_HOST_DRY_CHECK_PASS'
+            or readiness.get('scientific_evaluation_calls') != 0
+            or readiness.get('request_sha256') != assignment['request_sha256']
+            or readiness.get('source') != assignment['source_manifest']['commit']
+            or readiness.get('input_hashes') != assignment.get('input_hashes', [])):
+        raise ValueError('Live dry-check evidence differs from the assignment')
+    return current_host_fingerprint(assignment, profile, readiness=readiness)
 
 
 def _verify_runtime_precheck(profile, report):

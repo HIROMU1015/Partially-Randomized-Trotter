@@ -3,12 +3,15 @@
 The controller and each worker have their own cache. Only missing hashes cross
 SSH/HTTP; no filesystem or direct host-to-host connection is assumed.
 """
+from contextlib import closing, suppress
 import base64
 import errno
 import hashlib
+import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import sqlite3
 import uuid
 
 
@@ -140,12 +143,84 @@ class ArtifactCache:
                 self.put({sha:base64.b64encode(raw).decode('ascii')});manifest[rel] = sha
         return manifest
 
+    def share_completed_inputs(self, directory, outputs, inputs):
+        """Keep unchanged archived workspace copies backed by the same cached bytes."""
+        for name, sha in outputs.items():
+            if inputs.get(name) != sha or not name.startswith(('workspace/', 'workspaces/')):
+                continue
+            target = directory.joinpath(*artifact_path(name).parts)
+            source = self.path(sha)
+            temporary = target.with_name('.share-input-' + uuid.uuid4().hex)
+            try:
+                local = target.stat()
+                cached = source.stat()
+                if (target.is_symlink() or source.is_symlink() or not target.resolve().is_relative_to(directory)
+                        or local.st_dev != cached.st_dev or local.st_ino == cached.st_ino
+                        or local.st_size != cached.st_size or local.st_mode != cached.st_mode):
+                    continue
+                os.link(source, temporary)
+                os.replace(temporary, target)
+            except OSError:
+                # The receipt and complete private copy are already durable.
+                continue
+            finally:
+                with suppress(OSError):
+                    temporary.unlink(missing_ok=True)
+
 
 def input_manifest(request):
     inputs = request.get('preparation', {}).get('inputs', {})
     if isinstance(inputs, list):inputs = {row['path']:row['sha256'] for row in inputs}
     if not isinstance(inputs, dict):raise ValueError('Preparation inputs must be an artifact manifest')
     return {str(artifact_path(name)):artifact_hash(sha) for name, sha in inputs.items()}
+
+
+def assigned_artifacts(assignment):
+    manifest=input_manifest(assignment['request'])
+    for name,sha in assignment.get('artifact_manifest',{}).items():
+        name=str(artifact_path(name));artifact_hash(sha)
+        if name in manifest and manifest[name]!=sha:raise ValueError('Assignment changed an explicit input artifact')
+        manifest[name]=sha
+    return manifest
+
+
+def preparation_bundle_hashes(assignment):
+    spec = assignment.get('request', assignment).get('preparation', {})
+    bundles = list(spec.get('input_git_bundles', []))
+    for workspace in spec.get('workspaces', {}).values():
+        bundles.extend(workspace.get('input_git_bundles', []))
+    return list(dict.fromkeys(bundle['sha256'] for bundle in bundles))
+
+
+def readiness_artifact_hashes(assignment):
+    hashes = preparation_bundle_hashes(assignment)
+    spec = assignment.get('request', assignment).get('preparation', {})
+    if spec.get('pf_compile_context') is True:
+        hashes.extend(assigned_artifacts(assignment).values())
+    return list(dict.fromkeys(hashes))
+
+
+def read_preparation_readiness(directory, database=None):
+    """Read the old checkpoint plus per-request updates in the queue database."""
+    directory = Path(directory)
+    if database is None:
+        path = (directory/'QUEUE.sqlite3').resolve()
+        if path.is_file():
+            with closing(sqlite3.connect(path.as_uri()+'?mode=ro', uri=True)) as db:
+                return read_preparation_readiness(directory, db)
+    checkpoint = directory/'PREPARATION_PENDING.json'
+    saved = json.loads(checkpoint.read_text()) if checkpoint.is_file() else {}
+    if saved and saved.get('schema') != 'RPE_PENDING_PREPARATION_READINESS_V1':
+        raise ValueError('Unknown saved preparation readiness schema')
+    tasks = dict(saved.get('tasks', {}))
+    if database is not None and database.execute(
+            "SELECT 1 FROM sqlite_master WHERE name='preparation_readiness'").fetchone():
+        for job, record in database.execute('SELECT job_id, record FROM preparation_readiness'):
+            if record is None:
+                tasks.pop(job, None)
+            else:
+                tasks[job] = json.loads(record)
+    return tasks
 
 
 def worker_cache(profile):

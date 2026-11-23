@@ -281,18 +281,18 @@ class DiscoveryTests(unittest.TestCase):
                 gate.set()
                 relay.discovery_pool.shutdown(wait=True)
 
-    def test_slow_preferred_ack_does_not_block_wsl_delivery_or_repeat_host_status(self):
+    def test_slow_preferred_ack_does_not_block_wsl_delivery_or_repeat_ack(self):
         with tempfile.TemporaryDirectory()as temporary:
             workers=[dict(host_id='preferred'),dict(host_id='wsl',transport='wsl')]
             relay=self.relay(Path(temporary),workers)
-            gate=threading.Event();ack_started=threading.Event();wsl_polled=threading.Event();statuses=[]
+            gate=threading.Event();ack_started=threading.Event();wsl_polled=threading.Event();acks=[]
             def remote(worker,action,value=None):
                 if action=='ack':
                     self.assertEqual(worker['host_id'],'preferred')
+                    acks.append(value)
                     ack_started.set();gate.wait(2)
                     return dict(ok=True),0
                 self.assertEqual(action,'status')
-                statuses.append(worker['host_id'])
                 attempts=[]
                 if worker['host_id']=='preferred':
                     attempts=[dict(job_id='ARTIFICIAL',attempt_id='attempt',state='COMPLETED_PENDING_TRANSFER',request_sha256='hash',files={})]
@@ -309,11 +309,10 @@ class DiscoveryTests(unittest.TestCase):
                     self.assertTrue(ack_started.wait(.3))
                     self.assertTrue(wsl_polled.wait(.3),'Blocked preferred ACK prevented independent WSL poll')
                     relay.cycle()
-                    self.assertEqual(statuses.count('preferred'),1)
-                    self.assertIn('preferred',relay.pending_ticks)
-                    gate.set();relay.discovery_pool.shutdown(wait=True)
+                    self.assertEqual(len(acks),1)
+                    self.assertEqual(len(relay.pending_recoveries['preferred']),1)
             finally:
-                gate.set();relay.discovery_pool.shutdown(wait=True)
+                gate.set();relay.discovery_pool.shutdown(wait=True);relay.recovery_pool.shutdown(wait=True)
 
 
 if __name__=='__main__':unittest.main()

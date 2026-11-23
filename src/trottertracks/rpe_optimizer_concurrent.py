@@ -7,7 +7,7 @@ launch; running scientific workers are never cancelled to discard lookahead.
 from collections import Counter, defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
-from copy import deepcopy
+from copy import copy, deepcopy
 import fcntl
 import json
 import os
@@ -18,6 +18,7 @@ from types import SimpleNamespace
 import subprocess
 import sys
 import signal
+import sqlite3
 
 from . import rpe_method_optimizer as O
 from .rpe_q3_timing import stamp
@@ -52,6 +53,8 @@ class ConcurrentExecutor(O.Executor):
                  prefix_selective_window_seconds=None,compact_q3_evidence=False,parallel_dp_residual=False,
                  profile_dp_residual=False,large_shot_bounds=False,**kwargs):
         super().__init__(*args,**kwargs)
+        from .rpe_plan_history_cache import HistoryInventory
+        self.prior_history_inventory = HistoryInventory()
         if dp_workers is not None and (type(dp_workers)is not int or dp_workers<1):
             raise ValueError('Positive integer dp_workers required')
         if prefix_cache_max_bytes is not None and (type(prefix_cache_max_bytes) is not int or prefix_cache_max_bytes < 1):
@@ -484,7 +487,10 @@ class ConcurrentExecutor(O.Executor):
             receipt = O.load_json(job/'PROCESS_RETURN.json')
             if receipt.get('returncode') != 0 or receipt.get('signal') is not None:
                 continue
-            answer = O.Executor.ingest(self, job, proposal, calls=0)
+            cached = getattr(self, '_cached_transfer_answer', None)
+            answer = cached(job, proposal, 0) if cached is not None else None
+            if answer is None:
+                answer = O.Executor.ingest(self, job, proposal, calls=0)
             if answer['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
                 continue
             lower, upper = answer['MSE_lower'], answer['MSE_upper']
@@ -513,6 +519,8 @@ class ConcurrentExecutor(O.Executor):
             with s.cv:s.peak_RSS_KiB=max(s.peak_RSS_KiB,rss)
             if check_owners is not None and time.monotonic() >= next_check:
                 check_owners()
+                if getattr(self, '_worker_services_ready', False):
+                    self._supervise_worker_services()
                 next_check = time.monotonic() + 5
             s.monitor_stop.wait(.1)
 
@@ -560,6 +568,9 @@ class ConcurrentExecutor(O.Executor):
         finally:
             self.log(event='DEPENDENCY_WAIT_END', job=task.job.name)
 
+    def _ingest_current_answer(self, job, proposal, calls):
+        return self.ingest(job, proposal, calls)
+
     def answer(self,proposal,allow_new=True):
         job=self.job_dir(proposal);s=self.state
         with s.cv:
@@ -573,7 +584,7 @@ class ConcurrentExecutor(O.Executor):
         if task and task.error:
             return dict(status='UNKNOWN',reason=task.error,source='EXECUTOR_FAILURE',calls=self.take_count(job),
                         MSE_lower=None,MSE_upper=None,job=str(job))
-        if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
+        if(job/'OUTCOME.json').exists():answer=self._ingest_current_answer(job,proposal,calls=self.take_count(job))
         else:
             prior = self.prior_job(proposal) if task is None and not (job/'LAUNCH.json').exists() else None
             if prior is not None:
@@ -598,7 +609,7 @@ class ConcurrentExecutor(O.Executor):
                     return dict(status='RESELECT_READY', job=str(job), calls=0)
                 if task.error == 'HOST_ELIGIBILITY_HOLD':
                     return self._held_answer(proposal)
-                if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
+                if(job/'OUTCOME.json').exists():answer=self._ingest_current_answer(job,proposal,calls=self.take_count(job))
                 else:answer=dict(status='UNKNOWN',reason=task.error or'ADAPTER_EXIT_WITHOUT_OUTCOME',
                     source='NEW_Q3_JOB',calls=self.take_count(job),MSE_lower=None,MSE_upper=None,job=str(job))
         answer=self.scope_unknown(job,proposal,answer)
@@ -654,9 +665,13 @@ class ConcurrentExecutor(O.Executor):
             active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.
             first=last=None
             interval_capacity=self.capacity
-            with self.lock, (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
+            with (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
+                with self.lock:
+                    end = os.fstat(progress.fileno()).st_size
                 progress.seek(self.progress_start)
-                for line in progress:
+                while progress.tell() < end:
+                    line = progress.readline()
+                    if not line.endswith(b'\n'): break
                     e=json.loads(line)
                     if e.get('invocation')!=self.invocation:continue
                     if first is None:first=last=e['monotonic']
@@ -787,17 +802,18 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_preparation_artifacts import ArtifactCache
         self.artifact_cache = ArtifactCache(run/'distributed'/'artifacts')
         self.preparation_pending_path = run/'distributed'/'PREPARATION_PENDING.json'
-        saved_preparation = json.loads(self.preparation_pending_path.read_text()) if self.preparation_pending_path.exists() else {}
-        if saved_preparation and saved_preparation.get('schema') != 'RPE_PENDING_PREPARATION_READINESS_V1':
-            raise ValueError('Unknown saved preparation readiness schema')
-        self.preparation_pending = saved_preparation.get('tasks', {})
+        from .rpe_preparation_artifacts import read_preparation_readiness
+        self.preparation_pending = read_preparation_readiness(self.preparation_pending_path.parent)
         # A resumed controller can recheck a pending request which never had
         # a queue reservation. Existing attempt ownership stays in JobStore.
+        saved_jobs = self.store.preparation_states(self.preparation_pending)
         for job_id, record in self.preparation_pending.items():
-            if self.store.row(job_id) is None:
+            if job_id not in saved_jobs:
                 record['probe_started_epoch'] = time.time()
         self.preparation_probe_offsets = {}
         self.hosts = {}
+        self.worker_contact = {}
+        self.worker_contact_lock = threading.Lock()
         self.input_hash_cache = {}
         self.local_worker = None
         self.local_worker_pid = None
@@ -837,6 +853,8 @@ class DistributedExecutor(ConcurrentExecutor):
             if not contract_path.exists(): Q.atomic_json(contract_path, fixed)
             with self.state.cv:
                 for row in self.store.rows():
+                    if row['state'] == 'UNKNOWN' and self._restore_pbs_unstarted(row):
+                        row = self.store.row(row['job_id'])
                     if row['state'] == 'QUEUED':
                         decision = (row['eligibility'] if row['detail'].get('prelaunch_recovery') is True
                                     else self._eligibility_for(row['request'], row['job_id'], blocking=False,
@@ -872,21 +890,9 @@ class DistributedExecutor(ConcurrentExecutor):
                         profile['task_deployments'] = {release: {key: continuation[key] for key in ('manifest','layout')}}
                 profile_path = run/'distributed'/'LOCAL_WORKER.json'
                 Q.atomic_json(profile_path, profile)
-                daemon_path = run/'distributed'/'LOCAL_DAEMON.json'
-                previous = json.loads(daemon_path.read_text()) if daemon_path.exists() else {}
-                if self._local_daemon_alive(previous.get('pid'), profile_path):
-                    self.local_worker_pid = previous['pid']
-                else:
-                    command = [sys.executable, '-B', str(self.worker_script), '--profile', str(profile_path),
-                               '--controller', self.controller_url, '--poll-seconds', '.1']
-                    if distributed.get('controller_queue_first'):
-                        command = ['nice', '-n', '10', *command]
-                    with (run/'distributed'/'LOCAL_WORKER.log').open('a') as log:
-                        self.local_worker = subprocess.Popen(command,
-                            cwd=self.root, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
-                            start_new_session=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
-                    self.local_worker_pid = self.local_worker.pid
-                    Q.atomic_json(daemon_path, dict(pid=self.local_worker_pid, profile=str(profile_path)))
+                self._local_profile_path = profile_path
+                self._start_local_worker(profile_path)
+            self._worker_services_ready = True
             self.log(event='DISTRIBUTED_START', url=self.controller_url, controller_source=self.controller_source,
                 computation_source=self.computation_source, computation_root=str(self.computation_root),
                 allocation_settings=settings)
@@ -978,6 +984,72 @@ class DistributedExecutor(ConcurrentExecutor):
             return str(profile_path) in command and str(self.worker_script) in command
         except OSError: return False
 
+    def _start_local_worker(self, profile_path):
+        from .rpe_q3_coordinator import atomic_json
+
+        directory = profile_path.parent
+        daemon = directory/'LOCAL_DAEMON.json'
+        previous = json.loads(daemon.read_bytes()) if daemon.exists() else {}
+        if self._local_daemon_alive(previous.get('pid'), profile_path):
+            self.local_worker_pid = previous['pid']
+            return
+        command = [sys.executable, '-B', str(self.worker_script), '--profile', str(profile_path),
+                   '--controller', self.controller_url, '--poll-seconds', '.1']
+        if self.distributed.get('controller_queue_first'):
+            command = ['nice', '-n', '10', *command]
+        with (directory/'LOCAL_WORKER.log').open('a') as log:
+            self.local_worker = subprocess.Popen(command, cwd=self.root, stdin=subprocess.DEVNULL,
+                stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
+                env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+        self.local_worker_pid = self.local_worker.pid
+        atomic_json(daemon, dict(pid=self.local_worker_pid, profile=str(profile_path)))
+
+    def _supervise_worker_services(self):
+        if self.state.closed or self.state.failure or self._user_stop_requested():
+            return
+        for name, restart in (('relay', self._check_relay_process), ('local', self._check_local_process)):
+            try:
+                restart()
+            except (OSError, ValueError, subprocess.SubprocessError) as error:
+                self.log(event='WORKER_SERVICE_RESTART_PENDING', service=name, reason=str(error))
+
+    def _check_relay_process(self):
+        directory = getattr(self.state, 'controller_relay_directory', None)
+        if directory is None or (directory/'STOP').exists():
+            return
+        # The relay can be adopted from a surviving controller invocation.
+        # Its lifetime flock, rather than a possibly reused PID, is decisive.
+        with (directory/'RELAY.lock').open('a') as lock:
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                return
+        process = getattr(self.state, 'controller_relay_process', None)
+        if process is None or process.poll() is not None:
+            self.start_controller_relay(self.rpc_server.server_address[1])
+
+    def _check_local_process(self):
+        profile = getattr(self, '_local_profile_path', None)
+        if profile is not None and not self._local_daemon_alive(self.local_worker_pid, profile):
+            self._start_local_worker(profile)
+
+    def _restore_pbs_unstarted(self, row):
+        from .rpe_q3_coordinator import atomic_json
+
+        detail = row['detail']
+        if not detail.get('pbs_admission_exit'):
+            return False
+        job = self.run_dir/'jobs'/row['method']/row['job_id']
+        launch = job/'LAUNCH.json'
+        if launch.is_file():
+            marker = json.loads(launch.read_bytes())
+            if marker.get('attempt_id') == row['attempt_id']:
+                history = job/'attempt-history'/row['attempt_id']/'LAUNCH.json'
+                if not history.is_file():
+                    history.parent.mkdir(parents=True, exist_ok=True)
+                    atomic_json(history, marker)
+        return self.store.requeue_pbs_buffer(row['job_id'], row['attempt_id'])
+
     def _dispatch(self):
         # RPC claims supply host slots; the original dispatcher order is used
         # in _poll rather than launching controller-local adapters directly.
@@ -1039,16 +1111,17 @@ class DistributedExecutor(ConcurrentExecutor):
         count = sum(row['host_id'] == host for row in owned)
         return min(slots, max(0, maximum-count))
 
-    def _local_calibration_pair_allows(self, host, request):
+    def _local_calibration_pair_allows(self, host, request, *, owned=None):
         trial = self.distributed.get('local_calibration_pair')
         if host != 'local' or trial is None:
             return True
-        owned = [self.store.row(row['job_id'])['request'] for row in self._owned_attempts()
-                 if row['host_id'] == host]
-        if not owned:
+        active = [row['job_id'] for row in (self._owned_attempts() if owned is None else owned)
+                  if row['host_id'] == host]
+        if not active:
             return True
-        if len(owned) != 1:
+        if len(active) != 1 or not request.get('preparation'):
             return False
+        owned = [self.store.row(active[0])['request']]
         preparations = [(item.get('preparation') or {}) for item in [*owned, request]]
         pf_providers = {'PF_SIGNALS', 'PF_AUDIT', 'PF_HOLDOUT_AUDIT', 'PF_MODEL_FREEZE', 'PF_FINISH'}
         pf_pair = trial.get('pf_preparation') and all(p.get('provider') in pf_providers for p in preparations)
@@ -1085,7 +1158,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def _owned_attempts(self):
         with self.store._connection() as database:
             rows = database.execute(
-                "SELECT job_id,host_id,attempt_id,state,method,detail,assigned_epoch FROM jobs "
+                "SELECT job_id,host_id,attempt_id,state,method,detail,assigned_epoch FROM jobs INDEXED BY host_state_queue "
                 "WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
             # UNKNOWN still owns the request. Release only its capacity when
             # the worker proved it exited or a retired PBS allocation is verified.
@@ -1110,6 +1183,8 @@ class DistributedExecutor(ConcurrentExecutor):
             grace = 3 * max(30, relay.get('request_timeout_seconds', 30),
                             pbs.get('request_timeout_seconds', 20),
                             self.allocation_config.get('remote_offer_ttl_seconds', 0))
+            with self.worker_contact_lock:
+                recent = self.worker_contact.copy()
             for row in self._owned_attempts():
                 job = self.run_dir/'jobs'/row['method']/row['job_id']
                 task = state.tasks.get(job)
@@ -1117,7 +1192,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     continue
                 observed = self.hosts.get(row['host_id'], {}).get('epoch', state.allocation_epoch)
                 assigned = row['assigned_epoch']
-                if now - max(observed, assigned) <= grace:
+                if now - max(observed, assigned, recent.get(row['host_id'], 0)) <= grace:
                     continue
                 task.error = 'WORKER_CONTACT_LOST'
                 self._finished(task, None, assigned)
@@ -1162,16 +1237,17 @@ class DistributedExecutor(ConcurrentExecutor):
         if not self.state.allocation_auto: return
         owned = self._owned_attempts()
         queue = self._ready_queue()
-        available = {host:self._offer_free(host, policy, error, owned=owned) for host in self.hosts}
+        available = {host:self._offer_free(host, policy, error, owned=owned) for host in self.hosts.copy()}
         available = {host:min(free,len(queue)) for host,free in available.items() if free > 0}
-        usable = len(self._match_ready_jobs(queue, available))
+        usable = len(self._match_ready_jobs(queue, available, owned=owned))
         capacity = max(1, len(owned)+usable)
-        if capacity != self.state.allocation_capacity:
-            self.state.allocation_capacity = capacity
-            self.log(event='AUTO_CAPACITY', capacity=capacity, unresolved_owned=len(owned),
-                     ready_jobs=len(queue), fresh_free_slots=sum(available.values()),
-                     request_compatible_slots=usable,
-                     reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
+        with self.state.cv:
+            if capacity != self.state.allocation_capacity:
+                self.state.allocation_capacity = capacity
+                self.log(event='AUTO_CAPACITY', capacity=capacity, unresolved_owned=len(owned),
+                         ready_jobs=len(queue), fresh_free_slots=sum(available.values()),
+                         request_compatible_slots=usable,
+                         reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
 
     def _ready_queue(self):
         def priority(task):
@@ -1189,7 +1265,9 @@ class DistributedExecutor(ConcurrentExecutor):
             return (getattr(task, 'optional_price_validation', False), rank,
                     self.state.owner_clock.get(task.owner, -1), task.enqueue)
 
-        return sorted((task for task in self.state.tasks.values() if task.status == 'QUEUED'
+        with self.state.cv:
+            tasks = tuple(self.state.tasks.values())
+        return sorted((task for task in tasks if task.status == 'QUEUED'
                        and (task.rule['kind'] != 'preparation' or self._task_ready(task))), key=priority)
 
     def _budget_reserved(self):
@@ -1335,7 +1413,9 @@ class DistributedExecutor(ConcurrentExecutor):
         if not self.state.allocation_auto:
             return self.capacity
         policy, error = self._host_admission_policy()
-        fresh = sum(self._offer_free(host, policy, error) for host in self.hosts)
+        hosts = self.hosts.copy()
+        owned = self._owned_attempts() if hosts else []
+        fresh = sum(self._offer_free(host, policy, error, owned=owned) for host in hosts)
         return max(self.capacity, self.state.active + fresh)
 
     def _standby_headroom(self):
@@ -1534,11 +1614,12 @@ class DistributedExecutor(ConcurrentExecutor):
         with self.state.cv:
             if self.state.failure or self.state.closed:
                 return False
-            owned = max(self.state.active, len(self._owned_attempts()))
+            attempts = self._owned_attempts()
+            owned = max(self.state.active, len(attempts))
             if not self.hosts:
                 return not owned
             policy, error = self._host_admission_policy()
-            offers = {host: self._offer_free(host, policy, error) for host in self.hosts}
+            offers = {host: self._offer_free(host, policy, error, owned=attempts) for host in self.hosts}
             offers = {host: count for host, count in offers.items() if count}
             free = sum(offers.values())
             if not self.state.allocation_auto:
@@ -1577,7 +1658,7 @@ class DistributedExecutor(ConcurrentExecutor):
             return min(compatible, key=lambda item: (not self._offer_free(item[0], policy, error),
                                                       self._host_rank(item[0]), item[0], item[3] or ''))
 
-    def _observe_q3_completion(self, row, transfer, validation):
+    def _q3_completion_observation(self, row, transfer, validation):
         if validation['status'] not in (O.PASS, O.FAIL):
             return
         from .rpe_q3_timing import q3_body_spans
@@ -1590,11 +1671,11 @@ class DistributedExecutor(ConcurrentExecutor):
         profile = profiles.get(host)
         if not spans or (profile is None and not self.store.artificial(row['request'])):
             return
-        self.state.observations[row['method']].append(dict(
+        return dict(
             id=row['job_id'], kind='SHOT_Q3', method=row['method'],
             configuration_id=row['request']['configuration_id'],
             profile=self._bound_timing_profile(row['request'], host, profile),
-            status=validation['status'], finished_at=time.monotonic(), seconds=sum(spans)))
+            status=validation['status'], finished_at=time.monotonic(), seconds=sum(spans))
 
     def _host_rank(self, host):
         groups = self.allocation_config['priority_groups']
@@ -1602,7 +1683,7 @@ class DistributedExecutor(ConcurrentExecutor):
             return len(groups)
         return next((index for index, group in enumerate(groups) if host in group), 0)
 
-    def _preferred_ready_jobs(self, host, queue, policy, error=None):
+    def _preferred_ready_jobs(self, host, queue, policy, error=None, *, rows=None):
         """Match existing READY jobs to immediately usable higher-priority slots.
 
         This is only a choice among free execution slots. It creates no job
@@ -1612,12 +1693,13 @@ class DistributedExecutor(ConcurrentExecutor):
         """
         rank = self._host_rank(host)
         if rank == 0: return set()
-        available = {h:self._offer_free(h, policy, error) for h in self.hosts
-                     if self._host_rank(h) < rank}
+        preferred = [h for h in self.hosts.copy() if self._host_rank(h) < rank]
+        owned = self._owned_attempts() if preferred else []
+        available = {h:self._offer_free(h, policy, error, owned=owned) for h in preferred}
         available = {h:min(count, len(queue)) for h,count in available.items() if count > 0}
-        return self._match_ready_jobs(queue, available)
+        return self._match_ready_jobs(queue, available, owned=owned, rows=rows)
 
-    def _match_ready_jobs(self, queue, available):
+    def _match_ready_jobs(self, queue, available, *, owned=None, rows=None):
         """One request per usable host slot, preserving candidate order."""
         if not available:
             return set()
@@ -1625,18 +1707,23 @@ class DistributedExecutor(ConcurrentExecutor):
         compatible = {};skipped = {h:False for h in available}
         policy, error = (self._host_admission_policy() if self.distributed.get('preparation_host_preference')
                          else (None, None))
+        if owned is None and 'local' in available and self.distributed.get('local_calibration_pair'):
+            owned = self._owned_attempts()
         queue = list(queue)
-        rows = self.store.rows_for(task.job.name for task in queue)
+        if rows is None:
+            rows = self.store.rows_for(task.job.name for task in queue)
         for task in queue:
-            row = rows[task.job.name]
             compatible[task.job.name] = []
+            row = rows.get(task.job.name)
+            if row is None or row['state'] != 'QUEUED':
+                continue
             for h in available:
                 if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
                     skipped[h] = True
                     continue
                 if (not self._fits_host_task_class(h, row)
                         or self._wait_for_preparation_preference(h, row, policy, error)
-                        or not self._local_calibration_pair_allows(h, row['request'])):
+                        or not self._local_calibration_pair_allows(h, row['request'], owned=owned)):
                     skipped[h] = True
                     continue
                 if not self.store.eligible(row['request'], row['eligibility'], h,
@@ -1703,16 +1790,13 @@ class DistributedExecutor(ConcurrentExecutor):
         return classes is None or self._task_resource_class(row, host) in classes
 
     def _capacity_feedback(self, host):
-        with self.store._connection() as database:
-            own = [dict(row) for row in database.execute(
-                'SELECT job_id,state,completed_epoch,adopted_epoch FROM jobs WHERE host_id=?', (host,))]
         epoch = self.state.allocation_epoch
         now = time.monotonic()
-        with self.lock:
-            totals = dict(self.state.allocation_wait_totals)
-            for job, starts in self.state.allocation_waits.items():
-                if starts: totals[job] = totals.get(job, 0)+sum(now-start for start in starts)
-        selected = [totals[row['job_id']] for row in own if row['job_id'] in totals]
+        totals = dict(self.state.allocation_wait_totals)
+        for job, starts in self.state.allocation_waits.items():
+            if starts:
+                totals[job] = totals.get(job, 0) + sum(now-start for start in starts)
+        usable, adopted, selected = self.store.capacity_history(host, epoch, totals)
         classify = self.distributed.get('live_readiness_max_workers') is not None
         local = self.distributed.get('local_worker') or {}
         class_admission = (classify and host == local.get('host_id')
@@ -1769,15 +1853,15 @@ class DistributedExecutor(ConcurrentExecutor):
             ready = max(observations, default=0)
         return dict(controller_invocation=self.invocation, measurement_seconds=now-self.state.allocation_start,
             controller_clock_id=stamp()['clock_id'],
-            usable_results=sum(row['state'] == 'ACCEPTED' and (row['completed_epoch'] or 0) >= epoch for row in own),
-            adopted_results=sum((row['adopted_epoch'] or 0) >= epoch for row in own),
-            decision_wait_seconds=sum(selected) if selected else None,
+            usable_results=usable, adopted_results=adopted,
+            decision_wait_seconds=selected,
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
             ready_jobs=ready, ready_jobs_now=ready_now, capacity_ready_jobs=capacity_ready,
             ready_task_classes=sorted(ready_classes), capacity=self.capacity,
             **({'ready_task_class_order': class_order} if class_admission else {}))
 
-    def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None, prefetch=False):
+    def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None,
+                         prefetch=False, queued=False):
         """Bind a prepared host decision to this exact scientific request."""
         from . import rpe_q3_coordinator as Q
         if request.get('route', {}).get('kind') == 'preparation':
@@ -1801,10 +1885,11 @@ class DistributedExecutor(ConcurrentExecutor):
             if not isinstance(record, dict): raise ValueError('NO_REQUEST_SPECIFIC_HOST_EVIDENCE')
             if record.get('decision_sha256') != Q.digest({k:v for k,v in record.items() if k != 'decision_sha256'}):
                 raise ValueError('HOST_ELIGIBILITY_DECISION_CONTENT_CHANGED')
-            current_source = Q.source_manifest(self.computation_root, self.computation_source)
-            head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.computation_root, text=True).strip()
-            if current_source != self.source_manifest or head != self.computation_source:
-                raise ValueError('COMPUTATION_SOURCE_CHANGED')
+            if not queued:
+                current_source = Q.source_manifest(self.computation_root, self.computation_source)
+                head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.computation_root, text=True).strip()
+                if current_source != self.source_manifest or head != self.computation_source:
+                    raise ValueError('COMPUTATION_SOURCE_CHANGED')
             for key, expected in (('request_sha256', result['request_sha256']),
                                   ('source_manifest_sha256', result['source_manifest_sha256']),
                                   ('method', request['method'])):
@@ -1884,7 +1969,8 @@ class DistributedExecutor(ConcurrentExecutor):
     def _pbs_q3_challenges(self, host, fingerprints, existing, slots):
         from .rpe_pbs import Q3_WORKER_PROOF_SECONDS
 
-        pending = self.pbs_q3_check_queue.get(host, {})
+        current_pending = self.pbs_q3_check_queue.get(host, {})
+        pending = current_pending.copy()
         limit = min(slots, self._live_readiness_window()) - len(existing)
         if not pending or limit <= 0:
             return []
@@ -1899,7 +1985,9 @@ class DistributedExecutor(ConcurrentExecutor):
             if (now - checked >= Q3_WORKER_PROOF_SECONDS
                     or row is not None and (row['state'] != 'QUEUED'
                         or row['request_sha256'] != decision['request_sha256'])):
-                del pending[job_id]
+                with self.state.cv:
+                    if current_pending.get(job_id) is pending[job_id]:
+                        del current_pending[job_id]
                 continue
             if (job_id in existing or not self._host_supports_stage(host, request)
                     or not self._fits_host_walltime(host, request)
@@ -1910,7 +1998,9 @@ class DistributedExecutor(ConcurrentExecutor):
                     request=request, request_sha256=decision['request_sha256'], attempt_id=None),
                     host_id=host, eligibility=decision)
             except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
-                del pending[job_id]
+                with self.state.cv:
+                    if current_pending.get(job_id) is pending[job_id]:
+                        del current_pending[job_id]
                 self.log(event='PBS_Q3_PREFLIGHT_UNAVAILABLE', job=job_id, host_id=host, reason=str(error))
                 continue
             challenge.pop('attempt_id', None)
@@ -1945,7 +2035,11 @@ class DistributedExecutor(ConcurrentExecutor):
                 targets = {host} if self.controller_parallel and missing_host and cached and eligible['eligible_host_ids'] else None
                 if targets is None and deferred and not eligible['eligible_host_ids']:
                     targets = deferred
-                holds = (eligible.get('host_decisions') or {}).values()
+                host_decisions = eligible.get('host_decisions') or {}
+                # A passed local profile does not make another host's fixed
+                # scope rejection transient. Keep that host's probe lane open
+                # for different requests until this invocation changes.
+                holds = ([host_decisions.get(host, {})] if missing_host else host_decisions.values())
                 fixed_scope_hold = holds and all(h.get('reasons') in (
                     ['COUNT_ONLY_SCOPE_EXCEEDED'], ['OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN'])
                     for h in holds)
@@ -1965,9 +2059,11 @@ class DistributedExecutor(ConcurrentExecutor):
                             for name in eligible['eligible_host_ids']:
                                 if name not in observed and name not in decision['eligible_host_ids']:
                                     decision['eligible_host_ids'].append(name)
-                                    for section in ('host_fingerprints', 'execution_profiles', 'host_decisions'):
+                                    for section in ('host_fingerprints', 'execution_profiles'):
                                         if name in eligible.get(section, {}):
                                             decision.setdefault(section, {})[name] = eligible[section][name]
+                            for name, cell in eligible.get('host_decisions', {}).items():
+                                decision.setdefault('host_decisions', {}).setdefault(name, cell)
                             waiting = (deferred - observed) | set(decision.get('deferred_hosts', ()))
                             if waiting:
                                 decision['deferred_hosts'] = sorted(waiting)
@@ -2158,9 +2254,14 @@ class DistributedExecutor(ConcurrentExecutor):
             raise ValueError('No configured preparation stage profiles for host: '+host)
         return configured
 
-    def _save_preparation_pending(self):
-        from .rpe_q3_coordinator import atomic_json
-        atomic_json(self.preparation_pending_path,dict(schema='RPE_PENDING_PREPARATION_READINESS_V1',tasks=self.preparation_pending))
+    def _save_preparation_pending(self, jobs):
+        self.store.save_preparation_readiness({job: self.preparation_pending.get(job) for job in jobs})
+
+    def discard_pending_preparation(self, job):
+        with self.state.cv:
+            if job in self.preparation_pending:
+                self.store.save_preparation_readiness({job: None})
+                del self.preparation_pending[job]
 
     def _pending_preparation_assignment(self, record, host):
         from .rpe_q3_coordinator import digest
@@ -2238,8 +2339,9 @@ class DistributedExecutor(ConcurrentExecutor):
     def _pending_preparation_challenges(self, host, free_slots):
         if host not in self._preparation_probe_targets():return []
         candidates = []
-        states = self.store.preparation_states(self.preparation_pending)
-        for job_id, record in self.preparation_pending.items():
+        pending = self.preparation_pending.copy()
+        states = self.store.preparation_states(pending)
+        for job_id, record in pending.items():
             if not self._host_supports_stage(host, record['request']):
                 continue
             if job_id in states and states[job_id][1] not in ('QUEUED', 'CANCELLED'):
@@ -2253,21 +2355,25 @@ class DistributedExecutor(ConcurrentExecutor):
         # in advance. Advance past failures and rotate through later requests.
         target = max(1, free_slots)
         challenges = []
-        changed = False
+        changed = set()
         for examined, (job_id, record) in enumerate(candidates[start:]+candidates[:start], 1):
             try:challenges.append(self._pending_preparation_assignment(record,host))
             except (OSError,KeyError,ValueError,TypeError)as exc:
-                failure=str(exc)
-                if record.setdefault('failures',{}).get(host)!=failure:
-                    record['failures'][host] = failure
-                    changed = True
-                hold=self._preparation_probe_hold(record)
-                if hold is not None:self.preparation_holds[job_id]=hold
+                with self.state.cv:
+                    if self.preparation_pending.get(job_id) is not record:
+                        continue
+                    failure=str(exc)
+                    if record.setdefault('failures',{}).get(host)!=failure:
+                        record['failures'][host] = failure
+                        changed.add(job_id)
+                    hold=self._preparation_probe_hold(record)
+                    if hold is not None:self.preparation_holds[job_id]=hold
                 continue
             if len(challenges) == target:
                 break
         if changed:
-            self._save_preparation_pending()
+            with self.state.cv:
+                self._save_preparation_pending(changed)
         self.preparation_probe_offsets[host] = (start + examined) % len(candidates)
         return challenges
 
@@ -2293,60 +2399,69 @@ class DistributedExecutor(ConcurrentExecutor):
                 reports[job_id] = (record, None, str(exc))
         return reports
 
-    def _refresh_pending_preparation(self, host, reports):
+    def _refresh_pending_preparation(self, host, reports, *, poll_started):
         if not reports or host not in self._preparation_probe_targets():
             return
         rows = self.store.rows_for(reports)
-        modified = False
+        modified = set()
         for job_id, (record, checked, error) in reports.items():
-            if self.preparation_pending.get(job_id) is not record:
-                continue
-            old = rows.get(job_id)
-            if old is not None and (old['state'] not in ('QUEUED', 'CANCELLED')
-                                    or old['detail'].get('prelaunch_recovery') is True):
-                continue
-            decision=deepcopy(record['decision']);changed=False
-            try:
-                if error is not None:
-                    raise ValueError(error)
-                fingerprint,selected,current=checked
-                changed=decision['host_fingerprints'].get(host)!=current
-                if host not in decision['eligible_host_ids']:decision['eligible_host_ids'].append(host);changed=True
-                decision['host_fingerprints'][host]=current;decision['execution_profiles'][host]=selected
-                if host in record.setdefault('failures',{}):record['failures'].pop(host);changed=True
-                record['reports'][host]=fingerprint
-                decision['reasons']=[]
-                record['decision']=decision
-                modified |= changed
-                self.preparation_holds.pop(job_id,None)
-                # A verified metadata report enables a normal durable reservation;
-                # readiness itself consumes no attempt or scientific budget.
-                if old is None or old['state']=='CANCELLED':
-                    self.submit_preparation(record['request'],budget=record['budget'],approved=record['approved'],
-                        contract=record['contract'],eligibility=decision)
-                elif old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
-                if changed:
-                    preparation = record['request']['preparation']
-                    started = record.get('probe_started_epoch')
-                    self.log(event='PREPARATION_HOST_READINESS', job=job_id, host_id=host,
-                        status='PASS', stage=preparation['stage'], provider=preparation.get('provider'),
-                        seconds_since_probe_requested=max(0, time.time()-started) if started else None)
-            except (OSError,KeyError,ValueError,TypeError)as exc:
-                failure=str(exc);failures=record.setdefault('failures',{})
-                changed=failures.get(host)!=failure;failures[host]=failure
-                if host in decision['eligible_host_ids']:
-                    decision['eligible_host_ids'].remove(host);decision['host_fingerprints'].pop(host,None);decision['execution_profiles'].pop(host,None);changed=True
-                decision['reasons']=['NO_MATCHING_PREPARATION_STAGE_HOST']if not decision['eligible_host_ids']else[]
-                record['decision']=decision
-                modified |= changed
-                if changed:
-                    self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='UNCHECKED',stage=record['request']['preparation']['stage'],reason=failure)
-                if old is not None and old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
-                hold=self._preparation_probe_hold(record)
-                if hold is not None:self.preparation_holds[job_id]=hold
+            with self.state.cv:
+                if self.hosts[host]['poll_started'] != poll_started or self._user_stop_requested():
+                    break
+                if self.preparation_pending.get(job_id) is not record:
+                    continue
+                old = rows.get(job_id)
+                owner = self.store.attempt_owner(job_id)
+                if owner is not None and owner['state'] not in ('QUEUED', 'CANCELLED'):
+                    continue
+                if old is not None and (old['state'] not in ('QUEUED', 'CANCELLED')
+                                        or old['detail'].get('prelaunch_recovery') is True):
+                    continue
+                decision=deepcopy(record['decision']);changed=False
+                try:
+                    if error is not None:
+                        raise ValueError(error)
+                    fingerprint,selected,current=checked
+                    changed=decision['host_fingerprints'].get(host)!=current
+                    if host not in decision['eligible_host_ids']:decision['eligible_host_ids'].append(host);changed=True
+                    decision['host_fingerprints'][host]=current;decision['execution_profiles'][host]=selected
+                    if host in record.setdefault('failures',{}):record['failures'].pop(host);changed=True
+                    record['reports'][host]=fingerprint
+                    decision['reasons']=[]
+                    record['decision']=decision
+                    if changed:
+                        modified.add(job_id)
+                    self.preparation_holds.pop(job_id,None)
+                    # A verified metadata report enables a normal durable reservation;
+                    # readiness itself consumes no attempt or scientific budget.
+                    if old is None or old['state']=='CANCELLED':
+                        self.submit_preparation(record['request'],budget=record['budget'],approved=record['approved'],
+                            contract=record['contract'],eligibility=decision)
+                    elif old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
+                    if changed:
+                        preparation = record['request']['preparation']
+                        started = record.get('probe_started_epoch')
+                        self.log(event='PREPARATION_HOST_READINESS', job=job_id, host_id=host,
+                            status='PASS', stage=preparation['stage'], provider=preparation.get('provider'),
+                            seconds_since_probe_requested=max(0, time.time()-started) if started else None)
+                except (OSError,KeyError,ValueError,TypeError)as exc:
+                    failure=str(exc);failures=record.setdefault('failures',{})
+                    changed=failures.get(host)!=failure;failures[host]=failure
+                    if host in decision['eligible_host_ids']:
+                        decision['eligible_host_ids'].remove(host);decision['host_fingerprints'].pop(host,None);decision['execution_profiles'].pop(host,None);changed=True
+                    decision['reasons']=['NO_MATCHING_PREPARATION_STAGE_HOST']if not decision['eligible_host_ids']else[]
+                    record['decision']=decision
+                    if changed:
+                        modified.add(job_id)
+                    if changed:
+                        self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='UNCHECKED',stage=record['request']['preparation']['stage'],reason=failure)
+                    if old is not None and old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
+                    hold=self._preparation_probe_hold(record)
+                    if hold is not None:self.preparation_holds[job_id]=hold
         if modified:
-            self._save_preparation_pending()
-        self.state.cv.notify_all()
+            with self.state.cv:
+                self._save_preparation_pending(modified)
+                self.state.cv.notify_all()
 
     def _prelaunch_recovery_challenges(self, host, slots, fingerprints):
         """Use normal host checks and keep an ended attempt's reservation."""
@@ -2385,10 +2500,11 @@ class DistributedExecutor(ConcurrentExecutor):
                                                      previous=row['eligibility'], prefetch=True)
                     if not decision or host not in decision['eligible_host_ids']:
                         continue
-                    assignment = self._assignment(row, host_id=host, eligibility=decision, metadata_only=True)
+                    assignment = self._assignment(row, host_id=host, eligibility=decision)
                     assignment.pop('attempt_id', None)
                 if facts is None:
                     if len(challenges) < slots:
+                        assignment['prelaunch_recovery_probe'] = True
                         challenges.append(assignment)
                     continue
                 if (host == row['host_id'] and digest(facts) ==
@@ -2396,23 +2512,30 @@ class DistributedExecutor(ConcurrentExecutor):
                     continue
                 # A queued fallback still requires a fresh fingerprint at claim.
                 decision = dict(decision, eligible_host_ids=[host])
-                launch = job/'LAUNCH.json'
-                if launch.is_file():
-                    history = job/'attempt-history'/row['attempt_id']/'LAUNCH.json'
-                    if not history.is_file():
-                        history.parent.mkdir(parents=True, exist_ok=True)
-                        atomic_json(history, json.loads(launch.read_bytes()))
-                if not self.store.requeue_prelaunch(job_id, row['attempt_id'], host, decision, facts):
-                    continue
-                original = self.state.tasks.get(job)
-                demand = prep is not None or (original is not None and original.demand)
-                self.state.tasks.pop(job, None)
-                self._restore_task(self.store.row(job_id), demand=demand)
-                self.preparation_holds.pop(job_id, None)
-                self.eligibility_holds.pop(job_id, None)
-                self.log(event='PRELAUNCH_REDISPATCH', job=job_id, host_id=host,
-                         original_host_id=row['host_id'], original_attempt_id=row['attempt_id'])
-                self.state.cv.notify_all()
+                with self.state.cv:
+                    if self._user_stop_requested() or self.state.closed or self.state.failure:
+                        break
+                    current = self.store.attempt_owner(job_id)
+                    if (current is None or current['attempt_id'] != row['attempt_id']
+                            or current['state'] != 'UNKNOWN'):
+                        continue
+                    launch = job/'LAUNCH.json'
+                    if launch.is_file():
+                        history = job/'attempt-history'/row['attempt_id']/'LAUNCH.json'
+                        if not history.is_file():
+                            history.parent.mkdir(parents=True, exist_ok=True)
+                            atomic_json(history, json.loads(launch.read_bytes()))
+                    if not self.store.requeue_prelaunch(job_id, row['attempt_id'], host, decision, facts):
+                        continue
+                    original = self.state.tasks.get(job)
+                    demand = prep is not None or (original is not None and original.demand)
+                    self.state.tasks.pop(job, None)
+                    self._restore_task(self.store.row(job_id), demand=demand)
+                    self.preparation_holds.pop(job_id, None)
+                    self.eligibility_holds.pop(job_id, None)
+                    self.log(event='PRELAUNCH_REDISPATCH', job=job_id, host_id=host,
+                             original_host_id=row['host_id'], original_attempt_id=row['attempt_id'])
+                    self.state.cv.notify_all()
                 slots -= 1
                 if not slots:
                     break
@@ -2460,7 +2583,7 @@ class DistributedExecutor(ConcurrentExecutor):
                             and not self.store.artificial(request) and job_id not in self.preparation_pending):
                         empty=dict(request_sha256=Q.digest(request),eligible_host_ids=[],host_fingerprints={},execution_profiles={},reasons=['PREPARATION_HOST_METADATA_PENDING'])
                         self.preparation_pending[job_id]=dict(request=request,budget=budget,approved=approved,contract=deepcopy(contract),decision=empty,reports={},failures={},probe_started_epoch=time.time())
-                        self._save_preparation_pending()
+                        self._save_preparation_pending([job_id])
                     self.eligibility_holds[job_id] = eligibility
                     self.preparation_holds[job_id] = dict(status='HOST_ELIGIBILITY_HOLD',reason='NO_MATCHING_PREPARATION_STAGE_HOST',host_eligibility=eligibility)
                     pending = self.preparation_pending.get(job_id)
@@ -2494,55 +2617,56 @@ class DistributedExecutor(ConcurrentExecutor):
         """Wait for a watched job's result or its terminal eligibility decision."""
         if not job_ids:
             return []
-        with self.state.cv:
-            while not (self.state.closed or self.state.failure or stop_requested()):
-                states = self.store.preparation_states(job_ids)
-                ready = []
-                can_progress = False
-                for job in job_ids:
-                    method, state = states.get(job, (None, None))
-                    task = self.state.tasks.get(self.run_dir/'jobs'/method/job) if method else None
-                    if state == 'UNKNOWN' or (state == 'ACCEPTED' and
-                            (self.run_dir/'jobs'/method/job/'OUTCOME.json').is_file()) or (task and task.error):
+        while not (self.state.closed or self.state.failure or stop_requested()):
+            states = self.store.preparation_states(job_ids)
+            ready = []
+            can_progress = False
+            for job in job_ids:
+                method, state = states.get(job, (None, None))
+                task = self.state.tasks.get(self.run_dir/'jobs'/method/job) if method else None
+                if state == 'UNKNOWN' or (state == 'ACCEPTED' and
+                        (self.run_dir/'jobs'/method/job/'OUTCOME.json').is_file()) or (task and task.error):
+                    ready.append(job)
+                if state == 'QUEUED':
+                    row = self.store.row(job)
+                    if self._preparation_dependency_hold(row):
                         ready.append(job)
-                    if state == 'QUEUED':
-                        row = self.store.row(job)
-                        if self._preparation_dependency_hold(row):
-                            ready.append(job)
-                        elif wait:
-                            eligibility = (row.get('eligibility') or {}).get('eligible_host_ids')
-                            if eligibility is None:  # Artificial queues may have no readiness policy.
-                                can_progress = True
-                            else:
-                                policy, error = self._host_admission_policy()
-                                age = time.time() - row['enqueued_epoch']
-                                for host in eligibility:
-                                    admission = self._host_admission(host, policy, error)
-                                    offer = self.hosts.get(host, {})
-                                    if (not admission['accepting'] or admission['max_slots'] == 0
-                                            or offer.get('accepting_new_jobs') is False):
-                                        continue
-                                    if (self._offer_fresh(host) and self._fits_host_walltime(host, row['request'])
-                                            or not offer and age < self.allocation_config['offer_ttl_seconds']):
-                                        can_progress = True
-                                        break
-                    elif state not in (None, 'CANCELLED'):
-                        can_progress = True
-                    if state not in (None, 'CANCELLED'):
-                        continue
-                    pending = self.preparation_pending.get(job)
-                    hold = self.preparation_holds.get(job, {})
-                    if (hold.get('status') == 'PREPARATION_BUDGET_OR_PERMISSION_HOLD'
-                            or (pending is not None and self._preparation_probe_hold(pending) is not None)
-                            or (pending is None and hold)):
-                        ready.append(job)
-                    else:
-                        can_progress |= pending is not None
-                if ready or not wait or not can_progress:
-                    return ready
-                # Some admission deadlines and STOPs are set outside this
-                # process. Result publication and local eligibility wake us.
-                self.state.cv.wait(.5)
+                    elif wait:
+                        eligibility = (row.get('eligibility') or {}).get('eligible_host_ids')
+                        if eligibility is None:  # Artificial queues may have no readiness policy.
+                            can_progress = True
+                        else:
+                            policy, error = self._host_admission_policy()
+                            age = time.time() - row['enqueued_epoch']
+                            for host in eligibility:
+                                admission = self._host_admission(host, policy, error)
+                                offer = self.hosts.get(host, {})
+                                if (not admission['accepting'] or admission['max_slots'] == 0
+                                        or offer.get('accepting_new_jobs') is False):
+                                    continue
+                                if (self._offer_fresh(host) and self._fits_host_walltime(host, row['request'])
+                                        or not offer and age < self.allocation_config['offer_ttl_seconds']):
+                                    can_progress = True
+                                    break
+                elif state not in (None, 'CANCELLED'):
+                    can_progress = True
+                if state not in (None, 'CANCELLED'):
+                    continue
+                pending = self.preparation_pending.get(job)
+                hold = self.preparation_holds.get(job, {})
+                if (hold.get('status') == 'PREPARATION_BUDGET_OR_PERMISSION_HOLD'
+                        or (pending is not None and self._preparation_probe_hold(pending) is not None)
+                        or (pending is None and hold)):
+                    ready.append(job)
+                else:
+                    can_progress |= pending is not None
+            if ready or not wait or not can_progress:
+                return ready
+            # Some admission deadlines and STOPs are set outside this
+            # process. Result publication and local eligibility wake us.
+            with self.state.cv:
+                if not (self.state.closed or self.state.failure or stop_requested()):
+                    self.state.cv.wait(.5)
         return []
 
     def _preparation_dependency_hold(self, row):
@@ -2589,6 +2713,8 @@ class DistributedExecutor(ConcurrentExecutor):
             self.for_method(row['method']).log(event='DEPENDENCY_WAIT_START',job=job_id)
             try:
                 while not task.event.wait(.1):
+                    if self._user_stop_requested() or self.state.closed or self.state.failure is not None:
+                        return dict(status='PREPARATION_WAIT_INTERRUPTED', job_id=job_id, calls=0, preparation_calls=0)
                     if hold := self._preparation_dependency_hold(row):
                         return hold
             finally: self.for_method(row['method']).log(event='DEPENDENCY_WAIT_END',job=job_id)
@@ -2617,9 +2743,9 @@ class DistributedExecutor(ConcurrentExecutor):
         row = self.store.row(job_id)
         if row is None or row['state'] != 'ACCEPTED' or self._preparation_request(row['request']) is None:
             raise ValueError('Only a received preparation result can be adopted')
+        job = self.run_dir/'jobs'/row['method']/job_id
+        outcome = json.loads((job/'OUTCOME.json').read_text())
         if self.store.adopt(job_id):
-            job = self.run_dir/'jobs'/row['method']/job_id
-            outcome = json.loads((job/'OUTCOME.json').read_text())
             self.for_method(row['method']).log(event='ADOPT',job=job_id,configuration=job_id,
                 status=outcome['status'],stage=row['request']['preparation']['stage'])
             self.state.metrics['preparation_adopted'] += 1
@@ -2870,21 +2996,23 @@ class DistributedExecutor(ConcurrentExecutor):
             reference = continuation['references'][host]
         return deepcopy(reference)
 
-    def _assignment(self, row, host_id=None, *, eligibility=None, metadata_only=False):
+    def _assignment(self, row, host_id=None, *, eligibility=None):
         from .rpe_q3_coordinator import input_hashes, prefix_key, digest
         from .rpe_host_profiles import profile_core
         preparation = self._preparation_request(row['request'])
+        eligibility = eligibility if eligibility is not None else row.get('eligibility') or {}
+        inputs = preparation.get('input_hashes', []) if preparation else eligibility.get('input_hashes')
+        if inputs is None:
+            inputs = input_hashes(self.computation_root, row['request'], self.input_hash_cache)
         value = dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
             request_sha256=row['request_sha256'], source_manifest=preparation.get('source', self.source_manifest) if preparation else self.source_manifest,
-            input_hashes=preparation.get('input_hashes', []) if preparation else input_hashes(self.computation_root, row['request'], self.input_hash_cache),
+            input_hashes=inputs,
             prefix_key=('preparation:'+digest(row['request'])) if preparation else prefix_key(row['request']))
         if preparation:
             value['artifact_manifest'] = self._preparation_inputs(row['request'])
         # Eligibility can change only before claim. Assigned rows retain the
         # selected profile for replay/recovery even after policy replacement.
-        fixed = self.store.row(row['job_id'])
         host = host_id or row.get('host_id')
-        eligibility = eligibility if eligibility is not None else fixed.get('eligibility') or {}
         profile = (eligibility.get('execution_profiles') or {}).get(host)
         evaluator = (eligibility.get('host_decisions') or {}).get(host, {}).get('evaluator')
         if evaluator:
@@ -2895,29 +3023,63 @@ class DistributedExecutor(ConcurrentExecutor):
                 value['host_execution_profile'] = preparation_profile_core(profile)
             else: value['host_execution_profile'] = profile_core(profile)
             value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
+        launch_fit = (row.get('detail') or {}).get('pbs_launch_resources')
+        if launch_fit is not None and row.get('state') == 'ASSIGNED':
+            value['pbs_launch_resources'] = launch_fit
         reference = self._task_release(row['request'], host)
         if reference is not None:
             value['required_release'] = reference
-            continuation = self.distributed.get('local_pf_continuation')
-            local=self.distributed.get('local_worker')or{}
-            if not metadata_only and host == local.get('host_id') and self.distributed.get('local_deployment_layout'):
-                from .rpe_release_deployment import read,validate_assignment_release
-                if continuation and reference != self.distributed['required_release']:
-                    manifest, layout = continuation['manifest'], continuation['layout']
-                else:
-                    manifest, layout = self.release_manifest, read(self.distributed['local_deployment_layout'])
-                validate_assignment_release(manifest,layout,value,local)
         return value
 
     def _timing_queue(self):
-        """Observe queue causes under the existing claim lock; never reorder."""
+        """Schedule one background observation from a short in-memory snapshot."""
+        state = self.state
+        now = time.monotonic()
+        with state.cv:
+            if state.closed or getattr(state, 'queue_observation_active', False) or now < getattr(state, 'next_queue_timing', 0):
+                return
+            snapshot = copy(self)
+            snapshot.hosts = self.hosts.copy()  # Each poll replaces the complete host report.
+            snapshot.host_admission_cache = {}
+            snapshot.preparation_pending = {
+                job: dict(record, failures=dict(record.get('failures', {})))
+                for job, record in self.preparation_pending.items()}
+            snapshot.state = copy(state)
+            snapshot.state.tasks = {path: copy(task) for path, task in state.tasks.items()
+                                    if task.status in ('QUEUED', 'RUNNING')}
+            snapshot.state.owner_clock = dict(state.owner_clock)
+            snapshot.state.host_ready_backlog = dict(getattr(state, 'host_ready_backlog', {}))
+            state.queue_observation_active = True
+            state.next_queue_timing = now + 2
+        threading.Thread(target=self._collect_queue_observation, args=(snapshot,),
+                         name='rpe-queue-observer', daemon=True).start()
+
+    def _collect_queue_observation(self, snapshot):
+        state = self.state
+        try:
+            with self.lock:
+                snapshot.state.allocation_wait_totals = dict(state.allocation_wait_totals)
+                snapshot.state.allocation_waits = {job: tuple(starts) for job, starts in state.allocation_waits.items()}
+            snapshot._report_queue_snapshot()
+            feedback = {host: snapshot._capacity_feedback(host) for host in snapshot.hosts}
+            with state.cv:
+                if not state.closed:
+                    state.queue_feedback = feedback
+                    state.last_timing_queue = getattr(snapshot.state, 'last_timing_queue', None)
+                    state.ready_cpu_supply = getattr(snapshot.state, 'ready_cpu_supply', {})
+                    state.host_ready_backlog = snapshot.state.host_ready_backlog
+        except (OSError, KeyError, TypeError, ValueError, RuntimeError, sqlite3.Error) as error:
+            if not state.closed:
+                self.log(event='QUEUE_OBSERVATION_FAILED', reason=str(error))
+        finally:
+            with state.cv:
+                state.queue_observation_active = False
+                state.cv.notify_all()
+
+    def _report_queue_snapshot(self):
+        """Measure ready work without holding the allocation lock."""
         s=self.state;reasons={}
         started = time.monotonic()
-        # Waiting work and CPU supply are sampled diagnostics. Several hosts
-        # can poll in the same instant. Rebuilding the same report for each
-        # poll delays claims and result acknowledgements behind the lock.
-        if started < getattr(s, 'next_queue_timing', 0):
-            return
         admission=None;admission_error=None
         # Use the newer optional-host policy when supplied by the integration;
         # do not copy or change its dispatch/admission implementation here.
@@ -2926,8 +3088,14 @@ class DistributedExecutor(ConcurrentExecutor):
         # Compact operational columns only: do not deserialize every saved REQUEST.
         with self.store._connection() as db:
             snapshot={r['job_id']:dict(r)for r in db.execute(
-                "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
+                "SELECT job_id,host_id,state,eligibility FROM jobs INDEXED BY host_state_queue WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
         owned_attempts = self._owned_attempts()
+        queued_preparation = [task.job.name for task in s.tasks.values()
+                              if task.status == 'QUEUED' and task.rule['kind'] == 'preparation']
+        preparation_rows = self.store.rows_for(queued_preparation)
+        dependencies_ready = {
+            task.job.name: self._task_ready(task, preparation_rows[task.job.name])
+            for task in s.tasks.values() if task.job.name in preparation_rows}
         owned=Counter(r['host_id'] for r in owned_attempts)
         for task in s.tasks.values():
             if task.status!='QUEUED':continue
@@ -2945,7 +3113,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 value=self.hosts[h].get('capacity')
                 maximum=None if admission is None else self._host_admission(h,admission,admission_error)['max_slots']
                 return min(value,maximum)if value is not None and maximum is not None else value
-            if self._preparation_request(self.store.row(task.job.name)['request']) and not self._task_ready(task):reason='PREPARATION_DEPENDENCY_OR_ARTIFACT_WAIT'
+            if not dependencies_ready.get(task.job.name, True):reason='PREPARATION_DEPENDENCY_OR_ARTIFACT_WAIT'
             elif admission_error or(admission is not None and not allowed):reason='HOST_ADMISSION_HOLD'
             elif s.active>=self.capacity:reason='ALL_ELIGIBLE_SLOTS_BUSY'
             elif allowed and all(h in self.hosts and capacity(h) is not None and
@@ -2960,8 +3128,9 @@ class DistributedExecutor(ConcurrentExecutor):
             reserved = self.store.preparation_reservations()
             budget_blocked = {}
             checking = False
+            pending_states = self.store.preparation_states(self.preparation_pending)
             for job, record in self.preparation_pending.items():
-                if job in snapshot or self.store.row(job) is not None:
+                if job in pending_states:
                     continue
                 stage = record['request']['preparation']['stage']
                 budget = record.get('budget')
@@ -2990,7 +3159,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not storage['accepting_new_jobs']:
                         observation['idle_reason'] = storage['reason']
                 if free:
-                    compatible = self._match_ready_jobs(ready, {host: free})
+                    compatible = self._match_ready_jobs(ready, {host: free}, owned=owned_attempts)
                     if work_conserving:
                         blocked_by_resources = (cpu is not None and cpu['compatible_ready_jobs']
                                                 and not cpu['ready_jobs_fitting_free_resources'])
@@ -3005,19 +3174,18 @@ class DistributedExecutor(ConcurrentExecutor):
         marker=json.dumps(payload,sort_keys=True)
         if marker!=getattr(s,'last_timing_queue',None):
             s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE', report_seconds=time.monotonic()-started,**payload)
-        s.next_queue_timing = time.monotonic() + 2
 
     @contextmanager
     def _rpc_queue_lock(self, path, host):
         waiting = time.monotonic()
         with self.state.cv:
             acquired = time.monotonic()
-            if acquired-waiting >= 1:
-                self.log(event='DISTRIBUTED_RPC_LOCK_WAIT', endpoint=path, host_id=host, seconds=acquired-waiting)
             try:
                 yield
             finally:
                 held = time.monotonic()-acquired
+        if acquired-waiting >= 1:
+            self.log(event='DISTRIBUTED_RPC_LOCK_WAIT', endpoint=path, host_id=host, seconds=acquired-waiting)
         if held >= 1:
             self.log(event='DISTRIBUTED_RPC_LOCK_HELD', endpoint=path, host_id=host, seconds=held)
 
@@ -3028,6 +3196,31 @@ class DistributedExecutor(ConcurrentExecutor):
         s = self.state
         host = value['host_id']
         if not isinstance(host, str) or not host: raise ValueError('Nonempty host_id required')
+        if path in ('/v1/attempt', '/v1/attempts'):
+            attempts = value['attempts'] if path == '/v1/attempts' else [value]
+            rows = self.store.attempt_owners(item['job_id'] for item in attempts)
+            replies = {}
+            for item in attempts:
+                row = rows.get(item['job_id'])
+                attempt = item['attempt_id']
+                if not attempt or row is None or (host, attempt, item['request_sha256']) != (
+                        row['host_id'], row['attempt_id'], row['request_sha256']):
+                    reply = dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN')
+                elif row['state'] == 'ACCEPTED':
+                    reply = dict(ok=True, disposition='STATE_ALREADY_ACCEPTED', completion_sha256=row['completion_sha256'])
+                else:
+                    reply = dict(ok=True, state=row['state'])
+                replies[attempt] = reply
+            return dict(attempts=replies) if path == '/v1/attempts' else replies[value['attempt_id']]
+        if path == '/v1/transfer-metric':
+            row = self.store.attempt_owner(value['job_id'])
+            owned = (row is not None and value['attempt_id'] and
+                     (host, value['attempt_id']) == (row['host_id'], row['attempt_id']))
+            if not owned:
+                raise ValueError('Different execution host/attempt')
+            self.for_method(row['method']).log(event='TRANSFER_TIMING', job=value['job_id'], host_id=host,
+                attempt_id=value['attempt_id'], **value.get('timing', {}))
+            return dict(ok=True)
         # The content-addressed cache installs only complete hash-checked
         # files. Hashing and encoding large bundles need no queue lock.
         if path.startswith('/v1/artifacts/'):
@@ -3036,281 +3229,8 @@ class DistributedExecutor(ConcurrentExecutor):
             if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
             raise ValueError('Unknown artifact RPC endpoint')
         if path == '/v1/poll':
-            poll_started = time.monotonic()
-            if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
-            slots = value['slots']
-            if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
-            fingerprints = value.get('host_fingerprints') or {}
-            errors = value.get('readiness_errors') or {}
-            if not isinstance(fingerprints, dict) or not isinstance(errors, dict):
-                raise ValueError('Host readiness must map job IDs to current facts or errors')
-            host_capacity = value.get('capacity')
-            if host_capacity is not None and (type(host_capacity) is not int or host_capacity < 0):
-                raise ValueError('Nonnegative host capacity required')
-            # Profile and request validation are independent of queue ownership.
-            preparation_reports = self._check_pending_preparation_reports(host, fingerprints, errors)
+            return self._poll(host, value)
         with self._rpc_queue_lock(path, host):
-            if path == '/v1/poll':
-                observed = self.hosts.get(host, {})
-                if poll_started < observed.get('poll_started', float('-inf')):
-                    return dict(assignments=[], stop=False, host_admission=observed['host_admission'],
-                                eligibility_challenges=[], capacity_feedback=self._capacity_feedback(host))
-                stopping = self._user_stop_requested()
-                admission_policy, admission_error = self._host_admission_policy()
-                admission = self._host_admission(host, admission_policy, admission_error)
-                owned = self._owned_attempts()
-                new_slots = self._host_new_slots(host, slots, admission, owned=owned)
-                if host not in self.hosts:
-                    self.log(event='HOST_FIRST_POLL',host_id=host,capacity=value.get('capacity'))
-                self.hosts[host] = dict(epoch=time.time(), poll_started=poll_started, slots=new_slots, reported_slots=slots,
-                                       capacity=host_capacity, host_admission=admission,
-                                       accepting_new_jobs=value.get('accepting_new_jobs', True),
-                                       observed_monotonic=time.monotonic(),
-                                       owned_at_offer=[row['attempt_id'] for row in owned if row['host_id'] == host],
-                                       resource_report=value.get('resource_report'),
-                                       cached_prefixes=value.get('cached_prefixes', []),
-                                       host_fingerprints=fingerprints, readiness_errors=value.get('readiness_errors'))
-                self._refresh_pending_preparation(host,preparation_reports)
-                self._refresh_capacity(admission_policy, admission_error)
-                s.cv.notify_all()
-                new_slots = self._offer_free(host, admission_policy, admission_error)
-                may_probe = (not stopping and not s.failure and not s.closed and admission['accepting']
-                             and admission['max_slots'] != 0 and value.get('accepting_new_jobs', True)
-                             and self._offer_fresh(host)
-                             and ((value.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs', True))
-                pending_challenges = self._pending_preparation_challenges(host, new_slots) if may_probe else []
-                if may_probe and new_slots:
-                    pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
-                def reply(*, probe_rows=(), **fields):
-                    existing=fields.get('eligibility_challenges',[])
-                    challenges = {item['job_id']:item for item in existing+pending_challenges}
-                    if probe_rows:
-                        # Workers verify the exact release during their metadata
-                        # check. Keep a slow host from holding the shared lock
-                        # while the controller validates every waiting request.
-                        start = self.poll_probe_offsets.get(host, 0) % len(probe_rows)
-                        limit = min(len(probe_rows), max(new_slots, self._host_readiness_limit(host)))
-                        for row in (probe_rows[start:]+probe_rows[:start])[:limit]:
-                            try:
-                                challenge = self._assignment(row, host_id=host, metadata_only=True)
-                            except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
-                                self.log(event='HOST_PROBE_INPUT_UNAVAILABLE', host_id=host,
-                                         job=row['job_id'], reason=str(error))
-                                continue
-                            challenge.pop('attempt_id', None)
-                            challenges[challenge['job_id']] = challenge
-                        self.poll_probe_offsets[host] = (start+limit) % len(probe_rows)
-                    if may_probe and new_slots and self.pbs_manager is not None and host in self.pbs_manager.configured:
-                        for challenge in self._pbs_q3_challenges(host, fingerprints, challenges, new_slots):
-                            challenges[challenge['job_id']] = challenge
-                    fields['eligibility_challenges'] = list(challenges.values())
-                    return dict(fields, capacity_feedback=self._capacity_feedback(host))
-                # A lost response is reconciled with its original owner even
-                # if current readiness changed or another host is offline.
-                with self.store._connection() as database:
-                    replay_ids = [row['job_id'] for row in database.execute(
-                        "SELECT job_id FROM jobs WHERE host_id=? AND state='ASSIGNED' ORDER BY enqueued_epoch,job_id LIMIT ?",
-                        (host, slots))]
-                assignments = [self._assignment(self.store.row(job)) for job in replay_ids]
-                if stopping:
-                    return reply(assignments=assignments, stop=False,
-                                 host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
-                if not new_slots:
-                    self._timing_queue()
-                    return reply(assignments=assignments, stop=False, host_admission=admission,
-                                eligibility_challenges=[])
-                queue = self._ready_queue()
-                if s.failure or s.closed: return reply(assignments=assignments, stop=False, host_admission=admission)
-                eligible, challenges = [], []
-                skipped = False
-                rows = self.store.rows_for(task.job.name for task in queue)
-                for task in queue:
-                    row = rows[task.job.name]
-                    if not self._host_supports_stage(host, row['request']):
-                        skipped = True
-                        continue
-                    if not self._fits_host_walltime(host, row['request']):
-                        skipped = True
-                        continue
-                    saved = row['eligibility']
-                    # Live evidence is bound to the immutable request at reservation
-                    # and claim requires this host's current exact fingerprint.
-                    # A host without a stored PASS still goes through live readiness.
-                    if (row['detail'].get('prelaunch_recovery') is True
-                            or (saved and 'input_hashes' in saved and host in saved['eligible_host_ids']
-                                and fingerprints.get(row['job_id']) is not None
-                                and Q.digest(fingerprints[row['job_id']]) == saved['host_fingerprints'].get(host))):
-                        decision = saved
-                    else:
-                        decision = self._eligibility_for(row['request'], row['job_id'], blocking=False,
-                                                         previous=saved, host=host)
-                    unchanged = decision == saved and self.store.eligible(
-                        row['request'], decision, request_sha256=row['request_sha256'])
-                    if not unchanged and not self.store.set_eligibility(row['job_id'], decision):
-                        self.eligibility_holds[row['job_id']] = decision
-                        task.error = 'HOST_ELIGIBILITY_HOLD'
-                        ConcurrentExecutor._cancel(self, task)
-                        skipped = True
-                        continue
-                    self.eligibility_holds.pop(row['job_id'], None)
-                    task.supply_hosts = None if decision is None else frozenset(decision['eligible_host_ids'])
-                    if decision is not None and host not in decision['eligible_host_ids']:
-                        skipped = True
-                        continue
-                    if not self.store.eligible(row['request'], decision, host, fingerprints, row['job_id'],
-                                               request_sha256=row['request_sha256']):
-                        # Metadata challenge only: no attempt ID, reservation
-                        # transition, LAUNCH or scientific execution occurs.
-                        if row['job_id'] not in self.preparation_pending:
-                            challenges.append(row)
-                        skipped = True
-                        continue
-                    if not self._fits_host_task_class(host, dict(row, eligibility=decision)):
-                        skipped = True
-                        continue
-                    conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
-                    if skipped and conditional and not task.demand:
-                        continue
-                    eligible.append(task)
-                if value.get('observe_only') is True:
-                    self._timing_queue()
-                    return reply(assignments=[], stop=False, probe_rows=challenges, host_admission=admission)
-                if self.pbs_manager is not None:
-                    starting = self.pbs_manager.startup_jobs(except_host=host)
-                    eligible = [task for task in eligible if task.job.name not in starting]
-                    starting = self.pbs_manager.startup_jobs()
-                    queue = [task for task in queue if task.job.name not in starting]
-                reserved_for_preferred = self._preferred_ready_jobs(host, queue, admission_policy, admission_error)
-                if reserved_for_preferred:
-                    skipped_preferred = False
-                    remaining_tasks = []
-                    for task in eligible:
-                        if task.job.name in reserved_for_preferred:
-                            skipped_preferred = True
-                            continue
-                        if (skipped_preferred and not task.demand and
-                                task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'):
-                            continue
-                        remaining_tasks.append(task)
-                    eligible = remaining_tasks
-                # Direct workers may poll before the other hosts are observed.
-                # One bounded discovery interval allows simultaneous free
-                # offers to arrive; it never waits for a busy host to finish.
-                rank = self._host_rank(host)
-                if s.allocation_auto and rank > 0 and eligible:
-                    higher = [h for group in self.allocation_config['priority_groups'][:rank] for h in group]
-                    unknown = [h for h in higher if h not in self.hosts]
-                    # Start once at this host's first eligible poll, rather
-                    # than at controller startup (planning/placement can be
-                    # slow). Any higher-group observation ends discovery:
-                    # an absent third host cannot delay known surplus work.
-                    now = time.monotonic()
-                    since = s.allocation_discovery.setdefault(host, now)
-                    if (unknown and not any(h in self.hosts for h in higher) and
-                            now-since < self.allocation_config['discovery_grace_seconds']):
-                        def needs_discovery(task):
-                            decision = self.store.row(task.job.name)['eligibility']
-                            return decision is None or bool(set(unknown).intersection(decision['eligible_host_ids']))
-
-                        eligible = [task for task in eligible if not needs_discovery(task)]
-                        if not eligible:
-                            return reply(assignments=assignments, stop=False, probe_rows=challenges,
-                                         host_admission=admission, waiting_for_discovery=unknown)
-                # Prefix locality is considered only among eligible hosts for
-                # the same first dispatchable task, never an unsupported host.
-                if eligible and not self._preparation_request(self.store.row(eligible[0].job.name)['request']) and time.monotonic()-eligible[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
-                    first = self.store.row(eligible[0].job.name)
-                    key = Q.prefix_key(first['request'])
-                    if key not in value.get('cached_prefixes', []):
-                        preferred = [h for h, info in self.hosts.items() if h != host and info['slots'] > 0
-                            and self._host_rank(h) <= self._host_rank(host)
-                            and self._host_new_slots(h, info.get('reported_slots', info['slots']),
-                                self._host_admission(h, admission_policy, admission_error)) > 0
-                            and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']
-                            and self._host_supports_stage(h, first['request'])
-                            and self._fits_host_walltime(h, first['request'])
-                            and self._fits_host_task_class(h, first)
-                            and self.store.eligible(first['request'], first['eligibility'], h,
-                                                   info.get('host_fingerprints'), first['job_id'])]
-                        if preferred:
-                            eligible = eligible[1:]
-                unresolved = len(self._owned_attempts())
-                remaining = max(0, min(slots-len(assignments), new_slots,
-                    self.capacity-max(s.active, unresolved)-len(reserved_for_preferred)))
-                if host == 'local' and self.distributed.get('controller_queue_first'):
-                    eligible.sort(key=lambda task: not (
-                        task.rule['kind'] == 'preparation' and task.demand))
-                resource_pool = ((value.get('resource_report') or {}).get('pbs') or {}).get('resource_pool')
-                if resource_pool is not None and remaining:
-                    from .rpe_pbs import GIB, resource_need
-                    settings = self.distributed['pbs']
-                    worker = next(w for w in settings['workers'] if w['host_id'] == host)
-                    free_cpu = resource_pool['cpu_count']
-                    free_memory = resource_pool['memory_bytes'] - GIB
-                    for owned in self._owned_attempts():
-                        if owned['host_id'] == host and self._uses_pbs_task_resources(owned):
-                            cpu, memory = resource_need(self.store.row(owned['job_id'])['request'],
-                                                        worker['profile'], settings, host)
-                            free_cpu -= cpu
-                            free_memory -= memory
-                for task in eligible:
-                    if remaining <= 0: break
-                    row = self.store.row(task.job.name)
-                    if self._wait_for_preparation_preference(host, row, admission_policy, admission_error):
-                        continue
-                    if not self._local_calibration_pair_allows(host, row['request']):
-                        continue
-                    if resource_pool is not None:
-                        try:
-                            cpu, memory = resource_need(self.store.row(task.job.name)['request'],
-                                                        worker['profile'], settings, host)
-                        except (KeyError, ValueError):
-                            continue
-                        if cpu > free_cpu or memory > free_memory:
-                            continue
-                    prepared_assignment = None
-                    if (row['request'].get('preparation') and self.distributed.get('required_release')
-                            and host == (self.distributed.get('local_worker') or {}).get('host_id')
-                            and self.distributed.get('local_deployment_layout')):
-                        try:
-                            prepared_assignment = self._assignment(row, host_id=host)
-                        except (ValueError, OSError, subprocess.CalledProcessError) as error:
-                            reason = 'PREPARATION_RELEASE_HOLD:' + str(error)
-                            if task.error != reason:
-                                task.error = reason
-                                self.log(event='PREPARATION_RELEASE_HOLD', job=row['job_id'], host=host, reason=reason)
-                            continue
-                    rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
-                                            host_fingerprints=fingerprints)
-                    if not rows: continue
-                    row = rows[0]
-                    if resource_pool is not None:
-                        free_cpu -= cpu
-                        free_memory -= memory
-                    # Assignment and reservation are committed before a worker
-                    # receives anything. A lost HTTP response retains ownership.
-                    Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],
-                        pid=None, started=row['assigned_epoch'], kind=task.rule['kind'], transport='distributed'))
-                    task.status = 'RUNNING'; task.started = True; task.speculative = not task.demand
-                    s.clock += 1; s.owner_clock[task.owner] = s.clock; s.active += 1
-                    s.peak_active = max(s.peak_active, s.active)
-                    self.uncounted.add(task.job)
-                    s.metrics['launched'] += 1
-                    s.by_method.setdefault(row['method'], Counter())['launched'] += 1
-                    if task.speculative: s.metrics['speculative_launched'] += 1
-                    task.view.log(event='LAUNCH', job=row['job_id'], host_id=host, attempt_id=row['attempt_id'],
-                        configuration=task.proposal['configuration_id'], queue_wait_seconds=time.monotonic()-task.enqueue,
-                        active=s.active, demand=task.demand,
-                        provider=(row['request'].get('preparation') or {}).get('provider'),
-                        eligible_hosts=(row['eligibility'] or {}).get('eligible_host_ids'))
-                    if prepared_assignment is None:
-                        assignments.append(self._assignment(row))
-                    else:
-                        assignments.append(dict(prepared_assignment, attempt_id=row['attempt_id']))
-                    remaining -= 1
-                self._timing_queue()
-                self._refresh_capacity(admission_policy, admission_error)
-                return reply(assignments=assignments, stop=False, probe_rows=challenges, host_admission=admission)
             row = self.store.row(value['job_id'])
             attempt = value['attempt_id']
             if row is None or row['host_id'] != host or row['attempt_id'] != attempt:
@@ -3321,18 +3241,429 @@ class DistributedExecutor(ConcurrentExecutor):
                 raise ValueError('Different execution host/attempt')
             job = self.run_dir/'jobs'/row['method']/row['job_id']
             task = s.tasks.get(job)
-            if path == '/v1/transfer-metric':
-                self.for_method(row['method']).log(event='TRANSFER_TIMING', job=row['job_id'], host_id=host,
-                    attempt_id=value['attempt_id'], **value.get('timing', {}))
-                return dict(ok=True)
             if path == '/v1/state':
+                if value.get('request_sha256', row['request_sha256']) != row['request_sha256']:
+                    return dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN')
+                if row['state'] == 'ACCEPTED' and 'request_sha256' in value:
+                    return dict(ok=True, disposition='STATE_ALREADY_ACCEPTED', completion_sha256=row['completion_sha256'])
                 if row['state'] != 'ACCEPTED':
-                    self.store.update(host, row['job_id'], value['attempt_id'], value['state'], value.get('detail'))
+                    updated = self.store.update(host, row['job_id'], value['attempt_id'], value['state'], value.get('detail'))
+                    if (value['state'] == 'UNKNOWN' and not s.closed and not s.failure
+                            and not self._user_stop_requested() and self._restore_pbs_unstarted(updated)):
+                        if task and task.status == 'RUNNING':
+                            task.status, task.started, task.error = 'QUEUED', False, None
+                            s.active -= 1
+                        else:
+                            s.tasks.pop(job, None)
+                            self._restore_task(self.store.row(row['job_id']))
+                        self.uncounted.discard(job)
+                        s.cv.notify_all()
+                        return dict(ok=True, disposition='REQUEUED_PROVED_UNSTARTED')
                     if value['state'] == 'UNKNOWN' and task and task.status == 'RUNNING':
                         task.error = 'WORKER_UNKNOWN:'+str(value.get('detail'))
                         self._finished(task, None, row['assigned_epoch'])
                 return dict(ok=True)
             raise ValueError('Unknown Q3 RPC endpoint')
+
+    def _poll(self, host, value):
+        started = checkpoint = time.monotonic()
+        phases = {}
+        def mark(phase):
+            nonlocal checkpoint
+            now = time.monotonic()
+            phases[phase] = now-checkpoint
+            checkpoint = now
+        try:
+            return self._poll_prepared(host, value, mark)
+        finally:
+            seconds = time.monotonic()-started
+            if seconds >= 2:
+                mark('reply')
+                self.log(event='POLL_PHASE_TIMING', host_id=host, seconds=seconds, phases=phases,
+                         observe_only=value.get('observe_only') is True)
+
+    def _poll_prepared(self, host, value, mark):
+        """Plan against current offers, then commit only live claims."""
+        from . import rpe_q3_coordinator as Q
+        s = self.state
+        poll_started = time.monotonic()
+        if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
+        slots = value['slots']
+        if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
+        pbs_offer = (value.get('resource_report') or {}).get('pbs') or {}
+        pool = pbs_offer.get('resource_pool')
+        buffered = (self.distributed.get('pbs_ready_buffer') is True and pool is not None
+                    and pbs_offer.get('ready_buffer') is True and pbs_offer.get('launch_fit') is True)
+        buffer_slots = pool['cpu_count'] // 4 if buffered else 0
+        delivery_slots = slots + buffer_slots
+        fingerprints = value.get('host_fingerprints') or {}
+        errors = value.get('readiness_errors') or {}
+        if not isinstance(fingerprints, dict) or not isinstance(errors, dict):
+            raise ValueError('Host readiness must map job IDs to current facts or errors')
+        host_capacity = value.get('capacity')
+        if host_capacity is not None and (type(host_capacity) is not int or host_capacity < 0):
+            raise ValueError('Nonnegative host capacity required')
+        with self.worker_contact_lock:
+            self.worker_contact[host] = time.time()
+        # Profile and request validation are independent of queue ownership.
+        preparation_reports = self._check_pending_preparation_reports(host, fingerprints, errors)
+        mark("validate_preparation_reports")
+        admission_policy, admission_error = self._host_admission_policy()
+        owned = self._owned_attempts()
+        with self._rpc_queue_lock('/v1/poll', host):
+            observed = self.hosts.get(host, {})
+            if poll_started < observed.get('poll_started', float('-inf')):
+                return dict(assignments=[], stop=False, host_admission=observed['host_admission'],
+                            eligibility_challenges=[], capacity_feedback=getattr(s, 'queue_feedback', {}).get(host))
+            stopping = self._user_stop_requested()
+            admission = self._host_admission(host, admission_policy, admission_error)
+            new_slots = self._host_new_slots(host, slots, admission, owned=owned)
+            if host not in self.hosts:
+                self.log(event='HOST_FIRST_POLL',host_id=host,capacity=value.get('capacity'))
+            self.hosts[host] = dict(epoch=time.time(), poll_started=poll_started, slots=new_slots, reported_slots=slots,
+                                   capacity=host_capacity, host_admission=admission,
+                                   accepting_new_jobs=value.get('accepting_new_jobs', True),
+                                   observed_monotonic=time.monotonic(),
+                                   owned_at_offer=[row['attempt_id'] for row in owned if row['host_id'] == host],
+                                   resource_report=value.get('resource_report'),
+                                   cached_prefixes=value.get('cached_prefixes', []),
+                                   host_fingerprints=fingerprints, readiness_errors=value.get('readiness_errors'))
+            s.cv.notify_all()
+        mark("record_offer")
+        self._refresh_pending_preparation(host, preparation_reports, poll_started=poll_started)
+        mark("publish_preparation_readiness")
+        new_slots = self._offer_free(host, admission_policy, admission_error, owned=owned)
+        may_probe = (not stopping and not s.failure and not s.closed and admission['accepting']
+                     and admission['max_slots'] != 0 and value.get('accepting_new_jobs', True)
+                     and self._offer_fresh(host)
+                     and ((value.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs', True))
+        probe_slots = max(new_slots, buffer_slots)
+        pending_challenges = self._pending_preparation_challenges(host, new_slots) if may_probe else []
+        observed_only = value.get('observe_only') is True
+        if observed_only:
+            # Discovery never reserves work. Reuse the last claim's
+            # Q3 challenges and keep fresh preparation checks moving.
+            previous = getattr(s, 'queue_probe_hints', {}).get(host, ())
+            if may_probe and new_slots and previous:
+                current = self.store.attempt_owners(item['job_id'] for item in previous)
+                for item in previous:
+                    row = current.get(item['job_id'])
+                    if row is None or (row['request_sha256'] == item['request_sha256'] and
+                            (row['state'] == 'QUEUED' or
+                             row['state'] == 'UNKNOWN' and item.get('prelaunch_recovery_probe'))):
+                        pending_challenges.append(item)
+            self._timing_queue()
+            return dict(assignments=[], stop=False,
+                host_admission=dict(accepting=False, reason='USER_REQUESTED_STOP') if stopping else admission,
+                eligibility_challenges=pending_challenges,
+                capacity_feedback=getattr(s, 'queue_feedback', {}).get(host))
+        self._refresh_capacity(admission_policy, admission_error)
+        mark("match_capacity")
+        if may_probe and new_slots:
+            pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
+        mark("prelaunch_recovery")
+        def reply(*, probe_rows=(), **fields):
+            existing=fields.get('eligibility_challenges',[])
+            challenges = {item['job_id']:item for item in existing+pending_challenges}
+            if probe_rows:
+                # Workers verify the exact release during their metadata
+                # check. Keep a slow host from holding the shared lock
+                # while the controller validates every waiting request.
+                start = self.poll_probe_offsets.get(host, 0) % len(probe_rows)
+                limit = min(len(probe_rows), max(new_slots, self._host_readiness_limit(host)))
+                for row in (probe_rows[start:]+probe_rows[:start])[:limit]:
+                    try:
+                        challenge = self._assignment(row, host_id=host)
+                    except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+                        self.log(event='HOST_PROBE_INPUT_UNAVAILABLE', host_id=host,
+                                 job=row['job_id'], reason=str(error))
+                        continue
+                    challenge.pop('attempt_id', None)
+                    challenges[challenge['job_id']] = challenge
+                self.poll_probe_offsets[host] = (start+limit) % len(probe_rows)
+            if may_probe and probe_slots and self.pbs_manager is not None and host in self.pbs_manager.configured:
+                for challenge in self._pbs_q3_challenges(host, fingerprints, challenges, probe_slots):
+                    challenges[challenge['job_id']] = challenge
+            fields['eligibility_challenges'] = list(challenges.values())
+            with s.cv:
+                if self.hosts[host]['poll_started'] == poll_started:
+                    hints = getattr(s, 'queue_probe_hints', None)
+                    if hints is None:
+                        hints = s.queue_probe_hints = {}
+                    hints[host] = tuple(item for item in fields['eligibility_challenges']
+                                        if not self._preparation_request(item['request'])
+                                        or item.get('prelaunch_recovery_probe'))
+            self._timing_queue()
+            return dict(fields, capacity_feedback=getattr(s, 'queue_feedback', {}).get(host))
+        # A lost response is reconciled with its original owner even
+        # if current readiness changed or another host is offline.
+        is_pbs = self.pbs_manager is not None and host in self.pbs_manager.configured
+        durable = set()
+        if is_pbs:
+            durable = {tuple(receipt) for receipt in value.get('durable_assignments', ())
+                       if isinstance(receipt, list) and len(receipt) == 3
+                       and all(isinstance(field, str) for field in receipt)}
+        with self.store._connection() as database:
+            replay_ids = [row['job_id'] for row in database.execute(
+                "SELECT job_id,attempt_id,request_sha256 FROM jobs WHERE host_id=? AND state='ASSIGNED' "
+                "ORDER BY enqueued_epoch,job_id LIMIT ?", (host, -1 if durable else delivery_slots))
+                if (row['job_id'], row['attempt_id'], row['request_sha256']) not in durable][:delivery_slots]
+        replay_rows = self.store.rows_for(replay_ids)
+        assignments = [self._assignment(replay_rows[job]) for job in replay_ids
+                       if replay_rows[job]['state'] == 'ASSIGNED' and replay_rows[job]['host_id'] == host]
+        if stopping:
+            return reply(assignments=assignments, stop=False,
+                         host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
+        if not new_slots and not (buffer_slots and may_probe):
+            self._timing_queue()
+            return reply(assignments=assignments, stop=False, host_admission=admission,
+                        eligibility_challenges=[])
+        queue = self._ready_queue()
+        if s.failure or s.closed: return reply(assignments=assignments, stop=False, host_admission=admission)
+        eligible, challenges = [], []
+        skipped = False
+        rows = self.store.rows_for(task.job.name for task in queue)
+        mark("load_queue")
+        for task in queue:
+            row = rows.get(task.job.name)
+            if row is None or row['state'] != 'QUEUED':
+                continue
+            if not self._host_supports_stage(host, row['request']):
+                skipped = True
+                continue
+            if not self._fits_host_walltime(host, row['request']):
+                skipped = True
+                continue
+            saved = row['eligibility']
+            facts = fingerprints.get(row['job_id'])
+            # Live evidence is bound to the immutable request at reservation
+            # and claim requires this host's current exact fingerprint.
+            # A host without a stored PASS still goes through live readiness.
+            if (row['detail'].get('prelaunch_recovery') is True
+                    or (saved and 'input_hashes' in saved and host in saved['eligible_host_ids']
+                        and (facts is None or Q.digest(facts) == saved['host_fingerprints'].get(host)))):
+                decision = saved
+            else:
+                # Queue admission bound the fixed controller SOURCE. The
+                # claim still needs this worker's matching current facts.
+                decision = self._eligibility_for(row['request'], row['job_id'], blocking=False,
+                                                 previous=saved, host=host, queued=True)
+            if decision != saved or not self.store.eligible(
+                    row['request'], decision, request_sha256=row['request_sha256']):
+                with s.cv:
+                    current = self.store.row(row['job_id'])
+                    if (task.status != 'QUEUED' or current['state'] != 'QUEUED'
+                            or current['eligibility'] != saved or self._user_stop_requested()):
+                        continue
+                    if not self.store.set_eligibility(row['job_id'], decision):
+                        self.eligibility_holds[row['job_id']] = decision
+                        task.error = 'HOST_ELIGIBILITY_HOLD'
+                        ConcurrentExecutor._cancel(self, task)
+                        skipped = True
+                        continue
+                    self.eligibility_holds.pop(row['job_id'], None)
+                    task.supply_hosts = None if decision is None else frozenset(decision['eligible_host_ids'])
+                    row = rows[row['job_id']] = dict(row, eligibility=decision)
+            if decision is not None and host not in decision['eligible_host_ids']:
+                skipped = True
+                continue
+            # A saved PASS without current worker facts only needs a
+            # challenge. Recomputing the same controller decision cannot
+            # turn it into a claimable worker proof.
+            if (decision is not None and facts is None) or not self.store.eligible(
+                    row['request'], decision, host, fingerprints, row['job_id'],
+                                       request_sha256=row['request_sha256']):
+                # Metadata challenge only: no attempt ID, reservation
+                # transition, LAUNCH or scientific execution occurs.
+                if row['job_id'] not in self.preparation_pending:
+                    challenges.append(row)
+                skipped = True
+                continue
+            if not self._fits_host_task_class(host, dict(row, eligibility=decision)):
+                skipped = True
+                continue
+            conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
+            if skipped and conditional and not task.demand:
+                continue
+            eligible.append(task)
+        mark('check_eligibility')
+        if self.pbs_manager is not None:
+            starting = self.pbs_manager.startup_jobs(except_host=host)
+            eligible = [task for task in eligible if task.job.name not in starting]
+            starting = self.pbs_manager.startup_jobs()
+            queue = [task for task in queue if task.job.name not in starting]
+        reserved_for_preferred = self._preferred_ready_jobs(
+            host, queue, admission_policy, admission_error, rows=rows)
+        if reserved_for_preferred:
+            skipped_preferred = False
+            remaining_tasks = []
+            for task in eligible:
+                if task.job.name in reserved_for_preferred:
+                    skipped_preferred = True
+                    continue
+                if (skipped_preferred and not task.demand and
+                        task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'):
+                    continue
+                remaining_tasks.append(task)
+            eligible = remaining_tasks
+        # Direct workers may poll before the other hosts are observed.
+        # One bounded discovery interval allows simultaneous free
+        # offers to arrive; it never waits for a busy host to finish.
+        rank = self._host_rank(host)
+        if s.allocation_auto and rank > 0 and eligible:
+            higher = [h for group in self.allocation_config['priority_groups'][:rank] for h in group]
+            unknown = [h for h in higher if h not in self.hosts]
+            # Start once at this host's first eligible poll, rather
+            # than at controller startup (planning/placement can be
+            # slow). Any higher-group observation ends discovery:
+            # an absent third host cannot delay known surplus work.
+            now = time.monotonic()
+            since = s.allocation_discovery.setdefault(host, now)
+            if (unknown and not any(h in self.hosts for h in higher) and
+                    now-since < self.allocation_config['discovery_grace_seconds']):
+                def needs_discovery(task):
+                    decision = self.store.row(task.job.name)['eligibility']
+                    return decision is None or bool(set(unknown).intersection(decision['eligible_host_ids']))
+
+                eligible = [task for task in eligible if not needs_discovery(task)]
+                if not eligible:
+                    return reply(assignments=assignments, stop=False, probe_rows=challenges,
+                                 host_admission=admission, waiting_for_discovery=unknown)
+        # Prefix locality is considered only among eligible hosts for
+        # the same first dispatchable task, never an unsupported host.
+        if eligible and not self._preparation_request(self.store.row(eligible[0].job.name)['request']) and time.monotonic()-eligible[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
+            first = self.store.row(eligible[0].job.name)
+            key = Q.prefix_key(first['request'])
+            if key not in value.get('cached_prefixes', []):
+                preferred = [h for h, info in self.hosts.copy().items() if h != host and info['slots'] > 0
+                    and self._host_rank(h) <= self._host_rank(host)
+                    and self._host_new_slots(h, info.get('reported_slots', info['slots']),
+                        self._host_admission(h, admission_policy, admission_error)) > 0
+                    and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']
+                    and self._host_supports_stage(h, first['request'])
+                    and self._fits_host_walltime(h, first['request'])
+                    and self._fits_host_task_class(h, first)
+                    and self.store.eligible(first['request'], first['eligibility'], h,
+                                           info.get('host_fingerprints'), first['job_id'])]
+                if preferred:
+                    eligible = eligible[1:]
+        if host == 'local' and self.distributed.get('controller_queue_first'):
+            eligible.sort(key=lambda task: not (
+                task.rule['kind'] == 'preparation' and task.demand))
+        if not eligible:
+            return reply(assignments=assignments, stop=False, probe_rows=challenges, host_admission=admission)
+        mark('select_assignments')
+        claimed = []
+        latest_policy, latest_error = self._host_admission_policy()
+        with self._rpc_queue_lock('/v1/poll', host):
+            stopping = self._user_stop_requested() or s.failure or s.closed
+            stale = self.hosts[host]['poll_started'] != poll_started
+            admission_policy, admission_error = latest_policy, latest_error
+            owned_now = self._owned_attempts()
+            unresolved = len(owned_now)
+            new_slots = self._offer_free(host, admission_policy, admission_error, owned=owned_now)
+            remaining = max(0, min(slots-len(assignments), new_slots,
+                self.capacity-max(s.active, unresolved)-len(reserved_for_preferred)))
+            resource_pool = pool
+            spare_delivery = max(0, delivery_slots-len(assignments))
+            # Startable assignments keep the existing global capacity limit.
+            # PBS standby reservations are bounded by a fraction of this
+            # allocation, and only consume resources at the worker on launch.
+            extra = buffer_slots if (may_probe and self._offer_fresh(host)
+                    and self._host_admission(host, admission_policy, admission_error)['accepting']
+                    and self._host_admission(host, admission_policy, admission_error)['max_slots'] is None) else 0
+            standby_cpu = standby_memory = 0
+            host_busy = False
+            if resource_pool is not None and (remaining or extra):
+                from .rpe_pbs import GIB, resource_need, task_estimate
+                settings = self.distributed['pbs']
+                worker = next(w for w in settings['workers'] if w['host_id'] == host)
+                free_cpu = resource_pool['cpu_count']
+                free_memory = resource_pool['memory_bytes'] - GIB
+                for owned in owned_now:
+                    if owned['host_id'] == host and self._uses_pbs_task_resources(owned):
+                        old = self.store.row(owned['job_id'])
+                        launch_fit = old['detail'].get('pbs_launch_resources') if old['state'] == 'ASSIGNED' else None
+                        cpu, memory = ((launch_fit['cpu'], launch_fit['memory_bytes']) if launch_fit else
+                                       resource_need(old['request'], worker['profile'], settings, host))
+                        if launch_fit and launch_fit['standby']:
+                            standby_cpu += cpu
+                            standby_memory += memory
+                        else:
+                            host_busy = True
+                        free_cpu -= cpu
+                        free_memory -= memory
+            standby_claimed = 0
+            for task in (() if stale or stopping else eligible):
+                if (remaining <= 0 and (not extra or not spare_delivery)) or self._user_stop_requested(): break
+                if task.status != 'QUEUED': continue
+                row = self.store.row(task.job.name)
+                if not self._fits_host_walltime(host, row['request']) or not self._fits_host_task_class(host, row):
+                    continue
+                if self._wait_for_preparation_preference(host, row, admission_policy, admission_error):
+                    continue
+                if not self._local_calibration_pair_allows(host, row['request']):
+                    continue
+                launch_fit = None
+                standby = False
+                if resource_pool is not None:
+                    try:
+                        cpu, memory = resource_need(row['request'], worker['profile'], settings, host)
+                    except (KeyError, ValueError):
+                        continue
+                    fits = cpu <= free_cpu and memory <= free_memory
+                    standby = not (remaining and fits)
+                    if standby and (not extra or not host_busy or task.demand
+                            or task.rule['kind'] == 'preparation' or fits
+                            or task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
+                            or standby_cpu+cpu > extra or standby_memory+memory > (resource_pool['memory_bytes']-GIB)//4
+                            or free_cpu-cpu < -extra or free_memory-memory < -(resource_pool['memory_bytes']-GIB)//4):
+                        continue
+                    if self.distributed.get('pbs_ready_buffer') is True and pbs_offer.get('launch_fit') is True:
+                        seconds = task_estimate(row['request'],settings,host) or pbs_offer.get('minimum_task_seconds',1)
+                        launch_fit = dict(cpu=cpu, memory_bytes=memory, seconds=seconds, standby=standby, order=time.time_ns())
+                elif not remaining:
+                    break
+                options = {'assignment_detail': {'pbs_launch_resources': launch_fit}} if launch_fit else {}
+                rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
+                                        host_fingerprints=fingerprints, **options)
+                if not rows: continue
+                row = rows[0]
+                if resource_pool is not None:
+                    free_cpu -= cpu
+                    free_memory -= memory
+                # Assignment and reservation are committed before a worker
+                # receives anything. A lost HTTP response retains ownership.
+                Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],
+                    pid=None, started=row['assigned_epoch'], kind=task.rule['kind'], transport='distributed'))
+                task.status = 'RUNNING'; task.started = True; task.speculative = not task.demand
+                s.clock += 1; s.owner_clock[task.owner] = s.clock; s.active += 1
+                s.peak_active = max(s.peak_active, s.active)
+                self.uncounted.add(task.job)
+                s.metrics['launched'] += 1
+                s.by_method.setdefault(row['method'], Counter())['launched'] += 1
+                if task.speculative: s.metrics['speculative_launched'] += 1
+                task.view.log(event='LAUNCH', job=row['job_id'], host_id=host, attempt_id=row['attempt_id'],
+                    configuration=task.proposal['configuration_id'], queue_wait_seconds=time.monotonic()-task.enqueue,
+                    active=s.active, demand=task.demand, phase='ASSIGNED', pbs_standby=standby,
+                    provider=(row['request'].get('preparation') or {}).get('provider'),
+                    eligible_hosts=(row['eligibility'] or {}).get('eligible_host_ids'))
+                claimed.append(row)
+                spare_delivery -= 1
+                if standby:
+                    standby_claimed += 1
+                    standby_cpu += cpu
+                    standby_memory += memory
+                else:
+                    remaining -= 1
+                    host_busy = True
+        if standby_claimed:
+            self.log(event='PBS_READY_BUFFER_ASSIGNED', host_id=host, jobs=standby_claimed,
+                     standby_cpu=standby_cpu, standby_memory_bytes=standby_memory)
+        assignments.extend(self._assignment(row) for row in claimed)
+        self._timing_queue()
+        self._refresh_capacity(admission_policy, admission_error)
+        return reply(assignments=assignments, stop=False, probe_rows=challenges, host_admission=admission)
 
     def _receive_completion(self, value):
         """Verify independent transfers before taking the shared queue lock."""
@@ -3367,9 +3698,9 @@ class DistributedExecutor(ConcurrentExecutor):
             if not (transfer/'REQUEST.json').exists():
                 _write(transfer/'REQUEST.json', row['request'])
             receipt = json.loads((transfer/'PROCESS_RETURN.json').read_text())
-            outcome = json.loads((transfer/'OUTCOME.json').read_text())
+            outcome = json.loads((transfer/'OUTCOME.json').read_text(), parse_int=O._outcome_int)
             preparation = self._preparation_request(row['request'])
-            validation, rejection = None, None
+            validation, rejection, validation_key = None, None, None
             if preparation:
                 try:
                     validate_preparation_result(row, receipt, outcome, self.artifact_cache)
@@ -3390,6 +3721,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     validation = owner.ingest(transfer, proposal, calls=0)
                     if success and validation['status'] == 'UNKNOWN':
                         rejection = 'Transferred outcome identity mismatch: '+str(validation.get('reason'))
+                    if success and rejection is None and task is not None:
+                        validation_key = owner._transfer_validation_key(proposal, row['request'])
             transfer_bytes = sum(len(x)*3//4-x.count('=') for x in files.values())
             verified = time.monotonic()
             with self.state.cv:
@@ -3402,18 +3735,30 @@ class DistributedExecutor(ConcurrentExecutor):
                     self._hold_result_transfer(current, task, rejection)
                 accepted, duplicate = self.store.complete_hashed(
                     host, job_id, attempt, row['request_sha256'], completion_sha)
-                self._publish_transfer(accepted)
-                if not duplicate:
-                    if validation is not None and self.distributed.get('work_conserving_search'):
-                        self._observe_q3_completion(accepted, transfer, validation)
-                    view.log(event='TRANSFER_COMPLETE', job=job_id, host_id=host,
-                        attempt_id=attempt, stage=preparation['stage'] if preparation else 'q3',
-                        transfer_seconds=time.monotonic()-started, validation_seconds=verified-started,
-                        lock_wait_seconds=time.monotonic()-verified,
-                        transfer_bytes=transfer_bytes,
-                        worker_transfer_seconds=value.get('transfer_seconds'))
+                lock_wait = time.monotonic()-verified
+            # Staging is durable and the attempt lock still owns this publication.
+            # An unrelated poll or completion need not wait for file copies.
+            self._publish_transfer(accepted)
+            try:
+                marker = self._outcome_marker(job) if validation_key is not None else None
+            except OSError:
+                marker = None  # this optional optimization must not interrupt durable acceptance
+            observation = (self._q3_completion_observation(accepted, transfer, validation)
+                           if not duplicate and validation is not None and self.distributed.get('work_conserving_search')
+                           else None)
+            with self.state.cv:
+                if marker is not None and task is not None and task is self.state.tasks.get(job):
+                    task.validated_transfer = (marker, validation_key, validation)
+                if observation is not None:
+                    self.state.observations[row['method']].append(observation)
                 self._finish_received_task(job, accepted, receipt)
-                return dict(ok=True, duplicate=duplicate)
+            if not duplicate:
+                view.log(event='TRANSFER_COMPLETE', job=job_id, host_id=host,
+                    attempt_id=attempt, stage=preparation['stage'] if preparation else 'q3',
+                    transfer_seconds=time.monotonic()-started, validation_seconds=verified-started,
+                    lock_wait_seconds=lock_wait, transfer_bytes=transfer_bytes,
+                    worker_transfer_seconds=value.get('transfer_seconds'))
+            return dict(ok=True, duplicate=duplicate)
 
     def _finish_received_task(self, job, row, receipt):
         task = self.state.tasks.get(job)
@@ -3462,6 +3807,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 with self.state.cv:
                     self.state.scaled_completions[self.method].pop(job, None)
                 return
+        with self.state.cv:
+            task = self.state.tasks.get(job)
+            if task is not None:
+                task.validated_transfer = None
         super()._adopt_answer(job, proposal, answer)
 
     def scope_unknown(self, job, proposal, answer):
@@ -3572,6 +3921,49 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.reused_jobs.add(job.name)
             self.log(event='RESULT_REUSE', job=job.name, host_id=host)
 
+    @staticmethod
+    def _outcome_marker(job):
+        stat = (job/'OUTCOME.json').stat()
+        return stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns
+
+    def _transfer_validation_key(self, proposal, request=None):
+        from .rpe_q3_coordinator import digest
+
+        cid = proposal['configuration_id']
+        route = self.route(cid)
+        expected = self.expected_for(cid, route)
+        risk = (route or {}).get('horizon_risk_source')
+        origin = proposal.get('origin')
+        if origin is None and request is None:
+            return None  # preserve the normal REQUEST-origin fallback
+        if origin is None:
+            origin = request.get('origin')
+        return (cid, tuple(proposal['vector']), tuple(expected.get(k) for k in
+                ('total_configuration_id', 'binding_id', 'M')),
+                digest(risk) if risk is not None else None, (origin or {}).get('kind'))
+
+    def _cached_transfer_answer(self, job, proposal, calls):
+        with self.state.cv:
+            cached = getattr(self.state.tasks.get(job), 'validated_transfer', None)
+        if cached is not None:
+            marker, key, answer = cached
+            try:
+                current = self._outcome_marker(job)
+            except OSError:
+                current = None
+            if marker == current and key == self._transfer_validation_key(proposal):
+                locator = job.relative_to(self.root) if job.is_relative_to(self.root) else job
+                return dict(answer, job=str(locator), calls=calls)
+        return None
+
+    def _ingest_current_answer(self, job, proposal, calls):
+        answer = self._cached_transfer_answer(job, proposal, calls)
+        if answer is None:
+            return self.ingest(job, proposal, calls)
+        if calls == 0:
+            self.record_prior_result_reuse(job)
+        return answer
+
     def ingest(self, job, proposal, calls):
         answer = super().ingest(job, proposal, calls)
         if calls == 0:
@@ -3579,16 +3971,24 @@ class DistributedExecutor(ConcurrentExecutor):
         return answer
 
     def metrics(self):
-        # RPC updates hosts/tasks/preflight state under this same reentrant
-        # condition. Early candidate completion may request metrics while an
-        # optional host joins; observe one consistent controller snapshot.
         with self.state.cv:
-            return self._metrics_locked()
+            snapshot = copy(self)
+            snapshot.state = copy(self.state)
+            snapshot.state.cv = threading.Condition()
+            snapshot.state.tasks = {job: copy(task) for job, task in self.state.tasks.items()}
+            snapshot.state.metrics = self.state.metrics.copy()
+            snapshot.state.by_method = {m: counts.copy() for m, counts in self.state.by_method.items()}
+            snapshot.hosts = self.hosts.copy()
+            snapshot.eligibility_holds = self.eligibility_holds.copy()
+            snapshot.preparation_pending = {
+                job: dict(record, failures=record.get('failures', {}).copy())
+                for job, record in self.preparation_pending.items()}
+        return snapshot._metrics_snapshot(self._reuse_counts())
 
     def _reuse_counts(self):
         # All method views share the progress log and this cursor. A fresh
         # controller rebuilds counts from the durable log on its first query.
-        with self.lock, (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
+        with getattr(self.state, 'reuse_lock', self.lock), (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
             stat = os.fstat(progress.fileno())
             identity = (stat.st_dev, stat.st_ino)
             previous, offset, counts = getattr(self.state, 'reuse_cursor', (None, 0, None))
@@ -3606,7 +4006,7 @@ class DistributedExecutor(ConcurrentExecutor):
             self.state.reuse_cursor = (identity, offset, counts)
             return counts
 
-    def _metrics_locked(self):
+    def _metrics_snapshot(self, reused):
         result = super().metrics()
         rows = self.store.metric_rows(); by_host = {}
         for row in rows:
@@ -3616,7 +4016,7 @@ class DistributedExecutor(ConcurrentExecutor):
             counts['launched'] += row['started_epoch'] is not None
             counts['completed'] += row['state'] == 'ACCEPTED'
             counts['adopted'] += row['adopted_epoch'] is not None
-        for host, count in self._reuse_counts().items():
+        for host, count in reused.items():
             if host in by_host:
                 by_host[host]['reused'] = count
         admission_policy, admission_error = self._host_admission_policy()
@@ -3644,7 +4044,8 @@ class DistributedExecutor(ConcurrentExecutor):
                       persistent_reserved={m:self.store.counts(m) for m in self.routes},
                       host_eligibility_holds=deepcopy(self.eligibility_holds),
                       preparation={stage:dict(reserved=self.store.counts('PREPARATION:'+stage),
-                          launched=self.store.counts('PREPARATION:'+stage,started_only=True))for stage in ('signal','compile','audit')},
+                          assigned=self.store.counts('PREPARATION:'+stage,started_only=True),
+                          launched=self.store.counts('PREPARATION:'+stage,observed_only=True))for stage in ('signal','compile','audit')},
                       preparation_readiness_pending={job:dict(stage=value['request']['preparation']['stage'],eligible_host_ids=value['decision']['eligible_host_ids'],failures=value.get('failures',{}))for job,value in self.preparation_pending.items() if self.store.row(job) is None},
                       actual_OS_host_count='recorded by integration harness; host IDs alone do not establish separate machines')
         return result
@@ -3688,11 +4089,11 @@ class DistributedExecutor(ConcurrentExecutor):
                               "AND NOT coalesce(json_extract(request,'$.preparation.optional_price_validation'),0)").fetchone()[0]
 
     def await_dispatchable_preparation(self):
-        with self.state.cv:
-            policy, error = self._host_admission_policy()
-            offers = {host: self._offer_free(host, policy, error) for host in self.hosts}
-            ready = [task for task in self._ready_queue() if task.rule['kind'] == 'preparation' and task.demand]
-            jobs = self._match_ready_jobs(ready, {host: slots for host, slots in offers.items() if slots})
+        policy, error = self._host_admission_policy()
+        owned = self._owned_attempts()
+        offers = {host: self._offer_free(host, policy, error, owned=owned) for host in self.hosts.copy()}
+        ready = [task for task in self._ready_queue() if task.rule['kind'] == 'preparation' and task.demand]
+        jobs = self._match_ready_jobs(ready, {host: slots for host, slots in offers.items() if slots}, owned=owned)
         return self.ready_preparations(jobs, wait=True, stop_requested=self._user_stop_requested)
 
     def _close_worker_rpc(self):

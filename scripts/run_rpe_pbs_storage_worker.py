@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Start the fixed PBS transport with allocation-local gateway storage samples."""
 import json
+import os
 from pathlib import Path
 import runpy
 import sys
@@ -99,10 +100,27 @@ def configure_allocation_worker(profile, launcher):
     if bundled:
         MeasuredAllocationWorker._service_attempt = cycle.Worker._service_attempt
         MeasuredAllocationWorker._poll_assignments = cycle.Worker._poll_assignments
+        from trottertracks import _pipeline_release_deployment as deployment
+
+        def validate_release(self, selected, assignment):
+            deployment.validate_assignment_release(
+                worker.read(selected['manifest']), worker.read(selected['layout']), assignment,
+                self.profile, input_hash_cache=getattr(self, 'batch_input_hashes', None),
+                request_validator=cycle.validate_assignment)
+
+        MeasuredAllocationWorker._validate_release_assignment = validate_release
 
 
 def main():
     args = sys.argv[1:]
+    launcher = Path(sys.argv[0]).resolve()
+    if args[:1] == ['--supervise-attempt']:
+        _, transport_root, attempt = args
+        sys.path.insert(0, str(Path(transport_root)/'src'))
+        import trottertracks
+        trottertracks.__path__.append(str(launcher)+'/trottertracks')
+        from trottertracks import _collection_q3_worker
+        raise SystemExit(_collection_q3_worker.supervise(Path(attempt)))
     check_imports = args[:1] == ['--check-imports']
     if check_imports:
         args.pop(0)
@@ -122,7 +140,9 @@ def main():
     observer = GatewayStorage(directory/'STORAGE_USAGE_GATEWAY.json',
                               max_age=2*storage.SAMPLE_SECONDS)
     storage.report = observer.report
-    configure_allocation_worker(profile, Path(sys.argv[0]).resolve())
+    os.environ.update(RPE_PBS_OPERATIONAL_LAUNCHER=str(launcher),
+                      RPE_PBS_TRANSPORT_ROOT=str(script.parents[1]))
+    configure_allocation_worker(profile, launcher)
     if check_imports:
         print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path))))
         return

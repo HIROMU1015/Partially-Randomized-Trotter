@@ -720,6 +720,64 @@ class ControllerFailures(unittest.TestCase):
                 ex.rpc('/v1/complete', dict(self.completion(assignment), host_id=host))
         self.assertEqual(len(delivered), 8)
 
+    def test_pbs_reserves_one_buffered_q3_while_cpu_is_full_and_keeps_attempt(self):
+        from trottertracks.rpe_pbs import GIB
+        executor = self.executor(capacity=2, pbs_ready_buffer=True)
+        executor.distributed['pbs'] = dict(workers=[dict(host_id='pbs-0', profile=dict(dp_workers=2))],
+            task_seconds=dict(q3=1), allocation_sizing=dict(q3_startup_memory_bytes_per_task=GIB))
+        view = executor.for_method('PR_PAULI')
+        tasks = [view._enqueue(self.proposal(f'buffer-{i}'), demand=i==0) for i in range(4)]
+        poll = dict(host_id='pbs-0', source_sha=self.source, slots=4, capacity=8,
+            resource_report=dict(pbs=dict(remaining_seconds=120, accepting=True, launch_fit=True,ready_buffer=True,
+                resource_pool=dict(cpu_count=8, memory_bytes=12*GIB))))
+        with patch('trottertracks.rpe_pbs.resource_need', return_value=(4,GIB)):
+            first, second = executor.rpc('/v1/poll', poll)['assignments']
+        self.assertFalse(first['pbs_launch_resources']['standby'])
+        self.assertFalse(second['pbs_launch_resources']['standby'])
+        for owner in (first, second):
+            executor.rpc('/v1/state', dict(host_id='pbs-0', job_id=owner['job_id'], attempt_id=owner['attempt_id'], state='RUNNING'))
+        with patch('trottertracks.rpe_pbs.resource_need',
+                   side_effect=lambda request,*args: (2 if request['request_id'] in {t.job.name for t in tasks[2:]} else 4,GIB)):
+            buffered = executor.rpc('/v1/poll', dict(poll,slots=0))['assignments']
+        standby, = buffered
+        self.assertTrue(standby['pbs_launch_resources']['standby'])
+        row = executor.store.row(standby['job_id'])
+        self.assertEqual(row['attempt_id'], standby['attempt_id'])
+        self.assertEqual(row['detail']['pbs_launch_resources'], standby['pbs_launch_resources'])
+        self.assertEqual(executor.store.row(tasks[3].job.name)['state'], 'QUEUED')
+        self.assertIsNone(row['started_epoch'])
+        self.assertFalse(executor.store.requeue_pbs_buffer(row['job_id'], row['attempt_id']))
+        with patch('trottertracks.rpe_pbs.resource_need', return_value=(4,GIB)):
+            replay, = executor.rpc('/v1/poll', dict(poll,slots=0))['assignments']
+        self.assertEqual(standby, replay)
+        identity = {key: row[key] for key in ('job_id', 'attempt_id', 'request_sha256')}
+        detail = dict(reason='PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH', scientific_execution_started=False,
+                      pbs_buffer_reserved=True, automatic_retry=False)
+        executor.store.update('pbs-0', row['job_id'], row['attempt_id'], 'UNKNOWN', detail)
+        self.assertFalse(executor.store.requeue_pbs_buffer(row['job_id'], row['attempt_id']))
+        detail.update(resource_released=True, pbs_admission_exit=dict(token='ended', **identity))
+        executor.store.update('pbs-0', row['job_id'], row['attempt_id'], 'UNKNOWN', detail)
+        self.assertTrue(executor.store.requeue_pbs_buffer(row['job_id'], row['attempt_id']))
+        self.assertEqual(executor.store.row(row['job_id'])['state'], 'QUEUED')
+
+    def test_proved_unstarted_pbs_ordinary_assignment_returns_to_same_queue(self):
+        executor = self.executor()
+        task = self.enqueue(executor, 'before-science')
+        assignment, = executor.rpc('/v1/poll', dict(host_id='pbs-0', source_sha=self.source,
+                                                   slots=1, capacity=1))['assignments']
+        owner = {field: assignment[field] for field in ('job_id', 'attempt_id', 'request_sha256')}
+        self.assertEqual(executor.store.counts('PR_PAULI', observed_only=True), 0)
+        decline = dict(reason='PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH', automatic_retry=False,
+                       scientific_execution_started=False, resource_released=True,
+                       pbs_admission_exit=dict(owner, token='finished-allocation'))
+        answer = executor.rpc('/v1/state', dict(owner, host_id='pbs-0', state='UNKNOWN', detail=decline))
+        self.assertEqual(answer['disposition'], 'REQUEUED_PROVED_UNSTARTED')
+        self.assertEqual(executor.store.row(task.job.name)['state'], 'QUEUED')
+        self.assertEqual(task.status, 'QUEUED')
+        self.assertTrue((task.job/'attempt-history'/assignment['attempt_id']/'LAUNCH.json').is_file())
+        self.assertEqual(executor.store.counts('PR_PAULI'), 1)
+        self.assertEqual(executor.store.counts('PR_PAULI', observed_only=True), 0)
+
     def test_pbs_refills_after_q3_exit_before_transfer_ack(self):
         from trottertracks.rpe_pbs import GIB
         executor = self.executor(capacity=3)
@@ -868,8 +926,12 @@ class ControllerFailures(unittest.TestCase):
         def poll(host, observe_only=False):
             # Treat each synthetic change as a separate telemetry sample.
             executor.state.next_queue_timing = 0
-            return executor.rpc('/v1/poll', dict(host_id=host, source_sha=self.source, slots=1, capacity=1,
+            reply = executor.rpc('/v1/poll', dict(host_id=host, source_sha=self.source, slots=1, capacity=1,
                                                 observe_only=observe_only))
+            with executor.state.cv:
+                self.assertTrue(executor.state.cv.wait_for(
+                    lambda: not executor.state.queue_observation_active, timeout=2))
+            return reply
 
         poll('waiting-host')
         prep = normalize_preparation_request(dict(route={'kind': 'preparation'}, method='ARTIFICIAL',

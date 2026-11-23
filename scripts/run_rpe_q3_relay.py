@@ -6,9 +6,10 @@ same host as this relay; SSH mailboxes can be Linux or Windows-hosted WSL.
 Stopping this relay leaves all received jobs running independently.
 """
 import argparse
+import ast
 import base64
 from concurrent.futures import ThreadPoolExecutor, wait
-from contextlib import closing
+from contextlib import closing, nullcontext
 import threading
 try:
     import fcntl
@@ -175,19 +176,47 @@ def scp_prefix(worker, ssh):
 
 # Use the existing remote worker validation and durable spool for each request.
 # One SSH call carries the list while each receipt keeps its own job and attempt.
-MAILBOX_SUBMIT_BATCH = """import json, runpy, sys
-worker_script, profile = sys.argv[1:]
+MAILBOX_SUBMIT_BATCH = """import hashlib, json, runpy, sys
+from pathlib import Path
+worker_script, profile, *compatibility = sys.argv[1:]
 api = runpy.run_path(worker_script)
 selected = api['read'](profile)
-reply = []
-for assignment in json.load(sys.stdin):
-    try:
-        result = api['mailbox'](selected, 'submit', assignment)
-    except Exception as error:
-        result = dict(ok=False, error=type(error).__name__ + ': ' + str(error))
-    reply.append(dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], result=result))
+assignments = json.load(sys.stdin)
+module = sys.modules[api['mailbox'].__module__]
+submit_batch = getattr(module, 'mailbox_submit_batch', None)
+batch_mode = 'NATIVE'
+if submit_batch is None and compatibility:
+    expected, source = compatibility
+    if hashlib.sha256(Path(module.__file__).read_bytes()).hexdigest() == expected:
+        namespace = vars(module).copy()
+        exec(compile(source, '<fixed-mailbox-batch>', 'exec'), namespace)
+        candidate = namespace.get('mailbox_submit_batch')
+        if callable(candidate) and callable(namespace.get('_mailbox_submit')):
+            submit_batch = candidate
+            batch_mode = 'FIXED_COMPATIBILITY'
+if submit_batch is not None:
+    reply = submit_batch(selected, assignments)
+else:
+    batch_mode = 'LEGACY'
+    reply = []
+    for assignment in assignments:
+        try:
+            result = api['mailbox'](selected, 'submit', assignment)
+        except Exception as error:
+            result = dict(ok=False, error=type(error).__name__ + ': ' + str(error))
+        reply.append(dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], result=result))
+for item in reply:
+    item['batch_mode'] = batch_mode
 print(json.dumps(reply, separators=(',', ':'), allow_nan=False))
 """
+
+# Windows OpenSSH launches PowerShell through a command line with a practical
+# length limit. Keep the batch program and fixed compatibility text in the
+# same staged input as its assignments.
+WSL_BATCH_BOOTSTRAP = ("import io,json,sys,contextlib; envelope=json.load(sys.stdin); output=io.StringIO(); "
+                       "sys.argv=envelope['argv']; sys.stdin=io.StringIO(json.dumps(envelope['assignments'])); "
+                       "exec(\"with contextlib.redirect_stdout(output): exec(envelope['program'])\"); "
+                       "print(json.dumps({'rows':json.loads(output.getvalue())}))")
 
 class Relay:
     def __init__(self, configuration):
@@ -209,11 +238,15 @@ class Relay:
         self.discovery_pool = None
         self.pending_discovery = {}
         self.pending_ticks = {}
+        self.recovery_pool = None
+        self.pending_recoveries = {worker['host_id']: {} for worker in self.config['workers']}
+        self.recovery_width = 2
         windows_workers = sum(item.get('transport') == 'ssh-wsl' for item in self.config['workers'])
         self.bundle_pool = (ThreadPoolExecutor(max_workers=windows_workers, thread_name_prefix='rpe-wsl-bundles')
                             if windows_workers else None)
         self.pending_bundles = {}
         self.log_lock = threading.Lock()
+        self.mailbox_locks = {item['host_id']: threading.Lock() for item in self.config['workers']}
         self.deployed_workers={}
         self.reported_unowned = set()
         self.readiness_probe_counts = {}
@@ -285,14 +318,43 @@ class Relay:
                 self.ensure_worker_deployment(worker, assignment)
         command = [worker.get('python', 'python3'), '-B', '-c', MAILBOX_SUBMIT_BATCH,
                    worker['root'].rstrip('/')+'/scripts/run_rpe_q3_worker.py', worker['profile']]
-        rows, seconds = self.remote_command(worker, command, 'submit-batch', assignments)
+        if worker_sha := self.config.get('batch_worker_sources', {}).get(worker['host_id']):
+            if not hasattr(self, 'batch_compatibility_source'):
+                path = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_q3_worker.py'
+                source = path.read_text()
+                functions = {'_mailbox_submit', 'mailbox_submit_batch'}
+                definitions = [node for node in ast.parse(source).body
+                               if isinstance(node, ast.FunctionDef) and node.name in functions]
+                self.batch_compatibility_source = ('\n\n'.join(ast.get_source_segment(source, node)
+                                                   for node in definitions)
+                                                   if {node.name for node in definitions} == functions else '')
+            if self.batch_compatibility_source:
+                command.extend((worker_sha, self.batch_compatibility_source))
+        payload = assignments
+        if worker.get('transport') == 'ssh-wsl':
+            payload = dict(program=command[3], argv=command[3:], assignments=assignments)
+            command = command[:3] + [WSL_BATCH_BOOTSTRAP]
+        rows, seconds = self.remote_command(worker, command, 'submit-batch', payload)
+        if worker.get('transport') == 'ssh-wsl':
+            rows = rows['rows']
         expected = [(a['job_id'], a['attempt_id']) for a in assignments]
         if [(r['job_id'], r['attempt_id']) for r in rows] != expected:
             raise ValueError('Worker batch response differs from the assigned attempts')
+        self.log('MAILBOX_BATCH_MODE', host_id=worker['host_id'], count=len(rows),
+                 mode=rows[0].get('batch_mode', 'LEGACY') if rows else 'EMPTY')
         return [r['result'] for r in rows], seconds
 
     def remote_command(self,worker,command,action,value=None):
+        # Only spool-owner operations serialize. Result bytes and other hosts
+        # can continue while a submission or acknowledgement owns this spool.
+        lock = (self.mailbox_locks.get(worker.get('host_id'))
+                if action in ('ack', 'status', 'resources', 'submit', 'submit-batch') else None)
         started = time.monotonic()
+        with lock if lock is not None else nullcontext():
+            result = self._remote_command(worker, command, action, value)
+        return result, time.monotonic() - started
+
+    def _remote_command(self,worker,command,action,value=None):
         # Reuse local0's published WSL mailbox transport (6e70f5d13061).
         # Scientific execution still resolves the route-specific saved profile.
         if worker.get('transport') == 'wsl':
@@ -306,6 +368,17 @@ class Relay:
         else:
             alias = worker['ssh_alias']
             if not alias or alias.startswith('-'): raise ValueError('Invalid existing SSH alias')
+            limit = worker.get('cpu_limit')
+            if limit is not None:
+                if type(limit) is not int or limit < 1:
+                    raise ValueError('Expected a positive CPU limit')
+                # All mailbox calls, including their detached scientific
+                # children, inherit the same subset of the allowed CPUs.
+                command = [worker.get('python', 'python3'), '-B', '-c',
+                    'import os,sys; '
+                    'os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:int(sys.argv[1])]); '
+                    'os.execvp(sys.argv[2],sys.argv[2:])',
+                    str(limit), *command]
             remote_command = shlex.join(command)
             ssh = worker.get('ssh_command', self.ssh)
             reuse = []
@@ -343,7 +416,7 @@ class Relay:
             if not enabled:
                 # Completion transfer and reconciliation above the poll continue.
                 result['slots'] = 0
-        return result, time.monotonic()-started
+        return result
 
     def _remote_wsl_file(self,worker,command,action,value):
         ssh=list(worker.get('ssh_command',self.ssh));alias=worker['ssh_alias']
@@ -590,36 +663,72 @@ class Relay:
             if owned is not None and (owner['job_id'], owner['attempt_id']) not in owned:
                 self._log_unowned_attempt(owner)
                 continue
-            info['phase'] = 'CONTROLLER_STATE'
-            if not self._report_attempt(owner, state, attempt.get('detail', {})):
-                continue
-            if state == 'COMPLETED_PENDING_TRANSFER':
-                started = time.monotonic()
-                result_download_seconds = None
-                if 'files' not in attempt:
-                    result, result_download_seconds = self.remote(
-                        worker, 'result', dict(owner, request_sha256=attempt['request_sha256']))
-                    attempt = dict(attempt, **result)
-                info['phase'] = 'CONTROLLER_ARTIFACTS'
-                self._recover_artifacts(worker, attempt)
-                info['phase'] = 'CONTROLLER_COMPLETE'
-                response = self.post('/v1/complete', dict(owner, request_sha256=attempt['request_sha256'], files=attempt['files']))
-                if response.get('ok') is not True: raise ValueError('Controller refused completion')
-                upload_seconds = time.monotonic()-started
-                info['phase'] = 'MAILBOX_ACK'
-                acknowledgement, ack_seconds = self.remote(worker, 'ack', owner)
-                if acknowledgement.get('ok') is not True: raise ValueError('Worker refused completion acknowledgement')
-                recovered = True
-                timing = dict(upload_roundtrip_seconds=upload_seconds, ssh_status_download_seconds=download_seconds,
-                              ssh_ack_roundtrip_seconds=ack_seconds,
-                              artificial_transport_scope=('SSH metadata-only status' if status.get('metadata_only')
-                                                          else 'SSH status includes all pending attempts for this host'))
-                if result_download_seconds is not None:
-                    timing['ssh_result_download_seconds'] = result_download_seconds
-                self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
-                try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
-                except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
+            try:
+                info['phase'] = 'CONTROLLER_STATE'
+                if not self._report_attempt(owner, state, attempt.get('detail', {})):
+                    continue
+                if state == 'COMPLETED_PENDING_TRANSFER':
+                    started = time.monotonic()
+                    result_download_seconds = None
+                    if 'files' not in attempt:
+                        result, result_download_seconds = self.remote(
+                            worker, 'result', dict(owner, request_sha256=attempt['request_sha256']))
+                        attempt = dict(attempt, **result)
+                    info['phase'] = 'CONTROLLER_ARTIFACTS'
+                    self._recover_artifacts(worker, attempt)
+                    info['phase'] = 'CONTROLLER_COMPLETE'
+                    response = self.post('/v1/complete', dict(owner, request_sha256=attempt['request_sha256'], files=attempt['files']))
+                    if response.get('ok') is not True: raise ValueError('Controller refused completion')
+                    upload_seconds = time.monotonic()-started
+                    info['phase'] = 'MAILBOX_ACK'
+                    acknowledgement, ack_seconds = self.remote(worker, 'ack', owner)
+                    if acknowledgement.get('ok') is not True: raise ValueError('Worker refused completion acknowledgement')
+                    recovered = True
+                    timing = dict(upload_roundtrip_seconds=upload_seconds, ssh_status_download_seconds=download_seconds,
+                                  ssh_ack_roundtrip_seconds=ack_seconds,
+                                  artificial_transport_scope=('SSH metadata-only status' if status.get('metadata_only')
+                                                              else 'SSH status includes all pending attempts for this host'))
+                    if result_download_seconds is not None:
+                        timing['ssh_result_download_seconds'] = result_download_seconds
+                    self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
+                    try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
+                    except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
+            except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError) as error:
+                self.log('MAILBOX_RESULT_PENDING', **owner, phase=info['phase'], error=str(error))
         return recovered
+
+    def _schedule_recovery(self, worker, info, status, owned, download_seconds):
+        host = status['host_id']
+        pending = self.pending_recoveries[host]
+        finished = set()
+        for identity, future in tuple(pending.items()):
+            if not future.done():
+                continue
+            del pending[identity]
+            try:
+                if future.result():
+                    finished.add(identity)
+            except Exception as error:
+                job_id, attempt_id = identity
+                self.log('MAILBOX_RESULT_PENDING', host_id=host, job_id=job_id,
+                         attempt_id=attempt_id, phase='RECOVERY', error=str(error))
+        # Offers can be sampled just before an ACK. Refresh those offers and
+        # keep ownership of every in-flight attempt until its recovery ends.
+        active = []
+        for attempt in status['attempts']:
+            identity = attempt['job_id'], attempt['attempt_id']
+            if attempt['state'] != 'COMPLETED_PENDING_TRANSFER':
+                active.append(attempt)
+                continue
+            if owned is not None and identity not in owned:
+                self._log_unowned_attempt(dict(host_id=host, job_id=identity[0], attempt_id=identity[1]))
+                continue
+            if identity in finished or identity in pending or len(pending) >= self.recovery_width:
+                continue
+            pending[identity] = self.recovery_pool.submit(
+                self._recover_attempts, worker, info.copy(), status, owned, [attempt], download_seconds)
+        self._recover_attempts(worker, info, status, owned, active, download_seconds)
+        return bool(finished)
 
     def tick(self, worker, observed=None):
         info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
@@ -636,25 +745,31 @@ class Relay:
         host = status['host_id']
         if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
         owned = self._owned_attempts(host) if any(a['state'] != 'TRANSFERRED' for a in status['attempts']) else None
+        if self.recovery_pool is not None:
+            recovered = self._schedule_recovery(worker, info, status, owned, download_seconds)
+            self._claim_and_deliver(worker, info, observed, status, poll, recovered)
+        else:
+            self._recover_and_deliver_once(worker, info, observed, status, poll, owned, download_seconds)
+        info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
+            states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
+
+    def _recover_and_deliver_once(self, worker, info, observed, status, poll, owned, download_seconds):
         pending = []
-        # WSL result retrieval goes through Windows and can take several
-        # seconds. Use the already observed free slots before downloading it.
+        # Use the already observed free slots while returning completions.
         # No credit is taken for a slot that still requires acknowledgement.
-        if worker.get('transport') == 'ssh-wsl' and status['slots']:
+        if status['slots']:
             pending = [attempt for attempt in status['attempts']
                        if attempt['state'] == 'COMPLETED_PENDING_TRANSFER']
         immediate = [attempt for attempt in status['attempts'] if attempt not in pending]
         recovered = self._recover_attempts(worker, info, status, owned, immediate, download_seconds)
         if pending:
             result_info = info.copy()
-            with ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-wsl-recovery') as pool:
+            with ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-mailbox-recovery') as pool:
                 result = pool.submit(self._recover_attempts, worker, result_info, status, owned, pending, download_seconds)
                 self._claim_and_deliver(worker, info, observed, status, poll, recovered)
                 result.result()
         else:
             self._claim_and_deliver(worker, info, observed, status, poll, recovered)
-        info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
-            states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
 
     def _claim_and_deliver(self, worker, info, observed, status, poll, recovered):
         host = status['host_id']
@@ -765,7 +880,8 @@ class Relay:
         """Observe and deliver independent hosts without serial transport waits.
 
         Each host has at most one discovery or delivery in flight. A blocking
-        submit/ACK retains that host's future and cannot strand another host.
+        submit retains that host's future and cannot strand another host.
+        Completed attempts are returned by a separate, bounded pool.
         The cycle waits at most one poll interval, not every SSH timeout.
         """
         self._collect_ticks()
@@ -782,6 +898,8 @@ class Relay:
                 workers.append(worker)
             if self.discovery_pool is None:
                 self.discovery_pool=ThreadPoolExecutor(max_workers=max(1,len(workers)),thread_name_prefix='rpe-mailbox')
+                self.recovery_pool=ThreadPoolExecutor(
+                    max_workers=max(1, len(workers)*self.recovery_width), thread_name_prefix='rpe-mailbox-recovery')
             for worker in workers:
                 host=worker['host_id']
                 info=self.state['workers'].setdefault(host,dict(failure_count=0,next_retry_epoch=0))
@@ -834,6 +952,8 @@ class Relay:
             self.log('RELAY_STOP')
             if self.discovery_pool is not None:
                 self.discovery_pool.shutdown(wait=False, cancel_futures=True)
+            if self.recovery_pool is not None:
+                self.recovery_pool.shutdown(wait=False, cancel_futures=True)
             if self.bundle_pool is not None:
                 self.bundle_pool.shutdown(wait=False, cancel_futures=True)
             if self.ssh_socket_directory is not None:

@@ -67,6 +67,9 @@ class JobStore:
                     eligibility TEXT NOT NULL DEFAULT 'null'
                 );
                 CREATE INDEX IF NOT EXISTS method_state ON jobs(method, state);
+                CREATE INDEX IF NOT EXISTS host_state_queue ON jobs(host_id, state, enqueued_epoch, job_id);
+                CREATE INDEX IF NOT EXISTS host_completion ON jobs(host_id, completed_epoch);
+                CREATE INDEX IF NOT EXISTS host_adoption ON jobs(host_id, adopted_epoch);
                 CREATE TABLE IF NOT EXISTS events (
                     sequence INTEGER PRIMARY KEY,
                     job_id TEXT NOT NULL,
@@ -76,6 +79,10 @@ class JobStore:
                 );
                 CREATE INDEX IF NOT EXISTS prelaunch_redispatch
                     ON events(job_id) WHERE event='REDISPATCH_AFTER_DRY_CHECK';
+                CREATE TABLE IF NOT EXISTS preparation_readiness (
+                    job_id TEXT PRIMARY KEY,
+                    record TEXT
+                );
             ''')
             if 'eligibility' not in {r['name'] for r in db.execute('PRAGMA table_info(jobs)')}:
                 db.execute("ALTER TABLE jobs ADD COLUMN eligibility TEXT NOT NULL DEFAULT 'null'")
@@ -115,6 +122,40 @@ class JobStore:
     def row(self, job_id):
         with self._connection() as db:
             return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
+
+    def save_preparation_readiness(self, updates):
+        values = [(job, None if record is None else canonical(record)) for job, record in updates.items()]
+        with self._connection(write=True) as database:
+            database.executemany('INSERT OR REPLACE INTO preparation_readiness VALUES (?, ?)', values)
+
+    def attempt_owner(self, job_id):
+        return self.attempt_owners([job_id]).get(job_id)
+
+    def capacity_history(self, host, epoch, totals):
+        with self._connection() as database:
+            usable, = database.execute(
+                "SELECT count(*) FROM jobs WHERE host_id=? AND completed_epoch>=? AND state='ACCEPTED'",
+                (host, epoch)).fetchone()
+            adopted, = database.execute(
+                "SELECT count(*) FROM jobs WHERE host_id=? AND adopted_epoch>=?", (host, epoch)).fetchone()
+            selected = database.execute(
+                "SELECT job_id FROM jobs WHERE host_id=? AND job_id IN (SELECT value FROM json_each(?))",
+                (host, json.dumps(list(totals))))
+            waits = [totals[job_id] for job_id, in selected]
+        return usable, adopted, sum(waits) if waits else None
+
+    def attempt_owners(self, job_ids):
+        ids = list(dict.fromkeys(job_ids))
+        owners = {}
+        with self._connection() as database:
+            for start in range(0, len(ids), 500):
+                block = ids[start:start+500]
+                placeholders = ','.join('?' for _ in block)
+                for row in database.execute(
+                        'SELECT job_id,method,host_id,attempt_id,state,request_sha256,completion_sha256 '
+                        f'FROM jobs WHERE job_id IN ({placeholders})', block):
+                    owners[row['job_id']] = dict(row)
+        return owners
 
     def rows_for(self, job_ids):
         """Read one queue snapshot for a scheduling pass."""
@@ -163,12 +204,35 @@ class JobStore:
     def prelaunch_rejections(self):
         with self._connection() as db:
             return [self._decoded(row) for row in db.execute("""
-                SELECT * FROM jobs WHERE state='UNKNOWN' AND completion_sha256 IS NULL
+                SELECT * FROM jobs INDEXED BY host_state_queue WHERE state='UNKNOWN' AND completion_sha256 IS NULL
                     AND json_type(detail, '$.prelaunch_rejection') = 'object'
                     AND NOT EXISTS (SELECT 1 FROM events WHERE events.job_id=jobs.job_id
                         AND event='REDISPATCH_AFTER_DRY_CHECK')
                 ORDER BY enqueued_epoch, job_id
             """)]
+
+    def requeue_pbs_buffer(self, job_id, attempt_id):
+        """Restore a reservation only after the PBS session proves no launch."""
+        with self._connection(write=True) as db:
+            row = self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
+            if (not row or row['state'] != 'UNKNOWN' or row['attempt_id'] != attempt_id
+                    or any(row[k] is not None for k in ('started_epoch', 'completed_epoch',
+                                                        'adopted_epoch', 'completion_sha256'))):
+                return False
+            detail = row['detail']
+            proof = detail.get('pbs_admission_exit') or {}
+            if (detail.get('reason') != 'PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH'
+                    or detail.get('resource_released') is not True
+                    or detail.get('scientific_execution_started') is not False
+                    or detail.get('automatic_retry') is not False or not proof.get('token')
+                    or any(proof.get(k) != row[k] for k in ('job_id', 'attempt_id', 'request_sha256'))):
+                return False
+            self._event(db, job_id, 'PBS_READY_BUFFER_REQUEUED',
+                        dict(host_id=row['host_id'], attempt_id=attempt_id, detail=detail))
+            db.execute("""UPDATE jobs SET state='QUEUED',host_id=NULL,attempt_id=NULL,
+                          assigned_epoch=NULL,updated_epoch=?,detail=? WHERE job_id=?""",
+                       (time.time(), canonical(dict(prelaunch_recovery=True)), job_id))
+            return True
 
     def requeue_prelaunch(self, job_id, attempt_id, host, eligibility, facts):
         """Reuse the original reservation after a proved non-scientific exit."""
@@ -231,13 +295,15 @@ class JobStore:
         with self._connection() as db:
             return [dict(row, detail=json.loads(row['detail'])) for row in db.execute('SELECT * FROM events ORDER BY sequence')]
 
-    def counts(self, method, started_only=False):
+    def counts(self, method, started_only=False, *, observed_only=False):
         """Reserved scientific jobs; assigned attempts count as started.
 
         An ASSIGNED job cannot be reassigned even if its start notification was
         lost.  ``started_epoch`` records the stronger STARTING/RUNNING observation.
         """
         condition = ' AND assigned_epoch IS NOT NULL' if started_only else " AND state!='CANCELLED'"
+        if observed_only:
+            condition = " AND (started_epoch IS NOT NULL OR completion_sha256 IS NOT NULL)"
         with self._connection() as db:
             return db.execute('SELECT count(*) FROM jobs WHERE method=?' + condition, (method,)).fetchone()[0]
 
@@ -340,7 +406,7 @@ class JobStore:
             self._event(db, job_id, 'CANCEL_QUEUED')
             return True
 
-    def claim(self, host_id, slots, cached_prefixes=(), allowed_jobs=None, host_fingerprints=None):
+    def claim(self, host_id, slots, cached_prefixes=(), allowed_jobs=None, host_fingerprints=None, *, assignment_detail=None):
         if not isinstance(host_id, str) or not host_id:
             raise ValueError('Nonempty host_id required')
         if type(slots) is not int or slots < 0:
@@ -371,8 +437,9 @@ class JobStore:
                 if not self.eligible(row['request'], row['eligibility'], host_id, host_fingerprints, job_id):
                     continue
                 now, attempt = time.time(), uuid.uuid4().hex
-                db.execute("UPDATE jobs SET state='ASSIGNED',host_id=?,attempt_id=?,assigned_epoch=?,updated_epoch=? WHERE job_id=?",
-                           (host_id, attempt, now, now, job_id))
+                detail = row['detail'] if assignment_detail is None else dict(row['detail'], **assignment_detail)
+                db.execute("UPDATE jobs SET state='ASSIGNED',host_id=?,attempt_id=?,assigned_epoch=?,updated_epoch=?,detail=? WHERE job_id=?",
+                           (host_id, attempt, now, now, canonical(detail), job_id))
                 self._event(db, job_id, 'ASSIGN', dict(host_id=host_id, attempt_id=attempt))
                 selected.append(self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()))
                 if len(selected) >= slots:

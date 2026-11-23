@@ -203,7 +203,7 @@ def _view_fingerprint(path):
     return dict(path=str(path), head=head, tracked_changes=changed)
 
 
-def dry_check_fingerprint(root, assignment, profile):
+def dry_check_fingerprint(root, assignment, profile, *, verified_assignment=False, runtime=None):
     """Refresh source/input/route/runtime evidence before considering a cache."""
     from .rpe_host_profiles import (COMPACT_Q3_RUNTIME_PROBE, check_compact_q3_runtime,
                                     needs_compact_q3_runtime, select_host_profile, profile_core)
@@ -217,11 +217,12 @@ def dry_check_fingerprint(root, assignment, profile):
                     '\n try: d[n]=m.version(n)'
                     '\n except m.PackageNotFoundError: d[n]=None'
                     '\nprint(json.dumps(dict(executable=sys.executable,version=sys.version,platform=platform.platform(),packages=d),sort_keys=True))')
-    if needs_compact_q3_runtime(assignment['request']):
-        runtime = json.loads(check_compact_q3_runtime(profile['interpreter'], COMPACT_Q3_RUNTIME_PROBE + runtime_code))
-        runtime['compact_q3_sqlite'] = 'PASS'
-    else:
-        runtime = json.loads(subprocess.check_output([profile['interpreter'], '-B', '-c', runtime_code]))
+    if runtime is None:
+        if needs_compact_q3_runtime(assignment['request']):
+            runtime = json.loads(check_compact_q3_runtime(profile['interpreter'], COMPACT_Q3_RUNTIME_PROBE + runtime_code))
+            runtime['compact_q3_sqlite'] = 'PASS'
+        else:
+            runtime = json.loads(subprocess.check_output([profile['interpreter'], '-B', '-c', runtime_code]))
     executable = Path(profile['interpreter']).resolve()
     stat = executable.stat()
     views = [_view_fingerprint(view)]
@@ -241,8 +242,15 @@ def dry_check_fingerprint(root, assignment, profile):
         else:
             nested = Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115')
         views.append(_view_fingerprint(nested))
-    return dict(source=Q.source_manifest(root, SOURCE), source_head=_git(root, 'rev-parse', 'HEAD').decode().strip(),
-                input_hashes=Q.input_hashes(root, assignment['request']),
+    if verified_assignment:
+        source = assignment['source_manifest']
+        source_head = source['commit']
+        input_hashes = assignment.get('input_hashes', [])
+    else:
+        source = Q.source_manifest(root, SOURCE)
+        source_head = _git(root, 'rev-parse', 'HEAD').decode().strip()
+        input_hashes = Q.input_hashes(root, assignment['request'])
+    return dict(source=source, source_head=source_head, input_hashes=input_hashes,
                 request_sha256=Q.digest(assignment['request']), profile=profile_core(profile), views=views,
                 runtime=runtime, interpreter_stat=dict(path=str(executable), size=stat.st_size,
                 mtime_ns=stat.st_mtime_ns, inode=stat.st_ino))

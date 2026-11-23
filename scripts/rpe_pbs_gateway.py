@@ -234,13 +234,35 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
                     atomic(destination, response)
     for token, control in incoming.get('controls', {}).items():
         atomic(root/'allocations'/safe_id(token)/'CONTROL.json', control)
+    if incoming.get('responses_only') is True:
+        return {}
+    mode = incoming.get('request_mode')
+    if mode not in (None, 'control', 'completion'):
+        raise ValueError('Unknown PBS exchange request mode')
+    remaining = incoming.get('limit') if mode == 'completion' else None
+    if mode == 'completion' and (type(remaining) is not int or remaining < 0):
+        raise ValueError('Invalid PBS completion request limit')
+    excluded = incoming.get('exclude', {})
     requests = {}
     for directory in (root/'allocations').glob('*'):
-        values = [read(path) for path in sorted((directory/'requests').glob('*.json'))
-                  if not (directory/'responses'/path.name).exists()]
+        values = []
+        for path in sorted((directory/'requests').glob('*.json')):
+            if remaining == 0:
+                break
+            bulk = path.name.startswith('complete-')
+            if (mode == 'control' and bulk) or (mode == 'completion' and not bulk):
+                continue
+            if path.stem in excluded.get(directory.name, ()) or (directory/'responses'/path.name).exists():
+                continue
+            value = read(path)
+            if value is None:
+                continue
+            values.append(value)
+            if remaining is not None:
+                remaining -= 1
         if values:
             requests[directory.name] = values
-    return dict(requests=requests, allocations=snapshotter(root, finished))
+    return dict(requests=requests, allocations=[] if mode == 'completion' else snapshotter(root, finished))
 
 
 def admission_exit(directory, attempt, assignment, state):

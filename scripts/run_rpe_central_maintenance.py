@@ -13,13 +13,21 @@ import sqlite3
 import sys
 import time
 
-from recover_stopped_rpe_run import OWNED, load, live_driver, optional, read_rows, safe_name
+from recover_stopped_rpe_run import (OWNED, load, live_driver, optional, read_rows,
+                                     safe_name, read_preparation_readiness)
+from publish_h4_search_run import FILES as PUBLICATION_FILES
 
 
 def save(path, data):
     temporary = path.with_suffix('.tmp')
     temporary.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
     temporary.replace(path)
+
+def error_summary(error):
+    detail = getattr(error, 'stderr', None)
+    if isinstance(detail, bytes):
+        detail = detail.decode(errors='replace')
+    return detail[-500:] if detail else str(error)[:500]
 
 
 def latest_wait(path):
@@ -61,7 +69,7 @@ def archive_candidates(runs, current, rows):
     proposals = []
     for run in runs:
         run_rows = rows.get(run,[])
-        pending = optional(run/'distributed/PREPARATION_PENDING.json').get('tasks', {})
+        pending = read_preparation_readiness(run/'distributed')
         requests = [row['request'] for row in run_rows] + [row['request'] for row in pending.values()]
         referenced.update({bundle['sha256'] for request in requests
                            for bundle in (request.get('preparation') or {}).get('input_git_bundles', [])})
@@ -121,6 +129,39 @@ def resume_interrupted_target(state, run):
         return dict(status='RECOVERY_HELD', previous_invocation=invocation, reason=str(error))
 
 
+def publish_due(run, *, active, previous):
+    """Publish completed snapshots through the run's ordinary C destination."""
+    if time.time() - previous.get('checked_epoch', 0) < (600 if active else 120):
+        return previous
+    config = optional(run/'CONTROLLER_CONFIG.json')
+    settings = config.get('publication')
+    # Existing runs keep their publication behavior until this release is
+    # selected for that run, including its serialized publisher.
+    if not settings or not config.get('periodic_publication') or config.get('artificial_controller_directory'):
+        return previous
+    if not (run/'ROUND_RESULT.json').is_file():
+        return previous
+    published = run/'PUBLICATION_STATUS.json'
+    stamp = published.stat().st_mtime if published.is_file() else 0
+    snapshot = PUBLICATION_FILES + ('KAPPA_STATE.json',)
+    if (optional(published).get('status') == 'PUBLISHED'
+            and all(not (run/name).is_file() or (run/name).stat().st_mtime <= stamp for name in snapshot)):
+        return previous
+    command = [config['python'], '-B', str(Path(__file__).with_name('publish_romutail_search.py')),
+               '--repository', settings['repository'], '--run-dir', str(run),
+               '--controller-source', config['code_source'], '--branch', settings['branch']]
+    if settings.get('push'):
+        command.append('--push')
+    checked = time.time()
+    try:
+        response = subprocess.run(command, capture_output=True, text=True, check=True, timeout=180)
+        status = json.loads(response.stdout)
+        return dict(checked_epoch=checked, status=status['status'], head=status.get('head'))
+    except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+        return dict(checked_epoch=checked, status='PUBLICATION_PENDING',
+                    reason=error_summary(error))
+
+
 def run_pass(state, *, offline=False, resume_interrupted=False):
     report_dir = state/'maintenance'
     report_dir.mkdir(exist_ok=True)
@@ -169,12 +210,16 @@ def run_pass(state, *, offline=False, resume_interrupted=False):
                 completed = subprocess.run(cmd, capture_output=True,check=True,text=True,timeout=110)
                 result = json.loads(completed.stdout)
             except (OSError,ValueError,subprocess.SubprocessError) as error:
-                result = dict(status='RECOVERY_PENDING',reason=str(error)[:350],jobs=previous.get('jobs', []),
+                result = dict(status='RECOVERY_PENDING', reason=error_summary(error),
+                              jobs=previous.get('jobs', []),
                               repaired_inputs=[],new_scientific_calls=0)
             if resume_interrupted and not offline and run_id == current and result['status'] != 'RECOVERY_PENDING':
                 resumed = resume_interrupted_target(state, run)
                 if resumed is not None:
                     result['controller_resume'] = resumed
+            if not offline:
+                result['publication_check'] = publish_due(
+                    run, active=live_driver(run), previous=previous.get('publication_check', {}))
             save(report,dict(result,wait=wait_summary(run,result),observed_epoch=time.time()))
             if (run_id != current and not live_driver(run)
                     and not any(row['state'] in OWNED for row in read_rows(run))):

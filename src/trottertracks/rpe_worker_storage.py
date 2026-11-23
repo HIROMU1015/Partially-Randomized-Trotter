@@ -220,6 +220,73 @@ def reclaim_transferred_attempt(policy, attempt):
         _remove_copy(path)
 
 
+def pending_pbs_completions(spool):
+    """Inventory completed attempts whose worker session has not recorded an ACK."""
+    candidates = []
+    for marker in Path(spool).glob('*/*/WORKER_STATE.json'):
+        try:
+            state = json.loads(marker.read_bytes())
+            if state['state'] == 'COMPLETED_PENDING_TRANSFER':
+                candidates.append(dict(job_id=marker.parent.parent.name, attempt_id=marker.parent.name))
+        except (OSError, KeyError, ValueError):
+            continue
+    return candidates
+
+
+def acknowledge_pbs_completions(profile, spool, receipts):
+    """Retire exactly the completion bytes already stored by the controller."""
+    from .rpe_q3_worker import digest, event, result_bundle, safe_id, save_state
+
+    spool = Path(spool)
+    policy = profile.get('storage_limit')
+    lock = spool/'WORKER.lock'
+    if (not policy or not spool.is_dir() or spool.resolve() != spool
+            or spool.stat().st_uid != os.getuid() or not lock.is_file() or lock.is_symlink()
+            or not any(spool.is_relative_to(Path(root).resolve()) for root in policy['roots'])):
+        return dict(acknowledged=0, reason='PBS_SPOOL_UNAVAILABLE')
+    worker_profile = dict(profile, work_dir=str(spool))
+    acknowledged = mismatch = deferred = 0
+    with lock.open('rb') as worker_lock:
+        try:
+            fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return dict(acknowledged=0, reason='PBS_WORKER_OWNS_SPOOL')
+        for receipt in receipts:
+            try:
+                job, attempt_id = (safe_id(receipt[key]) for key in ('job_id', 'attempt_id'))
+                attempt = spool/job/attempt_id
+                if attempt.resolve() != attempt or not attempt.is_dir():
+                    raise ValueError('Unexpected PBS attempt path')
+                paths = [attempt/name for name in ('ASSIGNMENT.json', 'WORKER_STATE.json', 'WORKER_PROCESS.lock')]
+                if any(path.is_symlink() for path in paths):
+                    raise ValueError('Unexpected PBS attempt metadata path')
+                assignment = json.loads(paths[0].read_bytes())
+                state = json.loads(paths[1].read_bytes())['state']
+                request_sha = receipt['request_sha256']
+                identity = (assignment.get('host_id', profile['host_id']), assignment['job_id'],
+                            assignment['attempt_id'], assignment['request_sha256'])
+                if identity != (profile['host_id'], job, attempt_id, request_sha):
+                    raise ValueError('PBS attempt owner differs from central receipt')
+                if state != 'COMPLETED_PENDING_TRANSFER':
+                    continue
+                with paths[2].open('rb') as execution_lock:
+                    fcntl.flock(execution_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    completion_sha = receipt['completion_sha256']
+                    if digest(assignment['request']) != request_sha or digest(result_bundle(attempt)) != completion_sha:
+                        raise ValueError('PBS request or completion digest differs')
+                    save_state(attempt, 'TRANSFERRED', via='PBS_HARVEST_ACK_RECOVERY',
+                               request_sha256=request_sha, completion_sha256=completion_sha)
+                    acknowledged += 1
+                event(worker_profile, 'TRANSFER_ACK', job_id=job, attempt_id=attempt_id,
+                      via='PBS_HARVEST_ACK_RECOVERY')
+                reclaim_transferred_attempt(policy, attempt)
+            except (KeyError, ValueError, TypeError):
+                mismatch += 1
+            except OSError:
+                deferred += 1
+    return dict(acknowledged=acknowledged, mismatch=mismatch, deferred=deferred)
+
+
 def _reclaim(spools, roots, used, target):
     copies = sorted(_acknowledged_copies(spools, roots))
     removed = 0
@@ -523,3 +590,183 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             return measured
     except OSError:
         return dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
+
+
+_Q3_RESULT_COPY_NAMES = ('RESULT.json', 'API_RETURN.json')
+_Q3_COPY_SWEEP_BYTES = 1024**3
+
+
+def _q3_copy_attempt(spool, job, attempt):
+    if not (re.fullmatch(r'[a-zA-Z0-9_-]{1,128}', job)
+            and re.fullmatch(r'[a-zA-Z0-9_-]{1,128}', attempt)):
+        return None
+    directory = spool/job/attempt
+    if directory.resolve() != directory:
+        return None
+    marker, assignment_path = (directory/name for name in ('WORKER_STATE.json', 'ASSIGNMENT.json'))
+    if marker.is_symlink() or assignment_path.is_symlink():
+        return None
+    if json.loads(marker.read_bytes()).get('state') != 'TRANSFERRED':
+        return None
+    assignment = json.loads(assignment_path.read_bytes())
+    if (assignment['job_id'], assignment['attempt_id']) != (job, attempt):
+        return None
+    if assignment['request']['route']['kind'] in ('preparation', 'artificial'):
+        return None
+    if not (directory/'OUTCOME.json').is_file() or not (directory/'PROCESS_RETURN.json').is_file():
+        return None
+    return directory, assignment['request_sha256']
+
+
+def q3_result_copy_inventory(profile, spools):
+    """List only known Q3 copies for comparison with the central ledger."""
+    roots = [Path(root).resolve() for root in profile['storage_limit']['roots']]
+    items = []
+    for spool in sorted(set(map(Path, spools))):
+        if spool.resolve() != spool or not any(spool.is_relative_to(root) for root in roots):
+            continue
+        for marker in spool.glob('*/*/WORKER_STATE.json'):
+            job, attempt = marker.parent.parent.name, marker.parent.name
+            try:
+                result = _q3_copy_attempt(spool, job, attempt)
+                if result is None:
+                    continue
+                directory, request_sha256 = result
+                for name in _Q3_RESULT_COPY_NAMES:
+                    path = directory/job/name
+                    if path.resolve() != path or not path.is_file():
+                        continue
+                    info = path.stat()
+                    if info.st_nlink == 1:
+                        items.append(dict(spool=str(spool), job=job, attempt=attempt, name=name,
+                                          size=info.st_size, blocks=info.st_blocks*512,
+                                          request_sha256=request_sha256))
+            except (OSError, KeyError, ValueError, TypeError):
+                continue
+    return items
+
+
+def reclaim_q3_result_copies(profile, spools, proofs, target):
+    """Retire only byte-identical copies once worker ownership has closed."""
+    if target <= 0:
+        return dict(files=0, bytes=0)
+    policy = profile['storage_limit']
+    roots = [Path(root).resolve() for root in policy['roots']]
+    allowed = set(map(Path, spools))
+    removed = size = 0
+    lockfile = Path(policy['sample_path']).with_suffix('.lock')
+    with lockfile.open('r+b') as storage_lock:
+        fcntl.flock(storage_lock, fcntl.LOCK_EX)
+        for row in proofs:
+            spool = Path(row['spool'])
+            name = row['name']
+            if (spool not in allowed or spool.resolve() != spool or name not in _Q3_RESULT_COPY_NAMES
+                    or not any(spool.is_relative_to(root) for root in roots)):
+                continue
+            try:
+                result = _q3_copy_attempt(spool, row['job'], row['attempt'])
+                if result is None:
+                    continue
+                directory, request_sha256 = result
+                if request_sha256 != row['request_sha256']:
+                    continue
+                lock_path = directory/'WORKER_PROCESS.lock'
+                if not stat.S_ISREG(lock_path.lstat().st_mode):
+                    continue
+                with lock_path.open('rb') as execution_lock:
+                    fcntl.flock(execution_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    if _q3_copy_attempt(spool, row['job'], row['attempt']) != result:
+                        continue
+                    path = directory/row['job']/name
+                    if path.resolve() != path:
+                        continue
+                    before = path.lstat()
+                    if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1 or before.st_size != row['size']:
+                        continue
+                    with path.open('rb') as stream:
+                        if hashlib.file_digest(stream, 'sha256').hexdigest() != row['sha256']:
+                            continue
+                    after = path.lstat()
+                    if (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns) != (
+                            before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns, before.st_ctime_ns):
+                        continue
+                    path.unlink()
+                    removed += 1
+                    size += before.st_blocks*512
+                    if size >= target:
+                        break
+            except (OSError, KeyError, ValueError, TypeError):
+                continue
+    return dict(files=removed, bytes=size)
+
+
+def _ended_pbs_rpc_pairs(namespace):
+    """Find candidate completion replays in closed allocation directories."""
+    root = Path(namespace)/'allocations'
+    for session in sorted(root.glob('*')):
+        terminal = session/'SESSION_END.json'
+        if (not re.fullmatch(r'[a-f0-9]{32}', session.name) or session.resolve() != session
+                or terminal.is_symlink() or not terminal.is_file()):
+            continue
+        for request in sorted((session/'requests').glob('*.json')):
+            if not re.fullmatch(r'(?:complete-[a-f0-9]{20}-)?[a-f0-9]{32}', request.stem):
+                continue
+            response = session/'responses'/request.name
+            try:
+                if request.resolve() != request or response.resolve() != response:
+                    continue
+                incoming, outgoing = request.stat(), response.stat()
+                if not (stat.S_ISREG(incoming.st_mode) and stat.S_ISREG(outgoing.st_mode)
+                        and incoming.st_nlink == outgoing.st_nlink == 1 and outgoing.st_size <= 4096):
+                    continue
+                reply = json.loads(response.read_bytes())
+                result = reply.get('result') or {}
+                if reply.get('ok') is True and result.get('ok') is True and type(result.get('duplicate')) is bool:
+                    yield request, response, incoming.st_blocks*512+outgoing.st_blocks*512
+            except (OSError, ValueError, AttributeError):
+                continue
+
+
+def pbs_completion_copy_inventory(namespace):
+    return [(request.parents[1].name, request.stem, size)
+            for request, _, size in _ended_pbs_rpc_pairs(namespace)]
+
+
+def reclaim_pbs_completion_copies(profile, namespace, proof, adopted, target):
+    """Reclaim matched successful RPC pairs after the central result was adopted."""
+    from .rpe_q3_worker import digest
+
+    policy = profile['storage_limit']
+    namespace = Path(namespace)
+    if namespace.resolve() != namespace or not any(namespace.is_relative_to(Path(root).resolve())
+                                                     for root in policy['roots']):
+        return dict(pairs=0, bytes=0)
+    removed = size = 0
+    proof = {(row['token'],row['request_id']):row for row in proof}
+    with Path(policy['sample_path']).with_suffix('.lock').open('rb') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        for request, response, pair_size in _ended_pbs_rpc_pairs(namespace):
+            key = request.parents[1].name, request.stem
+            saved = proof.get(key)
+            if saved is None:
+                continue
+            try:
+                incoming = json.loads(request.read_bytes())
+                outgoing = json.loads(response.read_bytes())
+                value = incoming['payload']
+                if (incoming['endpoint'] != '/v1/complete' or incoming['request_id'] != key[1]
+                        or digest(incoming) != saved['request_sha256'] or outgoing != saved['response']
+                        or value['host_id'] != profile['host_id']):
+                    continue
+                owner = '|'.join(value[k] for k in ('job_id','attempt_id','request_sha256'))
+                if owner not in adopted or digest(value['files']) != adopted[owner]:
+                    continue
+                request.unlink()
+                response.unlink()
+                removed += 1
+                size += pair_size
+                if size >= target:
+                    break
+            except (OSError, KeyError, ValueError, TypeError):
+                continue
+    return dict(pairs=removed, bytes=size)

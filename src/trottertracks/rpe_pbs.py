@@ -322,6 +322,7 @@ def measured_q3_memory(request, runtime, host, estimates):
                     row['horizon_risk_commit'], row['adapter_source'], row['dp_workers'], row['rounds'])
                 == (host, request['method'], route['kind'], route.get('view_commit'),
                     risk, adapter, runtime.get('dp_workers'), len(x))
+                and row.get('interpreter', runtime.get('interpreter')) == runtime.get('interpreter')
                 and row['min_peak_shots'] <= peak_shots <= row['max_peak_shots']), default=None)
 
 
@@ -414,10 +415,13 @@ def apply_q3_measured_memory(distributed, estimates):
     pbs = distributed['pbs']
     profiles = {row['host_id']: row['profile'] for row in pbs['workers']}
     integers = ('dp_workers', 'rounds', 'min_peak_shots', 'max_peak_shots', 'memory_bytes')
-    sources = ('view_commit', 'horizon_risk_commit', 'adapter_source')
+    sources = ('view_commit', 'adapter_source')
     for row in estimates:
         if (row['host'] not in profiles or not row['method'] or not row['route_kind']
                 or any(not re.fullmatch('[0-9a-f]{40}', row[key]) for key in sources)
+                or ('horizon_risk_commit' not in row or row['horizon_risk_commit'] is not None
+                    and not re.fullmatch('[0-9a-f]{40}', row['horizon_risk_commit']))
+                or ('interpreter' in row and not Path(row['interpreter']).is_absolute())
                 or any(type(row[key]) is not int or row[key] <= 0 for key in integers)
                 or row['min_peak_shots'] > row['max_peak_shots']
                 or row['memory_bytes'] > usable_memory(profiles[row['host']], pbs)):
@@ -552,6 +556,21 @@ class PbsManager:
         self.artifact_transfers = {}
         self.prefetched_inputs = {}
         self.q3_worker_proofs = {}
+        completion_workers = getattr(executor, 'distributed', {}).get('pbs_gateway_completion_workers', 0)
+        self.completion_pool = (ThreadPoolExecutor(max_workers=completion_workers, thread_name_prefix='pbs-receive')
+                                if completion_workers else None)
+        self.completion_workers = completion_workers
+        self.pending_completions = {}
+        self.split_exchange = bool(dispatch and dispatch.get('split_exchange') and completion_workers)
+        self.completion_gateway = Gateway(self.settings) if self.split_exchange else None
+        self.completion_responses = {}
+        self.completion_thread = None
+        self.split_status = bool(self.split_exchange and dispatch.get('split_status'))
+        self.status_gateway = Gateway(self.settings) if self.split_status else None
+        self.status_thread = None
+        self.status_queue = queue.Queue()
+        self.status_pending = set()
+        self.status_lock = threading.Lock()
         self.controls = {}
         self.storage_checks = {}
         self.last_error = None
@@ -745,6 +764,8 @@ class PbsManager:
                                              observed.get('memory_bytes') or 0))
                     else:
                         admission.pop('resource_pool', None)
+                    if not admission['accepting'] or not admission.get('resource_pool'):
+                        admission.pop('ready_buffer', None)
             if request['endpoint'] == '/v1/poll' and (allocation is None or allocation['status'] != 'R' or
                     not (allocation.get('worker') or {}).get('accepting', False) or
                     self.state['allocations'][token].get('resize_requested') or
@@ -752,6 +773,7 @@ class PbsManager:
                 # A delayed file survives worker/PBS termination; it cannot
                 # constitute a current free-slot offer.
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
+                ((payload.get('resource_report') or {}).get('pbs') or {}).pop('ready_buffer', None)
             reused = set()
             if request['endpoint'] == '/v1/poll':
                 reused = self._reuse_q3_worker_proofs(
@@ -767,6 +789,19 @@ class PbsManager:
                     for job_id in assignments:
                         cached[1].pop(job_id, None)
                 result = self._prefetch_preparation_inputs(token, payload, result)
+                cached_challenges = payload.get('pbs_cached_challenges')
+                if isinstance(cached_challenges, dict):
+                    challenges = result.get('eligibility_challenges', ())
+                    compact = []
+                    for challenge in challenges:
+                        job = challenge['job_id']
+                        known = cached_challenges.get(job)
+                        if (known and challenge['request'].get('route', {}).get('kind') != 'preparation'
+                                and digest(challenge) == known):
+                            compact.append(dict(job_id=job, pbs_challenge_ref=known))
+                        else:
+                            compact.append(challenge)
+                    result['eligibility_challenges'] = compact
                 record = self.state['allocations'][token]
                 storage = (payload.get('resource_report') or {}).get('storage') or {}
                 ready = payload['slots'] > 0 and payload.get('accepting_new_jobs', True)
@@ -1275,6 +1310,178 @@ class PbsManager:
             return None
         return dict(token=previous['pilot_token'], job_id=previous['job_id']), [row['request'] for row in rows]
 
+    def _flush_responses(self):
+        if not self.responses:
+            return
+        started = time.monotonic()
+        responses = sum(len(batch) for batch in self.responses.values())
+        self.gateway.call(dict(action='exchange', responses=self.responses, controls={},
+                               responses_only=True))
+        self.responses = {}
+        self.log('PBS_RESPONSE_FLUSH', replies=responses, seconds=time.monotonic()-started)
+
+    def _timed_dispatch(self, token, request):
+        started = time.monotonic()
+        result = self._dispatch_ready(token, request)
+        elapsed = time.monotonic()-started
+        if elapsed >= 1:
+            self.log('PBS_REQUEST_TIMING', token=token, endpoint=request['endpoint'],
+                     request_id=request['request_id'], seconds=elapsed, replied=result is not None)
+        return result
+
+    def _collect_completed_requests(self, responses):
+        for (token, request_id), (request, future) in tuple(self.pending_completions.items()):
+            if not future.done():
+                continue
+            del self.pending_completions[token, request_id]
+            try:
+                result = future.result()
+            except Exception as error:
+                self.log('PBS_COMPLETION_EXCHANGE_PENDING', token=token, request_id=request_id,
+                         error=str(error))
+                continue
+            if result is not None:
+                responses.setdefault(token, {})[request_id] = result
+
+    def _submit_completion(self, token, request):
+        key = token, request['request_id']
+        if key in self.pending_completions:
+            if request != self.pending_completions[key][0]:
+                raise ValueError('In-flight PBS completion RPC changed content')
+        elif len(self.pending_completions) < self.completion_workers:
+            self.pending_completions[key] = request, self.completion_pool.submit(
+                self._timed_dispatch, token, request)
+
+    def _exchange_completions(self):
+        self._collect_completed_requests(self.completion_responses)
+        exclude = {}
+        for token, request_id in self.pending_completions:
+            exclude.setdefault(token, []).append(request_id)
+        remaining = self.completion_workers-len(self.pending_completions)
+        if not remaining and not self.completion_responses:
+            return
+        start = time.monotonic()
+        data = self.completion_gateway.call(dict(
+            action='exchange', request_mode='completion', limit=remaining,
+            exclude=exclude, responses=self.completion_responses, controls={}))
+        count = sum(len(rows) for rows in data['requests'].values())
+        if count or self.completion_responses:
+            self.log('PBS_COMPLETION_EXCHANGE_TIMING', seconds=time.monotonic()-start,
+                     requests=count, replies=sum(len(rows) for rows in self.completion_responses.values()))
+        self.completion_responses = {}
+        for token, requests in data['requests'].items():
+            for request in requests:
+                if request['endpoint'] != '/v1/complete':
+                    raise ValueError('Non-completion request on PBS completion exchange')
+                self._submit_completion(token, request)
+
+    def _run_completions(self):
+        try:
+            while not self.stop.is_set():
+                try:
+                    self._exchange_completions()
+                except Exception as error:
+                    self.log('PBS_COMPLETION_EXCHANGE_PENDING', error=str(error))
+                self.stop.wait(self.settings.get('poll_seconds', .25))
+        finally:
+            self.completion_pool.shutdown(wait=True)
+            self._collect_completed_requests(self.completion_responses)
+            try:
+                if self.completion_responses:
+                    self.completion_gateway.call(dict(action='exchange', responses_only=True,
+                                                       responses=self.completion_responses, controls={}))
+            except Exception as error:
+                self.log('PBS_COMPLETION_EXCHANGE_PENDING', error=str(error))
+            finally:
+                self.completion_gateway.close()
+
+    def _queue_status(self, token, request):
+        key = token, request['request_id']
+        with self.status_lock:
+            if key in self.status_pending:
+                return
+            self.status_pending.add(key)
+            self.status_queue.put((token, request))
+
+    def _run_status(self):
+        """A slow status burst cannot delay acquisition of the next offer."""
+        try:
+            while True:
+                item = self.status_queue.get()
+                if item is None:
+                    break
+                batch = [item]
+                closing = False
+                while len(batch) < 32:
+                    try:
+                        item = self.status_queue.get_nowait()
+                    except queue.Empty:
+                        break
+                    if item is None:
+                        closing = True
+                        break
+                    batch.append(item)
+                replies = {}
+                started = time.monotonic()
+                try:
+                    for token, request in batch:
+                        result = self._timed_dispatch(token, request)
+                        replies.setdefault(token, {})[request['request_id']] = result
+                    self.status_gateway.call(dict(action='exchange', responses=replies,
+                                                  controls={}, responses_only=True))
+                    self.log('PBS_STATUS_EXCHANGE_TIMING', replies=len(batch),
+                             seconds=time.monotonic()-started)
+                except Exception as error:
+                    # The request file and any committed reply survive and are
+                    # replayed on the next snapshot or the next Resume.
+                    self.log('PBS_STATUS_EXCHANGE_PENDING', error=str(error))
+                finally:
+                    with self.status_lock:
+                        self.status_pending.difference_update(
+                            (token, request['request_id']) for token, request in batch)
+                if closing:
+                    break
+        finally:
+            self.status_gateway.close()
+
+    def _dispatch_requests(self, requests_by_token):
+        if not self.split_exchange:
+            self._collect_completed_requests(self.responses)
+        for token, requests in requests_by_token.items():
+            if self.split_exchange:
+                # Apply finished state before reserving replacement work, but
+                # do not hold assignment replies behind other status traffic.
+                def priority(row):
+                    if row is None:
+                        return 3
+                    if row['endpoint'] == '/v1/state' and row['payload'].get('state') == 'COMPLETED_PENDING_TRANSFER':
+                        return 0
+                    return 1 if row['endpoint'] == '/v1/poll' else 2
+                requests = sorted(requests, key=priority)
+            for request in requests:
+                if request is None:
+                    continue
+                endpoint = request['endpoint']
+                request_id = request['request_id']
+                if request_id in self.responses.get(token, {}):
+                    continue
+                if self.completion_pool is not None and not self.split_exchange and endpoint == '/v1/complete':
+                    self._submit_completion(token, request)
+                    continue
+                if getattr(self, 'split_status', False) and endpoint in ('/v1/state', '/v1/transfer-metric'):
+                    self._queue_status(token, request)
+                    continue
+                if endpoint in ('/v1/poll', '/v1/complete', '/v1/artifacts/get', '/v1/artifacts/put'):
+                    self._flush_responses()
+                result = self._timed_dispatch(token, request)
+                if result is not None:
+                    self.responses.setdefault(token, {})[request_id] = result
+                    if self.split_exchange and endpoint == '/v1/poll':
+                        self._flush_responses()
+        if not self.split_exchange:
+            self._collect_completed_requests(self.responses)
+        self._flush_responses()
+
     def cycle(self):
         for token, record in self.state['allocations'].items():
             if record['status'] != 'INTENT' or time.monotonic() < self.ensure_retry_after.get(token, 0):
@@ -1287,7 +1494,23 @@ class PbsManager:
                 self.log('PBS_UNSUBMITTED_INTENT_SUPERSEDED', token=token)
                 continue
             self.gateway.call(dict(action='ensure', spec=record['spec']))
-        data = self.gateway.call(dict(action='exchange', responses=self.responses, controls=self.controls))
+        exchange_started = time.monotonic()
+        response_count = sum(len(batch) for batch in self.responses.values())
+        request = dict(action='exchange', responses=self.responses, controls=self.controls)
+        if self.split_exchange:
+            request['request_mode'] = 'control'
+        if self.split_status:
+            with self.status_lock:
+                pending = tuple(self.status_pending)
+            exclude = {}
+            for token, request_id in pending:
+                exclude.setdefault(token, []).append(request_id)
+            request['exclude'] = exclude
+        data = self.gateway.call(request)
+        elapsed = time.monotonic()-exchange_started
+        if elapsed >= 1:
+            self.log('PBS_EXCHANGE_TIMING', seconds=elapsed, replies=response_count,
+                     requests=sum(len(batch) for batch in data['requests'].values()))
         self.responses, self.controls = {}, {}
         self.allocations = data['allocations']
         for allocation in self.allocations:
@@ -1328,19 +1551,34 @@ class PbsManager:
                 profile['storage_limit']['sample_path'] = str(sample)
                 profiles[profile['host_id']] = profile
             self.gateway.monitor_storage(profiles)
-        for token, requests in data['requests'].items():
-            responses = {}
-            for request in requests:
-                if request is not None and (result := self._dispatch_ready(token, request)) is not None:
-                    responses[request['request_id']] = result
-            if responses:
-                self.responses[token] = responses
+        self._dispatch_requests(data['requests'])
         if self.selective_harvest:
             self._advance_harvest()
         user_stop = self.stop.is_set() or self.executor._user_stop_requested()
         if self.executor.state.closed and self.retain_between_batches and not user_stop:
             self.save()
             return
+        # A held running node already has its full resource pool. Routine
+        # exchanges do not need to rebuild admission demand or repack jobs.
+        if self.split_exchange and self.hold_node and len(self.configured) == 1:
+            held = next((entry for entry in self.allocations if entry['status'] == 'R'), None)
+            if held and held.get('pilot_token'):
+                token = held['token']
+                record = self.state['allocations'][token]
+                idle = not any(row['host_id'] == held['host_id'] for row in self.executor._owned_attempts())
+                if (not user_stop and idle and not record.get('storage_maintenance_requested')
+                        and record.get('worker_storage_hold') in ('STORAGE_LIMIT_REACHED', 'FILESYSTEM_SPACE_LOW')):
+                    record['storage_maintenance_requested'] = True
+                    self.storage_checks.pop(held['host_id'], None)
+                    self.log('PBS_STORAGE_MAINTENANCE_DRAIN', token=token, host_id=held['host_id'],
+                             job_id=held['job_id'], reason=record['worker_storage_hold'])
+                stopping = user_stop or self.executor.state.closed
+                self.controls[token] = dict(stop=bool(stopping or record.get('resize_requested')
+                    or record.get('storage_maintenance_requested')), release_when_idle=bool(stopping and idle))
+                self.last_error = None
+                self.state['heartbeat'] = stamp()
+                self.save()
+                return
         outstanding, pending, queued, free = self._demand()
         waiting_tasks = outstanding + pending
         shortage = len(waiting_tasks)
@@ -1492,6 +1730,14 @@ class PbsManager:
         self.save()
 
     def start(self):
+        if self.split_status:
+            self.status_thread = threading.Thread(target=self._run_status, name='rpe-pbs-status', daemon=True)
+            self.status_thread.start()
+        if self.split_exchange:
+            self.completion_thread = threading.Thread(target=self._run_completions,
+                                                      name='rpe-pbs-completions', daemon=True)
+            self.completion_thread.start()
+
         def run():
             try:
                 while not self.stop.is_set():
@@ -1518,6 +1764,12 @@ class PbsManager:
             self.thread.join(timeout=self.settings.get('request_timeout_seconds',20)+4)
         if self.thread and self.thread.is_alive():
             self.gateway.close(); self.thread.join(timeout=4)
+        if self.status_thread is not None:
+            self.status_queue.put(None)
+            self.status_thread.join()
+            self.status_thread = None
+        if self.completion_thread is not None:
+            self.completion_thread.join()
         if self.harvest_pool is not None:
             # A read in flight may finish, but only a live manager applies its
             # result to the central ledger. Resume will recover the same owner.
@@ -1531,6 +1783,9 @@ class PbsManager:
             self.artifact_transfers.clear()
             self.prefetched_inputs.clear()
         try:
+            if self.completion_pool is not None and self.completion_thread is None:
+                self.completion_pool.shutdown(wait=True)
+                self._collect_completed_requests(self.responses)
             if retain_allocation:
                 if self.responses:
                     self.gateway.call(dict(action='exchange', responses=self.responses, controls={}))

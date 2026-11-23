@@ -329,11 +329,16 @@ def ensure_assignment_components(manifest, host_layout, assignment, profile, *, 
     return dict(inspected, stage=stage, scientific_source=source, matched_components=matches)
 
 
-def validate_assignment_release(manifest,host_layout,assignment,profile):
+def validate_assignment_release(manifest,host_layout,assignment,profile,*,input_hash_cache=None,
+                                request_validator=None):
     """Check the operational envelope, then reuse scientific worker guards."""
     inspected=ensure_assignment_components(manifest,host_layout,assignment,profile)
     from .rpe_q3_worker import validate_assignment,select_host_profile
-    validate_assignment(profile,assignment)
+    validator = request_validator or validate_assignment
+    if input_hash_cache is None:
+        validator(profile, assignment)
+    else:
+        validator(profile, assignment, input_hash_cache=input_hash_cache)
     runtime=None
     if inspected['stage']=='q3':
         from .rpe_host_profiles import validate_adapter_profile,check_runtime_profile

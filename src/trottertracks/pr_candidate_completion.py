@@ -506,7 +506,7 @@ class Completion:
             return False
         directory = (ROOT/record['directory']).resolve()
         if directory.is_relative_to(self.directory.resolve()):
-            return check(directory, record.get('reason') or '')
+            return self.metadata_path_failure(record, directory) or check(directory, record.get('reason') or '')
         return self.inherited_metadata_repair(record) is not None
 
     def inherited_metadata_repair(self, record):
@@ -963,6 +963,8 @@ class Completion:
             received_preparation = bool(old and not getattr(self, 'stop_requested', lambda: False)()
                                         and self.recoverable_transport(old))
             metadata_repair = self.inherited_metadata_repair(old) if received_preparation else None
+            if received_preparation and metadata_repair is None and self.metadata_path_failure(old, d):
+                metadata_repair = d/'metadata-recheck'
             if metadata_repair is not None:
                 d = metadata_repair
             recovered_terminal = (old and request.get('horizon_parent') and old.get('scientific_failure')
@@ -1023,7 +1025,7 @@ class Completion:
                            deferred_tail_descriptor=old.get('deferred_tail_descriptor') or
                                                     old['request'].get('tail_descriptor'))
             if metadata_repair is not None:
-                rec.update(directory=rel(d), deferred_configuration=old['configuration'])
+                rec.update(directory=rel(d), deferred_configuration=old.get('configuration'))
             if recovered_input or recheck:
                 previous_hold = old.get('previous_hold') or {}
                 if not str(previous_hold.get('reason')).startswith('A_PREPARATION:NEEDS_INPUT_SOURCE:'):

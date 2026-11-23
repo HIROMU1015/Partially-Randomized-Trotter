@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 from queue import Empty
+from runpy import run_path
 import shlex
 import sqlite3
 import subprocess
@@ -94,6 +95,9 @@ def check_assignment(row, assignment):
     if assignment.get('request') != row['request']:
         raise ValueError('Saved worker request differs from the central request')
 
+
+read_preparation_readiness = run_path(str(Path(__file__).resolve().parents[1] /
+    'src/trottertracks/rpe_preparation_artifacts.py'))['read_preparation_readiness']
 
 DRY_CHECK_OBSERVER = (Path(__file__).resolve().parents[1] /
                       'src/trottertracks/rpe_dry_check_recovery.py').read_text()
@@ -376,7 +380,7 @@ def repair_dependencies(run, rows, cache):
     by_id = {row['job_id']:row for row in rows}
     repaired = []
     prepared = {row['job_id']:row['request'] for row in rows if row['state'] == 'QUEUED'}
-    for job, entry in optional(run/'distributed/PREPARATION_PENDING.json').get('tasks', {}).items():
+    for job, entry in read_preparation_readiness(run/'distributed').items():
         if job not in by_id:
             prepared[job] = entry['request']
     for job, request in prepared.items():

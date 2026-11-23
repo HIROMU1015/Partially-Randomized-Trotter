@@ -87,7 +87,7 @@ import tempfile
 payload = json.load(sys.stdin)
 root = Path(payload['worker_root'])
 sys.path.insert(0, str(root/'src'))
-from trottertracks.rpe_host_eligibility import current_host_fingerprint
+from trottertracks import rpe_host_eligibility
 from trottertracks.rpe_host_profiles import profile_core, select_host_profile
 
 assignment = payload['assignment']
@@ -192,7 +192,9 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
     elif result.get('scientific_evaluation_calls') != 0 or result.get('request_sha256') != assignment['request_sha256']:
         raise ValueError('Dry-check changed the request or executed a scientific call')
     else:
-        fingerprint = current_host_fingerprint(assignment, configured)
+        checked_fingerprint = getattr(rpe_host_eligibility, 'fingerprint_after_dry_check', None)
+        fingerprint = (checked_fingerprint(assignment, configured, result) if checked_fingerprint
+                       else rpe_host_eligibility.current_host_fingerprint(assignment, configured))
         print(json.dumps(dict(status='PASS', request_sha256=assignment['request_sha256'],
                               fingerprint=fingerprint, profile=profile_core(effective),
                               evaluator=(result.get('adapter_result') or {}).get('evaluator'))))

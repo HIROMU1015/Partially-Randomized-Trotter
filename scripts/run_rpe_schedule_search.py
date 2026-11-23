@@ -296,6 +296,14 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if hashlib.sha256(relay.read_bytes()).hexdigest() != trial['relay_sha256']:
             raise ValueError('Selected relay implementation differs')
         distributed['relay_script'] = str(relay)
+    if 'relay_batch_worker_sources' in trial:
+        batch_sources = trial['relay_batch_worker_sources']
+        configured_hosts = {worker['host_id'] for worker in distributed['relay']['workers']}
+        if (not isinstance(batch_sources, dict) or not set(batch_sources) <= configured_hosts or
+                not all(isinstance(sha, str) and len(sha) == 64 and
+                        all(x in '0123456789abcdef' for x in sha) for sha in batch_sources.values())):
+            raise ValueError('Expected fixed mailbox worker hashes for configured relay hosts')
+        distributed['relay']['batch_worker_sources'] = batch_sources
     if 'local_resource_worker' in trial:
         selected = trial['local_resource_worker']
         root = Path(selected.get('root', Path(__file__).resolve().parents[1])).resolve()
@@ -321,6 +329,7 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         raise ValueError('Preparation recovery requires both fixed controller helpers')
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
                                ('rpe_plan_readiness', 'plan_readiness_sha256'),
+                               ('rpe_host_eligibility', 'host_eligibility_sha256'),
                                ('pf_saved_prices', 'pf_saved_prices_sha256'),
                                ('pf_distributed_preparation', 'pf_distributed_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
@@ -427,6 +436,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             # The preflight and mailbox must understand the same route fields.
             # Keep the original release manifest and worker layout.
             worker['deployment'] = dict(worker['deployment'], entry=entry)
+    for worker in distributed.get('relay', {}).get('workers', ()):
+        limit = trial.get('relay_cpu_limits', {}).get(worker['host_id'])
+        if limit is not None:
+            if type(limit) is not int or limit < 1 or worker.get('transport') in ('wsl', 'ssh-wsl'):
+                raise ValueError('Invalid CPU limit for SSH worker: '+worker['host_id'])
+            worker['cpu_limit'] = min(limit, worker.get('cpu_limit', limit))
     if 'local_memory_reserve_bytes' in trial:
         distributed['local_calibration_pair'] = dict(
             memory_reserve_bytes=trial['local_memory_reserve_bytes'],
@@ -452,6 +467,13 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:
         distributed['pbs_collection_workers'] = trial['pbs_collection_workers']
+    if 'pbs_gateway_completion_workers' in trial:
+        count = trial['pbs_gateway_completion_workers']
+        if type(count) is not int or count < 1:
+            raise ValueError('PBS gateway completion workers must be positive')
+        distributed['pbs_gateway_completion_workers'] = count
+    if trial.get('pbs_ready_buffer') is True:
+        distributed['pbs_ready_buffer'] = True
     if trial.get('pbs_dispatch_gateway'):
         distributed['pbs_dispatch_gateway'] = trial['pbs_dispatch_gateway']
     if trial.get('controller_queue_first'):
@@ -1878,8 +1900,8 @@ class WidthDriver:
                 stop_preparation=threading.Event()
 
                 def stop_preparing():
+                    stop_preparation.set()
                     with executor.state.cv:
-                        stop_preparation.set()
                         executor.state.cv.notify_all()
 
                 executor.state.failure_callback=lambda error:stop_preparing()
@@ -2214,8 +2236,16 @@ class WidthDriver:
                     and not O.shared_stop(result)):
                 # The next planning cycle uses the same durable queue.
                 executor.state.retain_queued_preparation = True
-            actions=[] if preparation_pool is None else [('PREPARATION_DRAIN',lambda:preparation_pool.shutdown(wait=True))]
-            actions.append(('EXECUTOR_DRAIN',executor.finish))
+            actions = [('EXECUTOR_DRAIN', executor.finish)]
+            if preparation_pool is not None:
+                interrupted = stop_preparation.is_set() or executor._user_stop_requested()
+                if interrupted:
+                    stop_preparing()
+                preparation_drain = ('PREPARATION_DRAIN',
+                                     lambda: preparation_pool.shutdown(wait=True, cancel_futures=interrupted))
+                # Release queue waiters before joining producers on Stop.
+                # Normal batches still let producers publish their final results first.
+                actions.insert(len(actions) if interrupted else 0, preparation_drain)
             for phase,close in actions:
                 try:close()
                 except BaseException as error:

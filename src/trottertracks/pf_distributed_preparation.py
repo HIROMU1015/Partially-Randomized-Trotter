@@ -135,6 +135,9 @@ def saved_for_configuration(settings, field, configuration_id):
 
 def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_registry=None):
     """Original finite PF contract; no independent candidate/shot selection."""
+    from .pr_candidate_completion import PreparationWait
+    if not Path(entry).is_file():
+        raise PreparationWait('Fixed PF provider entry is unavailable: '+str(entry))
     original=Path(entry).resolve().parents[1];run=Path(run)
     owner_input=run/'ORIGINAL_OWNER_REQUEST.json';owner_output=run/'ORIGINAL_OWNER_CHECK.json'
     outer=next((p for p in run.parents if p.name=='pf_auto'),run)

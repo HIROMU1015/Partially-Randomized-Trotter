@@ -15,6 +15,7 @@ import signal
 import socket
 import subprocess
 import sys
+import threading
 import time
 import uuid
 
@@ -162,8 +163,13 @@ class SpoolTransport:
         self.heartbeat = heartbeat
 
     def __call__(self, endpoint, payload):
+        completion_prefix = ('complete-' + digest([payload.get('job_id'), payload.get('attempt_id')])[:20] + '-'
+                             if endpoint == '/v1/complete' else '')
         matching = []
         for path in self.requests.glob('*.json'):
+            if path.name.startswith('complete-') and (not completion_prefix
+                                                     or not path.name.startswith(completion_prefix)):
+                continue
             try:
                 saved = read(path)
             except FileNotFoundError:
@@ -180,7 +186,7 @@ class SpoolTransport:
             request_id = saved['request_id']
             payload = saved['payload']
         else:
-            request_id = uuid.uuid4().hex
+            request_id = completion_prefix + uuid.uuid4().hex
             request = self.requests / (request_id + '.json')
             atomic(request, dict(request_id=request_id, endpoint=endpoint,
                                  payload=payload, clock=stamp()))
@@ -251,6 +257,18 @@ class AllocationWorker(Worker):
         self.readiness_ready = {}
         self.readiness_retry = {}
         self.readiness_sent = {}
+        self.readiness_lock = threading.Lock()
+        self.readiness_stop = threading.Event()
+        self.readiness_thread = None
+        self.readiness_offer = (0, False)
+        self.readiness_requests = {}
+
+    def _refill_readiness(self):
+        while not self.readiness_stop.wait(.2):
+            with self.readiness_lock:
+                slots, accepting = self.readiness_offer
+                if accepting and self.accepting() and not self.control().get('stop'):
+                    self._advance_readiness(slots, True)
 
     def tick(self, acquire=True):
         if getattr(self, 'collection', None) is None:
@@ -300,6 +318,10 @@ class AllocationWorker(Worker):
         super().close()
 
     def _close_readiness(self):
+        if getattr(self, 'readiness_thread', None) is not None:
+            self.readiness_stop.set()
+            self.readiness_thread.join()
+            self.readiness_thread = None
         if getattr(self, 'readiness_pool', None) is not None:
             self.readiness_pool.shutdown(wait=True)
             self.readiness_pool = None
@@ -324,9 +346,26 @@ class AllocationWorker(Worker):
         release = (assignment.get('required_release') or {}).get('id')
         deployment = settings.get('task_deployments', {}).get(release, settings.get('deployment'))
         if deployment:
-            from .rpe_release_deployment import validate_assignment_release
-            validate_assignment_release(read(deployment['manifest']),read(deployment['layout']),
-                                        assignment,self.profile)
+            self._validate_release_assignment(deployment, assignment)
+
+    def _validate_release_assignment(self, deployment, assignment):
+        from .rpe_release_deployment import validate_assignment_release
+        cache = getattr(self, 'batch_input_hashes', None)
+        args = read(deployment['manifest']), read(deployment['layout']), assignment, self.profile
+        if cache is None:
+            validate_assignment_release(*args)
+        else:
+            validate_assignment_release(*args, input_hash_cache=cache)
+
+    def _receive_assignments(self, assignments):
+        # Reuse only immutable Git objects within one reply and compare the
+        # resulting digest with each assignment, keeping the other checks.
+        self.batch_input_hashes = {}
+        try:
+            for assignment in assignments:
+                self._receive_assignment(assignment)
+        finally:
+            self.batch_input_hashes = None
 
     @staticmethod
     def _readiness_key(challenge):
@@ -355,9 +394,24 @@ class AllocationWorker(Worker):
                                   for job, (_, kind, future) in self.readiness_running.items()}
 
     def _poll_readiness(self, report, accepting):
-        accepting = accepting and self.accepting()
+        with self.readiness_lock:
+            self.readiness_offer = report['slots'], accepting
+            self._advance_readiness(report['slots'], accepting and self.accepting())
+            facts, errors, checked_at = {}, {}, {}
+            for job, (_, _, finished_at, proof, error) in self.readiness_ready.items():
+                checked_at[job] = finished_at
+                if error is None:
+                    facts[job] = proof
+                else:
+                    errors[job] = error
+            self.readiness_sent = checked_at
+            return dict(host_fingerprints=facts, readiness_errors=errors,
+                        readiness_checked_monotonic=checked_at,
+                        pbs_cached_challenges={job: entry[0] for job, entry in self.readiness_requests.items()})
+
+    def _advance_readiness(self, slots, accepting):
         # Keep the next check moving even while execution fills the allocation.
-        limit = min(max(1, report['slots']), READINESS_WORKERS)
+        limit = min(max(1, slots), READINESS_WORKERS)
         now = time.monotonic()
         self.readiness_retry = {key: until for key, until in self.readiness_retry.items() if until > now}
         if not accepting:
@@ -416,17 +470,11 @@ class AllocationWorker(Worker):
         if started:
             event(self.profile, 'PBS_READINESS_STARTED', jobs=started, pending=len(self.readiness_pending))
 
-        facts, errors, checked_at = {}, {}, {}
-        for job, (_, _, finished_at, proof, error) in self.readiness_ready.items():
-            checked_at[job] = finished_at
-            if error is None:
-                facts[job] = proof
-            else:
-                errors[job] = error
-        self.readiness_sent = checked_at
-        return dict(host_fingerprints=facts, readiness_errors=errors, readiness_checked_monotonic=checked_at)
-
     def _readiness_delivered(self, response):
+        with self.readiness_lock:
+            self._apply_readiness_response(response)
+
+    def _apply_readiness_response(self, response):
         now = time.monotonic()
         assigned = {item['job_id'] for item in response.get('assignments', [])}
         if assigned:
@@ -444,12 +492,24 @@ class AllocationWorker(Worker):
         for job in assigned | reported:
             self.readiness_pending.pop(job, None)
         if not self.accepting() or response.get('host_admission', {}).get('accepting') is False:
+            self.readiness_offer = (0, False)
             self._discard_readiness()
             return
         for challenge in response.get('eligibility_challenges', []):
             job = challenge['job_id']
             if job in assigned:
                 continue
+            ref = challenge.get('pbs_challenge_ref')
+            cached = self.readiness_requests.pop(job, None)
+            if ref is not None:
+                if cached is None or cached[0] != ref:
+                    event(self.profile, 'PBS_READINESS_REFERENCE_MISS', job_id=job)
+                    continue
+                challenge = cached[1]
+            if challenge['request'].get('route', {}).get('kind') != 'preparation':
+                self.readiness_requests[job] = (ref or digest(challenge), challenge)
+                if len(self.readiness_requests) > 256:
+                    del self.readiness_requests[next(iter(self.readiness_requests))]
             key = self._readiness_key(challenge)
             self.readiness_pending[job] = (key, challenge, now)
             if job in self.readiness_ready and self.readiness_ready[job][0] != key:
@@ -536,6 +596,9 @@ class AllocationWorker(Worker):
     def run_allocation(self):
         self.heartbeat(force=True)
         try:
+            if getattr(self, 'readiness_pool', None) is not None:
+                self.readiness_thread = threading.Thread(target=self._refill_readiness, name='pbs-readiness-refill')
+                self.readiness_thread.start()
             while self.remaining() > 0:
                 control = self.control()
                 if control.get('stop') or self.stop.is_set():

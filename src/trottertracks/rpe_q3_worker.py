@@ -787,6 +787,47 @@ class Worker:
         self.lock.close()
 
 
+def _mailbox_submit(worker, payload, *, offer=None):
+    assignment = payload.get('assignment', payload)
+    safe_id(assignment['job_id']); safe_id(assignment['attempt_id'])
+    attempt = worker.work / assignment['job_id'] / assignment['attempt_id']
+    duplicate = (attempt / 'ASSIGNMENT.json').exists()
+    profile = read(attempt / 'WORKER_PROFILE.json') if duplicate else worker.profile
+    validate_assignment(profile, assignment)
+    offer = worker._resource_offer() if offer is None else worker._storage_offer(dict(offer))
+    if not duplicate and not offer.get('storage', {}).get('accepting_new_jobs', True):
+        raise ValueError(offer['storage']['reason'])
+    occupied_states = Resources.OCCUPIED if (worker.profile.get('slot_policy') or {}).get('mode') == 'auto' else ('ASSIGNED','STARTING','RUNNING')
+    active = sum(resource_state(path, worker._reconcile(path, saved)['state']) in occupied_states
+                 for path, saved in worker.records.items())
+    if not duplicate and active >= worker.slots:
+        raise ValueError('No free worker slot')
+    worker._acquire(assignment)
+    state = read(attempt / 'WORKER_STATE.json')
+    if state['state'] == 'ASSIGNED':
+        worker._launch(attempt)
+        threading.Thread(target=worker.processes[attempt].wait, daemon=True).start()
+    return dict(ok=True, duplicate=duplicate)
+
+
+def mailbox_submit_batch(profile, assignments):
+    """Share the one spool owner and its loaded records across submissions."""
+    replies = []
+    worker = Worker(profile, 'http://127.0.0.1:1')
+    try:
+        offer = worker._resource_offer()
+        for assignment in assignments:
+            try:
+                result = _mailbox_submit(worker, assignment, offer=offer)
+            except Exception as error:
+                result = dict(ok=False, error=type(error).__name__ + ': ' + str(error))
+            replies.append(dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
+                                result=result))
+        return replies
+    finally:
+        worker.close()
+
+
 def mailbox(profile, action, payload=None):
     """One SSH request against the same durable spool used by the HTTP daemon.
 
@@ -831,26 +872,7 @@ def mailbox(profile, action, payload=None):
             report = worker._resource_offer()
             return dict(ok=True, host_id=worker.host_id, capacity=worker.slots, resource_report=report)
         if action == 'submit':
-            assignment = payload.get('assignment', payload)
-            safe_id(assignment['job_id']); safe_id(assignment['attempt_id'])
-            attempt = worker.work / assignment['job_id'] / assignment['attempt_id']
-            duplicate = (attempt / 'ASSIGNMENT.json').exists()
-            profile = read(attempt / 'WORKER_PROFILE.json') if duplicate else worker.profile
-            validate_assignment(profile, assignment)
-            offer = worker._resource_offer()
-            if not duplicate and not offer.get('storage', {}).get('accepting_new_jobs', True):
-                raise ValueError(offer['storage']['reason'])
-            occupied_states = Resources.OCCUPIED if (worker.profile.get('slot_policy') or {}).get('mode') == 'auto' else ('ASSIGNED','STARTING','RUNNING')
-            active = sum(resource_state(path, worker._reconcile(path, saved)['state']) in occupied_states
-                         for path, saved in worker.records.items())
-            if not duplicate and active >= worker.slots:
-                raise ValueError('No free worker slot')
-            worker._acquire(assignment)
-            state = read(attempt / 'WORKER_STATE.json')
-            if state['state'] == 'ASSIGNED':
-                worker._launch(attempt)
-                threading.Thread(target=worker.processes[attempt].wait, daemon=True).start()
-            return dict(ok=True, duplicate=duplicate)
+            return _mailbox_submit(worker, payload)
         if action == 'ack':
             attempt = worker.work / safe_id(payload['job_id']) / safe_id(payload['attempt_id'])
             if attempt not in worker.records:

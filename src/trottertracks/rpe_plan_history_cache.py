@@ -5,6 +5,7 @@ authority for job identity, route matching and ingestion; no launch, collect,
 queue or scientific API is called. A local cache is disposable and is never
 substituted for its original evidence locator or hashes.
 """
+from concurrent.futures import Future
 from fractions import Fraction
 import hashlib
 import io
@@ -16,6 +17,7 @@ import sqlite3
 import subprocess
 import sys
 import textwrap
+import threading
 import time
 import zlib
 
@@ -164,6 +166,44 @@ def _current_unresolved(job, outcome_status=None):
     return row
 
 
+class HistoryInventory:
+    """Share only overlapping scans; matching evidence still gets fresh signatures."""
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.pending = {}
+
+    def scan(self, directory):
+        with self.lock:
+            future = self.pending.get(directory)
+            if future is not None:
+                owner = False
+            else:
+                future = self.pending[directory] = Future()
+                owner = True
+        if not owner:
+            return future.result()
+        try:
+            jobs = []
+            for outcome in sorted(directory.glob('*/OUTCOME.json')):
+                request = outcome.parent/'REQUEST.json'
+                try:
+                    info = request.stat()
+                except FileNotFoundError:
+                    signature = None
+                else:
+                    signature = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+                jobs.append((outcome.parent, signature))
+            future.set_result(jobs)
+            return jobs
+        except BaseException as error:
+            future.set_exception(error)
+            raise
+        finally:
+            with self.lock:
+                self.pending.pop(directory, None)
+
+
 class HistoryCache:
     """Local SQLite cache of exact records previously validated by Executor.
 
@@ -202,6 +242,7 @@ class HistoryCache:
         record_reuse = None if details else getattr(executor, 'record_prior_result_reuse', None)
         stopped = None if details else getattr(executor, '_user_stop_requested', None)
         request_configurations = executor.prior_request_configurations
+        inventory = getattr(executor, 'prior_history_inventory', None) if request_configurations else None
         validator = _validator(executor)
         contexts, comparisons = {}, {}
         known, refused = {}, []
@@ -228,26 +269,32 @@ class HistoryCache:
             directory = Path(base) / 'jobs' / executor.method
             if not directory.exists():
                 continue
-            jobs = (sorted(p for p in directory.iterdir() if p.is_dir()) if details else
-                    [outcome.parent for outcome in sorted(directory.glob('*/OUTCOME.json'))])
-            for job in jobs:
+            if details:
+                jobs = [(p, None) for p in sorted(directory.iterdir()) if p.is_dir()]
+            elif inventory is not None:
+                jobs = inventory.scan(directory)
+            else:
+                jobs = [(outcome.parent, None) for outcome in sorted(directory.glob('*/OUTCOME.json'))]
+            for job, observed_request in jobs:
                 if stopped is not None and stopped():
                     stats['interrupted'] = True
                     break
                 request_path = job / 'REQUEST.json'
                 previous = request_configurations.get(request_path)
                 if not details and previous is not None and previous[1] not in ready and (not held or job.resolve() not in held):
-                    try:
-                        info = request_path.stat()
-                    except FileNotFoundError:
-                        pass
-                    else:
-                        identity = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
-                        if identity == previous[0]:
-                            stats['scanned_jobs'] += 1
-                            stats['unrelated_request_hits'] += 1
-                            refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
-                            continue
+                    if inventory is None:
+                        try:
+                            info = request_path.stat()
+                        except FileNotFoundError:
+                            pass
+                        else:
+                            observed_request = (info.st_dev, info.st_ino, info.st_size,
+                                                info.st_mtime_ns, info.st_ctime_ns)
+                    if observed_request == previous[0]:
+                        stats['scanned_jobs'] += 1
+                        stats['unrelated_request_hits'] += 1
+                        refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
+                        continue
                 signature = _signature(job)
                 present = {name for name, value in signature if value is not None}
                 if not present.intersection(('REQUEST.json', 'LAUNCH.json', 'OUTCOME.json')):

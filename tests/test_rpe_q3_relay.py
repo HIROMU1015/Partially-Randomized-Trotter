@@ -552,8 +552,10 @@ class RelayTests(unittest.TestCase):
                         raise OSError('ARTIFICIAL relay disconnect after controller accepted completion')
                     return original_remote(worker,action,value)
                 harness.relay.remote=flaky_remote
-                with self.assertRaisesRegex(OSError,'disconnect'):
-                    harness.tick()
+                harness.tick()
+                self.assertFalse(lost_ack[0])
+                self.assertIn('ARTIFICIAL relay disconnect',
+                              (harness.relay.directory/'EVENTS.jsonl').read_text())
                 self.assertEqual(harness.executor.store.row(task.job.name)['state'],'ACCEPTED')
                 self.assertEqual(W.read(attempt/'WORKER_STATE.json')['state'],'COMPLETED_PENDING_TRANSFER')
                 # A fresh local relay recovers the same bytes and attempt.

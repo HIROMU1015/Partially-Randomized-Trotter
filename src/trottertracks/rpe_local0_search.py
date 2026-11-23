@@ -1229,6 +1229,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                                          and 'pf_optimizer_connection.py' in trace
                                          and "record['configuration_id'] == candidates[0]" in trace)
             legacy_write_scope = False
+            restored_provider = False
             suffix = "' returned non-zero exit status 1."
             if (stop['error_type'] == 'CalledProcessError' and 'pf_distributed_preparation.py' in trace
                     and message.startswith("Command '") and message.endswith(suffix)
@@ -1238,16 +1239,34 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     output = Path(command[command.index('--output') + 1]).resolve()
                 except (AttributeError, IndexError, SyntaxError, TypeError, ValueError):
                     hold('invalid PF launcher command in the failure record')
-                pinned = load(run/'ROUND.json')['pf_completion']['interpreter']
-                if (command[0] == pinned and Path(command[2]).name == 'check_pf_preparation_owner.py'
+                fixed = load(run/'ROUND.json')['pf_completion']
+                pinned = fixed['interpreter']
+                arguments = launch['command']
+                prior_worker = (json.loads(arguments[arguments.index('--schedule-resume')+1])['worker_trial']
+                                if '--schedule-resume' in arguments else {})
+                runtime = prior_worker.get('pf_controller_runtime', {})
+                allowed = {pinned}
+                if runtime.get('replaces') == pinned and Path(runtime['run_directory']).resolve() == run.resolve():
+                    allowed.add(runtime['interpreter'])
+                if (command[0] in allowed and Path(command[2]).name == 'check_pf_preparation_owner.py'
                         and output.name == 'ORIGINAL_OWNER_CHECK.json' and output.is_relative_to(run.resolve())):
                     with (run/'DRIVER.log').open('rb') as log:
                         log.seek(max(0, log.seek(0, os.SEEK_END) - 2 * 1024**2))
                         evidence = log.read().decode(errors='replace')
-                    legacy_write_scope = any(str(output) in line and 'is not in the subpath of' in line
+                    legacy_write_scope = command[0] == pinned and any(str(output) in line and 'is not in the subpath of' in line
                                              for line in evidence.splitlines() if line.startswith('ValueError:'))
+                    provider = Path(fixed['entry']).resolve()
+                    owner_root = Path(command[command.index('--provider-root')+1]).resolve()
+                    owner_request = Path(command[command.index('--request')+1]).resolve()
+                    restored_provider = (provider.is_file() and provider.parents[1] == owner_root
+                        and owner_request == output.with_name('ORIGINAL_OWNER_REQUEST.json')
+                        and owner_request.is_file() and not output.exists()
+                        and any(repr(str(provider)) in line for line in evidence.splitlines()
+                                if line.startswith('FileNotFoundError: [Errno 2]'))
+                        and subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'scripts', 'src'],
+                                           cwd=owner_root).returncode == 0)
             if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
-                     or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope)
+                     or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope or restored_provider)
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
@@ -1257,7 +1276,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
-        reattach = kind == 'pf_request' and (incomplete_recovery_index or legacy_write_scope)
+        reattach = kind == 'pf_request' and (incomplete_recovery_index or legacy_write_scope or restored_provider)
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
         if reattach:
@@ -1750,13 +1769,15 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         value=dict(returncode=code,command=command,finished_utc=time.time(),invocation_id=invocation)
         write(run/'invocations'/invocation/'EXIT.json',value);write(run/'EXIT.json',value)
         publish_after_exit(config, run, publisher_root=(schedule_resume['root'] if schedule_resume and
-                                                       'publisher_sha256' in schedule_resume else None))
+                                                       'publisher_sha256' in schedule_resume else None),
+                           operations_source=schedule_resume['source'] if schedule_resume and
+                           'publisher_sha256' in schedule_resume else None)
     except Exception as error:
         value=dict(returncode=1,error=str(error),command=command,invocation_id=invocation)
         write(run/'invocations'/invocation/'EXIT.json',value);write(run/'EXIT.json',value);raise
 
 
-def publish_after_exit(config,run, *, publisher_root=None):
+def publish_after_exit(config,run, *, publisher_root=None, operations_source=None):
     """Publish saved result metadata through C's normal path; never alter Q3."""
     publication=config.get('publication')
     if not publication:return
@@ -1769,10 +1790,11 @@ def publish_after_exit(config,run, *, publisher_root=None):
         '--repository',publication['repository'],'--run-dir',str(run),
         '--controller-source',config['code_source']]
     if publication.get('branch'):command+=['--branch',publication['branch']]
+    if operations_source:command+=['--operations-source',operations_source]
     if publication.get('push',False):command+=['--push']
     try:
         with (run/'PUBLICATION.log').open('a')as log:
-            result=subprocess.run(command,cwd=config['code_root'],stdout=log,stderr=subprocess.STDOUT,
+            result=subprocess.run(command,cwd=config['code_root'],stdout=log,stderr=subprocess.STDOUT,timeout=180,
                 env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
         # Publisher may write a more specific pending/published locator status.
         status=load(run/'PUBLICATION_STATUS.json')if(run/'PUBLICATION_STATUS.json').exists()else{}
