@@ -736,6 +736,10 @@ class PbsManager:
         policy = worker['profile'].get('storage_limit')
         if policy is None:
             return True
+        if self.compute_storage_sampling and self.hold_node and self.storage_launcher:
+            # Attach the worker so it can collect the first compute-node sample.
+            # Its own offer and launch checks still enforce the original limit.
+            return True
         host = worker['host_id']
         sampled, report = self.storage_checks.get(host, (float('-inf'), None))
         interval = max(30, SAMPLE_SECONDS) if self.compute_storage_sampling else SAMPLE_SECONDS
