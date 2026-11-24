@@ -44,6 +44,34 @@ def selected_workspace_request(request, workspace):
     return dict(request, output_root=str(destination), registry_file=str(destination/'REGISTRY.json'))
 
 
+def place_saved_price_inputs(root, workspace, prices):
+    """Transfer selected guard receipts without traversing their Git history."""
+    from .pr_candidate_completion import PreparationWait
+    from .rpe_live_q3_readiness import copy_git_locators
+
+    refs = set()
+    admissions = set()
+    for row in prices:
+        evidence = row['price_evidence']
+        admission = evidence['admission']
+        if not admission['path'].endswith('/GUARD_CHECK.json'):
+            continue
+        for entry in (evidence['source'], admission):
+            refs.add((entry['commit'], entry['path']))
+        key = admission['commit'], admission['path'], tuple(admission.get('selector', ()))
+        admissions.add(key)
+    try:
+        for commit, path, selector in admissions:
+            guard = json.loads(git(root, 'show', commit+':'+path))
+            for index in selector:
+                guard = guard[index]
+            refs.update((item['evidence']['commit'], item['evidence']['path'])
+                        for item in guard.get('guard', guard)['checked'])
+        copy_git_locators(root, workspace, refs)
+    except subprocess.CalledProcessError as error:
+        raise PreparationWait('PF_SAVED_PRICE_GIT_INPUT_HOLD: '+str(error)) from error
+
+
 def recover_signal_publication(workspace, commit, owner):
     """Read the accepted signal bundle and its fixed input delta from the old run."""
     from .pf_saved_prices import bound_owner_input, distributed_owner_return
@@ -445,10 +473,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         if price_args:
             # Only the admitted prices actually selected by this plan need
             # object delivery to tasks running in the owned producer clone.
-            for commit in sorted({row['price_evidence']['source']['commit'] for row in value['direct_prices']
-                                  if row['price_evidence']['admission']['path'].endswith('/GUARD_CHECK.json')}):
-                subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit],
-                               cwd=workspace,check=True,capture_output=True)
+            place_saved_price_inputs(root, workspace, value['direct_prices'])
         if (folder/'STOP.json').exists():raise ValueError('Preserve consumed PF STOP; no automatic retry')
         source=dict(commit=fixed['source'],caller='scripts/prepare_pf_candidate.py')
         def local(phase,**fields):

@@ -251,6 +251,33 @@ def _supply_inputs(executor, payload, invoke, response):
     return dict(result, input_transfer=dict(timing, delivery_check_seconds=time.monotonic()-started))
 
 
+def copy_git_locators(source, destination, locators):
+    """Place the exact commit, trees and blobs needed to read fixed locators."""
+    from .rpe_preparation_artifacts import artifact_path
+
+    env = dict(os.environ, GIT_NO_LAZY_FETCH='1')
+    expressions = set()
+    for commit, name in locators:
+        path = artifact_path(name)
+        if not re.fullmatch(r'[0-9a-f]{40}', commit):
+            raise ValueError('Git locator must use a fixed commit')
+        named = commit+':'+path.as_posix()
+        if subprocess.run(['git', 'cat-file', '-e', named], cwd=destination, env=env,
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+            continue
+        expressions.update({commit, commit+'^{tree}'})
+        expressions.update(commit+':'+part.as_posix() for part in (*path.parents, path)
+                           if part != PurePosixPath('.'))
+    if not expressions:
+        return
+    objects = subprocess.check_output(['git', 'rev-parse', *sorted(expressions)], cwd=source,
+                                      env=env, stderr=subprocess.PIPE)
+    packed = subprocess.check_output(['git', 'pack-objects', '--stdout', '--window=0', '--no-reuse-delta'],
+                                     cwd=source, env=env, input=objects, stderr=subprocess.PIPE)
+    subprocess.run(['git', 'index-pack', '--stdin', '--keep=Fixed preparation input locators'],
+                   cwd=destination, env=env, input=packed, check=True, capture_output=True)
+
+
 def controller_input_hashes(executor, request):
     """Place newer provider receipts in the fixed controller-side Q3 object store."""
     target=executor.computation_root
@@ -260,10 +287,8 @@ def controller_input_hashes(executor, request):
         if target==executor.root:
             raise
     expected=Q.input_hashes(executor.root,request)
-    commits=sorted({row['commit']for row in expected})
-    before=subprocess.check_output(['git','rev-parse','HEAD'],cwd=target)
-    subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(executor.root),*commits],
-                   cwd=target,check=True,capture_output=True)
+    before=subprocess.check_output(['git', 'rev-parse', 'HEAD'],cwd=target)
+    copy_git_locators(executor.root, target, {(row['commit'], row['path']) for row in expected})
     observed=Q.input_hashes(target,request)
     if observed!=expected or subprocess.check_output(['git','rev-parse','HEAD'],cwd=target)!=before:
         raise ValueError('Controller Q3 input placement changed fixed SOURCE or input bytes')

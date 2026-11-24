@@ -1238,6 +1238,19 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             legacy_write_scope = False
             restored_provider = False
             vanished_pf_owner = False
+            saved_price_git_input = False
+            git_suffix = "' returned non-zero exit status 128."
+            if (stop['error_type'] == 'CalledProcessError'
+                    and 'pf_distributed_preparation.py' in trace
+                    and "['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit]" in trace
+                    and message.startswith("Command '") and message.endswith(git_suffix)):
+                command = ast.literal_eval(message[len("Command '"):-len(git_suffix)])
+                root = run.resolve().parents[1]
+                saved_price_git_input = (
+                    command[:5] == ['git', 'fetch', '--no-tags', '--no-write-fetch-head', str(root)]
+                    and len(command) == 6 and re.fullmatch(r'[0-9a-f]{40}', command[5])
+                    and subprocess.run(['git', 'cat-file', '-e', command[5]+'^{commit}'],
+                                       cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0)
             suffix = "' returned non-zero exit status 1."
             if (stop['error_type'] == 'CalledProcessError' and 'pf_distributed_preparation.py' in trace
                     and "source=local('preflight'" in trace and message.startswith("Command '")
@@ -1306,18 +1319,20 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                                                cwd=owner_root).returncode == 0)
             if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
                      or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope or restored_provider
-                     or vanished_pf_owner)
+                     or vanished_pf_owner or saved_price_git_input)
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
-            if (incomplete_recovery_index or legacy_write_scope or vanished_pf_owner) and (run/'STOP_REQUESTED.json').exists():
+            if ((incomplete_recovery_index or legacy_write_scope or vanished_pf_owner or saved_price_git_input)
+                    and (run/'STOP_REQUESTED.json').exists()):
                 hold('user STOP prevents recovery')
         elif (kind != 'ast' or stop['error_type'] != 'SystemError'
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
         reattach = damaged_progress or (kind == 'pf_request'
-            and (incomplete_recovery_index or legacy_write_scope or restored_provider or vanished_pf_owner))
+            and (incomplete_recovery_index or legacy_write_scope or restored_provider or vanished_pf_owner
+                 or saved_price_git_input))
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
         if reattach:

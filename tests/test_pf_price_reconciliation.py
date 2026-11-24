@@ -547,6 +547,7 @@ class PFPriceReconciliationTests(unittest.TestCase):
             runtime = SimpleNamespace(call=fake_worker)
             with patch.object(distributed.subprocess, 'check_output', return_value=b'artificial'), \
                  patch.object(distributed.subprocess, 'run', side_effect=metadata), \
+                 patch.object(distributed, 'place_saved_price_inputs'), \
                  patch.object(distributed, 'reuse_signal') as reuse_signal, \
                  patch.object(distributed, 'track_collected_prices'), \
                  patch.object(distributed, 'stage_original_audit', return_value=(recovered, {'axes_by_round': {'1': ['Y']}})):
