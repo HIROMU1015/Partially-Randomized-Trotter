@@ -327,7 +327,8 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         d.methods = ['PR_DF', 'FULL_PF', 'TRUNCATED_PF']
         d.log = lambda **event: None
         executor = SimpleNamespace(state=SimpleNamespace(cv=threading.Condition()))
-        _, _, ready = d.live_ready_source(executor, None, {'methods': {}}, threading.Event())
+        problem = {'methods': {}, 'search': {'exploratory_cost': True}}
+        _, _, ready = d.live_ready_source(executor, None, problem, threading.Event())
         cid = 'pf-ready'
         method = 'TRUNCATED_PF'
         old = dict(method=method, configuration_id=cid, ready=False)
@@ -338,7 +339,9 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         original = dict(candidates=[old], expected={}, saved=SimpleNamespace(table={}))
         pending, take = ready.subscribe(method, original, [old], view)
         full_view = SimpleNamespace(routes={}, expected={}, for_method=lambda _: trial)
-        full_pending, full_take = ready.subscribe('FULL_PF', original, [], full_view)
+        waiting_route = dict(method='FULL_PF', configuration_id='full-ready', ready=True,
+                             execution_needs=['Q3_ROUTE_CONFIGURATION_OR_TEMPLATE'])
+        full_pending, full_take = ready.subscribe('FULL_PF', original, [waiting_route], full_view)
         self.assertFalse(pending())
         full = dict(method='FULL_PF', configuration_id='full-ready', ready=True)
         snapshot = dict(candidates=[pf, full], expected={cid: cid, 'full-ready': 'full-ready'},

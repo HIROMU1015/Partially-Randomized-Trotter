@@ -1743,7 +1743,10 @@ class WidthDriver:
         def subscriber(method, context, candidates, view):
             seen = set()
             pf_seen = 0
-            delivered = {c['configuration_id']: c.get('prices') for c in candidates if c['ready']}
+            # A signal-ready candidate with a missing route or an active
+            # execution hold has not yet reached a live selector.
+            delivered = {c['configuration_id']: c.get('prices') for c in candidates
+                         if c['ready'] and not c.get('execution_needs')}
             exploratory = problem['search'].get('exploratory_cost') is True
 
             def pending():
