@@ -897,6 +897,7 @@ class WidthDriver:
     family constants come from the method's existing canonical generator.
     """
     work_conserving_search = False
+    prior_history_inventory = None
 
     def __init__(self, a):
         self.a = a; self.run = a.run_dir.resolve(); self.run.mkdir(parents=True, exist_ok=True)
@@ -1868,6 +1869,13 @@ class WidthDriver:
                                                 max_candidates=controller_cpu_count(),
                                                 refill_candidate_preparation=True)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
+        # Executors are renewed every cycle. Keep the run's bounded history
+        # cache so unchanged exact values also survive successive cycles.
+        inventory = getattr(executor, 'prior_history_inventory', None)
+        if inventory is not None and getattr(executor, 'optimizer_history_directory', None) is not None:
+            if self.prior_history_inventory is None:
+                self.prior_history_inventory = inventory
+            executor.prior_history_inventory = self.prior_history_inventory
         self.queued_preparation = 0
         self.preparation_queue_advanced = False
         manager = getattr(executor, 'pbs_manager', None)

@@ -224,6 +224,10 @@ class WidthThroughput(unittest.TestCase):
             stack.enter_context(patch('trottertracks.pr_price_rules.GitReader',return_value=world.reader))
             stack.enter_context(patch.object(E.K.CLI,'make_executor',side_effect=factory))
             with redirect_stdout(io.StringIO()):first=E.main(args,driver_factory=Driver)
+            if fast:
+                self.assertIsNotNone(first.prior_history_inventory)
+                self.assertTrue(all(ex.prior_history_inventory is first.prior_history_inventory
+                                    for ex in world.executors))
             launches={str(p):p.read_bytes()for p in(first.run/'jobs').glob('*/*/LAUNCH.json')}
             signals=len(world.signal_calls);leaves=len(world.scientific_price_leaves)
             with redirect_stdout(io.StringIO()):second=E.main(args,driver_factory=Driver)
