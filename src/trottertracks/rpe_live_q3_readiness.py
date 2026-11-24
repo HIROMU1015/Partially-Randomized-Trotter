@@ -6,6 +6,7 @@ from functools import lru_cache
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shlex
 import subprocess
