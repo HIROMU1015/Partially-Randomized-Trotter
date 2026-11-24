@@ -323,8 +323,21 @@ class HistoryInventory:
                 memory_workers = max(1, min(available) // (512 * 1024**2)) if available else cpus
                 # Shared by all methods and history lanes, not one pool per
                 # candidate. Leave cores available to service the queue.
+                # A normal Resume loads a scheduler overlay over the fixed
+                # scientific checkout. Spawn must load these very same two
+                # modules before unpickling the task, without changing the
+                # scientific checkout on sys.path.
+                modules = [(O.__name__, str(Path(O.__file__).resolve())),
+                           (__name__, str(Path(__file__).resolve()))]
+                bootstrap = ('import importlib.util, sys, trottertracks\n'
+                             'for name, path in '+repr(modules)+':\n'
+                             '    spec = importlib.util.spec_from_file_location(name, path)\n'
+                             '    module = importlib.util.module_from_spec(spec)\n'
+                             '    sys.modules[name] = module\n'
+                             '    spec.loader.exec_module(module)\n'
+                             '    setattr(trottertracks, name.rsplit(".", 1)[-1], module)\n')
                 self.decode_pool = ProcessPoolExecutor(max_workers=max(1, min(cpus-2, memory_workers)),
-                        mp_context=multiprocessing.get_context('spawn'))
+                        mp_context=multiprocessing.get_context('spawn'), initializer=exec, initargs=(bootstrap,))
             return self.decode_pool.submit(_decode_outcome, job, signature)
 
     def close(self):
