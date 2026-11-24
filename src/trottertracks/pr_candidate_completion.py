@@ -82,7 +82,17 @@ _LEGACY_DF_PRICE_BOOTSTRAP = (
 
 _DF_PRICE_STARTUP_RECOVERY_BOOTSTRAP = _DF_PRICE_BOOTSTRAP.replace(
     'raise SystemExit(module.main())',
-    """fixed_runtime = module.runtime
+    """import os
+import subprocess
+objects = subprocess.check_output(
+    ['git', 'rev-parse', '--path-format=absolute', '--git-path', 'objects'],
+    cwd=module.ROOT, text=True,
+).strip()
+alternates = os.environ.get('GIT_ALTERNATE_OBJECT_DIRECTORIES')
+os.environ['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(
+    value for value in (objects, alternates) if value
+)
+fixed_runtime = module.runtime
 def portable_runtime():
     worker = fixed_runtime()
     if not getattr(worker, '_rpe_paths_bound', False):

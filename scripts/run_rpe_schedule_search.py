@@ -548,6 +548,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                 for key in ('attempt_id', 'request_sha256', 'reason')) for plan in plans.values()):
             raise ValueError('Preparation recalculation must identify the failed attempt and reason')
         distributed['preparation']['failed_preparation_recalculations'] = plans
+    if placements := trial.get('preparation_request_hosts'):
+        if any(not job.startswith('prep-') or not hosts or any(
+                host not in distributed['preparation_profiles'] for host in hosts)
+                for job, hosts in placements.items()):
+            raise ValueError('Preparation placement must name a fixed request and supported hosts')
+        distributed['preparation_request_hosts'] = deepcopy(placements)
     if 'pf_terminal_price_leaves' in trial:
         terminal = trial['pf_terminal_price_leaves']
         raw = Path(terminal['path']).read_bytes()
