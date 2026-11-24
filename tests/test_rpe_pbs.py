@@ -11,6 +11,7 @@ import io
 import json
 from pathlib import Path
 import shlex
+import subprocess
 import sys
 import tempfile
 import threading
@@ -33,6 +34,18 @@ spec.loader.exec_module(W)
 
 
 class StorageSampleTests(unittest.TestCase):
+    def test_compute_worker_uses_first_fresh_sample_and_rejects_stale_sample(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'sample.json'
+            policy = dict(limit_bytes=50*P.GIB, roots=['/shared'])
+            report = dict(limit_bytes=policy['limit_bytes'], used_bytes=P.GIB,
+                          accepting_new_jobs=True, reason=None)
+            P.atomic(path, dict(policy=policy, sampled_epoch=12345., report=report))
+            observer = W.GatewayStorage(path, max_age=10, local_clock=True)
+            with patch.object(W.time, 'time', side_effect=[12346., 12356.]):
+                self.assertEqual(observer.report(policy), report)
+                self.assertFalse(observer.report(policy)['accepting_new_jobs'])
+
     def test_refresh_is_measured_on_the_worker_clock(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)/'sample.json'
@@ -995,6 +1008,71 @@ class ManagerTests(unittest.TestCase):
 
 
 class GatewayTests(unittest.TestCase):
+    def test_failed_ssh_login_is_shared_between_gateways(self):
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(P.tempfile, 'gettempdir', return_value=directory), \
+             patch.object(P.time, 'time', return_value=100) as clock, \
+             patch.object(P.subprocess, 'check_output', return_value='hostname prism\n'), \
+             patch.object(P.subprocess, 'run') as run:
+            def connect(args, **kwargs):
+                if '-MNf' in args:
+                    raise subprocess.CalledProcessError(255, args)
+                return SimpleNamespace(returncode=255)
+            run.side_effect = connect
+            for _ in range(2):
+                with self.assertRaises(subprocess.CalledProcessError):
+                    P.SharedSSH('prism').command()
+                with self.assertRaisesRegex(OSError, 'reconnect backoff'):
+                    P.SharedSSH('prism').command()
+                clock.return_value += 6
+            with self.assertRaisesRegex(OSError, 'reconnect backoff'):
+                P.SharedSSH('prism').command()
+        self.assertEqual(sum('-MNf' in call.args[0] for call in run.call_args_list), 2)
+
+    def test_successful_master_can_be_reused_and_paused(self):
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(P.tempfile, 'gettempdir', return_value=directory), \
+             patch.object(P.subprocess, 'check_output', return_value='hostname prism\n') as config, \
+             patch.object(P.subprocess, 'run', return_value=SimpleNamespace(returncode=0)) as run:
+            cmd = P.SharedSSH('prism').command()
+            self.assertIn('ProxyCommand=/bin/false', cmd)
+            self.assertIn('-O', run.call_args.args[0])
+            config.return_value = 'proxycommand /usr/bin/false\n'
+            with self.assertRaisesRegex(OSError, 'access is paused'):
+                P.SharedSSH('prism').command()
+            self.assertEqual(run.call_count, 1)
+
+    def test_scheduler_cache_keeps_fast_polls_and_allows_forced_refresh(self):
+        with patch.object(G.time, 'monotonic', return_value=0) as clock, \
+             patch.object(G, 'qstat', return_value={'job': {'job_state': 'R'}}) as query:
+            scheduler = G.SchedulerCache()
+            for tick in range(30):
+                clock.return_value = tick
+                self.assertIn('job', scheduler.query(['job']))
+            self.assertEqual(query.call_count, 2)
+            scheduler.query(['job'], force=True)
+            scheduler.query([])
+            scheduler.query([])
+            self.assertEqual(query.call_count, 4)
+            self.assertEqual(query.call_args.args, ())
+
+    def test_bulk_spool_returns_only_sizes_until_read_in_bounded_chunks(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            directory = root/'allocations'/'owned'
+            path = directory/'requests'/'complete-one.json'
+            exact = dict(request_id='complete-one', endpoint='/v1/complete',
+                        payload={'files': {'OUTCOME.json': 'x'*(2*G.BULK_CHUNK_BYTES+17)}})
+            G.atomic(path, exact)
+            data = G.exchange(root, {'request_mode': 'completion', 'bounded_results': True, 'limit': 4})
+            receipt, = data['requests']['owned']
+            self.assertEqual(receipt, {'request_id': 'complete-one', 'spool_bytes': path.stat().st_size})
+            gateway = SimpleNamespace(call=lambda value: G.handle(root, value))
+            saved = P.PbsManager._read_bulk(gateway, 'owned', 'spool', 'complete-one',
+                                            size=receipt['spool_bytes'])
+            self.assertEqual(saved, path.read_bytes())
+            self.assertEqual(json.loads(saved), exact)
+
     def test_explicit_gateway_runtime_survives_exchange_to_harvest_reconnect(self):
         class Process:
             def __init__(self):
@@ -1007,7 +1085,8 @@ class GatewayTests(unittest.TestCase):
         config = dict(ssh_alias='existing-alias', gateway_python='/private/fixed/python',
                       gateway_script='/fixed/rpe_pbs_gateway.py', remote_root='/owned/spool')
         gateway = P.Gateway(config)
-        with patch.object(P.subprocess, 'Popen', side_effect=lambda *a, **k: Process()) as start:
+        with patch.object(P.subprocess, 'Popen', side_effect=lambda *a, **k: Process()) as start, \
+             patch.object(gateway.ssh, 'command', return_value=['ssh', 'existing-alias']):
             gateway.call(dict(action='exchange'))
             gateway.close()
             gateway.call(dict(action='harvest', token='saved-original'))
@@ -1080,17 +1159,42 @@ class GatewayTests(unittest.TestCase):
             work = root/'worker'
             G.atomic(allocation/'SPEC.json', dict(profile=dict(host_id='pbs-0')))
             G.atomic(allocation/'PROFILE.json', dict(work_dir=str(work)))
+            artifact = b'saved dependency'
+            sha = hashlib.sha256(artifact).hexdigest()
+            path = work/'artifacts'/sha[:2]/sha
+            path.parent.mkdir(parents=True)
+            path.write_bytes(artifact)
             for job in ('already-transferred', 'needs-recovery'):
                 attempt = work/job/'attempt'
                 G.atomic(attempt/'ASSIGNMENT.json', dict(job_id=job, attempt_id='attempt'))
                 G.atomic(attempt/'PROCESS_RETURN.json', dict(returncode=0))
-                G.atomic(attempt/'OUTCOME.json', dict(status='ARTIFICIAL', numerator=10**7167))
+                G.atomic(attempt/'OUTCOME.json', dict(status='ARTIFICIAL', numerator=10**7167,
+                                                     artifacts={'dependency': sha}))
             # Traversing this unrelated directory would reject its symlink.
             (work/'already-transferred'/'attempt'/'unrelated').symlink_to(root)
             recovered = G.harvest(allocation, owners=[dict(job_id='needs-recovery', attempt_id='attempt')])
             self.assertEqual([item['assignment']['job_id'] for item in recovered['attempts']], ['needs-recovery'])
             saved = work/'needs-recovery'/'attempt'/'OUTCOME.json'
             self.assertEqual(base64.b64decode(recovered['attempts'][0]['files']['OUTCOME.json']), saved.read_bytes())
+            manifest = G.harvest(allocation, owners=[dict(job_id='needs-recovery', attempt_id='attempt')],
+                                 manifest_only=True)
+            self.assertEqual(manifest['attempts'][0]['files']['OUTCOME.json'], saved.stat().st_size)
+            gateway = SimpleNamespace(call=lambda value: G.read_bulk_chunk(allocation, value))
+            raw = P.PbsManager._read_bulk(gateway, 'allocation', 'attempt', 'OUTCOME.json',
+                                         job_id='needs-recovery', attempt_id='attempt')
+            self.assertEqual(raw, saved.read_bytes())
+            end_to_end = SimpleNamespace(call=lambda value: (
+                G.harvest(allocation, owners=value['owners'], manifest_only=value['manifest_only'])
+                if value['action'] == 'harvest' else G.read_bulk_chunk(allocation, value)))
+            manager = object.__new__(P.PbsManager)
+            manager.bounded_results = True
+            manager.executor = SimpleNamespace(artifact_cache=ArtifactCache(root/'central-cache'))
+            data, blobs = manager._fetch_harvest(end_to_end, 'allocation', {('needs-recovery', 'attempt')})
+            manager.executor.artifact_cache.put(blobs)
+            self.assertEqual(manager.executor.artifact_cache.path(sha).read_bytes(), artifact)
+            received = base64.b64decode(data['attempts'][0]['files']['OUTCOME.json'])
+            self.assertEqual(received, saved.read_bytes())
+            self.assertEqual(json.loads(received)['numerator'], 10**7167)
 
             later = work/'new-session'/'attempt'
             G.atomic(later/'ASSIGNMENT.json', dict(job_id='new-session', attempt_id='attempt'))

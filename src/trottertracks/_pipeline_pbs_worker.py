@@ -154,7 +154,7 @@ class SpoolTransport:
     the request ID matches; the gateway persists its answer before delivery.
     """
     def __init__(self, directory, *, deadline, timeout_seconds=15.,
-                 poll_seconds=.1, heartbeat=None):
+                 poll_seconds=.1, heartbeat=None, bounded_results=False):
         self.directory = Path(directory)
         self.requests = self.directory / 'requests'
         self.responses = self.directory / 'responses'
@@ -164,14 +164,17 @@ class SpoolTransport:
         self.timeout_seconds = timeout_seconds
         self.poll_seconds = poll_seconds
         self.heartbeat = heartbeat
+        self.bounded_results = bounded_results
 
     def __call__(self, endpoint, payload):
         completion_prefix = ('complete-' + digest([payload.get('job_id'), payload.get('attempt_id')])[:20] + '-'
                              if endpoint == '/v1/complete' else '')
+        if self.bounded_results and endpoint == '/v1/artifacts/put':
+            completion_prefix = 'artifact-put-' + digest(sorted(payload['blobs']))[:20] + '-'
         matching = []
         for path in self.requests.glob('*.json'):
-            if path.name.startswith('complete-') and (not completion_prefix
-                                                     or not path.name.startswith(completion_prefix)):
+            if path.name.startswith(('complete-', 'artifact-put-')) and (
+                    not completion_prefix or not path.name.startswith(completion_prefix)):
                 continue
             try:
                 saved = read(path)
@@ -241,7 +244,7 @@ class AllocationWorker(Worker):
         self.start_clock = stamp()
         transport = SpoolTransport(directory, deadline=deadline,
                                    timeout_seconds=float(profile['pbs'].get('rpc_timeout_seconds', 15.)),
-                                   heartbeat=self.heartbeat)
+                                   heartbeat=self.heartbeat, bounded_results=profile['pbs'].get('bounded_results', False))
         super().__init__(profile, 'http://127.0.0.1:1',
                          poll_seconds=poll_seconds, transport=transport)
         count = profile['pbs'].get('collection_workers', 0)

@@ -43,18 +43,19 @@ def owned_live_jobs():
     return gateway.qstat(*ids) if ids else {}
 
 
-def physical(pool, token, finished=None):
+def physical(pool, token, finished=None, *, scheduler=None, force=False):
     directory = pool/'allocations'/safe_id(token)
-    row = gateway.snapshot(pool, finished, [directory])[0]
+    row = gateway.snapshot(pool, finished, [directory], scheduler=scheduler, force=force)[0]
     if row['status'] == 'SUBMIT_REJECTED':
         # Even a nonzero qsub exit can be a lost connection after submission.
-        matches = [job for job, detail in owned_live_jobs().items()
+        jobs = owned_live_jobs() if scheduler is None else scheduler.discover(owned_live_jobs, force=force)
+        matches = [job for job, detail in jobs.items()
                    if detail.get('Job_Name') == 'RPE'+token[:12]]
         if len(matches) > 1:
             raise ValueError('Ambiguous physical PBS reservation')
         if matches:
             atomic(directory/'JOB_ID.json', dict(job_id=matches[0], recovered=True))
-            return gateway.snapshot(pool, finished, [directory])[0]
+            return gateway.snapshot(pool, finished, [directory], scheduler=scheduler, force=True)[0]
         row['status'] = 'SUBMIT_ERROR_RECONCILE'
     return row
 
@@ -247,22 +248,32 @@ def attach(root, pool, spec):
     return dict(token=token, existing=prior is not None, pilot=binding['token'])
 
 
-def session_snapshot(root, finished=None):
+def session_snapshot(root, finished=None, *, scheduler=None, force=False):
     pool = root.parent/POOL_NAME
     legacy, shared = [], []
     for directory in sorted((root/'allocations').glob('*')):
         if (directory/'SPEC.json').exists():
             (shared if (directory/'PILOT.json').exists() else legacy).append(directory)
-    result = gateway.snapshot(root, finished, legacy)
+    result = gateway.snapshot(root, finished, legacy, scheduler=scheduler, force=force)
     observations = {}
+    ended_sessions = {directory: read(directory/'SESSION_END.json') for directory in shared}
+    terminal_sessions = {}
+    if scheduler is not None:
+        for directory, ended in ended_sessions.items():
+            if ended and directory not in scheduler.terminal_sessions:
+                token = read(directory/'PILOT.json')['token']
+                terminal_sessions.setdefault(token, []).append(directory)
     for directory in shared:
         token = read(directory/'PILOT.json')['token']
         if token not in observations:
-            observations[token] = physical(pool, token, finished)
+            observations[token] = physical(pool, token, finished, scheduler=scheduler,
+                                           force=force or token in terminal_sessions)
+            if token in terminal_sessions:
+                scheduler.terminal_sessions.update(terminal_sessions[token])
         row = dict(observations[token])
         row.update(token=directory.name, directory=str(directory), pilot_token=token,
                    allocation=read(directory/'ALLOCATION.json'), worker=read(directory/'STATE.json'))
-        ended = read(directory/'SESSION_END.json')
+        ended = ended_sessions[directory]
         if ended:
             row.update(status='F', exit_status=ended.get('returncode'), session_end=ended)
         elif row['status'] == 'R' and not (directory/'SESSION_START.json').exists():
@@ -273,13 +284,13 @@ def session_snapshot(root, finished=None):
     return result
 
 
-def handle(root, value, finished):
+def handle(root, value, finished, scheduler=None):
     pool = root.parent/POOL_NAME
     action = value['action']
     if action == 'ensure':
         return attach(root, pool, value['spec'])
     if action == 'snapshot':
-        return dict(allocations=session_snapshot(root, finished))
+        return dict(allocations=session_snapshot(root, finished, scheduler=scheduler, force=True))
     if action == 'exchange':
         # Under the pool lock a queued Stop wins against a simultaneous worker
         # claim. Never erase that fence with a delayed non-stop heartbeat.
@@ -295,14 +306,15 @@ def handle(root, value, finished):
                         elif not read(directory/'CONTROL.json', {}).get('stop'):
                             atomic(directory/'CONTROL.json', control)
                         del controls[token]
-        return gateway.exchange(root, dict(value, controls=controls), finished, session_snapshot)
+        return gateway.exchange(root, dict(value, controls=controls), finished,
+                                lambda root, finished: session_snapshot(root, finished, scheduler=scheduler))
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
         if (directory/'PILOT.json').exists():
             with locked(pool):
                 stop_session(directory)
             return dict(returncode=0, detached=True)
-    return gateway.handle(root, value, finished)
+    return gateway.handle(root, value, finished, scheduler)
 
 
 def claim(pool, generation, job_id):
@@ -449,9 +461,10 @@ def main():
             raise ValueError('Pilot requires the ordinary per-run PBS namespace')
         root.mkdir(parents=True, exist_ok=True)
         finished = {}
+        scheduler = gateway.SchedulerCache()
         for line in sys.stdin:
             try:
-                answer = dict(ok=True, result=handle(root, json.loads(line), finished))
+                answer = dict(ok=True, result=handle(root, json.loads(line), finished, scheduler))
             except Exception as error:
                 answer = dict(ok=False, error=type(error).__name__ + ': ' + str(error))
             print(json.dumps(answer, separators=(',', ':')), flush=True)

@@ -20,6 +20,9 @@ import sys
 import time
 
 
+BULK_CHUNK_BYTES = 1024 * 1024
+
+
 def read(path, default=None):
     return json.loads(Path(path).read_text()) if Path(path).exists() else default
 
@@ -145,7 +148,34 @@ def ensure(root, spec):
     return dict(token=token, existing=False)
 
 
-def snapshot(root, finished=None, directories=None):
+class SchedulerCache:
+    def __init__(self, seconds=15):
+        self.seconds = seconds
+        self.observed = {}
+        self.terminal_sessions = set()
+        self.discoveries = {}
+
+    def discover(self, lookup, *, force=False):
+        now = time.monotonic()
+        cached = self.discoveries.get(lookup)
+        if force or cached is None or now - cached[0] >= self.seconds:
+            cached = now, lookup()
+            self.discoveries[lookup] = cached
+        return cached[1]
+
+    def query(self, job_ids, *, force=False):
+        if not job_ids:
+            return self.discover(qstat, force=force)
+        now = time.monotonic()
+        due = [job for job in job_ids if force or job not in self.observed
+               or now - self.observed[job][0] >= self.seconds]
+        if due:
+            found = qstat(*due)
+            self.observed.update((job, (now, found.get(job))) for job in due)
+        return {job: self.observed[job][1] for job in job_ids if self.observed[job][1] is not None}
+
+
+def snapshot(root, finished=None, directories=None, *, scheduler=None, force=False):
     if directories is None:
         directories = [directory for directory in sorted((root/'allocations').glob('*'))
                        if (directory/'SPEC.json').exists()]
@@ -153,7 +183,13 @@ def snapshot(root, finished=None, directories=None):
         return []
     ids = []
     discovery = False
+    ended = set()
     for directory in directories:
+        marker = directory/'STATE.json'
+        worker = read(marker) if scheduler is not None else None
+        if worker and worker.get('state') == 'EXITED' and marker not in scheduler.terminal_sessions:
+            ended.add(marker)
+            force = True
         known = read(directory/'JOB_ID.json')
         receipt = read(directory/'QSUB_RETURN.json')
         if known:
@@ -166,13 +202,17 @@ def snapshot(root, finished=None, directories=None):
     jobs = {job_id: finished[job_id] for job_id in ids if job_id in finished}
     query = tuple(job_id for job_id in dict.fromkeys(ids) if job_id not in finished)
     if discovery or query:
-        fresh = qstat(*(() if discovery else query))
+        ids_to_query = () if discovery else query
+        fresh = (qstat(*ids_to_query) if scheduler is None else
+                 scheduler.query(ids_to_query, force=force))
         jobs.update(fresh)
         # Finished accounting records cannot make a worker eligible. Keep
         # their scheduler evidence in this gateway connection and still read
         # the worker spool each time so late completion remains recoverable.
         finished.update((job_id, job) for job_id, job in fresh.items()
                         if job.get('job_state') == 'F' and job_id in ids)
+        if scheduler is not None:
+            scheduler.terminal_sessions.update(ended)
     result = []
     for directory in directories:
         spec = read(directory/'SPEC.json')
@@ -249,12 +289,18 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
         for path in sorted((directory/'requests').glob('*.json')):
             if remaining == 0:
                 break
-            bulk = path.name.startswith('complete-')
+            bulk = path.name.startswith(('complete-', 'artifact-put-'))
             if (mode == 'control' and bulk) or (mode == 'completion' and not bulk):
                 continue
             if path.stem in excluded.get(directory.name, ()) or (directory/'responses'/path.name).exists():
                 continue
-            value = read(path)
+            if bulk and incoming.get('bounded_results') is True:
+                try:
+                    value = dict(request_id=path.stem, spool_bytes=path.stat().st_size)
+                except FileNotFoundError:
+                    continue
+            else:
+                value = read(path)
             if value is None:
                 continue
             values.append(value)
@@ -291,7 +337,69 @@ def admission_exit(directory, attempt, assignment, state):
         return None
 
 
-def harvest(directory, wanted=None, owners=None, completed_only=False):
+_PREPARATION_FILES = frozenset(('OUTCOME.json','PROCESS_RETURN.json','ARTIFACT_MANIFEST.json',
+    'PREPARATION_RECEIPT.json','JOB_STAGES.jsonl','TRANSPORT_TIMING.jsonl','WORKER_COLLECT_RETURN.json'))
+_OMIT_HARVEST = frozenset(('ASSIGNMENT.json','WORKER_PROFILE.json','WORKER_STATE.json','WORKER_PROCESS.lock',
+    'SUPERVISOR_STARTED.json','SCIENTIFIC_STARTING.json','WORKER_LAUNCH.json','WORKER_SUPERVISOR.log',
+    'SUPERVISOR_LAUNCH.json','STARTING.json','LAUNCH.json','REQUEST.json'))
+
+
+def harvest_path(relative, preparation):
+    path = Path(relative)
+    if (path.is_absolute() or not path.parts or '..' in path.parts
+            or path.parts[0] == '_dry_check' or relative in _OMIT_HARVEST
+            or preparation and relative not in _PREPARATION_FILES):
+        raise ValueError('File is outside the saved PBS receipt')
+    return path
+
+
+def read_bulk_chunk(directory, request):
+    kind = request['kind']
+    name = request['name']
+    if kind == 'spool':
+        identifier = safe_id(name)
+        if not identifier.startswith(('complete-', 'artifact-put-')):
+            raise ValueError('PBS spool payload is not a bulk request')
+        path = directory/'requests'/(identifier+'.json')
+    else:
+        profile = read(directory/'PROFILE.json')
+        work = Path(profile['work_dir'])
+        if kind == 'artifact':
+            if not re.fullmatch(r'[0-9a-f]{64}', name):
+                raise ValueError('Invalid PBS artifact hash')
+            cache = Path(profile.get('artifact_cache_directory') or work/'artifacts')
+            path = cache/name[:2]/name
+        elif kind == 'attempt':
+            attempt = work/safe_id(request['job_id'])/safe_id(request['attempt_id'])
+            assignment = read(attempt/'ASSIGNMENT.json')
+            if (assignment['job_id'], assignment['attempt_id']) != (request['job_id'], request['attempt_id']):
+                raise ValueError('PBS bulk receipt belongs to a different attempt')
+            preparation = assignment.get('request', {}).get('route', {}).get('kind') == 'preparation'
+            path = attempt/harvest_path(name, preparation)
+            path.resolve().relative_to(attempt.resolve())
+        else:
+            raise ValueError('Unknown PBS bulk receipt kind')
+    offset = request['offset']
+    if type(offset) is not int or offset < 0 or path.is_symlink():
+        raise ValueError('Invalid PBS bulk receipt offset or path')
+    with path.open('rb') as stream:
+        observed = os.fstat(stream.fileno())
+        size = observed.st_size
+        identity = [observed.st_dev, observed.st_ino, observed.st_mtime_ns, size]
+        if offset > size or request.get('size', size) != size:
+            raise ValueError('PBS bulk receipt size changed')
+        if request.get('file_identity', identity) != identity:
+            raise ValueError('PBS bulk receipt changed during transfer')
+        stream.seek(offset)
+        raw = stream.read(BULK_CHUNK_BYTES)
+        if kind == 'spool':
+            # The durable RPC files are ASCII JSON. Its result payload is
+            # already encoded, so send this slice without another base64 layer.
+            return dict(size=size, file_identity=identity, text=raw.decode('ascii'))
+        return dict(size=size, file_identity=identity, data=base64.b64encode(raw).decode('ascii'))
+
+
+def harvest(directory, wanted=None, owners=None, completed_only=False, manifest_only=False):
     """Read existing receipts, optionally only finished attempts on a live worker."""
     if completed_only and owners is None:
         raise ValueError('Live PBS collection requires exact attempt owners')
@@ -343,22 +451,20 @@ def harvest(directory, wanted=None, owners=None, completed_only=False):
             if state.get('state') != 'TRANSFERRED' and (owners is None or same_session):
                 incomplete.append(dict(assignment=assignment, state=state))
             continue
-        names = ('OUTCOME.json','PROCESS_RETURN.json','ARTIFACT_MANIFEST.json','PREPARATION_RECEIPT.json',
-                 'JOB_STAGES.jsonl','TRANSPORT_TIMING.jsonl','WORKER_COLLECT_RETURN.json')
         preparation = assignment.get('request', {}).get('route', {}).get('kind') == 'preparation'
         files = {}
-        omit = {'ASSIGNMENT.json','WORKER_PROFILE.json','WORKER_STATE.json','WORKER_PROCESS.lock',
-                'SUPERVISOR_STARTED.json','SCIENTIFIC_STARTING.json','WORKER_LAUNCH.json','WORKER_SUPERVISOR.log',
-                'SUPERVISOR_LAUNCH.json','STARTING.json','LAUNCH.json','REQUEST.json'}
-        candidates = (path.parent/name for name in names) if preparation else path.parent.rglob('*')
+        candidates = (path.parent/name for name in _PREPARATION_FILES) if preparation else path.parent.rglob('*')
         for file in candidates:
             relative = str(file.relative_to(path.parent))
             if file.is_symlink():
                 raise ValueError('Symlink in saved worker artifact')
-            if file.is_file() and relative not in omit and file.relative_to(path.parent).parts[0] != '_dry_check':
-                files[relative] = base64.b64encode(file.read_bytes()).decode('ascii')
+            if file.is_file() and relative not in _OMIT_HARVEST and file.relative_to(path.parent).parts[0] != '_dry_check':
+                files[relative] = (file.stat().st_size if manifest_only else
+                                   base64.b64encode(file.read_bytes()).decode('ascii'))
         if 'OUTCOME.json' in files and (not completed_only or 'PROCESS_RETURN.json' in files):
-            hashes.update(json.loads(base64.b64decode(files['OUTCOME.json'])).get('artifacts', {}).values())
+            if not manifest_only:
+                outcome = json.loads(base64.b64decode(files['OUTCOME.json']))
+                hashes.update(outcome.get('artifacts', {}).values())
             attempts.append(dict(assignment=assignment, state=state, files=files))
     cache = Path(profile.get('artifact_cache_directory') or Path(profile['work_dir'])/'artifacts')
     blobs = {}
@@ -371,7 +477,7 @@ def harvest(directory, wanted=None, owners=None, completed_only=False):
                 host_id=spec['profile']['host_id'])
 
 
-def handle(root, value, finished=None):
+def handle(root, value, finished=None, scheduler=None):
     action = value['action']
     if action == 'intent_present':
         directory = root/'allocations'/safe_id(value['token'])
@@ -383,12 +489,16 @@ def handle(root, value, finished=None):
     if action == 'ensure':
         return ensure(root, value['spec'])
     if action == 'exchange':
-        return exchange(root, value, finished)
+        return exchange(root, value, finished, lambda root, finished: snapshot(
+            root, finished, scheduler=scheduler))
     if action == 'snapshot':
-        return dict(allocations=snapshot(root, finished))
+        return dict(allocations=snapshot(root, finished, scheduler=scheduler, force=True))
     if action == 'harvest':
         return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'), value.get('owners'),
-                       completed_only=value.get('completed_only') is True)
+                       completed_only=value.get('completed_only') is True,
+                       manifest_only=value.get('manifest_only') is True)
+    if action == 'read_bulk_chunk':
+        return read_bulk_chunk(root/'allocations'/safe_id(value['token']), value)
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
         receipt = read(directory/'JOB_ID.json')
@@ -413,9 +523,10 @@ def main():
         record_allocation(args.record_allocation); return
     root = args.root.resolve(); root.mkdir(parents=True, exist_ok=True)
     finished = {}
+    scheduler = SchedulerCache()
     for line in sys.stdin:
         try:
-            answer = dict(ok=True, result=handle(root, json.loads(line), finished))
+            answer = dict(ok=True, result=handle(root, json.loads(line), finished, scheduler))
         except Exception as error:
             answer = dict(ok=False, error=type(error).__name__ + ': ' + str(error))
         print(json.dumps(answer, separators=(',', ':')), flush=True)

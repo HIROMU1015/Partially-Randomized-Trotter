@@ -5,13 +5,17 @@ offer participates in matching; queued/held PBS jobs contribute no free slots.
 """
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
+import base64
 import fcntl
+import hashlib
 import json
+import os
 from pathlib import Path
 import queue
 import re
 import shlex
 import subprocess
+import tempfile
 import threading
 from statistics import median
 import time
@@ -72,11 +76,56 @@ with tempfile.NamedTemporaryFile(dir=path.parent, prefix=expected+'.transfer-', 
 """
 
 
+class SharedSSH:
+    """One authenticated transport and reconnect deadline per login host."""
+    def __init__(self, alias):
+        self.alias = alias
+
+    def command(self):
+        alias = self.alias
+        base = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5']
+        # Check the effective user policy before using even an existing master.
+        config = subprocess.check_output([*base, '-G', alias], text=True, timeout=5)
+        if any(line in ('proxycommand /usr/bin/false', 'proxycommand /bin/false')
+               for line in config.splitlines()):
+            raise OSError('PBS SSH access is paused')
+        root = Path(tempfile.gettempdir())/f'rpe-pbs-ssh-{os.getuid()}'
+        root.mkdir(mode=0o700, exist_ok=True)
+        if root.is_symlink() or root.stat().st_uid != os.getuid() or root.stat().st_mode & 0o077:
+            raise ValueError('PBS SSH control sockets require a private directory')
+        key = hashlib.sha256(config.encode()).hexdigest()[:16]
+        socket = root/key
+        retry = socket.with_suffix('.retry.json')
+        options = [*base, '-S', str(socket)]
+        with socket.with_suffix('.lock').open('a') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            if not subprocess.run([*options, '-O', 'check', alias], stdout=subprocess.DEVNULL,
+                                  stderr=subprocess.DEVNULL, timeout=5).returncode:
+                return [*options, '-o', 'ControlMaster=no', '-o', 'ProxyCommand=/bin/false', '-T', alias]
+            previous = read(retry) if retry.is_file() else {}
+            now = time.time()
+            if now < previous.get('retry_after', 0):
+                raise OSError('PBS SSH reconnect backoff active')
+            try:
+                subprocess.run([*options, '-o', 'ControlMaster=yes', '-o', 'ControlPersist=60',
+                    '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=2', '-MNf', alias],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=12, check=True)
+            except (OSError, subprocess.SubprocessError):
+                delay = min(60, max(5, previous.get('delay', 0)*2))
+                atomic(retry, dict(delay=delay, retry_after=time.time()+delay))
+                raise
+            retry.unlink(missing_ok=True)
+        # If the master disappears, a channel must never silently authenticate.
+        return [*options, '-o', 'ControlMaster=no', '-o', 'ProxyCommand=/bin/false', '-T', alias]
+
+
 class Gateway:
     """A private persistent SSH JSON-lines connection; reconnect is read/replay."""
-    def __init__(self, settings):
+    def __init__(self, settings, ssh=None):
         self.settings = settings
+        self.ssh = ssh or (SharedSSH(settings['ssh_alias']) if 'ssh_alias' in settings else None)
         self.process = None
+        self.call_lock = threading.Lock()
         self.responses = queue.Queue()
         self.storage_monitors = {}
         self.storage_monitor_started = {}
@@ -88,10 +137,7 @@ class Gateway:
             self.verify_gateway_file(config['gateway_script'], config['gateway_sha256'])
         remote = [config.get('gateway_python', '/usr/bin/python3'), '-B',
                   config['gateway_script'], '--root', config['remote_root']]
-        command = config.get('gateway_command') or [
-            'ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
-            '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=2',
-            config['ssh_alias'], shlex.join(remote)]
+        command = config.get('gateway_command') or [*self.ssh.command(), shlex.join(remote)]
         self.responses = queue.Queue()
         self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL, text=True, bufsize=1)
@@ -106,6 +152,10 @@ class Gateway:
         threading.Thread(target=collect, daemon=True).start()
 
     def call(self, payload):
+        with self.call_lock:
+            return self._call(payload)
+
+    def _call(self, payload):
         if self.process is None or self.process.poll() is not None:
             self._start()
         try:
@@ -135,14 +185,12 @@ class Gateway:
         if config.get('namespace_by_run', True):
             remote.extend(('--storage-pbs-runs', str(root.parent)))
         output = subprocess.check_output(
-            ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
-             config['ssh_alias'], shlex.join(remote)], input=json.dumps(policy), text=True, timeout=15)
+            [*self.ssh.command(), shlex.join(remote)], input=json.dumps(policy), text=True, timeout=15)
         return json.loads(output)
 
     def verify_gateway_file(self, path, expected):
         output = subprocess.check_output(
-            ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
-             self.settings['ssh_alias'], shlex.join(['sha256sum', '--', path])],
+            [*self.ssh.command(), shlex.join(['sha256sum', '--', path])],
             text=True, timeout=12)
         if not output.split() or output.split()[0] != expected:
             raise ValueError('PBS gateway file differs from the selected deployment')
@@ -155,8 +203,7 @@ class Gateway:
         command = [config['gateway_python'], '-B', '-c', _STAGE_ARTIFACT, str(destination), sha]
         with source.open('rb') as stream:
             completed = subprocess.run(
-                ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
-                 config['ssh_alias'], shlex.join(command)], stdin=stream, capture_output=True,
+                [*self.ssh.command(), shlex.join(command)], stdin=stream, capture_output=True,
                 timeout=config.get('request_timeout_seconds', 20), check=True)
         if completed.stdout.strip() != sha.encode():
             raise ValueError('PBS artifact acknowledgement differs')
@@ -182,9 +229,7 @@ class Gateway:
             remote = [config.get('gateway_python', '/usr/bin/python3'), '-B', '-c',
                       _STORAGE_MONITOR, config['transport_root']]
             process = subprocess.Popen(
-                ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
-                 '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=2',
-                 config['ssh_alias'], shlex.join(remote)], stdin=subprocess.PIPE,
+                [*self.ssh.command(), shlex.join(remote)], stdin=subprocess.PIPE,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
             self.storage_monitors[host] = process
             self.storage_monitor_started[host] = now
@@ -533,7 +578,10 @@ class PbsManager:
         dispatch = getattr(executor, 'distributed', {}).get('pbs_dispatch_gateway')
         if dispatch:
             self.settings.update(gateway_script=dispatch['path'], gateway_sha256=dispatch['sha256'])
+        self.bounded_results = bool(dispatch and dispatch.get('bounded_results'))
+        self.compute_storage_sampling = bool(dispatch and dispatch.get('compute_storage_sampling'))
         self.gateway = gateway or Gateway(self.settings)
+        self.bulk_gateway = Gateway(self.settings) if self.bounded_results else None
         # Only gateways deployed with the selected-attempt harvest protocol
         # may receive an owners filter.
         self.selective_harvest = bool(dispatch and dispatch.get('selective_harvest'))
@@ -562,6 +610,9 @@ class PbsManager:
         self.completion_workers = completion_workers
         self.pending_completions = {}
         self.split_exchange = bool(dispatch and dispatch.get('split_exchange') and completion_workers)
+        if self.bounded_results and not self.split_exchange:
+            self.lock.close()
+            raise ValueError('Bounded PBS bulk reads require a completion lane')
         self.completion_gateway = Gateway(self.settings) if self.split_exchange else None
         self.completion_responses = {}
         self.completion_thread = None
@@ -662,7 +713,8 @@ class PbsManager:
             return True
         host = worker['host_id']
         sampled, report = self.storage_checks.get(host, (float('-inf'), None))
-        if time.monotonic() - sampled >= SAMPLE_SECONDS:
+        interval = max(30, SAMPLE_SECONDS) if self.compute_storage_sampling else SAMPLE_SECONDS
+        if time.monotonic() - sampled >= interval:
             try:
                 new = self.gateway.storage_report(policy)
                 used = new['used_bytes']
@@ -898,6 +950,14 @@ class PbsManager:
 
     def _dispatch_ready(self, token, request):
         """Bulk inputs use the worker's shared cache, leaving the poll lane free."""
+        if 'spool_bytes' in request:
+            raw = self._read_bulk(self.bulk_gateway, token, 'spool', request['request_id'],
+                                  size=request['spool_bytes'])
+            decoded = json.loads(raw)
+            if (decoded['request_id'] != request['request_id']
+                    or decoded['endpoint'] not in ('/v1/complete', '/v1/artifacts/put')):
+                raise ValueError('PBS bulk request identity changed')
+            request = decoded
         if (not self.settings.get('stage_artifacts_over_ssh')
                 or request['endpoint'] != '/v1/artifacts/get'):
             return self._dispatch(token, request)
@@ -946,15 +1006,53 @@ class PbsManager:
                  bytes=paths[0].stat().st_size)
         return response
 
+    @staticmethod
+    def _read_bulk(gateway, token, kind, name, *, size=None, **owner):
+        result = bytearray()
+        identity = {}
+        while size is None or len(result) < size:
+            chunk = gateway.call(dict(action='read_bulk_chunk', token=token, kind=kind,
+                                      name=name, offset=len(result), **owner,
+                                      **identity, **({'size': size} if size is not None else {})))
+            if size is None:
+                size = chunk['size']
+            if type(size) is not int or size < 0 or chunk['size'] != size:
+                raise ValueError('Invalid PBS bulk transfer size')
+            identity = {'file_identity': chunk['file_identity']}
+            raw = (chunk['text'].encode('ascii') if kind == 'spool' else
+                   base64.b64decode(chunk['data'], validate=True))
+            if len(raw) > 1024*1024 or len(result)+len(raw) > size or (not raw and len(result) < size):
+                raise ValueError('PBS bulk transfer made no valid progress')
+            result.extend(raw)
+        return result
+
     def _fetch_harvest(self, gateway, token, owners=None, *, live=False):
         request = dict(action='harvest', token=token)
         if owners is not None:
             request['owners'] = [dict(job_id=job, attempt_id=attempt) for job, attempt in sorted(owners)]
         if live:
             request['completed_only'] = True
+        if self.bounded_results:
+            request['manifest_only'] = True
         data = gateway.call(request)
-        missing = self.executor.artifact_cache.missing(data.get('artifact_hashes', []))
-        blobs = gateway.call(dict(request, hashes=missing))['blobs'] if missing else {}
+        if not self.bounded_results:
+            missing = self.executor.artifact_cache.missing(data.get('artifact_hashes', []))
+            blobs = gateway.call(dict(request, hashes=missing))['blobs'] if missing else {}
+            return data, blobs
+        hashes = set()
+        for item in data['attempts']:
+            assignment = item['assignment']
+            files = {}
+            for name, size in item['files'].items():
+                raw = self._read_bulk(gateway, token, 'attempt', name, size=size,
+                                      job_id=assignment['job_id'], attempt_id=assignment['attempt_id'])
+                if name == 'OUTCOME.json':
+                    hashes.update(json.loads(raw).get('artifacts', {}).values())
+                files[name] = base64.b64encode(raw).decode('ascii')
+            item['files'] = files
+        missing = self.executor.artifact_cache.missing(sorted(hashes))
+        blobs = {sha: base64.b64encode(self._read_bulk(gateway, token, 'artifact', sha)).decode('ascii')
+                 for sha in missing}
         return data, blobs
 
     def _accept_harvested(self, allocation, data, blobs, owners, *, live=False):
@@ -1262,6 +1360,10 @@ class PbsManager:
         profile['pbs'] = dict(profile.get('pbs') or {}, worker_source=self.settings['transport_source'],
             worker_root=self.settings['transport_root'], drain_seconds=self.settings.get('drain_seconds', 30))
         profile['pbs'].setdefault('rpc_timeout_seconds', max(15., 2 * self.settings.get('request_timeout_seconds', 20)))
+        if self.bounded_results:
+            profile['pbs']['bounded_results'] = True
+        if self.compute_storage_sampling:
+            profile['pbs']['compute_storage_sampling'] = True
         collection_workers = getattr(self.executor, 'distributed', {}).get('pbs_collection_workers')
         if collection_workers is not None:
             profile['pbs']['collection_workers'] = collection_workers
@@ -1363,7 +1465,8 @@ class PbsManager:
         start = time.monotonic()
         data = self.completion_gateway.call(dict(
             action='exchange', request_mode='completion', limit=remaining,
-            exclude=exclude, responses=self.completion_responses, controls={}))
+            exclude=exclude, responses=self.completion_responses, controls={},
+            **({'bounded_results': True} if self.bounded_results else {})))
         count = sum(len(rows) for rows in data['requests'].values())
         if count or self.completion_responses:
             self.log('PBS_COMPLETION_EXCHANGE_TIMING', seconds=time.monotonic()-start,
@@ -1371,7 +1474,7 @@ class PbsManager:
         self.completion_responses = {}
         for token, requests in data['requests'].items():
             for request in requests:
-                if request['endpoint'] != '/v1/complete':
+                if 'spool_bytes' not in request and request['endpoint'] not in ('/v1/complete', '/v1/artifacts/put'):
                     raise ValueError('Non-completion request on PBS completion exchange')
                 self._submit_completion(token, request)
 
@@ -1497,6 +1600,8 @@ class PbsManager:
         exchange_started = time.monotonic()
         response_count = sum(len(batch) for batch in self.responses.values())
         request = dict(action='exchange', responses=self.responses, controls=self.controls)
+        if self.bounded_results:
+            request['bounded_results'] = True
         if self.split_exchange:
             request['request_mode'] = 'control'
         if self.split_status:
@@ -1543,7 +1648,8 @@ class PbsManager:
             profiles = {}
             for record in self.state['allocations'].values():
                 spec = record['spec']
-                if record['status'] != 'R' or spec['python'] != self.storage_launcher['path']:
+                if (record['status'] != 'R' or spec['python'] != self.storage_launcher['path']
+                        or spec['profile'].get('pbs', {}).get('compute_storage_sampling')):
                     continue
                 profile = deepcopy(spec['profile'])
                 sample = (Path(self.settings['remote_root'])/'allocations'/spec['token']/
@@ -1770,6 +1876,8 @@ class PbsManager:
             self.status_thread = None
         if self.completion_thread is not None:
             self.completion_thread.join()
+        if self.bulk_gateway is not None:
+            self.bulk_gateway.close()
         if self.harvest_pool is not None:
             # A read in flight may finish, but only a live manager applies its
             # result to the central ledger. Resume will recover the same owner.

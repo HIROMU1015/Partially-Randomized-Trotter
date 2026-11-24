@@ -5,14 +5,16 @@ import os
 from pathlib import Path
 import runpy
 import sys
+import threading
 import time
 import zipfile
 
 
 class GatewayStorage:
-    def __init__(self, sample, *, max_age):
+    def __init__(self, sample, *, max_age, local_clock=False):
         self.sample = sample
         self.max_age = max_age
+        self.local_clock = local_clock
         self.generation = None
         self.observed = None
 
@@ -29,6 +31,10 @@ class GatewayStorage:
             if type(generation) not in (int, float):
                 return unavailable
             now = time.monotonic()
+            if self.local_clock:
+                if 0 <= time.time()-generation <= self.max_age:
+                    return data['report']
+                return unavailable
             if self.generation is not None and generation != self.generation:
                 self.observed = now
             self.generation = generation
@@ -137,8 +143,10 @@ def main():
         raise ValueError('PBS profile is outside its allocation')
     sys.path.insert(0, str(script.parents[1]/'src'))
     from trottertracks import rpe_worker_storage as storage
-    observer = GatewayStorage(directory/'STORAGE_USAGE_GATEWAY.json',
-                              max_age=2*storage.SAMPLE_SECONDS)
+    sample = directory/'STORAGE_USAGE_GATEWAY.json'
+    compute_sampling = profile['pbs'].get('compute_storage_sampling') is True
+    original_report = storage.report
+    observer = GatewayStorage(sample, max_age=2*storage.SAMPLE_SECONDS, local_clock=compute_sampling)
     storage.report = observer.report
     os.environ.update(RPE_PBS_OPERATIONAL_LAUNCHER=str(launcher),
                       RPE_PBS_TRANSPORT_ROOT=str(script.parents[1]))
@@ -146,8 +154,22 @@ def main():
     if check_imports:
         print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path))))
         return
+    stop_sampling = threading.Event()
+    if compute_sampling and profile.get('storage_limit'):
+        policy = dict(profile['storage_limit'], sample_path=str(sample))
+
+        def sample_storage():
+            while not stop_sampling.is_set():
+                original_report(policy, spools=[profile['work_dir']],
+                                cache_directories=storage.prefix_caches(profile), refresh=True)
+                stop_sampling.wait(storage.SAMPLE_SECONDS)
+
+        threading.Thread(target=sample_storage, name='pbs-storage-sample', daemon=True).start()
     sys.argv = [str(script), *args]
-    runpy.run_path(str(script), run_name='__main__')
+    try:
+        runpy.run_path(str(script), run_name='__main__')
+    finally:
+        stop_sampling.set()
 
 
 if __name__ == '__main__':
