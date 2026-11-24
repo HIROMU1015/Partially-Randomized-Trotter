@@ -1191,6 +1191,16 @@ class DistributedPreparationBridge:
                     approved=self.approved, contract=request['original_contract'],
                     dependencies=preparation['dependencies'], expected_job_id=job)
                 result = self.executor.preparation_result(job, adopt=False, materialize=False)
+                if (plan.get('df_startup_recovery') and result and result['status'] == 'PREPARATION_COMPLETE'
+                        and (row is None or row['adopted_epoch'] is None)):
+                    result = self.executor.preparation_result(job, adopt=False)
+                    [output] = preparation['outputs']
+                    summary = read(Path(result['artifact_directory']) / artifact_path(output)
+                                   / 'df_prices/calibration/acquisition/RESULT.json')
+                    if (summary['status'] != 'ACQUIRED' or summary['held_axes'] != 0
+                            or summary['source'] != preparation['source']['commit']):
+                        raise ValueError('Returned calibration does not cover all fixed axes')
+                    self.executor.adopt_preparation(job)
                 states[original] = dict(job_id=job, reason=reason, status=result['status'] if result else 'PENDING')
             except (OSError, KeyError, TypeError, ValueError, sqlite3.Error) as error:
                 states[original] = dict(status='RECOVERY_INPUT_HOLD', reason=reason, detail=str(error))
