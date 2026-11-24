@@ -12,6 +12,7 @@ import json
 import os
 import subprocess
 import sys
+from tempfile import TemporaryDirectory
 
 
 def read(path):return json.loads(Path(path).read_text())
@@ -43,14 +44,106 @@ def selected_workspace_request(request, workspace):
     return dict(request, output_root=str(destination), registry_file=str(destination/'REGISTRY.json'))
 
 
-def reuse_signal(root, workspace, folder, plan, saved):
+def recover_signal_publication(workspace, commit, owner):
+    """Read the accepted signal bundle and its fixed input delta from the old run."""
+    from .pf_saved_prices import bound_owner_input, distributed_owner_return
+    from .rpe_preparation_artifacts import ArtifactCache, artifact_path
+
+    stage = 'PF_SIGNALS'
+    owner = Path(owner)
+    marker = read(owner/(stage+'.DISTRIBUTED.json'))
+    if not bound_owner_input(marker, owner/(stage+'.INPUT.json')):
+        raise ValueError('Accepted PF signal input differs from the prior request')
+    state, returned = distributed_owner_return(owner, marker, stage)
+    if state != 'ENDED' or commit not in returned['git_heads']:
+        raise ValueError('No accepted PF signal publication for '+commit)
+    job = Path(returned['accepted_job'])
+    outcome = read(job/'OUTCOME.json')
+    [bundle] = [entry for entry in outcome['git_bundles']
+                if entry.get('workspace', 'workspace') == 'workspace' and entry['head'] == commit]
+    run = job.parents[2]
+    cache = ArtifactCache(run/'distributed/artifacts')
+    source_ref = bundle.get('ref', 'HEAD')
+    result_ref = 'refs/rpe-preparation/recovered/'+commit
+
+    def fetch(path, ref, target):
+        subprocess.run(['git', 'fetch', '--no-tags', '--no-write-fetch-head', str(path), ref+':'+target],
+                       cwd=workspace, check=True, capture_output=True)
+
+    def has_commit(sha):
+        return subprocess.run(['git', 'cat-file', '-e', sha+'^{commit}'], cwd=workspace,
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+
+    def fetch_input(row):
+        sha, ref = row['sha256'], row.get('ref', 'HEAD')
+        path = cache.path(sha)
+        target = result_ref+'/inputs/'+sha
+        if not cache.missing([sha]):
+            fetch(path, ref, target)
+            return
+        # Retention may have compacted the input bundle after the run ended.
+        # Reconstruct only the declared request's exact bytes, in temporary
+        # storage, so the original run's archive and cache remain untouched.
+        from .rpe_preparation_retention import restore
+
+        for parent in run.parents:
+            archives = parent/'archives/preparation-inputs'
+            if not archives.is_dir():
+                continue
+            for recipe in sorted(archives.glob('*/'+sha+'.recipe.json.gz')):
+                with TemporaryDirectory(prefix='rpe-pf-signal-input-') as temporary:
+                    recovered = ArtifactCache(temporary)
+                    restore(marker['request'], sha, archive=recipe.parent, cache_directory=recovered.root)
+                    fetch(recovered.path(sha), ref, target)
+                return
+        raise FileNotFoundError('Missing accepted PF signal input bundle '+sha)
+
+    if input_head := bundle.get('input_head'):
+        if not has_commit(input_head):
+            inputs = [row for row in marker['request']['preparation'].get('input_git_bundles', ())
+                      if not row.get('workspace_objects')]
+            for row in inputs:
+                fetch_input(row)
+                if has_commit(input_head):
+                    break
+            if not has_commit(input_head):
+                raise ValueError('The saved inputs do not provide the accepted PF signal parent')
+    if 'path' in bundle:
+        name = artifact_path(bundle['path']).as_posix()
+        sha = outcome['artifacts'][name]
+        if cache.missing([sha]):
+            raise FileNotFoundError('Missing accepted PF signal output bundle '+sha)
+        path = cache.path(sha)
+        heads = git(workspace, 'bundle', 'list-heads', str(path), source_ref).splitlines()
+        if len(heads) != 1 or heads[0].split()[0] != commit:
+            raise ValueError('Accepted PF signal bundle publication changed')
+        # Keep inputs under a sibling ref: Git cannot store a ref and a
+        # directory of refs with that same name.
+        fetch(path, source_ref, result_ref+'/output')
+    elif input_head != commit:
+        raise ValueError('Accepted PF signal publication is missing its output bundle')
+
+
+def reuse_signal(root, workspace, folder, plan, saved, *, waves=()):
     """Carry the original completed signal into an explicitly scoped continuation."""
     from .pr_candidate_completion import Held
     relative=folder.relative_to(workspace).as_posix()
     commit=saved['commit']
+    source_root = root
+
     def blob(name):
-        return subprocess.check_output(['git','show',commit+':'+relative+'/'+name],cwd=root)
+        return subprocess.check_output(['git','show',commit+':'+relative+'/'+name],cwd=source_root,
+                                       stderr=subprocess.PIPE)
     try:
+        exists = subprocess.run(['git', 'cat-file', '-e', commit+'^{commit}'], cwd=root,
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+        if not exists:
+            from .pf_saved_prices import archived_signal_owner
+
+            owner = saved.get('owner') or archived_signal_owner(waves, commit)
+            if owner:
+                recover_signal_publication(workspace, commit, owner)
+                source_root = workspace
         prior=json.loads(blob('PLAN.json'))
         status=json.loads(blob('signal_run01/STATUS.json'))
         handoff=json.loads(blob('signal_run01/MEAN_HANDOFF.json'))
@@ -62,8 +155,13 @@ def reuse_signal(root, workspace, folder, plan, saved):
             raise ValueError('Original completed signal does not match the selected PF plan')
         files=['STATUS.json','MEAN_HANDOFF.json',*(f'round_{m}.json' for m in range(13))]
         original={name:blob('signal_run01/'+name) for name in files}
-        subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit],cwd=workspace,check=True,
-                       stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        if source_root == root:
+            subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit],cwd=workspace,
+                           check=True,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        else:
+            subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),
+                            commit+':refs/rpe-preparation/recovered/'+commit+'/output'],cwd=root,
+                           check=True,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         output=folder/'signal_run01';output.mkdir(exist_ok=True)
         for name, raw in original.items():
             path=output/name
@@ -74,7 +172,7 @@ def reuse_signal(root, workspace, folder, plan, saved):
         put(folder/'SAVED_SIGNAL_REUSE.json',dict(configuration_id=handoff['configuration_id'],
             original_source=dict(commit=commit,path=relative+'/signal_run01/MEAN_HANDOFF.json'),
             reused_means=13,new_means=0))
-    except (OSError,KeyError,ValueError,subprocess.CalledProcessError) as error:
+    except (OSError, KeyError, IndexError, TypeError, ValueError, subprocess.CalledProcessError) as error:
         raise Held('PF_SAVED_SIGNAL_REUSE_HOLD:'+str(error)) from error
 
 
@@ -221,13 +319,14 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     if exploratory and inherited_registry is None:
         request = dict(request, exploratory_cost=True)
     saved_signals = {}
+    from .pf_saved_prices import prior_waves
+    earlier_waves = prior_waves(wave_root.parent, spec)
     if inherited_registry is not None:
         # Resume the exact owner check and plan already bound to this workspace.
         request = read(owner_input)
     elif settings.get('recover_saved_price_rounds', True):
-        from .pf_saved_prices import candidate_roots, completed_partial, price_indexes, prior_waves
+        from .pf_saved_prices import candidate_roots, completed_partial, price_indexes
         price_index = run/'SAVED_PRICE_INDEX.json'
-        earlier_waves = prior_waves(wave_root.parent, spec)
         if not price_index.exists():
             put(price_index, dict(root=str(root), locators=price_indexes([wave_root, *earlier_waves], settings)))
         price_args = ['--saved-price-index', str(price_index)]
@@ -251,7 +350,10 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                             consumed.update(tuple(axis) for axis in audited)
                             result = provider/'PF_SIGNALS.RESULT.json'
                             if result.is_file():
-                                saved_signals[cfg] = dict(commit=read(result)['publication'])
+                                saved = dict(commit=read(result)['publication'])
+                                if (provider/'PF_SIGNALS.DISTRIBUTED.json').is_file():
+                                    saved['owner'] = str(provider)
+                                saved_signals[cfg] = saved
             request = dict(request, prior_owner_directories=sorted(owners))
             if consumed:
                 request['previously_audited_price_axes'] = [list(axis) for axis in sorted(consumed)]
@@ -465,13 +567,16 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 track_collected_prices(workspace,compiled)
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
+        original_signal = owner_row.get('original_signal')
         saved_signal = (saved_for_configuration(settings, 'saved_signal', value['configuration']['id'])
-                        or request.get('independent_saved_signals', {}).get(value['configuration']['id'])
-                        or owner_row.get('original_signal'))
+                        or original_signal
+                        or request.get('independent_saved_signals', {}).get(value['configuration']['id']))
+        if original_signal and saved_signal['commit'] == original_signal['commit']:
+            saved_signal = original_signal
 
         def signals():
             if saved_signal:
-                reuse_signal(root,workspace,folder,value,saved_signal)
+                reuse_signal(root,workspace,folder,value,saved_signal,waves=(wave_root, *earlier_waves))
                 return None
             return call('signal','PF_SIGNALS')
 

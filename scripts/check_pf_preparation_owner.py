@@ -136,10 +136,10 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             provider.preflight(cleared, destination)
             row = dict(configuration_id=cid,status='ORIGINAL_OWNER_PREFLIGHT_PASS')
             if owner_evidence:
-                signal_sources = {signal['commit'] for signal in owner_evidence['signals']}
+                signal_sources = owner_evidence['signals']
                 signal_holds = [item for item in owner_evidence['holds'] if item['stage'] in ('signal', 'all')]
                 if signal_sources:
-                    row['original_signal'] = dict(commit=min(signal_sources))
+                    row['original_signal'] = min(signal_sources, key=lambda item: (item['commit'], item['owner']))
                 elif signal_holds and (plan.get('new_signal_means') or any(item['state'] == 'STOP' for item in signal_holds)):
                     row['original_signal_holds'] = signal_holds
                 if original_audits:

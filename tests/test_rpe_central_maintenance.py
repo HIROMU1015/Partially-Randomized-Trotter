@@ -13,7 +13,7 @@ sys.path[:0] = [str(ROOT/'src'), str(ROOT/'scripts')]
 from recover_stopped_rpe_run import (PBS_PRELAUNCH_PROBE, accept, check_assignment, owner,
                                     pbs_results, probe_local, publish_received, read_rows, repair_dependencies,
                                     recover_live_attempts)
-from run_rpe_central_maintenance import archive_candidates, wait_summary
+from run_rpe_central_maintenance import archive_candidates, publish_due, run_pass, wait_summary
 from trottertracks.rpe_completion_acceptance import validate_preparation_result
 from trottertracks.rpe_local0_search import supervise_run
 from trottertracks.rpe_preparation_artifacts import ArtifactCache
@@ -143,6 +143,55 @@ class CentralMaintenanceTests(unittest.TestCase):
               reasons={'signal':'PREPARATION_BUDGET_HOLD'},hosts={'pbs-0':{'idle_reason':'PREPARATION_BUDGET_HOLD'}}))+'\n')
         self.assertEqual(wait_summary(self.run,{})['queue_wait_reasons'],{'PREPARATION_BUDGET_HOLD':1})
         self.assertEqual(archive_candidates([self.run],None,{self.run:read_rows(self.run)})['count'],0)
+
+    def test_legacy_run_publishes_with_the_current_resume_publisher(self):
+        scripts = self.run.parent/'deployment/scripts'
+        scripts.mkdir(parents=True)
+        names = ('publish_romutail_search.py', 'publish_h4_search_run.py')
+        hashes = {}
+        for name in names:
+            (scripts/name).write_text(name)
+            hashes[name] = hashlib.sha256(name.encode()).hexdigest()
+        config = dict(code_source='fixed', python=sys.executable,
+                      publication=dict(repository='/fixture/results', branch='results', push=True))
+        write(self.run/'CONTROLLER_CONFIG.json', config)
+        write(self.run/'ROUND_RESULT.json', {})
+        selection = dict(run_id=self.run.name, root=str(scripts.parent), base_source='fixed',
+                         source='operations', publisher_sha256=hashes)
+        command = [sys.executable, '-B', str(scripts/'run_rpe_local0_search.py'),
+                   '--execute-run', str(self.run), '--invocation', 'fixture']
+        marker = self.run/'LAUNCH.json'
+        write(marker, dict(command=command, invocation_id='fixture'))
+        with patch('run_rpe_central_maintenance.subprocess.run') as run:
+            self.assertEqual(publish_due(self.run, active=True, previous={}), {})
+            run.assert_not_called()
+            write(marker, dict(command=command+['--schedule-resume', json.dumps(selection)], invocation_id='fixture'))
+            run.return_value.stdout = '{"status":"PUBLISHED","head":"fixture-result"}'
+            status = publish_due(self.run, active=True, previous={})
+            self.assertEqual(status['status'], 'PUBLISHED')
+            self.assertEqual(run.call_args.args[0][2], str(scripts/names[0]))
+            self.assertEqual(run.call_args.args[0][-3:], ['--operations-source', 'operations', '--push'])
+            self.assertEqual(publish_due(self.run, active=True, previous=status), status)
+            run.assert_called_once()
+            (scripts/names[0]).write_text('different')
+            self.assertEqual(publish_due(self.run, active=True, previous={})['status'], 'PUBLICATION_PENDING')
+            run.assert_called_once()
+
+    def test_publication_only_keeps_queue_and_archive_maintenance_out_of_the_pass(self):
+        state = self.run.parent
+        write(state/'RUNS.json', {self.run.name: {'run_directory': str(self.run)}})
+        write(state/'CURRENT_TARGET.json', {'run_id': self.run.name})
+        report = state/'maintenance'/(self.run.name+'.json')
+        write(report, {'status': 'EXISTING_RECOVERY_RECORD'})
+        with patch('run_rpe_central_maintenance.publish_due',
+                   return_value={'status': 'PUBLISHED'}) as publish, \
+             patch('run_rpe_central_maintenance.subprocess.run') as process:
+            result = run_pass(state, publication_only=True)
+        process.assert_not_called()
+        publish.assert_called_once_with(self.run, active=False, previous={})
+        self.assertEqual(result['status'], 'PUBLISHED')
+        self.assertEqual(result['new_scientific_calls'], 0)
+        self.assertEqual(json.loads(report.read_bytes())['status'], 'EXISTING_RECOVERY_RECORD')
 
     def test_legacy_pbs_timeout_does_not_hide_another_allocation_result(self):
         from queue import Empty

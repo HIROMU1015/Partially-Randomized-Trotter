@@ -274,6 +274,97 @@ class PFPriceReconciliationTests(unittest.TestCase):
             self.assertEqual([c['axes'] for c in prices.independent_plan(plan, blocked)['new_compile_cells']],
                              [['X'], ['Y'], ['X', 'Y'], ['Y']])
 
+    def test_legacy_signal_receipt_recovers_the_original_commit_from_returned_bundle(self):
+        from trottertracks.pf_distributed_preparation import recover_signal_publication, reuse_signal
+        from trottertracks.rpe_preparation_artifacts import ArtifactCache
+        from trottertracks.rpe_q3_coordinator import digest
+
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            producer, consumer, central = (base/name for name in ('producer', 'consumer', 'central'))
+
+            def git(root, *args):
+                return subprocess.check_output(
+                    ['git', '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', *args],
+                    cwd=root, stderr=subprocess.PIPE, text=True).strip()
+
+            producer.mkdir()
+            git(producer, 'init', '-q')
+            git(producer, 'commit', '--allow-empty', '-qm', 'fixed input')
+            source = git(producer, 'rev-parse', 'HEAD')
+            git(base, 'clone', '--no-local', str(producer), str(central))
+            git(base, 'clone', '--no-local', str(producer), str(consumer))
+            relative = Path('docs/research/distributed_selected_pf/cfg')
+            owner = producer/relative
+            plan = dict(configuration={'id': 'cfg'}, prepared={'target': 'fixture', 'pending': {'requests': []}})
+            payload = owner/'PF_SIGNALS.INPUT.json'
+            write(payload, dict(value=plan))
+            write(owner/'PLAN.json', plan)
+            git(producer, 'add', '.')
+            git(producer, 'commit', '-qm', 'request workspace')
+            parent = git(producer, 'rev-parse', 'HEAD')
+
+            def cache_bundle(name, ancestor):
+                path = base/name
+                git(producer, 'bundle', 'create', str(path), 'HEAD', '^'+ancestor)
+                raw = path.read_bytes()
+                sha = hashlib.sha256(raw).hexdigest()
+                cached = ArtifactCache(base/'distributed/artifacts').path(sha)
+                cached.parent.mkdir(parents=True, exist_ok=True)
+                cached.write_bytes(raw)
+                return sha
+
+            input_bundle = cache_bundle('input.bundle', source)
+            signals = owner/'signal_run01'
+            write(signals/'STATUS.json', {'status': 'COMPLETE_THIRTEEN_ROUNDS'})
+            write(signals/'MEAN_HANDOFF.json', dict(configuration_id='cfg', target='fixture', means=[0]*13))
+            for m in range(13):
+                write(signals/f'round_{m}.json', {'round': m})
+            git(producer, 'add', '.')
+            git(producer, 'commit', '-qm', 'signal result')
+            publication = git(producer, 'rev-parse', 'HEAD')
+            output_bundle = cache_bundle('output.bundle', parent)
+            result = owner/'PF_SIGNALS.RESULT.json'
+            write(result, dict(status='SIGNALS_READY', publication=publication))
+            request = dict(preparation=dict(provider='PF_SIGNALS', source={'commit': source},
+                controller_root=str(producer),
+                inputs={'workspace/'+(relative/payload.name).as_posix(): hashlib.sha256(payload.read_bytes()).hexdigest()},
+                input_git_bundles=[dict(sha256=input_bundle, ref='HEAD')],
+                command=['python', '--input', str(payload), '--output', str(result)]))
+            job_id = 'prep-signal'
+            stored = dict(request, request_id=job_id)
+            write(owner/'PF_SIGNALS.DISTRIBUTED.json', dict(source=source, job_id=job_id, request=request))
+            receipt = owner/'PF_SIGNALS.RETURN.json'
+            write(receipt, dict(returncode=0, signal=None, source=source, job_id=job_id))
+            ledger = base/'distributed/QUEUE.sqlite3'
+            with sqlite3.connect(ledger) as db:
+                db.execute('create table jobs (job_id, request, request_sha256, method, state, attempt_id, completion_sha256)')
+                db.execute('insert into jobs values (?, ?, ?, ?, ?, ?, ?)',
+                           (job_id, json.dumps(stored), digest(stored), 'PREPARATION:signal', 'ACCEPTED', 'owner', 'receipt'))
+            outcome = base/'jobs/PREPARATION:signal'/job_id/'OUTCOME.json'
+            write(outcome, dict(status='PREPARATION_COMPLETE', request_id=job_id, request_sha256=digest(stored),
+                                artifacts={'source-output.bundle': output_bundle},
+                                git_bundles=[dict(base=source, input_head=parent, head=publication,
+                                                  ref='HEAD', path='source-output.bundle')]))
+            write(outcome.with_name('PROCESS_RETURN.json'), dict(returncode=0, signal=None))
+            saved = dict(commit=publication, owner=str(owner))
+            self.assertEqual(prices.scoped_original_owners(plan, [owner])['signals'], [saved])
+            self.assertRaises(subprocess.CalledProcessError, git, consumer, 'cat-file', '-e', publication)
+            with self.assertRaisesRegex(ValueError, 'No accepted PF signal'):
+                recover_signal_publication(consumer, parent, owner)
+            destination = consumer/relative
+            destination.mkdir(parents=True)
+            for _ in range(2):
+                reuse_signal(central, consumer, destination, plan, {'commit': publication},
+                             waves=(base/'pf_auto',))
+            self.assertEqual(git(central, 'rev-parse', 'HEAD'), source)
+            self.assertEqual(git(consumer, 'rev-parse', 'HEAD'), source)
+            self.assertEqual((signals/'round_12.json').read_bytes(),
+                             (destination/'signal_run01/round_12.json').read_bytes())
+            self.assertNotIn('git_heads', json.loads(receipt.read_bytes()))
+            write(receipt, dict(returncode=0, signal=None, source=source, job_id='different-job'))
+            self.assertEqual(prices.scoped_original_owners(plan, [owner])['signals'], [])
+
     def test_reconciled_compile_audits_only_missing_unowned_axes(self):
         plan = dict(configuration={'id': 'cfg'}, selected_axis_compile=True,
                     new_compile_cells=[dict(m=1, axes=['Y']), dict(m=2, axes=['X', 'Y'])],

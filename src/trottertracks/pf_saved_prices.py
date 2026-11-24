@@ -418,6 +418,47 @@ def owner_document(path):
     return json.loads(path.read_bytes()) if path.is_file() else None
 
 
+@lru_cache(maxsize=16)
+def accepted_signal_publications(run, revision):
+    """Index the accepted signal heads of one fixed prior run."""
+    ledger = run/'distributed/QUEUE.sqlite3'
+    with closing(sqlite3.connect(ledger.as_uri()+'?mode=ro', uri=True, timeout=2)) as db:
+        rows = db.execute("SELECT job_id, request FROM jobs WHERE method='PREPARATION:signal' "
+                          "AND state='ACCEPTED' AND json_extract(request, '$.preparation.provider')='PF_SIGNALS'"
+                          ).fetchall()
+    publications = {}
+    for job, request in rows:
+        try:
+            outcome = owner_document(run/'jobs/PREPARATION:signal'/job/'OUTCOME.json')
+            if not outcome or outcome.get('status') != 'PREPARATION_COMPLETE':
+                continue
+            command = json.loads(request)['preparation']['command']
+            owner = Path(command[command.index('--output')+1]).parent
+            for bundle in outcome.get('git_bundles', ()):
+                if bundle.get('workspace', 'workspace') == 'workspace':
+                    publications[bundle['head']] = str(owner)
+        except (OSError, KeyError, IndexError, TypeError, ValueError):
+            continue
+    return publications
+
+
+def archived_signal_owner(waves, commit):
+    """Find the owner of a legacy locator even if its Git object was pruned."""
+    for wave in waves:
+        run = wave.parent
+        ledger = run/'distributed/QUEUE.sqlite3'
+        try:
+            info = ledger.stat()
+            wal = ledger.with_name(ledger.name+'-wal')
+            revision = (info.st_mtime_ns, wal.stat().st_mtime_ns if wal.is_file() else None)
+            owner = accepted_signal_publications(run, revision).get(commit)
+            if owner:
+                return owner
+        except (OSError, KeyError, IndexError, ValueError, sqlite3.Error):
+            continue
+    return None
+
+
 def distributed_owner_return(directory, marker, stage):
     """Reconcile a submitted request against the owning queue in read-only mode."""
     job = marker['job_id']
@@ -457,11 +498,20 @@ def distributed_owner_return(directory, marker, stage):
             return 'STOP', None  # The original distributed contract forbids automatic retry.
         if (outcome.get('status') == 'PREPARATION_COMPLETE' and returned.get('returncode') == 0
                 and returned.get('signal') is None):
+            bundles = [bundle for bundle in outcome.get('git_bundles', ())
+                       if bundle.get('workspace', 'workspace') == 'workspace'
+                       and bundle['base'] == marker['source']]
+            heads = [bundle['head'] for bundle in bundles]
             collected = owner_document(directory/(stage+'.RETURN.json'))
             if collected:
-                return 'ENDED', collected
+                if (collected.get('job_id') != job or collected.get('source') != marker['source']
+                        or collected.get('returncode') != 0 or collected.get('signal') is not None
+                        or set(collected.get('git_heads', ())) - set(heads)):
+                    return 'UNKNOWN', None
+                if (directory/(stage+'.RESULT.json')).is_file():
+                    return 'ENDED', dict(collected, git_heads=heads, accepted_job=str(output))
             # A prior run may have received the immutable result before it
-            # wrote a producer-local RETURN. Read that exact cached output.
+            # wrote the producer-local result. Read that exact cached output.
             controller_root = Path(expected['preparation']['controller_root'])
             command = expected['preparation']['command']
             output_path = Path(command[command.index('--output')+1]).relative_to(controller_root)
@@ -474,7 +524,7 @@ def distributed_owner_return(directory, marker, stage):
                     if hashlib.sha256(raw).hexdigest() == sha:
                         cached = json.loads(raw)
             return 'ENDED', dict(job_id=job, source=marker['source'], cached_result=cached,
-                                 git_heads=[bundle['head'] for bundle in outcome.get('git_bundles', ())])
+                                 git_heads=heads, accepted_job=str(output))
         return 'UNKNOWN', None
     return 'UNKNOWN', None
 
@@ -588,7 +638,7 @@ def scoped_original_owners(plan, directories):
                     # immutable publication before we replace missing work.
                     heads = (returned or {}).get('git_heads', ())
                     if kind == 'signal' and result and result.get('status') == 'SIGNALS_READY' and result.get('publication') in heads:
-                        output['signals'].append(dict(commit=result['publication']))
+                        output['signals'].append(dict(commit=result['publication'], owner=str(leaf)))
                     elif kind == 'compile' and result and result.get('status') == 'COMPILE_RECEIPTS_READY' and result.get('raw_commit') in heads:
                         if owner_stage_axes(result, stage, all_axes) != axes:
                             hold(markers[0], kind, axes, 'UNKNOWN')

@@ -342,7 +342,8 @@ def reconsider_prices(root, run, spec, settings, records, *, shortlist=()):
     waves = [run/'pf_auto', *prior_waves(run, spec)]
     restore_price_checks(waves, records)
     pending = [(cid, row) for cid, row in records.items()
-               if (row['status'] in PRICE_RECHECK_STATES and not row.get('configurations'))
+               if (not row.get('configurations') and (row['status'] in PRICE_RECHECK_STATES
+                   or str(row.get('reason') or '').startswith('PF_SAVED_SIGNAL_REUSE_HOLD:')))
                or (cid in shortlist and row['status'] in PRICE_RECHECK_STATES |
                    {'READY_RETURNED_TO_SAME_OPTIMIZER'})]
     if not pending:
@@ -371,6 +372,9 @@ def reconsider_prices(root, run, spec, settings, records, *, shortlist=()):
         scoped = (settings.get('exploratory_cost') is True or
                   spec.get('search_overrides', {}).get('exploratory_cost') is True)
         version = 'RECEIPT_RECOVERY_V2' if scoped else 'RECEIPT_RECOVERY_V1'
+        if scoped and (row.get('price_reconciliation', {}).get('original_signal_holds')
+                       or str(row.get('reason') or '').startswith('PF_SAVED_SIGNAL_REUSE_HOLD:')):
+            version = 'RECEIPT_RECOVERY_SIGNAL_V1'
         fingerprint = version + ':' + reconciliation_snapshot(root, row, locators[cid], objects=objects, scoped=scoped)
         provider = spec.get('pf_price_recheck_provider')
         if provider:

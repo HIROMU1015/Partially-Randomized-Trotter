@@ -3,6 +3,7 @@
 import argparse
 from collections import Counter
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -137,15 +138,39 @@ def resume_interrupted_target(state, run):
         return dict(status='RECOVERY_HELD', previous_invocation=invocation, reason=str(error))
 
 
+def publication_source(run, config):
+    """Use the verified publisher selected by the run's current invocation."""
+    launch = optional(run/'LAUNCH.json')
+    command = launch.get('command', [])
+    if '--schedule-resume' not in command:
+        if config.get('periodic_publication'):
+            return Path(__file__).with_name('publish_romutail_search.py'), None
+        return None
+    selection = json.loads(command[command.index('--schedule-resume')+1])
+    hashes = selection.get('publisher_sha256')
+    if not hashes:
+        if config.get('periodic_publication'):
+            return Path(__file__).with_name('publish_romutail_search.py'), None
+        return None
+    scripts = Path(selection['root']).resolve()/'scripts'
+    if (selection['run_id'] != run.name or selection['base_source'] != config['code_source']
+            or Path(command[2]).resolve() != scripts/'run_rpe_local0_search.py'
+            or Path(command[command.index('--execute-run')+1]).resolve() != run.resolve()
+            or command[command.index('--invocation')+1] != launch['invocation_id']):
+        raise ValueError('Scheduled publisher does not match the current run invocation')
+    for name in ('publish_romutail_search.py', 'publish_h4_search_run.py'):
+        if hashlib.sha256((scripts/name).read_bytes()).hexdigest() != hashes.get(name):
+            raise ValueError('Scheduled publisher differs from the selected deployment: '+name)
+    return scripts/'publish_romutail_search.py', selection['source']
+
+
 def publish_due(run, *, active, previous):
     """Publish completed snapshots through the run's ordinary C destination."""
     if time.time() - previous.get('checked_epoch', 0) < (600 if active else 120):
         return previous
     config = optional(run/'CONTROLLER_CONFIG.json')
     settings = config.get('publication')
-    # Existing runs keep their publication behavior until this release is
-    # selected for that run, including its serialized publisher.
-    if not settings or not config.get('periodic_publication') or config.get('artificial_controller_directory'):
+    if not settings or config.get('artificial_controller_directory'):
         return previous
     if not (run/'ROUND_RESULT.json').is_file():
         return previous
@@ -155,22 +180,28 @@ def publish_due(run, *, active, previous):
     if (optional(published).get('status') == 'PUBLISHED'
             and all(not (run/name).is_file() or (run/name).stat().st_mtime <= stamp for name in snapshot)):
         return previous
-    command = [config['python'], '-B', str(Path(__file__).with_name('publish_romutail_search.py')),
-               '--repository', settings['repository'], '--run-dir', str(run),
-               '--controller-source', config['code_source'], '--branch', settings['branch']]
-    if settings.get('push'):
-        command.append('--push')
     checked = time.time()
     try:
+        selected = publication_source(run, config)
+        if selected is None:
+            return previous
+        script, operations_source = selected
+        command = [config['python'], '-B', str(script), '--repository', settings['repository'],
+                   '--run-dir', str(run), '--controller-source', config['code_source'],
+                   '--branch', settings['branch']]
+        if operations_source:
+            command.extend(['--operations-source', operations_source])
+        if settings.get('push'):
+            command.append('--push')
         response = subprocess.run(command, capture_output=True, text=True, check=True, timeout=180)
         status = json.loads(response.stdout)
         return dict(checked_epoch=checked, status=status['status'], head=status.get('head'))
-    except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+    except (OSError, ValueError, KeyError, IndexError, TypeError, subprocess.SubprocessError) as error:
         return dict(checked_epoch=checked, status='PUBLICATION_PENDING',
                     reason=error_summary(error))
 
 
-def run_pass(state, *, offline=False, resume_interrupted=False):
+def run_pass(state, *, offline=False, resume_interrupted=False, publication_only=False):
     report_dir = state/'maintenance'
     report_dir.mkdir(exist_ok=True)
     with (report_dir/'LOCK').open('a+b') as lock:
@@ -181,6 +212,20 @@ def run_pass(state, *, offline=False, resume_interrupted=False):
         index = load(state/'RUNS.json')
         current = (state/'CURRENT_TARGET.json')
         current = optional(current).get('run_id')
+        if publication_only:
+            item = index.get(current)
+            if not item:
+                return dict(status='NO_CURRENT_RUN', new_scientific_calls=0)
+            run = Path(item['run_directory']).resolve(strict=True)
+            if run.name != current:
+                raise ValueError('Registered run path differs')
+            path = report_dir/(current+'.json')
+            report = optional(path)
+            result = publish_due(run, active=live_driver(run), previous=report.get('publication_check', {}))
+            if result:
+                save(path, dict(report, publication_check=result))
+            return dict(status=result.get('status', 'NO_PUBLICATION_DUE'), run_id=current,
+                        publication_check=result, new_scientific_calls=0)
         runs, warnings = {}, []
         for run_id, item in index.items():
             try:
@@ -250,11 +295,14 @@ def run_pass(state, *, offline=False, resume_interrupted=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state-directory',type=Path,required=True)
-    parser.add_argument('--offline',action='store_true')
-    parser.add_argument('--resume-interrupted',action='store_true')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--offline',action='store_true')
+    mode.add_argument('--resume-interrupted',action='store_true')
+    mode.add_argument('--publication-only',action='store_true')
     args = parser.parse_args()
     print(json.dumps(run_pass(args.state_directory.resolve(strict=True), offline=args.offline,
-                              resume_interrupted=args.resume_interrupted), ensure_ascii=False))
+                              resume_interrupted=args.resume_interrupted,
+                              publication_only=args.publication_only), ensure_ascii=False))
 
 
 if __name__ == '__main__':
