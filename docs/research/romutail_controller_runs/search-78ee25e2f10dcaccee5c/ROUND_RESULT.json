@@ -16394,7 +16394,7 @@
         "ready_queue_waves": 2,
         "live_readiness_max_workers": 8,
         "live_readiness_refill_seconds": 5,
-        "relay_script": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/h4-prdf-worker-recovery-20261125/code/scripts/run_rpe_q3_relay.py",
+        "relay_script": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/h4-history-index-20261125/code/scripts/run_rpe_q3_relay.py",
         "pbs_hold_node": true,
         "pf_legacy_compile_hosts": [
           "server2"
@@ -156020,10 +156020,8 @@
         ],
         "loaded": 383,
         "already_known": 0,
-        "refused": 656,
-        "refused_reasons": [
-          "CONFIGURATION_NOT_IN_THIS_ROUND"
-        ]
+        "refused": 0,
+        "refused_reasons": []
       },
       "input_requests": [],
       "scaled_shots": {
@@ -156380,14 +156378,14 @@
         "dp_workers": 3,
         "new_real_route_launches": 10,
         "executor_failure": null,
-        "elapsed_seconds": 1056.1732080031652,
-        "busy_job_seconds": 10343.301047571935,
-        "idle_slot_seconds_no_queued_candidate": 21.659076296025887,
+        "elapsed_seconds": 1045.52948989789,
+        "busy_job_seconds": 10281.081567994319,
+        "idle_slot_seconds_no_queued_candidate": 17.232876444933936,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 21.659076296025887,
+        "idle_slot_seconds_no_queued_or_selected_result": 17.232876444933936,
         "idle_slot_seconds_with_queued_candidate": 0.0,
-        "integrated_available_slot_seconds": 1056.1732080031652,
-        "slot_utilization": 9.793186353521795,
+        "integrated_available_slot_seconds": 1045.52948989789,
+        "slot_utilization": 9.833373106480625,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
         "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
@@ -156398,35 +156396,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1207,
-            "reused": 26023
+            "reused": 29542
           },
           "local": {
             "assigned": 1588,
             "launched": 1588,
             "completed": 1588,
             "adopted": 1579,
-            "reused": 21436
+            "reused": 25816
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 521,
-            "reused": 10722
+            "reused": 12222
           },
           "local0-wsl": {
             "assigned": 837,
             "launched": 829,
             "completed": 827,
             "adopted": 814,
-            "reused": 15084
+            "reused": 17421
           },
           "pbs-0": {
             "assigned": 4024,
             "launched": 3600,
             "completed": 4024,
             "adopted": 3976,
-            "reused": 64852
+            "reused": 76282
           }
         },
         "host_admission": {
@@ -160476,15 +160474,15 @@
               "token": "dabe5e26268642e093bff451fdd9dbed",
               "host_id": "pbs-0",
               "job_id": "268201.CPUcluster-PRISM",
-              "status": "R",
+              "status": "F",
               "worker": {
                 "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
-                "monotonic": 2886630.826426353,
-                "epoch": 1795540317.6420083,
+                "monotonic": 2887263.926915264,
+                "epoch": 1795540950.7424972,
                 "schema": "RPE_PBS_WORKER_STATE_V1",
-                "state": "READY",
-                "ready": true,
-                "accepting": true,
+                "state": "EXITED",
+                "ready": false,
+                "accepting": false,
                 "host_id": "pbs-0",
                 "job_id": "268201.CPUcluster-PRISM",
                 "hostname": "CPUcluster019",
@@ -160561,13 +160559,13 @@
                   "one_shared_slot_pool": true
                 },
                 "capacity": 96,
-                "remaining_seconds": 131824.25421045907,
+                "remaining_seconds": 131191.15372528974,
                 "start_clock": {
                   "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
                   "monotonic": 2884117.523259302,
                   "epoch": 1795537804.3388414
                 },
-                "exit_reason": null
+                "exit_reason": "ALLOCATION_WALLTIME_END"
               },
               "receipt": {
                 "epoch": 1795411915.1785643,
@@ -160587,9 +160585,14 @@
                 "select_nodes": 1,
                 "walltime_seconds": 259200
               },
-              "exit_status": null,
+              "exit_status": 0,
               "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/c7345872a93e6f814615/allocations/dabe5e26268642e093bff451fdd9dbed",
-              "pilot_token": "7e267436270c4ba39f9e550d8426fb46"
+              "pilot_token": "7e267436270c4ba39f9e550d8426fb46",
+              "session_end": {
+                "epoch": 1795540958.1635606,
+                "reason": "WORKER_EXIT",
+                "returncode": 0
+              }
             },
             {
               "token": "dcaa7d87e3b1498cb71883bd6599bfcb",
@@ -161128,70 +161131,11 @@
           }
         ],
         "host_offers": {
-          "pbs-0": {
-            "capacity": 96,
-            "fresh_free_slots": 96,
-            "reported_free_slots": 96,
-            "observed_age_seconds": 3.0629713740199804,
-            "priority_group": 0,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 96,
-              "slots": 96,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42928623616,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 11245018152960,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false,
-                "measurement_seconds": 34.875196848995984
-              },
-              "pbs": {
-                "job_id": "268201.CPUcluster-PRISM",
-                "remaining_seconds": 131826.18391623208,
-                "minimum_task_seconds": 60.0,
-                "drain_seconds": 30.0,
-                "accepting": true,
-                "resource_pool": {
-                  "cpu_count": 96,
-                  "memory_bytes": 375809638400
-                },
-                "launch_fit": true,
-                "ready_buffer": true
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.015377834905,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
           "local": {
             "capacity": 0,
             "fresh_free_slots": 0,
             "reported_free_slots": 0,
-            "observed_age_seconds": 1.074809692101553,
+            "observed_age_seconds": 1.152887396980077,
             "priority_group": 2,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -161207,12 +161151,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1579304.092546607,
-                  "epoch": 1795539315.5381951
+                  "monotonic": 1583098.87294066,
+                  "epoch": 1795543110.3185892
                 },
                 "machine_cpu_count": 32,
                 "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 30990540800,
+                "machine_mem_available_bytes": 29054595072,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -161250,15 +161194,15 @@
               "peak_job_rss_bytes": 40913018880,
               "peak_job_cpu_cores": 28.176044292750376,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1053.133746370906,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1046.9034186769277,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
                 "decision_wait_seconds": null,
                 "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-                "ready_jobs": 1,
-                "ready_jobs_now": 1,
+                "ready_jobs": 0,
+                "ready_jobs_now": 0,
                 "capacity_ready_jobs": 1,
                 "ready_task_classes": [
                   "preparation:compile:DF_CALIBRATION"
@@ -161274,10 +161218,10 @@
               "admitted_task_classes": [],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40501338112,
+                "used_bytes": 40501342208,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 77780860928,
+                "filesystem_free_bytes": 70950760448,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": [],
                 "reclaim_start_bytes": 51002736640,
@@ -161287,14 +161231,14 @@
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0173431658186,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.5211530618835,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 1,
+              "ready_jobs": 0,
               "ready_jobs_now": 0,
               "capacity_ready_jobs": 1,
               "ready_task_classes": [
@@ -161310,7 +161254,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 2.1914925519376993,
+            "observed_age_seconds": 4.075036569964141,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -161326,12 +161270,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2577267.862862886,
-                  "epoch": 1795539313.434539
+                  "monotonic": 2581060.941630752,
+                  "epoch": 1795543106.5133069
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 494325264384,
+                "machine_mem_available_bytes": 493791334400,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -161379,8 +161323,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1046.6380463088863,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1037.997595628025,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -161397,17 +161341,58 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37131354112,
+                "used_bytes": 37131567104,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 569141321728,
+                "filesystem_free_bytes": 569140953088,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0193887238856,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.5233059490565,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "local0-wsl": {
+            "capacity": 4,
+            "fresh_free_slots": 4,
+            "reported_free_slots": 4,
+            "observed_age_seconds": 4.025584234856069,
+            "priority_group": 1,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 4,
+              "slots": 4,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 40640880640,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 930776936448,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": []
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.524317174917,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -161424,7 +161409,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 4.185644308105111,
+            "observed_age_seconds": 7.974375909892842,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -161440,12 +161425,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 443234.259016943,
-                  "epoch": 1795539309.9071565
+                  "monotonic": 447027.343239715,
+                  "epoch": 1795543102.9913793
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1059435556864,
+                "machine_mem_available_bytes": 1060400893952,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -161484,8 +161469,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1042.2601791128982,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1033.1588160190731,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -161502,58 +161487,17 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40657346560,
+                "used_bytes": 40657498112,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 63038406656,
+                "filesystem_free_bytes": 63038255104,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0204460588284,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "local0-wsl": {
-            "capacity": 4,
-            "fresh_free_slots": 4,
-            "reported_free_slots": 4,
-            "observed_age_seconds": 4.146255075931549,
-            "priority_group": 1,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 4,
-              "slots": 4,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 41300094976,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 930117726208,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": []
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0215114068706,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.525770904962,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -1895219,10 +1895163,8 @@
         ],
         "loaded": 7140,
         "already_known": 0,
-        "refused": 3261,
-        "refused_reasons": [
-          "CONFIGURATION_NOT_IN_THIS_ROUND"
-        ]
+        "refused": 0,
+        "refused_reasons": []
       },
       "input_requests": [],
       "scaled_shots": {
@@ -1895664,14 +1895606,14 @@
         "dp_workers": 3,
         "new_real_route_launches": 10,
         "executor_failure": null,
-        "elapsed_seconds": 1056.1732080031652,
-        "busy_job_seconds": 10343.301047571935,
-        "idle_slot_seconds_no_queued_candidate": 21.659076296025887,
+        "elapsed_seconds": 1045.52948989789,
+        "busy_job_seconds": 10281.081567994319,
+        "idle_slot_seconds_no_queued_candidate": 17.232876444933936,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 21.659076296025887,
+        "idle_slot_seconds_no_queued_or_selected_result": 17.232876444933936,
         "idle_slot_seconds_with_queued_candidate": 0.0,
-        "integrated_available_slot_seconds": 1056.1732080031652,
-        "slot_utilization": 9.793186353521795,
+        "integrated_available_slot_seconds": 1045.52948989789,
+        "slot_utilization": 9.833373106480625,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
         "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
@@ -1895682,35 +1895624,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1207,
-            "reused": 26023
+            "reused": 29542
           },
           "local": {
             "assigned": 1588,
             "launched": 1588,
             "completed": 1588,
             "adopted": 1579,
-            "reused": 21436
+            "reused": 25816
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 521,
-            "reused": 10722
+            "reused": 12222
           },
           "local0-wsl": {
             "assigned": 837,
             "launched": 829,
             "completed": 827,
             "adopted": 814,
-            "reused": 15084
+            "reused": 17421
           },
           "pbs-0": {
             "assigned": 4024,
             "launched": 3600,
             "completed": 4024,
             "adopted": 3976,
-            "reused": 64852
+            "reused": 76282
           }
         },
         "host_admission": {
@@ -1899760,15 +1899702,15 @@
               "token": "dabe5e26268642e093bff451fdd9dbed",
               "host_id": "pbs-0",
               "job_id": "268201.CPUcluster-PRISM",
-              "status": "R",
+              "status": "F",
               "worker": {
                 "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
-                "monotonic": 2886630.826426353,
-                "epoch": 1795540317.6420083,
+                "monotonic": 2887263.926915264,
+                "epoch": 1795540950.7424972,
                 "schema": "RPE_PBS_WORKER_STATE_V1",
-                "state": "READY",
-                "ready": true,
-                "accepting": true,
+                "state": "EXITED",
+                "ready": false,
+                "accepting": false,
                 "host_id": "pbs-0",
                 "job_id": "268201.CPUcluster-PRISM",
                 "hostname": "CPUcluster019",
@@ -1899845,13 +1899787,13 @@
                   "one_shared_slot_pool": true
                 },
                 "capacity": 96,
-                "remaining_seconds": 131824.25421045907,
+                "remaining_seconds": 131191.15372528974,
                 "start_clock": {
                   "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
                   "monotonic": 2884117.523259302,
                   "epoch": 1795537804.3388414
                 },
-                "exit_reason": null
+                "exit_reason": "ALLOCATION_WALLTIME_END"
               },
               "receipt": {
                 "epoch": 1795411915.1785643,
@@ -1899871,9 +1899813,14 @@
                 "select_nodes": 1,
                 "walltime_seconds": 259200
               },
-              "exit_status": null,
+              "exit_status": 0,
               "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/c7345872a93e6f814615/allocations/dabe5e26268642e093bff451fdd9dbed",
-              "pilot_token": "7e267436270c4ba39f9e550d8426fb46"
+              "pilot_token": "7e267436270c4ba39f9e550d8426fb46",
+              "session_end": {
+                "epoch": 1795540958.1635606,
+                "reason": "WORKER_EXIT",
+                "returncode": 0
+              }
             },
             {
               "token": "dcaa7d87e3b1498cb71883bd6599bfcb",
@@ -1900412,70 +1900359,11 @@
           }
         ],
         "host_offers": {
-          "pbs-0": {
-            "capacity": 96,
-            "fresh_free_slots": 96,
-            "reported_free_slots": 96,
-            "observed_age_seconds": 3.0629713740199804,
-            "priority_group": 0,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 96,
-              "slots": 96,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42928623616,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 11245018152960,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false,
-                "measurement_seconds": 34.875196848995984
-              },
-              "pbs": {
-                "job_id": "268201.CPUcluster-PRISM",
-                "remaining_seconds": 131826.18391623208,
-                "minimum_task_seconds": 60.0,
-                "drain_seconds": 30.0,
-                "accepting": true,
-                "resource_pool": {
-                  "cpu_count": 96,
-                  "memory_bytes": 375809638400
-                },
-                "launch_fit": true,
-                "ready_buffer": true
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.015377834905,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
           "local": {
             "capacity": 0,
             "fresh_free_slots": 0,
             "reported_free_slots": 0,
-            "observed_age_seconds": 1.074809692101553,
+            "observed_age_seconds": 1.152887396980077,
             "priority_group": 2,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -1900491,12 +1900379,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1579304.092546607,
-                  "epoch": 1795539315.5381951
+                  "monotonic": 1583098.87294066,
+                  "epoch": 1795543110.3185892
                 },
                 "machine_cpu_count": 32,
                 "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 30990540800,
+                "machine_mem_available_bytes": 29054595072,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -1900534,15 +1900422,15 @@
               "peak_job_rss_bytes": 40913018880,
               "peak_job_cpu_cores": 28.176044292750376,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1053.133746370906,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1046.9034186769277,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
                 "decision_wait_seconds": null,
                 "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-                "ready_jobs": 1,
-                "ready_jobs_now": 1,
+                "ready_jobs": 0,
+                "ready_jobs_now": 0,
                 "capacity_ready_jobs": 1,
                 "ready_task_classes": [
                   "preparation:compile:DF_CALIBRATION"
@@ -1900558,10 +1900446,10 @@
               "admitted_task_classes": [],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40501338112,
+                "used_bytes": 40501342208,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 77780860928,
+                "filesystem_free_bytes": 70950760448,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": [],
                 "reclaim_start_bytes": 51002736640,
@@ -1900571,14 +1900459,14 @@
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0173431658186,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.5211530618835,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 1,
+              "ready_jobs": 0,
               "ready_jobs_now": 0,
               "capacity_ready_jobs": 1,
               "ready_task_classes": [
@@ -1900594,7 +1900482,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 2.1914925519376993,
+            "observed_age_seconds": 4.075036569964141,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -1900610,12 +1900498,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2577267.862862886,
-                  "epoch": 1795539313.434539
+                  "monotonic": 2581060.941630752,
+                  "epoch": 1795543106.5133069
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 494325264384,
+                "machine_mem_available_bytes": 493791334400,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -1900663,8 +1900551,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1046.6380463088863,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1037.997595628025,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -1900681,17 +1900569,58 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37131354112,
+                "used_bytes": 37131567104,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 569141321728,
+                "filesystem_free_bytes": 569140953088,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0193887238856,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.5233059490565,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "local0-wsl": {
+            "capacity": 4,
+            "fresh_free_slots": 4,
+            "reported_free_slots": 4,
+            "observed_age_seconds": 4.025584234856069,
+            "priority_group": 1,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 4,
+              "slots": 4,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 40640880640,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 930776936448,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": []
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.524317174917,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -1900708,7 +1900637,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 4.185644308105111,
+            "observed_age_seconds": 7.974375909892842,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -1900724,12 +1900653,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 443234.259016943,
-                  "epoch": 1795539309.9071565
+                  "monotonic": 447027.343239715,
+                  "epoch": 1795543102.9913793
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1059435556864,
+                "machine_mem_available_bytes": 1060400893952,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -1900768,8 +1900697,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1042.2601791128982,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1033.1588160190731,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -1900786,58 +1900715,17 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40657346560,
+                "used_bytes": 40657498112,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 63038406656,
+                "filesystem_free_bytes": 63038255104,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0204460588284,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "local0-wsl": {
-            "capacity": 4,
-            "fresh_free_slots": 4,
-            "reported_free_slots": 4,
-            "observed_age_seconds": 4.146255075931549,
-            "priority_group": 1,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 4,
-              "slots": 4,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 41300094976,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 930117726208,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": []
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0215114068706,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.525770904962,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -2862656,9 +2862544,8 @@
         ],
         "loaded": 492,
         "already_known": 0,
-        "refused": 1989,
+        "refused": 308,
         "refused_reasons": [
-          "CONFIGURATION_NOT_IN_THIS_ROUND",
           "DIFFERENT_JOB_KEY_OR_ROUTE"
         ]
       },
@@ -2863628,14 +2863515,14 @@
         "dp_workers": 3,
         "new_real_route_launches": 10,
         "executor_failure": null,
-        "elapsed_seconds": 1056.1732080031652,
-        "busy_job_seconds": 10343.301047571935,
-        "idle_slot_seconds_no_queued_candidate": 21.659076296025887,
+        "elapsed_seconds": 1045.52948989789,
+        "busy_job_seconds": 10281.081567994319,
+        "idle_slot_seconds_no_queued_candidate": 17.232876444933936,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 21.659076296025887,
+        "idle_slot_seconds_no_queued_or_selected_result": 17.232876444933936,
         "idle_slot_seconds_with_queued_candidate": 0.0,
-        "integrated_available_slot_seconds": 1056.1732080031652,
-        "slot_utilization": 9.793186353521795,
+        "integrated_available_slot_seconds": 1045.52948989789,
+        "slot_utilization": 9.833373106480625,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
         "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
@@ -2863646,35 +2863533,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1207,
-            "reused": 26023
+            "reused": 29542
           },
           "local": {
             "assigned": 1588,
             "launched": 1588,
             "completed": 1588,
             "adopted": 1579,
-            "reused": 21436
+            "reused": 25816
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 521,
-            "reused": 10722
+            "reused": 12222
           },
           "local0-wsl": {
             "assigned": 837,
             "launched": 829,
             "completed": 827,
             "adopted": 814,
-            "reused": 15084
+            "reused": 17421
           },
           "pbs-0": {
             "assigned": 4024,
             "launched": 3600,
             "completed": 4024,
             "adopted": 3976,
-            "reused": 64852
+            "reused": 76282
           }
         },
         "host_admission": {
@@ -2867724,15 +2867611,15 @@
               "token": "dabe5e26268642e093bff451fdd9dbed",
               "host_id": "pbs-0",
               "job_id": "268201.CPUcluster-PRISM",
-              "status": "R",
+              "status": "F",
               "worker": {
                 "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
-                "monotonic": 2886630.826426353,
-                "epoch": 1795540317.6420083,
+                "monotonic": 2887263.926915264,
+                "epoch": 1795540950.7424972,
                 "schema": "RPE_PBS_WORKER_STATE_V1",
-                "state": "READY",
-                "ready": true,
-                "accepting": true,
+                "state": "EXITED",
+                "ready": false,
+                "accepting": false,
                 "host_id": "pbs-0",
                 "job_id": "268201.CPUcluster-PRISM",
                 "hostname": "CPUcluster019",
@@ -2867809,13 +2867696,13 @@
                   "one_shared_slot_pool": true
                 },
                 "capacity": 96,
-                "remaining_seconds": 131824.25421045907,
+                "remaining_seconds": 131191.15372528974,
                 "start_clock": {
                   "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
                   "monotonic": 2884117.523259302,
                   "epoch": 1795537804.3388414
                 },
-                "exit_reason": null
+                "exit_reason": "ALLOCATION_WALLTIME_END"
               },
               "receipt": {
                 "epoch": 1795411915.1785643,
@@ -2867835,9 +2867722,14 @@
                 "select_nodes": 1,
                 "walltime_seconds": 259200
               },
-              "exit_status": null,
+              "exit_status": 0,
               "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/c7345872a93e6f814615/allocations/dabe5e26268642e093bff451fdd9dbed",
-              "pilot_token": "7e267436270c4ba39f9e550d8426fb46"
+              "pilot_token": "7e267436270c4ba39f9e550d8426fb46",
+              "session_end": {
+                "epoch": 1795540958.1635606,
+                "reason": "WORKER_EXIT",
+                "returncode": 0
+              }
             },
             {
               "token": "dcaa7d87e3b1498cb71883bd6599bfcb",
@@ -2868376,70 +2868268,11 @@
           }
         ],
         "host_offers": {
-          "pbs-0": {
-            "capacity": 96,
-            "fresh_free_slots": 96,
-            "reported_free_slots": 96,
-            "observed_age_seconds": 3.0629713740199804,
-            "priority_group": 0,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 96,
-              "slots": 96,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42928623616,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 11245018152960,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false,
-                "measurement_seconds": 34.875196848995984
-              },
-              "pbs": {
-                "job_id": "268201.CPUcluster-PRISM",
-                "remaining_seconds": 131826.18391623208,
-                "minimum_task_seconds": 60.0,
-                "drain_seconds": 30.0,
-                "accepting": true,
-                "resource_pool": {
-                  "cpu_count": 96,
-                  "memory_bytes": 375809638400
-                },
-                "launch_fit": true,
-                "ready_buffer": true
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.015377834905,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
           "local": {
             "capacity": 0,
             "fresh_free_slots": 0,
             "reported_free_slots": 0,
-            "observed_age_seconds": 1.074809692101553,
+            "observed_age_seconds": 1.152887396980077,
             "priority_group": 2,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2868455,12 +2868288,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1579304.092546607,
-                  "epoch": 1795539315.5381951
+                  "monotonic": 1583098.87294066,
+                  "epoch": 1795543110.3185892
                 },
                 "machine_cpu_count": 32,
                 "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 30990540800,
+                "machine_mem_available_bytes": 29054595072,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2868498,15 +2868331,15 @@
               "peak_job_rss_bytes": 40913018880,
               "peak_job_cpu_cores": 28.176044292750376,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1053.133746370906,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1046.9034186769277,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
                 "decision_wait_seconds": null,
                 "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-                "ready_jobs": 1,
-                "ready_jobs_now": 1,
+                "ready_jobs": 0,
+                "ready_jobs_now": 0,
                 "capacity_ready_jobs": 1,
                 "ready_task_classes": [
                   "preparation:compile:DF_CALIBRATION"
@@ -2868522,10 +2868355,10 @@
               "admitted_task_classes": [],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40501338112,
+                "used_bytes": 40501342208,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 77780860928,
+                "filesystem_free_bytes": 70950760448,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": [],
                 "reclaim_start_bytes": 51002736640,
@@ -2868535,14 +2868368,14 @@
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0173431658186,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.5211530618835,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 1,
+              "ready_jobs": 0,
               "ready_jobs_now": 0,
               "capacity_ready_jobs": 1,
               "ready_task_classes": [
@@ -2868558,7 +2868391,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 2.1914925519376993,
+            "observed_age_seconds": 4.075036569964141,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2868574,12 +2868407,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2577267.862862886,
-                  "epoch": 1795539313.434539
+                  "monotonic": 2581060.941630752,
+                  "epoch": 1795543106.5133069
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 494325264384,
+                "machine_mem_available_bytes": 493791334400,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2868627,8 +2868460,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1046.6380463088863,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1037.997595628025,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2868645,17 +2868478,58 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37131354112,
+                "used_bytes": 37131567104,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 569141321728,
+                "filesystem_free_bytes": 569140953088,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0193887238856,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.5233059490565,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "local0-wsl": {
+            "capacity": 4,
+            "fresh_free_slots": 4,
+            "reported_free_slots": 4,
+            "observed_age_seconds": 4.025584234856069,
+            "priority_group": 1,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 4,
+              "slots": 4,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 40640880640,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 930776936448,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": []
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.524317174917,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -2868672,7 +2868546,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 4.185644308105111,
+            "observed_age_seconds": 7.974375909892842,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2868688,12 +2868562,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 443234.259016943,
-                  "epoch": 1795539309.9071565
+                  "monotonic": 447027.343239715,
+                  "epoch": 1795543102.9913793
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1059435556864,
+                "machine_mem_available_bytes": 1060400893952,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2868732,8 +2868606,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "658899-1795538259005112703",
-                "measurement_seconds": 1042.2601791128982,
+                "controller_invocation": "835720-1795542061349352981",
+                "measurement_seconds": 1033.1588160190731,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2868750,58 +2868624,17 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40657346560,
+                "used_bytes": 40657498112,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 63038406656,
+                "filesystem_free_bytes": 63038255104,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0204460588284,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "local0-wsl": {
-            "capacity": 4,
-            "fresh_free_slots": 4,
-            "reported_free_slots": 4,
-            "observed_age_seconds": 4.146255075931549,
-            "priority_group": 1,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 4,
-              "slots": 4,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 41300094976,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 930117726208,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": []
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "658899-1795538259005112703",
-              "measurement_seconds": 1057.0215114068706,
+              "controller_invocation": "835720-1795542061349352981",
+              "measurement_seconds": 1049.525770904962,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
