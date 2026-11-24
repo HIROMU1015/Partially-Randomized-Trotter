@@ -77,6 +77,14 @@ def ssh_wsl_command(worker, command, action, *, input_file=None, inline_input=No
         "$OutputEncoding=New-Object System.Text.UTF8Encoding($false);"
         "[Console]::OutputEncoding=New-Object System.Text.UTF8Encoding($false);"
     )
+    if worker.get('require_running_wsl'):
+        distro = "'" + worker['distribution'].replace("'", "''") + "'"
+        script += (
+            "$running=@(& " + executable + " --list --running --quiet);"
+            "if($LASTEXITCODE -ne 0){exit $LASTEXITCODE};"
+            "$running=@($running|ForEach-Object{($_ -replace '\x00','').Trim()});"
+            "if(" + distro + " -notin $running){throw 'WSL distribution is stopped'};"
+        )
     if input_file is None:
         script += (
             "$raw=[Console]::In.ReadToEnd();"
@@ -358,6 +366,13 @@ class Relay:
         # Reuse local0's published WSL mailbox transport (6e70f5d13061).
         # Scientific execution still resolves the route-specific saved profile.
         if worker.get('transport') == 'wsl':
+            if worker.get('require_running_wsl'):
+                running = subprocess.check_output(
+                    [worker.get('wsl_executable', 'wsl.exe'), '--list', '--running', '--quiet'],
+                    timeout=10, **child_options())
+                names = running.decode('utf-8', errors='replace').replace('\x00', '').splitlines()
+                if worker['distribution'].casefold() not in [n.strip('\ufeff ').casefold() for n in names]:
+                    raise RuntimeError('WSL distribution is stopped')
             command = [worker.get('wsl_executable', 'wsl.exe'), '-d', worker['distribution'], '--exec'] + command
         elif worker.get('transport') == 'ssh-wsl':
             try:

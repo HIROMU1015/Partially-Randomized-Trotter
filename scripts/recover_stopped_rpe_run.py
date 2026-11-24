@@ -16,6 +16,8 @@ import subprocess
 import sys
 import tempfile
 import time
+from urllib.parse import urlsplit
+from urllib.request import Request, urlopen
 
 OWNED = ('ASSIGNED', 'STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER', 'UNKNOWN')
 
@@ -175,10 +177,17 @@ def probe_local(profile, row):
 
 
 def worker_results(run, rows, cache):
-    from run_rpe_q3_relay import Relay
     from trottertracks.rpe_q3_worker import mailbox, result_bundle, worker_cache
     relay_path = run/'distributed/relay/CONFIG.json'
-    relay = Relay(relay_path) if relay_path.is_file() else None
+    relay = None
+    if relay_path.is_file():
+        # The deployment owns recovery transport, while fixed_modules pins
+        # the run's science and queue modules.
+        code = Path(__file__).resolve().with_name('run_rpe_q3_relay.py')
+        spec = importlib.util.spec_from_file_location('_rpe_recovery_relay', code)
+        transport = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(transport)
+        relay = transport.Relay(relay_path)
     workers = {w['host_id']: w for w in relay.config['workers'] if w.get('enabled', True)} if relay else {}
     local = run/'distributed/LOCAL_WORKER.json'
     local_profile = optional(local)
@@ -203,7 +212,7 @@ def worker_results(run, rows, cache):
                     saved = mailbox(local_profile, 'result', owner(row))
                 fetch = lambda hashes: worker_cache(local_profile).get(hashes)
             elif host in workers:
-                worker = workers[host]
+                worker = dict(workers[host], require_running_wsl=True)
                 command = [worker.get('python','python3'), '-B', '-c', PROBE, worker['profile']]
                 status, _ = relay.remote_command(worker, command, 'recovery-observe', owner(row))
                 ready = status['state'] == 'COMPLETED_PENDING_TRANSFER' or (
@@ -423,6 +432,40 @@ def publish_received(run, row):
     return True
 
 
+def recover_live_attempts(run, launch, rows, cache):
+    """Send proved completions back through the live owner's receipt path."""
+    endpoint = optional(run/'distributed/ENDPOINT.json')
+    url = endpoint.get('url', '')
+    address = urlsplit(url)
+    if address.scheme != 'http' or address.hostname not in ('127.0.0.1', 'localhost', '::1'):
+        return []
+    unresolved = [row for row in rows if row['state'] == 'UNKNOWN' and row['host_id']
+                  and row['attempt_id'] and not row['host_id'].startswith('pbs-')]
+    if not unresolved:
+        return []
+    reports = []
+    for row, observation, files in worker_results(run, unresolved, cache):
+        item = dict(owner(row), ledger_state=row['state'], worker=observation)
+        reports.append(item)
+        if files is None:
+            continue
+        try:
+            if optional(run/'LAUNCH.json') != launch or optional(run/'distributed/ENDPOINT.json') != endpoint:
+                break
+            # Recovered WSL results may have arrived through the relay while
+            # we were reading its existing spool. The owner RPC is idempotent.
+            payload = dict(owner(row), files=files)
+            req = Request(url+'/v1/complete', json.dumps(payload).encode(), {'Content-Type': 'application/json'})
+            with urlopen(req, timeout=20) as response:
+                reply = json.load(response)
+            if reply.get('ok') is not True:
+                raise ValueError('Live controller declined the saved receipt')
+            item['recovery'] = 'LIVE_CONTROLLER_RECONCILED'
+        except (OSError, ValueError) as error:
+            item.update(recovery='HELD', reason=str(error))
+    return reports
+
+
 def recover(state, run, *, remote=True):
     pin, validate_preparation = fixed_modules(run)
     from trottertracks.rpe_preparation_artifacts import ArtifactCache
@@ -436,8 +479,12 @@ def recover(state, run, *, remote=True):
         report['repaired_inputs'] = repair_dependencies(run,rows,cache)
     except (OSError, ValueError, KeyError) as error:
         report['delivery_hold'] = str(error)
-    if not launch or live_driver(run):
+    if not launch:
         return dict(report,status='ACTIVE_OR_UNLAUNCHED')
+    if live_driver(run):
+        if remote:
+            report['jobs'] = recover_live_attempts(run, launch, rows, cache)
+        return dict(report,status='LIVE_CONTROLLER')
     for row in rows:
         if row['state'] != 'ACCEPTED' or not row['attempt_id'] or not row['completion_sha256']:
             continue

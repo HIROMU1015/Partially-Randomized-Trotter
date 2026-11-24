@@ -535,6 +535,8 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
             stop = 'NO_IMPROVING_PROPOSAL_INPUTS_MISSING' if missing else 'NO_IMPROVING_PROPOSAL'
             if ready and incumbent is None:
                 stop = 'NO_FEASIBLE_POINT_IN_RANGE'
+            if pending and pending.get('hold_reason'):
+                stop = 'HOST_ELIGIBILITY_HOLD'
             break
         choice = props[0];allow = new_calls < limit
         if prefetch is not None and limit == float('inf') and science_approved:
@@ -554,6 +556,9 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
         if hold:
             candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
             held.append(hold_candidate(candidate,choice,answer,backend))
+            if pending is None and answer['status'] == 'HOST_ELIGIBILITY_HOLD':
+                pending = dict(choice, route=(routes or {}).get(name), job=answer.get('job'),
+                               host_eligibility=answer.get('host_eligibility'), hold_reason=answer.get('reason'))
             continue
         if answer is None or hold:
             pending = dict(choice, route=(routes or {}).get(name), queue=[dict(candidate=p['candidate'], cost=p['cost'],
@@ -803,6 +808,12 @@ class Executor:
                     fallback = job
         return fallback
 
+    def prior_same_route(self, job, cid, *, request=None):
+        return self.same_route(job, cid, request=request)
+
+    def ingest_prior(self, job, proposal):
+        return self.ingest(job, proposal, calls=0)
+
     def has_job(self, proposal):
         job = self.job_dir(proposal)
         return (job / 'OUTCOME.json').exists() or (job / 'LAUNCH.json').exists() or self.prior_job(proposal) is not None
@@ -855,9 +866,9 @@ class Executor:
                 if c is None:
                     refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'));continue
                 proposal = dict(configuration_id=c['configuration_id'], vector=interleave(q['N_X'], q['N_Y']))
-                if self.job_dir(proposal).name != job.name or not self.same_route(job, c['configuration_id']):
+                if self.job_dir(proposal).name != job.name or not self.prior_same_route(job, c['configuration_id'], request=q):
                     refused.append(dict(job=str(job), reason='DIFFERENT_JOB_KEY_OR_ROUTE'));continue
-                r = self.ingest(job, proposal, calls=0)
+                r = self.ingest_prior(job, proposal)
                 if r['status'] not in (PASS, FAIL, 'INCONCLUSIVE'):
                     refused.append(dict(job=str(job), reason=r['status'] + ':' + str(r.get('reason'))));continue
                 known[(c['configuration_id'], proposal['vector'])] = dict(r, source='PRIOR_ROUND_JOB',
@@ -928,11 +939,11 @@ class Executor:
         if not (job / 'LAUNCH.json').exists():
             prior = self.prior_job(proposal)
             if prior is not None:
-                if not self.same_route(prior,proposal['configuration_id']):
+                if not self.prior_same_route(prior,proposal['configuration_id']):
                     return dict(status='STALE_JOB',job=str(prior),calls=0,source='PRIOR_ROUND_JOB',owner_review_required=True,
                                 reason='PRIOR_OWNER_ROUTE_OR_SOURCE_UNRESOLVED_REVIEW_REQUIRED')
                 if (prior / 'OUTCOME.json').exists():
-                    return dict(self.ingest(prior, proposal, calls=0), source='PRIOR_ROUND_JOB')
+                    return dict(self.ingest_prior(prior, proposal), source='PRIOR_ROUND_JOB')
                 try:
                     launch = json.loads((prior / 'LAUNCH.json').read_text())
                     running = self.alive(launch, prior)

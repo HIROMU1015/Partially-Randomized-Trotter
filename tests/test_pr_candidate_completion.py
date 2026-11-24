@@ -230,21 +230,54 @@ def main():
         self.assertEqual(c.saved_df_descriptor(dict(design={'L_D':8,'kappa':'2'})),loc)
         self.assertIsNone(c.saved_df_descriptor(dict(design={'L_D':7,'kappa':'2'})))
 
-    def test_scoped_price_conflict_skips_calibration_only_for_that_candidate(self):
+    def test_scoped_price_conflict_delegates_to_planner_and_complete_price_skips_it(self):
         with tempfile.TemporaryDirectory() as tmp:
             path=Path(tmp)
             c=C.Completion.__new__(C.Completion)
+            c.directory=path
+            c.registry=path/'PRICE_RULES.json'
+            C.put(c.registry, {'entries': []})
             need=dict(m=3,axis='X',unit_price_RZ=None,needs=dict(reasons=[C.PRICE_SOURCE_CONFLICT],
                                                                entry_ids=['scoped1','scoped2']))
             quote=dict(complete=False,rows=[need])
+            def plans(*args):
+                raise C.Held('PRICE_EVIDENCE_REQUIRED: scoped conflict')
             with patch.object(c,'path',return_value='FIXTURE'),patch.object(c,'quote_with_steps',side_effect=lambda cfg,q:q), \
-                 patch.object(c,'df_price') as calibrate,patch.object(c,'ingest_price_results'):
-                self.assertEqual(c._price({}, {}, {}, {'method':'PR_DF'},path,quote),quote)
-                calibrate.assert_not_called()
-                self.assertEqual(C.read(path/'FINAL_QUOTE.json'),quote)
+                 patch.object(c,'df_price',side_effect=plans) as calibrate,patch.object(c,'ingest_price_results'):
+                with self.assertRaisesRegex(C.Held, 'scoped conflict'):
+                    c._price({}, {}, {}, {'method':'PR_DF'},path,quote)
+                calibrate.assert_called_once()
                 complete=dict(complete=True,rows=[dict(need,unit_price_RZ=5)])
                 self.assertEqual(c._price({}, {}, {}, {'method':'PR_DF'},path,complete),complete)
-                calibrate.assert_not_called()
+                calibrate.assert_called_once()
+
+    def test_ready_unpriced_df_retains_q3_and_reuses_price_attempt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            folder = root/'candidate'
+            folder.mkdir()
+            c = C.Completion.__new__(C.Completion)
+            c.directory = root
+            c.settings = {'exploratory_cost': True}
+            old = dict(request={}, method='PR_DF', status='READY_FOR_SEARCH', prices=None,
+                       configuration_id='candidate', configuration={'fixed': True},
+                       directory='candidate', signal={'saved': True}, intake={'binding_id': 'saved'})
+            c.state = {'records': {'candidate': old}}
+            from types import SimpleNamespace
+            store = SimpleNamespace(row=lambda job: {'state': 'QUEUED'})
+            c.stage_executor = SimpleNamespace(executor=SimpleNamespace(store=store))
+            with patch.object(C,'ROOT',root), patch.object(C,'value',return_value={}), \
+                 patch.object(c,'price_registry_digest',return_value='prices'), \
+                 patch.object(c,'df_price_evidence_snapshot',return_value='evidence'), \
+                 patch.object(c,'initial_quote',return_value={'complete': False}), \
+                 patch.object(c,'df_price',side_effect=C.PreparationWait('waiting',job_id='original')) as price, \
+                 patch.object(c,'save'):
+                for _ in range(3):
+                    c.prepare_shortlist_prices({'candidate'}, stop_requested=lambda: False)
+            self.assertEqual(price.call_count, 1)
+            self.assertEqual(old['shortlist_price_attempt']['job_id'], 'original')
+            self.assertEqual(old['signal'], {'saved': True})
+            self.assertEqual(old['status'], 'READY_FOR_SEARCH')
 
     def test_new_registry_recovers_price_hold_without_scientific_retry(self):
         with tempfile.TemporaryDirectory()as tmp:

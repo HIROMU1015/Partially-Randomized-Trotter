@@ -130,6 +130,9 @@ while not (d/'CONTROL.json').is_file():
                 self.stop(self.a, 'a1')
                 wait(self.b/'workers/pbs-0/artificial/original-attempt/PROCESS_RETURN.json')
                 self.assertTrue((a/'SESSION_END.json').exists())
+                finished = pilot.session_snapshot(self.a)[0]
+                self.assertEqual(finished['session_status'], 'F')
+                self.assertEqual(finished['reservation_status'], 'R')
                 import base64
                 for root, token, directory in [(self.a,'a1',a),(self.b,'b1',b)]:
                     data = pilot.handle(root, dict(action='harvest', token=token), {})

@@ -40,6 +40,7 @@ def test_width_report_child_resumes_without_waiting_for_report_generation(tmp_pa
         row['evaluated_count'] = 1
         driver.report(result)
         assert driver._report is not None
+        assert driver._report[0].wait(timeout=10) == 0
         driver.finish_report()
     assert load(tmp_path/'ROUND_RESULT.json')['methods']['FULL_PF']['evaluated_count'] == 1
     assert 'WIDTH_QUEUE_REPORT' in (tmp_path/'ROUND_STAGES.jsonl').read_text()
@@ -707,6 +708,28 @@ class ScaleTests(unittest.TestCase):
             self.assertEqual(driver.state['cycle'], 2)
             self.assertNotIn('recovery_wait', driver.state)
             self.assertEqual(driver.state['stop']['reason'], 'REQUESTED_WIDTH_RULE_EXHAUSTED')
+
+    def test_shortlist_rechecks_track_the_fixed_pricing_candidate(self):
+        methods = dict(PR_DF=dict(scaled_shots=dict(unpriced_feasible=[dict(configuration_id='projected', M=11)]),
+                                  by_configuration=[dict(configuration_id='projected', M=11,
+                                                         source_configuration_id='original'),
+                                                    dict(configuration_id='priced', M=12)]),
+                       FULL_PF=dict(by_configuration=[dict(configuration_id='ordinary')]))
+        self.assertEqual(entry.shortlist_price_ids(methods), dict(PR_DF=['original'], FULL_PF=[]))
+
+    def test_idle_recovery_wakes_for_original_queue_event(self):
+        from trottertracks.rpe_q3_store import JobStore
+        with tempfile.TemporaryDirectory() as directory:
+            run = Path(directory)
+            driver = entry.WidthDriver.__new__(entry.WidthDriver)
+            driver.run, driver.state_file = run, run/'KAPPA_STATE.json'
+            driver.state = {'cycle': 1}
+            store = JobStore(run/'distributed/QUEUE.sqlite3')
+            driver.waiting_executor = SimpleNamespace(store=store, hosts={}, state=SimpleNamespace(failure=None))
+            driver.waiting_revision = driver.recovery_revision(driver.waiting_executor)
+            store.reserve('FULL_PF', 'fixture', {'route': {'kind': 'artificial'}}, 1, True)
+            with patch.object(entry.time, 'sleep', side_effect=AssertionError('new event is already available')):
+                driver.wait_for_recovery(['OWNED_ATTEMPT'], 15)
 
     def test_artificial_normal_start_queue_resume_and_legacy_pin(self):
         with tempfile.TemporaryDirectory(prefix='artificial-scaled-rpe-') as tmp:

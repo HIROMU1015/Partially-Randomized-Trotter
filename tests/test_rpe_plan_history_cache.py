@@ -126,22 +126,21 @@ class SavedHistoryDeltas(unittest.TestCase):
     def test_pure_dispatch_source_changes_keep_the_validated_record(self):
         concurrent = ConcurrentExecutor.__new__(ConcurrentExecutor)
         distributed = DistributedExecutor.__new__(DistributedExecutor)
-        canonical = _validator(self.executor)
-        self.assertEqual(_validator(concurrent), canonical)
-        self.assertEqual(_validator(distributed), canonical)
+        transport = ROOT/'src'/'trottertracks'/'rpe_optimizer_concurrent.py'
+        self.assertIn(str(transport), _validator(concurrent))
+        self.assertEqual(_validator(distributed), _validator(concurrent))
         self.evidence(4)
         self.cache.prior_records(self.executor, self.candidates, details=False)
 
-        transport = ROOT/'src'/'trottertracks'/'rpe_optimizer_concurrent.py'
+        relay = ROOT/'scripts'/'run_rpe_q3_relay.py'
         original_read = Path.read_bytes
 
         def read_changed(path):
             data = original_read(path)
-            return data + b'\n# dispatch edit\n' if path == transport else data
+            return data + b'\n# dispatch edit\n' if path == relay else data
 
         with patch.object(Path, 'read_bytes', read_changed):
-            with patch('trottertracks.rpe_plan_history_cache._validator', return_value=_validator(distributed)):
-                _, _, stats = self.cache.prior_records(self.executor, self.candidates, details=False)
+            _, _, stats = self.cache.prior_records(self.executor, self.candidates, details=False)
         self.assertEqual((stats['cache_hits'], stats['validated_jobs']), (1, 0))
 
     def test_new_validation_hook_or_wrapper_restores_full_dispatch_hash(self):

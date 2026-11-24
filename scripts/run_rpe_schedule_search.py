@@ -889,6 +889,18 @@ class WideDriver(K.Driver):
         self.state['stop'] = dict(reason='MAX_CYCLES', UTC=K.now());self.save()
 
 
+def shortlist_price_ids(results):
+    unresolved = {}
+    for method, result in results.items():
+        needed = {(row['configuration_id'], row['M'])
+                  for row in (result.get('scaled_shots') or {}).get('unpriced_feasible', ())}
+        unresolved[method] = sorted({row.get('source_configuration_id') or row['configuration_id']
+                                     for row in result.get('by_configuration', ())
+                                     if (row['configuration_id'], row.get('M')) in needed
+                                     and row['configuration_id']})
+    return unresolved
+
+
 class WidthDriver:
     """Declared widths for both PR methods, reusing common completion and V2.
 
@@ -1852,6 +1864,15 @@ class WidthDriver:
         # The width planner still chooses designs. Continuation may refresh and
         # install its existing waiting records, without a second design chooser.
         active_spec=deepcopy(self.spec);active_spec['max_new_q3_per_method']=budgets
+        shortlist = {}
+        if exploratory:
+            shortlist = self.state.get('shortlist_price_candidates')
+            if shortlist is None:
+                previous_report = self.run/'ROUND_RESULT.json'
+                shortlist = shortlist_price_ids(O.load_json(previous_report)['methods']) if previous_report.is_file() else {}
+                self.state['shortlist_price_candidates'] = shortlist
+            active_spec['exploratory_price_candidates'] = [
+                cid for method in ('FULL_PF', 'TRUNCATED_PF') for cid in shortlist.get(method, ())]
         active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
         if self.live_ready_refill and active_spec['executor'].get('distributed'):
             if self.work_conserving_search and (active_spec['executor']['distributed'].get('ready_queue_waves', 2) > 1):
@@ -1910,12 +1931,18 @@ class WidthDriver:
                         or problem.get('problem',{}).get('system') != 'H4'
                         or context.get('pf_evidence_registry',{}).get('artificial')):
                     return
-                from trottertracks.pr_df_horizon_preparation import prepare as prepare_df_horizons
                 def ready(record):
                     horizon_keys.add(record['key'])
                     if notify:
                         notify('PR_DF',record)
-                prepare_df_horizons(ROOT,runtime,comp,scope,scaled_settings(search['scaled_shots'])['M'],
+                if exploratory:
+                    comp.prepare_shortlist_prices(set(shortlist.get('PR_DF', ())), stop_requested=stop_requested,
+                                                  on_ready=ready)
+                horizons = scaled_settings(search['scaled_shots'])['M']
+                if 13 not in horizons:
+                    return
+                from trottertracks.pr_df_horizon_preparation import prepare as prepare_df_horizons
+                prepare_df_horizons(ROOT,runtime,comp,scope,horizons,
                                     active_spec['executor'].get('prior_run_dirs', ()),
                                     stop_requested, on_ready=ready)
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
@@ -1949,7 +1976,8 @@ class WidthDriver:
                 df_context = (snapshot_context(context)
                               if runtime is not None and 'PR_DF' in self.methods and
                               search.get('rule') == 'RPE_SCALED_SHOTS_V1' and
-                              13 in scaled_settings(search['scaled_shots'])['M'] else None)
+                              (13 in scaled_settings(search['scaled_shots'])['M']
+                               or (exploratory and shortlist.get('PR_DF'))) else None)
                 parallel_families = runtime is not None and search.get('controller_parallel') is True
                 preparation_pool=ThreadPoolExecutor(max_workers=1 + bool(pf_enabled) + (df_context is not None)
                                                     + parallel_families)
@@ -2266,7 +2294,14 @@ class WidthDriver:
                     and not O.shared_stop(result)):
                 # The next planning cycle uses the same durable queue.
                 executor.state.retain_queued_preparation = True
-            actions = [('EXECUTOR_DRAIN', executor.finish)]
+            keep_connected = (original_error is None and self.work_conserving_search
+                              and getattr(executor, 'rpc_server', None) is not None
+                              and not executor._user_stop_requested() and not O.shared_stop(result)
+                              and not any(r['new_calls'] for r in result.values()))
+            if keep_connected:
+                self.waiting_executor = executor
+                self.waiting_revision = self.recovery_revision(executor)
+            actions = [] if keep_connected else [('EXECUTOR_DRAIN', executor.finish)]
             if preparation_pool is not None:
                 interrupted = stop_preparation.is_set() or executor._user_stop_requested()
                 if interrupted:
@@ -2297,6 +2332,12 @@ class WidthDriver:
                 stop={m:r['stop_reason']for m,r in result.items()},new_calls={m:r['new_calls']for m,r in result.items()})))+'\n')
         with K.CLI.round_phase(self.run, 'WIDTH_UPDATE_CANDIDATE_STATE'):
             self.update_evaluated_points(context, search, result)
+            self.shortlist_price_changed = False
+            if exploratory:
+                current = shortlist_price_ids(result)
+                self.shortlist_price_changed = any(set(ids) - set(shortlist.get(method, ()))
+                                                   for method, ids in current.items())
+                self.state['shortlist_price_candidates'] = current
             self.save()
         self.report(result)
         if str(self.run).startswith(str(ROOT/'docs/research')):
@@ -2320,10 +2361,10 @@ class WidthDriver:
                 self.render_snapshot(deferred)
 
     def render_snapshot(self, snapshot):
-        import pickle
+        from trottertracks.rpe_plan_history_cache import read_local_exact_snapshot
 
         snapshot.seek(0)
-        run, spec, result, source, owner = pickle.load(snapshot)
+        run, spec, result, source, owner = read_local_exact_snapshot(snapshot)
         write_width_report(Path(run), self.report_cli(), spec, result, source, owner=owner)
 
     def report_cli(self):
@@ -2364,13 +2405,18 @@ class WidthDriver:
         # A single child renders an immutable snapshot from a private file
         # descriptor while the controller advances its saved checkpoint.
         script = (
-            'import pickle,runpy,sys\n'
+            'import importlib.util,runpy,sys\n'
             'from pathlib import Path\n'
             'root,driver,entry=sys.argv[1:]\n'
             'report=runpy.run_path(driver,init_globals={"FIXED_RUN_CODE_ROOT":root})\n'
             'from types import SimpleNamespace\n'
             'cli=SimpleNamespace(**runpy.run_path(entry))\n'
-            'run,spec,result,source,owner=pickle.load(sys.stdin.buffer)\n'
+            'codec=Path(driver).parents[1]/"src/trottertracks/rpe_plan_history_cache.py"\n'
+            'loader=importlib.util.spec_from_file_location("trottertracks._report_codec",codec)\n'
+            'history=importlib.util.module_from_spec(loader)\n'
+            'sys.modules[loader.name]=history\n'
+            'loader.loader.exec_module(history)\n'
+            'run,spec,result,source,owner=history.read_local_exact_snapshot(sys.stdin.buffer)\n'
             'report["write_width_report"](Path(run),cli,spec,result,source,owner=owner)\n')
         with K.CLI.round_phase(self.run, 'WIDTH_QUEUE_REPORT'):
             snapshot = tempfile.TemporaryFile()
@@ -2480,6 +2526,7 @@ class WidthDriver:
         recheck_delay = 15
         held_q3, unresolved = False, []
         while end is None or self.state['cycle']<end:
+            self.finish_waiting_executor()
             if (self.run/'STOP_REQUESTED.json').exists():
                 self.state.pop('recovery_wait', None)
                 self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
@@ -2539,7 +2586,7 @@ class WidthDriver:
                 if getattr(self,'pf_more',False) or any(r['stop_reason']=='WORK_SLICE_YIELDED' for r in result.values()):
                     continue
                 pending=any(p['status'] in ('COMPLETION','REGISTERED') for p in self.state['points'])
-            if getattr(self, 'preparation_queue_advanced', False):
+            if getattr(self, 'preparation_queue_advanced', False) or getattr(self, 'shortlist_price_changed', False):
                 continue
             pf_status_path = self.run/'PF_PREPARATION_STATUS.json'
             pf_status = O.load_json(pf_status_path) if pf_status_path.is_file() else {}
@@ -2593,34 +2640,64 @@ class WidthDriver:
         self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'MAX_CYCLES',
             UTC=K.now(),unresolved_q3_attempts=unresolved);self.save()
 
-    def wait_for_recovery(self, reasons, seconds):
-        def revision():
-            paths = (
-                self.run/'distributed'/'QUEUE.sqlite3',
-                self.run/'distributed'/'QUEUE.sqlite3-wal',
-                self.run/'distributed'/'pbs'/'offline-history'/'coverage',
-                self.run/'HOST_ADMISSION.json',
-                self.run/'completion'/'STEP_PRICE_RULES.json',
-                self.run/'completion'/'PRICE_RULES.json',
-            )
-            result = []
-            for path in paths:
-                try:
-                    stat = path.stat()
-                    result.append((stat.st_ino, stat.st_size, stat.st_mtime_ns))
-                except FileNotFoundError:
-                    result.append(None)
-            return result
+    def finish_waiting_executor(self):
+        executor = getattr(self, 'waiting_executor', None)
+        if executor is not None:
+            self.waiting_executor = None
+            executor.finish()
 
-        baseline = revision()
+    def recovery_revision(self, executor):
+        paths = (
+            self.run/'distributed'/'pbs'/'offline-history'/'coverage',
+            self.run/'HOST_ADMISSION.json',
+            self.run/'completion'/'STEP_PRICE_RULES.json',
+            self.run/'completion'/'PRICE_RULES.json',
+            self.run/'pf_auto'/'WAVES.json',
+        )
+        result = []
+        for path in paths:
+            try:
+                stat = path.stat()
+                result.append((stat.st_ino, stat.st_size, stat.st_mtime_ns))
+            except FileNotFoundError:
+                result.append(None)
+        if executor is not None:
+            with executor.store._connection() as db:
+                result.append(db.execute("SELECT max(sequence) FROM events").fetchone()[0])
+            # A returning worker can make an unqueued candidate eligible.
+            # Poll timestamps and fluctuating memory readings are not changes
+            # to its identity or admission.
+            result.append(tuple(sorted(
+                (host, offer.get('capacity'), bool(offer.get('slots')),
+                 offer.get('accepting_new_jobs'), json.dumps(offer.get('host_fingerprints'), sort_keys=True),
+                 json.dumps(offer.get('host_admission'), sort_keys=True),
+                 ((offer.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs'))
+                for host, offer in dict(executor.hosts).items())))
+        return result
+
+    def wait_for_recovery(self, reasons, seconds):
+        executor = getattr(self, 'waiting_executor', None)
+        baseline = self.waiting_revision if executor is not None else self.recovery_revision(None)
         self.state['recovery_wait'] = dict(reasons=reasons, recheck_epoch=time.time()+seconds)
         self.save()
         self.log(event='WAITING_FOR_RECOVERY', **self.state['recovery_wait'])
         deadline = time.monotonic() + seconds
+        # Old run evidence edited outside this controller has no queue event.
+        external_recheck = time.monotonic() + 900
         stop = self.run/'STOP_REQUESTED.json'
-        while not stop.exists() and (remaining := deadline - time.monotonic()) > 0:
-            if revision() != baseline:
+        while not stop.exists():
+            if self.recovery_revision(executor) != baseline or time.monotonic() >= external_recheck:
                 return
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                if executor is None or executor.state.failure:
+                    return
+                # With the relay and readiness services still alive, polling
+                # an unchanged queue need not restart the scientific planner.
+                deadline = time.monotonic() + seconds
+                self.log(event='WAITING_FOR_RECOVERY_HEARTBEAT', reasons=reasons,
+                         recheck_epoch=time.time()+seconds)
+                remaining = seconds
             time.sleep(min(1, remaining))
 
 
@@ -2670,9 +2747,13 @@ def main(argv=None, *, driver_factory=None):
             if finish_report is not None:
                 finish_report()
         finally:
-            manager = getattr(d, 'run_pbs_manager', None)
-            if manager is not None and manager.detached:
-                manager.close()
+            try:
+                if finish_waiting := getattr(d, 'finish_waiting_executor', None):
+                    finish_waiting()
+            finally:
+                manager = getattr(d, 'run_pbs_manager', None)
+                if manager is not None and manager.detached:
+                    manager.close()
     if (a.run_dir/'STOP_REQUESTED.json').exists() and d.state.get('stop',{}).get('reason') not in (
             'V2_RESULT_REQUIRES_REVIEW','RUNTIME_EXCEPTION'):
         d.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());d.save()

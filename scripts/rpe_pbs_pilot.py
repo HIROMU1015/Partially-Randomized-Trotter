@@ -271,7 +271,7 @@ def session_snapshot(root, finished=None, *, scheduler=None, force=False):
             if token in terminal_sessions:
                 scheduler.terminal_sessions.update(terminal_sessions[token])
         row = dict(observations[token])
-        row.update(token=directory.name, directory=str(directory), pilot_token=token,
+        row.update(token=directory.name, directory=str(directory), pilot_token=token, reservation_status=row['status'],
                    allocation=read(directory/'ALLOCATION.json'), worker=read(directory/'STATE.json'))
         ended = ended_sessions[directory]
         if ended:
@@ -280,6 +280,7 @@ def session_snapshot(root, finished=None, *, scheduler=None, force=False):
             row['status'] = 'Q'  # Another run may still be draining on this node.
         if (directory/'CONTROL.json').exists() and read(directory/'CONTROL.json').get('stop'):
             row['worker'] = dict(row.get('worker') or {}, accepting=False)
+        row['session_status'] = row['status']
         result.append(row)
     return result
 

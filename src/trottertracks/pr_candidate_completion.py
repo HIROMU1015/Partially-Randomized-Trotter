@@ -741,7 +741,7 @@ class Completion:
                 or [row['unit_price_RZ'] for row in current['rows']] != record['prices']):
             raise ValueError('CONTINUATION_PRICE_EVIDENCE_DIFFERS')
 
-    def refresh_price_hold(self,record, *, admit_unpriced=False):
+    def refresh_price_hold(self,record, *, admit_unpriced=False, force=False):
         """Requery after a registry or quote policy update, without scientific retry."""
         reason=str(record.get('reason',''))
         if record.get('scientific_failure')or record.get('status','').startswith('STOP')or any(
@@ -749,7 +749,7 @@ class Completion:
             return None
         if not all(record.get(k)for k in ('configuration','signal','intake')):return None
         digest=self.price_registry_digest()
-        if record.get('registry_at_hold')==digest and not admit_unpriced:return None
+        if record.get('registry_at_hold')==digest and not admit_unpriced and not force:return None
         d=self.directory/'refresh'/record['key']/digest
         registry=d/'PRICE_RULES.json';put(registry,read(self.registry))
         quote=self.service('quote',dict(configuration=record['configuration'],view=str(self.path('D2_VIEW')),
@@ -797,6 +797,53 @@ class Completion:
                 except (Held, ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
                     record['exploratory_price_reason'] = str(error)
                     self.save()
+
+    def prepare_shortlist_prices(self, candidates, *, stop_requested, on_ready=None):
+        """Complete approximate prices for evaluated PR-DF candidates by the existing planner."""
+        if not candidates or not self.settings.get('exploratory_cost') or getattr(self, 'stage_executor', None) is None:
+            return
+        store = self.stage_executor.executor.store
+        for record in list(self.state['records'].values()):
+            if stop_requested():
+                return
+            if (record.get('method') != 'PR_DF' or record.get('status') != 'READY_FOR_SEARCH'
+                    or record.get('prices') is not None or record.get('scientific_failure')
+                    or not ({record.get('configuration_id'), record.get('installed_configuration_id')} & candidates)):
+                continue
+            request = record['request']
+            directory = (ROOT/record['directory']).resolve()
+            if (request.get('horizon_parent') or not directory.is_relative_to(self.directory.resolve())
+                    or (directory/'STOP.json').exists()):
+                continue
+            previous = record.get('shortlist_price_attempt', {})
+            job = previous.get('job_id') or record.get('pending_preparation_job')
+            row = store.row(job) if job else None
+            evidence = [self.price_registry_digest(), self.df_price_evidence_snapshot(record), row and row['state']]
+            if previous.get('evidence') == evidence:
+                continue
+            attempt = dict(evidence=evidence, job_id=job)
+            try:
+                cref = record['configuration']
+                config = value(cref)
+                # Keep the original workspace and any fixed stage it owns.
+                quote = self.initial_quote(config, cref, directory)
+                if not quote['complete']:
+                    self.df_price(cref, quote, directory, directory/'PRICE_RULES.json',
+                                  request.get('tail_descriptor') or record.get('deferred_tail_descriptor'))
+                self.refresh_price_hold(record, force=True)
+                attempt['reason'] = 'PRICES_READY' if record.get('prices') is not None else 'PRICE_EVIDENCE_INCOMPLETE'
+                if on_ready is not None and record.get('prices') is not None:
+                    on_ready(record)
+            except PreparationWait as error:
+                attempt.update(job_id=error.job_id or job, reason=str(error))
+                pending = store.row(attempt['job_id']) if attempt['job_id'] else None
+                evidence[2] = pending and pending['state']
+            except (Held, ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
+                attempt['reason'] = str(error)
+            if (directory/'DF_PRICE_DECISIONS.json').is_file():
+                record['price_actions'] = read(directory/'DF_PRICE_DECISIONS.json')
+            record['shortlist_price_attempt'] = attempt
+            self.save()
 
     def reconcile_committed_df_holdout(self, record):
         """Reopen a publication mismatch only after the original results pass intake."""

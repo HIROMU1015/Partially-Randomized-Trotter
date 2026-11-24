@@ -36,7 +36,7 @@ MARKERS = ('REQUEST.json', 'OUTCOME.json', 'COLLECTED_OUTCOME.json',
            'SUPERVISION.json', 'DRY_CHECK.json', 'RESOLVED_REQUEST.json',
            'WORKER_STATE.json', 'ASSIGNMENT.json')
 REUSE_HOOKS = ('job_dir', 'same_route', 'prior_route_fields', 'route', 'expected_for',
-               'pf_template_source', 'ingest', 'scope_unknown')
+               'pf_template_source', 'ingest', 'scope_unknown', 'prior_same_route', 'ingest_prior')
 DISTRIBUTED_INGEST_WRAPPER = '''\
 def ingest(self, job, proposal, calls):
     answer = super().ingest(job, proposal, calls)
@@ -83,7 +83,12 @@ class _LocalExactUnpickler(pickle.Unpickler):
 def _unpack(value):
     # Compatible with existing local payloads; original JSON and validation
     # paths still construct and normalize Fraction in the usual way.
-    return _LocalExactUnpickler(io.BytesIO(zlib.decompress(value))).load()
+    return read_local_exact_snapshot(io.BytesIO(zlib.decompress(value)))
+
+
+def read_local_exact_snapshot(stream):
+    """Read locally created data whose Fraction values were already normalized."""
+    return _LocalExactUnpickler(stream).load()
 
 
 def _signature(job):
@@ -216,6 +221,7 @@ class HistoryInventory:
         self.directories = {}
         self.decoded = OrderedDict()
         self.decoded_bytes = 0
+        self.route_equivalence = {}
 
     def index(self, directory, history, *, stopped=None):
         version = _directory_version(directory)
@@ -265,7 +271,7 @@ class HistoryInventory:
                 self.decoded.move_to_end(key)
                 return previous[0], True
         raw = zlib.decompress(read_payload())
-        cached = _LocalExactUnpickler(io.BytesIO(raw)).load()
+        cached = read_local_exact_snapshot(io.BytesIO(raw))
         if cached.get('record') is not None and len(raw) <= DECODED_CACHE_BYTES:
             with self.lock:
                 if key not in self.decoded:
@@ -541,10 +547,10 @@ class HistoryCache:
                     else:
                         if saved is not None:
                             stats['invalidated_jobs'] += 1
-                        if executor.job_dir(proposal).name != job.name or not executor.same_route(job, cid, request=request):
+                        if executor.job_dir(proposal).name != job.name or not executor.prior_same_route(job, cid, request=request):
                             refused.append(dict(job=str(job), reason='DIFFERENT_JOB_KEY_OR_ROUTE'))
                             continue
-                        record = executor.ingest(job, proposal, calls=0)
+                        record = executor.ingest_prior(job, proposal)
                         stats['validated_jobs'] += 1
                         if record['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
                             refused.append(dict(job=str(job), reason=record['status'] + ':' + str(record.get('reason'))))

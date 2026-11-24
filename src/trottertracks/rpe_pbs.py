@@ -1937,7 +1937,13 @@ class PbsManager:
                 first = record.get('first_accepting_clock') or {}
                 if first.get('clock_id') != now['clock_id']:
                     record['first_accepting_clock'] = now
-            record.update(status=allocation['status'], observed=allocation, clock=now)
+            # Older gateways report the shared pilot's physical state only
+            # inside scheduler metadata. Keep it visible after a run detaches.
+            session = allocation.get('session_status')
+            reservation = allocation.get('reservation_status') or (allocation.get('scheduler') or {}).get('job_state')
+            record.update(status=allocation['status'], observed=allocation, clock=now,
+                          reservation_status=reservation or allocation['status'],
+                          session_status=session or (allocation['status'] if allocation.get('pilot_token') else None))
             if allocation['status'] != 'R':
                 self.q3_worker_proofs.pop(token, None)
             if not self.selective_harvest and (

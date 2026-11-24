@@ -73,6 +73,18 @@ def run_fixture(directory,fast,*,methods=METHODS,configurations=2,budget=None,st
 
 
 class SchedulerTests(unittest.TestCase):
+    def test_prdf_relocation_checks_numeric_source_payload(self):
+        old, new = ({'commit': tag, 'path': 'raw.json'} for tag in ('old', 'new'))
+        raw = dict(status='LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED', B_identity='physical',
+                   B_law_binding='law', signal={'corrected': 0.5}, numerical={'pass': True})
+        items = {'old': dict(raw, reuse={'kind': 'SAME_PHYSICS_IDENTITY_REBOUND'}),
+                 'new': dict(raw, normalizer_revision='new-source')}
+        reader = types.SimpleNamespace(read=lambda loc: items[loc['commit']])
+        same = C.ConcurrentExecutor._same_fixed_data
+        self.assertTrue(same(old, new, reader, set(), df_signal=True))
+        items['new']['signal'] = {'corrected': 0.5000001}
+        self.assertFalse(same(old, new, reader, set(), df_signal=True))
+
     def test_native_pf_template_request_accepts_a_partial_registry(self):
         executor = C.ConcurrentExecutor.__new__(C.ConcurrentExecutor)
         executor.method = 'TRUNCATED_PF'
@@ -510,7 +522,18 @@ class SchedulerTests(unittest.TestCase):
         isolated=ast.dump(ast.parse("""if hold:
     candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
     held.append(hold_candidate(candidate,choice,answer,backend))
+    if pending is None and answer['status'] == 'HOST_ELIGIBILITY_HOLD':
+        pending = dict(choice, route=(routes or {}).get(name), job=answer.get('job'),
+                       host_eligibility=answer.get('host_eligibility'), hold_reason=answer.get('reason'))
     continue
+""").body[0])
+        original_isolated=ast.dump(ast.parse("""if hold:
+    candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
+    held.append(hold_candidate(candidate,choice,answer,backend))
+    continue
+""").body[0])
+        waiting_host_stop=ast.dump(ast.parse("""if pending and pending.get('hold_reason'):
+    stop = 'HOST_ELIGIBILITY_HOLD'
 """).body[0])
         local_unknown=ast.dump(ast.parse('''if is_local_unknown(answer):
     candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
@@ -522,10 +545,13 @@ class SchedulerTests(unittest.TestCase):
             count=0
             isolated_count=0
             local_unknown_count=0
+            waiting_host_stop_count=0
             def visit_If(self,node):
+                if ast.dump(node)==waiting_host_stop:
+                    self.waiting_host_stop_count+=1;return None
                 if ast.dump(node)==local_unknown:
                     self.local_unknown_count+=1;return None
-                if ast.dump(node)==isolated:
+                if ast.dump(node) in (isolated, original_isolated):
                     self.isolated_count+=1;return None
                 return self.generic_visit(node)
             def visit_BoolOp(self,node):
@@ -536,11 +562,12 @@ class SchedulerTests(unittest.TestCase):
         for name in ('proposals','method_state','run_method','run_by_configuration'):
             a=next(n for n in old.body if isinstance(n,ast.FunctionDef)and n.name==name)
             b=next(n for n in new.body if isinstance(n,ast.FunctionDef)and n.name==name)
-            self.assertEqual(ast.dump(a),ast.dump(b),name)
             strip=StripReadiness();b=strip.visit(b)
+            self.assertEqual(ast.dump(StripReadiness().visit(a)),ast.dump(b),name)
             self.assertEqual(strip.count,1 if name in('proposals','run_method')else 0,name)
             self.assertEqual(strip.isolated_count,1 if name=='run_method'else 0,name)
             self.assertEqual(strip.local_unknown_count,1 if name=='run_method'else 0,name)
+            self.assertEqual(strip.waiting_host_stop_count,1 if name=='run_method'else 0,name)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

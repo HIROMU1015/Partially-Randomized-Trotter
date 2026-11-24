@@ -51,15 +51,23 @@ def wait_summary(run, recovery):
     wait = latest_wait(run/'PROGRESS.jsonl')
     relay = optional(run/'distributed/relay/STATUS.json')
     pbs = optional(run/'distributed/pbs/STATE.json')
-    allocations = Counter(row.get('status','UNCONFIRMED') for row in pbs.get('allocations', {}).values()
-                          if not row.get('harvested'))
+    allocations = [row for row in pbs.get('allocations', {}).values() if not row.get('harvested')]
+    sessions = Counter(row.get('session_status') or row.get('status', 'UNCONFIRMED') for row in allocations)
+    reservations = {}
+    for row in allocations:
+        observed = row.get('observed') or {}
+        identity = observed.get('job_id') or observed.get('pilot_token') or observed.get('token')
+        if identity:
+            reservations[identity] = (row.get('reservation_status') or (observed.get('scheduler') or {}).get('job_state')
+                                      or row.get('status', 'UNCONFIRMED'))
     return dict(queue_wait_observed_at=wait.get('UTC'),
                 live_controller=live_driver(run),
                 queue_wait_reasons=dict(Counter(wait.get('reasons', {}).values())),
                 hosts=wait.get('hosts', {}), preparation_budget=wait.get('preparation_budget_blocked', {}),
                 relay={host:{key:value[key] for key in ('phase','error','last_error_epoch') if key in value}
                        for host,value in relay.get('workers', {}).items()},
-                pbs_allocations=dict(allocations), recovery_status=recovery.get('status'),
+                pbs_allocations=dict(sessions), pbs_reservations=dict(Counter(reservations.values())),
+                recovery_status=recovery.get('status'),
                 delivery_hold=recovery.get('delivery_hold'))
 
 

@@ -11,7 +11,8 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT/'src'), str(ROOT/'scripts')]
 from recover_stopped_rpe_run import (PBS_PRELAUNCH_PROBE, accept, check_assignment, owner,
-                                    pbs_results, probe_local, publish_received, read_rows, repair_dependencies)
+                                    pbs_results, probe_local, publish_received, read_rows, repair_dependencies,
+                                    recover_live_attempts)
 from run_rpe_central_maintenance import archive_candidates, wait_summary
 from trottertracks.rpe_completion_acceptance import validate_preparation_result
 from trottertracks.rpe_local0_search import supervise_run
@@ -42,6 +43,24 @@ class CentralMaintenanceTests(unittest.TestCase):
         self.assertTrue(self.store.reserve('PREPARATION:'+stage,job,request,2,True))
         write(self.run/'jobs'/('PREPARATION:'+stage)/job/'REQUEST.json',request)
         return request
+
+    def test_live_recovery_delivers_to_existing_owner(self):
+        launch = dict(pid=123)
+        write(self.run/'LAUNCH.json', launch)
+        write(self.run/'distributed/ENDPOINT.json', {'url': 'http://127.0.0.1:8763'})
+        row = dict(state='UNKNOWN', job_id='q3', attempt_id='existing', host_id='local0-wsl',
+                   request_sha256='request')
+        files = {'OUTCOME.json': encoded({'status': 'fixture'})}
+        observed = [(row, {'state': 'COMPLETED_PENDING_TRANSFER'}, files)]
+        handshake = unittest.mock.mock_open(read_data='{"ok": true}')
+        with patch('recover_stopped_rpe_run.worker_results', return_value=iter(observed)), \
+             patch('recover_stopped_rpe_run.urlopen', handshake) as send:
+            result = recover_live_attempts(self.run, launch, [row], self.cache)
+        request = send.call_args.args[0]
+        self.assertTrue(request.full_url.endswith('/v1/complete'))
+        self.assertEqual(json.loads(request.data), dict(owner(row), files=files))
+        self.assertEqual(result[0]['recovery'], 'LIVE_CONTROLLER_RECONCILED')
+        self.assertIsNone(self.store.row('q3'))
 
     def test_receive_existing_attempt_without_new_execution_or_adoption(self):
         self.reserve('compile','compile')

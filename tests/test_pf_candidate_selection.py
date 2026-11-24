@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from trottertracks import pf_candidate_selection as S
 
@@ -23,6 +23,25 @@ def context():
 
 
 class Selection(unittest.TestCase):
+    def test_feasible_unpriced_candidate_recovers_audit_and_remains_selectable(self):
+        ctx = context()
+        ctx['candidates'][0].update(ready=True, needs=[], prices=None)
+        chosen = S.select(ctx, ['TRUNCATED_PF'], excluded={'missing'}, price_rechecks={'saved7'})['selected']
+        self.assertEqual((chosen['configuration_id'], chosen['needs']), ('saved7', ['PRICE_26AXIS']))
+        self.assertTrue(ctx['candidates'][0]['ready'])
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            folder = run/'pf_auto/candidates/saved7/pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf/saved7'
+            folder.mkdir(parents=True)
+            (folder/'PF_COMPILE.DISTRIBUTED.json').touch()
+            (folder/'PF_COMPILE.RETURN.json').touch()
+            marker = folder/'PF_AUDIT.DISTRIBUTED.json'
+            marker.touch()
+            bridge = Mock()
+            S.recover_candidate_price_receipts(run, {'saved7'}, bridge)
+            bridge.import_received_stage.assert_called_once()
+            self.assertEqual(bridge.import_received_stage.call_args.args[1:], (marker, 'PF_AUDIT'))
+
     def test_legacy_price_summary_only_restores_matching_preflight(self):
         with tempfile.TemporaryDirectory() as tmp:
             wave = Path(tmp)

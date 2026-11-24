@@ -50,8 +50,12 @@ def inspect(context,methods,*,include_full=False):
     return rows,evaluated
 
 
-def select(context,methods,excluded=(),*,include_full=False):
+def select(context,methods,excluded=(),*,include_full=False,price_rechecks=()):
     rows,evaluated=inspect(context,methods,include_full=include_full)
+    for row in rows:
+        if row['configuration_id'] in price_rechecks:
+            row['ready'] = False
+            row['needs'] = ['PRICE_26AXIS']
     eligible=[r for r in rows if not r['ready'] and r['needs'] and r['configuration_id'] not in excluded]
     chosen=deepcopy(eligible[0])if eligible else None
     incumbents=[p for p in context['catalog']['candidates']if p['method']=='TRUNCATED_PF'and p['status']=='FEASIBLE'and p.get('conditional_cost')is not None]
@@ -285,7 +289,7 @@ def restore_price_checks(waves, records):
             break
 
 
-def reconsider_prices(root, run, spec, settings, records):
+def reconsider_prices(root, run, spec, settings, records, *, shortlist=()):
     from concurrent.futures import ThreadPoolExecutor
     from .pf_saved_prices import (catalog_receipt_locators, completed_partial, prior_waves, receipt_locators,
                                   receipt_objects, reconciliation_locators, reconciliation_snapshot)
@@ -293,7 +297,9 @@ def reconsider_prices(root, run, spec, settings, records):
     waves = [run/'pf_auto', *prior_waves(run, spec)]
     restore_price_checks(waves, records)
     pending = [(cid, row) for cid, row in records.items()
-               if row['status'] in PRICE_RECHECK_STATES and not row.get('configurations')]
+               if (row['status'] in PRICE_RECHECK_STATES and not row.get('configurations'))
+               or (cid in shortlist and row['status'] in PRICE_RECHECK_STATES |
+                   {'READY_RETURNED_TO_SAME_OPTIMIZER'})]
     if not pending:
         return
     # Trace finalized legacy duplicate findings without cloning a provider
@@ -415,6 +421,28 @@ def reconcile_received_preparation(run, records, stage_executor):
                 break
 
 
+def recover_candidate_price_receipts(run, candidates, stage_executor):
+    """Recover successful PF leaves even after their signal entered Q3."""
+    from types import SimpleNamespace
+    from .pf_saved_prices import candidate_roots
+    from .pr_candidate_completion import Held, PreparationWait
+    importer = getattr(stage_executor, 'import_received_stage', None)
+    if importer is None or not candidates:
+        return
+    for base in candidate_roots(run/'pf_auto'):
+        for cid in candidates:
+            folder = base/cid/'pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf'/cid
+            for stage in ('PF_COMPILE', 'PF_AUDIT'):
+                marker = folder/(stage+'.DISTRIBUTED.json')
+                if not marker.is_file() or (folder/(stage+'.RETURN.json')).exists():
+                    continue
+                try:
+                    importer(SimpleNamespace(log=stage_executor.executor.log), marker, stage)
+                except (Held, PreparationWait, OSError, KeyError, ValueError) as error:
+                    stage_executor.executor.log(event='PF_SHORTLIST_RECEIPT_PENDING',
+                                                configuration=cid, stage=stage, reason=str(error))
+
+
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None,recheck_waiting=True,
                  announce=None, refill_requested=None):
     """A durable PF wave, with each candidate and native owner in its own directory."""
@@ -460,7 +488,10 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             announce(context, routes)
     recovery = run/'pf_auto'/'price-recovery'
     distributed_completion = stage_executor is not None and settings.get('mode') == 'complete'
+    shortlist = {c['configuration_id'] for c in context['candidates'] if c.get('prices') is None
+                 and c['configuration_id'] in spec.get('exploratory_price_candidates', ())}
     if distributed_completion and recheck_waiting:
+        recover_candidate_price_receipts(run, records.keys() | shortlist, stage_executor)
         reconcile_received_preparation(run, records, stage_executor)
         for row in records.values():
             if (row.get('reason') == 'PF_COMPLETION_REQUEST_MISMATCH'
@@ -484,7 +515,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 atomic_write(recovery/'original'/f'{cid}.json', row)
                 # Recheck only before a producer or scientific attempt existed.
                 row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE', price_receipt_recheck=True)
-        reconsider_prices(root, run, spec, settings, records)
+        reconsider_prices(root, run, spec, settings, records, shortlist=shortlist)
         for row in records.values():
             if row['status'] in PRICE_RECHECK_STATES and 'price_reconciliation' in row:
                 row['price_axis_actions'] = price_axis_actions(row['price_reconciliation'])
@@ -494,7 +525,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         newly_ready = False
         for candidate in context['candidates']:
             record = records.get(candidate['configuration_id'])
-            if (candidate['ready'] and record and record['status'] in
+            if (candidate['ready'] and candidate['configuration_id'] not in shortlist
+                    and record and record['status'] in
                     PRICE_RECHECK_STATES | {'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE'}):
                 if record.get('reason'):
                     record.setdefault('previous_preparation_hold', record['reason'])
@@ -511,6 +543,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                ('PRICE_RECEIPT_RECHECK_AVAILABLE', 'PRICE_RECHECK_AVAILABLE')}
     waiting = {cid for cid, row in records.items() if row['status'] == 'PREPARATION_WAITING'} if recheck_waiting else set()
     selection=select(context,spec['methods'],records.keys()-pending-revisit-waiting,
+                     price_rechecks=shortlist & (revisit | waiting | pending | (shortlist - records.keys())),
                      include_full=distributed_completion or limit>1 or 'TRUNCATED_PF' not in spec['methods']
                      or any(records[cid].get('method') == 'FULL_PF' for cid in pending | revisit | waiting))
     if selection['selected'] is None and not pending:
@@ -545,7 +578,9 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             if family in families:
                 continue
             wave.append(row);families.add(family)
-            records.setdefault(cid, {}).update(status='PREPARATION_SCHEDULED',key=row['key'],configurations={})
+            record = records.setdefault(cid, {})
+            record.update(status='PREPARATION_SCHEDULED', key=row['key'])
+            record.setdefault('configurations', {})
             if len(wave)==workers:break
         atomic_write(index,records)
         started = {row['configuration_id'] for row in wave}
@@ -597,8 +632,9 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                     continue
                 queued.remove(row)
                 cid = row['configuration_id']
-                records.setdefault(cid, {}).update(status='PREPARATION_SCHEDULED',
-                                                   key=row['key'], configurations={})
+                record = records.setdefault(cid, {})
+                record.update(status='PREPARATION_SCHEDULED', key=row['key'])
+                record.setdefault('configurations', {})
                 atomic_write(index, records)
                 occupied.add(family(row))
                 active[pool.submit(acquire, row)] = row
@@ -629,8 +665,9 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             reason = status.get('reason')
             if reason is None and status.get('remaining_needs'):
                 reason = 'PF_EVIDENCE_INCOMPLETE'
+            former = records[cid].get('configurations', {}) if cid in shortlist else {}
             records[cid].update(status=disposition,reason=reason,key=chosen['key'],method=chosen['method'],
-                                configurations={cid:entry} if entry is not None else {})
+                                configurations={cid:entry} if entry is not None else former)
             for field in ('request_path', 'differing_fields', 'price_reconciliation', 'remaining_needs'):
                 if field in status:
                     records[cid][field] = status[field]

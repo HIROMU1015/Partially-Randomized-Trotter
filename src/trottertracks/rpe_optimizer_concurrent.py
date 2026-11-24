@@ -142,15 +142,147 @@ class ConcurrentExecutor(O.Executor):
         directories = (base/'jobs'/self.method for base in self.prior_run_dirs)
         paths = tuple(inventory.prior_paths(directories, name))
         fallback = None
+        retired = set()
+        cid = proposal['configuration_id']
         for marker in ('OUTCOME.json', 'LAUNCH.json'):
             for job in paths:
-                if not (job/marker).exists() or (exclude and job.resolve() in exclude):
+                if job in retired or not (job/marker).exists() or (exclude and job.resolve() in exclude):
                     continue
-                if marker == 'OUTCOME.json' and self.same_route(job, proposal['configuration_id']):
-                    return job
+                if marker == 'OUTCOME.json':
+                    if self.prior_same_route(job, cid):
+                        return job
+                    if self._ended_incompatible_prior(job, proposal):
+                        retired.add(job)
+                        continue
                 if fallback is None:
                     fallback = job
         return fallback
+
+    @staticmethod
+    def _same_fixed_data(left, right, reader, compared, *, df_signal=False):
+        if type(left) is not type(right):
+            return False
+        if isinstance(left, dict):
+            if df_signal and left.get('status') == right.get('status'):
+                if left.get('status') == 'ALL13_PHYSICAL_MEANS_NUMERICALLY_CHECKED_RMSE_UNQUALIFIED':
+                    # The raw carrier denotes the publication containing the
+                    # per-round source records. Compare every referenced round.
+                    if not all(isinstance(packet.get('raw_result_carrier'), str)
+                               and len(packet['means']) == 13 and all(
+                                   row['source']['commit'] == packet['raw_result_carrier']
+                                   and row['normalization']['source'] == row['source'] for row in packet['means'])
+                               for packet in (left, right)):
+                        return False
+                    left, right = ({k: v for k, v in obj.items() if k != 'raw_result_carrier'} for obj in (left, right))
+                elif (left.get('status') == 'LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED'
+                      and all({'B_identity', 'B_law_binding', 'signal', 'numerical'} <= obj.keys()
+                              for obj in (left, right))):
+                    # Rebinding and normalizer revision are provenance. All
+                    # numeric fields and their physical identities still match.
+                    left, right = ({k: v for k, v in obj.items() if k not in ('reuse', 'normalizer_revision')}
+                                   for obj in (left, right))
+            if left.keys() != right.keys():
+                return False
+            if {'commit', 'path'} <= left.keys() and left.keys() <= {'commit', 'path', 'selector'}:
+                pair = (json.dumps(left, sort_keys=True), json.dumps(right, sort_keys=True))
+                if pair[0] == pair[1] or pair in compared:
+                    return True
+                compared.add(pair)
+                return ConcurrentExecutor._same_fixed_data(reader.read(left), reader.read(right), reader, compared,
+                                                           df_signal=df_signal)
+            return all(ConcurrentExecutor._same_fixed_data(v, right[k], reader, compared, df_signal=df_signal)
+                       for k, v in left.items())
+        if isinstance(left, list):
+            return len(left) == len(right) and all(
+                ConcurrentExecutor._same_fixed_data(a, b, reader, compared, df_signal=df_signal)
+                for a, b in zip(left, right))
+        if isinstance(left, float):
+            return left.hex() == right.hex()
+        return left == right
+
+    def prior_same_route(self, job, cid, *, request=None):
+        if self.same_route(job, cid, request=request):
+            return True
+        if not getattr(self, 'exploratory_cost', False):
+            return False
+        try:
+            old = request if request is not None else O.load_json(job/'REQUEST.json')
+            route = self.route(cid) or {}
+            expected = self.expected_for(cid, route)
+            before = old['expected']
+            if (old['configuration_id'] != cid or old['optimizer_source'] != self.optimizer_source
+                    or route.get('kind') not in ('prdf_d2_common_entry', 'pauli_b_common_entry')
+                    or not before.get('binding_id') or not expected.get('binding_id')
+                    or not expected.get('total_configuration_id')
+                    or {k: v for k, v in before.items() if k != 'binding_id'}
+                       != {k: v for k, v in expected.items() if k != 'binding_id'}):
+                return False
+            receipt = O.load_json(job/'PROCESS_RETURN.json')
+            if (old['request_id'] != job.name or type(receipt['returncode']) is not int
+                    or receipt['returncode'] != 0 or receipt.get('signal') is not None
+                    or not (job/'LAUNCH.json').is_file()):
+                return False
+            older = self.prior_route_fields(old['route'], cid)
+            newer = self.prior_route_fields(route, cid)
+            for data, identity in ((older, before), (newer, expected)):
+                if data['entry']['binding_id'] != identity['binding_id']:
+                    return False
+                data['entry'] = {k: v for k, v in data['entry'].items() if k != 'binding_id'}
+            key = json.dumps([older, newer], sort_keys=True)
+            inventory = self.prior_history_inventory
+            with inventory.lock:
+                observed = inventory.route_equivalence.get(key)
+            if observed is not None:
+                return observed
+            same = self._same_fixed_data(older, newer, O.Reader(self.root), set(),
+                                         df_signal=route['kind'] == 'prdf_d2_common_entry')
+            with inventory.lock:
+                inventory.route_equivalence[key] = same
+            return same
+        except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
+            return False
+
+    def ingest_prior(self, job, proposal):
+        cid = proposal['configuration_id']
+        if self.same_route(job, cid):
+            return super().ingest_prior(job, proposal)
+        if not self.prior_same_route(job, cid):
+            return dict(status='UNKNOWN', reason='PRIOR_FIXED_INPUT_DIFFERS', calls=0)
+        old = O.load_json(job/'REQUEST.json')
+        outcome, _ = O.job_outcome(job)
+        if (outcome.get('request_id') != job.name or outcome.get('route') != old['route']['kind']
+                or (outcome.get('identity') or {}).get('signal_packet') !=
+                   self.prior_route_fields(old['route'], cid)['entry']['signal_packet']):
+            return dict(status='UNKNOWN', reason='PRIOR_RESULT_INPUT_IDENTITY_DIFFERS', calls=0)
+        view = self.for_method(self.method)
+        view.expected = dict(self.expected, **{cid: old['expected']})
+        return view.ingest(job, proposal, calls=0)
+
+    def _ended_incompatible_prior(self, job, proposal):
+        # Recalculate only a different evaluation after proving the old owner
+        # finished. An explicit hold or failed/absent exit still owns its job.
+        if not getattr(self, 'exploratory_cost', False) or self.route(proposal['configuration_id']) is None:
+            return False
+        if ((job/'STOP.json').exists() or (job/'STOP').exists() or any(
+                Path(row['parent_directory']).resolve() == job.parents[2].resolve()
+                and row['method'] == self.method and row['job_id'] == job.name
+                for row in getattr(self, 'prior_q3_holds', ()))):
+            return False
+        try:
+            receipt = O.load_json(job/'PROCESS_RETURN.json')
+            request = O.load_json(job/'REQUEST.json')
+            out, _ = O.job_outcome(job)
+            if (receipt['returncode'] != 0 or receipt.get('signal') is not None
+                    or request['request_id'] != job.name or not (job/'LAUNCH.json').is_file()
+                    or request['configuration_id'] != proposal['configuration_id']
+                    or O.interleave(request['N_X'], request['N_Y']) != tuple(proposal['vector'])
+                    or out['request_id'] != job.name or out['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE')):
+                return False
+        except (OSError, ValueError, KeyError, TypeError):
+            return False
+        self.log(event='PRIOR_Q3_OWNER_FINISHED_DIFFERENT_EVALUATION', job=job,
+                 prior_job=str(job), configuration=proposal['configuration_id'])
+        return True
 
     def log(self,**event):
         job = event.get('job')
@@ -2838,7 +2970,7 @@ class DistributedExecutor(ConcurrentExecutor):
         if proposal is None:
             proposal = dict(configuration_id=request['configuration_id'], vector=O.interleave(request['N_X'], request['N_Y']),
                             cost=None if request['cost'] is None else O.frac(request['cost']), origin=request['origin'])
-        running = row['state'] != 'QUEUED'
+        running = row['state'] not in ('QUEUED', 'UNKNOWN')
         task = SimpleNamespace(view=self.for_method(method), job=job, proposal=deepcopy(proposal), rule=request['route'],
             owner=(method, proposal['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
             event=threading.Event(), enqueue=time.monotonic()-max(0, time.time()-row['enqueued_epoch']),
@@ -2849,11 +2981,11 @@ class DistributedExecutor(ConcurrentExecutor):
         if running:
             self.state.active += 1
             task.view.log(event='RESUME_RUNNING', job=job.name, host_id=row['host_id'], attempt_id=row['attempt_id'])
-        else:
+        elif row['state'] == 'QUEUED':
             self.state.reserved[method] += 1
         if row['state'] == 'UNKNOWN':
             task.error = 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED'
-            task.status = 'DONE'; task.event.set(); self.state.active -= 1
+            task.status = 'DONE'; task.event.set()
         self.state.peak_active = max(self.state.peak_active, self.state.active)
         return task
 
@@ -3138,6 +3270,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 return min(value,maximum)if value is not None and maximum is not None else value
             if not dependencies_ready.get(task.job.name, True):reason='PREPARATION_DEPENDENCY_OR_ARTIFACT_WAIT'
             elif admission_error or(admission is not None and not allowed):reason='HOST_ADMISSION_HOLD'
+            elif allowed and all(h in self.hosts and capacity(h) == 0 for h in allowed):
+                reason='ELIGIBLE_HOSTS_REPORT_ZERO_CAPACITY'
             elif s.active>=self.capacity:reason='ALL_ELIGIBLE_SLOTS_BUSY'
             elif allowed and all(h in self.hosts and capacity(h) is not None and
                     owned[h]>=capacity(h) for h in allowed):reason='ALL_ELIGIBLE_SLOTS_BUSY'
