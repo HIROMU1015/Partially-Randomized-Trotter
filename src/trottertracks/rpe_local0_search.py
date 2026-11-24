@@ -1206,6 +1206,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
         if (stop.get('reason') != 'RUNTIME_EXCEPTION' or stop.get('error_type') != fault.get('error_type')
                 or message != fault.get('message')):
             hold('the driver failure differs from its saved stop')
+        damaged_progress = False
         if kind == 'dispatch':
             projected_request = (
                 stop['error_type'] == 'KeyError' and re.fullmatch("'[0-9a-f]{64}'", message)
@@ -1215,8 +1216,14 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                 stop['error_type'] == 'AttributeError'
                 and message == "'DistributedExecutor' object has no attribute 'prior_route_fields'"
                 and 'rpe_plan_history_cache.py' in trace and 'in _context' in trace)
-            if not (projected_request or pinned_history_binding):
-                hold('the failure is outside the projected Q3 request builder or pinned history binding')
+            damaged_progress = (
+                stop['error_type'] == 'JSONDecodeError'
+                and 'in _metrics_snapshot' in trace and 'in metrics' in trace
+                and 'rpe_optimizer_concurrent.py' in trace and 'e=json.loads(line)' in trace)
+            if not (projected_request or pinned_history_binding or damaged_progress):
+                hold('the failure is outside the recoverable dispatch or metrics paths')
+            if damaged_progress and (run/'STOP_REQUESTED.json').exists():
+                hold('user STOP prevents metrics recovery')
         elif kind == 'pf_request':
             old_mismatch = (message == 'PF completion directory belongs to another selected request'
                             and 'pf_optimizer_connection.py' in trace)
@@ -1309,8 +1316,8 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
-        reattach = kind == 'pf_request' and (incomplete_recovery_index or legacy_write_scope or restored_provider
-                                             or vanished_pf_owner)
+        reattach = damaged_progress or (kind == 'pf_request'
+            and (incomplete_recovery_index or legacy_write_scope or restored_provider or vanished_pf_owner))
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
         if reattach:

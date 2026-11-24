@@ -833,6 +833,7 @@ class ConcurrentExecutor(O.Executor):
             active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.
             first=last=None
             interval_capacity=self.capacity
+            unreadable_lines = 0
             with (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
                 with self.lock:
                     end = os.fstat(progress.fileno()).st_size
@@ -840,7 +841,11 @@ class ConcurrentExecutor(O.Executor):
                 while progress.tell() < end:
                     line = progress.readline()
                     if not line.endswith(b'\n'): break
-                    e=json.loads(line)
+                    try:
+                        e = json.loads(line)
+                    except (json.JSONDecodeError, UnicodeDecodeError):
+                        unreadable_lines += 1
+                        continue  # Progress telemetry is separate from the durable queue.
                     if e.get('invocation')!=self.invocation:continue
                     if first is None:first=last=e['monotonic']
                     if e['event']=='ADOPT':adopted.add(e['job'])
@@ -872,6 +877,7 @@ class ConcurrentExecutor(O.Executor):
                 idle_slot_seconds_with_queued_candidate=idle_ready,
                 integrated_available_slot_seconds=available,
                 slot_utilization=busy/available if available else 0,
+                unreadable_progress_lines=unreadable_lines,
                 capacity_measurement='INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS',
                 speculative_adoption_fraction=s.metrics['speculative_adopted']/s.metrics['speculative_launched']if s.metrics['speculative_launched']else None,
                 memory_scope='sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted')
