@@ -150,6 +150,40 @@ class CompletionBridgeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'terminal attempt'):
                 bridge.failed_preparation_request(job, plan)
 
+    def test_legacy_df_price_recovery_pins_the_existing_kernel_before_provider_import(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            request = normalize_preparation_request(dict(route={'kind': 'preparation'},
+                original_contract={'calls': 4}, preparation=dict(stage='compile', provider='DF_CALIBRATION',
+                    source={'commit': 'fixed', 'files': {}},
+                    command=['python', '-B', '-c', C._LEGACY_DF_PRICE_BOOTSTRAP, 'runner', 'view'],
+                    outputs=['workspace/result'])))
+            job = request['request_id']
+            row = dict(request=request, request_sha256=W.digest(request), state='ACCEPTED',
+                       attempt_id='failed', host_id='assigned', method='PREPARATION:compile',
+                       completion_sha256='accepted')
+            directory = root/'jobs'/row['method']/job
+            C.put(directory/'REQUEST.json', request)
+            C.put(directory/'LAUNCH.json', dict(attempt_id='failed', host_id='assigned'))
+            C.put(directory/'PROCESS_RETURN.json', dict(returncode=2, signal=None, automatic_retry=False))
+            C.put(directory/'OUTCOME.json', dict(status='PREPARATION_FAILED', request_sha256=row['request_sha256']))
+            bridge = B.DistributedPreparationBridge(SimpleNamespace(
+                run_dir=root, store=SimpleNamespace(row=lambda _: row)), root,
+                {'df_price_openblas_coretype': 'HASWELL'})
+            plan = dict(attempt_id='failed', request_sha256=row['request_sha256'],
+                        reason='Fix the legacy loader', repair_legacy_price_loader=True)
+
+            replacement = bridge.failed_preparation_request(job, plan)
+            command = replacement['preparation']['command']
+            self.assertTrue(command[3].endswith(C._DF_PRICE_BOOTSTRAP))
+            prefix = command[3].removesuffix(C._DF_PRICE_BOOTSTRAP)
+            output = subprocess.check_output([sys.executable, '-B', '-c', prefix +
+                "import sys\nassert 'numpy' not in sys.modules\n"
+                "print(os.environ['OPENBLAS_CORETYPE'], os.environ['OPENBLAS_NUM_THREADS'])\n"], text=True)
+            self.assertEqual(output.strip(), 'HASWELL 1')
+            self.assertEqual(replacement['original_contract'], request['original_contract'])
+            self.assertEqual(request['preparation']['command'][3], C._LEGACY_DF_PRICE_BOOTSTRAP)
+
     def test_interrupted_calibration_preserves_fixed_inputs_and_only_reuses_scoped_receipts(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

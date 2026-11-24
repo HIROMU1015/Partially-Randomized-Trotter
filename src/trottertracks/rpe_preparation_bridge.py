@@ -1107,6 +1107,16 @@ class DistributedPreparationBridge:
                 raise ValueError('DF startup recovery requires a failed fixed calibration successor')
             self.bind_failed_df_startup_inputs(preparation, row, startup)
             command[3] = _DF_PRICE_STARTUP_RECOVERY_BOOTSTRAP
+        if (repair_loader or startup) and (core := self.settings.get('df_price_openblas_coretype')):
+            # Old provider CLIs predate --openblas-coretype. Fix the kernel in
+            # this child before its imports, using the run's existing policy.
+            if core not in ('HASWELL', 'NEHALEM'):
+                raise ValueError('Unsupported fixed DF price OpenBLAS core')
+            command[3] = (
+                "import os\n"
+                f"os.environ.update(OPENBLAS_CORETYPE={core!r}, OPENBLAS_NUM_THREADS='1', "
+                "OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')\n" + command[3]
+            )
         request.pop('request_id')
         preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=row['attempt_id'], reason=reason)
         return request

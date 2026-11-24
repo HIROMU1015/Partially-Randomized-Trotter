@@ -548,6 +548,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                 for key in ('attempt_id', 'request_sha256', 'reason')) for plan in plans.values()):
             raise ValueError('Preparation recalculation must identify the failed attempt and reason')
         distributed['preparation']['failed_preparation_recalculations'] = plans
+        if core := (spec.get('candidate_completion') or {}).get('df_price_openblas_coretype'):
+            distributed['preparation']['df_price_openblas_coretype'] = core
     if placements := trial.get('preparation_request_hosts'):
         if any(not job.startswith('prep-') or not hosts or any(
                 host not in distributed['preparation_profiles'] for host in hosts)
