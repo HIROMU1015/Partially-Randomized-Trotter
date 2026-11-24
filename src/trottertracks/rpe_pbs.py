@@ -1593,6 +1593,8 @@ class PbsManager:
             profile['pbs']['compute_storage_sampling'] = True
         if self.defer_q3_evidence:
             profile['pbs']['defer_q3_evidence'] = True
+        if getattr(self.executor, 'distributed', {}).get('pbs_q3_memory_backfill') is True:
+            profile['pbs']['q3_memory_backfill'] = True
         if self.offline_plan:
             raw = json.dumps(self.offline_plan, sort_keys=True, separators=(',', ':')).encode()
             sha = hashlib.sha256(raw).hexdigest()

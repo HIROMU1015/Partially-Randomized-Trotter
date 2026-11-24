@@ -474,6 +474,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         distributed['pbs_gateway_completion_workers'] = count
     if trial.get('pbs_ready_buffer') is True:
         distributed['pbs_ready_buffer'] = True
+    if trial.get('pbs_q3_memory_backfill') is True:
+        distributed['pbs_q3_memory_backfill'] = True
     if 'pbs_standby_waves' in trial:
         from trottertracks.rpe_pbs import standby_capacity
         waves = trial['pbs_standby_waves']

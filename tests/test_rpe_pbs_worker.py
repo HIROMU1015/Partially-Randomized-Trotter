@@ -67,6 +67,68 @@ class AllocationTests(unittest.TestCase):
 
 
 class SpoolTests(unittest.TestCase):
+    def test_q3_backfill_reuses_distinct_completed_samples_and_leaves_head_room(self):
+        from trottertracks import _pipeline_pbs_q3_worker as transport
+        with patch.dict(sys.modules, {'trottertracks._collection_q3_worker': transport}):
+            from trottertracks import _pipeline_pbs_worker as pipeline
+
+        gib = 1024**3
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            worker = object.__new__(pipeline.AllocationWorker)
+            worker.profile = dict(pbs={})
+            worker.memory_backfill = True
+            worker.memory_history_path = root/'Q3_MEMORY_HISTORY.json'
+            worker.memory_history, worker.memory_checked = {}, set()
+            worker.records, worker.launch_tracking = {}, set()
+            worker.slots = 1
+            worker.pbs_resources = dict(cpu_count=4, memory_bytes=9*gib)
+            worker.drain_seconds = 0
+            worker.resource_report = {}
+            worker.control = lambda: {}
+            worker.accepting = lambda: True
+            worker.remaining = lambda: 600
+            launched = []
+            worker._launch = lambda path: (launched.append(path.name), pipeline.atomic(
+                path/'WORKER_STATE.json', dict(state='TRANSFERRED')))
+
+            def job(name, shots, memory, order, *, completed=False):
+                path = root/name
+                path.mkdir()
+                request = dict(method='PR_DF', N_X=[shots], N_Y=[shots], configuration_id=name,
+                               route=dict(kind='artificial'))
+                assignment = dict(job_id=name, request=request, pbs_launch_resources=dict(
+                    cpu=2, memory_bytes=memory*gib, standby=True, order=order, seconds=1))
+                pipeline.atomic(path/'WORKER_PROFILE.json', dict(interpreter=sys.executable, dp_workers=2))
+                pipeline.atomic(path/'WORKER_STATE.json', dict(state='ASSIGNED'))
+                if completed:
+                    pipeline.atomic(path/'PROCESS_RETURN.json', dict(returncode=0, signal=None))
+                    pipeline.atomic(path/'OUTCOME.json', dict(status='INCONCLUSIVE'))
+                    pipeline.atomic(path/'OWNED_RESOURCES.json', dict(peak_rss_bytes=gib))
+                    worker._learn_q3_memory(path, assignment)
+                else:
+                    worker.records[path] = assignment
+                    worker.launch_tracking.add(path)
+                return path
+
+            job('history-one', 8, 3, 0, completed=True)
+            job('history-two', 8, 3, 0, completed=True)
+            worker.memory_history = pipeline.read(worker.memory_history_path)
+            active = job('active', 16, 3, 0)
+            pipeline.atomic(active/'WORKER_STATE.json', dict(state='UNKNOWN'))
+            head = job('head', 16, 8, 1)
+            job('unmeasured', 9, 3, 2)
+            job('fits', 8, 6, 3)
+            job('other-fit', 8, 6, 4)
+            worker.slots = 2  # One free slot behind the active reservation.
+            with patch.object(pipeline, 'resource_state', side_effect=lambda _, state: state), patch.object(pipeline, 'event'):
+                worker._launch_buffered()
+                worker._launch_buffered()
+                self.assertEqual(launched, ['fits'])
+                pipeline.atomic(active/'WORKER_STATE.json', dict(state='TRANSFERRED'))
+                worker._launch_buffered()
+                self.assertEqual(launched[:2], ['fits', head.name])
+
     def test_worker_releases_collection_slot_but_keeps_evidence_until_final_ack(self):
         from trottertracks import _pipeline_pbs_q3_worker as worker
 

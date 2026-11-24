@@ -257,6 +257,18 @@ class AllocationWorker(Worker):
         self.collection_inflight = {}
         self.next_collection_scan = 0.
         self.launch_tracking = set(self.records)
+        self.memory_backfill = self.profile['pbs'].get('q3_memory_backfill') is True
+        self.memory_history_path = self.work/'Q3_MEMORY_HISTORY.json'
+        self.memory_history = read(self.memory_history_path) if self.memory_backfill and self.memory_history_path.is_file() else {}
+        self.memory_checked = set()
+        self.backfill_head = None
+        self.backfills_left = 0
+        for attempt, assignment in (self.records.items() if self.memory_backfill else ()):
+            if (attempt/'OWNED_RESOURCES.json').is_file() and (attempt/'PROCESS_RETURN.json').is_file():
+                self._learn_q3_memory(attempt, assignment)
+        if self.memory_backfill:
+            event(self.profile, 'PBS_Q3_MEMORY_HISTORY', profiles=len(self.memory_history),
+                  calibrated=sum(len(row['jobs']) == 2 for row in self.memory_history.values()))
         self.buffer_cpu = 0
         self.next_assignment_poll = 0.
         self.offline_search = None
@@ -391,6 +403,8 @@ class AllocationWorker(Worker):
                     if process is not None and process.poll() is None:
                         continue
                 complete = state['state'] == 'COMPLETED_PENDING_TRANSFER'
+                if complete and getattr(self, 'memory_backfill', False):
+                    self._learn_q3_memory(attempt, assignment)
                 candidates.append((not complete, attempt, assignment, state))
             for incomplete, attempt, assignment, state in sorted(candidates):
                 preparation = 'preparation' in assignment['request']
@@ -685,6 +699,54 @@ class AllocationWorker(Worker):
                     'SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json',
                     'WORKER_LAUNCH.json', 'SCIENTIFIC_STARTING.json', 'PROCESS_RETURN.json')))
 
+    @staticmethod
+    def _q3_memory_key(assignment, profile):
+        request = assignment['request']
+        route = request.get('route') or {}
+        resources = assignment.get('pbs_launch_resources') or {}
+        if ('preparation' in request or not request.get('N_X') or not request.get('N_Y')
+                or not resources.get('cpu') or not profile.get('interpreter')):
+            return None
+        return digest([request['method'], request['N_X'], request['N_Y'], request.get('optimizer_source'),
+                       route.get('kind'), route.get('view_commit'), route.get('horizon_risk_source'),
+                       assignment.get('q3_evaluator'), profile['interpreter'],
+                       (profile.get('adapter_manifest') or {}).get('commit'), profile.get('dp_workers'),
+                       resources['cpu']])
+
+    def _learn_q3_memory(self, attempt, assignment):
+        if attempt in self.memory_checked or 'preparation' in assignment['request']:
+            return
+        self.memory_checked.add(attempt)
+        try:
+            receipt = read(attempt/'PROCESS_RETURN.json')
+            if receipt.get('returncode') != 0 or receipt.get('signal') is not None:
+                return
+            result = read(attempt/'OUTCOME.json')
+            if result.get('status') not in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD',
+                    'MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD', 'INCONCLUSIVE'):
+                return
+            key = self._q3_memory_key(assignment, read(attempt/'WORKER_PROFILE.json'))
+            peak = read(attempt/'OWNED_RESOURCES.json')['peak_rss_bytes']
+            if key is None or type(peak) is not int or peak <= 0:
+                return
+            row = self.memory_history.setdefault(key, {'jobs': [], 'peak_rss_bytes': 0})
+            job = assignment['job_id']
+            if job not in row['jobs'] and len(row['jobs']) < 2:
+                row['jobs'].append(job)
+            row['peak_rss_bytes'] = max(peak, row['peak_rss_bytes'])
+            atomic(self.memory_history_path, self.memory_history)
+        except (OSError, KeyError, ValueError, TypeError):
+            return  # Missing telemetry leaves the original reservation in force.
+
+    def _q3_memory_reservation(self, attempt, resources):
+        if getattr(self, 'memory_backfill', False) and self.memory_history:
+            key = self._q3_memory_key(self.records[attempt], read(attempt/'WORKER_PROFILE.json'))
+            row = self.memory_history.get(key, {})
+            if len(row.get('jobs', ())) == 2:
+                return max(1024**3, (3*row['peak_rss_bytes']+1)//2,
+                           self.profile['pbs'].get('task_memory_bytes') or 0), True
+        return resources['memory_bytes'], False
+
     def _launch_buffered(self):
         pending = []
         slots = self.slots
@@ -703,7 +765,12 @@ class AllocationWorker(Worker):
                     and resource_state(attempt, status) != 'EXITED'):
                 slots -= 1
                 cpus -= resources['cpu'] if resources else self.pbs_resources['cpu_count']
-                memory -= resources['memory_bytes'] if resources else self.pbs_resources['memory_bytes']
+                if resources and getattr(self, 'memory_backfill', False):
+                    reserved, _ = self._q3_memory_reservation(attempt, resources)
+                    sample = attempt/'OWNED_RESOURCES.json'
+                    memory -= max(reserved, read(sample).get('peak_rss_bytes', 0) if sample.is_file() else 0)
+                else:
+                    memory -= resources['memory_bytes'] if resources else self.pbs_resources['memory_bytes']
             else:
                 self.launch_tracking.discard(attempt)
         self.buffer_cpu = sum(resources['cpu'] for _, resources in pending)
@@ -715,18 +782,38 @@ class AllocationWorker(Worker):
             return
         # Non-buffered assignments retain priority. Independent buffered Q3s
         # can fill holes without waiting for the next gateway response.
-        for attempt, resources in sorted(pending, key=lambda item: (item[1]['standby'], item[1]['order'])):
+        pending.sort(key=lambda item: (item[1]['standby'], item[1]['order']))
+        blocked = None
+        if not any(attempt == getattr(self, 'backfill_head', None) for attempt, _ in pending):
+            self.backfill_head = None
+        for attempt, resources in pending:
             if stopping or self.remaining() < self.drain_seconds + resources['seconds']:
                 self._decline_before_launch(attempt)
                 self.buffer_cpu -= resources['cpu']
                 continue
-            if slots <= 0 or resources['cpu'] > cpus or resources['memory_bytes'] > memory:
+            if slots <= 0 or resources['cpu'] > cpus:
+                continue
+            request = self.records[attempt].get('request', {})
+            q3 = getattr(self, 'memory_backfill', False) and 'preparation' not in request
+            reserved, calibrated = self._q3_memory_reservation(attempt, resources)
+            if reserved > memory:
+                if q3 and blocked is None and reserved <= self.pbs_resources['memory_bytes']-1024**3:
+                    blocked = request.get('configuration_id', attempt.parent.name)
+                    if self.backfill_head != attempt:
+                        self.backfill_head, self.backfills_left = attempt, slots
+                continue
+            if blocked is not None and q3 and (not calibrated or self.backfills_left == 0
+                    or request.get('configuration_id', attempt.parent.name) == blocked):
                 continue
             self._launch(attempt)
             self.buffer_cpu -= resources['cpu']
             slots -= 1
             cpus -= resources['cpu']
-            memory -= resources['memory_bytes']
+            memory -= reserved
+            if blocked is not None and q3:
+                self.backfills_left -= 1
+                event(self.profile, 'PBS_CALIBRATED_Q3_BACKFILL', job_id=attempt.parent.name,
+                      attempt_id=attempt.name, memory_bytes=reserved, bypasses_left=self.backfills_left)
             if resources['standby']:
                 event(self.profile, 'PBS_READY_BUFFER_LAUNCH', job_id=attempt.parent.name,
                       attempt_id=attempt.name, cpu=resources['cpu'], memory_bytes=resources['memory_bytes'])
