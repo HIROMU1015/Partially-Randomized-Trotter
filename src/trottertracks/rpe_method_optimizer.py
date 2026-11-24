@@ -624,12 +624,23 @@ def _outcome_int(text):
     return _outcome_int(text[:middle]) * _ten_to(len(text) - middle) + _outcome_int(text[middle:])
 
 
-def job_outcome(job):
+_PREDECODED_OUTCOME = threading.local()
+
+
+def _outcome_metadata_int(text):
+    return int(text) if len(text) <= 3072 else None
+
+
+def job_outcome(job, *, metadata_only=False):
     """Accept separately collected evidence without overwriting the old STOP."""
+    prepared = getattr(_PREDECODED_OUTCOME, 'value', None)
+    if prepared is not None and prepared[0] == job:
+        return prepared[1]
     original=Path(job)/'OUTCOME.json';path=Path(job)/'COLLECTED_OUTCOME.json'
-    old=json.loads(original.read_text(), parse_int=_outcome_int)
+    parse_int = _outcome_metadata_int if metadata_only else _outcome_int
+    old=json.loads(original.read_text(), parse_int=parse_int)
     if path.exists() and old.get('status')=='UNKNOWN':
-        new=json.loads(path.read_text(), parse_int=_outcome_int)
+        new=json.loads(path.read_text(), parse_int=parse_int)
         gatefile=Path(job)/'COLLECT_SUPERVISION.json'
         gate=json.loads(gatefile.read_text()).get('process_exit_gate',{}) if gatefile.exists()else{}
         if (new.get('mode')=='collect' and new.get('collection_source') and
@@ -833,6 +844,7 @@ class Executor:
                     known, refused, stats = history.prior_records(self, candidates, details=False)
                 self.log(event='PRIOR_HISTORY_CACHE', hits=stats['cache_hits'],
                          scanned=stats['scanned_jobs'], validated=stats['validated_jobs'],
+                         process_decodes=stats['process_decodes'],
                          unrelated_request_hits=stats['unrelated_request_hits'],
                          context_changes=stats['context_changes'],
                          seconds=stats['wall_seconds'])
@@ -1020,8 +1032,10 @@ class Executor:
             if not all(checks.values()):
                 status, reason = 'UNKNOWN', 'IDENTITY_MISMATCH:' + ','.join(k for k, v in checks.items() if not v)
         source = 'ARTIFICIAL_JOB' if out.get('artificial') else 'NEW_Q3_JOB'
-        lower = None if out.get('MSE_lower') is None else frac(out['MSE_lower'])
-        upper = None if out.get('MSE_upper') is None else frac(out['MSE_upper'])
+        lower = out.get('MSE_lower')
+        upper = out.get('MSE_upper')
+        lower = lower if lower is None or isinstance(lower, Fraction) else frac(lower)
+        upper = upper if upper is None or isinstance(upper, Fraction) else frac(upper)
         result = dict(status=status, reason=reason, MSE_lower=lower, MSE_upper=upper, source=source, calls=calls,
                       scientific_evaluation_calls=out.get('scientific_evaluation_calls'),
                       job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None)

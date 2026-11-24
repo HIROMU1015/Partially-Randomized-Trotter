@@ -432,6 +432,41 @@ class ControllerFailures(unittest.TestCase):
         self.assertIsNone(executor.store.row(view.job_dir(waiting).name))
         self.assertEqual(executor.store.row(assignment['job_id'])['state'], 'ACCEPTED')
 
+    def test_slow_prior_lookup_does_not_block_independent_completion(self):
+        executor = self.executor()
+        self.enqueue(executor, 'owned')
+        assignment = self.poll(executor)['assignments'][0]
+        started, release, completed = threading.Event(), threading.Event(), threading.Event()
+        view = executor.for_method('PR_PAULI')
+        waiting = self.proposal('waiting')
+
+        def slow_prior(*args, **kwargs):
+            started.set()
+            if not release.wait(5):
+                raise AssertionError('Completion was blocked by prior history')
+            return None
+
+        def finish_owned():
+            executor.rpc('/v1/complete', self.completion(assignment))
+            completed.set()
+
+        with patch.object(view, 'prior_job', side_effect=slow_prior):
+            standby = threading.Thread(target=view._enqueue, args=(waiting,))
+            receiver = threading.Thread(target=finish_owned)
+            standby.start()
+            try:
+                self.assertTrue(started.wait(2))
+                receiver.start()
+                self.assertTrue(completed.wait(1))
+                Q.atomic_json(executor.run_dir/'STOP_REQUESTED.json', {'reason':'USER_REQUESTED_STOP'})
+            finally:
+                release.set()
+                standby.join(5)
+                if receiver.ident is not None:
+                    receiver.join(5)
+        self.assertIsNone(executor.store.row(view.job_dir(waiting).name))
+        self.assertEqual(executor.store.row(assignment['job_id'])['state'], 'ACCEPTED')
+
     def test_joining_host_refreshes_queued_readiness_without_blocking_poll(self):
         executor = self.executor(live_q3_readiness=True,
                                  host_eligibility=dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))

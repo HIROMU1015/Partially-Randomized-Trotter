@@ -6,9 +6,12 @@ queue or scientific API is called. A local cache is disposable and is never
 substituted for its original evidence locator or hashes.
 """
 from collections import OrderedDict, defaultdict
-from concurrent.futures import Future
+from concurrent.futures import Future, ProcessPoolExecutor
+import ast
+import multiprocessing
 from dataclasses import dataclass
 from fractions import Fraction
+from functools import lru_cache
 import hashlib
 import io
 import inspect
@@ -103,9 +106,87 @@ def _signature(job):
     return signature
 
 
+def _decode_outcome(job, signature):
+    """CPU-heavy, read-only work in a separate process; no adoption here."""
+    if hasattr(sys, 'set_int_max_str_digits'):
+        sys.set_int_max_str_digits(0)
+    if _signature(job) != signature:
+        return None
+    outcome, path = O.job_outcome(job)
+    for key in ('MSE_lower', 'MSE_upper'):
+        if outcome.get(key) is not None:
+            outcome[key] = O.frac(outcome[key])
+    if _signature(job) != signature:
+        return None
+    return _pack((outcome, path))
+
+
 def _hashes(job, signature):
     return {name: hashlib.sha256((job / name).read_bytes()).hexdigest()
             for name, value in signature if value is not None}
+
+
+def _validation_digest(path):
+    """Fingerprint validation code, not unrelated scheduling function bodies.
+
+    Keep module constants/imports and follow referenced local functions and
+    methods conservatively. Other modules (including exact parsing and Git
+    readers) retain whole-file fingerprints.
+    """
+    return _validation_digest_bytes(path.name, path.read_bytes())
+
+
+@lru_cache(maxsize=16)
+def _validation_digest_bytes(filename, raw):
+    classes = {'rpe_method_optimizer.py': {'Executor'},
+               'rpe_optimizer_concurrent.py': {'ConcurrentExecutor', 'DistributedExecutor'}}
+    if filename not in classes:
+        return hashlib.sha256(raw).hexdigest()
+    tree = ast.parse(raw)
+    funcs = (ast.FunctionDef, ast.AsyncFunctionDef)
+    roots = set(REUSE_HOOKS) | {'_same_fixed_data', 'job_outcome', 'for_method',
+                               'route_supports_configuration', 'split', 'interleave', 'load_json'}
+    definitions = defaultdict(list)
+    global_names = set()
+    selected = []
+    for node in tree.body:
+        if isinstance(node, funcs):
+            definitions[node.name].append(node)
+            global_names.add(node.name)
+        elif isinstance(node, ast.ClassDef):
+            if node.name not in classes[filename]:
+                definitions[node.name].append(node)
+                global_names.add(node.name)
+                continue
+            # Include inheritance and class-level declarations as well.
+            selected.append(ast.copy_location(ast.ClassDef(name=node.name, bases=node.bases, keywords=node.keywords,
+                                         decorator_list=node.decorator_list,
+                                         body=[n for n in node.body if not isinstance(n, funcs)]), node))
+            for member in node.body:
+                if isinstance(member, funcs):
+                    definitions[member.name].append(member)
+        else:
+            selected.append(node)
+    seen = set()
+    while roots:
+        name = roots.pop()
+        if name in seen:
+            continue
+        seen.add(name)
+        for node in definitions.get(name, ()):
+            selected.append(node)
+            for dep in ast.walk(node):
+                if isinstance(dep, ast.Name) and isinstance(dep.ctx, ast.Load) and dep.id in global_names:
+                    roots.add(dep.id)
+                elif isinstance(dep, ast.Attribute):
+                    receiver = dep.value
+                    if ((isinstance(receiver, ast.Name) and receiver.id in
+                         {'self', 'view', 'cls', 'Executor', 'ConcurrentExecutor', 'DistributedExecutor', 'O'})
+                            or (isinstance(receiver, ast.Call) and isinstance(receiver.func, ast.Name)
+                                and receiver.func.id == 'super')):
+                        roots.add(dep.attr)
+    return hashlib.sha256('\n'.join(ast.dump(n, include_attributes=False) for n in
+                                  sorted(selected, key=lambda n: n.lineno)).encode()).hexdigest()
 
 
 def _validator(executor):
@@ -134,7 +215,11 @@ def _validator(executor):
                         hashlib.sha256(scope.encode()).hexdigest() == DISTRIBUTED_UNKNOWN_SCOPE_SHA256):
                     continue
         paths.add(path)
-    return {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
+    known = {__package__ + '.rpe_method_optimizer', __package__ + '.rpe_optimizer_concurrent'}
+    standard = all(cls is object or (cls.__module__ in known and cls.__name__ in
+                   ('Executor', 'ConcurrentExecutor', 'DistributedExecutor')) for cls in type(executor).__mro__)
+    return {str(p): _validation_digest(p) if standard else hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted(paths)}
 
 
 def _validator_sources(paths):
@@ -145,7 +230,8 @@ def _validator_sources(paths):
 def _context(executor, cid):
     route = executor.route(cid) or {}
     result = dict(executor.prior_route_fields(route, cid), executor_root=str(Path(executor.root).resolve()),
-                  expected=executor.expected_for(cid, route), contract=executor.contract)
+                  expected=executor.expected_for(cid, route), contract=executor.contract,
+                  exploratory_cost=bool(getattr(executor, 'exploratory_cost', False)))
     if route.get('kind') == 'pf_b_pf6':
         result['pf_template_source'] = executor.pf_template_source(route, cid)
     return result
@@ -222,6 +308,30 @@ class HistoryInventory:
         self.decoded = OrderedDict()
         self.decoded_bytes = 0
         self.route_equivalence = {}
+        self.decode_pool = None
+
+    def decode_async(self, job, signature):
+        with self.lock:
+            if self.decode_pool is None:
+                from .rpe_q3_resources import resource_snapshot
+                resources = resource_snapshot({}, environ={})
+                cpus = max(1, int(resources['allowed_cpu_count'] or resources['machine_cpu_count'] or 1))
+                available = [resources.get(key) for key in ('remaining_group_memory_bytes',
+                                                            'machine_mem_available_bytes') if resources.get(key) is not None]
+                # Bound process import/decimal conversion memory in addition
+                # to the small per-lane lookahead window.
+                memory_workers = max(1, min(available) // (512 * 1024**2)) if available else cpus
+                # Shared by all methods and history lanes, not one pool per
+                # candidate. Leave cores available to service the queue.
+                self.decode_pool = ProcessPoolExecutor(max_workers=max(1, min(cpus-2, memory_workers)),
+                        mp_context=multiprocessing.get_context('spawn'))
+            return self.decode_pool.submit(_decode_outcome, job, signature)
+
+    def close(self):
+        with self.lock:
+            pool, self.decode_pool = self.decode_pool, None
+        if pool is not None:
+            pool.shutdown(wait=True, cancel_futures=True)
 
     def index(self, directory, history, *, stopped=None):
         version = _directory_version(directory)
@@ -402,7 +512,48 @@ class HistoryCache:
                      cache_hits=0, request_cache_hits=0, unrelated_request_hits=0,
                      parsed_jobs=0, validated_jobs=0, invalidated_jobs=0,
                      context_changes={}, current_unresolved=[], evidence=[], scientific_calls=0, collection_calls=0,
-                     indexed_out_of_scope=0, memory_hits=0, interrupted=False)
+                     indexed_out_of_scope=0, memory_hits=0, interrupted=False, process_decodes=0)
+
+        def prefetch(batch):
+            pending = {}
+            if details or inventory is None:
+                return pending
+            # Bound lookahead so several method lanes cannot fill RAM or delay
+            # Stop with thousands of pending reads. Only large cold records.
+            for job, _ in batch:
+                if stopped is not None and stopped():
+                    break
+                if held and job.resolve() in held:
+                    continue
+                signature = _signature(job)
+                if max((value[2] for name, value in signature if value is not None
+                        and name in ('OUTCOME.json', 'COLLECTED_OUTCOME.json')), default=0) < 100_000:
+                    continue
+                header = self.db.execute('SELECT signature, context FROM evidence WHERE job=?',
+                                         (str(job.resolve()),)).fetchone()
+                if header and header[0] == _json(signature) and header[1]:
+                    try:
+                        old = json.loads(header[1])
+                        same_validator = (old.get('schema') == SCHEMA and
+                                          _validator_sources(old['validator']) == _validator_sources(validator))
+                    except (ValueError, AttributeError, TypeError, KeyError):
+                        continue  # let the normal cache reader handle damaged metadata
+                    if same_validator:
+                        cid = old.get('context', {}).get('expected', {}).get('configuration_id')
+                        if cid in ready:
+                            try:
+                                if cid not in contexts:
+                                    contexts[cid] = _json(dict(schema=SCHEMA, validator=validator,
+                                                               context=_context(executor, cid)))
+                                if old['context'] == json.loads(contexts[cid])['context']:
+                                    continue  # warm outcome and current input binding
+                            except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
+                                continue  # let the canonical reader report the failure
+                try:
+                    pending[job] = (signature, inventory.decode_async(job, signature))
+                except (OSError, RuntimeError):
+                    break  # canonical serial read remains available
+            return pending
         for base in executor.prior_run_dirs:
             directory = Path(base) / 'jobs' / executor.method
             if inventory is None and not directory.exists():
@@ -423,7 +574,12 @@ class HistoryCache:
                         if (directory/name/'OUTCOME.json').is_file()]
             else:
                 jobs = [(outcome.parent, None) for outcome in sorted(directory.glob('*/OUTCOME.json'))]
-            for job, observed_request in jobs:
+            pending = {}
+            for offset, (job, observed_request) in enumerate(jobs):
+                if offset % 16 == 0:
+                    for _, future in pending.values():
+                        future.cancel()
+                    pending = prefetch(jobs[offset:offset+16])
                 if stopped is not None and stopped():
                     stats['interrupted'] = True
                     break
@@ -550,7 +706,24 @@ class HistoryCache:
                         if executor.job_dir(proposal).name != job.name or not executor.prior_same_route(job, cid, request=request):
                             refused.append(dict(job=str(job), reason='DIFFERENT_JOB_KEY_OR_ROUTE'))
                             continue
-                        record = executor.ingest_prior(job, proposal)
+                        prepared = pending.pop(job, None)
+                        decoded = None
+                        if prepared is not None and prepared[0] == signature:
+                            try:
+                                packed = prepared[1].result()
+                                if packed is not None and signature == _signature(job):
+                                    decoded = _unpack(packed)
+                                    stats['process_decodes'] += 1
+                            except Exception:
+                                # The canonical read still determines errors.
+                                decoded = None
+                        previous = getattr(O._PREDECODED_OUTCOME, 'value', None)
+                        try:
+                            if decoded is not None:
+                                O._PREDECODED_OUTCOME.value = (job, decoded)
+                            record = executor.ingest_prior(job, proposal)
+                        finally:
+                            O._PREDECODED_OUTCOME.value = previous
                         stats['validated_jobs'] += 1
                         if record['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
                             refused.append(dict(job=str(job), reason=record['status'] + ':' + str(record.get('reason'))))
@@ -580,7 +753,11 @@ class HistoryCache:
                 except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
                     refused.append(dict(job=str(job), reason='HISTORY_METADATA_ERROR:' + str(exc)))
             if stats['interrupted']:
+                for _, future in pending.values():
+                    future.cancel()
                 break
+            for _, future in pending.values():
+                future.cancel()
         flush()
         stats.update(known_records=len(known), refused_records=len(refused), wall_seconds=time.monotonic() - started)
         self.stats_by_method[executor.method] = stats

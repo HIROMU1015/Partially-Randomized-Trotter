@@ -15,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
@@ -654,7 +655,7 @@ class ManagerTests(unittest.TestCase):
             executor._ready_queue = lambda: [SimpleNamespace(job=Path(name)) for name in executor.rows]
             executor.store.artificial = lambda request: request['route']['kind'] == 'artificial'
             for name in ('covered', 'ready', 'missing_estimate'):
-                executor.rows[name] = dict(request=dict(id=name,
+                executor.rows[name] = dict(state='QUEUED', request=dict(id=name,
                     route=dict(kind='pauli' if name == 'missing_estimate' else 'artificial')),
                     eligibility=dict(eligible_host_ids=['local', 'pbs-0']))
             ready, pending, queued, covered = manager._demand()
@@ -875,6 +876,15 @@ class ManagerTests(unittest.TestCase):
             executor._offer_free = lambda *_: 1
             self.assertEqual(manager._demand(), ([], [], 1, 1))
             executor.preparation_pending['signal']['failures']['pbs-0'] = 'runtime mismatch'
+            executor.preparation_pending['signal']['failure_epochs'] = {'pbs-0': time.time()}
+            self.assertEqual(manager._demand(), ([], [], 0, 0))
+            executor._offer_free = lambda *_: 0
+            # Old failures allow a fresh preflight, not an eligible assignment.
+            executor.preparation_pending['signal']['failure_epochs']['pbs-0'] -= 61
+            self.assertEqual(manager._demand(), ([], [(['pbs-0'], request)], 1, 0))
+            executor._ready_queue = lambda: []  # not yet restored in memory
+            self.assertEqual(manager._demand(), ([], [(['pbs-0'], request)], 1, 0))
+            executor.rows['signal']['state'] = 'RUNNING'
             self.assertEqual(manager._demand(), ([], [], 0, 0))
 
     def test_mixed_methods_request_capacity_for_all_independent_preparation_checks(self):

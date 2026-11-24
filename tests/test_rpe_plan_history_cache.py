@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from trottertracks import rpe_method_optimizer as O
 from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, DistributedExecutor
-from trottertracks.rpe_plan_history_cache import HistoryCache, HistoryInventory, _unpack, _validator
+from trottertracks.rpe_plan_history_cache import HistoryCache, HistoryInventory, _unpack, _validator, _validation_digest_bytes
 
 
 class SavedHistoryDeltas(unittest.TestCase):
@@ -59,6 +59,40 @@ class SavedHistoryDeltas(unittest.TestCase):
         (job / 'OUTCOME.json').write_text('{"lower": -' + '9' * 20000 + ', "upper": ' + '9' * 20001 + '}')
         outcome, _ = O.job_outcome(job)
         self.assertEqual(outcome, dict(lower=1 - 10**20000, upper=10**20001 - 1))
+
+    def test_validation_digest_ignores_scheduler_edits_but_not_validation_helpers(self):
+        filename = 'rpe_method_optimizer.py'
+        before = b'def helper():\n    return 1\ndef dispatch():\n    return 2\nclass Executor:\n    def ingest(self):\n        return helper()\n'
+        digest = _validation_digest_bytes(filename, before)
+        self.assertEqual(digest, _validation_digest_bytes(filename, before.replace(b'return 2', b'return 3')))
+        self.assertNotEqual(digest, _validation_digest_bytes(filename, before.replace(b'return 1', b'return 3')))
+        self.assertNotEqual(digest, _validation_digest_bytes(filename, before.replace(b'return helper()', b'return 0')))
+
+        filename = 'rpe_optimizer_concurrent.py'
+        before = (ROOT/'src'/'trottertracks'/filename).read_bytes()
+        original = b"raise RuntimeError('Executor is closed')"
+        self.assertIn(original, before)
+        digest = _validation_digest_bytes(filename, before)
+        self.assertEqual(digest, _validation_digest_bytes(filename,
+                         before.replace(original, b"raise RuntimeError('Dispatch changed')")))
+        self.assertNotEqual(digest, _validation_digest_bytes(filename,
+                            before.replace(b'PRIOR_FIXED_INPUT_DIFFERS', b'PRIOR_FIXED_INPUT_DIFFERS_V2')))
+
+    def test_cold_large_outcomes_decoded_in_processes_exactly(self):
+        job = self.evidence(4)
+        path = job/'OUTCOME.json'
+        row = json.loads(path.read_text())
+        row['padding'] = 'a' * 100_000
+        path.write_text(json.dumps(row))
+        expected = self.executor.prior_records(self.candidates)
+        self.executor.prior_history_inventory = HistoryInventory()
+        self.addCleanup(self.executor.prior_history_inventory.close)
+        known, refused, stats = self.cache.prior_records(self.executor, self.candidates, details=False)
+        self.assertEqual((known, refused), expected)
+        self.assertEqual(stats['process_decodes'], 1)
+        _, _, warm = self.cache.prior_records(self.executor, self.candidates, details=False)
+        self.assertEqual(warm['process_decodes'], 0)
+        self.assertEqual(warm['cache_hits'], 1)
 
     def test_persistent_warm_results_exact_and_current_prices(self):
         self.evidence(4)

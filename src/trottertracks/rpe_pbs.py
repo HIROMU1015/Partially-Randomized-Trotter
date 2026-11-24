@@ -1479,7 +1479,24 @@ class PbsManager:
             return
 
     def _demand(self):
+        # This is advisory sizing, not reservation or assignment. Copy the
+        # mutable inputs briefly; the actual queue owner is checked at claim.
         with self.executor.state.cv:
+            preparation = {job: dict(record, failures=dict(record.get('failures', {})),
+                                     failure_epochs=dict(record.get('failure_epochs', {})))
+                           for job, record in self.executor.preparation_pending.items()}
+            observed_hosts = tuple(self.executor.hosts)
+        return self._estimate_demand(preparation, observed_hosts)
+
+    def _estimate_demand(self, preparation, observed_hosts):
+        now = time.time()
+        # A failure never grants eligibility. It merely delays another
+        # preflight, including when the retained allocation has no session yet.
+        def retry_due(record, host):
+            return (host not in record.get('failures', {}) or
+                    now - record.get('failure_epochs', {}).get(host, 0) >= 60)
+
+        def estimate():
             policy, error = self.executor._host_admission_policy()
             admission = {host: self.executor._host_admission(host, policy, error) for host in self.configured}
             hosts = [host for host, rule in admission.items() if rule['accepting'] and rule.get('max_slots') != 0]
@@ -1495,7 +1512,7 @@ class PbsManager:
             # there is no compatible free slot outside PBS.
             checks = {}
             budgets = self.executor.store.preparation_reservations()
-            for job, record in self.executor.preparation_pending.items():
+            for job, record in preparation.items():
                 request = record['request']
                 row = self.executor.store.row(job)
                 if row is not None and row['state'] not in ('QUEUED', 'CANCELLED'):
@@ -1507,7 +1524,7 @@ class PbsManager:
                         (budget not in (None, 'UNLIMITED') and budgets.get(stage, 0) >= budget)):
                     continue
                 usable = [host for host in compatible(request, None, unchecked=True)
-                          if host not in record.get('failures', {})]
+                          if retry_due(record, host)]
                 if usable:
                     checks[job] = (usable, request)
                     if needs_reservation and budget not in (None, 'UNLIMITED'):
@@ -1515,11 +1532,13 @@ class PbsManager:
             ready = []
             for task in self.executor._ready_queue():
                 row = self.executor.store.row(task.job.name)
+                if row is None or row['state'] != 'QUEUED':
+                    continue
                 usable = compatible(row['request'], row['eligibility'])
                 unchecked, _ = checks.pop(task.job.name, ([], None))
                 if usable or unchecked:
                     ready.append((task, usable, unchecked, row['request']))
-            available = {host:self.executor._offer_free(host,policy,error) for host in self.executor.hosts if host not in self.configured}
+            available = {host:self.executor._offer_free(host,policy,error) for host in observed_hosts if host not in self.configured}
             startup = self.startup_jobs()
             matched = set() if self.hold_node else self.executor._match_ready_jobs(
                 [task for task, _, _, _ in ready if task.job.name not in startup],
@@ -1528,8 +1547,13 @@ class PbsManager:
                            if usable and task.job.name not in matched]
             pending = [(unchecked, request) for task, usable, unchecked, request in ready
                        if not usable and task.job.name not in matched]
-            unreserved = [row for job,row in checks.items() if self.executor.store.row(job) is None]
+            unreserved = []
+            for job, value in checks.items():
+                row = self.executor.store.row(job)
+                if row is None or row['state'] in ('QUEUED', 'CANCELLED'):
+                    unreserved.append(value)
             return outstanding, pending + unreserved, len(ready) + len(unreserved), len(matched)
+        return estimate()
 
     def _submit(self, host, worker, demand, requests=()):
         token = uuid.uuid4().hex

@@ -271,7 +271,7 @@ class ConcurrentExecutor(O.Executor):
         try:
             receipt = O.load_json(job/'PROCESS_RETURN.json')
             request = O.load_json(job/'REQUEST.json')
-            out, _ = O.job_outcome(job)
+            out, _ = O.job_outcome(job, metadata_only=True)
             if (receipt['returncode'] != 0 or receipt.get('signal') is not None
                     or request['request_id'] != job.name or not (job/'LAUNCH.json').is_file()
                     or request['configuration_id'] != proposal['configuration_id']
@@ -381,8 +381,17 @@ class ConcurrentExecutor(O.Executor):
                 if demand:old.demand=True;s.cv.notify_all()
                 return old
             if(job/'OUTCOME.json').exists()or(job/'LAUNCH.json').exists()or(job/'STARTING.json').exists():return None
-            rule=self.route(proposal['configuration_id'])
-            if rule is None or self.prior_job(proposal) is not None:return None
+        rule=self.route(proposal['configuration_id'])
+        if rule is None or self.prior_job(proposal) is not None:return None
+        with s.cv:
+            if self._user_stop_requested():return False
+            if s.failure:raise RuntimeError('Executor persistence/start failure; no new launches: '+s.failure)
+            if proposal['configuration_id']in self.execution_holds.get(self.method,{}):return None
+            old=s.tasks.get(job)
+            if old and old.status!='CANCELLED':
+                if demand:old.demand=True;s.cv.notify_all()
+                return old
+            if(job/'OUTCOME.json').exists()or(job/'LAUNCH.json').exists()or(job/'STARTING.json').exists():return None
             cap=s.budgets.get(self.method)
             cap=None if cap in(None,'UNLIMITED')else cap
             if not s.approved or(cap is not None and s.existing.get(self.method,0)+s.reserved[self.method]>=cap):return False
@@ -423,15 +432,22 @@ class ConcurrentExecutor(O.Executor):
 
     def prefetch_standby(self, choice, proposals):
         """Reserve the demand first and retain the rest as unreserved alternatives."""
+        proposals = deque(proposals)
+        offered = tuple(proposals)
+        demand = self.job_dir(choice) if choice is not None else None
         with self.state.cv:
-            self.standby = deque(proposals)
+            self.standby = proposals
             speculative = [t for t in self.state.tasks.values() if t.view.method == self.method
                            and t.status == 'QUEUED' and not t.demand]
-            demand = self.job_dir(choice) if choice is not None else None
-            if speculative:
-                desired = {self.job_dir(p) for p in self.standby}
+        if speculative:
+            # The dispatcher may consume the deque while route lookup runs.
+            # Cancel only the original still-unstarted speculative tasks.
+            desired = {self.job_dir(p) for p in offered}
+            with self.state.cv:
                 for t in speculative:
-                    if t.job not in desired and t.job != demand:
+                    if (self.standby is proposals and t.status == 'QUEUED' and not t.demand
+                            and self.state.tasks.get(t.job) is t
+                            and t.job not in desired and t.job != demand):
                         self._cancel(t)
         if choice is not None and self._enqueue_demand(choice) is False:
             with self.state.cv:
@@ -805,6 +821,7 @@ class ConcurrentExecutor(O.Executor):
             s.monitor_stop.set()
         self.dispatcher.join();self.monitor.join()
         for t in self.waiters:t.join()
+        self.prior_history_inventory.close()
         try:self.log(event='EXECUTOR_STOP')
         finally:fcntl.flock(s.driver,fcntl.LOCK_UN);s.driver.close()
 
@@ -955,12 +972,13 @@ class DistributedExecutor(ConcurrentExecutor):
         self.preparation_pending_path = run/'distributed'/'PREPARATION_PENDING.json'
         from .rpe_preparation_artifacts import read_preparation_readiness
         self.preparation_pending = read_preparation_readiness(self.preparation_pending_path.parent)
-        # A resumed controller can recheck a pending request which never had
-        # a queue reservation. Existing attempt ownership stays in JobStore.
+        # Readiness failures are observations, not permanent host exclusions.
+        # Recheck unstarted reservations on Resume as well as unreserved work.
         saved_jobs = self.store.preparation_states(self.preparation_pending)
         for job_id, record in self.preparation_pending.items():
-            if job_id not in saved_jobs:
+            if job_id not in saved_jobs or saved_jobs[job_id][1] in ('QUEUED', 'CANCELLED'):
                 record['probe_started_epoch'] = time.time()
+                record['failure_epochs'] = {}
         self.preparation_probe_offsets = {}
         self.hosts = {}
         self.worker_contact = {}
@@ -2501,6 +2519,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 continue
             if job_id in states and states[job_id][1] not in ('QUEUED', 'CANCELLED'):
                 continue
+            if (host in record.get('failures', {}) and
+                    time.time() - record.get('failure_epochs', {}).get(host, 0) < 60):
+                continue
             candidates.append((job_id, record))
         if not candidates:
             self.preparation_probe_offsets.pop(host, None)
@@ -2518,8 +2539,10 @@ class DistributedExecutor(ConcurrentExecutor):
                     if self.preparation_pending.get(job_id) is not record:
                         continue
                     failure=str(exc)
+                    record.setdefault('failure_epochs', {}).setdefault(host, time.time())
                     if record.setdefault('failures',{}).get(host)!=failure:
                         record['failures'][host] = failure
+                        record['failure_epochs'][host] = time.time()
                         changed.add(job_id)
                     hold=self._preparation_probe_hold(record)
                     if hold is not None:self.preparation_holds[job_id]=hold
@@ -2581,6 +2604,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     if host not in decision['eligible_host_ids']:decision['eligible_host_ids'].append(host);changed=True
                     decision['host_fingerprints'][host]=current;decision['execution_profiles'][host]=selected
                     if host in record.setdefault('failures',{}):record['failures'].pop(host);changed=True
+                    record.setdefault('failure_epochs', {}).pop(host, None)
                     record['reports'][host]=fingerprint
                     decision['reasons']=[]
                     record['decision']=decision
@@ -2602,6 +2626,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 except (OSError,KeyError,ValueError,TypeError)as exc:
                     failure=str(exc);failures=record.setdefault('failures',{})
                     changed=failures.get(host)!=failure;failures[host]=failure
+                    epochs = record.setdefault('failure_epochs', {})
+                    if changed or host not in epochs or time.time() - epochs[host] >= 60:
+                        epochs[host] = time.time()
+                        modified.add(job_id)
                     if host in decision['eligible_host_ids']:
                         decision['eligible_host_ids'].remove(host);decision['host_fingerprints'].pop(host,None);decision['execution_profiles'].pop(host,None);changed=True
                     decision['reasons']=['NO_MATCHING_PREPARATION_STAGE_HOST']if not decision['eligible_host_ids']else[]
@@ -3063,15 +3091,18 @@ class DistributedExecutor(ConcurrentExecutor):
             if resolved:
                 return task
             if not row or row['state'] == 'CANCELLED':
-                excluded = (replay[0].resolve(),) if replay else ()
-                if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal, exclude=excluded) is not None:
-                    return None
-                rule = replay[1]['route'] if replay else self.route(proposal['configuration_id'])
-                if rule is None:
-                    return None
                 if not s.approved or self._budget_reserved():
                     return False
-            request = row['request'] if row else replay[1] if replay else self.request(proposal, job, rule)
+        # Prior ownership and fixed route reads can traverse large Git blobs.
+        # Do not block worker polls or outcome intake during these reads.
+        if not row or row['state'] == 'CANCELLED':
+            excluded = (replay[0].resolve(),) if replay else ()
+            if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal, exclude=excluded) is not None:
+                return None
+            rule = replay[1]['route'] if replay else self.route(proposal['configuration_id'])
+            if rule is None:
+                return None
+        request = row['request'] if row else replay[1] if replay else self.request(proposal, job, rule)
 
         options = dict(blocking=False, prefetch=True) if defer_readiness else {}
         eligibility = self._eligibility_for(request, job.name, previous=row and row['eligibility'], **options)
@@ -3084,6 +3115,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 if row['state'] == 'QUEUED':
                     return self._restore_task(row, proposal, demand)
                 raise ValueError('Scientific request changed during host readiness')
+            if (not row or row['state'] == 'CANCELLED') and (
+                    (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists()):
+                return None
             if eligibility and 'input_hashes' in eligibility:
                 # A faster host may have published before the reservation existed.
                 key = (job.name, eligibility['request_sha256'])
@@ -4017,9 +4051,10 @@ class DistributedExecutor(ConcurrentExecutor):
         if self.route(proposal['configuration_id']) is None:
             return dict(status='NO_ROUTE', calls=0)
         job = self.job_dir(proposal)
+        has_job = self.has_job(proposal)
         with self.state.cv:
             revision = getattr(self.state, 'probe_revision', 0)
-            if (not self.has_job(proposal) and not self._budget_reserved() and not self._standby_has_capacity()):
+            if (not has_job and not self._budget_reserved() and not self._standby_has_capacity()):
                 return dict(status='DISPATCH_PENDING', reason='Q3_QUEUE_WINDOW_FULL', job_id=job.name, calls=0)
         task = self._enqueue_demand(proposal)
         if task is _CHECK_PENDING or (task and not task.event.is_set()):

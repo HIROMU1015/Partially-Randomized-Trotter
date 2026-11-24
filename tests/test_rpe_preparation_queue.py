@@ -422,11 +422,11 @@ class PreparationQueue(Base.ControllerFailures):
         self.poll_host(ex,'server1')
         inspecting=threading.Event();release=threading.Event();joining=threading.Event();joined=threading.Event()
         original=ex._offer_free;results=[];errors=[]
-        def offer(host,policy,error=None):
+        def offer(host,policy,error=None,*,owned=None):
             if threading.current_thread().name=='PREPARATION_METRICS_FIXTURE':
                 inspecting.set()
                 if not release.wait(3):raise AssertionError('Fixture did not release metrics')
-            return original(host,policy,error)
+            return original(host,policy,error,owned=owned)
         ex._offer_free=offer
         def measure():
             try:results.append(ex.metrics())
@@ -540,7 +540,8 @@ class PreparationQueue(Base.ControllerFailures):
         result=O.run_method('PR_PAULI',[candidate],knowledge,ex.for_method('PR_PAULI'),
             dict(large_step_headroom='9/10',decrement_steps=[1],seed_rules=[],max_steps_per_method=2),
             Fraction(1),lambda *args:None,1,science_approved=True)
-        self.assertEqual(result['stop_reason'],'NO_FEASIBLE_POINT_IN_RANGE')
+        # Preparation is incomplete, not evidence that no feasible point exists.
+        self.assertEqual(result['stop_reason'],'HOST_ELIGIBILITY_HOLD')
         self.assertEqual(result['new_calls'],0);self.assertEqual(result['trace'],[])
         self.assertEqual(knowledge,{})
         self.assertEqual(result['held'][0]['reason'],'CANDIDATE_PREPARATION_NOT_COMPLETE')
