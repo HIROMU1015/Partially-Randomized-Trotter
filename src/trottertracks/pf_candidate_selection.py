@@ -540,8 +540,9 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
     distributed_completion = stage_executor is not None and settings.get('mode') == 'complete'
     shortlist = {c['configuration_id'] for c in context['candidates'] if c.get('prices') is None
                  and c['configuration_id'] in spec.get('exploratory_price_candidates', ())}
-    if distributed_completion and recheck_waiting:
+    if distributed_completion:
         recover_candidate_price_receipts(run, records.keys() | shortlist, stage_executor)
+    if distributed_completion and recheck_waiting:
         reconcile_received_preparation(run, records, stage_executor)
         for row in records.values():
             if (row.get('reason') == 'PF_COMPLETION_REQUEST_MISMATCH'

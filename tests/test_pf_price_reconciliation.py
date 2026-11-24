@@ -312,6 +312,27 @@ class PFPriceReconciliationTests(unittest.TestCase):
         self.assertEqual(actual['expected'], {'retained': {'binding_id': 'same'}, 'new': {'binding_id': 'new'}})
         self.assertEqual(actual['pf_evidence_registry'], received)
 
+    def test_preflight_pid_exit_retries_metadata_and_other_failures_hold_one_candidate(self):
+        from trottertracks.pf_distributed_preparation import run_preflight
+        from trottertracks.pr_candidate_completion import Held, PreparationWait
+
+        command = ['fixture-preflight']
+        exited = subprocess.CalledProcessError(1, command, stderr=(
+            b'  File "pf_price_stages.py", line 147, in active_price_jobs\n'
+            b'ProcessLookupError: [Errno 3] No such process\n'))
+        result = subprocess.CompletedProcess(command, 0)
+        with patch.object(subprocess, 'run', side_effect=[exited, result]) as call:
+            self.assertEqual(run_preflight(command), result)
+        self.assertEqual(call.call_count, 2)
+        with patch.object(subprocess, 'run', side_effect=exited):
+            with self.assertRaises(PreparationWait):
+                run_preflight(command)
+        rejected = subprocess.CalledProcessError(1, command, stderr=b'Owner proof differs')
+        with patch.object(subprocess, 'run', side_effect=rejected) as call:
+            with self.assertRaisesRegex(Held, 'Owner proof differs'):
+                run_preflight(command)
+        self.assertEqual(call.call_count, 1)
+
     def test_normal_completion_uses_saved_price_and_adopts_each_needed_stage_once(self):
         from trottertracks import pf_distributed_preparation as distributed
         from trottertracks.pf_optimizer_connection import complete_selected

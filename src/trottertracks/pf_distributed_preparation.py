@@ -21,6 +21,23 @@ def put(path,value):
 def git(root,*args):return subprocess.check_output(['git',*args],cwd=root,text=True).strip()
 
 
+def run_preflight(command, **options):
+    """Limit a failed metadata probe to its candidate and tolerate a departing PID."""
+    from .pr_candidate_completion import Held, PreparationWait
+
+    for attempt in range(2):
+        try:
+            return subprocess.run(command, check=True, stderr=subprocess.PIPE, **options)
+        except subprocess.CalledProcessError as error:
+            stderr = (error.stderr or b'').decode(errors='replace')
+            vanished = 'ProcessLookupError: [Errno 3]' in stderr and 'in active_price_jobs' in stderr
+            if vanished and attempt == 0:
+                continue
+            detail = '\n'.join(stderr.splitlines()[-8:]) or str(error)
+            failure = PreparationWait if vanished else Held
+            raise failure('PF_METADATA_PREFLIGHT_HOLD:'+detail) from error
+
+
 def selected_workspace_request(request, workspace):
     destination = workspace/'docs/research/distributed_selected_pf'
     return dict(request, output_root=str(destination), registry_file=str(destination/'REGISTRY.json'))
@@ -254,10 +271,10 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         raise ValueError('Original PF owner request changed on resume')
     registry_output = inherited_registry or request['registry_file']
     if not owner_output.exists() or not (run/'PROVIDER_SOURCE.json').exists():
-        subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
+        run_preflight([spec['pf_completion'].get('interpreter',sys.executable),'-B',
             str(metadata_root/'scripts/check_pf_preparation_owner.py'),'--provider-root',str(original),
             '--request',str(owner_input),'--output',str(owner_output),'--signal-index',str(signal_index),
-            *price_args],check=True,env=metadata_env)
+            *price_args],env=metadata_env)
     owner=read(owner_output)
     discovered = [ref for row in owner['rows'] for ref in row.get('discovered_price_receipts', ())]
     if discovered and price_args:
@@ -339,9 +356,13 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             if not phase_out.exists():
                 # Fresh interpreter: the D provider's package must not mix
                 # with the controller's already imported trottertracks.
-                subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
+                command = [spec['pf_completion'].get('interpreter',sys.executable),'-B',
                     str(metadata_root/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
-                    '--input',str(phase_in),'--output',str(phase_out)],cwd=workspace,check=True,env=metadata_env)
+                    '--input',str(phase_in),'--output',str(phase_out)]
+                if phase == 'preflight':
+                    run_preflight(command,cwd=workspace,env=metadata_env)
+                else:
+                    subprocess.run(command,cwd=workspace,check=True,env=metadata_env)
             return read(phase_out)
         source=local('preflight', **({'deferred_price_rounds': deferred} if deferred else {}))['source']
         provider_files = ['scripts/prepare_pf_candidate.py','src/trottertracks/pf_evidence_preparation.py',

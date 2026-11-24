@@ -1230,7 +1230,38 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                                          and "record['configuration_id'] == candidates[0]" in trace)
             legacy_write_scope = False
             restored_provider = False
+            vanished_pf_owner = False
             suffix = "' returned non-zero exit status 1."
+            if (stop['error_type'] == 'CalledProcessError' and 'pf_distributed_preparation.py' in trace
+                    and "source=local('preflight'" in trace and message.startswith("Command '")
+                    and message.endswith(suffix) and 'run_pf_preparation_stage.py' in message):
+                command = ast.literal_eval(message[len("Command '"):-len(suffix)])
+                arguments = launch.get('command', ())
+                selection = (json.loads(arguments[arguments.index('--schedule-resume')+1])
+                             if '--schedule-resume' in arguments else {})
+                trial = selection.get('worker_trial', {})
+                adapter = Path(command[2]).resolve()
+                provider = Path(command[command.index('--provider-root')+1]).resolve()
+                stage_input = Path(command[command.index('--input')+1]).resolve()
+                output = Path(command[command.index('--output')+1]).resolve()
+                if (selection.get('run_id') == run.name and trial.get('pf_stage_sha256')
+                        and adapter == Path(selection['root']).resolve()/'scripts/run_pf_preparation_stage.py'
+                        and hashlib.sha256(adapter.read_bytes()).hexdigest() == trial['pf_stage_sha256']
+                        and command[0] == trial.get('pf_controller_runtime', {}).get('interpreter')
+                        and output.name == 'preflight.METADATA_RESULT.json' and not output.exists()
+                        and stage_input == output.with_name('preflight.METADATA_INPUT.json')
+                        and stage_input.is_relative_to(provider/'docs/research/distributed_selected_pf')
+                        and provider.name == 'provider_workspace' and provider.is_relative_to(run.resolve())
+                        and load(stage_input)['phase'] == 'preflight'
+                        and not any(p.name.endswith(('.DISTRIBUTED.json', '.STARTED.json'))
+                                    for p in output.parent.rglob('PF_*.json'))):
+                    with (run/'DRIVER.log').open('rb') as log:
+                        log.seek(max(0, log.seek(0, os.SEEK_END) - 2 * 1024**2))
+                        tail = log.read().decode(errors='replace')
+                    vanished_pf_owner = any(
+                        str(provider/'scripts/pf_price_stages.py') in block and 'in active_price_jobs' in block
+                        and 'ProcessLookupError: [Errno 3] No such process' in block
+                        for block in tail.split('Traceback (most recent call last):'))
             if (stop['error_type'] == 'CalledProcessError' and 'pf_distributed_preparation.py' in trace
                     and message.startswith("Command '") and message.endswith(suffix)
                     and 'check_pf_preparation_owner.py' in message):
@@ -1241,7 +1272,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     hold('invalid PF launcher command in the failure record')
                 fixed = load(run/'ROUND.json')['pf_completion']
                 pinned = fixed['interpreter']
-                arguments = launch['command']
+                arguments = launch.get('command', ())
                 prior_worker = (json.loads(arguments[arguments.index('--schedule-resume')+1])['worker_trial']
                                 if '--schedule-resume' in arguments else {})
                 runtime = prior_worker.get('pf_controller_runtime', {})
@@ -1266,17 +1297,19 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                         and subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'scripts', 'src'],
                                            cwd=owner_root).returncode == 0)
             if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
-                     or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope or restored_provider)
+                     or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope or restored_provider
+                     or vanished_pf_owner)
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
-            if (incomplete_recovery_index or legacy_write_scope) and (run/'STOP_REQUESTED.json').exists():
+            if (incomplete_recovery_index or legacy_write_scope or vanished_pf_owner) and (run/'STOP_REQUESTED.json').exists():
                 hold('user STOP prevents recovery')
         elif (kind != 'ast' or stop['error_type'] != 'SystemError'
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
-        reattach = kind == 'pf_request' and (incomplete_recovery_index or legacy_write_scope or restored_provider)
+        reattach = kind == 'pf_request' and (incomplete_recovery_index or legacy_write_scope or restored_provider
+                                             or vanished_pf_owner)
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
         if reattach:
@@ -1319,7 +1352,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     if (state != 'UNKNOWN' or not attempt or saved.get('automatic_retry') is not False
                             or saved.get('resource_released') is not True):
                         hold('a queue entry still has unresolved execution or recovery', ownership_wait=True)
-    except (OSError, ValueError, KeyError, sqlite3.Error) as error:
+    except (OSError, ValueError, KeyError, IndexError, SyntaxError, TypeError, sqlite3.Error) as error:
         hold(str(error))
     return stop
 
