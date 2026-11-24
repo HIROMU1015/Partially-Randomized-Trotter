@@ -3338,7 +3338,7 @@ class DistributedExecutor(ConcurrentExecutor):
                      and self._offer_fresh(host)
                      and ((value.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs', True))
         probe_slots = max(new_slots, buffer_slots)
-        pending_challenges = self._pending_preparation_challenges(host, new_slots) if may_probe else []
+        pending_challenges = self._pending_preparation_challenges(host, probe_slots) if may_probe else []
         observed_only = value.get('observe_only') is True
         if observed_only:
             # Discovery never reserves work. Reuse the last claim's
@@ -3560,10 +3560,21 @@ class DistributedExecutor(ConcurrentExecutor):
             stale = self.hosts[host]['poll_started'] != poll_started
             admission_policy, admission_error = latest_policy, latest_error
             owned_now = self._owned_attempts()
-            unresolved = len(owned_now)
+            standby_owners = {}
+            standby_active = 0
+            for row in owned_now:
+                if row['state'] != 'ASSIGNED':
+                    continue
+                launch_fit = json.loads(row['detail']).get('pbs_launch_resources') or {}
+                if launch_fit.get('standby') is True:
+                    standby_owners[row['job_id']] = launch_fit
+                    task = s.tasks.get(self.run_dir/'jobs'/row['method']/row['job_id'])
+                    standby_active += task is not None and task.status == 'RUNNING'
+            unresolved = len(owned_now) - len(standby_owners)
+            active = s.active - standby_active
             new_slots = self._offer_free(host, admission_policy, admission_error, owned=owned_now)
             remaining = max(0, min(slots-len(assignments), new_slots,
-                self.capacity-max(s.active, unresolved)-len(reserved_for_preferred)))
+                self.capacity-max(active, unresolved)-len(reserved_for_preferred)))
             resource_pool = pool
             spare_delivery = max(0, delivery_slots-len(assignments))
             # Startable assignments keep the existing global capacity limit.
@@ -3583,14 +3594,12 @@ class DistributedExecutor(ConcurrentExecutor):
                 for owned in owned_now:
                     if owned['host_id'] == host and self._uses_pbs_task_resources(owned):
                         old = self.store.row(owned['job_id'])
-                        launch_fit = old['detail'].get('pbs_launch_resources') if old['state'] == 'ASSIGNED' else None
-                        cpu, memory = ((launch_fit['cpu'], launch_fit['memory_bytes']) if launch_fit else
-                                       resource_need(old['request'], worker['profile'], settings, host))
-                        if launch_fit and launch_fit['standby']:
-                            standby_cpu += cpu
-                            standby_memory += memory
-                        else:
-                            host_busy = True
+                        if (launch_fit := standby_owners.get(owned['job_id'])) is not None:
+                            standby_cpu += launch_fit['cpu']
+                            standby_memory += launch_fit['memory_bytes']
+                            continue
+                        cpu, memory = resource_need(old['request'], worker['profile'], settings, host)
+                        host_busy = True
                         free_cpu -= cpu
                         free_memory -= memory
             standby_claimed = 0
@@ -3630,8 +3639,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 if not rows: continue
                 row = rows[0]
                 if resource_pool is not None:
-                    free_cpu -= cpu
-                    free_memory -= memory
+                    if not standby:
+                        free_cpu -= cpu
+                        free_memory -= memory
                 # Assignment and reservation are committed before a worker
                 # receives anything. A lost HTTP response retains ownership.
                 Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],

@@ -67,6 +67,44 @@ class AllocationTests(unittest.TestCase):
 
 
 class SpoolTests(unittest.TestCase):
+    def test_worker_releases_collection_slot_but_keeps_evidence_until_final_ack(self):
+        from trottertracks import _pipeline_pbs_q3_worker as worker
+
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory)/'job'/'attempt'
+            attempt.mkdir(parents=True)
+            for name in ('OUTCOME.json', 'PROCESS_RETURN.json', 'RESULT.json'):
+                (attempt/name).write_text('{}')
+            state = worker.save_state(attempt, 'COMPLETED_PENDING_TRANSFER')
+            instance = object.__new__(worker.Worker)
+            instance.profile = dict(pbs=dict(defer_q3_evidence=True))
+            instance.reported = {}
+            instance.pbs_evidence_checks = {}
+            calls = []
+
+            def send(endpoint, payload):
+                calls.append((endpoint, payload))
+                return dict(ok=True, duplicate='pbs_evidence_status' in payload,
+                            evidence_pending='pbs_evidence_status' not in payload)
+
+            instance._reconcile = lambda *_: state
+            instance._post = send
+            assignment = dict(job_id='job', attempt_id='attempt', request_sha256='fixed',
+                              request=dict(route=dict(kind='artificial')))
+            with patch.object(worker.Storage, 'reclaim_transferred_attempt') as reclaim, \
+                 patch.object(worker, 'event'):
+                instance._service_attempt(attempt, assignment)
+                self.assertEqual(calls[0][1]['pbs_evidence'], {'RESULT.json': 2})
+                self.assertEqual(worker.read(attempt/'WORKER_STATE.json')['state'], 'COMPLETED_PENDING_TRANSFER')
+                self.assertTrue((attempt/'PBS_CORE_ACK.json').is_file())
+                reclaim.assert_not_called()
+                instance.pbs_evidence_checks.clear()  # the time for the next status poll has passed
+                instance._service_attempt(attempt, assignment)
+                self.assertTrue(calls[1][1]['pbs_evidence_status'])
+                self.assertNotIn('files', calls[1][1])
+                self.assertEqual(worker.read(attempt/'WORKER_STATE.json')['state'], 'TRANSFERRED')
+                reclaim.assert_called_once()
+
     def test_timeout_restart_reuses_the_one_acquisition_before_next_poll(self):
         with tempfile.TemporaryDirectory() as directory:
             first = P.SpoolTransport(directory, deadline=time.monotonic()+1,

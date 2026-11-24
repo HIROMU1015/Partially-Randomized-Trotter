@@ -429,10 +429,14 @@ def supervise(attempt):
 # Controller markers and assignment/profile files stay owned by their sender.
 _TRANSFER_OMIT = {'ASSIGNMENT.json', 'WORKER_PROFILE.json', 'WORKER_STATE.json', 'WORKER_PROCESS.lock',
     'SUPERVISOR_STARTED.json', 'SCIENTIFIC_STARTING.json', 'WORKER_LAUNCH.json', 'WORKER_SUPERVISOR.log',
-    'SUPERVISOR_LAUNCH.json', 'STARTING.json', 'LAUNCH.json', 'REQUEST.json'}
+    'SUPERVISOR_LAUNCH.json', 'STARTING.json', 'LAUNCH.json', 'REQUEST.json', 'PBS_CORE_ACK.json'}
 
 
-def result_bundle(attempt):
+_DEFERRED_PBS_FILES = frozenset(('RESULT.json', 'API_RETURN.json', 'COLLECTED_OUTCOME.json',
+    'FINITE_SUPPORT.json', 'PARTIAL_COARSE.json', 'PARTIAL_LEMMA.json', 'PARTIAL_TOTAL_DP.json'))
+
+
+def result_bundle(attempt, *, deferred=None):
     attempt = Path(attempt)
     assignment_path = attempt/'ASSIGNMENT.json'
     if assignment_path.exists() and Preparation.is_preparation(read(assignment_path)):
@@ -448,7 +452,10 @@ def result_bundle(attempt):
             raise ValueError('Symlink in result bundle')
         if path.is_file() and path.relative_to(attempt).parts[0] != '_dry_check' and str(path.relative_to(attempt)) not in _TRANSFER_OMIT:
             name = str(path.relative_to(attempt)); safe_relative(name)
-            files[name] = base64.b64encode(path.read_bytes()).decode('ascii')
+            if deferred is not None and path.name in _DEFERRED_PBS_FILES:
+                deferred[name] = path.stat().st_size
+            else:
+                files[name] = base64.b64encode(path.read_bytes()).decode('ascii')
     if 'OUTCOME.json' not in files or 'PROCESS_RETURN.json' not in files:
         raise ValueError('Incomplete result bundle')
     return files
@@ -474,6 +481,7 @@ class Worker:
         self.eligibility_challenges = []
         self.stop = threading.Event(); self.processes = {}; self.reported = {}; self.records = {}
         self.resource_report = None
+        self.pbs_evidence_checks = {}
         self.transferred_attempts = set()
         self.lock = (self.work / 'WORKER.lock').open('a')
         try:
@@ -720,15 +728,32 @@ class Worker:
         if transfer and state['state'] == 'COMPLETED_PENDING_TRANSFER':
             try:
                 started = time.monotonic()
-                timing_append(attempt/'TRANSPORT_TIMING.jsonl', 'WORKER_TRANSFER_START')
-                self._upload_artifacts(attempt, assignment)
-                files = result_bundle(attempt)
-                response = self._post('/v1/complete', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                    request_sha256=assignment['request_sha256'], files=files))
+                owner = {key: assignment[key] for key in ('job_id', 'attempt_id', 'request_sha256')}
+                core_ack = attempt/'PBS_CORE_ACK.json'
+                if sending_q3 and core_ack.exists():
+                    if started < self.pbs_evidence_checks.get(attempt, 0):
+                        return
+                    self.pbs_evidence_checks[attempt] = started + 2
+                    response = self._post('/v1/complete', dict(owner, pbs_evidence_status=True))
+                    transferred = read(core_ack)['bytes']
+                else:
+                    timing_append(attempt/'TRANSPORT_TIMING.jsonl', 'WORKER_TRANSFER_START')
+                    self._upload_artifacts(attempt, assignment)
+                    deferred = {} if sending_q3 and self.profile.get('pbs', {}).get('defer_q3_evidence') else None
+                    files = result_bundle(attempt, deferred=deferred)
+                    response = self._post('/v1/complete', dict(owner, files=files,
+                        **({'pbs_evidence': deferred} if deferred else {})))
+                    transferred = (sum(len(v)*3//4-v.count('=') for v in files.values())
+                                   + sum((deferred or {}).values()))
                 if response.get('ok') is not True:
                     raise ValueError('Controller refused completion')
-                timing = dict(upload_roundtrip_seconds=time.monotonic()-started,
-                              bytes=sum(len(base64.b64decode(v)) for v in files.values()))
+                if response.get('evidence_pending') is True:
+                    if not core_ack.exists():
+                        atomic(core_ack, dict(bytes=transferred))
+                        self.pbs_evidence_checks[attempt] = time.monotonic() + 2
+                    return  # Let other completions use this worker's collection lane.
+                timing = dict(upload_roundtrip_seconds=time.monotonic()-started, bytes=transferred)
+                self.pbs_evidence_checks.pop(attempt, None)
                 save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
                 Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
                 event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],

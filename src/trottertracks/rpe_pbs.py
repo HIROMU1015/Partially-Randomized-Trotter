@@ -580,6 +580,12 @@ class PbsManager:
             self.settings.update(gateway_script=dispatch['path'], gateway_sha256=dispatch['sha256'])
         self.bounded_results = bool(dispatch and dispatch.get('bounded_results'))
         self.compute_storage_sampling = bool(dispatch and dispatch.get('compute_storage_sampling'))
+        self.defer_q3_evidence = bool(dispatch and dispatch.get('defer_q3_evidence'))
+        self.evidence_directory = self.directory/'deferred-evidence'
+        self.evidence_gateway = None
+        self.evidence_pool = None
+        self.evidence_pending = None
+        self.evidence_retry_after = {}
         self.gateway = gateway or Gateway(self.settings)
         self.bulk_gateway = Gateway(self.settings) if self.bounded_results else None
         # Only gateways deployed with the selected-attempt harvest protocol
@@ -610,9 +616,10 @@ class PbsManager:
         self.completion_workers = completion_workers
         self.pending_completions = {}
         self.split_exchange = bool(dispatch and dispatch.get('split_exchange') and completion_workers)
-        if self.bounded_results and not self.split_exchange:
+        if (self.bounded_results and not self.split_exchange
+                or self.defer_q3_evidence and (not self.bounded_results or not self.selective_harvest)):
             self.lock.close()
-            raise ValueError('Bounded PBS bulk reads require a completion lane')
+            raise ValueError('PBS bounded and deferred transfers require their completion and harvest lanes')
         self.completion_gateway = Gateway(self.settings) if self.split_exchange else None
         self.completion_responses = {}
         self.completion_thread = None
@@ -880,8 +887,7 @@ class PbsManager:
             response = dict(ok=True, result=result)
         except (OSError, ValueError, KeyError) as error:
             response = dict(ok=False, error=type(error).__name__+': '+str(error))
-        atomic(saved, dict(request_sha256=identity, response=response, clock=stamp()))
-        return response
+        return self._record_rpc_response(token, request_id, identity, response)
 
     def _shared_artifact(self, profile, sha):
         cache = profile.get('artifact_cache_directory')
@@ -958,6 +964,8 @@ class PbsManager:
                     or decoded['endpoint'] not in ('/v1/complete', '/v1/artifacts/put')):
                 raise ValueError('PBS bulk request identity changed')
             request = decoded
+        if request['endpoint'] == '/v1/complete' and request['payload'].keys() & {'pbs_evidence', 'pbs_evidence_status'}:
+            return self._complete_with_deferred_evidence(token, request)
         if (not self.settings.get('stage_artifacts_over_ssh')
                 or request['endpoint'] != '/v1/artifacts/get'):
             return self._dispatch(token, request)
@@ -1005,6 +1013,110 @@ class PbsManager:
         self.log('PBS_SHARED_ARTIFACT_STAGED', token=token, sha256=sha,
                  bytes=paths[0].stat().st_size)
         return response
+
+    def _complete_with_deferred_evidence(self, token, request):
+        """Commit the exact outcome before retrieving the worker's large evidence."""
+        from .rpe_q3_coordinator import _artifact_destination
+
+        payload = request['payload']
+        job, attempt, sha = (payload[key] for key in ('job_id', 'attempt_id', 'request_sha256'))
+        host = self.state['allocations'][token]['spec']['profile']['host_id']
+        row = self.executor.store.row(job)
+        if (not self.defer_q3_evidence or not row or self.executor._preparation_request(row['request'])
+                or (host, attempt, sha) != (row['host_id'], row['attempt_id'], row['request_sha256'])
+                or payload['host_id'] != host):
+            raise ValueError('PBS deferred Q3 evidence does not match the assigned attempt')
+        marker = self.evidence_directory/job/(attempt+'.json')
+        if payload.get('pbs_evidence_status') is True:
+            if row['state'] != 'ACCEPTED':
+                raise ValueError('PBS Q3 core is not yet accepted')
+            # Only the receipt's sender and the existing JobStore own the
+            # decision. An observation must never submit or adopt another job.
+            return dict(ok=True, result=dict(ok=True, duplicate=True, evidence_pending=marker.exists()))
+        evidence = payload['pbs_evidence']
+        files = payload['files']
+        if (not isinstance(evidence, dict) or not evidence or evidence.keys() & files.keys()
+                or not {'OUTCOME.json', 'PROCESS_RETURN.json'} <= files.keys()
+                or any(type(size) is not int or size < 0 for size in evidence.values())):
+            raise ValueError('Invalid PBS deferred evidence manifest')
+        directory = self.executor.run_dir/'jobs'/row['method']/job
+        destinations = [_artifact_destination(directory, name) for name in evidence]
+        receipt = dict(token=token, host_id=host, job_id=job, attempt_id=attempt, request_sha256=sha,
+                       files=evidence)
+        if marker.exists() and read(marker) != receipt:
+            raise ValueError('PBS evidence manifest changed for the same attempt')
+        if row['state'] == 'ACCEPTED':
+            # A terminated worker may already have been recovered by ordinary
+            # harvest. The returned outcome must still match the accepted one.
+            for name in ('OUTCOME.json', 'PROCESS_RETURN.json'):
+                if (directory/name).read_bytes() != base64.b64decode(files[name], validate=True):
+                    raise ValueError('Repeated PBS completion changed its outcome or exit receipt')
+            result = dict(ok=True, duplicate=True)
+            if not marker.exists() and all(path.is_file() and path.stat().st_size == evidence[name]
+                                           for path, name in zip(destinations, evidence)):
+                final = dict(ok=True, result=dict(result, evidence_pending=False))
+                return self._record_rpc_response(token, request['request_id'], digest(request), final)
+        else:
+            result = None
+        if not marker.exists():
+            marker.parent.mkdir(parents=True, exist_ok=True)
+            atomic(marker, receipt)
+        if result is None:
+            result = self.executor.rpc('/v1/complete', {k: v for k, v in payload.items() if k != 'pbs_evidence'})
+            if not result.get('duplicate'):
+                self.log('PBS_Q3_CORE_ACCEPTED', job_id=job, attempt_id=attempt,
+                         deferred_bytes=sum(evidence.values()))
+        # A short-lived reply unlocks the worker's collection lane. The second
+        # acknowledgement allows it to clean original copies after archiving.
+        return dict(ok=True, result=dict(result, evidence_pending=marker.exists()))
+
+    def _archive_evidence(self, marker, receipt):
+        from .rpe_q3_coordinator import install_files, publish_staged_files
+
+        token, job, attempt = (receipt[key] for key in ('token', 'job_id', 'attempt_id'))
+        row = self.executor.store.row(job)
+        if (not row or row['state'] != 'ACCEPTED' or
+                any(row[key] != receipt[key] for key in ('host_id', 'attempt_id', 'request_sha256'))):
+            raise ValueError('Deferred PBS evidence has no accepted original attempt')
+        root = self.executor.run_dir
+        transfer = root/'distributed'/'transfers'/job/attempt
+        target = root/'jobs'/row['method']/job
+        for name, size in receipt['files'].items():
+            if self.stop.is_set():
+                return
+            raw = self._read_bulk(self.evidence_gateway, token, 'attempt', name, size=size,
+                                  job_id=job, attempt_id=attempt)
+            install_files(transfer, {name: base64.b64encode(raw).decode('ascii')})
+        publish_staged_files(transfer, target)
+        marker.unlink()
+        self.log('PBS_DEFERRED_EVIDENCE_COLLECTED', job_id=job, attempt_id=attempt,
+                 bytes=sum(receipt['files'].values()))
+
+    def _advance_deferred_evidence(self):
+        if self.evidence_pending is not None:
+            marker, future = self.evidence_pending
+            if not future.done():
+                return
+            self.evidence_pending = None
+            try:
+                future.result()
+            except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+                self.evidence_retry_after[marker] = time.monotonic() + self.settings.get('request_timeout_seconds', 20)
+                self.log('PBS_DEFERRED_EVIDENCE_PENDING', job_id=marker.parent.name, error=str(error))
+            else:
+                self.evidence_retry_after.pop(marker, None)
+        for marker in self.evidence_directory.glob('*/*.json'):
+            if time.monotonic() < self.evidence_retry_after.get(marker, 0):
+                continue
+            receipt = read(marker)
+            row = self.executor.store.row(receipt['job_id'])
+            if not row or row['state'] != 'ACCEPTED':
+                continue  # The ordinary worker or end-of-session harvest owns recovery.
+            if self.evidence_pool is None:
+                self.evidence_gateway = Gateway(self.settings)
+                self.evidence_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='pbs-evidence')
+            self.evidence_pending = marker, self.evidence_pool.submit(self._archive_evidence, marker, receipt)
+            return
 
     @staticmethod
     def _read_bulk(gateway, token, kind, name, *, size=None, **owner):
@@ -1364,6 +1476,8 @@ class PbsManager:
             profile['pbs']['bounded_results'] = True
         if self.compute_storage_sampling:
             profile['pbs']['compute_storage_sampling'] = True
+        if self.defer_q3_evidence:
+            profile['pbs']['defer_q3_evidence'] = True
         collection_workers = getattr(self.executor, 'distributed', {}).get('pbs_collection_workers')
         if collection_workers is not None:
             profile['pbs']['collection_workers'] = collection_workers
@@ -1427,9 +1541,21 @@ class PbsManager:
         result = self._dispatch_ready(token, request)
         elapsed = time.monotonic()-started
         if elapsed >= 1:
-            self.log('PBS_REQUEST_TIMING', token=token, endpoint=request['endpoint'],
-                     request_id=request['request_id'], seconds=elapsed, replied=result is not None)
+            self.log('PBS_REQUEST_TIMING', token=token, endpoint=request.get('endpoint', 'bulk'),
+                     request_id=request['request_id'], seconds=elapsed,
+                     replied=result is not None)
         return result
+
+    def _record_rpc_response(self, token, request_id, request_sha256, response):
+        path = self.directory/'responses'/token/(request_id+'.json')
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            previous = read(path)
+            if previous['request_sha256'] != request_sha256:
+                raise ValueError('Reused PBS RPC ID has changed content')
+            return previous['response']
+        atomic(path, dict(request_sha256=request_sha256, response=response, clock=stamp()))
+        return response
 
     def _collect_completed_requests(self, responses):
         for (token, request_id), (request, future) in tuple(self.pending_completions.items()):
@@ -1586,6 +1712,8 @@ class PbsManager:
         self._flush_responses()
 
     def cycle(self):
+        if self.defer_q3_evidence:
+            self._advance_deferred_evidence()
         for token, record in self.state['allocations'].items():
             if record['status'] != 'INTENT' or time.monotonic() < self.ensure_retry_after.get(token, 0):
                 continue
@@ -1878,6 +2006,11 @@ class PbsManager:
             self.completion_thread.join()
         if self.bulk_gateway is not None:
             self.bulk_gateway.close()
+        if self.evidence_pool is not None:
+            self.evidence_gateway.close()
+            self.evidence_pool.shutdown(wait=True, cancel_futures=True)
+            self.evidence_gateway.close()
+            self.evidence_pool = self.evidence_pending = None
         if self.harvest_pool is not None:
             # A read in flight may finish, but only a live manager applies its
             # result to the central ledger. Resume will recover the same owner.

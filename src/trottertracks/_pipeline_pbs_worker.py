@@ -312,6 +312,8 @@ class AllocationWorker(Worker):
             for attempt, assignment in self.records.items():
                 if attempt in self.collection_inflight or attempt in self.transferred_attempts:
                     continue
+                if now < getattr(self, 'pbs_evidence_checks', {}).get(attempt, 0):
+                    continue
                 state = read(attempt/'WORKER_STATE.json')
                 if state['state'] == 'ASSIGNED' and assignment.get('pbs_launch_resources'):
                     continue

@@ -159,6 +159,11 @@ def main():
         policy = dict(profile['storage_limit'], sample_path=str(sample))
 
         def sample_storage():
+            # On the PBS Linux nodes nice applies to this background thread.
+            try:
+                os.nice(5)
+            except OSError:
+                pass
             while not stop_sampling.is_set():
                 original_report(policy, spools=[profile['work_dir']],
                                 cache_directories=storage.prefix_caches(profile), refresh=True)

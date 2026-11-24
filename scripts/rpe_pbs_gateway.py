@@ -339,7 +339,7 @@ def admission_exit(directory, attempt, assignment, state):
 
 _PREPARATION_FILES = frozenset(('OUTCOME.json','PROCESS_RETURN.json','ARTIFACT_MANIFEST.json',
     'PREPARATION_RECEIPT.json','JOB_STAGES.jsonl','TRANSPORT_TIMING.jsonl','WORKER_COLLECT_RETURN.json'))
-_OMIT_HARVEST = frozenset(('ASSIGNMENT.json','WORKER_PROFILE.json','WORKER_STATE.json','WORKER_PROCESS.lock',
+_OMIT_HARVEST = frozenset(('ASSIGNMENT.json','WORKER_PROFILE.json','WORKER_STATE.json','WORKER_PROCESS.lock','PBS_CORE_ACK.json',
     'SUPERVISOR_STARTED.json','SCIENTIFIC_STARTING.json','WORKER_LAUNCH.json','WORKER_SUPERVISOR.log',
     'SUPERVISOR_LAUNCH.json','STARTING.json','LAUNCH.json','REQUEST.json'))
 

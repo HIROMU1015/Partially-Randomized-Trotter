@@ -760,6 +760,103 @@ class ControllerFailures(unittest.TestCase):
         self.assertTrue(executor.store.requeue_pbs_buffer(row['job_id'], row['attempt_id']))
         self.assertEqual(executor.store.row(row['job_id'])['state'], 'QUEUED')
 
+    def test_pbs_buffered_work_leaves_room_for_a_late_priority_request(self):
+        from trottertracks.rpe_pbs import GIB
+        executor = self.executor(capacity=2, pbs_ready_buffer=True)
+        executor.distributed['pbs'] = dict(workers=[dict(host_id='pbs-0', profile=dict(dp_workers=2))],
+            task_seconds=dict(q3=1), allocation_sizing=dict(q3_startup_memory_bytes_per_task=GIB))
+        view = executor.for_method('PR_PAULI')
+        for i in range(2):
+            self.enqueue(executor, f'active-{i}')
+        standby = view._enqueue(self.proposal('waiting-standby'), demand=False)
+        poll = dict(host_id='pbs-0', source_sha=self.source, slots=2, capacity=8,
+            resource_report=dict(pbs=dict(remaining_seconds=120, accepting=True, launch_fit=True, ready_buffer=True,
+                resource_pool=dict(cpu_count=8, memory_bytes=12*GIB))))
+        with patch('trottertracks.rpe_pbs.resource_need',
+                   side_effect=lambda request, *_: (2 if request['request_id'] == standby.job.name else 4, GIB)):
+            first, second, prepositioned = executor.rpc('/v1/poll', poll)['assignments']
+            self.assertTrue(prepositioned['pbs_launch_resources']['standby'])
+            for owner in (first, second):
+                executor.rpc('/v1/state', dict(host_id='pbs-0', job_id=owner['job_id'],
+                    attempt_id=owner['attempt_id'], state='RUNNING'))
+            executor.rpc('/v1/complete', dict(self.completion(first), host_id='pbs-0'))
+            priority = self.enqueue(executor, 'late-priority')
+            manager = SimpleNamespace(configured={'pbs-0': {}}, settings={}, startup_jobs=lambda **_: set(),
+                                      accepting_allocation=lambda *_: True)
+            with patch.object(executor, 'pbs_manager', manager), \
+                 patch.object(executor, '_pending_preparation_challenges', return_value=[]) as check:
+                answer = executor.rpc('/v1/poll', dict(poll, slots=1, durable_assignments=[[
+                    prepositioned['job_id'], prepositioned['attempt_id'], prepositioned['request_sha256']]]))
+                check.assert_called_once_with('pbs-0', 2)
+            fresh, = answer['assignments']
+            self.assertEqual(fresh['job_id'], priority.job.name)
+            self.assertFalse(fresh['pbs_launch_resources']['standby'])
+            self.assertEqual(executor.store.row(standby.job.name)['attempt_id'], prepositioned['attempt_id'])
+
+    def test_pbs_adopts_core_before_deferred_evidence_and_recovers_archive_after_restart(self):
+        from trottertracks.rpe_pbs import PbsManager
+        from trottertracks._pipeline_pbs_q3_worker import result_bundle
+
+        executor = self.executor(capacity=1, pbs_gateway_completion_workers=2,
+            pbs_dispatch_gateway=dict(path='/fixed/gateway', sha256='fixed', split_exchange=True,
+                selective_harvest=True, bounded_results=True, defer_q3_evidence=True))
+        settings = dict(ssh_alias='artificial', remote_root='/private/test', workers=[dict(host_id='pbs-0')])
+        self.enqueue(executor, 'archive')
+        poll = dict(host_id='pbs-0', slots=1, source_sha=self.source)
+        owner, = executor.rpc('/v1/poll', poll)['assignments']
+        attempt = Path(self.tmp.name)/'worker'
+        attempt.mkdir()
+        full = self.completion(owner)
+        for name, data in full['files'].items():
+            (attempt/name).write_bytes(base64.b64decode(data))
+        extra = attempt/'application'/'RESULT.json'
+        extra.parent.mkdir()
+        extra.write_bytes(b'artificial evidence' * 90_000)
+        deferred = {}
+        files = result_bundle(attempt, deferred=deferred)
+        self.assertEqual(files, full['files'])
+        self.assertEqual(deferred, {'application/RESULT.json': extra.stat().st_size})
+        gateway = SimpleNamespace(close=lambda: None)
+        manager = PbsManager(executor, settings, gateway=gateway)
+        try:
+            manager.state['allocations']['token'] = dict(status='F', spec=dict(profile=dict(host_id='pbs-0')))
+            payload = dict(full, host_id='pbs-0', pbs_evidence=deferred)
+            packet = dict(request_id='complete-core', endpoint='/v1/complete', payload=payload)
+            response = manager._dispatch_ready('token', packet)
+            marker = manager.evidence_directory/owner['job_id']/(owner['attempt_id']+'.json')
+            self.assertEqual(executor.store.row(owner['job_id'])['state'], 'ACCEPTED')
+            self.assertFalse(response['result']['duplicate'])
+            self.assertTrue(response['result']['evidence_pending'])
+            central = self.run/'jobs'/'PR_PAULI'/owner['job_id']
+            self.assertTrue((central/'OUTCOME.json').exists())
+            self.assertFalse((central/'application/RESULT.json').exists())
+            next_task = self.enqueue(executor, 'next-while-archiving')
+            self.assertEqual(executor.rpc('/v1/poll', poll)['assignments'][0]['job_id'], next_task.job.name)
+            manager.save()
+        finally:
+            manager.close(retain_allocation=True)
+        manager = PbsManager(executor, settings, gateway=gateway)
+        try:
+            self.assertTrue(marker.exists())
+            status = dict(request_id='complete-status', endpoint='/v1/complete',
+                          payload={key: payload[key] for key in ('job_id','attempt_id','request_sha256','host_id')})
+            status['payload']['pbs_evidence_status'] = True
+            self.assertTrue(manager._dispatch_ready('token', status)['result']['evidence_pending'])
+            with patch.object(manager, '_read_bulk', return_value=extra.read_bytes()) as read:
+                manager._advance_deferred_evidence()
+                manager.evidence_pending[1].result(timeout=3)
+                self.assertEqual(read.call_args.kwargs['attempt_id'], owner['attempt_id'])
+            final = manager._dispatch_ready('token', status)['result']
+            self.assertTrue(final['duplicate'])
+            self.assertFalse(final['evidence_pending'])
+            self.assertEqual((central/'application/RESULT.json').read_bytes(), extra.read_bytes())
+            self.assertFalse(marker.exists())
+            with executor.store._connection() as db:
+                self.assertEqual(db.execute("SELECT count(*) FROM events WHERE job_id=? AND event='ACCEPT'",
+                                           (owner['job_id'],)).fetchone()[0], 1)
+        finally:
+            manager.close(retain_allocation=True)
+
     def test_proved_unstarted_pbs_ordinary_assignment_returns_to_same_queue(self):
         executor = self.executor()
         task = self.enqueue(executor, 'before-science')
