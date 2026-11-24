@@ -212,10 +212,8 @@ def _supply_inputs(executor, payload, invoke, response):
             row['commit'] for row in payload['assignment']['input_hashes']}:
         raise ValueError('Worker Git input inventory is outside the fixed Q3 assignment')
     root = executor.computation_root
-    objects = set(subprocess.check_output(['git', 'rev-list', '--objects', '--no-object-names',
-                                          *sorted(commits), '--not', *sorted(anchors)], cwd=root, text=True).split())
-    # Sparse worker stores can lack trees or blobs shared with an anchor.
-    # Include only the fixed locators' commits and their path components.
+    # An exact Git locator needs its commit, path trees and blob. Checking
+    # the whole ancestry sends large unrelated histories to sparse workers.
     locators = []
     for row in payload['assignment']['input_hashes']:
         commit = row['commit']
@@ -223,9 +221,16 @@ def _supply_inputs(executor, payload, invoke, response):
             path = Path(row['path'])
             locators.extend([commit, commit+'^{tree}',
                              *(commit+':'+p.as_posix() for p in (*path.parents, path) if p != Path('.'))])
-    if locators:
-        objects.update(subprocess.check_output(['git', 'rev-parse', *locators], cwd=root, text=True).split())
-    inventory = invoke(dict(payload, input_objects=sorted(objects)))
+    started = time.monotonic()
+    objects = set(subprocess.check_output(['git', 'rev-parse', *locators], cwd=root, text=True).split())
+    timing = dict(locator_seconds=time.monotonic()-started, offered_objects=len(objects))
+    started = time.monotonic()
+    try:
+        inventory = invoke(dict(payload, input_objects=sorted(objects)))
+    except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+        return dict(status='HOLD', reason='Q3 input inventory: '+str(error)[-1500:],
+                    input_transfer=dict(timing, inventory_seconds=time.monotonic()-started))
+    timing['inventory_seconds'] = time.monotonic()-started
     if inventory['status'] != 'NEEDS_Q3_INPUT_OBJECTS':
         return inventory
     needed = sorted({oid for row in inventory['repositories'] for oid in row['objects']})
@@ -233,11 +238,17 @@ def _supply_inputs(executor, payload, invoke, response):
         return dict(status='HOLD', reason='Q3 input locator missing despite available Git objects')
     if not set(needed) <= set(objects):
         raise ValueError('Worker requested objects outside the fixed Q3 input delta')
+    started = time.monotonic()
     content = subprocess.check_output(['git', 'pack-objects', '--stdout', '--window=0'], cwd=root,
                                       input=('\n'.join(needed)+'\n').encode())
     sha256 = hashlib.sha256(content).hexdigest()
-    result = invoke(dict(payload, input_pack=base64.b64encode(content).decode(), input_pack_sha256=sha256))
-    return dict(result, input_transfer=dict(objects=len(needed), bytes=len(content), sha256=sha256))
+    timing.update(objects=len(needed), bytes=len(content), sha256=sha256, pack_seconds=time.monotonic()-started)
+    started = time.monotonic()
+    try:
+        result = invoke(dict(payload, input_pack=base64.b64encode(content).decode(), input_pack_sha256=sha256))
+    except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+        result = dict(status='HOLD', reason='Q3 input delivery and check: '+str(error)[-1500:])
+    return dict(result, input_transfer=dict(timing, delivery_check_seconds=time.monotonic()-started))
 
 
 def controller_input_hashes(executor, request):

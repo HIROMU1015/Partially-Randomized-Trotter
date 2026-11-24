@@ -34,6 +34,28 @@ spec.loader.exec_module(W)
 
 
 class StorageSampleTests(unittest.TestCase):
+    def test_slow_compute_scan_respects_headroom_and_does_not_change_byte_limit(self):
+        from trottertracks import rpe_worker_storage as storage
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = dict(limit_bytes=50*P.GIB, roots=[directory], sample_path=str(root/'sample.json'))
+            with patch.object(storage, '_used_bytes', return_value=42*P.GIB) as measure:
+                report = storage.report(policy, du_timeout=W.COMPUTE_DU_TIMEOUT)
+                self.assertTrue(report['accepting_new_jobs'])
+                measure.assert_called_once_with([directory], timeout=W.COMPUTE_DU_TIMEOUT)
+            sample = Path(policy['sample_path'])
+            facts = json.loads(sample.read_bytes())
+            facts.update(sampled_epoch=100.)
+            facts['report']['measurement_seconds'] = 45.
+            P.atomic(sample, facts)
+            observer = W.GatewayStorage(sample, max_age=10, local_clock=True)
+            with patch.object(W.time, 'time', return_value=144.):
+                self.assertTrue(observer.report(policy)['accepting_new_jobs'])
+                facts['report']['used_bytes'] = 49*P.GIB
+                P.atomic(sample, facts)
+                self.assertFalse(observer.report(policy)['accepting_new_jobs'])
+
     def test_compute_worker_uses_first_fresh_sample_and_rejects_stale_sample(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)/'sample.json'

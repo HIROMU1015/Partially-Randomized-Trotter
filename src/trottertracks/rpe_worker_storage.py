@@ -127,7 +127,7 @@ def prefix_caches(profile):
                                if p.get('prefix_cache_directory')))
 
 
-def _used_bytes(roots):
+def _used_bytes(roots, *, timeout=10):
     existing = set()
     for path in roots:
         try:
@@ -144,7 +144,7 @@ def _used_bytes(roots):
         return 0
     output = subprocess.check_output(
         ['du', '--summarize', '--total', '--block-size=1', '--', *map(str, distinct)],
-        text=True, stderr=subprocess.PIPE, timeout=10)
+        text=True, stderr=subprocess.PIPE, timeout=timeout)
     return int(output.splitlines()[-1].split('\t', 1)[0])
 
 
@@ -287,7 +287,7 @@ def acknowledge_pbs_completions(profile, spool, receipts):
     return dict(acknowledged=acknowledged, mismatch=mismatch, deferred=deferred)
 
 
-def _reclaim(spools, roots, used, target):
+def _reclaim(spools, roots, used, target, *, du_timeout=10):
     copies = sorted(_acknowledged_copies(spools, roots))
     removed = 0
     # Recheck the host total after each batch. Separate copies can share blocks.
@@ -295,7 +295,7 @@ def _reclaim(spools, roots, used, target):
         paths = [str(path) for _, _, path in copies[offset:offset+32]]
         output = subprocess.check_output(
             ['du', '--summarize', '--block-size=1', '--', *paths],
-            text=True, stderr=subprocess.PIPE, timeout=10)
+            text=True, stderr=subprocess.PIPE, timeout=du_timeout)
         sizes = {name: int(size) for size, name in (line.split('\t', 1) for line in output.splitlines())}
         remaining = used
         for filename in paths:
@@ -304,7 +304,7 @@ def _reclaim(spools, roots, used, target):
                 remaining -= sizes.get(filename, 0)
                 if remaining <= target:
                     break
-        used = _used_bytes(roots)
+        used = _used_bytes(roots, timeout=du_timeout)
         if used <= target:
             break
     return used, removed
@@ -482,7 +482,7 @@ def _exchange_pack_directories(left, right):
 
 
 def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(),
-           refresh=False, compact_metadata=False, proactive=False):
+           refresh=False, compact_metadata=False, proactive=False, du_timeout=10):
     """Report intake state and reclaim copies independently of the hard limit."""
     if policy is None:
         return None
@@ -526,7 +526,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
         compacted = 0
         if compact_metadata:
             observation = report(policy, spools=spools, pbs_runs=pbs_runs,
-                                 cache_directories=caches, refresh=refresh, proactive=proactive)
+                                 cache_directories=caches, refresh=refresh, proactive=proactive,
+                                 du_timeout=du_timeout)
             if observation.get('reclaim_pending'):
                 compacted = _compact_metadata_packs(policy, spools, pbs_runs)
             if not compacted:
@@ -537,8 +538,9 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             cached = recent()
             if cached is not None:
                 return cached
+            started = time.monotonic()
             try:
-                used = _used_bytes(roots)
+                used = _used_bytes(roots, timeout=du_timeout)
                 before, reclaimed = used, 0
                 cleanup_due = used >= start
                 if cleanup_due and (spools or pbs_runs):
@@ -546,18 +548,18 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     if pbs_runs:
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
                     # Leave room for new attempts before the next cleanup pass.
-                    used, reclaimed = _reclaim(candidates, roots, used, target)
+                    used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout)
                 if cleanup_due and used > target and (spools or pbs_runs):
                     if _share_transferred_git_packs(candidates, roots, used-target):
-                        used = _used_bytes(roots)
+                        used = _used_bytes(roots, timeout=du_timeout)
                 evicted = 0
                 if cleanup_due and used > target:
                     for path in caches:
                         cache = Path(path).resolve()
                         if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
-                            cache_size = _used_bytes([str(cache)])
+                            cache_size = _used_bytes([str(cache)], timeout=du_timeout)
                             evicted += PrefixStore(cache).reclaim(cache_size - (used-target))
-                            used = _used_bytes(roots)
+                            used = _used_bytes(roots, timeout=du_timeout)
                             if used <= target:
                                 break
                 filesystem_free = {}
@@ -568,10 +570,10 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     filesystem_free[name] = shutil.disk_usage(root).free
                 min_free = limit // 10
                 low_roots = [name for name,free in filesystem_free.items() if free < min_free]
-            except (OSError, ValueError, subprocess.SubprocessError):
+            except (OSError, ValueError, subprocess.SubprocessError) as error:
                 measured = dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False,
                                 reason='STORAGE_USAGE_UNAVAILABLE',filesystem_free_bytes=None,
-                                filesystem_min_free_bytes=limit//10)
+                                filesystem_min_free_bytes=limit//10, measurement_error=type(error).__name__)
             else:
                 measured = dict(limit_bytes=limit, used_bytes=used, accepting_new_jobs=used < limit and not low_roots,
                                 reason='STORAGE_LIMIT_REACHED' if used >= limit else 'FILESYSTEM_SPACE_LOW' if low_roots else None,
@@ -586,6 +588,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     measured['evicted_prefix_checkpoints'] = evicted
                 if compacted:
                     measured['compacted_metadata_bytes'] = compacted
+            measured['measurement_seconds'] = time.monotonic()-started
             atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
             return measured
     except OSError:

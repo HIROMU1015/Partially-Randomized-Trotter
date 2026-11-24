@@ -10,6 +10,9 @@ import time
 import zipfile
 
 
+COMPUTE_DU_TIMEOUT = 150
+
+
 class GatewayStorage:
     def __init__(self, sample, *, max_age, local_clock=False):
         self.sample = sample
@@ -32,8 +35,17 @@ class GatewayStorage:
                 return unavailable
             now = time.monotonic()
             if self.local_clock:
-                if 0 <= time.time()-generation <= self.max_age:
-                    return data['report']
+                report = data['report']
+                age = self.max_age
+                used = report.get('used_bytes')
+                measured = report.get('measurement_seconds')
+                # A cold sweep can take longer than the poll interval. Keep a
+                # measured sweep usable during the next one only with headroom.
+                if (type(used) is int and 0 <= used <= policy['limit_bytes'] * 95 // 100
+                        and type(measured) in (int, float) and 0 <= measured <= COMPUTE_DU_TIMEOUT):
+                    age += measured
+                if 0 <= time.time()-generation <= age:
+                    return report
                 return unavailable
             if self.generation is not None and generation != self.generation:
                 self.observed = now
@@ -145,12 +157,15 @@ def main():
     from trottertracks import rpe_worker_storage as storage
     sample = directory/'STORAGE_USAGE_GATEWAY.json'
     compute_sampling = profile['pbs'].get('compute_storage_sampling') is True
-    original_report = storage.report
+    sample_report = storage.report
     observer = GatewayStorage(sample, max_age=2*storage.SAMPLE_SECONDS, local_clock=compute_sampling)
     storage.report = observer.report
     os.environ.update(RPE_PBS_OPERATIONAL_LAUNCHER=str(launcher),
                       RPE_PBS_TRANSPORT_ROOT=str(script.parents[1]))
     configure_allocation_worker(profile, launcher)
+    if compute_sampling and launcher.suffix == '.pyz':
+        from trottertracks import _pbs_storage_report as sampler
+        sample_report = sampler.report
     if check_imports:
         print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path))))
         return
@@ -166,8 +181,9 @@ def main():
                 pass
             while not stop_sampling.is_set():
                 if not (directory/'OFFLINE_ACTIVE').exists():
-                    original_report(policy, spools=[profile['work_dir']],
-                                    cache_directories=storage.prefix_caches(profile), refresh=True)
+                    sample_report(policy, spools=[profile['work_dir']],
+                                  cache_directories=storage.prefix_caches(profile), refresh=True,
+                                  du_timeout=COMPUTE_DU_TIMEOUT)
                 stop_sampling.wait(storage.SAMPLE_SECONDS)
 
         threading.Thread(target=sample_storage, name='pbs-storage-sample', daemon=True).start()
