@@ -67,6 +67,7 @@ class JobStore:
                     eligibility TEXT NOT NULL DEFAULT 'null'
                 );
                 CREATE INDEX IF NOT EXISTS method_state ON jobs(method, state);
+                CREATE INDEX IF NOT EXISTS jobs_enqueue_order ON jobs(enqueued_epoch, job_id);
                 CREATE INDEX IF NOT EXISTS host_state_queue ON jobs(host_id, state, enqueued_epoch, job_id);
                 CREATE INDEX IF NOT EXISTS host_completion ON jobs(host_id, completed_epoch);
                 CREATE INDEX IF NOT EXISTS host_adoption ON jobs(host_id, adopted_epoch);
