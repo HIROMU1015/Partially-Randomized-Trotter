@@ -1015,7 +1015,9 @@ class GatewayTests(unittest.TestCase):
              patch.object(P.subprocess, 'check_output', return_value='hostname prism\n'), \
              patch.object(P.subprocess, 'run') as run:
             def connect(args, **kwargs):
-                if '-MNf' in args:
+                if 'ControlMaster=yes' in args:
+                    self.assertIn('-NTf', args)
+                    self.assertFalse(any(option.startswith('-') and 'M' in option for option in args))
                     raise subprocess.CalledProcessError(255, args)
                 return SimpleNamespace(returncode=255)
             run.side_effect = connect
@@ -1027,7 +1029,7 @@ class GatewayTests(unittest.TestCase):
                 clock.return_value += 6
             with self.assertRaisesRegex(OSError, 'reconnect backoff'):
                 P.SharedSSH('prism').command()
-        self.assertEqual(sum('-MNf' in call.args[0] for call in run.call_args_list), 2)
+        self.assertEqual(sum('ControlMaster=yes' in call.args[0] for call in run.call_args_list), 2)
 
     def test_successful_master_can_be_reused_and_paused(self):
         with tempfile.TemporaryDirectory() as directory, \

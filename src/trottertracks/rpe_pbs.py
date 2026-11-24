@@ -93,7 +93,7 @@ class SharedSSH:
         root.mkdir(mode=0o700, exist_ok=True)
         if root.is_symlink() or root.stat().st_uid != os.getuid() or root.stat().st_mode & 0o077:
             raise ValueError('PBS SSH control sockets require a private directory')
-        key = hashlib.sha256(config.encode()).hexdigest()[:16]
+        key = hashlib.sha256(('rpe-pbs-control-v2\0'+config).encode()).hexdigest()[:16]
         socket = root/key
         retry = socket.with_suffix('.retry.json')
         options = [*base, '-S', str(socket)]
@@ -108,7 +108,7 @@ class SharedSSH:
                 raise OSError('PBS SSH reconnect backoff active')
             try:
                 subprocess.run([*options, '-o', 'ControlMaster=yes', '-o', 'ControlPersist=60',
-                    '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=2', '-MNf', alias],
+                    '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=2', '-NTf', alias],
                     stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=12, check=True)
             except (OSError, subprocess.SubprocessError):
                 delay = min(60, max(5, previous.get('delay', 0)*2))
