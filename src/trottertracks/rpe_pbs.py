@@ -457,15 +457,17 @@ def packed_resources(requests, profile, settings, host, *, selected=None):
 
 
 def apply_preparation_resources(distributed, overrides):
-    """Set operational CPU and RAM reservations for named fixed preparation sources."""
+    """Set operational reservations and fill missing fixed preparation estimates."""
     pbs = distributed['pbs']
-    distributed['pbs_pinned_settings'] = deepcopy(pbs)
+    distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
     for override in overrides:
         host = override['host']
         worker = next(entry for entry in pbs['workers'] if entry['host_id'] == host)
         source, provider = override['source'], override['provider']
         slots, memory = override['task_cpu_count'], override['memory_bytes']
         interpreter = override.get('interpreter')
+        stage = override.get('stage')
+        seconds = override.get('seconds')
         if interpreter is not None and not Path(interpreter).is_absolute():
             raise ValueError('PBS preparation interpreter must be a fixed absolute path')
         if type(slots) is not int or not 0 < slots <= pbs['resources']['ncpus']:
@@ -478,17 +480,25 @@ def apply_preparation_resources(distributed, overrides):
             distributed['preparation_profiles'][host] = configured
         for profile in (worker['profile'], configured):
             matches = [rule for rule in profile['preparation_profiles']
-                       if (rule.get('source_commit'), rule.get('provider')) == (source, provider)]
+                       if (rule.get('source_commit'), rule.get('provider')) == (source, provider)
+                       and (stage is None or rule['stage'] == stage)]
             if len(matches) != 1:
                 raise ValueError('PBS preparation profile is missing or ambiguous: '+provider)
             matches[0]['profile']['task_cpu_count'] = slots
             if interpreter is not None:
                 matches[0]['profile']['interpreter'] = interpreter
-        estimates = [rule for rule in pbs['preparation_task_seconds']
-                     if (rule['source'], rule['provider']) == (source, provider)]
-        if len(estimates) != 1:
+        estimates = pbs['preparation_task_seconds']
+        matches = [rule for rule in estimates if (rule['source'], rule['provider']) == (source, provider)
+                   and (stage is None or rule['stage'] == stage)]
+        if seconds is not None:
+            if matches or stage is None or type(seconds) is not int or seconds <= 0:
+                raise ValueError('New PBS preparation walltime requires an unused stage and positive seconds')
+            estimates.append(dict(id=f'{stage}-{provider}-{source}', stage=stage, provider=provider,
+                                  source=source, seconds=seconds, memory_bytes=memory))
+        elif len(matches) == 1:
+            matches[0]['memory_bytes'] = memory
+        else:
             raise ValueError('PBS preparation walltime rule is missing or ambiguous: '+provider)
-        estimates[0]['memory_bytes'] = memory
 
 
 def apply_q3_measured_memory(distributed, estimates):

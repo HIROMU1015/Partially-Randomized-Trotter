@@ -437,8 +437,11 @@ class ManagerTests(unittest.TestCase):
             fixed = settings()
             fixed['resources'].update(ncpus=96, mem='350gb')
             profile = fixed['workers'][0]['profile']
-            profile['preparation_profiles'] = [dict(stage='compile', provider='DF_CALIBRATION',
-                source_commit='PINNED', profile=dict(task_cpu_count=2))]
+            profile['preparation_profiles'] = [
+                dict(stage='compile', provider='DF_CALIBRATION', source_commit=source,
+                     profile=dict(task_cpu_count=2))
+                for source in ('PINNED', 'NEW_ESTIMATE')
+            ]
             fixed['preparation_task_seconds'] = [dict(stage='compile', provider='DF_CALIBRATION',
                 source='PINNED', seconds=3600)]
             fixed['allocation_sizing'] = dict(per_task_resources=True, q3_startup_memory_bytes_per_task=8*P.GIB)
@@ -450,6 +453,8 @@ class ManagerTests(unittest.TestCase):
             executor.distributed = dict(pbs=deepcopy(fixed), preparation_profiles={'pbs-0': deepcopy(profile)})
             P.apply_preparation_resources(executor.distributed, [dict(host='pbs-0', provider='DF_CALIBRATION',
                 source='PINNED', task_cpu_count=6, memory_bytes=18*P.GIB, interpreter='/fixed/compiler/python')])
+            P.apply_preparation_resources(executor.distributed, [dict(host='pbs-0', provider='DF_CALIBRATION',
+                source='NEW_ESTIMATE', stage='compile', seconds=1200, task_cpu_count=4, memory_bytes=32*P.GIB)])
             manager = P.PbsManager(executor, executor.distributed['pbs'], gateway=FakeGateway())
             self.addCleanup(manager.close)
             request = dict(route=dict(kind='preparation'), preparation=dict(stage='compile',
@@ -460,6 +465,12 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(executor.distributed['preparation_profiles']['pbs-0']['preparation_profiles'],
                              effective['preparation_profiles'])
             self.assertEqual(P.packed_resources([request]*20, effective, manager.settings, 'pbs-0'), (96, 289, 16))
+            new_request = deepcopy(request)
+            new_request['preparation']['source']['commit'] = 'NEW_ESTIMATE'
+            self.assertEqual(P.task_estimate(new_request, manager.settings, 'pbs-0'), 1200)
+            self.assertIsNone(P.task_estimate(new_request, fixed, 'pbs-0'))
+            new_request['preparation']['stage'] = 'holdout'
+            self.assertIsNone(P.task_estimate(new_request, manager.settings, 'pbs-0'))
             self.assertEqual(pinned_file.read_bytes(), original)
 
     def manager(self, directory, gateway=None):
