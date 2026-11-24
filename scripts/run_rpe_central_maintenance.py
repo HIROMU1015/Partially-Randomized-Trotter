@@ -213,19 +213,24 @@ def run_pass(state, *, offline=False, resume_interrupted=False, publication_only
         current = (state/'CURRENT_TARGET.json')
         current = optional(current).get('run_id')
         if publication_only:
-            item = index.get(current)
-            if not item:
-                return dict(status='NO_CURRENT_RUN', new_scientific_calls=0)
-            run = Path(item['run_directory']).resolve(strict=True)
-            if run.name != current:
-                raise ValueError('Registered run path differs')
-            path = report_dir/(current+'.json')
-            report = optional(path)
-            result = publish_due(run, active=live_driver(run), previous=report.get('publication_check', {}))
-            if result:
-                save(path, dict(report, publication_check=result))
-            return dict(status=result.get('status', 'NO_PUBLICATION_DUE'), run_id=current,
-                        publication_check=result, new_scientific_calls=0)
+            checks = {}
+            for run_id, item in index.items():
+                try:
+                    run = Path(item['run_directory']).resolve(strict=True)
+                    if run.name != run_id:
+                        raise ValueError('Registered run path differs')
+                    active = live_driver(run)
+                    if run_id != current and not active:
+                        continue
+                    path = report_dir/(run_id+'.json')
+                    report = optional(path)
+                    result = publish_due(run, active=active, previous=report.get('publication_check', {}))
+                    if result:
+                        save(path, dict(report, publication_check=result))
+                    checks[run_id] = result
+                except (OSError, ValueError, KeyError, TypeError) as error:
+                    checks[run_id] = dict(status='PUBLICATION_PENDING', reason=error_summary(error))
+            return dict(status='CHECKED', publication_checks=checks, new_scientific_calls=0)
         runs, warnings = {}, []
         for run_id, item in index.items():
             try:

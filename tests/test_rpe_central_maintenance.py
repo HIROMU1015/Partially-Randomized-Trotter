@@ -189,9 +189,21 @@ class CentralMaintenanceTests(unittest.TestCase):
             result = run_pass(state, publication_only=True)
         process.assert_not_called()
         publish.assert_called_once_with(self.run, active=False, previous={})
-        self.assertEqual(result['status'], 'PUBLISHED')
+        self.assertEqual(result['publication_checks'][self.run.name]['status'], 'PUBLISHED')
         self.assertEqual(result['new_scientific_calls'], 0)
         self.assertEqual(json.loads(report.read_bytes())['status'], 'EXISTING_RECOVERY_RECORD')
+
+        other = state/'search-other'
+        other.mkdir()
+        write(state/'RUNS.json', {self.run.name: {'run_directory': str(self.run)},
+                                  other.name: {'run_directory': str(other)}})
+        write(state/'CURRENT_TARGET.json', {'run_id': other.name})
+        with patch('run_rpe_central_maintenance.live_driver',
+                   side_effect=lambda run: run == self.run), \
+             patch('run_rpe_central_maintenance.publish_due', return_value={}) as publish:
+            result = run_pass(state, publication_only=True)
+        self.assertEqual(set(result['publication_checks']), {self.run.name, other.name})
+        publish.assert_any_call(self.run, active=True, previous={'status': 'PUBLISHED'})
 
     def test_legacy_pbs_timeout_does_not_hide_another_allocation_result(self):
         from queue import Empty
