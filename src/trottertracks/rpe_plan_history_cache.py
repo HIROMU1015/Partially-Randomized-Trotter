@@ -5,12 +5,15 @@ authority for job identity, route matching and ingestion; no launch, collect,
 queue or scientific API is called. A local cache is disposable and is never
 substituted for its original evidence locator or hashes.
 """
+from collections import OrderedDict, defaultdict
 from concurrent.futures import Future
+from dataclasses import dataclass
 from fractions import Fraction
 import hashlib
 import io
 import inspect
 import json
+import os
 from pathlib import Path
 import pickle
 import sqlite3
@@ -24,6 +27,9 @@ import zlib
 from . import rpe_method_optimizer as O
 
 SCHEMA = 1
+# Keep recently reused exact values in the controller without retaining the
+# whole on-disk cache in RAM. The budget counts uncompressed serialization.
+DECODED_CACHE_BYTES = 64 * 1024**2
 MARKERS = ('REQUEST.json', 'OUTCOME.json', 'COLLECTED_OUTCOME.json',
            'COLLECT_SUPERVISION.json', 'CASE_INPUTS.json', 'SOURCE.json',
            'PROCESS_RETURN.json', 'LAUNCH.json', 'STARTING.json',
@@ -166,15 +172,59 @@ def _current_unresolved(job, outcome_status=None):
     return row
 
 
+def _directory_version(path):
+    try:
+        info = path.stat()
+    except FileNotFoundError:
+        return None
+    return info.st_dev, info.st_ino, info.st_mtime_ns, info.st_ctime_ns
+
+
+def _request_configuration(job):
+    try:
+        cid = json.loads((job/'REQUEST.json').read_bytes()).get('configuration_id')
+        return cid if isinstance(cid, str) else None
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+@dataclass
+class _DirectoryIndex:
+    version: tuple | None
+    names: dict
+    configurations: dict
+    pending: tuple
+
+    @classmethod
+    def build(cls, version, names):
+        configurations = defaultdict(list)
+        pending = []
+        for name, (_, cid) in names.items():
+            if cid is None:
+                pending.append(name)
+            else:
+                configurations[cid].append(name)
+        return cls(version, names, dict(configurations), tuple(pending))
+
+
 class HistoryInventory:
-    """Share only overlapping scans; matching evidence still gets fresh signatures."""
+    """Share lightweight history lookups and exact cache hits within an invocation."""
 
     def __init__(self):
         self.lock = threading.Lock()
         self.pending = {}
+        self.directories = {}
+        self.decoded = OrderedDict()
+        self.decoded_bytes = 0
 
-    def scan(self, directory):
+    def index(self, directory, history, *, stopped=None):
+        version = _directory_version(directory)
+        if version is None:
+            return None
         with self.lock:
+            current = self.directories.get(directory)
+            if current is not None and current.version == version and not current.pending:
+                return current
             future = self.pending.get(directory)
             if future is not None:
                 owner = False
@@ -182,26 +232,49 @@ class HistoryInventory:
                 future = self.pending[directory] = Future()
                 owner = True
         if not owner:
-            return future.result()
+            observed = future.result()
+            return observed if observed is None or observed.version == version else self.index(
+                directory, history, stopped=stopped)
         try:
-            jobs = []
-            for outcome in sorted(directory.glob('*/OUTCOME.json')):
-                request = outcome.parent/'REQUEST.json'
-                try:
-                    info = request.stat()
-                except FileNotFoundError:
-                    signature = None
-                else:
-                    signature = (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
-                jobs.append((outcome.parent, signature))
-            future.set_result(jobs)
-            return jobs
+            index = history.refresh_directory(directory, version, current, stopped)
         except BaseException as error:
+            with self.lock:
+                del self.pending[directory]
             future.set_exception(error)
             raise
-        finally:
+        with self.lock:
+            if index is not None:
+                self.directories[directory] = index
+            del self.pending[directory]
+        future.set_result(index)
+        return index
+
+    def prior_paths(self, directories, job_name):
+        """Use the same directory index for duplicate checks, with fresh
+        lookups on an unindexed or changed directory."""
+        for directory in directories:
             with self.lock:
-                self.pending.pop(directory, None)
+                index = self.directories.get(directory)
+            if index is None or job_name in index.names or index.version != _directory_version(directory):
+                yield directory/job_name
+
+    def load_payload(self, key, read_payload):
+        with self.lock:
+            previous = self.decoded.get(key)
+            if previous is not None:
+                self.decoded.move_to_end(key)
+                return previous[0], True
+        raw = zlib.decompress(read_payload())
+        cached = _LocalExactUnpickler(io.BytesIO(raw)).load()
+        if cached.get('record') is not None and len(raw) <= DECODED_CACHE_BYTES:
+            with self.lock:
+                if key not in self.decoded:
+                    self.decoded[key] = cached, len(raw)
+                    self.decoded_bytes += len(raw)
+                    while self.decoded_bytes > DECODED_CACHE_BYTES:
+                        _, (_, size) = self.decoded.popitem(last=False)
+                        self.decoded_bytes -= size
+        return cached, False
 
 
 class HistoryCache:
@@ -209,7 +282,7 @@ class HistoryCache:
 
     ``prior_records(executor_for_method, candidates)`` returns
     ``(known, refused, stats)`` with the same known/refused meaning as the
-    existing Executor method. Repeated calls still scan original stat markers,
+    existing Executor method. Repeated calls check the markers of matching jobs,
     refresh unresolved processes, and recalculate costs with current prices.
     """
     def __init__(self, path):
@@ -221,6 +294,11 @@ class HistoryCache:
         self.db.execute('PRAGMA journal_mode=WAL')
         self.db.execute('CREATE TABLE IF NOT EXISTS evidence '
                         '(job TEXT PRIMARY KEY, signature TEXT NOT NULL, context TEXT NOT NULL, payload BLOB NOT NULL)')
+        self.db.execute('CREATE TABLE IF NOT EXISTS history_directory '
+                        '(directory TEXT PRIMARY KEY, version TEXT NOT NULL)')
+        self.db.execute('CREATE TABLE IF NOT EXISTS history_job '
+                        '(directory TEXT NOT NULL, job TEXT NOT NULL, device INTEGER NOT NULL, inode INTEGER NOT NULL, '
+                        'configuration TEXT, PRIMARY KEY (directory, job)) WITHOUT ROWID')
         self.db.commit()
         self.stats_by_method = {}
 
@@ -233,6 +311,60 @@ class HistoryCache:
     def __exit__(self, *exc):
         self.close()
 
+    def refresh_directory(self, directory, version, current, stopped):
+        key = str(directory)
+        if current is None:
+            row = self.db.execute('SELECT version FROM history_directory WHERE directory=?', (key,)).fetchone()
+            if row is not None:
+                try:
+                    saved_version = tuple(json.loads(row[0]))
+                except (ValueError, TypeError, AttributeError):
+                    saved_version = None
+                saved = self.db.execute(
+                    'SELECT job, device, inode, configuration FROM history_job WHERE directory=?', (key,))
+                current = _DirectoryIndex.build(saved_version, {name: ((dev, ino), cid) for name, dev, ino, cid in saved})
+        previous = current.names if current is not None else {}
+        names = previous.copy()
+        modified = {}
+        if current is None or current.version != version:
+            names = {}
+            with os.scandir(directory) as entries:
+                for entry in entries:
+                    try:
+                        if not entry.is_dir():
+                            continue
+                        info = entry.stat()
+                    except FileNotFoundError:
+                        continue
+                    identity = info.st_dev, info.st_ino
+                    old_identity, cid = previous.get(entry.name, (None, None))
+                    # REQUEST identity is fixed by the job directory's key.
+                    # Existing job bytes are still checked before reuse.
+                    if identity != old_identity or cid is None:
+                        if stopped is not None and stopped():
+                            return None
+                        cid = _request_configuration(directory/entry.name)
+                    names[entry.name] = identity, cid
+                    if names[entry.name] != previous.get(entry.name):
+                        modified[entry.name] = identity, cid
+        elif current.pending:
+            for name in current.pending:
+                if stopped is not None and stopped():
+                    return None
+                cid = _request_configuration(directory/name)
+                if cid is not None:
+                    names[name] = previous[name][0], cid
+                    modified[name] = names[name]
+        if current is not None and current.version == version and not modified:
+            return current
+        with self.db:
+            self.db.executemany('DELETE FROM history_job WHERE directory=? AND job=?',
+                                ((key, name) for name in previous.keys() - names.keys()))
+            self.db.executemany('INSERT OR REPLACE INTO history_job VALUES (?, ?, ?, ?, ?)',
+                                ((key, name, *identity, cid) for name, (identity, cid) in modified.items()))
+            self.db.execute('INSERT OR REPLACE INTO history_directory VALUES (?, ?)', (key, _json(version)))
+        return _DirectoryIndex.build(version, names)
+
     def prior_records(self, executor, candidates, *, details=True):
         started = time.monotonic()
         ready = {c['configuration_id']: c for c in candidates
@@ -242,7 +374,7 @@ class HistoryCache:
         record_reuse = None if details else getattr(executor, 'record_prior_result_reuse', None)
         stopped = None if details else getattr(executor, '_user_stop_requested', None)
         request_configurations = executor.prior_request_configurations
-        inventory = getattr(executor, 'prior_history_inventory', None) if request_configurations else None
+        inventory = None if details else getattr(executor, 'prior_history_inventory', None)
         validator = _validator(executor)
         contexts, comparisons = {}, {}
         known, refused = {}, []
@@ -264,15 +396,25 @@ class HistoryCache:
                      cache_hits=0, request_cache_hits=0, unrelated_request_hits=0,
                      parsed_jobs=0, validated_jobs=0, invalidated_jobs=0,
                      context_changes={}, current_unresolved=[], evidence=[], scientific_calls=0, collection_calls=0,
-                     interrupted=False)
+                     indexed_out_of_scope=0, memory_hits=0, interrupted=False)
         for base in executor.prior_run_dirs:
             directory = Path(base) / 'jobs' / executor.method
-            if not directory.exists():
+            if inventory is None and not directory.exists():
                 continue
             if details:
                 jobs = [(p, None) for p in sorted(directory.iterdir()) if p.is_dir()]
             elif inventory is not None:
-                jobs = inventory.scan(directory)
+                index = inventory.index(directory, self, stopped=stopped)
+                if index is None:
+                    if stopped is not None and stopped():
+                        stats['interrupted'] = True
+                        break
+                    continue
+                matching = {name for cid in ready for name in index.configurations.get(cid, ())}
+                matching.update(job.name for job in held if job.parent == directory.resolve())
+                stats['indexed_out_of_scope'] += len(index.names) - len(matching & index.names.keys())
+                jobs = [(directory/name, None) for name in sorted(matching)
+                        if (directory/name/'OUTCOME.json').is_file()]
             else:
                 jobs = [(outcome.parent, None) for outcome in sorted(directory.glob('*/OUTCOME.json'))]
             for job, observed_request in jobs:
@@ -281,15 +423,15 @@ class HistoryCache:
                     break
                 request_path = job / 'REQUEST.json'
                 previous = request_configurations.get(request_path)
-                if not details and previous is not None and previous[1] not in ready and (not held or job.resolve() not in held):
-                    if inventory is None:
-                        try:
-                            info = request_path.stat()
-                        except FileNotFoundError:
-                            pass
-                        else:
-                            observed_request = (info.st_dev, info.st_ino, info.st_size,
-                                                info.st_mtime_ns, info.st_ctime_ns)
+                if (not details and inventory is None and previous is not None
+                        and previous[1] not in ready and (not held or job.resolve() not in held)):
+                    try:
+                        info = request_path.stat()
+                    except FileNotFoundError:
+                        pass
+                    else:
+                        observed_request = (info.st_dev, info.st_ino, info.st_size,
+                                            info.st_mtime_ns, info.st_ctime_ns)
                     if observed_request == previous[0]:
                         stats['scanned_jobs'] += 1
                         stats['unrelated_request_hits'] += 1
@@ -309,12 +451,29 @@ class HistoryCache:
                 request_signature = tuple(signature[0][1] or ())
                 key = str(job.resolve())
                 saved = writes.get(key)
-                if saved is None:
+                row_id = None
+                if saved is None and inventory is not None:
+                    header = self.db.execute('SELECT signature, context, rowid FROM evidence WHERE job=?', (key,)).fetchone()
+                    if header is not None:
+                        saved, row_id = header[:2], header[2]
+                elif saved is None:
                     saved = self.db.execute('SELECT signature, context, payload FROM evidence WHERE job=?', (key,)).fetchone()
                 cached = None
                 if saved is not None and saved[0] == _json(signature):
                     try:
-                        cached = _unpack(saved[2])
+                        if row_id is None:
+                            cached = _unpack(saved[2])
+                        else:
+                            def read_payload():
+                                row = self.db.execute(
+                                    'SELECT payload FROM evidence WHERE rowid=? AND job=? AND signature=? AND context=?',
+                                    (row_id, key, saved[0], saved[1])).fetchone()
+                                if row is None:
+                                    raise ValueError('History cache entry replaced')
+                                return row[0]
+                            cached, memory_hit = inventory.load_payload(
+                                (self.path, key, row_id, saved[0], saved[1]), read_payload)
+                            stats['memory_hits'] += memory_hit
                     except (ValueError, TypeError, zlib.error, KeyError, pickle.UnpicklingError, EOFError):
                         cached = None
                 if cached is not None:
@@ -392,7 +551,7 @@ class HistoryCache:
                             if details:
                                 stats['current_unresolved'].append(_current_unresolved(job, record['status']))
                             continue
-                        cached.update(record=record, outcome_status=record['status'])
+                        cached = dict(cached, record=record, outcome_status=record['status'])
                     if signature != _signature(job):
                         refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
                         continue

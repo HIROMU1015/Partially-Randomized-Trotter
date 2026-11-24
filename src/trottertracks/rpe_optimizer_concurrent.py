@@ -133,6 +133,25 @@ class ConcurrentExecutor(O.Executor):
         view.__dict__.pop('finish',None)
         return view
 
+    def prior_job(self, proposal, *, exclude=()):
+        """Find earlier owners through the same index as saved result selection."""
+        inventory = getattr(self, 'prior_history_inventory', None)
+        if inventory is None:
+            return super().prior_job(proposal, exclude=exclude)
+        name = self.job_dir(proposal).name
+        directories = (base/'jobs'/self.method for base in self.prior_run_dirs)
+        paths = tuple(inventory.prior_paths(directories, name))
+        fallback = None
+        for marker in ('OUTCOME.json', 'LAUNCH.json'):
+            for job in paths:
+                if not (job/marker).exists() or (exclude and job.resolve() in exclude):
+                    continue
+                if marker == 'OUTCOME.json' and self.same_route(job, proposal['configuration_id']):
+                    return job
+                if fallback is None:
+                    fallback = job
+        return fallback
+
     def log(self,**event):
         job = event.get('job')
         if job:

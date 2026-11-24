@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from trottertracks import rpe_method_optimizer as O
 from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, DistributedExecutor
-from trottertracks.rpe_plan_history_cache import HistoryCache, _unpack, _validator
+from trottertracks.rpe_plan_history_cache import HistoryCache, HistoryInventory, _unpack, _validator
 
 
 class SavedHistoryDeltas(unittest.TestCase):
@@ -193,6 +193,58 @@ class SavedHistoryDeltas(unittest.TestCase):
         invalid = self.cache.prior_records(self.executor, self.candidates)
         self.assertNotIn(('cfg', (4, 4)), invalid[0])
         self.assertIn('IDENTITY_MISMATCH', invalid[1][0]['reason'])
+
+    def test_index_uses_candidate_metadata_and_warm_exact_values(self):
+        job = self.evidence(4)
+        unrelated = self.evidence(5)
+        request_path = unrelated/'REQUEST.json'
+        request = json.loads(request_path.read_bytes())
+        request_path.write_text(json.dumps(dict(request, configuration_id='other')))
+        self.executor.prior_history_inventory = HistoryInventory()
+        initial, _, stats = self.cache.prior_records(self.executor, self.candidates, details=False)
+        self.assertEqual((stats['scanned_jobs'], stats['indexed_out_of_scope']), (1, 1))
+        self.assertEqual(len(initial), 1)
+        self.cache.close()
+        self.cache = HistoryCache(self.cachefile)
+        self.executor.prior_history_inventory = HistoryInventory()
+        with patch('trottertracks.rpe_plan_history_cache.os.scandir',
+                   side_effect=AssertionError('unchanged indexed directory was walked')):
+            known, _, _ = self.cache.prior_records(self.executor, self.candidates, details=False)
+            self.assertEqual(known, initial)
+            with patch('trottertracks.rpe_plan_history_cache.zlib.decompress',
+                       side_effect=AssertionError('verified value was decoded again')):
+                self.candidates[0]['prices'] = [Fraction(2), Fraction(3)]
+                known, _, stats = self.cache.prior_records(self.executor, self.candidates, details=False)
+                self.assertEqual(known[('cfg', (4, 4))]['cost'], 20)
+                self.assertEqual(stats['memory_hits'], 1)
+        self.write_outcome(job, 4, O.FAIL)
+        known, _, stats = self.cache.prior_records(self.executor, self.candidates, details=False)
+        self.assertEqual(known[('cfg', (4, 4))]['status'], O.FAIL)
+        self.assertEqual(stats['validated_jobs'], 1)
+
+    def test_index_finds_new_job_and_existing_unresolved_job_keeps_ownership(self):
+        executor = ConcurrentExecutor.__new__(ConcurrentExecutor)
+        executor.__dict__.update(self.executor.__dict__)
+        executor.prior_history_inventory = HistoryInventory()
+        pending = self.evidence(4, outcome=False)
+        path = pending/'REQUEST.json'
+        request = path.read_bytes()
+        path.unlink()
+        self.assertFalse(self.cache.prior_records(executor, self.candidates, details=False)[0])
+        proposal = dict(configuration_id='cfg', vector=(4, 4))
+        self.assertEqual(executor.prior_job(proposal), pending)
+        path.write_bytes(request)
+        self.write_outcome(pending, 4, O.PASS)
+        known, _, _ = self.cache.prior_records(executor, self.candidates, details=False)
+        self.assertIn(('cfg', (4, 4)), known)
+        new_job = self.evidence(5)
+        self.assertEqual(executor.prior_job(dict(configuration_id='cfg', vector=(5, 5))), new_job)
+        known, _, _ = self.cache.prior_records(executor, self.candidates, details=False)
+        self.assertEqual(set(known), {('cfg', (4, 4)), ('cfg', (5, 5))})
+        executor.prior_q3_holds = [dict(parent_directory=str(self.prior), method='FULL_PF', job_id=new_job.name)]
+        known, refused, _ = self.cache.prior_records(executor, self.candidates, details=False)
+        self.assertEqual(set(known), {('cfg', (4, 4))})
+        self.assertEqual(refused[0]['reason'], 'PRIOR_Q3_PERSISTENCE_HOLD')
 
     def test_unknown_markers_refresh_and_late_valid_completion_is_ingested(self):
         job = self.evidence(4, outcome=False)
