@@ -13855,7 +13855,7 @@
                 "profile": {
                   "host_id": "pbs-0",
                   "root": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/28d976b99cdf8329adcc1b79327e329e947ef774",
-                  "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+                  "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1-pauli-signal-chem05/bin/python",
                   "route_views": {
                     "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
                     "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
@@ -13896,7 +13896,8 @@
                     "runtime_provider_root_b714e6f05181": {
                       "path": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/runtime-inputs/runtime_provider_root_b714e6f05181"
                     }
-                  }
+                  },
+                  "task_cpu_count": 8
                 }
               },
               {
@@ -16814,6 +16815,158 @@
               "request_sha256": "cc771ddcd0fbda712b5ed084ec06125ba8340efd43e93a6292aeaf4adf5a0601",
               "repair_legacy_price_loader": true,
               "reason": "Previous DF_CALIBRATION exited unsuccessfully with no price artifacts; recalculate its missing price inputs under the fixed existing request."
+            },
+            "prep-68cf44497db11353e9f6b6b3": {
+              "df_startup_recovery": {
+                "body_log": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/h4-prdf-calibration-e03d88690c/FAILED_PROVIDER.log",
+                "body_log_sha256": "2e74248b3dacf5ff1e7629757521117b47c27a7427212159b952354ca03e9b23",
+                "evidence": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/h4-prdf-calibration-e03d88690c/FAILED_ATTEMPT_EVIDENCE.json",
+                "git_inputs": [
+                  {
+                    "commit": "326feadd093920bbea29b498108aa4eae6f67a75",
+                    "path": "src/trottertracks/p1_efficient_zz.py",
+                    "sha256": "2653c5decbaf0e2d2f0dbf15637a3016c64e0b9c3daa467cbcab108a5387a277"
+                  },
+                  {
+                    "commit": "326feadd093920bbea29b498108aa4eae6f67a75",
+                    "path": "src/trottertracks/efficient_controlled_zz.py",
+                    "sha256": "7f42923996571e1523470f4a4b5e1a00c3e1c33b90663326935402f0c96be164"
+                  },
+                  {
+                    "commit": "326feadd093920bbea29b498108aa4eae6f67a75",
+                    "path": "src/trottertracks/h4_df10_price_v1.py",
+                    "sha256": "2a8601d9907151ea9eeef6f22c21147b08deae96c4bc429361c2e701c5af5be3"
+                  },
+                  {
+                    "commit": "326feadd093920bbea29b498108aa4eae6f67a75",
+                    "path": "src/trottertracks/track_d_native_resources.py",
+                    "sha256": "9b24be2db0d34317a9a2cd2852d03c7e3f6f1a97887b19a14a33add322c07087"
+                  },
+                  {
+                    "commit": "326feadd093920bbea29b498108aa4eae6f67a75",
+                    "path": "scripts/h46_b3_fast_fingerprint.py",
+                    "sha256": "75d6341b693d610f15c35cb6d8ec61a4af732f6e4026ed73e0c15001e1d689b0"
+                  },
+                  {
+                    "commit": "ea9e66092465d39dfcd4aeb6fea8e9f09808cabb",
+                    "path": "scripts/run_pr_df_ld_split.py",
+                    "sha256": "319495a24310a38f768cc9eff37ed15338b78b2509c62596ac939403af6cbc7d"
+                  },
+                  {
+                    "commit": "e827367629ca6c2920d9d908fc1631314399db86",
+                    "path": "src/trottertracks/compiled_price_fast.py",
+                    "sha256": "d47704a152163f2cc5e86e1fa9556f9c21dd0f1d0d023fe618cf199e5fce2ac0"
+                  },
+                  {
+                    "commit": "e827367629ca6c2920d9d908fc1631314399db86",
+                    "path": "src/trottertracks/candidate_price_adapter.py",
+                    "sha256": "bcf60cb1cd3e04a6f79e4851d8fcae341f05baa7cd67358390c775f854664df6"
+                  },
+                  {
+                    "commit": "e827367629ca6c2920d9d908fc1631314399db86",
+                    "path": "src/trottertracks/ld12_price_requests.py",
+                    "sha256": "7e93ec124dded169a94ee6d4cf72ff919be705c467619a4922cc6abc883af846"
+                  },
+                  {
+                    "commit": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+                    "path": "src/trottertracks/r_price_phase1.py",
+                    "sha256": "2d3814321b9e6cd70d96cf344fafa2221ed7a5b32a8e3539e6a6d135ae33554e"
+                  },
+                  {
+                    "commit": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+                    "path": "src/trottertracks/r_price_phase1_runner.py",
+                    "sha256": "236b5ee3514652f0d577eb0931a63c50ebab04e93a5270a2161b743d66571959"
+                  },
+                  {
+                    "commit": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+                    "path": "src/trottertracks/r_price_phase1_science.py",
+                    "sha256": "d664efeb6fe7dc2550fc9ebd651eb43ae141c06cd481b6e1e832084dad664b55"
+                  },
+                  {
+                    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                    "path": "scripts/h46_m5_tol_saved_input.py",
+                    "sha256": "b6544ed94657bc8c25c9cca972952c27c2533913bcc43b131d135902b65963ac"
+                  },
+                  {
+                    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                    "path": "scripts/h46_new2_core.py",
+                    "sha256": "190dfa9638dfd488acdeb561d44d444a65cc6a5a059bf23a5f8ced690d5759da"
+                  },
+                  {
+                    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                    "path": "scripts/h46_new2_native.py",
+                    "sha256": "a3fd7dd09fe4f16493f2d582d933eb5fe6d6d25257863e22f740573dcc5e0a83"
+                  },
+                  {
+                    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                    "path": "scripts/h46_pr_pilot_repair.py",
+                    "sha256": "5bdf3d358dd46e7f268a04d5fae56b45788c42f905fe992477d9ae16a008d952"
+                  },
+                  {
+                    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                    "path": "scripts/h46_long_time_native.py",
+                    "sha256": "c228b330c3fd4a775a912d5c09280addc3e7f669dd2e7ee0b8955877b97538fb"
+                  },
+                  {
+                    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                    "path": "scripts/h46_m5_contract.py",
+                    "sha256": "d5f847fa737606bc2713c407f4e2dba454ec9b588b8b18afdc67388b18ddc7d9"
+                  },
+                  {
+                    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                    "path": "src/trotterlib/h46_m5_plan.py",
+                    "sha256": "2ad8cfa8e5ae71a8100fe16c71995e86236d2a2eee750af5e52034ab31e3e832"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/rte.py",
+                    "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/df_partial_s2.py",
+                    "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/df_rte_qiskit.py",
+                    "sha256": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/rte_compiled_cost.py",
+                    "sha256": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+                    "sha256": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/df_trotter/ops.py",
+                    "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/df_partial_randomized_pf.py",
+                    "sha256": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trotterlib/df_rte_circuit.py",
+                    "sha256": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76"
+                  },
+                  {
+                    "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                    "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+                    "sha256": "7b8b13483066bb39cc4aad1c36f6e5da6fbc679ecb8bae9c08a0b326648a36fd"
+                  }
+                ]
+              },
+              "attempt_id": "1768838d41b8460ba330937c5c95255a",
+              "request_sha256": "ece495687ef9e7c43245bf1cba3e3bdd08db8481b4967a26a1062dc00b93a038",
+              "reason": "Recover the verified Git startup failure before any calibration path started; retain the original science and budget."
             }
           }
         },
@@ -19100,7 +19253,7 @@
                     "profile": {
                       "host_id": "pbs-0",
                       "root": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/28d976b99cdf8329adcc1b79327e329e947ef774",
-                      "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+                      "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1-pauli-signal-chem05/bin/python",
                       "route_views": {
                         "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
                         "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
@@ -19141,7 +19294,8 @@
                         "runtime_provider_root_b714e6f05181": {
                           "path": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/runtime-inputs/runtime_provider_root_b714e6f05181"
                         }
-                      }
+                      },
+                      "task_cpu_count": 8
                     }
                   },
                   {
@@ -22266,6 +22420,14 @@
               "provider": "DF_HOLDOUT_COMPARE",
               "source": "1355ad65faffbfb9a03cff17df4091e7c8f1c93e",
               "seconds": 600
+            },
+            {
+              "id": "compile-DF_CALIBRATION-d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+              "stage": "compile",
+              "provider": "DF_CALIBRATION",
+              "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+              "seconds": 3600,
+              "memory_bytes": 34359738368
             }
           ],
           "walltime_policy": {
@@ -22400,7 +22562,7 @@
         "ready_queue_waves": 2,
         "live_readiness_max_workers": 8,
         "live_readiness_refill_seconds": 5,
-        "relay_script": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/h4-pf-axis-owner-bba4f18c96/code/scripts/run_rpe_q3_relay.py",
+        "relay_script": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/h4-prdf-calibration-e03d88690c/code/scripts/run_rpe_q3_relay.py",
         "pbs_hold_node": true,
         "pf_legacy_compile_hosts": [
           "server2"
@@ -22426,6 +22588,11 @@
           "defer_q3_evidence": true
         },
         "controller_queue_first": true,
+        "preparation_request_hosts": {
+          "prep-24b62a342c3cc4fbfbd1572e": [
+            "pbs-0"
+          ]
+        },
         "pbs_pinned_settings": {
           "ssh_alias": "prism",
           "remote_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs",
@@ -124251,7 +124418,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "27e184ad57e6f7910bc7846a411423c851be984c",
+            "commit": "2fa4fbc6bbe988539c6e9c753e2dcff1d6090ddf",
             "path": "docs/research/distributed_selected_pf/5b7e26fc7610f07fd2fbb41a1588e385a40d01950aad1afdaa0cd0897a7f0555/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -129629,7 +129796,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "ddd23436d523caebd61e7df0392e1f4336ccb74c",
+            "commit": "49cfecc95c63ff0f5bcacc4e22d7e08567ebcdde",
             "path": "docs/research/distributed_selected_pf/6fe7034cbba7c444b6a573f487bc0d4d573b4ccea71dd21bfa571581c8e6e4e3/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -147230,7 +147397,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "2abae7c717e7ddae4fc390b21b4606997d5de7c4",
+            "commit": "c7dcc86f2aa8a38f015748d9070eedc8781a4a7a",
             "path": "docs/research/distributed_selected_pf/b8bbe1f6561a21d41cc0ac3d08f8c77a5c6c6069daacfeccc762b8a763a7d6f4/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -150102,7 +150269,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "aa40c1fa994fae397ef4f60bd69a60eab8ae2f8b",
+            "commit": "1173dca8cce495163b23b6786906879ab7d8389d",
             "path": "docs/research/distributed_selected_pf/5c7f1c49d45ae65032d96ecbbcaa1cae42c2425d5a1772ad99e6db5ed94f8dc5/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -152962,7 +153129,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "1c489c133a7942861ef73d6cc7bd14eea03a31ef",
+            "commit": "dd97632ec6d7d4673c3610bbf954b0c8cd599830",
             "path": "docs/research/distributed_selected_pf/f90b8420c93f52e9e2ecbd4b21e0e75d8ef36cdd6f9d5a851407a0f0d2ba26ee/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -164649,7 +164816,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "d06beff25dd8b1584c4f1ea54804e206b900fcf7",
+            "commit": "5aac7f12964026913ed97093eff6b7cc0f88ecb0",
             "path": "docs/research/distributed_selected_pf/aee2fe047752ac5d29c3a0c7980517ab7f1241570c5edb4e4cbbf3e870934ed8/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -167521,7 +167688,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "3cdce4fe137d34a186e5dbd7f68bb5ac68634876",
+            "commit": "48dc789b3b9eac04634473c40f300b6bdcc7501d",
             "path": "docs/research/distributed_selected_pf/0f302b482a0125bf83c5b51b3767971c23c94fe3c389ccca489a85fe226411b3/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -170381,7 +170548,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "703a6111dba2db194a42525370f20e09757084a7",
+            "commit": "501b5253b82dd8bc7250bcc8694883c658e337ec",
             "path": "docs/research/distributed_selected_pf/fe2de91b7194cf110fa01f6a9e831e766d3326beccd96f5ba05d1c46ef39cfc7/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -173205,7 +173372,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "405177b420d9d3e299e6d66c19efba34a8eb4f58",
+            "commit": "90cfe4c0536b4d7f4d7aa76f07a0dd31b0b38cfa",
             "path": "docs/research/distributed_selected_pf/9b5f7260d647d34f48f4a314c82fe24653eb77756f38254025838f7cb963f693/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -176041,7 +176208,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "389ddc99c2c921d166651e993605bba3d1c9c9ae",
+            "commit": "c4c9a7124016017548f22b70a3de05b7718b251c",
             "path": "docs/research/distributed_selected_pf/5bd472c25925adb3b20a7be7c0b350023802adf47e70a662d1af8da5c69dbbbf/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -178865,7 +179032,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "943b17a2c258c3b50564e3720e68de841f239932",
+            "commit": "01544bf108b622ee6448f29d62ddb75b773f09f3",
             "path": "docs/research/distributed_selected_pf/e57ab2a3478d506d65b0921d872cf387f2f639bddad048ab74ddf6942760b571/EXPLORATORY_AXIS_PRICES.json"
           }
         }
@@ -179322,31 +179489,31 @@
       "executor_metrics": {
         "submitted": 0,
         "queued_cancelled": 0,
-        "launched": 0,
-        "finished": 0,
-        "adopted": 1,
+        "launched": 1,
+        "finished": 1,
+        "adopted": 0,
         "speculative_launched": 0,
         "speculative_adopted": 0,
-        "peak_active": 0,
+        "peak_active": 1,
         "sampled_owned_tree_peak_RSS_KiB": 0,
-        "completed_not_adopted": 0,
+        "completed_not_adopted": 1,
         "by_method": {
-          "FULL_PF": {
-            "adopted": 1
+          "PREPARATION:compile": {
+            "launched": 1
           }
         },
         "max_concurrent_jobs": 1,
         "dp_workers": 3,
         "new_real_route_launches": 0,
         "executor_failure": null,
-        "elapsed_seconds": 1073.601233005058,
-        "busy_job_seconds": 0.0,
-        "idle_slot_seconds_no_queued_candidate": 1073.601233005058,
+        "elapsed_seconds": 685.4615776890423,
+        "busy_job_seconds": 39.41716902004555,
+        "idle_slot_seconds_no_queued_candidate": 645.9779650978744,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 1073.601233005058,
-        "idle_slot_seconds_with_queued_candidate": 0.0,
-        "integrated_available_slot_seconds": 1073.601233005058,
-        "slot_utilization": 0.0,
+        "idle_slot_seconds_no_queued_or_selected_result": 645.9779650978744,
+        "idle_slot_seconds_with_queued_candidate": 0.06644357112236321,
+        "integrated_available_slot_seconds": 685.4615776890423,
+        "slot_utilization": 0.05750456379033842,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
         "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
@@ -179357,35 +179524,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1210,
-            "reused": 37697
+            "reused": 40043
           },
           "local": {
-            "assigned": 1619,
-            "launched": 1619,
-            "completed": 1619,
-            "adopted": 1613,
-            "reused": 36375
+            "assigned": 1622,
+            "launched": 1622,
+            "completed": 1622,
+            "adopted": 1616,
+            "reused": 39345
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 524,
-            "reused": 15661
+            "reused": 16661
           },
           "local0-wsl": {
-            "assigned": 867,
-            "launched": 859,
-            "completed": 857,
+            "assigned": 868,
+            "launched": 860,
+            "completed": 858,
             "adopted": 846,
-            "reused": 22847
+            "reused": 24465
           },
           "pbs-0": {
-            "assigned": 4114,
-            "launched": 3677,
-            "completed": 4114,
+            "assigned": 4115,
+            "launched": 3678,
+            "completed": 4115,
             "adopted": 4067,
-            "reused": 102215
+            "reused": 110015
           }
         },
         "host_admission": {
@@ -182746,6 +182913,125 @@
               }
             },
             {
+              "token": "b8b7fa804b7c4f8c8525e61dd12d6282",
+              "host_id": "pbs-0",
+              "job_id": "268201.CPUcluster-PRISM",
+              "status": "R",
+              "worker": {
+                "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                "monotonic": 2903521.295068002,
+                "epoch": 1795557208.1106498,
+                "schema": "RPE_PBS_WORKER_STATE_V1",
+                "state": "READY",
+                "ready": true,
+                "accepting": true,
+                "host_id": "pbs-0",
+                "job_id": "268201.CPUcluster-PRISM",
+                "hostname": "CPUcluster019",
+                "pid": 1902227,
+                "source_sha": "1355ad65faffbfb9a03cff17df4091e7c8f1c93e",
+                "resources": {
+                  "actual": {
+                    "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                    "exec_host": "CPUcluster019/0*96",
+                    "exec_vnode": "(CPUcluster019:ncpus=96:mem=367001600kb)",
+                    "job_id": "268201.CPUcluster-PRISM",
+                    "memory_bytes": 375809638400,
+                    "ncpus": 96,
+                    "recorded_epoch": 1795556666.998571,
+                    "remaining_seconds": 115450,
+                    "select_nodes": 1,
+                    "walltime_seconds": 259200
+                  },
+                  "snapshot": {
+                    "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                    "clock": {
+                      "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                      "monotonic": 2902982.48621441,
+                      "epoch": 1795556669.301797
+                    },
+                    "machine_cpu_count": 96,
+                    "machine_mem_total_bytes": 404353789952,
+                    "machine_mem_available_bytes": 399351939072,
+                    "allowed_cpu_count": 96,
+                    "cpu_bounds": [
+                      {
+                        "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                        "value": 96
+                      },
+                      {
+                        "kind": "CGROUP_V1_CPUSET",
+                        "value": 96,
+                        "path": "/sys/fs/cgroup/cpuset"
+                      },
+                      {
+                        "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                        "value": 96.0
+                      }
+                    ],
+                    "allowed_memory_bytes": 375809638400,
+                    "memory_bounds": [
+                      {
+                        "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                        "value": 375809638400
+                      }
+                    ],
+                    "remaining_group_memory_bytes": null,
+                    "memory_scope": "BOUNDED_ALLOCATION",
+                    "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                    "cgroup_version": "v1",
+                    "allocation_bounds_complete": true,
+                    "boundary_detection": "OBSERVED",
+                    "missing_controls": [],
+                    "observational_only": true
+                  },
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400,
+                  "library_threads": 1,
+                  "task_cpu_count": 1,
+                  "cpu_slots": 96,
+                  "maximum_slots": 96,
+                  "task_memory_bytes": null,
+                  "stages": [
+                    "audit",
+                    "compile",
+                    "q3",
+                    "signal"
+                  ],
+                  "one_shared_slot_pool": true
+                },
+                "capacity": 96,
+                "remaining_seconds": 114911.18760595284,
+                "start_clock": {
+                  "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                  "monotonic": 2902986.268262411,
+                  "epoch": 1795556673.0838444
+                },
+                "exit_reason": null
+              },
+              "receipt": {
+                "epoch": 1795411915.1785643,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "268201.CPUcluster-PRISM"
+              },
+              "allocation": {
+                "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                "exec_host": "CPUcluster019/0*96",
+                "exec_vnode": "(CPUcluster019:ncpus=96:mem=367001600kb)",
+                "job_id": "268201.CPUcluster-PRISM",
+                "memory_bytes": 375809638400,
+                "ncpus": 96,
+                "recorded_epoch": 1795556666.998571,
+                "remaining_seconds": 115450,
+                "select_nodes": 1,
+                "walltime_seconds": 259200
+              },
+              "exit_status": null,
+              "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/c7345872a93e6f814615/allocations/b8b7fa804b7c4f8c8525e61dd12d6282",
+              "pilot_token": "7e267436270c4ba39f9e550d8426fb46"
+            },
+            {
               "token": "bd0b2b00c99245038a0f926e0e7cd710",
               "host_id": "pbs-0",
               "job_id": "268201.CPUcluster-PRISM",
@@ -184340,11 +184626,122 @@
           }
         ],
         "host_offers": {
+          "local": {
+            "capacity": 0,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 3.863820879952982,
+            "priority_group": 2,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "AUTO",
+              "capacity": 0,
+              "slots": 0,
+              "occupied": 0,
+              "stage": "MEASURED_TASK_HEADROOM",
+              "reasons": [
+                "Offer fitting work by task class after reserving the costs of existing attempts"
+              ],
+              "resources": {
+                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                "clock": {
+                  "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                  "monotonic": 1596194.32874259,
+                  "epoch": 1795556205.7743914
+                },
+                "machine_cpu_count": 32,
+                "machine_mem_total_bytes": 67095015424,
+                "machine_mem_available_bytes": 33562292224,
+                "allowed_cpu_count": 30,
+                "cpu_bounds": [
+                  {
+                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                    "value": 32
+                  },
+                  {
+                    "kind": "CGROUP_CPUSET",
+                    "value": 32,
+                    "path": "/sys/fs/cgroup"
+                  },
+                  {
+                    "kind": "CONTROLLER_CPU_HEADROOM",
+                    "value": 30
+                  }
+                ],
+                "allowed_memory_bytes": 67095015424,
+                "memory_bounds": [],
+                "remaining_group_memory_bytes": null,
+                "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                "cgroup_version": "v2",
+                "allocation_bounds_complete": true,
+                "boundary_detection": "OBSERVED",
+                "missing_controls": [],
+                "observational_only": true
+              },
+              "limits": {
+                "cpu_slots": 0,
+                "memory_slots": 0,
+                "explicit_max_slots": null,
+                "memory_sample_headroom_factor": 1.5
+              },
+              "dp_workers_per_q3": 2,
+              "peak_job_rss_bytes": 0,
+              "peak_job_cpu_cores": 0,
+              "feedback": {
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 679.8575388789177,
+                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                "usable_results": 0,
+                "adopted_results": 0,
+                "decision_wait_seconds": null,
+                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+                "ready_jobs": 0,
+                "ready_jobs_now": 0,
+                "capacity_ready_jobs": 0,
+                "ready_task_classes": [],
+                "capacity": 1,
+                "ready_task_class_order": []
+              },
+              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+              "trial": null,
+              "running_jobs_may_exceed_reduced_capacity": false,
+              "admitted_task_classes": [],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 37961297920,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 29105209344,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": [],
+                "reclaim_start_bytes": 51002736640,
+                "reclaim_target_bytes": 48318382080,
+                "reclaim_checked": false,
+                "reclaim_pending": false
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8909621478524,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1,
+              "ready_task_class_order": []
+            }
+          },
           "server2": {
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.038977309130132,
+            "observed_age_seconds": 4.144321025116369,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -184360,12 +184757,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2592243.201721885,
-                  "epoch": 1795554288.773398
+                  "monotonic": 2594159.079824947,
+                  "epoch": 1795556204.651501
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 493261201408,
+                "machine_mem_available_bytes": 493055963136,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -184413,8 +184810,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1064.5062992100138,
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 672.9982427738141,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -184431,17 +184828,17 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37132029952,
+                "used_bytes": 37132124160,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 568540962816,
+                "filesystem_free_bytes": 568540770304,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4169181468897,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8923183789011,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -184454,130 +184851,11 @@
               "capacity": 1
             }
           },
-          "local": {
-            "capacity": 0,
-            "fresh_free_slots": 0,
-            "reported_free_slots": 0,
-            "observed_age_seconds": 4.853982377098873,
-            "priority_group": 2,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "AUTO",
-              "capacity": 0,
-              "slots": 0,
-              "occupied": 0,
-              "stage": "MEASURED_TASK_HEADROOM",
-              "reasons": [
-                "Offer fitting work by task class after reserving the costs of existing attempts"
-              ],
-              "resources": {
-                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
-                "clock": {
-                  "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1594276.8085717,
-                  "epoch": 1795554288.2542202
-                },
-                "machine_cpu_count": 32,
-                "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 25310998528,
-                "allowed_cpu_count": 30,
-                "cpu_bounds": [
-                  {
-                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
-                    "value": 32
-                  },
-                  {
-                    "kind": "CGROUP_CPUSET",
-                    "value": 32,
-                    "path": "/sys/fs/cgroup"
-                  },
-                  {
-                    "kind": "CONTROLLER_CPU_HEADROOM",
-                    "value": 30
-                  }
-                ],
-                "allowed_memory_bytes": 67095015424,
-                "memory_bounds": [],
-                "remaining_group_memory_bytes": null,
-                "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
-                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
-                "cgroup_version": "v2",
-                "allocation_bounds_complete": true,
-                "boundary_detection": "OBSERVED",
-                "missing_controls": [],
-                "observational_only": true
-              },
-              "limits": {
-                "cpu_slots": 0,
-                "memory_slots": 0,
-                "explicit_max_slots": null,
-                "memory_sample_headroom_factor": 1.5
-              },
-              "dp_workers_per_q3": 4,
-              "peak_job_rss_bytes": 40913018880,
-              "peak_job_cpu_cores": 28.176044292750376,
-              "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1069.2725525819696,
-                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                "usable_results": 0,
-                "adopted_results": 4,
-                "decision_wait_seconds": null,
-                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-                "ready_jobs": 1,
-                "ready_jobs_now": 0,
-                "capacity_ready_jobs": 1,
-                "ready_task_classes": [
-                  "preparation:compile:DF_CALIBRATION"
-                ],
-                "capacity": 1,
-                "ready_task_class_order": [
-                  "preparation:compile:DF_CALIBRATION"
-                ]
-              },
-              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
-              "trial": null,
-              "running_jobs_may_exceed_reduced_capacity": false,
-              "admitted_task_classes": [],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42565799936,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 50772672512,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4173296559602,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 4,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 1,
-              "ready_task_classes": [
-                "preparation:compile:DF_CALIBRATION"
-              ],
-              "capacity": 1,
-              "ready_task_class_order": [
-                "preparation:compile:DF_CALIBRATION"
-              ]
-            }
-          },
           "local0-wsl": {
             "capacity": 4,
             "fresh_free_slots": 4,
             "reported_free_slots": 4,
-            "observed_age_seconds": 5.963892694097012,
+            "observed_age_seconds": 2.4032385940663517,
             "priority_group": 1,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -184591,17 +184869,17 @@
               ],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 38902865920,
+                "used_bytes": 39275376640,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 932514172928,
+                "filesystem_free_bytes": 932139327488,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4194753589109,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8934573638253,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -184618,7 +184896,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.2866768918465823,
+            "observed_age_seconds": 1.6676511629484594,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -184634,12 +184912,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 458213.625597598,
-                  "epoch": 1795554289.2737372
+                  "monotonic": 460131.474028539,
+                  "epoch": 1795556207.122168
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1060538400768,
+                "machine_mem_available_bytes": 1060407836672,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -184678,8 +184956,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1064.5125488948543,
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 675.0264762819279,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -184696,19 +184974,70 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40657870848,
+                "used_bytes": 40657948672,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 63037882368,
+                "filesystem_free_bytes": 63037771776,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4211671380326,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8945709739346,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "pbs-0": {
+            "capacity": 96,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 3.043430718127638,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 96,
+              "slots": 0,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": null,
+                "accepting_new_jobs": false,
+                "reason": "STORAGE_USAGE_UNAVAILABLE"
+              },
+              "pbs": {
+                "job_id": "268201.CPUcluster-PRISM",
+                "remaining_seconds": 114911.18760595284,
+                "minimum_task_seconds": 60.0,
+                "drain_seconds": 30.0,
+                "accepting": true,
+                "resource_pool": {
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400
+                },
+                "launch_fit": true,
+                "ready_buffer": false
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8948412670288,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 1,
               "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
@@ -184734,20 +185063,20 @@
             "launched": 319
           },
           "compile": {
-            "reserved": 104,
-            "assigned": 103,
-            "launched": 103
+            "reserved": 105,
+            "assigned": 105,
+            "launched": 105
           },
           "audit": {
-            "reserved": 35,
-            "assigned": 35,
-            "launched": 35
+            "reserved": 38,
+            "assigned": 38,
+            "launched": 38
           }
         },
         "preparation_readiness_pending": {},
         "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
         "method_launched": 0,
-        "method_adopted": 1
+        "method_adopted": 0
       },
       "rule_adopted_best": {
         "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
@@ -1708786,7 +1709115,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "5520d8473c09f8e850ea87eb63fafeccf45050d5",
+            "commit": "1bf104c5ae714373a5e587c4d738b3f43493ebbd",
             "path": "docs/research/distributed_selected_pf/64e598fb9fa2179d17acdf211e4db87d2c8382b030b71716010a644565c42fc7/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1726363,7 +1726692,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "8dc76531b45cece13e8909039bc1dbc1ae48e1ab",
+            "commit": "34dc3606bae4486814d5a26ff8aecb5c264a244a",
             "path": "docs/research/distributed_selected_pf/41ed5c468d77b3b50cd55f50c83f0046a25664999e9b3dfff146917b7dbb5cbe/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1729175,7 +1729504,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "159aafd53ab8591bc09013b53f9522748167d785",
+            "commit": "1972a1f72a41a684f80cccf3cd16f48f910aab1a",
             "path": "docs/research/distributed_selected_pf/39c1e066365e4d06f4118bef40ee08fda4c449b14f4821f19b0979ad72ba34c2/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1731987,7 +1732316,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "0b2ca99c126c335157758ea8f25a5ce82c7dac34",
+            "commit": "77abb545ed0c5952887b43029f907672ea982af9",
             "path": "docs/research/distributed_selected_pf/477cf6e0f824a3674f599494449f89b87fbe93cd107646ab31c964f2e91dfd24/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1743658,7 +1743987,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "8cd40e63d7b9cb7ed1e6b26e02491c104addb9e4",
+            "commit": "6c2787274b2d6102ebdb7e70a19895f74b4c0836",
             "path": "docs/research/distributed_selected_pf/716ca362602127934ef1459bd2e2e99c880ffcdeb3be5f9f2dc4f8a895cd2792/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1746470,7 +1746799,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "693bc44b98fa4a7dd1b1d9210427028fc6f62fb7",
+            "commit": "3e57c4553eb0652d9d9ab4576011fac80372eb02",
             "path": "docs/research/distributed_selected_pf/b585907e34343f24119116d239807e1208ee97e4ee971fdb3c86c93054702cd4/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1749282,7 +1749611,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "19322709cb94ba14798ae1a83d7b022911b61632",
+            "commit": "6fe00f8ef4b4202cd97a9774aae8ef287850bcef",
             "path": "docs/research/distributed_selected_pf/ecaca959ae00e443910134135c9872531b675d5f12683b92ba3ac3483b205994/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1752094,7 +1752423,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "53b8e101c952c28a4ec32d415006dcaed42a5787",
+            "commit": "b2eb990f61186c1f10dad5560cfafd9ca26811f0",
             "path": "docs/research/distributed_selected_pf/0938480c15085c1571d6ec2f1bae651e3b5fb8fd1d55677546101bc03197ba29/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1754906,7 +1755235,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "a65cdf4e8be0f55610ef2ee2543ac1dee5932d8f",
+            "commit": "2ab7228832e93e018a3f86d532491acc80e1c322",
             "path": "docs/research/distributed_selected_pf/a11c60a6ec1a52c76a2ffec7a7ebb15ab04239cfbdca319db6eb74b6d4530c94/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1757718,7 +1758047,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "57e06fea65dcad3781c832d1fdb5abd89c7f85a1",
+            "commit": "64337e93fba4d637d17cb835877d2bbd55c5b4de",
             "path": "docs/research/distributed_selected_pf/4ace1d1e858298128e5e21d01807a0a51ea0fdc51d5c65cb086a3dd3de1cea31/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1766141,7 +1766470,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "fee81aee0078d4215f1b5ff04976d98c5dd86252",
+            "commit": "bdf2a1091ba285b3b95eee2ea98ad67f44795578",
             "path": "docs/research/distributed_selected_pf/b5747b46961f9eaf91bffa20ac6e414215ba83033916249575e57d725cccd728/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1794225,7 +1794554,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "a57d9d0a58f7026aeb1c9d79b5a04f0346550696",
+            "commit": "cd8a7e7122550990059c8dc90186bf2f4b449dfc",
             "path": "docs/research/distributed_selected_pf/bc970e9800205b73faed58fd977f46ae6d75b04238b3a4572039d6706c514340/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1800082,7 +1800411,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "0f7d6ba36f8d79071290577d0cdc687a96223ab6",
+            "commit": "bca9579172f79447ba8e9e5aca2997cc8e27fd47",
             "path": "docs/research/distributed_selected_pf/e4a91df67fb39319b2ab32725061a1c6631e62fb56def08a0698f0c584082322/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1802894,7 +1803223,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "09bd74c003c132da0e5009efd62cb1c0c2ab57c7",
+            "commit": "6cac2a0ca43726f8a0a844fdf28859b968e3e9a8",
             "path": "docs/research/distributed_selected_pf/9c948e35371e3af7bda8b1cb0cfeb15a8e8ee771062ae9d2fd81ce8141e49e9e/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1822731,7 +1823060,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "d5bcf11b3c3acb73f203c5a65896bdac5ff8ce44",
+            "commit": "49eec23e3173221c168e7312643ad38489000534",
             "path": "docs/research/distributed_selected_pf/e2246726683c9855dc5eb33f0943b6f9b49caae3cefa194b1933c2ffbe1bf7ed/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1828110,7 +1828439,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "d613270af21bd3a9b6f63c81b26f4bbc9ed4b737",
+            "commit": "fea7a6a875804e88c23f293c1c0457a9e7f0ef91",
             "path": "docs/research/distributed_selected_pf/a6e4c4f7220c4747ce367cbd5b662ad18b324cb62062aa32f4a5e98d04c6ab91/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1830922,7 +1831251,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "74d2fb634a642fe73495865915aa41df104083f9",
+            "commit": "923c19a9c0102bec4b30e97c6e243efa08c7a0c6",
             "path": "docs/research/distributed_selected_pf/a512981aefbf0c20526484a8b0b29a0273c128b45306864dfa0a276a87c145a9/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1833734,7 +1834063,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "8ba65e879941def715e1ff7ef1ee69ef8aeadd1f",
+            "commit": "304d9f8a6f24c7ccb1f8f23bedcf984ee249f8fc",
             "path": "docs/research/distributed_selected_pf/207707876cc8f8a12443b557d554412f5a2c4be62bac6c99ce5702b123f1f749/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1839591,7 +1839920,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "b9acd3429493c599bb30943f81a0d66fbb08413e",
+            "commit": "0437c1fa38117f72cde94154d9cc0ffa683ce999",
             "path": "docs/research/distributed_selected_pf/fc35769b68b91674a9f934073f803a01164508d6bafc0e9b3c24104c2cfc9e89/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1842427,7 +1842756,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "e31394d5bc4d7f65361d7ca6d9dd77557bc57ddf",
+            "commit": "5025b2deab0173faa81635af0a31905c805facb1",
             "path": "docs/research/distributed_selected_pf/8a489415c5d3535c2741c1ea2be46a5d5175b06fbe827aa5063da32a6c369b9c/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1850850,7 +1851179,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "20066e2467c4d8934d97b14a94937d737d2e2bdf",
+            "commit": "638dff4f888d54e456abc5a0938b9c78db900e1c",
             "path": "docs/research/distributed_selected_pf/44816b44807ad1a3a2cc0e3baba499ce448a58508c5d5f80c8f86b8acc6907f1/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1879546,7 +1879875,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "2de323cedd2415aff104e5e6861c203c87de22c7",
+            "commit": "9599d57443d95edea49856ed3a442211c59a4f6a",
             "path": "docs/research/distributed_selected_pf/c2f3fb4953b45332b15ce1065398631acfceb542e2bbd979631603a910bb434d/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1884925,7 +1885254,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "985415007a04a40813e8ab974b8a24ef649c3899",
+            "commit": "c0e11fd4f19352b7f8ad10e70cefd3bdb2ef4fec",
             "path": "docs/research/distributed_selected_pf/55f91b44cab5b99ee7542afa75df074371baed881495147b5243fcd9495acdd2/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1887737,7 +1888066,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "90401ca00fe35e53134978138370c9e05e7b31bd",
+            "commit": "94eab1278e3a324fee5d67280bad860256dd4c96",
             "path": "docs/research/distributed_selected_pf/e46bfefec5775e7778a2fd45ab22e9078a29f0fd737feca17032485b02288bde/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1908073,7 +1908402,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "7638278d89d4762a4a6e63f4bb1c5693b67bf62d",
+            "commit": "2bc6e7221581d49346c90f42e169b3cd279c078c",
             "path": "docs/research/distributed_selected_pf/52f2ed43ed23e9faea14a6c01522aa47a7130d89e37b982c1608845d4946f574/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1913452,7 +1913781,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "abcfb48a9d732ddbac01ad0f556a4dd6d6b810aa",
+            "commit": "2ef5898163ca627eb03f4458be60b25c14af5a13",
             "path": "docs/research/distributed_selected_pf/1919074be23c772e603d8808bbb75d11f5d21da503b45d98ec751f40d065c5d6/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1916264,7 +1916593,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "cf8cc77a2b89ec263b5eb353ddf98729e9fb6c6a",
+            "commit": "782543099bb0e07648b7fb813175ac37befcccd8",
             "path": "docs/research/distributed_selected_pf/6ba26634d32666d8faabf088cdbdbfebad87c78fb2b28fdc8ee448ece5d6ddc8/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1919076,7 +1919405,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "c6feb5637cdec28d7d42d3669351e8eb2d632d11",
+            "commit": "60c367287e947214b025f4604dddeb579c4e2136",
             "path": "docs/research/distributed_selected_pf/d82d97856bb5e0701ce61c465875565f7c00a6c756421425d1b60157690b4258/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1924455,7 +1924784,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "5c734b5ee8473fa34d30fea369e88ff6bab90f34",
+            "commit": "5fa85446c3ffb8e3cb2a3c38ee8680fb5c763cf0",
             "path": "docs/research/distributed_selected_pf/e816e10c50e0fd265ac3c436d2d7603f6439028aeb7ce2451e8094ca8d330f11/EXPLORATORY_AXIS_PRICES.json"
           }
         },
@@ -1927267,7 +1927596,7 @@
           },
           "cost_status": "UNAVAILABLE",
           "price_source": {
-            "commit": "799394794d8b4709d2102fd7e2c7bfb6ecd39777",
+            "commit": "b647bfc6f7f657b3f934f1caf014f2344f11ea7a",
             "path": "docs/research/distributed_selected_pf/b92b5989d131d5f907a18914a75447625e3948bdc1199078bf3eabbd31c454cf/EXPLORATORY_AXIS_PRICES.json"
           }
         }
@@ -1927825,31 +1928154,31 @@
       "executor_metrics": {
         "submitted": 0,
         "queued_cancelled": 0,
-        "launched": 0,
-        "finished": 0,
-        "adopted": 1,
+        "launched": 1,
+        "finished": 1,
+        "adopted": 0,
         "speculative_launched": 0,
         "speculative_adopted": 0,
-        "peak_active": 0,
+        "peak_active": 1,
         "sampled_owned_tree_peak_RSS_KiB": 0,
-        "completed_not_adopted": 0,
+        "completed_not_adopted": 1,
         "by_method": {
-          "FULL_PF": {
-            "adopted": 1
+          "PREPARATION:compile": {
+            "launched": 1
           }
         },
         "max_concurrent_jobs": 1,
         "dp_workers": 3,
         "new_real_route_launches": 0,
         "executor_failure": null,
-        "elapsed_seconds": 1073.601233005058,
-        "busy_job_seconds": 0.0,
-        "idle_slot_seconds_no_queued_candidate": 1073.601233005058,
+        "elapsed_seconds": 685.4615776890423,
+        "busy_job_seconds": 39.41716902004555,
+        "idle_slot_seconds_no_queued_candidate": 645.9779650978744,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 1073.601233005058,
-        "idle_slot_seconds_with_queued_candidate": 0.0,
-        "integrated_available_slot_seconds": 1073.601233005058,
-        "slot_utilization": 0.0,
+        "idle_slot_seconds_no_queued_or_selected_result": 645.9779650978744,
+        "idle_slot_seconds_with_queued_candidate": 0.06644357112236321,
+        "integrated_available_slot_seconds": 685.4615776890423,
+        "slot_utilization": 0.05750456379033842,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
         "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
@@ -1927860,35 +1928189,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1210,
-            "reused": 37697
+            "reused": 40043
           },
           "local": {
-            "assigned": 1619,
-            "launched": 1619,
-            "completed": 1619,
-            "adopted": 1613,
-            "reused": 36375
+            "assigned": 1622,
+            "launched": 1622,
+            "completed": 1622,
+            "adopted": 1616,
+            "reused": 39345
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 524,
-            "reused": 15661
+            "reused": 16661
           },
           "local0-wsl": {
-            "assigned": 867,
-            "launched": 859,
-            "completed": 857,
+            "assigned": 868,
+            "launched": 860,
+            "completed": 858,
             "adopted": 846,
-            "reused": 22847
+            "reused": 24465
           },
           "pbs-0": {
-            "assigned": 4114,
-            "launched": 3677,
-            "completed": 4114,
+            "assigned": 4115,
+            "launched": 3678,
+            "completed": 4115,
             "adopted": 4067,
-            "reused": 102215
+            "reused": 110015
           }
         },
         "host_admission": {
@@ -1931249,6 +1931578,125 @@
               }
             },
             {
+              "token": "b8b7fa804b7c4f8c8525e61dd12d6282",
+              "host_id": "pbs-0",
+              "job_id": "268201.CPUcluster-PRISM",
+              "status": "R",
+              "worker": {
+                "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                "monotonic": 2903521.295068002,
+                "epoch": 1795557208.1106498,
+                "schema": "RPE_PBS_WORKER_STATE_V1",
+                "state": "READY",
+                "ready": true,
+                "accepting": true,
+                "host_id": "pbs-0",
+                "job_id": "268201.CPUcluster-PRISM",
+                "hostname": "CPUcluster019",
+                "pid": 1902227,
+                "source_sha": "1355ad65faffbfb9a03cff17df4091e7c8f1c93e",
+                "resources": {
+                  "actual": {
+                    "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                    "exec_host": "CPUcluster019/0*96",
+                    "exec_vnode": "(CPUcluster019:ncpus=96:mem=367001600kb)",
+                    "job_id": "268201.CPUcluster-PRISM",
+                    "memory_bytes": 375809638400,
+                    "ncpus": 96,
+                    "recorded_epoch": 1795556666.998571,
+                    "remaining_seconds": 115450,
+                    "select_nodes": 1,
+                    "walltime_seconds": 259200
+                  },
+                  "snapshot": {
+                    "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                    "clock": {
+                      "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                      "monotonic": 2902982.48621441,
+                      "epoch": 1795556669.301797
+                    },
+                    "machine_cpu_count": 96,
+                    "machine_mem_total_bytes": 404353789952,
+                    "machine_mem_available_bytes": 399351939072,
+                    "allowed_cpu_count": 96,
+                    "cpu_bounds": [
+                      {
+                        "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                        "value": 96
+                      },
+                      {
+                        "kind": "CGROUP_V1_CPUSET",
+                        "value": 96,
+                        "path": "/sys/fs/cgroup/cpuset"
+                      },
+                      {
+                        "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                        "value": 96.0
+                      }
+                    ],
+                    "allowed_memory_bytes": 375809638400,
+                    "memory_bounds": [
+                      {
+                        "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                        "value": 375809638400
+                      }
+                    ],
+                    "remaining_group_memory_bytes": null,
+                    "memory_scope": "BOUNDED_ALLOCATION",
+                    "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                    "cgroup_version": "v1",
+                    "allocation_bounds_complete": true,
+                    "boundary_detection": "OBSERVED",
+                    "missing_controls": [],
+                    "observational_only": true
+                  },
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400,
+                  "library_threads": 1,
+                  "task_cpu_count": 1,
+                  "cpu_slots": 96,
+                  "maximum_slots": 96,
+                  "task_memory_bytes": null,
+                  "stages": [
+                    "audit",
+                    "compile",
+                    "q3",
+                    "signal"
+                  ],
+                  "one_shared_slot_pool": true
+                },
+                "capacity": 96,
+                "remaining_seconds": 114911.18760595284,
+                "start_clock": {
+                  "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                  "monotonic": 2902986.268262411,
+                  "epoch": 1795556673.0838444
+                },
+                "exit_reason": null
+              },
+              "receipt": {
+                "epoch": 1795411915.1785643,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "268201.CPUcluster-PRISM"
+              },
+              "allocation": {
+                "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                "exec_host": "CPUcluster019/0*96",
+                "exec_vnode": "(CPUcluster019:ncpus=96:mem=367001600kb)",
+                "job_id": "268201.CPUcluster-PRISM",
+                "memory_bytes": 375809638400,
+                "ncpus": 96,
+                "recorded_epoch": 1795556666.998571,
+                "remaining_seconds": 115450,
+                "select_nodes": 1,
+                "walltime_seconds": 259200
+              },
+              "exit_status": null,
+              "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/c7345872a93e6f814615/allocations/b8b7fa804b7c4f8c8525e61dd12d6282",
+              "pilot_token": "7e267436270c4ba39f9e550d8426fb46"
+            },
+            {
               "token": "bd0b2b00c99245038a0f926e0e7cd710",
               "host_id": "pbs-0",
               "job_id": "268201.CPUcluster-PRISM",
@@ -1932843,11 +1933291,122 @@
           }
         ],
         "host_offers": {
+          "local": {
+            "capacity": 0,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 3.863820879952982,
+            "priority_group": 2,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "AUTO",
+              "capacity": 0,
+              "slots": 0,
+              "occupied": 0,
+              "stage": "MEASURED_TASK_HEADROOM",
+              "reasons": [
+                "Offer fitting work by task class after reserving the costs of existing attempts"
+              ],
+              "resources": {
+                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                "clock": {
+                  "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                  "monotonic": 1596194.32874259,
+                  "epoch": 1795556205.7743914
+                },
+                "machine_cpu_count": 32,
+                "machine_mem_total_bytes": 67095015424,
+                "machine_mem_available_bytes": 33562292224,
+                "allowed_cpu_count": 30,
+                "cpu_bounds": [
+                  {
+                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                    "value": 32
+                  },
+                  {
+                    "kind": "CGROUP_CPUSET",
+                    "value": 32,
+                    "path": "/sys/fs/cgroup"
+                  },
+                  {
+                    "kind": "CONTROLLER_CPU_HEADROOM",
+                    "value": 30
+                  }
+                ],
+                "allowed_memory_bytes": 67095015424,
+                "memory_bounds": [],
+                "remaining_group_memory_bytes": null,
+                "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                "cgroup_version": "v2",
+                "allocation_bounds_complete": true,
+                "boundary_detection": "OBSERVED",
+                "missing_controls": [],
+                "observational_only": true
+              },
+              "limits": {
+                "cpu_slots": 0,
+                "memory_slots": 0,
+                "explicit_max_slots": null,
+                "memory_sample_headroom_factor": 1.5
+              },
+              "dp_workers_per_q3": 2,
+              "peak_job_rss_bytes": 0,
+              "peak_job_cpu_cores": 0,
+              "feedback": {
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 679.8575388789177,
+                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                "usable_results": 0,
+                "adopted_results": 0,
+                "decision_wait_seconds": null,
+                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+                "ready_jobs": 0,
+                "ready_jobs_now": 0,
+                "capacity_ready_jobs": 0,
+                "ready_task_classes": [],
+                "capacity": 1,
+                "ready_task_class_order": []
+              },
+              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+              "trial": null,
+              "running_jobs_may_exceed_reduced_capacity": false,
+              "admitted_task_classes": [],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 37961297920,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 29105209344,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": [],
+                "reclaim_start_bytes": 51002736640,
+                "reclaim_target_bytes": 48318382080,
+                "reclaim_checked": false,
+                "reclaim_pending": false
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8909621478524,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1,
+              "ready_task_class_order": []
+            }
+          },
           "server2": {
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.038977309130132,
+            "observed_age_seconds": 4.144321025116369,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -1932863,12 +1933422,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2592243.201721885,
-                  "epoch": 1795554288.773398
+                  "monotonic": 2594159.079824947,
+                  "epoch": 1795556204.651501
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 493261201408,
+                "machine_mem_available_bytes": 493055963136,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -1932916,8 +1933475,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1064.5062992100138,
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 672.9982427738141,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -1932934,17 +1933493,17 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37132029952,
+                "used_bytes": 37132124160,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 568540962816,
+                "filesystem_free_bytes": 568540770304,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4169181468897,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8923183789011,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -1932957,130 +1933516,11 @@
               "capacity": 1
             }
           },
-          "local": {
-            "capacity": 0,
-            "fresh_free_slots": 0,
-            "reported_free_slots": 0,
-            "observed_age_seconds": 4.853982377098873,
-            "priority_group": 2,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "AUTO",
-              "capacity": 0,
-              "slots": 0,
-              "occupied": 0,
-              "stage": "MEASURED_TASK_HEADROOM",
-              "reasons": [
-                "Offer fitting work by task class after reserving the costs of existing attempts"
-              ],
-              "resources": {
-                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
-                "clock": {
-                  "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1594276.8085717,
-                  "epoch": 1795554288.2542202
-                },
-                "machine_cpu_count": 32,
-                "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 25310998528,
-                "allowed_cpu_count": 30,
-                "cpu_bounds": [
-                  {
-                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
-                    "value": 32
-                  },
-                  {
-                    "kind": "CGROUP_CPUSET",
-                    "value": 32,
-                    "path": "/sys/fs/cgroup"
-                  },
-                  {
-                    "kind": "CONTROLLER_CPU_HEADROOM",
-                    "value": 30
-                  }
-                ],
-                "allowed_memory_bytes": 67095015424,
-                "memory_bounds": [],
-                "remaining_group_memory_bytes": null,
-                "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
-                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
-                "cgroup_version": "v2",
-                "allocation_bounds_complete": true,
-                "boundary_detection": "OBSERVED",
-                "missing_controls": [],
-                "observational_only": true
-              },
-              "limits": {
-                "cpu_slots": 0,
-                "memory_slots": 0,
-                "explicit_max_slots": null,
-                "memory_sample_headroom_factor": 1.5
-              },
-              "dp_workers_per_q3": 4,
-              "peak_job_rss_bytes": 40913018880,
-              "peak_job_cpu_cores": 28.176044292750376,
-              "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1069.2725525819696,
-                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                "usable_results": 0,
-                "adopted_results": 4,
-                "decision_wait_seconds": null,
-                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-                "ready_jobs": 1,
-                "ready_jobs_now": 0,
-                "capacity_ready_jobs": 1,
-                "ready_task_classes": [
-                  "preparation:compile:DF_CALIBRATION"
-                ],
-                "capacity": 1,
-                "ready_task_class_order": [
-                  "preparation:compile:DF_CALIBRATION"
-                ]
-              },
-              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
-              "trial": null,
-              "running_jobs_may_exceed_reduced_capacity": false,
-              "admitted_task_classes": [],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42565799936,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 50772672512,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4173296559602,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 4,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 1,
-              "ready_task_classes": [
-                "preparation:compile:DF_CALIBRATION"
-              ],
-              "capacity": 1,
-              "ready_task_class_order": [
-                "preparation:compile:DF_CALIBRATION"
-              ]
-            }
-          },
           "local0-wsl": {
             "capacity": 4,
             "fresh_free_slots": 4,
             "reported_free_slots": 4,
-            "observed_age_seconds": 5.963892694097012,
+            "observed_age_seconds": 2.4032385940663517,
             "priority_group": 1,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -1933094,17 +1933534,17 @@
               ],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 38902865920,
+                "used_bytes": 39275376640,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 932514172928,
+                "filesystem_free_bytes": 932139327488,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4194753589109,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8934573638253,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -1933121,7 +1933561,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.2866768918465823,
+            "observed_age_seconds": 1.6676511629484594,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -1933137,12 +1933577,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 458213.625597598,
-                  "epoch": 1795554289.2737372
+                  "monotonic": 460131.474028539,
+                  "epoch": 1795556207.122168
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1060538400768,
+                "machine_mem_available_bytes": 1060407836672,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -1933181,8 +1933621,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1064.5125488948543,
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 675.0264762819279,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -1933199,19 +1933639,70 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40657870848,
+                "used_bytes": 40657948672,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 63037882368,
+                "filesystem_free_bytes": 63037771776,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4211671380326,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8945709739346,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "pbs-0": {
+            "capacity": 96,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 3.043430718127638,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 96,
+              "slots": 0,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": null,
+                "accepting_new_jobs": false,
+                "reason": "STORAGE_USAGE_UNAVAILABLE"
+              },
+              "pbs": {
+                "job_id": "268201.CPUcluster-PRISM",
+                "remaining_seconds": 114911.18760595284,
+                "minimum_task_seconds": 60.0,
+                "drain_seconds": 30.0,
+                "accepting": true,
+                "resource_pool": {
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400
+                },
+                "launch_fit": true,
+                "ready_buffer": false
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8948412670288,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 1,
               "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
@@ -1933237,14 +1933728,14 @@
             "launched": 319
           },
           "compile": {
-            "reserved": 104,
-            "assigned": 103,
-            "launched": 103
+            "reserved": 105,
+            "assigned": 105,
+            "launched": 105
           },
           "audit": {
-            "reserved": 35,
-            "assigned": 35,
-            "launched": 35
+            "reserved": 38,
+            "assigned": 38,
+            "launched": 38
           }
         },
         "preparation_readiness_pending": {},
@@ -2879701,31 +2880192,31 @@
       "executor_metrics": {
         "submitted": 0,
         "queued_cancelled": 0,
-        "launched": 0,
-        "finished": 0,
-        "adopted": 1,
+        "launched": 1,
+        "finished": 1,
+        "adopted": 0,
         "speculative_launched": 0,
         "speculative_adopted": 0,
-        "peak_active": 0,
+        "peak_active": 1,
         "sampled_owned_tree_peak_RSS_KiB": 0,
-        "completed_not_adopted": 0,
+        "completed_not_adopted": 1,
         "by_method": {
-          "FULL_PF": {
-            "adopted": 1
+          "PREPARATION:compile": {
+            "launched": 1
           }
         },
         "max_concurrent_jobs": 1,
         "dp_workers": 3,
         "new_real_route_launches": 0,
         "executor_failure": null,
-        "elapsed_seconds": 1073.601233005058,
-        "busy_job_seconds": 0.0,
-        "idle_slot_seconds_no_queued_candidate": 1073.601233005058,
+        "elapsed_seconds": 685.4615776890423,
+        "busy_job_seconds": 39.41716902004555,
+        "idle_slot_seconds_no_queued_candidate": 645.9779650978744,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 1073.601233005058,
-        "idle_slot_seconds_with_queued_candidate": 0.0,
-        "integrated_available_slot_seconds": 1073.601233005058,
-        "slot_utilization": 0.0,
+        "idle_slot_seconds_no_queued_or_selected_result": 645.9779650978744,
+        "idle_slot_seconds_with_queued_candidate": 0.06644357112236321,
+        "integrated_available_slot_seconds": 685.4615776890423,
+        "slot_utilization": 0.05750456379033842,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
         "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
@@ -2879736,35 +2880227,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1210,
-            "reused": 37697
+            "reused": 40043
           },
           "local": {
-            "assigned": 1619,
-            "launched": 1619,
-            "completed": 1619,
-            "adopted": 1613,
-            "reused": 36375
+            "assigned": 1622,
+            "launched": 1622,
+            "completed": 1622,
+            "adopted": 1616,
+            "reused": 39345
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 524,
-            "reused": 15661
+            "reused": 16661
           },
           "local0-wsl": {
-            "assigned": 867,
-            "launched": 859,
-            "completed": 857,
+            "assigned": 868,
+            "launched": 860,
+            "completed": 858,
             "adopted": 846,
-            "reused": 22847
+            "reused": 24465
           },
           "pbs-0": {
-            "assigned": 4114,
-            "launched": 3677,
-            "completed": 4114,
+            "assigned": 4115,
+            "launched": 3678,
+            "completed": 4115,
             "adopted": 4067,
-            "reused": 102215
+            "reused": 110015
           }
         },
         "host_admission": {
@@ -2883125,6 +2883616,125 @@
               }
             },
             {
+              "token": "b8b7fa804b7c4f8c8525e61dd12d6282",
+              "host_id": "pbs-0",
+              "job_id": "268201.CPUcluster-PRISM",
+              "status": "R",
+              "worker": {
+                "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                "monotonic": 2903521.295068002,
+                "epoch": 1795557208.1106498,
+                "schema": "RPE_PBS_WORKER_STATE_V1",
+                "state": "READY",
+                "ready": true,
+                "accepting": true,
+                "host_id": "pbs-0",
+                "job_id": "268201.CPUcluster-PRISM",
+                "hostname": "CPUcluster019",
+                "pid": 1902227,
+                "source_sha": "1355ad65faffbfb9a03cff17df4091e7c8f1c93e",
+                "resources": {
+                  "actual": {
+                    "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                    "exec_host": "CPUcluster019/0*96",
+                    "exec_vnode": "(CPUcluster019:ncpus=96:mem=367001600kb)",
+                    "job_id": "268201.CPUcluster-PRISM",
+                    "memory_bytes": 375809638400,
+                    "ncpus": 96,
+                    "recorded_epoch": 1795556666.998571,
+                    "remaining_seconds": 115450,
+                    "select_nodes": 1,
+                    "walltime_seconds": 259200
+                  },
+                  "snapshot": {
+                    "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                    "clock": {
+                      "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                      "monotonic": 2902982.48621441,
+                      "epoch": 1795556669.301797
+                    },
+                    "machine_cpu_count": 96,
+                    "machine_mem_total_bytes": 404353789952,
+                    "machine_mem_available_bytes": 399351939072,
+                    "allowed_cpu_count": 96,
+                    "cpu_bounds": [
+                      {
+                        "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                        "value": 96
+                      },
+                      {
+                        "kind": "CGROUP_V1_CPUSET",
+                        "value": 96,
+                        "path": "/sys/fs/cgroup/cpuset"
+                      },
+                      {
+                        "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                        "value": 96.0
+                      }
+                    ],
+                    "allowed_memory_bytes": 375809638400,
+                    "memory_bounds": [
+                      {
+                        "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                        "value": 375809638400
+                      }
+                    ],
+                    "remaining_group_memory_bytes": null,
+                    "memory_scope": "BOUNDED_ALLOCATION",
+                    "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                    "cgroup_version": "v1",
+                    "allocation_bounds_complete": true,
+                    "boundary_detection": "OBSERVED",
+                    "missing_controls": [],
+                    "observational_only": true
+                  },
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400,
+                  "library_threads": 1,
+                  "task_cpu_count": 1,
+                  "cpu_slots": 96,
+                  "maximum_slots": 96,
+                  "task_memory_bytes": null,
+                  "stages": [
+                    "audit",
+                    "compile",
+                    "q3",
+                    "signal"
+                  ],
+                  "one_shared_slot_pool": true
+                },
+                "capacity": 96,
+                "remaining_seconds": 114911.18760595284,
+                "start_clock": {
+                  "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
+                  "monotonic": 2902986.268262411,
+                  "epoch": 1795556673.0838444
+                },
+                "exit_reason": null
+              },
+              "receipt": {
+                "epoch": 1795411915.1785643,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "268201.CPUcluster-PRISM"
+              },
+              "allocation": {
+                "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                "exec_host": "CPUcluster019/0*96",
+                "exec_vnode": "(CPUcluster019:ncpus=96:mem=367001600kb)",
+                "job_id": "268201.CPUcluster-PRISM",
+                "memory_bytes": 375809638400,
+                "ncpus": 96,
+                "recorded_epoch": 1795556666.998571,
+                "remaining_seconds": 115450,
+                "select_nodes": 1,
+                "walltime_seconds": 259200
+              },
+              "exit_status": null,
+              "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/c7345872a93e6f814615/allocations/b8b7fa804b7c4f8c8525e61dd12d6282",
+              "pilot_token": "7e267436270c4ba39f9e550d8426fb46"
+            },
+            {
               "token": "bd0b2b00c99245038a0f926e0e7cd710",
               "host_id": "pbs-0",
               "job_id": "268201.CPUcluster-PRISM",
@@ -2884719,11 +2885329,122 @@
           }
         ],
         "host_offers": {
+          "local": {
+            "capacity": 0,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 3.863820879952982,
+            "priority_group": 2,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "AUTO",
+              "capacity": 0,
+              "slots": 0,
+              "occupied": 0,
+              "stage": "MEASURED_TASK_HEADROOM",
+              "reasons": [
+                "Offer fitting work by task class after reserving the costs of existing attempts"
+              ],
+              "resources": {
+                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                "clock": {
+                  "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                  "monotonic": 1596194.32874259,
+                  "epoch": 1795556205.7743914
+                },
+                "machine_cpu_count": 32,
+                "machine_mem_total_bytes": 67095015424,
+                "machine_mem_available_bytes": 33562292224,
+                "allowed_cpu_count": 30,
+                "cpu_bounds": [
+                  {
+                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                    "value": 32
+                  },
+                  {
+                    "kind": "CGROUP_CPUSET",
+                    "value": 32,
+                    "path": "/sys/fs/cgroup"
+                  },
+                  {
+                    "kind": "CONTROLLER_CPU_HEADROOM",
+                    "value": 30
+                  }
+                ],
+                "allowed_memory_bytes": 67095015424,
+                "memory_bounds": [],
+                "remaining_group_memory_bytes": null,
+                "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                "cgroup_version": "v2",
+                "allocation_bounds_complete": true,
+                "boundary_detection": "OBSERVED",
+                "missing_controls": [],
+                "observational_only": true
+              },
+              "limits": {
+                "cpu_slots": 0,
+                "memory_slots": 0,
+                "explicit_max_slots": null,
+                "memory_sample_headroom_factor": 1.5
+              },
+              "dp_workers_per_q3": 2,
+              "peak_job_rss_bytes": 0,
+              "peak_job_cpu_cores": 0,
+              "feedback": {
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 679.8575388789177,
+                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                "usable_results": 0,
+                "adopted_results": 0,
+                "decision_wait_seconds": null,
+                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+                "ready_jobs": 0,
+                "ready_jobs_now": 0,
+                "capacity_ready_jobs": 0,
+                "ready_task_classes": [],
+                "capacity": 1,
+                "ready_task_class_order": []
+              },
+              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+              "trial": null,
+              "running_jobs_may_exceed_reduced_capacity": false,
+              "admitted_task_classes": [],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 37961297920,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 29105209344,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": [],
+                "reclaim_start_bytes": 51002736640,
+                "reclaim_target_bytes": 48318382080,
+                "reclaim_checked": false,
+                "reclaim_pending": false
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8909621478524,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1,
+              "ready_task_class_order": []
+            }
+          },
           "server2": {
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.038977309130132,
+            "observed_age_seconds": 4.144321025116369,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2884739,12 +2885460,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2592243.201721885,
-                  "epoch": 1795554288.773398
+                  "monotonic": 2594159.079824947,
+                  "epoch": 1795556204.651501
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 493261201408,
+                "machine_mem_available_bytes": 493055963136,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2884792,8 +2885513,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1064.5062992100138,
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 672.9982427738141,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2884810,17 +2885531,17 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37132029952,
+                "used_bytes": 37132124160,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 568540962816,
+                "filesystem_free_bytes": 568540770304,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4169181468897,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8923183789011,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -2884833,130 +2885554,11 @@
               "capacity": 1
             }
           },
-          "local": {
-            "capacity": 0,
-            "fresh_free_slots": 0,
-            "reported_free_slots": 0,
-            "observed_age_seconds": 4.853982377098873,
-            "priority_group": 2,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "AUTO",
-              "capacity": 0,
-              "slots": 0,
-              "occupied": 0,
-              "stage": "MEASURED_TASK_HEADROOM",
-              "reasons": [
-                "Offer fitting work by task class after reserving the costs of existing attempts"
-              ],
-              "resources": {
-                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
-                "clock": {
-                  "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1594276.8085717,
-                  "epoch": 1795554288.2542202
-                },
-                "machine_cpu_count": 32,
-                "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 25310998528,
-                "allowed_cpu_count": 30,
-                "cpu_bounds": [
-                  {
-                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
-                    "value": 32
-                  },
-                  {
-                    "kind": "CGROUP_CPUSET",
-                    "value": 32,
-                    "path": "/sys/fs/cgroup"
-                  },
-                  {
-                    "kind": "CONTROLLER_CPU_HEADROOM",
-                    "value": 30
-                  }
-                ],
-                "allowed_memory_bytes": 67095015424,
-                "memory_bounds": [],
-                "remaining_group_memory_bytes": null,
-                "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
-                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
-                "cgroup_version": "v2",
-                "allocation_bounds_complete": true,
-                "boundary_detection": "OBSERVED",
-                "missing_controls": [],
-                "observational_only": true
-              },
-              "limits": {
-                "cpu_slots": 0,
-                "memory_slots": 0,
-                "explicit_max_slots": null,
-                "memory_sample_headroom_factor": 1.5
-              },
-              "dp_workers_per_q3": 4,
-              "peak_job_rss_bytes": 40913018880,
-              "peak_job_cpu_cores": 28.176044292750376,
-              "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1069.2725525819696,
-                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                "usable_results": 0,
-                "adopted_results": 4,
-                "decision_wait_seconds": null,
-                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-                "ready_jobs": 1,
-                "ready_jobs_now": 0,
-                "capacity_ready_jobs": 1,
-                "ready_task_classes": [
-                  "preparation:compile:DF_CALIBRATION"
-                ],
-                "capacity": 1,
-                "ready_task_class_order": [
-                  "preparation:compile:DF_CALIBRATION"
-                ]
-              },
-              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
-              "trial": null,
-              "running_jobs_may_exceed_reduced_capacity": false,
-              "admitted_task_classes": [],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42565799936,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 50772672512,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4173296559602,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 0,
-              "adopted_results": 4,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 1,
-              "ready_task_classes": [
-                "preparation:compile:DF_CALIBRATION"
-              ],
-              "capacity": 1,
-              "ready_task_class_order": [
-                "preparation:compile:DF_CALIBRATION"
-              ]
-            }
-          },
           "local0-wsl": {
             "capacity": 4,
             "fresh_free_slots": 4,
             "reported_free_slots": 4,
-            "observed_age_seconds": 5.963892694097012,
+            "observed_age_seconds": 2.4032385940663517,
             "priority_group": 1,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2884970,17 +2885572,17 @@
               ],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 38902865920,
+                "used_bytes": 39275376640,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 932514172928,
+                "filesystem_free_bytes": 932139327488,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4194753589109,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8934573638253,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -2884997,7 +2885599,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.2866768918465823,
+            "observed_age_seconds": 1.6676511629484594,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2885013,12 +2885615,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 458213.625597598,
-                  "epoch": 1795554289.2737372
+                  "monotonic": 460131.474028539,
+                  "epoch": 1795556207.122168
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1060538400768,
+                "machine_mem_available_bytes": 1060407836672,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2885057,8 +2885659,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "1917395-1795553217213500533",
-                "measurement_seconds": 1064.5125488948543,
+                "controller_invocation": "2245813-1795555523230856736",
+                "measurement_seconds": 675.0264762819279,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2885075,19 +2885677,70 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40657870848,
+                "used_bytes": 40657948672,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 63037882368,
+                "filesystem_free_bytes": 63037771776,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "1917395-1795553217213500533",
-              "measurement_seconds": 1075.4211671380326,
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8945709739346,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "pbs-0": {
+            "capacity": 96,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 3.043430718127638,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 96,
+              "slots": 0,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": null,
+                "accepting_new_jobs": false,
+                "reason": "STORAGE_USAGE_UNAVAILABLE"
+              },
+              "pbs": {
+                "job_id": "268201.CPUcluster-PRISM",
+                "remaining_seconds": 114911.18760595284,
+                "minimum_task_seconds": 60.0,
+                "drain_seconds": 30.0,
+                "accepting": true,
+                "resource_pool": {
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400
+                },
+                "launch_fit": true,
+                "ready_buffer": false
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "2245813-1795555523230856736",
+              "measurement_seconds": 685.8948412670288,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 1,
               "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
@@ -2885113,14 +2885766,14 @@
             "launched": 319
           },
           "compile": {
-            "reserved": 104,
-            "assigned": 103,
-            "launched": 103
+            "reserved": 105,
+            "assigned": 105,
+            "launched": 105
           },
           "audit": {
-            "reserved": 35,
-            "assigned": 35,
-            "launched": 35
+            "reserved": 38,
+            "assigned": 38,
+            "launched": 38
           }
         },
         "preparation_readiness_pending": {},
