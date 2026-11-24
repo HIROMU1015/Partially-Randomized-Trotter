@@ -165,8 +165,9 @@ def main():
             except OSError:
                 pass
             while not stop_sampling.is_set():
-                original_report(policy, spools=[profile['work_dir']],
-                                cache_directories=storage.prefix_caches(profile), refresh=True)
+                if not (directory/'OFFLINE_ACTIVE').exists():
+                    original_report(policy, spools=[profile['work_dir']],
+                                    cache_directories=storage.prefix_caches(profile), refresh=True)
                 stop_sampling.wait(storage.SAMPLE_SECONDS)
 
         threading.Thread(target=sample_storage, name='pbs-storage-sample', daemon=True).start()

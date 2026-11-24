@@ -800,7 +800,9 @@ class Worker:
                     self.work / safe_id(a['job_id']) / safe_id(a['attempt_id']) not in self.records]
                 overflow = sum(bool((a.get('pbs_launch_resources') or {}).get('standby')) for a in new_assignments)
                 limit = getattr(self, 'pbs_resources', {}).get('cpu_count', 0)
-                if len(new_assignments)-overflow > report['slots'] or overflow > limit//4:
+                waves = self.profile.get('pbs', {}).get('standby_waves')
+                maximum = limit//4 if waves is None else limit*waves
+                if len(new_assignments)-overflow > report['slots'] or overflow > maximum:
                     raise ValueError('Controller overfilled announced slots')
                 self._receive_assignments(assignments)
                 if response.get('stop'):

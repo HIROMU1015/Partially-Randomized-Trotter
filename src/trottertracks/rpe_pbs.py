@@ -32,6 +32,16 @@ GIB = 1024**3
 # The controller and the independently pinned worker use the same proof lifetime.
 Q3_WORKER_PROOF_SECONDS = 120
 
+
+def standby_capacity(pool, waves=None):
+    """Unstarted backlog uses task resources as weights, not as reservations."""
+    cpu, memory = pool['cpu_count'], max(0, pool['memory_bytes'] - GIB)
+    if waves is None:
+        return cpu // 4, memory // 4
+    if type(waves) is not int or waves < 1:
+        raise ValueError('PBS standby waves must be a positive integer')
+    return cpu * waves, memory * waves
+
 # Measure the same shared paths from the gateway, where directory walks do
 # not occupy a PBS compute slot or depend on a compute node's NFS latency.
 _STORAGE_MONITOR = """
@@ -586,6 +596,13 @@ class PbsManager:
         self.evidence_pool = None
         self.evidence_pending = None
         self.evidence_retry_after = {}
+        self.offline_plan = getattr(executor, 'distributed', {}).get('pbs_offline_plan')
+        self.offline_imported = {}
+        self.offline_pending = None
+        self.offline_progress = {}
+        self.offline_progress_next = 0.
+        self.offline_staged = set()
+        self.offline_ranks = {}
         self.gateway = gateway or Gateway(self.settings)
         self.bulk_gateway = Gateway(self.settings) if self.bounded_results else None
         # Only gateways deployed with the selected-attempt harvest protocol
@@ -617,7 +634,8 @@ class PbsManager:
         self.pending_completions = {}
         self.split_exchange = bool(dispatch and dispatch.get('split_exchange') and completion_workers)
         if (self.bounded_results and not self.split_exchange
-                or self.defer_q3_evidence and (not self.bounded_results or not self.selective_harvest)):
+                or (self.defer_q3_evidence or self.offline_plan)
+                and (not self.bounded_results or not self.selective_harvest)):
             self.lock.close()
             raise ValueError('PBS bounded and deferred transfers require their completion and harvest lanes')
         self.completion_gateway = Gateway(self.settings) if self.split_exchange else None
@@ -1013,6 +1031,103 @@ class PbsManager:
         self.log('PBS_SHARED_ARTIFACT_STAGED', token=token, sha256=sha,
                  bytes=paths[0].stat().st_size)
         return response
+
+    def _collect_offline_history(self, token):
+        from .rpe_q3_worker import safe_id
+
+        gateway = Gateway(self.settings)
+        try:
+            progress = gateway.call(dict(action='offline_results', token=token))
+            history = self.directory/'offline-history'/'jobs'
+            copied = 0
+            for key, item in progress['jobs'].items():
+                method, job = key.split('/')
+                safe_id(job)
+                if method not in self.offline_plan['round']['methods'] or not any(
+                        part['id'] == item['part'] and part['method'] == method
+                        for part in self.offline_plan['parts']):
+                    raise ValueError('Offline PBS result lies outside the fixed scope')
+                target = history/method/job
+                if (target/'OUTCOME.json').exists():
+                    continue
+                names = ('REQUEST.json', 'PROCESS_RETURN.json', 'OUTCOME.json')
+                if set(item['files']) != set(names):
+                    raise ValueError('PBS offline result is missing its fixed receipt')
+                files = {name: self._read_bulk(gateway, token, 'offline', name,
+                            size=item['files'][name], method=method, job_id=job) for name in names}
+                request = json.loads(files['REQUEST.json'])
+                receipt = json.loads(files['PROCESS_RETURN.json'])
+                if (request.get('request_id') != job or request.get('method') != method
+                        or request.get('optimizer_source') != self.executor.computation_source
+                        or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+                    self.log('PBS_OFFLINE_RESULT_NOT_IMPORTED', job_id=job, method=method)
+                    continue
+                target.mkdir(parents=True, exist_ok=True)
+                for name in names:
+                    temporary = target/(name+'.tmp')
+                    temporary.write_bytes(files[name])
+                    temporary.replace(target/name)
+                copied += 1
+            reports = self.directory/'offline-history'/'coverage'
+            reports.mkdir(parents=True, exist_ok=True)
+            atomic(reports/(safe_id(token)+'.json'), progress['coverage'])
+            if copied:
+                self.log('PBS_OFFLINE_RESULTS_IMPORTED', count=copied, token=token)
+        finally:
+            gateway.close()
+
+    def _advance_offline_history(self):
+        if self.offline_pending is not None:
+            token, revision, future = self.offline_pending
+            if not future.done():
+                return
+
+            self.offline_pending = None
+            try:
+                future.result()
+            except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
+                self.harvest_retry_after[token] = time.monotonic()+30
+                self.log('PBS_OFFLINE_IMPORT_PENDING', token=token, error=str(error))
+            else:
+                self.offline_imported[token] = revision
+        for allocation in self.allocations:
+            token = allocation['token']
+            revision = (allocation.get('worker') or {}).get('offline_revision', 0)
+            if (revision > self.offline_imported.get(token, 0)
+                    and time.monotonic() >= self.harvest_retry_after.get(token, 0)):
+                if self.harvest_pool is None:
+                    self.harvest_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-pbs-harvest')
+                self.offline_pending = (token, revision, self.harvest_pool.submit(self._collect_offline_history, token))
+                return
+
+    def offline_priority(self):
+        if not self.offline_plan or self.last_error is None:
+            return {}
+        methods = self.offline_plan['round']['methods']
+        fallback = len(self.offline_plan['parts'])
+        return {method: fallback+rank for rank, method in enumerate(reversed(methods))} | self.offline_ranks
+
+    def bind_offline_points(self, points):
+        if not self.offline_plan:
+            return
+        ranks = {(part['method'], digest(part['width'])): rank
+                 for rank, part in enumerate(reversed(self.offline_plan['parts']))}
+        selected = {}
+        for point in points:
+            configuration = point.get('evaluation_configuration_id')
+            method = point['method']
+            key = method, digest(point.get('requested_delta_pf'))
+            if configuration and key in ranks:
+                selected[method, configuration] = ranks[key]
+        self.offline_ranks = selected
+
+    def _offline_contact(self, token):
+        if time.monotonic() >= self.offline_progress_next:
+            with self.executor.store._connection() as db:
+                self.offline_progress = dict(db.execute(
+                    "SELECT method,count(*) FROM jobs WHERE state='ACCEPTED' GROUP BY method"))
+            self.offline_progress_next = time.monotonic()+30
+        self.controls[token].update(contact=int(time.time()), accepted_by_method=self.offline_progress)
 
     def _complete_with_deferred_evidence(self, token, request):
         """Commit the exact outcome before retrieving the worker's large evidence."""
@@ -1478,6 +1593,20 @@ class PbsManager:
             profile['pbs']['compute_storage_sampling'] = True
         if self.defer_q3_evidence:
             profile['pbs']['defer_q3_evidence'] = True
+        if self.offline_plan:
+            raw = json.dumps(self.offline_plan, sort_keys=True, separators=(',', ':')).encode()
+            sha = hashlib.sha256(raw).hexdigest()
+            path = self.directory/'offline-plans'/f'{sha}.json'
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if not path.exists():
+                temporary = path.with_suffix('.tmp')
+                temporary.write_bytes(raw)
+                temporary.replace(path)
+            profile['pbs']['offline_plan'] = dict(sha256=sha,
+                path=str(Path(self.settings['remote_root'])/'offline-plans'/path.name))
+        if (waves := getattr(self.executor, 'distributed', {}).get('pbs_standby_waves')) is not None:
+            standby_capacity(dict(cpu_count=resources['ncpus'], memory_bytes=GIB), waves)
+            profile['pbs']['standby_waves'] = waves
         collection_workers = getattr(self.executor, 'distributed', {}).get('pbs_collection_workers')
         if collection_workers is not None:
             profile['pbs']['collection_workers'] = collection_workers
@@ -1501,8 +1630,17 @@ class PbsManager:
         self.state['allocations'][token] = dict(spec=spec, status='INTENT', clock=started, submitted_clock=started)
         self.save()
         self.log('PBS_SUBMISSION_INTENT', token=token, host_id=host, resources=spec['resources'], reason=demand)
-        self.gateway.call(dict(action='ensure', spec=spec))
+        self._ensure_spec(spec)
         return spec
+
+    def _ensure_spec(self, spec):
+        reference = spec.get('profile', {}).get('pbs', {}).get('offline_plan')
+        if reference and reference['sha256'] not in self.offline_staged:
+            sha = reference['sha256']
+            source = self.directory/'offline-plans'/f'{sha}.json'
+            self.gateway.stage_artifact(source, reference['path'], sha)
+            self.offline_staged.add(sha)
+        return self.gateway.call(dict(action='ensure', spec=spec))
 
     def _assigned_pilot_replay(self, host, owned):
         """Select a closed session's live node for durable assignment replay only."""
@@ -1724,7 +1862,7 @@ class PbsManager:
                 self.save()
                 self.log('PBS_UNSUBMITTED_INTENT_SUPERSEDED', token=token)
                 continue
-            self.gateway.call(dict(action='ensure', spec=record['spec']))
+            self._ensure_spec(record['spec'])
         exchange_started = time.monotonic()
         response_count = sum(len(batch) for batch in self.responses.values())
         request = dict(action='exchange', responses=self.responses, controls=self.controls)
@@ -1746,6 +1884,8 @@ class PbsManager:
                      requests=sum(len(batch) for batch in data['requests'].values()))
         self.responses, self.controls = {}, {}
         self.allocations = data['allocations']
+        if self.offline_plan:
+            self._advance_offline_history()
         for allocation in self.allocations:
             token = allocation['token']
             if token not in self.state['allocations']:
@@ -1919,6 +2059,8 @@ class PbsManager:
                     or record.get('storage_maintenance_requested')),
                     release_when_idle=(stopping or not self.hold_node) and not waiting
                     and not keep_for_preparation and host not in hosts_with_attempts)
+                if self.offline_plan:
+                    self._offline_contact(token)
                 queued_stop = stopping and allocation['status'] in ('Q', 'H', 'W')
                 queued_resize = record.get('resize_requested') and allocation['status'] == 'Q'
                 if (queued_stop or queued_resize) and allocation.get('job_id') and host not in hosts_with_attempts:

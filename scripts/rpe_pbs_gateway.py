@@ -361,6 +361,12 @@ def read_bulk_chunk(directory, request):
         if not identifier.startswith(('complete-', 'artifact-put-')):
             raise ValueError('PBS spool payload is not a bulk request')
         path = directory/'requests'/(identifier+'.json')
+    elif kind == 'offline':
+        if name not in ('REQUEST.json', 'PROCESS_RETURN.json', 'OUTCOME.json'):
+            raise ValueError('Unknown PBS offline receipt')
+        work = directory/'offline-search'/'jobs'
+        path = work/safe_id(request['method'])/safe_id(request['job_id'])/name
+        path.resolve().relative_to(work.resolve())
     else:
         profile = read(directory/'PROFILE.json')
         work = Path(profile['work_dir'])
@@ -499,6 +505,9 @@ def handle(root, value, finished=None, scheduler=None):
                        manifest_only=value.get('manifest_only') is True)
     if action == 'read_bulk_chunk':
         return read_bulk_chunk(root/'allocations'/safe_id(value['token']), value)
+    if action == 'offline_results':
+        directory = root/'allocations'/safe_id(value['token'])/'offline-search'
+        return dict(jobs=read(directory/'RESULTS.json', {}), coverage=read(directory/'COVERAGE.json', {}))
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
         receipt = read(directory/'JOB_ID.json')

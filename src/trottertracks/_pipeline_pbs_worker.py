@@ -257,6 +257,22 @@ class AllocationWorker(Worker):
         self.collection_inflight = {}
         self.next_collection_scan = 0.
         self.launch_tracking = set(self.records)
+        self.buffer_cpu = 0
+        self.next_assignment_poll = 0.
+        self.offline_search = None
+        self.offline_active = False
+        self.last_central_contact = time.monotonic()
+        self.central_contact = None
+        if reference := self.profile['pbs'].get('offline_plan'):
+            from .rpe_pbs_offline import OfflineSearch
+            try:
+                (self.directory/'OFFLINE_ACTIVE').unlink(missing_ok=True)
+                raw = Path(reference['path']).read_bytes()
+                if hashlib.sha256(raw).hexdigest() != reference['sha256']:
+                    raise ValueError('PBS continuation plan digest differs')
+                self.offline_search = OfflineSearch(json.loads(raw), self.profile, self.directory, self.pbs_resources)
+            except (OSError, KeyError, ValueError) as error:
+                event(self.profile, 'PBS_OFFLINE_SEARCH_UNAVAILABLE', reason=str(error))
         transport.service_during_poll = self._pump_collection
         self.preparation_transfers = set()
         self.dispatch_wakeup = threading.Event()
@@ -280,16 +296,65 @@ class AllocationWorker(Worker):
         while not self.readiness_stop.wait(.2):
             with self.readiness_lock:
                 slots, accepting = self.readiness_offer
-                if accepting and self.accepting() and not self.control().get('stop'):
+                if (accepting and self.accepting() and not self.offline_active
+                        and not self.control().get('stop')):
                     self._advance_readiness(slots, True)
 
     def tick(self, acquire=True):
         if getattr(self, 'collection', None) is None:
             return super().tick(acquire=acquire)
         self._pump_collection()
+        if (self.profile['pbs'].get('standby_waves') and self.buffer_cpu >= self.pbs_resources['cpu_count']//2
+                and time.monotonic() < self.next_assignment_poll):
+            return None  # Retain the normal completion lane while using the buffered work.
         result = self._poll_assignments(acquire)
+        self.next_assignment_poll = time.monotonic() + max(2., self.poll_seconds*4)
         self._launch_buffered()
         return result
+
+    def _offline_tick(self, control):
+        offline = getattr(self, 'offline_search', None)
+        if offline is None:
+            return False
+        now = time.monotonic()
+        contact = control.get('contact')
+        if contact is not None and contact != self.central_contact:
+            self.last_central_contact, self.central_contact = now, contact
+        disconnected = (now-self.last_central_contact >= 30 and self.accepting() and not control.get('stop'))
+        if disconnected != self.offline_active:
+            marker = self.directory/'OFFLINE_ACTIVE'
+            if disconnected:
+                marker.touch()
+            else:
+                marker.unlink(missing_ok=True)
+            self.offline_active = disconnected
+        if not disconnected and offline.process is None:
+            return False
+        self._launch_buffered()
+        active = False
+        for attempt in tuple(self.launch_tracking):
+            state = read(attempt/'WORKER_STATE.json')
+            if (state['state'] in ('STARTING', 'RUNNING', 'UNKNOWN')
+                    and attempt not in self.collection_inflight):
+                state = self._reconcile(attempt, self.records[attempt])
+            active |= (state['state'] in ('ASSIGNED', 'STARTING', 'RUNNING')
+                       or state['state'] == 'UNKNOWN'
+                       and not state.get('detail', {}).get('resource_released')
+                       and not self._known_decline(attempt, state))
+        storage = (self.resource_report or {}).get('storage') or {}
+        try:
+            if disconnected and not active:
+                offline.reserve_storage(storage)
+            started = offline.advance(disconnected=disconnected,
+                runnable=(not active and self.resource_report is not None
+                          and storage.get('accepting_new_jobs', True)
+                          and self.remaining() >= self.drain_seconds+2*self.minimum_task_seconds),
+                batch=max(1, self.slots))
+            return started or disconnected
+        except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
+            offline.recheck_at = now+60
+            event(self.profile, 'PBS_OFFLINE_SEARCH_PENDING', reason=str(error))
+            return disconnected or offline.process is not None
 
     def _pump_collection(self):
         if getattr(self, 'collection', None) is None:
@@ -641,6 +706,7 @@ class AllocationWorker(Worker):
                 memory -= resources['memory_bytes'] if resources else self.pbs_resources['memory_bytes']
             else:
                 self.launch_tracking.discard(attempt)
+        self.buffer_cpu = sum(resources['cpu'] for _, resources in pending)
         if not pending:
             return
         stopping = self.control().get('stop') or not self.accepting()
@@ -652,10 +718,12 @@ class AllocationWorker(Worker):
         for attempt, resources in sorted(pending, key=lambda item: (item[1]['standby'], item[1]['order'])):
             if stopping or self.remaining() < self.drain_seconds + resources['seconds']:
                 self._decline_before_launch(attempt)
+                self.buffer_cpu -= resources['cpu']
                 continue
             if slots <= 0 or resources['cpu'] > cpus or resources['memory_bytes'] > memory:
                 continue
             self._launch(attempt)
+            self.buffer_cpu -= resources['cpu']
             slots -= 1
             cpus -= resources['cpu']
             memory -= resources['memory_bytes']
@@ -695,7 +763,7 @@ class AllocationWorker(Worker):
             self.draining = True
         value = dict(stamp(), schema='RPE_PBS_WORKER_STATE_V1',
                      state=state or ('DRAINING' if self.draining else 'READY'),
-                     ready=state != 'EXITED', accepting=self.accepting(),
+                     ready=state != 'EXITED', accepting=self.accepting() and not getattr(self, 'offline_active', False),
                      host_id=self.host_id, job_id=self.pbs_resources['actual']['job_id'],
                      hostname=socket.gethostname(), pid=os.getpid(),
                      source_sha=self.profile['pbs']['worker_source'],
@@ -703,6 +771,8 @@ class AllocationWorker(Worker):
                      remaining_seconds=self.remaining(),
                      start_clock=self.start_clock,
                      exit_reason=self.exit_reason)
+        if getattr(self, 'offline_search', None) is not None:
+            value['offline_revision'] = self.offline_search.revision
         atomic(self.directory / 'STATE.json', value)
 
     def _post(self, endpoint, payload):
@@ -766,11 +836,13 @@ class AllocationWorker(Worker):
                     self.draining = True
                     self.exit_reason = self.exit_reason or 'WALLTIME_ADMISSION_CUTOFF'
                 self.dispatch_wakeup.clear()
-                self.tick(acquire=self.accepting())
+                offline_busy = self._offline_tick(control)
+                if not offline_busy:
+                    self.tick(acquire=self.accepting())
                 self.heartbeat()
-                if self.draining and not self.pending():
+                if self.draining and not offline_busy and not self.pending():
                     break
-                if control.get('release_when_idle') and not self.pending():
+                if control.get('release_when_idle') and not offline_busy and not self.pending():
                     if self.idle_since is None:
                         self.idle_since = time.monotonic()
                     if time.monotonic() - self.idle_since >= self.idle_release_seconds:
@@ -783,6 +855,8 @@ class AllocationWorker(Worker):
                 self.exit_reason = 'ALLOCATION_WALLTIME_END'
         finally:
             self.draining = True
+            if getattr(self, 'offline_search', None) is not None:
+                self.offline_search.request_stop()
             self._close_collection()
             self.heartbeat(state='EXITED', force=True)
             # No signal is sent to a scientific child; PBS owns the remaining

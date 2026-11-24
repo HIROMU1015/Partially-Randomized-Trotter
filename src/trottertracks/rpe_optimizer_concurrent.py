@@ -1250,6 +1250,9 @@ class DistributedExecutor(ConcurrentExecutor):
                          reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
 
     def _ready_queue(self):
+        manager = getattr(self, 'pbs_manager', None)
+        offline_priority = manager.offline_priority() if hasattr(manager, 'offline_priority') else {}
+
         def priority(task):
             preparation = task.rule['kind'] == 'preparation'
             conditional = (task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
@@ -1263,6 +1266,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 if self.distributed.get('work_conserving_search') and not preparation and not task.demand and not conditional:
                     rank = 1
             return (getattr(task, 'optional_price_validation', False), rank,
+                    offline_priority.get(task.owner, offline_priority.get(task.view.method, len(offline_priority))),
                     self.state.owner_clock.get(task.owner, -1), task.enqueue)
 
         with self.state.cv:
@@ -3294,7 +3298,9 @@ class DistributedExecutor(ConcurrentExecutor):
         pool = pbs_offer.get('resource_pool')
         buffered = (self.distributed.get('pbs_ready_buffer') is True and pool is not None
                     and pbs_offer.get('ready_buffer') is True and pbs_offer.get('launch_fit') is True)
-        buffer_slots = pool['cpu_count'] // 4 if buffered else 0
+        from .rpe_pbs import standby_capacity
+        standby_waves = self.distributed.get('pbs_standby_waves')
+        buffer_slots, buffer_memory = standby_capacity(pool, standby_waves) if buffered else (0, 0)
         delivery_slots = slots + buffer_slots
         fingerprints = value.get('host_fingerprints') or {}
         errors = value.get('readiness_errors') or {}
@@ -3578,8 +3584,8 @@ class DistributedExecutor(ConcurrentExecutor):
             resource_pool = pool
             spare_delivery = max(0, delivery_slots-len(assignments))
             # Startable assignments keep the existing global capacity limit.
-            # PBS standby reservations are bounded by a fraction of this
-            # allocation, and only consume resources at the worker on launch.
+            # The bounded PBS delivery window is separate from running
+            # capacity. Actual CPU and RAM are charged at launch.
             extra = buffer_slots if (may_probe and self._offer_fresh(host)
                     and self._host_admission(host, admission_policy, admission_error)['accepting']
                     and self._host_admission(host, admission_policy, admission_error)['max_slots'] is None) else 0
@@ -3623,10 +3629,10 @@ class DistributedExecutor(ConcurrentExecutor):
                     fits = cpu <= free_cpu and memory <= free_memory
                     standby = not (remaining and fits)
                     if standby and (not extra or not host_busy or task.demand
-                            or task.rule['kind'] == 'preparation' or fits
+                            or task.rule['kind'] == 'preparation' or (fits and standby_waves is None)
                             or task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
-                            or standby_cpu+cpu > extra or standby_memory+memory > (resource_pool['memory_bytes']-GIB)//4
-                            or free_cpu-cpu < -extra or free_memory-memory < -(resource_pool['memory_bytes']-GIB)//4):
+                            or cpu > resource_pool['cpu_count'] or memory > resource_pool['memory_bytes']-GIB
+                            or standby_cpu+cpu > extra or standby_memory+memory > buffer_memory):
                         continue
                     if self.distributed.get('pbs_ready_buffer') is True and pbs_offer.get('launch_fit') is True:
                         seconds = task_estimate(row['request'],settings,host) or pbs_offer.get('minimum_task_seconds',1)

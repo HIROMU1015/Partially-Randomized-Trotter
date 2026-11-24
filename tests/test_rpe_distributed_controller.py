@@ -760,6 +760,25 @@ class ControllerFailures(unittest.TestCase):
         self.assertTrue(executor.store.requeue_pbs_buffer(row['job_id'], row['attempt_id']))
         self.assertEqual(executor.store.row(row['job_id'])['state'], 'QUEUED')
 
+    def test_pbs_bulk_offer_delivers_multiple_waves_without_starting_them(self):
+        from trottertracks.rpe_pbs import GIB
+        executor = self.executor(capacity=2, pbs_ready_buffer=True, pbs_standby_waves=2)
+        executor.distributed['pbs'] = dict(workers=[dict(host_id='pbs-0', profile=dict(dp_workers=2))],
+            task_seconds=dict(q3=1), allocation_sizing=dict(q3_startup_memory_bytes_per_task=GIB))
+        view = executor.for_method('PR_PAULI')
+        tasks = [view._enqueue(self.proposal(f'bulk-{i}'), demand=i<2) for i in range(8)]
+        large = {t.job.name for t in tasks[:2]}
+        poll = dict(host_id='pbs-0', source_sha=self.source, slots=2, capacity=8,
+            resource_report=dict(pbs=dict(remaining_seconds=120, accepting=True, launch_fit=True, ready_buffer=True,
+                resource_pool=dict(cpu_count=8, memory_bytes=12*GIB))))
+        with patch('trottertracks.rpe_pbs.resource_need',
+                   side_effect=lambda request, *_: (4 if request['request_id'] in large else 2, GIB)):
+            assignments = executor.rpc('/v1/poll', poll)['assignments']
+        standby = [item for item in assignments if item['pbs_launch_resources']['standby']]
+        self.assertEqual(len(assignments), 8)
+        self.assertEqual(len(standby), 6)
+        self.assertTrue(all(executor.store.row(item['job_id'])['started_epoch'] is None for item in standby))
+
     def test_pbs_buffered_work_leaves_room_for_a_late_priority_request(self):
         from trottertracks.rpe_pbs import GIB
         executor = self.executor(capacity=2, pbs_ready_buffer=True)

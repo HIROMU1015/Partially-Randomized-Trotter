@@ -474,6 +474,24 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         distributed['pbs_gateway_completion_workers'] = count
     if trial.get('pbs_ready_buffer') is True:
         distributed['pbs_ready_buffer'] = True
+    if 'pbs_standby_waves' in trial:
+        from trottertracks.rpe_pbs import standby_capacity
+        waves = trial['pbs_standby_waves']
+        standby_capacity(dict(cpu_count=1, memory_bytes=0), waves)
+        if waves is None or not distributed.get('pbs_ready_buffer'):
+            raise ValueError('PBS standby waves require the PBS ready buffer')
+        distributed['pbs_standby_waves'] = waves
+    if 'pbs_offline_search' in trial:
+        if run_dir is None:
+            raise ValueError('PBS offline search requires the fixed normal run directory')
+        path = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_pbs_offline.py'
+        source = importlib.util.spec_from_file_location('trottertracks.rpe_pbs_offline', path)
+        offline = importlib.util.module_from_spec(source)
+        source.loader.exec_module(offline)
+        if plan := offline.prepare_plan(Path(run_dir), trial['pbs_offline_search']):
+            distributed['pbs_offline_plan'] = plan
+            history = str(Path(run_dir)/'distributed'/'pbs'/'offline-history')
+            spec['executor'].setdefault('prior_run_dirs', []).append(history)
     if trial.get('pbs_dispatch_gateway'):
         distributed['pbs_dispatch_gateway'] = trial['pbs_dispatch_gateway']
     if trial.get('controller_queue_first'):
@@ -1851,6 +1869,8 @@ class WidthDriver:
         self.queued_preparation = 0
         self.preparation_queue_advanced = False
         manager = getattr(executor, 'pbs_manager', None)
+        if manager is not None and hasattr(manager, 'bind_offline_points'):
+            manager.bind_offline_points(self.state['points'])
         if manager is not None and manager.hold_node:
             manager.retain_between_batches = True
             self.run_pbs_manager = manager
@@ -2568,6 +2588,7 @@ class WidthDriver:
             paths = (
                 self.run/'distributed'/'QUEUE.sqlite3',
                 self.run/'distributed'/'QUEUE.sqlite3-wal',
+                self.run/'distributed'/'pbs'/'offline-history'/'coverage',
                 self.run/'HOST_ADMISSION.json',
                 self.run/'completion'/'STEP_PRICE_RULES.json',
                 self.run/'completion'/'PRICE_RULES.json',
