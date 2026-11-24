@@ -21,6 +21,8 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
     exploratory = request.get('exploratory_cost') is True
     if exploratory:
         use_exploratory_plan()
+    scoped_recovery = exploratory and saved_price_index is not None
+    evidence_root = Path(json.loads(Path(saved_price_index).read_bytes())['root']) if scoped_recovery else root
     helpers, extra = None, None
     for item in request['selected']:
         configuration=provider.selected_configuration(item);cid=configuration['id']
@@ -36,10 +38,11 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             if not directory.is_dir():continue
             # Explicit selected directories only, bounded depth; no project or
             # private-circuit archive scan and no process signalling.
-            for pattern in ['*.json','*/*.json','*/*/*.json','*/*/*/*.json']:
-                for path in directory.glob(pattern):
-                    if any(word in path.name.upper()for word in ['STARTED','STARTING','LAUNCH','STOP','RESULT','STATUS']):
-                        found.append(str(path))
+            if not scoped_recovery:
+                for pattern in ['*.json','*/*.json','*/*/*.json','*/*/*/*.json']:
+                    for path in directory.glob(pattern):
+                        if any(word in path.name.upper()for word in ['STARTED','STARTING','LAUNCH','STOP','RESULT','STATUS']):
+                            found.append(str(path))
             completed=directory/'COMPLETION.json'
             if completed.is_file():
                 saved=json.loads(completed.read_text());candidate=saved.get('registry_entry')
@@ -74,31 +77,55 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             rows.append(dict(configuration_id=cid,status='PRICE_EVIDENCE_REQUIRED',
                              reason=str(error),signal_deferred_for_price=True))
             continue
+        owner_evidence = None
+        if scoped_recovery:
+            owner_evidence = helpers['scoped_original_owners'](plan, owners)
+            original_prices = helpers['audited_prices'](evidence_root, owner_evidence['prices'], E)
+            for key, hits in original_prices.items():
+                extra[key].extend(hits)
+            if original_prices:
+                plan = E.make_plan(root, configuration, source, **options)
         consumed = {tuple(axis) for axis in request.get('previously_audited_price_axes', ())}
         admitted = {(p['physical_id'], p['axis']) for p in plan['direct_prices']} if consumed else set()
-        if consumed - admitted:
+        if consumed - admitted and owner_evidence:
+            missing = consumed - admitted
+            owner_evidence['holds'].append(dict(path=str(saved_price_index), stage='audit',
+                axes=[(r['m'], axis) for r in plan['prepared']['pending']['requests'] for axis in ('X', 'Y')
+                      if (r['physical_candidate']['id'], axis) in missing],
+                state='WAITING_FOR_PRIOR_AUDIT_ADMISSION'))
+        elif consumed - admitted:
             rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
                              reason='Previously completed PF axes must pass saved-price admission before further work',
                              missing_audited_axes=sorted(consumed - admitted)))
             continue
         destination=Path(observations)/cid;destination.mkdir(parents=True,exist_ok=True)
         try:
-            discovered = []
+            discovered = ([row['price_evidence']['source'] for row in plan['direct_prices']
+                           if row['price_evidence']['source'] in owner_evidence['prices']]
+                          if owner_evidence and owner_evidence['prices'] else [])
             deferred = {}
             if helpers:
                 report = destination/'DUPLICATE_ROUNDS.json'
                 deferred = helpers['unresolved_rounds'](root, plan, report, extra, discover=True)
                 if report.exists():
-                    discovered = json.loads(report.read_bytes())['discovered_admitted_receipts']
-                if discovered:
+                    from_native = json.loads(report.read_bytes())['discovered_admitted_receipts']
+                    discovered.extend(from_native)
+                else:
+                    from_native = []
+                if from_native:
                     plan = E.make_plan(root, configuration, source, **options)
                     deferred = helpers['unresolved_rounds'](
                         root, plan, destination/'REMAINING_DUPLICATES.json', extra, discover=True)
+            original_audits = []
+            if owner_evidence:
+                deferred, original_audits = helpers['reconcile_original_prices'](
+                    evidence_root, plan, deferred, owner_evidence)
             cleared = helpers['independent_plan'](plan, deferred) if deferred else plan
             available = [cell for cell in cleared.get('new_compile_cells', ())
                          if not deferred or cell['role'] != 'HOLDOUT']
             raw_calibration = helpers['original_calibration'](
-                root, plan, deferred, Path('docs/research/distributed_selected_pf')/cid) if deferred else None
+                root, plan, deferred, Path('docs/research/distributed_selected_pf')/cid
+            ) if deferred and not owner_evidence else None
             needs_signal = plan.get('new_signal_means', 0) and cid not in request.get('independent_saved_signals', {})
             if deferred and not available and not needs_signal and not raw_calibration and not exploratory:
                 rows.append(dict(configuration_id=cid, status='PRICE_EVIDENCE_REQUIRED',
@@ -108,6 +135,18 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
                 continue
             provider.preflight(cleared, destination)
             row = dict(configuration_id=cid,status='ORIGINAL_OWNER_PREFLIGHT_PASS')
+            if owner_evidence:
+                signal_sources = {signal['commit'] for signal in owner_evidence['signals']}
+                signal_holds = [item for item in owner_evidence['holds'] if item['stage'] in ('signal', 'all')]
+                if signal_sources:
+                    row['original_signal'] = dict(commit=min(signal_sources))
+                elif signal_holds and (plan.get('new_signal_means') or any(item['state'] == 'STOP' for item in signal_holds)):
+                    row['original_signal_holds'] = signal_holds
+                if original_audits:
+                    row['original_audits'] = original_audits
+                if any(item['stage'] in ('model', 'all') for item in owner_evidence['holds']):
+                    row['original_model_hold'] = True
+                row['original_owner_directories'] = sorted(map(str, owners))
             if helpers:
                 row.update(reused_guarded_axes=sum(price['price_evidence']['admission']['path'].endswith('/GUARD_CHECK.json')
                                                    for price in plan['direct_prices']),

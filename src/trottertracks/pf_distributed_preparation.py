@@ -121,6 +121,56 @@ def track_collected_prices(workspace, compiled):
             '--',str(relative))
 
 
+def stage_original_audit(root, workspace, folder, value, audit):
+    """Stage a projection of an original publication for the unchanged C guard."""
+    from .pf_saved_prices import raw_compile_documents
+    from .pr_candidate_completion import Held
+
+    receipt = audit['compiled']
+    axes = audit['axes_by_round']
+    target = folder/'recovered_prices'/receipt['raw_commit']
+    raw = target/'raw'
+    relative = raw.relative_to(workspace).as_posix()
+    wanted = {(int(m), a) for m, names in axes.items() for a in names}
+    try:
+        result, prices, sidecars, proofs = raw_compile_documents(root, value, receipt)
+        selected = [(p, deepcopy(s)) for p, s in zip(prices, sidecars, strict=True)
+                    if (p['m'], p['axis']) in wanted]
+        if {(p['m'], p['axis']) for p, _ in selected} != wanted:
+            raise ValueError('Original PF audit axes differ from the fixed recovery')
+        origin = dict(commit=receipt['raw_commit'], path=receipt['relative']+'/RESULT.json')
+        for _, side in selected:
+            # The projected raw proof is byte-equivalent in content to the
+            # original. Its locator follows the fixed C binding convention.
+            side['implementation_evidence']['path'] = relative+'/IMPLEMENTATION_EVIDENCE.json'
+        documents = {
+            'RESULT.json': dict(original_compile=origin, axes_by_round=axes,
+                                child_exit_code=result['child_exit_code']),
+            'PRICES.json': [p for p, _ in selected],
+            'SIDECARS_UNBOUND.json': [s for _, s in selected],
+            'IMPLEMENTATION_EVIDENCE.json': proofs,
+        }
+        subprocess.run(['git', 'fetch', '--no-tags', '--no-write-fetch-head', str(root), origin['commit']],
+                       cwd=workspace, check=True, capture_output=True)
+        for name, body in documents.items():
+            path = raw/name
+            if not path.exists():
+                put(path, body)
+            elif read(path) != body:
+                raise ValueError('Preserve original PF audit projection: '+str(path))
+        track_collected_prices(workspace, {'relative': relative})
+        commit = git(workspace, 'log', '-1', '--format=%H', '--', relative)
+        staged = dict(status='COMPILE_RECEIPTS_READY', phase=receipt['phase'], route=receipt['route'],
+                      raw_commit=commit, relative=relative, axes_by_round=axes,
+                      rounds=sorted(int(m) for m in axes), original_compile=origin)
+        # The existing input collector binds each provisional sidecar to
+        # this durable raw publication.
+        put(target/'ORIGINAL_COMPILE.RESULT.json', staged)
+        return target, staged
+    except (OSError, KeyError, TypeError, ValueError, subprocess.CalledProcessError) as error:
+        raise Held('PF_SAVED_CALIBRATION_REUSE_HOLD:'+str(error)) from error
+
+
 def saved_for_configuration(settings, field, configuration_id):
     """Reuse a completed leaf only for its canonical configuration identity."""
     plural = {'saved_signal': 'saved_signals',
@@ -267,8 +317,12 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         folder=(workspace/'docs/research/distributed_selected_pf'/item['configuration_id']
                 if inherited_registry is not None else original_folder)
         value=read(folder/'PLAN.json')
-        deferred = owner_rows[item['configuration_id']].get('deferred_price_rounds', {})
-        original_calibration = owner_rows[item['configuration_id']].get('original_calibration')
+        owner_row = owner_rows[item['configuration_id']]
+        deferred = owner_row.get('deferred_price_rounds', {})
+        original_calibration = owner_row.get('original_calibration')
+        original_audits = owner_row.get('original_audits', ())
+        signal_holds = owner_row.get('original_signal_holds', ())
+        scoped = exploratory and 'original_owner_directories' in owner_row
         if price_args:
             # Only the admitted prices actually selected by this plan need
             # object delivery to tasks running in the owned producer clone.
@@ -306,9 +360,10 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             return dict(value=value, relative_output=str(folder.relative_to(workspace)),
                         phase=phase, source=source, **fields)
 
-        def call(phase,tag,**fields):
-            stage_in=folder/(tag+'.INPUT.json');stage_out=folder/(tag+'.RESULT.json')
+        def call(phase, tag, *, stage_folder=folder, **fields):
+            stage_in=stage_folder/(tag+'.INPUT.json');stage_out=stage_folder/(tag+'.RESULT.json')
             stage_input = stage_input_for(phase, **fields)
+            stage_input['relative_output'] = stage_folder.relative_to(workspace).as_posix()
             if inherited_registry is not None and stage_in.exists():
                 if read(stage_in) != stage_input:
                     raise Held('INHERITED_PF_STAGE_INPUTS_CHANGED:'+tag)
@@ -319,10 +374,11 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 '--input',str(stage_in),'--output',str(stage_out)]
             recovered_audit = getattr(runtime, 'recovered_audit', None)
             if phase == 'audit' and recovered_audit is not None:
-                result = recovered_audit(folder, tag, stage_input, fields['compiled'])
+                result = recovered_audit(stage_folder, tag, stage_input, fields['compiled'])
                 if result is not None:
                     return result
-            return runtime.call(context,cmd,folder,tag,stage_out,science=True)
+            options = {'wait': False} if scoped and phase in ('compile', 'audit') else {}
+            return runtime.call(context,cmd,stage_folder,tag,stage_out,science=True,**options)
         def compile_inputs(cohort, cells):
             fields = dict(cohort=cohort, rounds=[cell['m'] for cell in cells])
             if value.get('selected_axis_compile'):
@@ -336,7 +392,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             covered = {(r['m'], r['axis']) for r in values}
             need = {(m, a) for m in value['calibration_rounds'] for a in ('X', 'Y')}
             frozen = None
-            if need and need <= covered:
+            if need and need <= covered and not owner_row.get('original_model_hold'):
                 try:
                     frozen = local('freeze', prices=values)['model']
                 except subprocess.CalledProcessError as error:
@@ -389,7 +445,8 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
         saved_signal = (saved_for_configuration(settings, 'saved_signal', value['configuration']['id'])
-                        or request.get('independent_saved_signals', {}).get(value['configuration']['id']))
+                        or request.get('independent_saved_signals', {}).get(value['configuration']['id'])
+                        or owner_row.get('original_signal'))
 
         def signals():
             if saved_signal:
@@ -407,33 +464,57 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 put(folder/'EXPLORATORY_PRICE_ISSUE.json', dict(stage='PF_CALIBRATION', reason=str(error)))
                 return exploratory_prices(deepcopy(value['direct_prices']))
 
-        if deferred:
+        if deferred or signal_holds:
             from .pf_saved_prices import independent_plan
             # Preserve calibration/holdout roles while admitting independently clear work.
             cells = [cell for cell in independent_plan(value,deferred)['new_compile_cells']
                      if cell['role'] != 'HOLDOUT']
-            def audits():
-                if cells or original_calibration:
-                    if original_calibration:
-                        compiled = reuse_calibration(root, workspace, folder, value,
-                            original_calibration['rounds'], original_calibration)
-                        put(folder/'SAVED_CALIBRATION_REUSE.json', original_calibration)
-                    else:
-                        compiled = compile_stage('PF_COMPILE', 'calibration', cells)
+            def audits(result):
+                from .pr_candidate_completion import Held
+
+                for audit in original_audits:
+                    try:
+                        target, compiled = stage_original_audit(root, workspace, folder, value, audit)
+                        result.extend(call('audit', 'PF_AUDIT', stage_folder=target, compiled=compiled)['prices'])
+                    except Held as error:
+                        put(folder/'recovered_prices'/audit['compiled']['raw_commit']/'AUDIT_PENDING.json',
+                            dict(reason=str(error)))
+                if original_calibration:
+                    compiled = reuse_calibration(root, workspace, folder, value,
+                        original_calibration['rounds'], original_calibration)
+                    put(folder/'SAVED_CALIBRATION_REUSE.json', original_calibration)
                     track_collected_prices(workspace, compiled)
-                    return call('audit', 'PF_AUDIT', compiled=compiled)['prices']
-                return []
+                    result.extend(call('audit', 'PF_AUDIT', compiled=compiled)['prices'])
+                elif cells:
+                    compiled = compile_stage('PF_COMPILE', 'calibration', cells)
+                    track_collected_prices(workspace, compiled)
+                    result.extend(call('audit', 'PF_AUDIT', compiled=compiled)['prices'])
+            can_signal = saved_signal or not signal_holds
+            audited = []
+            def audit_prices():
+                from .pr_candidate_completion import Held
+                try:
+                    audits(audited)
+                except Held as error:
+                    put(folder/'EXPLORATORY_PRICE_ISSUE.json', dict(stage='PF_CALIBRATION', reason=str(error)))
+                return exploratory_prices(deepcopy(value['direct_prices']) + audited)
             with ThreadPoolExecutor(max_workers=1) as pool:
-                signal = pool.submit(signals) if exploratory or value.get('new_signal_means', 0) and not saved_signal else None
+                signal = pool.submit(signals) if can_signal and (
+                    exploratory or value.get('new_signal_means', 0) and not saved_signal) else None
                 if exploratory:
-                    prices_source = available_prices(lambda: exploratory_prices(deepcopy(value['direct_prices']) + audits()))
+                    prices_source = available_prices(audit_prices)
                 else:
-                    audited = audits()
+                    audits(audited)
                 saved_signal_result = signal.result() if signal is not None else None
-            if exploratory:
-                items.append(local('register', prices=prices_source,
+            if exploratory and can_signal:
+                registered = local('register', prices=prices_source,
                     registry=str(Path(selected['registry_file']).relative_to(workspace)),
-                    binding_view=selected.get('binding_view')))
+                    binding_view=selected.get('binding_view'))
+                registered.update(deferred_price_rounds=deferred, original_audits=original_audits,
+                                  audited_independent_prices=audited,
+                                  original_owner_directories=sorted({str(folder),
+                                      *owner_row.get('original_owner_directories', [])}))
+                items.append(registered)
                 continue
             commits = {row['price_evidence']['source']['commit'] for row in audited}
             if saved_signal_result:
@@ -442,9 +523,13 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                 subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),*sorted(commits)],
                                cwd=root,check=True,capture_output=True)
             items.append(dict(status='PRICE_EVIDENCE_REQUIRED', configuration_id=item['configuration_id'],
-                              reason='Outstanding PF price receipts require reconciliation',
+                              reason=('Original PF signal owner requires reconciliation' if signal_holds and not can_signal
+                                      else 'Outstanding PF price receipts require reconciliation'),
                               deferred_price_rounds=deferred, audited_independent_prices=audited,
                               original_calibration=original_calibration,
+                              original_signal_holds=signal_holds, original_audits=original_audits,
+                              original_owner_directories=sorted({str(folder),
+                                  *owner_row.get('original_owner_directories', [])}),
                               independent_signal=saved_signal_result or saved_signal))
             continue
         if saved_signal:
@@ -455,9 +540,12 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
             with ThreadPoolExecutor(max_workers=2)as pool:
                 signal=pool.submit(signals);price=pool.submit(prices)
                 signal.result();price_source=available_prices(price.result)
-        items.append(local('register',prices=price_source,
+        registered = local('register',prices=price_source,
             registry=str(Path(selected['registry_file']).relative_to(workspace)),
-            binding_view=selected.get('binding_view')))
+            binding_view=selected.get('binding_view'))
+        if scoped:
+            registered['original_owner_directories'] = sorted({str(folder), *owner_row['original_owner_directories']})
+        items.append(registered)
     # The usual registry loader consumes the original producer locators. Fetch
     # the owned clone's objects, without changing the controller's HEAD.
     subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),'HEAD'],cwd=root,check=True,

@@ -7,6 +7,8 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from contextlib import closing
+import sqlite3
 import subprocess
 
 
@@ -19,8 +21,10 @@ def receipt_locators(waves, physical_ids=None, *, index=False):
     result = []
     by_physical = defaultdict(list)
     for candidate_root in chain.from_iterable(map(candidate_roots, waves)):
-        for path in sorted(candidate_root.glob(
-                '*/pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf/*/*AUDIT.RESULT.json')):
+        provider = '*/pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf/*/'
+        paths = chain(candidate_root.glob(provider+'*AUDIT.RESULT.json'),
+                      candidate_root.glob(provider+'recovered_prices/*/PF_AUDIT.RESULT.json'))
+        for path in sorted(paths):
             try:
                 audit = json.loads(path.read_bytes())
                 if audit['status'] == 'AUDIT_PASS':
@@ -151,7 +155,7 @@ def receipt_objects(root, paths):
     return dict(zip(paths, result.splitlines(keepends=True), strict=True))
 
 
-def reconciliation_snapshot(root, row, locators, *, objects=None):
+def reconciliation_snapshot(root, row, locators, *, objects=None, scoped=False):
     """Revisit final decisions when an applicable receipt or owner changes."""
     paths = [loc['commit']+':'+loc['path'] for loc in locators]
     objects = receipt_objects(root, paths) if objects is None else objects
@@ -159,16 +163,28 @@ def reconciliation_snapshot(root, row, locators, *, objects=None):
     owner_paths = set(item.get('original_paths', ()))
     for directory in item.get('original_owner_directories', ()):
         base = Path(directory)
-        owner_paths.update(str(path) for pattern in ('*.json', '*/*/*.json')
-                           for path in base.glob(pattern)
-                           if any(part in path.name for part in ('COMPLETION', 'RESULT', 'RETURN', 'STOP')))
+        paths = (path for pattern in ('*.json', '*/*/*.json', 'recovered_prices/*/*.json')
+                 for path in base.glob(pattern))
+        if scoped:
+            owner_paths.update(str(path) for path in paths if (
+                path.name.startswith(('PF_', 'STOP', 'COMPLETION'))
+                and any(token in path.name for token in ('COMPLETION', 'RESULT', 'RETURN', 'STOP', 'DISTRIBUTED', 'STARTED'))))
+        else:
+            owner_paths.update(str(path) for path in paths if any(
+                part in path.name for part in ('COMPLETION', 'RESULT', 'RETURN', 'STOP')))
     owner = []
     for raw in sorted(owner_paths):
         path = Path(raw)
         try:
             stat = path.stat()
             owner.append((raw, stat.st_size, stat.st_mtime_ns))
-        except OSError:
+            if scoped and path.name.endswith('.DISTRIBUTED.json'):
+                stage = path.name.split('.')[0]
+                if stage in OWNER_STAGES:
+                    mark = owner_document(path)
+                    state, _ = distributed_owner_return(path.parent, mark, stage)
+                    owner.append((raw, state))
+        except (OSError, KeyError, TypeError, ValueError, sqlite3.Error):
             owner.append((raw, None, None))
     return hashlib.sha256(json.dumps([locators, ''.join(objects[path] for path in paths),
                                      owner, live_price_owners(item)],
@@ -183,10 +199,15 @@ def price_axis_actions(item):
     for axes in item.get('deferred_price_rounds', {}).values():
         for axis in axes:
             findings = axis.get('findings', ())
+            owner_states = {hit.get('original_owner_state') for hit in findings}
             if (axis['physical_id'], axis['axis']) in audited:
                 action, reason = 'REUSE_AUDITED_PRICE', 'The central controller received a guarded price'
-            elif axis['axis'] in raw_audit.get(str(axis['m']), ()):
+            elif 'AUDIT_ORIGINAL_COMPILE' in owner_states or axis['axis'] in raw_audit.get(str(axis['m']), ()):
                 action, reason = 'AUDIT_ORIGINAL_COMPILE', 'Original compile matched the fixed plan'
+            elif 'STOP' in owner_states:
+                action, reason = 'NO_NEW_CALCULATION_UNEVALUATED', 'The original STOP or no-retry condition applies to this axis'
+            elif owner_states - {None}:
+                action, reason = 'RECONCILE_ORIGINAL_ATTEMPT', ', '.join(sorted(owner_states - {None}))
             elif any(hit.get('running_job') for hit in findings):
                 action, reason = 'RECONCILE_ORIGINAL_ATTEMPT', 'Original owner appeared in the duplicate check'
             elif any(hit.get('prior_admitted_sources') for hit in findings):
@@ -384,6 +405,328 @@ def unique_locators(locators):
     return [unique[key] for key in sorted(unique)]
 
 
+OWNER_STAGES = {
+    'PF_SIGNALS': 'signal', 'PF_COMPILE': 'compile', 'PF_HOLDOUT_COMPILE': 'compile',
+    'PF_AUDIT': 'audit', 'PF_HOLDOUT_AUDIT': 'audit', 'PF_MODEL_FREEZE': 'model',
+    'PF_FINISH': 'model',
+}
+OWNER_MARKERS = ('.DISTRIBUTED.json', '.STARTED.json', '.STARTING.json', '.LAUNCH.json',
+                 '.RETURN.json', '.ORIGINAL_TRANSPORT_ATTEMPT.json', '.LEGACY_UNSTARTED.json')
+
+
+def owner_document(path):
+    return json.loads(path.read_bytes()) if path.is_file() else None
+
+
+def distributed_owner_return(directory, marker, stage):
+    """Reconcile a submitted request against the owning queue in read-only mode."""
+    job = marker['job_id']
+    expected = deepcopy(marker['request'])
+    if (expected.pop('request_id', job) != job or expected['preparation']['provider'] != stage
+            or expected['preparation']['source']['commit'] != marker['source']):
+        return 'UNKNOWN', None
+    expected['preparation'].pop('dependencies', None)
+    for base in directory.parents:
+        ledger = base/'distributed/QUEUE.sqlite3'
+        if not ledger.is_file():
+            continue
+        with closing(sqlite3.connect(ledger.resolve().as_uri()+'?mode=ro', uri=True, timeout=2)) as db:
+            row = db.execute('SELECT request, request_sha256, method, state, attempt_id, completion_sha256 '
+                             'FROM jobs WHERE job_id=?', (job,)).fetchone()
+        if row is None:
+            continue
+        stored, sha, method, state, attempt, completion = row
+        request = json.loads(stored)
+        body = json.dumps(request, sort_keys=True, separators=(',', ':')).encode()
+        if hashlib.sha256(body).hexdigest() != sha or request.pop('request_id', None) != job:
+            return 'UNKNOWN', None
+        request['preparation'].pop('dependencies', None)
+        if request != expected:
+            return 'UNKNOWN', None
+        if state == 'CANCELLED' and attempt is None:
+            return 'UNSTARTED', None
+        if state != 'ACCEPTED' or not attempt or not completion:
+            return 'UNKNOWN', None
+        output = base/'jobs'/method/job
+        outcome = owner_document(output/'OUTCOME.json')
+        returned = owner_document(output/'PROCESS_RETURN.json')
+        if (not outcome or outcome.get('request_sha256') != sha
+                or outcome.get('request_id') != job or not returned):
+            return 'UNKNOWN', None
+        if outcome.get('status') == 'PREPARATION_FAILED':
+            return 'STOP', None  # The original distributed contract forbids automatic retry.
+        if (outcome.get('status') == 'PREPARATION_COMPLETE' and returned.get('returncode') == 0
+                and returned.get('signal') is None):
+            collected = owner_document(directory/(stage+'.RETURN.json'))
+            if collected:
+                return 'ENDED', collected
+            # A prior run may have received the immutable result before it
+            # wrote a producer-local RETURN. Read that exact cached output.
+            controller_root = Path(expected['preparation']['controller_root'])
+            command = expected['preparation']['command']
+            output_path = Path(command[command.index('--output')+1]).relative_to(controller_root)
+            sha = outcome.get('artifacts', {}).get('workspace/'+output_path.as_posix(), '')
+            cached = None
+            if len(sha) == 64 and all(ch in '0123456789abcdef' for ch in sha):
+                path = base/'distributed/artifacts'/sha[:2]/sha
+                if path.is_file():
+                    raw = path.read_bytes()
+                    if hashlib.sha256(raw).hexdigest() == sha:
+                        cached = json.loads(raw)
+            return 'ENDED', dict(job_id=job, source=marker['source'], cached_result=cached,
+                                 git_heads=[bundle['head'] for bundle in outcome.get('git_bundles', ())])
+        return 'UNKNOWN', None
+    return 'UNKNOWN', None
+
+
+def owner_stage_axes(payload, stage, all_axes):
+    kind = OWNER_STAGES[stage]
+    if kind == 'signal':
+        return set()
+    if kind == 'model' or payload is None:
+        return all_axes
+    selected = payload if kind == 'compile' else payload['compiled']
+    return {(m, axis) for m in selected['rounds']
+            for axis in selected.get('axes_by_round', {}).get(str(m), ('X', 'Y'))} & all_axes
+
+
+def owner_stop_axes(fields, all_axes):
+    if 'rounds' in fields:
+        all_axes = owner_stage_axes(fields, 'PF_COMPILE', all_axes)
+    elif 'axes_by_round' in fields:
+        all_axes = {(m, axis) for m, axis in all_axes if axis in fields['axes_by_round'].get(str(m), ())}
+    return {(m, axis) for m, axis in all_axes
+            if m == fields.get('m', m) and axis == fields.get('axis', axis)
+            and ('axes' not in fields or axis in fields['axes'])}
+
+
+def bound_owner_input(marker, path):
+    preparation = marker['request']['preparation']
+    command = preparation['command']
+    original = Path(command[command.index('--input')+1]).relative_to(preparation['controller_root'])
+    return preparation['inputs'].get('workspace/'+original.as_posix()) == hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def scoped_original_owners(plan, directories):
+    """Index scoped original attempts and their immutable publications.
+
+    RESULT and STATUS are observations, not ownership. An unavailable or
+    conflicting receipt never clears a started request. The native provider's
+    own duplicate check runs separately against its legacy price sources.
+    """
+    output = dict(holds=[], signals=[], prices=[], compiles=[])
+    cfg = plan['configuration']
+    all_axes = {(row['m'], axis) for row in plan['prepared']['pending']['requests'] for axis in ('X', 'Y')}
+
+    def hold(path, kind, axes, state):
+        output['holds'].append(dict(path=str(path), stage=kind, axes=sorted(axes), state=state))
+
+    for directory in sorted(set(map(Path, directories))):
+        try:
+            original = owner_document(directory/'PLAN.json')
+            if original and original['configuration']['id'] != cfg['id']:
+                continue
+        except (OSError, KeyError, TypeError, ValueError):
+            pass  # The stage markers still determine which work is protected.
+        leaves = [directory, *sorted((directory/'recovered_prices').glob('*/'))]
+        for leaf in leaves:
+            for path in sorted({*leaf.glob('STOP*.json'), *leaf.glob('PF_*.STOP.json')}):
+                try:
+                    fields = owner_document(path)
+                    if fields.get('configuration_id', cfg['id']) != cfg['id']:
+                        continue
+                    stage = fields.get('stage', fields.get('phase', path.name.split('.')[0]))
+                    kind = OWNER_STAGES.get(stage, stage)
+                    kind = kind if kind in OWNER_STAGES.values() else 'all'
+                    keys = owner_stop_axes(fields, all_axes)
+                except (OSError, AttributeError, TypeError, ValueError):
+                    kind, keys = 'all', all_axes
+                hold(path, kind, keys, 'STOP')
+            for stage, kind in OWNER_STAGES.items():
+                markers = [leaf/(stage+suffix) for suffix in OWNER_MARKERS if (leaf/(stage+suffix)).is_file()]
+                if not markers:
+                    continue
+                axes, marker = all_axes, None
+                try:
+                    input_path = leaf/(stage+'.INPUT.json')
+                    marker = owner_document(leaf/(stage+'.DISTRIBUTED.json'))
+                    if marker is not None and not bound_owner_input(marker, input_path):
+                        hold(markers[0], kind, all_axes, 'UNKNOWN')
+                        continue
+                    payload = owner_document(input_path)
+                    if payload is not None and payload['value']['configuration']['id'] != cfg['id']:
+                        continue
+                    axes = owner_stage_axes(payload, stage, all_axes)
+                    exact = (payload is not None and payload['value']['configuration'] == cfg
+                             and payload['value']['prepared']['pending']['requests'] == plan['prepared']['pending']['requests'])
+                    if marker is not None:
+                        state, returned = distributed_owner_return(leaf, marker, stage)
+                        for archived in markers:
+                            if archived.suffixes[-2] not in ('.ORIGINAL_TRANSPORT_ATTEMPT', '.LEGACY_UNSTARTED'):
+                                continue
+                            old_state, _ = distributed_owner_return(leaf, owner_document(archived), stage)
+                            if old_state == 'UNKNOWN':
+                                hold(archived, kind, axes, old_state)
+                        if returned and (returned.get('job_id') != marker['job_id']
+                                         or returned.get('source') != marker['source']):
+                            state = 'UNKNOWN'
+                    else:
+                        returned = owner_document(leaf/(stage+'.RETURN.json'))
+                        state = ('ENDED' if returned and returned.get('returncode') == 0
+                                 and returned.get('signal') is None else 'UNKNOWN')
+                        if returned and returned.get('returncode') not in (0, None):
+                            state = 'STOP'
+                    if state == 'UNSTARTED':
+                        continue
+                    if state != 'ENDED' or not exact:
+                        hold(markers[0], kind, axes, 'UNKNOWN' if state == 'ENDED' else state)
+                        continue
+                    result = (returned or {}).get('cached_result')
+                    if result is None:
+                        result = owner_document(leaf/(stage+'.RESULT.json'))
+                    # A collected, ended stage must also point at its own
+                    # immutable publication before we replace missing work.
+                    heads = (returned or {}).get('git_heads', ())
+                    if kind == 'signal' and result and result.get('status') == 'SIGNALS_READY' and result.get('publication') in heads:
+                        output['signals'].append(dict(commit=result['publication']))
+                    elif kind == 'compile' and result and result.get('status') == 'COMPILE_RECEIPTS_READY' and result.get('raw_commit') in heads:
+                        if owner_stage_axes(result, stage, all_axes) != axes:
+                            hold(markers[0], kind, axes, 'UNKNOWN')
+                        else:
+                            output['compiles'].append(result)
+                    elif kind == 'audit' and result and result.get('status') == 'AUDIT_PASS' and all(
+                            p['gate'] == 'C_IMPLEMENTATION_GUARD_PASS' and p['price_evidence']['source']['commit'] in heads
+                            for p in result['prices']):
+                        output['prices'].extend(p['price_evidence']['source'] for p in result['prices'])
+                        hold(markers[0], kind, axes, 'WAITING_FOR_PRIOR_AUDIT_ADMISSION')
+                    elif kind != 'model':
+                        hold(markers[0], kind, axes, 'WAITING_FOR_RECEIPT')
+                except (OSError, KeyError, IndexError, TypeError, ValueError, sqlite3.Error):
+                    hold(markers[0], kind, all_axes if marker is None else axes, 'UNKNOWN')
+        # Legacy native markers carry stage ownership even without a queue.
+        for name, kind, modern in (('signal_run01', 'signal', 'PF_SIGNALS'),
+                                   ('calibration/run01', 'compile', 'PF_COMPILE'),
+                                   ('holdout/run01', 'compile', 'PF_HOLDOUT_COMPILE')):
+            native = directory/name
+            tracked = any((directory/(modern+suffix)).is_file() for suffix in OWNER_MARKERS)
+            legacy_markers = () if tracked else (*native.glob('*STARTED*.json'), *native.glob('JOB.json'))
+            for path in (*native.glob('STOP*.json'), *legacy_markers):
+                try:
+                    data = owner_document(path)
+                    keys = {(c['m'], axis) for c in data['cells'] for axis in c.get('axes', ('X', 'Y'))}
+                except (OSError, KeyError, TypeError, ValueError):
+                    keys = all_axes
+                hold(path, kind, keys & all_axes, 'STOP' if path.name.startswith('STOP') else 'UNKNOWN')
+            status = native/'STATUS.json'
+            if not tracked and kind == 'signal' and status.is_file():
+                try:
+                    active = owner_document(status).get('status') != 'COMPLETE_THIRTEEN_ROUNDS'
+                except (OSError, ValueError, AttributeError):
+                    active = True
+                if active or plan.get('new_signal_means'):
+                    hold(status, kind, set(), 'WAITING_FOR_RECEIPT')
+    return output
+
+
+def raw_compile_documents(root, plan, compiled):
+    """Verify original compile completion and retain the four raw C inputs."""
+    relative = Path(compiled['relative'])
+    commit = compiled['raw_commit']
+    if (relative.is_absolute() or '..' in relative.parts or relative.name != 'run01'
+            or relative.parent.name != compiled['phase'] or len(commit) != 40
+            or any(ch not in '0123456789abcdef' for ch in commit)):
+        raise ValueError('Invalid original PF compile locator')
+
+    def blob(path):
+        return json.loads(subprocess.check_output(['git', 'show', commit+':'+path.as_posix()],
+            cwd=root, stderr=subprocess.DEVNULL, env=dict(os.environ, GIT_NO_LAZY_FETCH='1')))
+
+    old = blob(relative.parents[1]/'PLAN.json')
+    result, prices, sides, proofs = (blob(relative/name) for name in
+        ('RESULT.json', 'PRICES.json', 'SIDECARS_UNBOUND.json', 'IMPLEMENTATION_EVIDENCE.json'))
+    axes = owner_stage_axes(compiled, 'PF_COMPILE', {
+        (r['m'], a) for r in plan['prepared']['pending']['requests'] for a in ('X', 'Y')})
+    wrappers = {(row['cell']['m'], {'cosine': 'X', 'sine': 'Y'}[axis])
+                for row in result['results'] for axis in row['wrappers']}
+    if (old['configuration'] != plan['configuration']
+            or old['prepared']['pending']['requests'] != plan['prepared']['pending']['requests']
+            or result['child_exit_code'] != 0 or result.get('child_signal') is not None
+            or not all(r['ok'] for r in result['results']) or not axes or axes != wrappers
+            or axes != {(row['m'], row['axis']) for row in prices} or len(prices) != len(axes)
+            or len(sides) != len(prices)
+            or any(price['axis'] != side['axis'] or price['physical_context'] != side['physical_context']
+                   or price['source'] != side['price_source'] for price, side in zip(prices, sides, strict=True))):
+        raise ValueError('Original compile does not match the fixed PF plan')
+    return result, prices, sides, proofs
+
+
+def reconcile_original_prices(root, plan, decisions, owners):
+    """Add the registered ledger's authority to the native duplicate decisions."""
+    rows = {(r['m'], r['axis']): r for group in decisions.values() for r in group}
+    wanted = {(cell['m'], axis) for cell in plan['new_compile_cells'] for axis in cell['axes']}
+    physical = {job['m']: job['physical_candidate']['id'] for job in plan['prepared']['pending']['requests']}
+
+    def block(key, state, **evidence):
+        row = rows.setdefault(key, dict(m=key[0], axis=key[1], physical_id=physical[key[0]], findings=[]))
+        row.update(action='HELD', new_calculation=False)
+        row['findings'].append(dict(original_owner_state=state, **evidence))
+
+    held = set()
+    for item in owners['holds']:
+        if item['stage'] != 'signal' and item['stage'] != 'model':
+            for key in wanted & {tuple(axis) for axis in item['axes']}:
+                block(key, item['state'], original_owner=item['path'])
+                held.add(key)
+    matching = defaultdict(dict)
+    for receipt in owners['compiles']:
+        axes = owner_stage_axes(receipt, 'PF_COMPILE', wanted) - held
+        if not axes:
+            continue
+        origin = dict(commit=receipt['raw_commit'], path=receipt['relative']+'/PRICES.json')
+        try:
+            _, price_rows, sides, proofs = raw_compile_documents(root, plan, receipt)
+            proofs_by_axis = {}
+            for row, side in zip(price_rows, sides, strict=True):
+                check = proofs
+                for selector in side['implementation_evidence'].get('selector', ()):
+                    check = check[selector]
+                proofs_by_axis[row['m'], row['axis']] = check
+        except ValueError:
+            # The original attempt is known to have ended. A complete but
+            # incompatible receipt cannot supply the required price. The
+            # original native duplicate gate still decides whether to compile.
+            continue
+        except (OSError, KeyError, IndexError, TypeError, subprocess.CalledProcessError):
+            for key in axes:
+                block(key, 'WAITING_FOR_RECEIPT', original_compile=origin)
+                held.add(key)
+            continue
+        for row, side in zip(price_rows, sides, strict=True):
+            key = row['m'], row['axis']
+            if key not in axes:
+                continue
+            signature = json.dumps([row, side, proofs_by_axis[key]], sort_keys=True)
+            identity = receipt['raw_commit'], receipt['relative']
+            matching[key].setdefault(signature, (identity, receipt))
+    audits = {}
+    for key in sorted(matching.keys() - held):
+        choices = matching[key]
+        if len(choices) != 1:
+            block(key, 'CONFLICTING_RECEIPTS')
+            continue
+        # The exact compile source now owns pricing for this axis. If a native
+        # owner is still live, defer the audit until its request reconciles.
+        if any(hit.get('running_job') for hit in rows.get(key, {}).get('findings', ())):
+            continue
+        identity, receipt = next(iter(choices.values()))
+        audit = audits.setdefault(identity, dict(compiled=receipt, axes_by_round={}))
+        audit['axes_by_round'].setdefault(str(key[0]), []).append(key[1])
+        block(key, 'AUDIT_ORIGINAL_COMPILE', original_compile=dict(
+            commit=identity[0], path=identity[1]+'/PRICES.json'))
+    reduced = {r['m'] for r in rows.values() if r['action'] != 'NEW_COMPILE_MISSING_CONFIRMED'}
+    return {m: [r for r in rows.values() if r['m'] == m] for m in sorted(reduced)}, list(audits.values())
+
+
 def original_calibration(root, plan, deferred, relative):
     """Find a committed raw calibration for this exact plan, ready for C audit."""
     cells = [cell for cell in plan['new_compile_cells'] if cell['role'] != 'HOLDOUT']
@@ -525,7 +868,13 @@ def unresolved_rounds(root, plan, output, extra, *, discover=False):
                for job in plan['prepared']['pending']['requests'] for axis in rounds.get(job['m'], ())]
     if not targets:
         return {}
-    audit = native.duplicate_check((1, 2), selected=targets)
+    # The fixed legacy checker visits every other row for native JOB/RESULT
+    # discovery. Supply its original X/Y pairs even when only one axis is needed.
+    pairs = {row['m']: row for row in targets}
+    wanted = {(row['m'], row['axis']) for row in targets}
+    audit = native.duplicate_check((1, 2), selected=[
+        dict(row, axis=axis) for row in pairs.values() for axis in ('X', 'Y')])
+    audit['rows'] = [row for row in audit['rows'] if (row['m'], row['axis']) in wanted]
     requests = {(r['m'], r['axis']): r for r in evidence.I.price_requests(root, plan['prepared'])}
     discovered = catalog_receipt_locators(root, audit['rows']) if discover else {}
     located = audited_prices(root, unique_locators(loc for refs, _ in discovered.values()

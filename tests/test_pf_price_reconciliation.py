@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 import gzip
+import hashlib
+import sqlite3
 import subprocess
 import tempfile
 import threading
@@ -75,6 +77,8 @@ class PFPriceReconciliationTests(unittest.TestCase):
             workspace = leaf/'provider_workspace'
             folder = workspace/'docs/research/distributed_selected_pf/cfg'
             entry = original/'scripts/prepare_pf_candidate.py'
+            entry.parent.mkdir(parents=True)
+            entry.touch()
             request = dict(mode='complete', selected=[{'configuration_body': {'id': 'cfg'}}],
                            output_root=str(run/'output'), registry_file=str(run/'registry.json'))
             spec = dict(methods=['TRUNCATED_PF'], science_approved=True,
@@ -219,6 +223,175 @@ class PFPriceReconciliationTests(unittest.TestCase):
         self.assertEqual(reduced['maximum_new_compile'], 1)
         self.assertEqual(original['new_compile_cells'][0]['axes'], ['X', 'Y'])
 
+    def test_original_ledger_ownership_is_scoped_to_bound_stage_and_axes(self):
+        from trottertracks.rpe_q3_coordinator import digest
+
+        plan = dict(configuration={'id': 'cfg'}, new_signal_means=0,
+                    new_compile_cells=[dict(m=m, axes=['X', 'Y']) for m in range(4)],
+                    prepared={'pending': {'requests': [
+                        dict(m=m, physical_candidate={'id': str(m)}) for m in range(4)]}},
+                    selected_axis_compile=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            ledger = base/'distributed/QUEUE.sqlite3'
+            ledger.parent.mkdir()
+            job_root = base/'jobs/PREPARATION:compile'
+            with sqlite3.connect(ledger) as db:
+                db.execute('create table jobs (job_id text, request text, request_sha256 text, method text, '
+                           'state text, attempt_id text, completion_sha256 text)')
+                directories = []
+                for m, state in enumerate(('UNKNOWN', 'CANCELLED', 'ACCEPTED'), 1):
+                    workspace = base/f'owner-{m}'
+                    owner = workspace/'cfg'
+                    directories.append(owner)
+                    payload = owner/'PF_COMPILE.INPUT.json'
+                    write(payload, dict(value=plan, rounds=[m], axes_by_round={str(m): ['X']}))
+                    result = owner/'PF_COMPILE.RESULT.json'
+                    job = f'prep-{m}'
+                    request = {'preparation': dict(
+                        provider='PF_COMPILE', source={'commit': 'original'},
+                        controller_root=str(workspace), inputs={
+                            'workspace/cfg/PF_COMPILE.INPUT.json': hashlib.sha256(payload.read_bytes()).hexdigest()},
+                        command=['python', '--input', str(payload), '--output', str(result)])}
+                    write(owner/'PF_COMPILE.DISTRIBUTED.json', dict(source='original', request=request, job_id=job))
+                    stored = dict(request, request_id=job)
+                    sha = digest(stored)
+                    attempt = None if state == 'CANCELLED' else 'attempt'
+                    db.execute('insert into jobs values (?, ?, ?, ?, ?, ?, ?)',
+                               (job, json.dumps(stored), sha, 'PREPARATION:compile', state, attempt, 'received'))
+                    if state == 'ACCEPTED':
+                        write(job_root/job/'OUTCOME.json',
+                              dict(status='PREPARATION_FAILED', request_id=job, request_sha256=sha))
+                        write(job_root/job/'PROCESS_RETURN.json', dict(returncode=1, signal=None))
+                write(directories[0]/'STATUS.json', {'status': 'COMPLETE'})
+                write(directories[0]/'STOP.json', dict(stage='audit', rounds=[0], axes_by_round={'0': ['Y']}))
+            original = prices.scoped_original_owners(plan, directories)
+            blocked, audits = prices.reconcile_original_prices(base, plan, {}, original)
+            self.assertEqual(audits, [])
+            self.assertEqual({(r['m'], r['axis']): r['findings'][0]['original_owner_state']
+                              for rows in blocked.values() for r in rows},
+                             {(0, 'Y'): 'STOP', (1, 'X'): 'UNKNOWN', (3, 'X'): 'STOP'})
+            self.assertEqual([c['axes'] for c in prices.independent_plan(plan, blocked)['new_compile_cells']],
+                             [['X'], ['Y'], ['X', 'Y'], ['Y']])
+
+    def test_reconciled_compile_audits_only_missing_unowned_axes(self):
+        plan = dict(configuration={'id': 'cfg'}, selected_axis_compile=True,
+                    new_compile_cells=[dict(m=1, axes=['Y']), dict(m=2, axes=['X', 'Y'])],
+                    prepared={'pending': {'requests': [
+                        dict(m=m, physical_candidate={'id': str(m)}) for m in (1, 2)]}})
+        receipt = dict(raw_commit='a'*40, relative='cfg/calibration/run01', rounds=[1])
+        owners = dict(holds=[dict(stage='audit', axes=[(2, 'X')], path='old', state='UNKNOWN')],
+                      compiles=[receipt])
+        raw_prices = [dict(m=1, axis=axis) for axis in ('X', 'Y')]
+        raw_sides = [dict(implementation_evidence={'selector': []}) for _ in raw_prices]
+        with patch.object(prices, 'raw_compile_documents', return_value=({}, raw_prices, raw_sides, {})):
+            blocked, audits = prices.reconcile_original_prices(ROOT, plan, {}, owners)
+        self.assertEqual(audits, [dict(compiled=receipt, axes_by_round={'1': ['Y']})])
+        self.assertEqual(prices.independent_plan(plan, blocked)['new_compile_cells'], [dict(m=2, axes=['Y'])])
+
+    def test_normal_completion_uses_saved_price_and_adopts_each_needed_stage_once(self):
+        from trottertracks import pf_distributed_preparation as distributed
+        from trottertracks.pf_optimizer_connection import complete_selected
+        from trottertracks.rpe_q3_coordinator import digest
+        from trottertracks.rpe_q3_store import JobStore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run = root/'run'
+            leaf = run/'pf_completion'
+            workspace = leaf/'provider_workspace'
+            folder = workspace/'docs/research/distributed_selected_pf/cfg'
+            entry = root/'fixed/scripts/prepare_pf_candidate.py'
+            entry.parent.mkdir(parents=True)
+            entry.touch()
+            request = dict(mode='complete', exploratory_cost=True, selected_axis_compile=True,
+                           selected=[dict(configuration_body={'id': 'cfg'})],
+                           output_root=str(run/'output'), registry_file=str(run/'registry.json'))
+            spec = dict(methods=['FULL_PF'], science_approved=True, pf_completion=dict(request, entry=str(entry)))
+            write(leaf/'ORIGINAL_OWNER_REQUEST.json', dict(request, prior_owner_directories=[]))
+            write(leaf/'PROVIDER_SOURCE.json', dict(root=str(entry.parents[1]), source='artificial'))
+            write(leaf/'PLAN_RESPONSE.json', {'items': [dict(status='PLAN_ONLY',
+                configuration_id='cfg', output=str(folder))]})
+            saved = dict(m=1, axis='X', physical_id='one', price_evidence={
+                'source': {'commit': 'old'}, 'admission': {'path': 'fixture/GUARD_CHECK.json'}})
+            plan = dict(configuration={'id': 'cfg'}, selected_axis_compile=True, direct_prices=[saved],
+                        calibration_rounds=[1, 2],
+                        new_compile_cells=[dict(m=m, axes=axes, role='CALIBRATION')
+                                           for m, axes in ((1, ['Y']), (2, ['X', 'Y']))])
+            write(folder/'PLAN.json', plan)
+            write(folder/'preflight.METADATA_RESULT.json', {'source': {'commit': 'artificial'}})
+            write(leaf/'ORIGINAL_OWNER_CHECK.json', {'rows': [dict(
+                configuration_id='cfg', status='ORIGINAL_OWNER_PREFLIGHT_PASS',
+                original_owner_directories=[], original_signal={'commit': 'saved-signal'},
+                original_audits=[dict(compiled={'raw_commit': 'old'}, axes_by_round={'1': ['Y']})],
+                deferred_price_rounds={1: [dict(axis='Y', action='HELD')],
+                                       2: [dict(axis='X', action='HELD')]})]})
+            store = JobStore(run/'distributed/QUEUE.sqlite3')
+            submitted = []
+            registered = []
+
+            def fake_worker(context, command, directory, stage, output, *, science, wait):
+                self.assertTrue(science)
+                self.assertFalse(wait)
+                payload = json.loads(Path(command[command.index('--input')+1]).read_bytes())
+                req = dict(route={'kind': 'artificial'}, stage=stage, payload=payload)
+                job = digest(req)[:24]
+                self.assertTrue(store.reserve('PREPARATION:'+stage, job, req, 'UNLIMITED', True))
+                assignment, = store.claim('fixture', 1, allowed_jobs=[job])
+                identity = ('fixture', job, assignment['attempt_id'])
+                store.update(*identity, 'RUNNING')
+                submitted.append((stage, payload))
+                if stage == 'PF_COMPILE':
+                    result = dict(rounds=payload['rounds'], axes_by_round=payload['axes_by_round'],
+                                  relative='fixture-raw')
+                else:
+                    result = dict(prices=[dict(m=int(m), axis=axis) for m, axes in
+                                          payload['compiled']['axes_by_round'].items() for axis in axes])
+                files = {'RESULT.json': result}
+                self.assertFalse(store.complete(*identity, assignment['request_sha256'], files)[1])
+                self.assertTrue(store.complete(*identity, assignment['request_sha256'], files)[1])
+                self.assertTrue(store.adopt(job))
+                self.assertFalse(store.adopt(job))
+                write(output, result)
+                return result
+
+            def metadata(command, **kwargs):
+                if command[0] == 'git':
+                    return
+                payload = json.loads(Path(command[command.index('--input')+1]).read_bytes())
+                output = Path(command[command.index('--output')+1])
+                if payload['phase'] == 'exploratory-prices':
+                    self.assertEqual([(p['m'], p['axis']) for p in payload['prices']],
+                                     [(1, 'X'), (1, 'Y'), (2, 'Y')])
+                    write(output, {'prices': {'commit': 'fixture-prices', 'path': 'PRICES'}})
+                else:
+                    self.assertEqual(payload['phase'], 'register')
+                    registered.append(payload['prices'])
+                    write(workspace/payload['registry'], {'configurations': {'cfg': {
+                        'signal_packet': {'commit': 'saved-signal'}, 'q3_inputs': {'commit': 'fixture-q3'},
+                        'prices': payload['prices']}}})
+                    write(output, dict(status='READY_FOR_SAME_OPTIMIZER', configuration_id='cfg'))
+
+            recovered = folder/'recovered_prices/old'
+            recovered.mkdir(parents=True)
+            runtime = SimpleNamespace(call=fake_worker)
+            with patch.object(distributed.subprocess, 'check_output', return_value=b'artificial'), \
+                 patch.object(distributed.subprocess, 'run', side_effect=metadata), \
+                 patch.object(distributed, 'reuse_signal') as reuse_signal, \
+                 patch.object(distributed, 'track_collected_prices'), \
+                 patch.object(distributed, 'stage_original_audit', return_value=(recovered, {'axes_by_round': {'1': ['Y']}})):
+                first = complete_selected(root, spec, run, stage_executor=runtime)
+                second = complete_selected(root, spec, run, stage_executor=runtime)
+            self.assertEqual(first, second)
+            reuse_signal.assert_called_once()
+            self.assertEqual(len(registered), 1)
+            self.assertEqual([stage for stage, _ in submitted], ['PF_AUDIT', 'PF_COMPILE', 'PF_AUDIT'])
+            self.assertEqual(submitted[1][1]['axes_by_round'], {'2': ['Y']})
+            with sqlite3.connect(store.path) as db:
+                self.assertEqual(db.execute("select event,count(*) from events where event in "
+                                            "('RUNNING','ADOPT') group by event order by event").fetchall(),
+                                 [('ADOPT', 3), ('RUNNING', 3)])
+
     def test_terminal_failure_supersedes_old_reservation_message(self):
         reason = "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:PF_COMPILE:{'job_id': 'job'}"
         evidence = dict(action='PRESERVE_FAILED_ATTEMPT', job_id='job', attempt_id='old')
@@ -268,7 +441,7 @@ class PFPriceReconciliationTests(unittest.TestCase):
 
             with patch.object(selection, '_refresh', side_effect=refresh), \
                  patch.object(selection.PF, 'registry_routes', return_value={}), \
-                 patch.object(selection, 'reconsider_prices', side_effect=lambda *args: events.append('RECONCILE')), \
+                 patch.object(selection, 'reconsider_prices', side_effect=lambda *args, **kwargs: events.append('RECONCILE')), \
                  patch.object(selection, 'select', return_value={'selected': None}):
                 selection.prepare_next(run, {}, context, spec, run, {}, object(), announce=announce)
             self.assertEqual(events, ['READY', 'RECONCILE'])

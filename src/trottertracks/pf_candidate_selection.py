@@ -170,17 +170,18 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
             ready=returned['ready'];needs=returned['needs']
         else:ready=True;needs=[]
         status=dict(status='READY_RETURNED_TO_SAME_OPTIMIZER'if ready else'PREPARATION_INCOMPLETE',selection=selection,response=response,artificial_only=artificial,remaining_needs=needs)
-    price_holds = [row for row in response['response'].get('items', [])
-                   if row.get('status') in ('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD')]
-    if price_holds and mode!='plan':
-        item = price_holds[0]
+    price_checks = [row for row in response['response'].get('items', [])
+                    if row.get('status') in ('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD')
+                    or row.get('deferred_price_rounds') or row.get('original_owner_directories')]
+    if price_checks and mode != 'plan':
+        item = price_checks[0]
         owner_input = folder/'pf_completion/ORIGINAL_OWNER_REQUEST.json'
         owner = json.loads(owner_input.read_text()) if owner_input.exists() else {}
         directories = (set(owner.get('prior_owner_directories', ())) |
                        set(item.get('original_owner_directories', ())))
-        status.update(status=item['status'], reason=item['reason'],
-                      price_reconciliation={**item, 'original_owner_directories':
-                                            sorted(directories)})
+        status['price_reconciliation'] = dict(item, original_owner_directories=sorted(directories))
+        if item['status'] in ('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD'):
+            status.update(status=item['status'], reason=item['reason'])
     write(status_path,status)
     return context,routes,status
 
@@ -323,7 +324,10 @@ def reconsider_prices(root, run, spec, settings, records, *, shortlist=()):
 
     def inspect(item):
         cid, row = item
-        fingerprint = 'RECEIPT_RECOVERY_V1:' + reconciliation_snapshot(root, row, locators[cid], objects=objects)
+        scoped = (settings.get('exploratory_cost') is True or
+                  spec.get('search_overrides', {}).get('exploratory_cost') is True)
+        version = 'RECEIPT_RECOVERY_V2' if scoped else 'RECEIPT_RECOVERY_V1'
+        fingerprint = version + ':' + reconciliation_snapshot(root, row, locators[cid], objects=objects, scoped=scoped)
         provider = spec.get('pf_price_recheck_provider')
         if provider:
             fingerprint = provider['source'] + ':' + fingerprint
@@ -432,9 +436,11 @@ def recover_candidate_price_receipts(run, candidates, stage_executor):
     for base in candidate_roots(run/'pf_auto'):
         for cid in candidates:
             folder = base/cid/'pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf'/cid
-            for stage in ('PF_COMPILE', 'PF_AUDIT'):
-                marker = folder/(stage+'.DISTRIBUTED.json')
-                if not marker.is_file() or (folder/(stage+'.RETURN.json')).exists():
+            markers = [folder/(name+'.DISTRIBUTED.json') for name in ('PF_COMPILE', 'PF_AUDIT')]
+            markers.extend(sorted((folder/'recovered_prices').glob('*/PF_AUDIT.DISTRIBUTED.json')))
+            for marker in markers:
+                stage = marker.name.split('.')[0]
+                if not marker.is_file() or marker.with_name(stage+'.RETURN.json').exists():
                     continue
                 try:
                     importer(SimpleNamespace(log=stage_executor.executor.log), marker, stage)
@@ -515,7 +521,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 atomic_write(recovery/'original'/f'{cid}.json', row)
                 # Recheck only before a producer or scientific attempt existed.
                 row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE', price_receipt_recheck=True)
-        reconsider_prices(root, run, spec, settings, records, shortlist=shortlist)
+        price_settings = dict(settings, exploratory_cost=problem.get('search', {}).get('exploratory_cost') is True)
+        reconsider_prices(root, run, spec, price_settings, records, shortlist=shortlist)
         for row in records.values():
             if row['status'] in PRICE_RECHECK_STATES and 'price_reconciliation' in row:
                 row['price_axis_actions'] = price_axis_actions(row['price_reconciliation'])
@@ -609,7 +616,15 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         one_spec = dict(spec, pf_completion=one_settings)
         after,_,status=prepare(root,problem,snapshot_context(context),one_spec,base/'candidates'/cid,
                               deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
-        return chosen,status,after['pf_evidence_registry']['configurations'].get(cid)
+        entry = after['pf_evidence_registry']['configurations'].get(cid)
+        previous = context['pf_evidence_registry']['configurations'].get(cid)
+        if (cid in shortlist and entry and previous and previous.get('signal_packet') and previous.get('q3_inputs')):
+            # The shortlist needs an optional price update. Keep the original
+            # route and Q3 template identity already in use by the ledger.
+            if any(entry.get(k) != previous.get(k) for k in ('method', 'p', 'formula', 'delta_over_h', 'total_configuration_id')):
+                raise ValueError('PF shortlist price update changed its configuration')
+            entry = dict(previous, prices=entry['prices'], price_scope=entry['price_scope']) if entry.get('prices') else previous
+        return chosen,status,entry
 
     updated=False;processed=False
     current = None
@@ -676,6 +691,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             if disposition == 'READY_RETURNED_TO_SAME_OPTIMIZER':
                 records[cid].pop('previous_preparation_hold', None)
             if 'price_reconciliation' in status:
+                records[cid]['price_prior_owner_directories'] = status['price_reconciliation']['original_owner_directories']
                 records[cid]['price_axis_actions'] = price_actions
             else:
                 records[cid].pop('price_axis_actions', None)
