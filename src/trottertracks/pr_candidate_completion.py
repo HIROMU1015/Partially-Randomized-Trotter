@@ -80,6 +80,23 @@ _LEGACY_DF_PRICE_BOOTSTRAP = (
       "raise SystemExit(main())\n"
 )
 
+_DF_PRICE_STARTUP_RECOVERY_BOOTSTRAP = _DF_PRICE_BOOTSTRAP.replace(
+    'raise SystemExit(module.main())',
+    """fixed_runtime = module.runtime
+def portable_runtime():
+    worker = fixed_runtime()
+    if not getattr(worker, '_rpe_paths_bound', False):
+        restore = worker.restore
+        def restore_from_fixed_inputs(request, inputs, runtime):
+            relocated = {name: dict(spec, path=resolve(spec['path'])) for name, spec in inputs.items()}
+            return restore(request, relocated, {name: resolve(path) for name, path in runtime.items()})
+        worker.restore = restore_from_fixed_inputs
+        worker._rpe_paths_bound = True
+    return worker
+module.runtime = portable_runtime
+raise SystemExit(module.main())""",
+)
+
 DF_PRICE_FLANKS = Path(__file__).resolve().with_name('rpe_df_price_flanks.py')
 
 

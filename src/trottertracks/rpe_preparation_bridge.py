@@ -1049,7 +1049,8 @@ class DistributedPreparationBridge:
 
     def failed_preparation_request(self, job, plan):
         """Derive one successor from a failed, fully returned preparation."""
-        from .pr_candidate_completion import _DF_PRICE_BOOTSTRAP, _LEGACY_DF_PRICE_BOOTSTRAP
+        from .pr_candidate_completion import (_DF_PRICE_BOOTSTRAP, _DF_PRICE_STARTUP_RECOVERY_BOOTSTRAP,
+                                              _LEGACY_DF_PRICE_BOOTSTRAP)
         from .rpe_q3_coordinator import digest as request_digest
 
         owner = self.executor.run_dir
@@ -1081,7 +1082,8 @@ class DistributedPreparationBridge:
         repair_loader = (plan.get('repair_legacy_price_loader') is True
                          and preparation['provider'] in ('DF_CALIBRATION', 'DF_HOLDOUT')
                          and command[2:4] == ['-c', _LEGACY_DF_PRICE_BOOTSTRAP])
-        if ((preparation.get('supersedes_preparation') and not repair_loader)
+        startup = plan.get('df_startup_recovery')
+        if ((preparation.get('supersedes_preparation') and not (repair_loader or startup))
                 or preparation.get('optional_price_validation')
                 or read(root/'REQUEST.json') != request
                 or (launch['host_id'], launch['attempt_id']) != (row['host_id'], row['attempt_id'])
@@ -1098,9 +1100,51 @@ class DistributedPreparationBridge:
             raise ValueError('Original preparation does not use the legacy DF price loader: '+job)
         if repair_loader:
             command[3] = _DF_PRICE_BOOTSTRAP
+        if startup:
+            if (plan.get('prior_run') or not preparation.get('supersedes_preparation')
+                    or preparation['provider'] != 'DF_CALIBRATION' or preparation['stage'] != 'compile'
+                    or command[2:4] != ['-c', _DF_PRICE_BOOTSTRAP]):
+                raise ValueError('DF startup recovery requires a failed fixed calibration successor')
+            self.bind_failed_df_startup_inputs(preparation, row, startup)
+            command[3] = _DF_PRICE_STARTUP_RECOVERY_BOOTSTRAP
         request.pop('request_id')
         preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=row['attempt_id'], reason=reason)
         return request
+
+    def bind_failed_df_startup_inputs(self, preparation, row, startup):
+        """Keep the provider's startup reads in the same immutable input set."""
+        from .rpe_preparation_artifacts import artifact_path
+
+        log = Path(startup['body_log']).read_bytes()
+        evidence = read(Path(startup['evidence']))
+        if (hashlib.sha256(log).hexdigest() != startup['body_log_sha256']
+                or (evidence['job_id'], evidence['attempt_id']) != (row['job_id'], row['attempt_id'])
+                or evidence['paths'] != ['DRIVER.lock']
+                or b'R=runtime();base=inputs' not in log
+                or b'subprocess.CalledProcessError: Command ' not in log or b"'git', 'show'" not in log):
+            raise ValueError('DF startup recovery requires an exited Git input failure before any path started')
+        cache = self.executor.artifact_cache
+        input_name = next((name for name in preparation['inputs'] if name.endswith('/df_prices/INPUTS.json')), None)
+        if input_name is None:
+            raise ValueError('DF startup recovery has no fixed price inputs')
+        input_sha = preparation['inputs'][input_name]
+        if cache.missing([input_sha]):
+            raise ValueError('DF startup recovery is missing the saved price inputs')
+        for name, saved in read(cache.path(input_sha))['saved_input_files'].items():
+            relative = artifact_path('private/df-physical-inputs/'+name).as_posix()
+            sha = saved['sha256']
+            if cache.missing([sha]) or cache.path(sha).stat().st_size != saved['bytes']:
+                raise ValueError('DF startup recovery is missing the saved physical input '+name)
+            preparation['inputs'][relative] = sha
+            preparation['path_bindings'][saved['path']] = '@WORK@/'+relative
+        known = {(row['commit'], row['path']): row['sha256'] for row in preparation['input_hashes']}
+        for locator in startup['git_inputs']:
+            key = (locator['commit'], locator['path'])
+            if key not in known:
+                preparation['input_hashes'].append(locator)
+                known[key] = locator['sha256']
+            elif known[key] != locator['sha256']:
+                raise ValueError('DF startup recovery changes a fixed Git input')
 
     def restore_recalculation_inputs(self, request, prior_run):
         """Restore the fixed input objects from the checked predecessor's run."""
