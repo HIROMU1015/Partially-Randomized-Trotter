@@ -67,6 +67,31 @@ class PreparationTransportTests(unittest.TestCase):
         self.assertEqual(subprocess.check_output(['git', 'show', 'HEAD:leaf.py'], cwd=root),
                          (root/'leaf.py').read_bytes())
 
+    def test_quota_reclaims_abandoned_git_temporaries_even_with_only_one_indexed_pack(self):
+        root = self.root.resolve()
+        spool = root/'spool'
+        spool.mkdir()
+        (spool/'WORKER.lock').touch()
+        cache = root/'preparation-metadata-cache'
+        owner = cache/'private'
+        packs = owner/'objects.git/objects/pack'
+        packs.mkdir(parents=True)
+        (owner/'IMPORT.lock').touch()
+        old = packs/'tmp_pack_abc'
+        in_use = packs/'tmp_pack_busy'
+        recent = packs/'tmp_pack_new'
+        indexed = packs/'pack-example.pack'
+        for path in (old, in_use, recent, indexed):
+            path.write_bytes(b'pack contents')
+        for path in (old, in_use):
+            os.utime(path, (1, 1))
+        policy = dict(roots=[str(cache)], sample_path=str(root/'USAGE.json'), limit_bytes=10_000)
+        with in_use.open('rb'):
+            result = Storage.report(policy, spools=(str(spool),), compact_metadata=True, proactive=True)
+        self.assertFalse(old.exists())
+        self.assertTrue(in_use.exists() and recent.exists() and indexed.exists())
+        self.assertGreater(result['reclaimed_metadata_temporary_bytes'], 0)
+
     def test_only_matching_packs_in_transferred_attempts_share_storage(self):
         spool = self.root/'spool'
         packname = 'pack-'+'a'*40+'.pack'

@@ -222,6 +222,17 @@ class ResourceTests(unittest.TestCase):
         _, offer = R.decide_slots(p, {}, resources(cpu=30), jobs, order)
         self.assertEqual(offer['slots'], 0)
 
+    def test_blocked_measured_class_does_not_hide_a_cold_class_on_an_idle_host(self):
+        p = profile(separate_task_resources=True, pack_measured_task_classes=True)
+        heavy = dict(resource_class='compile', state='TRANSFERRED', peak_rss_bytes=20_000_000)
+        cold = dict(resource_class='q3', state='RUNNING', peak_rss_bytes=1_000_000)
+        demand = feedback(0, 0, ready_task_class_order=['compile', 'q3', 'q3'])
+        state, offer = R.decide_slots(p, {}, resources(), [heavy], demand)
+        self.assertEqual((offer['slots'], offer['admitted_task_classes']), (1, ['q3']))
+        self.assertEqual(offer['isolated_resource_class'], 'q3')
+        _, offer = R.decide_slots(p, state, resources(), [heavy, cold], demand)
+        self.assertEqual(offer['slots'], 0)
+
     def test_mailbox_feedback_persists_and_resume_keeps_slot_state(self):
         with tempfile.TemporaryDirectory()as temporary:
             p=dict(profile(),root=str(ROOT),interpreter=sys.executable,route_views={},work_dir=temporary)

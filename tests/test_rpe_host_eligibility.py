@@ -13,7 +13,9 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from trottertracks import rpe_host_eligibility as H
-from trottertracks.rpe_live_q3_readiness import _HOST_PROBE, _supply_inputs, accepts_probe, controller_input_hashes
+from trottertracks.rpe_live_q3_readiness import (
+    _HOST_PROBE, _supply_inputs, accepts_probe, controller_input_hashes, q3_input_dependencies,
+)
 from trottertracks.rpe_q3_coordinator import digest
 
 
@@ -91,6 +93,27 @@ p=Path(sys.argv[sys.argv.index('--output')+1]);p.mkdir()
             self.assertEqual(git(view,'rev-parse','HEAD'),base)
             self.assertFalse((view/input_name).exists())
             self.assertEqual(invoke(payload)['status'],'PASS')
+
+            packet_name = 'signal-packet.json'
+            (controller/packet_name).write_text(json.dumps(dict(means=[
+                dict(source=dict(commit=revision, path='unrelated.bin'))])))
+            git(controller, 'add', packet_name)
+            git(controller, 'commit', '-m', 'saved signal packet')
+            packet_commit = git(controller, 'rev-parse', 'HEAD')
+            route_request = dict(route=dict(kind='prdf_d2_common_entry',
+                signal_packet=dict(commit=packet_commit, path=packet_name)))
+            identity = controller_input_hashes(executor, route_request)
+            dependencies = q3_input_dependencies(executor, route_request)
+            self.assertEqual([row['path'] for row in identity], [packet_name])
+            self.assertEqual([row['path'] for row in dependencies], ['unrelated.bin'])
+            prdf_payload = dict(payload, input_dependencies=dependencies,
+                assignment=dict(payload['assignment'], request=route_request, input_hashes=identity))
+            first = invoke(prdf_payload)
+            self.assertEqual(set(first['repositories'][0]['commits']), {revision, packet_commit})
+            result = _supply_inputs(executor, prdf_payload, invoke, first)
+            self.assertEqual(result['status'], 'PASS')
+            self.assertEqual(git(view, 'show', revision+':unrelated.bin'), 'belongs to another request')
+            self.assertEqual(git(view, 'rev-parse', 'HEAD'), base)
 
     def runtime_guard_fixture(self):
         root = Path(__file__).resolve().parents[1]

@@ -20,6 +20,7 @@ from .rpe_dp_prefix_reuse import PrefixStore
 
 SAMPLE_SECONDS = 5
 PREPARATION_COPIES = ('inputs', 'workspace', 'workspaces')
+GIT_TEMP_PACK_MIN_AGE = 300
 
 
 def reclaim_watermarks(limit, *, proactive):
@@ -378,12 +379,65 @@ def _packed_objects(directory):
     return objects
 
 
+def _abandoned_pack_candidates(directory):
+    cutoff = time.time() - GIT_TEMP_PACK_MIN_AGE
+    for path in directory.glob('tmp_pack_*'):
+        if not re.fullmatch(r'tmp_pack_[A-Za-z0-9]+', path.name):
+            continue
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            continue
+        if (stat.S_ISREG(info.st_mode) and info.st_nlink == 1
+                and info.st_uid == os.getuid() and info.st_mtime < cutoff):
+            yield path, info
+
+
+def _reclaim_abandoned_packs(directory):
+    """Drop unindexed files left by interrupted Git imports under the import lock."""
+    candidates = dict(_abandoned_pack_candidates(directory))
+    if not candidates:
+        return 0
+    proc = Path('/proc')
+    if not (proc/'self/fd').is_dir():
+        return 0
+    open_paths = set()
+    for process in proc.iterdir():
+        try:
+            if not process.name.isdigit() or process.stat().st_uid != os.getuid():
+                continue
+            for descriptor in (process/'fd').iterdir():
+                try:
+                    path = descriptor.readlink()
+                except FileNotFoundError:
+                    continue
+                if path in candidates:
+                    open_paths.add(path)
+        except FileNotFoundError:
+            continue  # Process exited during the scan.
+        except PermissionError:
+            # Unrelated protected processes do not write Git temporary
+            # packs. An unreadable Git process leaves this cache unchanged.
+            if (process/'comm').read_text().strip().startswith(('git', 'index-pack')):
+                return 0
+    reclaimed = 0
+    for path, info in candidates.items():
+        if path in open_paths:
+            continue
+        current = path.lstat()
+        if (current.st_dev, current.st_ino, current.st_mtime_ns, current.st_size, current.st_nlink) == (
+                info.st_dev, info.st_ino, info.st_mtime_ns, info.st_size, info.st_nlink):
+            path.unlink()
+            reclaimed += info.st_blocks * 512
+    return reclaimed
+
+
 def _compact_metadata_packs(policy, spools, pbs_runs):
-    """Compact an idle worker's derived Git store without pruning objects."""
+    """Reclaim temporary files and compact an idle worker's derived Git store."""
     roots = [Path(root).resolve() for root in policy['roots']]
     scratch_root = Path(policy['sample_path']).resolve().parent
     if any(scratch_root.is_relative_to(root) for root in roots):
-        return 0
+        return 0, 0
     spools = set(spools)
     if pbs_runs:
         spools.update(str(spool) for spool in Path(pbs_runs).glob('*/workers/*')
@@ -403,12 +457,14 @@ def _compact_metadata_packs(policy, spools, pbs_runs):
     packed = []
     for repository, owners in candidates.items():
         directory = repository/'objects/pack'
+        if directory.resolve() != directory:
+            continue
         packs = list(directory.glob('*.pack'))
-        if len(packs) >= 8:
-            packed.append((sum(p.stat().st_blocks * 512 for p in packs), directory, owners))
-    for size, directory, owners in sorted(packed, reverse=True):
-        if size < 256 * 1024**2:
-            break
+        indexed = sum(p.stat().st_blocks * 512 for p in packs) if len(packs) >= 8 else 0
+        temporary = sum(info.st_blocks * 512 for _, info in _abandoned_pack_candidates(directory))
+        if temporary or indexed >= 256 * 1024**2:
+            packed.append((temporary, indexed, directory, owners))
+    for temporary, indexed, directory, owners in sorted(packed, reverse=True):
         try:
             with ExitStack() as stack:
                 for spool in owners:
@@ -420,12 +476,16 @@ def _compact_metadata_packs(policy, spools, pbs_runs):
                         raise BlockingIOError('Active worker attempts still own inputs')
                 import_lock = stack.enter_context((directory.parents[2]/'IMPORT.lock').open('rb'))
                 fcntl.flock(import_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                reclaimed = _compact_pack_directory(directory, scratch_root)
-                if reclaimed:
-                    return reclaimed
+                abandoned = _reclaim_abandoned_packs(directory) if temporary else 0
+                if abandoned:
+                    return 0, abandoned
+                if indexed >= 256 * 1024**2:
+                    compacted = _compact_pack_directory(directory, scratch_root)
+                    if compacted:
+                        return compacted, 0
         except (OSError, ValueError, subprocess.SubprocessError):
             continue
-    return 0
+    return 0, 0
 
 
 def _compact_pack_directory(directory, scratch_root):
@@ -523,14 +583,14 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
         if cached is not None:
             return cached
         sample.parent.mkdir(parents=True, exist_ok=True)
-        compacted = 0
+        compacted = abandoned = 0
         if compact_metadata:
             observation = report(policy, spools=spools, pbs_runs=pbs_runs,
                                  cache_directories=caches, refresh=refresh, proactive=proactive,
                                  du_timeout=du_timeout)
             if observation.get('reclaim_pending'):
-                compacted = _compact_metadata_packs(policy, spools, pbs_runs)
-            if not compacted:
+                compacted, abandoned = _compact_metadata_packs(policy, spools, pbs_runs)
+            if not (compacted or abandoned):
                 return observation
             refresh = True
         with sample.with_suffix('.lock').open('a+b') as lock:
@@ -580,14 +640,16 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                                 filesystem_free_bytes=min(filesystem_free.values()),
                                 filesystem_min_free_bytes=min_free,filesystem_low_space_roots=low_roots,
                                 reclaim_start_bytes=start, reclaim_target_bytes=target,
-                                reclaim_checked=cleanup_due or bool(compacted),
-                                reclaim_pending=(cleanup_due or bool(compacted)) and used > target)
+                                reclaim_checked=cleanup_due or bool(compacted or abandoned),
+                                reclaim_pending=(cleanup_due or bool(compacted or abandoned)) and used > target)
                 if used < before:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:
                     measured['evicted_prefix_checkpoints'] = evicted
                 if compacted:
                     measured['compacted_metadata_bytes'] = compacted
+                if abandoned:
+                    measured['reclaimed_metadata_temporary_bytes'] = abandoned
             measured['measurement_seconds'] = time.monotonic()-started
             atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
             return measured

@@ -424,6 +424,16 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         state.pop('trial', None)
         stage = 'MEASURED_TASK_HEADROOM'
         reasons = ['Offer fitting work by task class after reserving the costs of existing attempts']
+        if not target:
+            # A measured request that cannot fit must not prevent an
+            # independent, unmeasured class from getting its first sample.
+            isolated = next((kind for kind in waiting if not peaks.get(kind, {}).get('peak_rss_bytes')), None)
+            if isolated is not None:
+                target = 1
+                offered_classes = [isolated]
+                state['isolated_resource_class'] = isolated
+                stage = 'ISOLATED_RESOURCE_CLASS_TRIAL'
+                reasons = ['No measured class fits; sample one unmeasured class on the idle host']
     state.update(schema='RPE_Q3_SLOT_STATE_V1', target_slots=target, peak_job_rss_bytes=peak, peak_job_cpu_cores=observed_cpu,
                  stage=stage, feedback=feedback, decision_clock=stamp(), monotonic=now)
     report=dict(schema=SCHEMA, mode='AUTO', capacity=target, slots=max(0,target-occupied),

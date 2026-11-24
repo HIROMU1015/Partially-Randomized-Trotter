@@ -125,7 +125,7 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
                               env=dict(os.environ, GIT_NO_LAZY_FETCH='1', GIT_TERMINAL_PROMPT='0'), **kwargs)
 
     def unavailable_inputs(repo):
-        rows = assignment['input_hashes']
+        rows = assignment['input_hashes'] + payload.get('input_dependencies', [])
         if not rows:
             return []
         locators = [os.fsencode(row['commit'] + ':' + row['path']) for row in rows]
@@ -208,14 +208,14 @@ def _supply_inputs(executor, payload, invoke, response):
     if not anchors:
         return dict(status='HOLD', reason='Q3 input delivery requires a placed fixed Git base')
     commits = {commit for row in repositories for commit in row['commits']}
-    if not anchors <= set(payload['input_anchors']) or not commits <= {
-            row['commit'] for row in payload['assignment']['input_hashes']}:
+    inputs = payload['assignment']['input_hashes'] + payload.get('input_dependencies', [])
+    if not anchors <= set(payload['input_anchors']) or not commits <= {row['commit'] for row in inputs}:
         raise ValueError('Worker Git input inventory is outside the fixed Q3 assignment')
     root = executor.computation_root
     # An exact Git locator needs its commit, path trees and blob. Checking
     # the whole ancestry sends large unrelated histories to sparse workers.
     locators = []
-    for row in payload['assignment']['input_hashes']:
+    for row in inputs:
         commit = row['commit']
         if commit in commits:
             path = Path(row['path'])
@@ -269,6 +269,29 @@ def controller_input_hashes(executor, request):
         raise ValueError('Controller Q3 input placement changed fixed SOURCE or input bytes')
     executor.input_hash_cache.update({(row['commit'],row['path']):row for row in observed})
     return observed
+
+
+def q3_input_dependencies(executor, request):
+    """Find the raw signal blobs read by a saved PR-DF signal packet."""
+    route = request['route']
+    if route['kind'] not in ('prdf_d2_split', 'prdf_d2_common_entry'):
+        return []
+    binding = route.get('configurations', {}).get(request.get('configuration_id'), route)
+    locator = binding.get('signal_packet')
+    if not locator:
+        return []
+    key = ('prdf_signal_inputs', Q.digest(locator))
+    cache = executor.input_hash_cache
+    if key not in cache:
+        packet = json.loads(subprocess.check_output(
+            ['git', 'show', locator['commit']+':'+locator['path']], cwd=executor.computation_root))
+        for selector in locator.get('selector', ()):
+            packet = packet[selector]
+        means = [row['source'] for row in packet.get('means', ())]
+        # These raw rows are transport dependencies of the fixed packet.
+        # Preserve the request hash and the existing assignment input identity.
+        cache[key] = controller_input_hashes(executor, dict(route=dict(kind=route['kind'], sources=means)))
+    return cache[key]
 
 
 _SCOPE_CHECK = """
@@ -372,6 +395,9 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
                 Q.atomic_json(record.with_name('CONTROLLER_SCOPE.json'), dict(assignment=assignment, scope=hold))
         return dict(decision, decision_sha256=Q.digest(decision))
     assignment['input_hashes'] = controller_input_hashes(executor, request)
+    existing = {(row['commit'], row['path']) for row in assignment['input_hashes']}
+    dependencies = [row for row in q3_input_dependencies(executor, request)
+                    if (row['commit'], row['path']) not in existing]
     participants = []
     pbs = executor.distributed.get('pbs') or {}
     def accepting(host):
@@ -405,6 +431,8 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
             if provider:
                 anchors.append(provider)
             payload = dict(assignment=assignment, input_anchors=[value for value in anchors if value])
+            if dependencies:
+                payload['input_dependencies'] = dependencies
             if host in pbs_workers:
                 if not (task_estimate(request, pbs, host) or 0) > 0:
                     return host, dict(status='HOLD', reason='PBS_WALLTIME_ESTIMATE_UNAVAILABLE')
