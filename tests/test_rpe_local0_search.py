@@ -511,6 +511,41 @@ class Tests(unittest.TestCase):
             reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request')
         (run/'DRIVER.log').write_text(f'ValueError: {str(output)!r} is not in the subpath of /fixture/old\n')
         self.assertEqual(reconcile_runtime_failure(run, launch, ended, invocation, 'pf_request'), scoped)
+
+        # A PID disappearing in the fixed native duplicate probe is another
+        # metadata failure. A separately owned preparation can still reattach.
+        import hashlib
+        adapter = run/'overlay/scripts/run_pf_preparation_stage.py'
+        adapter.parent.mkdir(parents=True)
+        adapter.write_text('# fixture metadata adapter\n')
+        provider = run/'pf_auto/candidate/provider_workspace'
+        out = provider/'docs/research/distributed_selected_pf/candidate/preflight.METADATA_RESULT.json'
+        inp = out.with_name('preflight.METADATA_INPUT.json')
+        write(inp, {'phase': 'preflight'})
+        selection = dict(run_id=run.name, root=str(adapter.parents[1]), worker_trial={
+            'pf_stage_sha256': hashlib.sha256(adapter.read_bytes()).hexdigest(),
+            'pf_controller_runtime': {'interpreter': launcher}})
+        selected_launch = dict(launch, command=['--schedule-resume', json.dumps(selection)])
+        for directory in (run, history):
+            write(directory/'LAUNCH.json', selected_launch)
+        command = [launcher, '-B', str(adapter), '--provider-root', str(provider),
+                   '--input', str(inp), '--output', str(out)]
+        disappeared = dict(stop, error_type='CalledProcessError', message=str(subprocess.CalledProcessError(1, command)))
+        write(run/'KAPPA_STATE.json', dict(stop=disappeared))
+        (run/'RUNTIME_ERRORS.jsonl').write_text(json.dumps(dict(disappeared, phase='DRIVER',
+            traceback="pf_candidate_selection.py\npf_distributed_preparation.py, in complete_selected\n"
+                      "    source=local('preflight')"))+'\n')
+        (run/'DRIVER.log').write_text('Traceback (most recent call last):\n'
+            f'  File "{provider / "scripts/pf_price_stages.py"}", line 147, in active_price_jobs\n'
+            'ProcessLookupError: [Errno 3] No such process\n')
+        self.assertEqual(reconcile_runtime_failure(run, selected_launch, ended, invocation, 'pf_request'),
+                         disappeared)
+        marker = out.with_name('PF_COMPILE.DISTRIBUTED.json')
+        write(marker, {'job_id': 'different'})
+        with self.assertRaisesRegex(RequestError, 'outside the PF candidate request binding'):
+            reconcile_runtime_failure(run, selected_launch, ended, invocation, 'pf_request')
+        for directory in (run, history):
+            write(directory/'LAUNCH.json', launch)
         (run/'ROUND.json').unlink()
         with sqlite3.connect(database) as db:
             self.assertEqual(db.execute("SELECT state,attempt_id FROM jobs WHERE job_id='original-job'").fetchone(),

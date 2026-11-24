@@ -1286,16 +1286,17 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                         evidence = log.read().decode(errors='replace')
                     legacy_write_scope = command[0] == pinned and any(str(output) in line and 'is not in the subpath of' in line
                                              for line in evidence.splitlines() if line.startswith('ValueError:'))
-                    provider = Path(fixed['entry']).resolve()
-                    owner_root = Path(command[command.index('--provider-root')+1]).resolve()
-                    owner_request = Path(command[command.index('--request')+1]).resolve()
-                    restored_provider = (provider.is_file() and provider.parents[1] == owner_root
-                        and owner_request == output.with_name('ORIGINAL_OWNER_REQUEST.json')
-                        and owner_request.is_file() and not output.exists()
-                        and any(repr(str(provider)) in line for line in evidence.splitlines()
-                                if line.startswith('FileNotFoundError: [Errno 2]'))
-                        and subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'scripts', 'src'],
-                                           cwd=owner_root).returncode == 0)
+                    if fixed.get('entry') and '--provider-root' in command and '--request' in command:
+                        provider = Path(fixed['entry']).resolve()
+                        owner_root = Path(command[command.index('--provider-root')+1]).resolve()
+                        owner_request = Path(command[command.index('--request')+1]).resolve()
+                        restored_provider = (provider.is_file() and provider.parents[1] == owner_root
+                            and owner_request == output.with_name('ORIGINAL_OWNER_REQUEST.json')
+                            and owner_request.is_file() and not output.exists()
+                            and any(repr(str(provider)) in line for line in evidence.splitlines()
+                                    if line.startswith('FileNotFoundError: [Errno 2]'))
+                            and subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'scripts', 'src'],
+                                               cwd=owner_root).returncode == 0)
             if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
                      or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope or restored_provider
                      or vanished_pf_owner)
