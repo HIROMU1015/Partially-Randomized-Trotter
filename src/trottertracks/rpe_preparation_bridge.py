@@ -1102,6 +1102,19 @@ class DistributedPreparationBridge:
         preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=row['attempt_id'], reason=reason)
         return request
 
+    def restore_recalculation_inputs(self, request, prior_run):
+        """Restore the fixed input objects from the checked predecessor's run."""
+        from .rpe_preparation_artifacts import ArtifactCache
+        from .rpe_preparation_worker import metadata_bundle_hashes
+
+        cache = self.executor.artifact_cache
+        hashes = [*request['preparation']['inputs'].values(), *metadata_bundle_hashes(request)]
+        missing = cache.missing(hashes)
+        if missing:
+            prior_cache = ArtifactCache(Path(prior_run)/'distributed'/'artifacts')
+            for sha in missing:
+                cache.put(prior_cache.get([sha]))
+
     def reconcile_failed_preparations(self):
         """Reserve exact retries through the existing stage budgets and persist their outcome."""
         from .rpe_preparation_queue import preparation_job_id
@@ -1127,6 +1140,9 @@ class DistributedPreparationBridge:
                 if other:
                     states[original] = dict(job_id=other[0], reason=reason, status='EXISTING_SUCCESSOR')
                     continue
+                row = self.executor.store.row(job)
+                if plan.get('prior_run') and (row is None or row['state'] in ('QUEUED', 'CANCELLED')):
+                    self.restore_recalculation_inputs(request, plan['prior_run'])
                 self.executor.submit_preparation(request, budget=self.settings['budgets'][preparation['stage']],
                     approved=self.approved, contract=request['original_contract'],
                     dependencies=preparation['dependencies'], expected_job_id=job)

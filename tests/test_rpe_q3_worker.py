@@ -68,6 +68,23 @@ def finish(worker, timeout=8):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_missing_preparation_bundle_keeps_independent_q3_readiness(self):
+        worker = object.__new__(W.Worker)
+        failed = {'job_id': 'prep-missing'}
+        independent = {'job_id': 'q3-ready'}
+
+        def prepare(challenges):
+            if failed in challenges:
+                raise OSError('missing input bundle')
+
+        with patch.object(worker, '_prepare_challenge_artifacts', side_effect=prepare), \
+             patch.object(worker, '_check_challenges',
+                          return_value={'host_fingerprints': {'q3-ready': 'verified'}}) as check:
+            result = worker._check_readiness_batch([failed, independent], {})
+        check.assert_called_once_with([independent], {})
+        self.assertEqual(result['host_fingerprints'], {'q3-ready': 'verified'})
+        self.assertEqual(result['readiness_errors'], {'prep-missing': 'missing input bundle'})
+
     def test_prelaunch_failure_releases_only_after_supervisor_unlocks(self):
         with tempfile.TemporaryDirectory() as directory:
             attempt = Path(directory)

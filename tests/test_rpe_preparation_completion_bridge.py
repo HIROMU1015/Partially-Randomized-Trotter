@@ -29,6 +29,25 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_recalculation_restores_verified_objects_from_prior_run(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            prior = root/'prior'
+            prior_cache = ArtifactCache(prior/'distributed'/'artifacts')
+            cache = ArtifactCache(root/'current'/'distributed'/'artifacts')
+            content = (b'input', b'git bundle', b'nested bundle')
+            hashes = [hashlib.sha256(raw).hexdigest() for raw in content]
+            prior_cache.put({sha: base64.b64encode(raw).decode() for sha, raw in zip(hashes, content)})
+            request = {'preparation': {'inputs': {'input.json': hashes[0]},
+                'input_git_bundles': [{'sha256': hashes[1]}],
+                'workspaces': {'provider': {'input_git_bundles': [{'sha256': hashes[2]}]}}}}
+            bridge = B.DistributedPreparationBridge(SimpleNamespace(artifact_cache=cache, run_dir=root), root)
+            bridge.restore_recalculation_inputs(request, prior)
+            bridge.restore_recalculation_inputs(request, prior)
+            self.assertEqual(cache.get(hashes), prior_cache.get(hashes))
+            with self.assertRaisesRegex(ValueError, 'Missing cached artifacts'):
+                bridge.restore_recalculation_inputs({'preparation': {'inputs': {'missing': 'f'*64}}}, prior)
+
     def test_pf_redelivery_reuses_frozen_stage_under_changed_search_settings(self):
         with tempfile.TemporaryDirectory() as temp:
             run = Path(temp)

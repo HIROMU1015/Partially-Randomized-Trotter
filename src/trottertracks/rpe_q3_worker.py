@@ -664,7 +664,11 @@ class Worker:
         if not hashes:return
         cache=worker_cache(self.profile)
         for sha in cache.missing(hashes):
-            cache.put(self._post('/v1/artifacts/get',dict(hashes=[sha]))['blobs'])
+            try:
+                blobs = self._post('/v1/artifacts/get', dict(hashes=[sha]))['blobs']
+            except urllib.error.HTTPError as error:
+                raise ValueError(f'Cannot fetch preparation bundle {sha}: {error}') from error
+            cache.put(blobs)
 
     def _upload_artifacts(self, attempt, assignment):
         if not Preparation.is_preparation(assignment):return
@@ -680,12 +684,24 @@ class Worker:
     def _check_challenges(self, challenges, report):
         return host_fingerprints(self.profile, challenges)
 
+    def _check_readiness_batch(self, challenges, report):
+        ready, failed = [], {}
+        for assignment in challenges:
+            try:
+                self._prepare_challenge_artifacts([assignment])
+            except (OSError, ValueError) as error:
+                failed[assignment['job_id']] = str(error)
+            else:
+                ready.append(assignment)
+        result = self._check_challenges(ready, report)
+        result.setdefault('readiness_errors', {}).update(failed)
+        return result
+
     inline_readiness_retry = True
 
     def _poll_readiness(self, report, accepting):
         challenges = self.eligibility_challenges if accepting else []
-        self._prepare_challenge_artifacts(challenges)
-        return self._check_challenges(challenges, report)
+        return self._check_readiness_batch(challenges, report)
 
     def _receive_assignment(self, assignment):
         self._acquire(assignment)

@@ -505,8 +505,12 @@ class Relay:
         if not hashes:return
         response,_=self.remote(worker,'artifacts-missing',dict(hashes=sorted(hashes)))
         for sha in response['missing']:
-            result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
-            self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
+            try:
+                result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
+                self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
+            except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                self.log('METADATA_GIT_BUNDLE_UNAVAILABLE',host_id=worker['host_id'],sha256=sha,error=str(error))
+                continue
             self.log('METADATA_GIT_BUNDLE_DELIVERED',host_id=worker['host_id'],sha256=sha)
 
     def _readiness_batch(self, worker, challenges, cached=None, *, slots, prefetch=False):
