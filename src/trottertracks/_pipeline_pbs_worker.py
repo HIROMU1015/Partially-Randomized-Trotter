@@ -167,20 +167,28 @@ class SpoolTransport:
         self.bounded_results = bounded_results
 
     def __call__(self, endpoint, payload):
+        evidence_batch = endpoint == '/v1/complete' and 'pbs_evidence_status_batch' in payload
         completion_prefix = ('complete-' + digest([payload.get('job_id'), payload.get('attempt_id')])[:20] + '-'
                              if endpoint == '/v1/complete' else '')
+        previous_prefix = ()
+        if evidence_batch:
+            completion_prefix = 'complete-evidence-'
+        elif endpoint == '/v1/complete' and 'pbs_evidence' in payload:
+            previous_prefix = (completion_prefix,)
+            completion_prefix = 'complete-q3-' + completion_prefix[len('complete-'):]
         if self.bounded_results and endpoint == '/v1/artifacts/put':
             completion_prefix = 'artifact-put-' + digest(sorted(payload['blobs']))[:20] + '-'
         matching = []
         for path in self.requests.glob('*.json'):
             if path.name.startswith(('complete-', 'artifact-put-')) and (
-                    not completion_prefix or not path.name.startswith(completion_prefix)):
+                    not completion_prefix or not path.name.startswith((completion_prefix,) + previous_prefix)):
                 continue
             try:
                 saved = read(path)
             except FileNotFoundError:
                 continue  # Another attempt consumed its reply.
-            if saved['endpoint'] == endpoint and (endpoint == '/v1/poll' or saved['payload'] == payload):
+            if saved['endpoint'] == endpoint and (endpoint == '/v1/poll' or evidence_batch
+                                                  or saved['payload'] == payload):
                 matching.append((path, saved))
         # Exactly one unconsumed acquisition may exist across timeouts and
         # process restarts. A fresh UUID here could reserve another task before
@@ -255,6 +263,7 @@ class AllocationWorker(Worker):
                            if count else None)
         self.collection_workers = count
         self.collection_inflight = {}
+        self.evidence_batch_inflight = None
         self.next_collection_scan = 0.
         self.launch_tracking = set(self.records)
         self.memory_backfill = self.profile['pbs'].get('q3_memory_backfill') is True
@@ -381,11 +390,17 @@ class AllocationWorker(Worker):
                 del self.collection_inflight[attempt]
                 self.preparation_transfers.discard(attempt)
                 future.result()
+        batch = getattr(self, 'evidence_batch_inflight', None)
+        if batch is not None and batch.done():
+            batch.result()
+            self.evidence_batch_inflight = batch = None
         # Prefer ready receipts. Every attempt still reports state, transfers,
         # and marks its own ACK in order using the ordinary worker code.
-        available = self.collection_workers-len(self.collection_inflight)
+        available = self.collection_workers-len(self.collection_inflight)-int(batch is not None)
         if available:
             candidates = []
+            evidence = []
+            batched = self.profile.get('pbs', {}).get('batch_q3_completions') is True
             for attempt, assignment in self.records.items():
                 if attempt in self.collection_inflight or attempt in self.transferred_attempts:
                     continue
@@ -403,9 +418,19 @@ class AllocationWorker(Worker):
                     if process is not None and process.poll() is None:
                         continue
                 complete = state['state'] == 'COMPLETED_PENDING_TRANSFER'
+                if complete and batched and (attempt/'PBS_CORE_ACK.json').is_file():
+                    evidence.append((attempt, assignment))
+                    continue
                 if complete and getattr(self, 'memory_backfill', False):
                     self._learn_q3_memory(attempt, assignment)
                 candidates.append((not complete, attempt, assignment, state))
+            if evidence and batch is None and (available > 1 or not candidates):
+                evidence.sort(key=lambda entry: self.pbs_evidence_checks.get(entry[0], 0))
+                self.evidence_batch_inflight = self.collection.submit(
+                    self._check_deferred_evidence_batch, evidence[:max(1, self.slots)])
+                available -= 1
+            if not available:
+                return
             for incomplete, attempt, assignment, state in sorted(candidates):
                 preparation = 'preparation' in assignment['request']
                 transfer = not preparation or (not incomplete and not self.preparation_transfers)

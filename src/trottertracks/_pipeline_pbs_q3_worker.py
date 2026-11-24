@@ -711,6 +711,38 @@ class Worker:
     def _receive_assignment(self, assignment):
         self._acquire(assignment)
 
+    def _finish_transfer(self, attempt, assignment, response, timing, *, report_metric=True):
+        self.pbs_evidence_checks.pop(attempt, None)
+        save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
+        Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
+        event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
+              seconds=timing['upload_roundtrip_seconds'], bytes=timing['bytes'],
+              duplicate=response.get('duplicate', False))
+        if report_metric:
+            try:
+                self._post('/v1/transfer-metric', dict(job_id=assignment['job_id'],
+                           attempt_id=assignment['attempt_id'], timing=timing))
+            except (OSError, ValueError, urllib.error.URLError) as error:
+                event(self.profile, 'TRANSFER_METRIC_OFFLINE', job_id=assignment['job_id'], reason=str(error))
+
+    def _check_deferred_evidence_batch(self, attempts):
+        keys = ('job_id', 'attempt_id', 'request_sha256')
+        started = time.monotonic()
+        owners = [{key: assignment[key] for key in keys} for _, assignment in attempts]
+        for attempt, _ in attempts:
+            self.pbs_evidence_checks[attempt] = started + 2
+        try:
+            reply = self._post('/v1/complete', dict(pbs_evidence_status_batch=owners))
+            ready = {tuple(owner[key] for key in keys) for owner in reply['evidence_complete']}
+            for attempt, assignment in attempts:
+                if tuple(assignment[key] for key in keys) in ready:
+                    timing = dict(upload_roundtrip_seconds=time.monotonic()-started,
+                                  bytes=read(attempt/'PBS_CORE_ACK.json')['bytes'])
+                    self._finish_transfer(attempt, assignment, dict(duplicate=True), timing,
+                                          report_metric=False)
+        except (OSError, ValueError, KeyError, urllib.error.URLError) as error:
+            event(self.profile, 'PBS_EVIDENCE_BATCH_PENDING', reason=str(error))
+
     def _service_attempt(self, attempt, assignment, *, transfer=True):
         state = self._reconcile(attempt, assignment)
         if state['state'] == 'ASSIGNED':
@@ -753,17 +785,7 @@ class Worker:
                         self.pbs_evidence_checks[attempt] = time.monotonic() + 2
                     return  # Let other completions use this worker's collection lane.
                 timing = dict(upload_roundtrip_seconds=time.monotonic()-started, bytes=transferred)
-                self.pbs_evidence_checks.pop(attempt, None)
-                save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
-                Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
-                event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                      seconds=timing['upload_roundtrip_seconds'], bytes=timing['bytes'],
-                      duplicate=response.get('duplicate', False))
-                try:
-                    self._post('/v1/transfer-metric', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], timing=timing))
-                except (OSError, ValueError, urllib.error.URLError) as error:
-                    # Optional telemetry cannot undo a durable completion acknowledgement.
-                    event(self.profile, 'TRANSFER_METRIC_OFFLINE', job_id=assignment['job_id'], reason=str(error))
+                self._finish_transfer(attempt, assignment, response, timing)
             except (OSError, ValueError, urllib.error.URLError) as error:
                 event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
                 if sending_q3 and self.reported.get(attempt) != state:

@@ -600,6 +600,15 @@ def apply_q3_horizon(distributed, selection):
     pbs.update(transport_root=root, transport_source=source)
 
 
+def pbs_transport_paths(value, paths):
+    """Relocate only exact operational paths in the new allocation profile."""
+    if isinstance(value, dict):
+        return {key: pbs_transport_paths(item, paths) for key, item in value.items()}
+    if isinstance(value, list):
+        return [pbs_transport_paths(item, paths) for item in value]
+    return paths.get(value, value) if isinstance(value, str) else value
+
+
 class PbsManager:
     def __init__(self, executor, settings, *, gateway=None):
         self.executor = executor
@@ -621,11 +630,24 @@ class PbsManager:
         self.path = self.directory/'STATE.json'
         self.state = read(self.path) if self.path.exists() else dict(allocations={}, requests={})
         dispatch = getattr(executor, 'distributed', {}).get('pbs_dispatch_gateway')
+        self.transport_paths = {}
         if dispatch:
             self.settings.update(gateway_script=dispatch['path'], gateway_sha256=dispatch['sha256'])
+            transport = dispatch.get('transport')
+            if transport:
+                if (not Path(transport['root']).is_absolute()
+                        or transport['source'] != self.settings['transport_source']):
+                    raise ValueError('PBS replacement transport must retain the fixed source')
+                self.transport_paths = transport.get('paths', {})
+                if any(not Path(old).is_absolute() or not Path(new).is_absolute()
+                       for old, new in self.transport_paths.items()):
+                    raise ValueError('PBS replacement transport requires absolute paths')
+                self.settings['transport_root'] = transport['root']
         self.bounded_results = bool(dispatch and dispatch.get('bounded_results'))
         self.compute_storage_sampling = bool(dispatch and dispatch.get('compute_storage_sampling'))
         self.defer_q3_evidence = bool(dispatch and dispatch.get('defer_q3_evidence'))
+        self.batch_q3_completions = bool(self.defer_q3_evidence and self.bounded_results
+                                         and dispatch.get('batch_q3_completions'))
         self.evidence_directory = self.directory/'deferred-evidence'
         self.evidence_gateway = None
         self.evidence_pool = None
@@ -1021,8 +1043,12 @@ class PbsManager:
                     or decoded['endpoint'] not in ('/v1/complete', '/v1/artifacts/put')):
                 raise ValueError('PBS bulk request identity changed')
             request = decoded
-        if request['endpoint'] == '/v1/complete' and request['payload'].keys() & {'pbs_evidence', 'pbs_evidence_status'}:
-            return self._complete_with_deferred_evidence(token, request)
+        if request['endpoint'] == '/v1/complete':
+            payload = request['payload']
+            if 'pbs_evidence_status_batch' in payload:
+                return self._batch_evidence_status(token, payload)
+            if payload.keys() & {'pbs_evidence', 'pbs_evidence_status'}:
+                return self._complete_with_deferred_evidence(token, request)
         if (not self.settings.get('stage_artifacts_over_ssh')
                 or request['endpoint'] != '/v1/artifacts/get'):
             return self._dispatch(token, request)
@@ -1168,6 +1194,29 @@ class PbsManager:
             self.offline_progress_next = time.monotonic()+30
         self.controls[token].update(contact=int(time.time()), accepted_by_method=self.offline_progress)
 
+    def _deferred_evidence_owner(self, host, payload):
+        job, attempt, sha = (payload[key] for key in ('job_id', 'attempt_id', 'request_sha256'))
+        row = self.executor.store.row(job)
+        if (not self.defer_q3_evidence or not row or self.executor._preparation_request(row['request'])
+                or (host, attempt, sha) != (row['host_id'], row['attempt_id'], row['request_sha256'])):
+            return None
+        return row, self.evidence_directory/job/(attempt+'.json')
+
+    def _batch_evidence_status(self, token, payload):
+        owners = payload['pbs_evidence_status_batch']
+        host = self.state['allocations'][token]['spec']['profile']['host_id']
+        keys = ('job_id', 'attempt_id', 'request_sha256')
+        if (not self.batch_q3_completions or payload['host_id'] != host or not isinstance(owners, list)
+                or any(not isinstance(owner, dict) or any(not isinstance(owner.get(k), str) for k in keys)
+                       for owner in owners)):
+            raise ValueError('Invalid PBS evidence status batch')
+        ready = []
+        for owner in owners:
+            verified = self._deferred_evidence_owner(host, owner)
+            if verified and verified[0]['state'] == 'ACCEPTED' and not verified[1].exists():
+                ready.append({key: owner[key] for key in keys})
+        return dict(ok=True, result=dict(evidence_complete=ready))
+
     def _complete_with_deferred_evidence(self, token, request):
         """Commit the exact outcome before retrieving the worker's large evidence."""
         from .rpe_q3_coordinator import _artifact_destination
@@ -1175,12 +1224,10 @@ class PbsManager:
         payload = request['payload']
         job, attempt, sha = (payload[key] for key in ('job_id', 'attempt_id', 'request_sha256'))
         host = self.state['allocations'][token]['spec']['profile']['host_id']
-        row = self.executor.store.row(job)
-        if (not self.defer_q3_evidence or not row or self.executor._preparation_request(row['request'])
-                or (host, attempt, sha) != (row['host_id'], row['attempt_id'], row['request_sha256'])
-                or payload['host_id'] != host):
+        verified = self._deferred_evidence_owner(host, payload)
+        if verified is None or payload['host_id'] != host:
             raise ValueError('PBS deferred Q3 evidence does not match the assigned attempt')
-        marker = self.evidence_directory/job/(attempt+'.json')
+        row, marker = verified
         if payload.get('pbs_evidence_status') is True:
             if row['state'] != 'ACCEPTED':
                 raise ValueError('PBS Q3 core is not yet accepted')
@@ -1219,7 +1266,8 @@ class PbsManager:
             result = self.executor.rpc('/v1/complete', {k: v for k, v in payload.items() if k != 'pbs_evidence'})
             if not result.get('duplicate'):
                 self.log('PBS_Q3_CORE_ACCEPTED', job_id=job, attempt_id=attempt,
-                         deferred_bytes=sum(evidence.values()))
+                         deferred_bytes=sum(evidence.values()),
+                         completion_rpc_clock=request.get('clock'))
         # A short-lived reply unlocks the worker's collection lane. The second
         # acknowledgement allows it to clean original copies after archiving.
         return dict(ok=True, result=dict(result, evidence_pending=marker.exists()))
@@ -1656,6 +1704,8 @@ class PbsManager:
             profile['pbs']['compute_storage_sampling'] = True
         if self.defer_q3_evidence:
             profile['pbs']['defer_q3_evidence'] = True
+        if self.batch_q3_completions:
+            profile['pbs']['batch_q3_completions'] = True
         if getattr(self.executor, 'distributed', {}).get('pbs_q3_memory_backfill') is True:
             profile['pbs']['q3_memory_backfill'] = True
         if self.offline_plan:
@@ -1680,6 +1730,8 @@ class PbsManager:
             profile['pbs']['deployment']=deepcopy(deployment)
         if worker.get('task_deployments'):
             profile['pbs']['task_deployments'] = deepcopy(worker['task_deployments'])
+        if self.transport_paths:
+            profile = pbs_transport_paths(profile, self.transport_paths)
         interpreter = self.settings['python']
         if self.storage_launcher and profile.get('storage_limit'):
             if not self.storage_launcher_verified:
@@ -1795,11 +1847,13 @@ class PbsManager:
         data = self.completion_gateway.call(dict(
             action='exchange', request_mode='completion', limit=remaining,
             exclude=exclude, responses=self.completion_responses, controls={},
+            **({'inline_q3_completions': True} if self.batch_q3_completions else {}),
             **({'bounded_results': True} if self.bounded_results else {})))
         count = sum(len(rows) for rows in data['requests'].values())
         if count or self.completion_responses:
             self.log('PBS_COMPLETION_EXCHANGE_TIMING', seconds=time.monotonic()-start,
-                     requests=count, replies=sum(len(rows) for rows in self.completion_responses.values()))
+                     requests=count, replies=sum(len(rows) for rows in self.completion_responses.values()),
+                     inline_cores=data.get('inline_cores', 0), inline_bytes=data.get('inline_bytes', 0))
         self.completion_responses = {}
         for token, requests in data['requests'].items():
             for request in requests:

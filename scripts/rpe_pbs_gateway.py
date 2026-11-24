@@ -259,6 +259,14 @@ def snapshot(root, finished=None, directories=None, *, scheduler=None, force=Fal
     return result
 
 
+def completion_priority(path):
+    if path.name.startswith('complete-q3-'):
+        return 0
+    if path.name.startswith('complete-evidence-'):
+        return 2
+    return 1
+
+
 def exchange(root, incoming, finished=None, snapshotter=snapshot):
     for token, responses in incoming.get('responses', {}).items():
         directory = root/'allocations'/safe_id(token)
@@ -284,32 +292,55 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
         raise ValueError('Invalid PBS completion request limit')
     excluded = incoming.get('exclude', {})
     requests = {}
+    pending = []
     for directory in (root/'allocations').glob('*'):
         if (directory/'SESSION_END.json').exists():
             continue  # The ended pilot's owned results use selective harvest.
-        values = []
         for path in sorted((directory/'requests').glob('*.json')):
-            if remaining == 0:
-                break
             bulk = path.name.startswith(('complete-', 'artifact-put-'))
             if (mode == 'control' and bulk) or (mode == 'completion' and not bulk):
                 continue
             if path.stem in excluded.get(directory.name, ()) or (directory/'responses'/path.name).exists():
                 continue
+            pending.append((directory.name, path, bulk))
+    inline_budget = BULK_CHUNK_BYTES
+    inline_bytes = 0
+    inline_cores = 0
+    if incoming.get('inline_q3_completions') is True and mode == 'completion':
+        pending.sort(key=lambda entry: completion_priority(entry[1]))
+    else:
+        inline_budget = 0
+    for token, path, bulk in pending:
+        if remaining == 0:
+            break
+        try:
             if bulk and incoming.get('bounded_results') is True:
-                try:
-                    value = dict(request_id=path.stem, spool_bytes=path.stat().st_size)
-                except FileNotFoundError:
-                    continue
+                size = path.stat().st_size
+                priority = completion_priority(path)
+                if priority != 1 and 0 < size <= inline_budget:
+                    value = read(path)
+                    field = 'pbs_evidence' if priority == 0 else 'pbs_evidence_status_batch'
+                    if value is None:
+                        continue
+                    if (value['request_id'] != path.stem or value['endpoint'] != '/v1/complete'
+                            or field not in value['payload']):
+                        raise ValueError('PBS inline completion identity changed')
+                    inline_budget -= size
+                    inline_bytes += size
+                    inline_cores += int(priority == 0)
+                else:
+                    value = dict(request_id=path.stem, spool_bytes=size)
             else:
                 value = read(path)
-            if value is None:
-                continue
-            values.append(value)
-            if remaining is not None:
-                remaining -= 1
-        if values:
-            requests[directory.name] = values
+        except FileNotFoundError:
+            continue
+        if value is None:
+            continue
+        requests.setdefault(token, []).append(value)
+        if remaining is not None:
+            remaining -= 1
+    if incoming.get('inline_q3_completions') is True and mode == 'completion':
+        return dict(requests=requests, allocations=[], inline_bytes=inline_bytes, inline_cores=inline_cores)
     return dict(requests=requests, allocations=[] if mode == 'completion' else snapshotter(root, finished))
 
 
