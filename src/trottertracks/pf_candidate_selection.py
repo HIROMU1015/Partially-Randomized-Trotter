@@ -50,12 +50,15 @@ def inspect(context,methods,*,include_full=False):
     return rows,evaluated
 
 
-def select(context,methods,excluded=(),*,include_full=False,price_rechecks=()):
+def select(context,methods,excluded=(),*,include_full=False,price_rechecks=(),route_rechecks=()):
     rows,evaluated=inspect(context,methods,include_full=include_full)
     for row in rows:
         if row['configuration_id'] in price_rechecks:
             row['ready'] = False
             row['needs'] = ['PRICE_26AXIS']
+        if row['configuration_id'] in route_rechecks:
+            row['ready'] = False
+            row['needs'].append('Q3_ROUTE_CONFIGURATION_OR_TEMPLATE')
     eligible=[r for r in rows if not r['ready'] and r['needs'] and r['configuration_id'] not in excluded]
     chosen=deepcopy(eligible[0])if eligible else None
     incumbents=[p for p in context['catalog']['candidates']if p['method']=='TRUNCATED_PF'and p['status']=='FEASIBLE'and p.get('conditional_cost')is not None]
@@ -67,6 +70,34 @@ def select(context,methods,excluded=(),*,include_full=False,price_rechecks=()):
         p10_alias='FULL_PF_CANONICAL_ID; NEVER_A_SECOND_B0I_EVALUATION',
         saved_incumbent=None if incumbent is None else {k:deepcopy(incumbent.get(k))for k in ('configuration_id','L_D','formula','conditional_cost','q3_status','N_X','N_Y')},
         selected=chosen,reason=None if chosen is None else 'UNSEEN_PREFIX_THEN_SAVED_STEP_REUSE_THEN_T1_SOFT_PRIORITY_THEN_SIGNED_PIECES_AND_WIDTH; ALL_OTHER_CANDIDATES_REMAIN_ELIGIBLE')
+
+
+def missing_pf_routes(root, context, routes, records):
+    """Expose saved-signal candidates that cannot reach the ordinary Q3 route."""
+    from subprocess import CalledProcessError
+    from .rpe_method_optimizer import Reader, route_supports_configuration
+
+    missing = set()
+    reader = context.get('reader') or Reader(Path(root))
+    for candidate in context['candidates']:
+        cid = candidate['configuration_id']
+        method = candidate['method']
+        if (method not in PF.METHODS or cid in records or not cid or not candidate['ready']
+                or not candidate.get('signal_source')
+                or (candidate.get('configuration_body') or {}).get('id') != cid):
+            continue
+        rules = [rule for rule in routes.get(method, ()) if rule.get('kind') == 'pf_b_pf6']
+        if not rules:
+            continue
+        for rule in rules:
+            try:
+                if route_supports_configuration(rule, cid, reader):
+                    break
+            except (KeyError, ValueError, TypeError, OSError, CalledProcessError):
+                continue
+        else:
+            missing.add(cid)
+    return missing
 
 
 def _artifact_mode(settings,routes,methods):
@@ -598,8 +629,11 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
     revisit = {cid for cid, row in records.items() if row['status'] in
                ('PRICE_RECEIPT_RECHECK_AVAILABLE', 'PRICE_RECHECK_AVAILABLE')}
     waiting = {cid for cid, row in records.items() if row['status'] == 'PREPARATION_WAITING'} if recheck_waiting else set()
+    missing_routes = missing_pf_routes(root, context, routes, records) if (
+        distributed_completion and problem.get('search', {}).get('exploratory_cost') is True) else set()
     selection=select(context,spec['methods'],records.keys()-pending-revisit-waiting,
                      price_rechecks=shortlist & (revisit | waiting | pending | (shortlist - records.keys())),
+                     route_rechecks=missing_routes,
                      include_full=distributed_completion or limit>1 or 'TRUNCATED_PF' not in spec['methods']
                      or any(records[cid].get('method') == 'FULL_PF' for cid in pending | revisit | waiting))
     if selection['selected'] is None and not pending:

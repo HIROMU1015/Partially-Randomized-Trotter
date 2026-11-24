@@ -140,6 +140,17 @@ def reconciliation_locators(waves, settings, row, *, audits=None):
     references = [ref for axes in deferred.values() for axis in axes
                   for field in ('checked_receipts', 'unavailable_receipts')
                   for ref in axis.get(field, ())]
+    for axes in deferred.values():
+        for axis in axes:
+            for finding in axis.get('findings', ()):
+                if (origin := finding.get('original_compile')) is None:
+                    continue
+                raw = Path(origin['path']).parent
+                # Arrival of a previously unreadable raw publication may
+                # make the already-ended compile eligible for an audit.
+                references.extend(dict(commit=origin['commit'], path=path.as_posix()) for path in (
+                    raw.parent.parent/'PLAN.json', raw/'RESULT.json', raw/'PRICES.json',
+                    raw/'SIDECARS_UNBOUND.json', raw/'IMPLEMENTATION_EVIDENCE.json'))
     return unique_locators([*price_indexes(waves, settings, physical_ids or None, audits=audits), *references])
 
 
@@ -163,14 +174,14 @@ def reconciliation_snapshot(root, row, locators, *, objects=None, scoped=False):
     owner_paths = set(item.get('original_paths', ()))
     for directory in item.get('original_owner_directories', ()):
         base = Path(directory)
-        paths = (path for pattern in ('*.json', '*/*/*.json', 'recovered_prices/*/*.json')
-                 for path in base.glob(pattern))
+        markers = (path for pattern in ('*.json', '*/*/*.json', 'recovered_prices/*/*.json')
+                   for path in base.glob(pattern))
         if scoped:
-            owner_paths.update(str(path) for path in paths if (
+            owner_paths.update(str(path) for path in markers if (
                 path.name.startswith(('PF_', 'STOP', 'COMPLETION'))
                 and any(token in path.name for token in ('COMPLETION', 'RESULT', 'RETURN', 'STOP', 'DISTRIBUTED', 'STARTED'))))
         else:
-            owner_paths.update(str(path) for path in paths if any(
+            owner_paths.update(str(path) for path in markers if any(
                 part in path.name for part in ('COMPLETION', 'RESULT', 'RETURN', 'STOP')))
     owner = []
     for raw in sorted(owner_paths):

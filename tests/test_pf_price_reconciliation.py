@@ -24,6 +24,41 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_saved_signal_candidate_with_missing_route_reaches_preparation(self):
+        def ready(cid):
+            return dict(configuration_id=cid, method='FULL_PF', configuration_body={'id': cid},
+                        signal_source={'commit': 'fixed'}, ready=True, needs=[],
+                        key=dict(p=10, formula='2nd', delta_over_h='2'))
+
+        context = dict(candidates=[ready(cid) for cid in ('bound', 'missing', 'owned')],
+                       catalog={'candidates': []},
+                       reader=SimpleNamespace(read=lambda _: {'cases': [{'configuration_id': 'bound'}]}))
+        routes = {'FULL_PF': [dict(kind='pf_b_pf6', templates=[dict(commit='fixed', path='cases.json')])]}
+        missing = selection.missing_pf_routes(ROOT, context, routes, {'owned': {}})
+        self.assertEqual(missing, {'missing'})
+        result = selection.select(context, ['FULL_PF'], include_full=True, route_rechecks=missing)
+        self.assertEqual(result['selected']['configuration_id'], 'missing')
+        self.assertEqual(result['selected']['needs'], ['Q3_ROUTE_CONFIGURATION_OR_TEMPLATE'])
+        self.assertTrue(all(c['ready'] for c in context['candidates']))
+
+    def test_owner_paths_do_not_hide_arrival_of_raw_compile_objects(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root/'PF_COMPILE.RESULT.json').write_text('{}')
+            row = dict(price_reconciliation=dict(original_owner_directories=[str(root)],
+                deferred_price_rounds={1: [dict(physical_id='physical', findings=[
+                    dict(original_compile=dict(commit='fixed', path='config/calibration/run01/PRICES.json'))])]}))
+            locators = prices.reconciliation_locators([], {}, row)
+            paths = {f"{loc['commit']}:{loc['path']}" for loc in locators}
+            admitted = 'fixed:config/calibration/run01/IMPLEMENTATION_EVIDENCE.json'
+            self.assertEqual(len(paths), 5)
+            self.assertIn(admitted, paths)
+            objects = dict.fromkeys(paths, 'missing')
+            before = prices.reconciliation_snapshot(root, row, locators, objects=objects, scoped=True)
+            objects[admitted] = 'hash blob 100'
+            after = prices.reconciliation_snapshot(root, row, locators, objects=objects, scoped=True)
+            self.assertNotEqual(before, after)
+
     def test_terminal_reuses_frozen_model_and_preserves_price_provenance(self):
         from trottertracks.pf_distributed_preparation import terminal_model_prices
         from trottertracks.saved_rpe_cost_catalog import enc
