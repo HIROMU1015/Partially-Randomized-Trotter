@@ -1008,6 +1008,18 @@ class ManagerTests(unittest.TestCase):
 
 
 class GatewayTests(unittest.TestCase):
+    def test_exchange_does_not_replay_bulk_rpc_from_ended_pilot_session(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for token in ('closed', 'live'):
+                session = root/'allocations'/token
+                (session/'requests').mkdir(parents=True)
+                P.atomic(session/'requests'/'complete-test.json', {'request_id':'complete-test'})
+            P.atomic(root/'allocations'/'closed'/'SESSION_END.json', {'reason':'WORKER_EXITED'})
+            result = G.exchange(root, {'request_mode':'completion', 'limit':2}, snapshotter=lambda *_: [])
+            self.assertEqual(set(result['requests']), {'live'})
+            self.assertTrue((root/'allocations'/'closed'/'requests'/'complete-test.json').is_file())
+
     def test_failed_ssh_login_is_shared_between_gateways(self):
         with tempfile.TemporaryDirectory() as directory, \
              patch.object(P.tempfile, 'gettempdir', return_value=directory), \

@@ -325,6 +325,21 @@ def controller_scope_hold(request, profile):
     return None
 
 
+def accepts_probe(executor, host, policy, error):
+    admission = executor._host_admission(host, policy, error)
+    if not admission['accepting'] or admission.get('max_slots') == 0:
+        return False
+    manager = getattr(executor, 'pbs_manager', None)
+    if manager is not None and host in manager.configured and not any(
+            row['host_id'] == host and row['status'] == 'R' for row in manager.allocations):
+        # A drained PBS session's last negative offer cannot prevent the
+        # request check needed to attach its successor to the reservation.
+        return True
+    observed = executor.hosts.get(host, {})
+    return (observed.get('accepting_new_jobs', True)
+            and ((observed.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs', True))
+
+
 def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, targets=None):
     """Obtain real-input dry checks for new jobs before reserving a slot."""
     assignment = dict(job_id=job_id, method=request['method'], request=request,
@@ -349,11 +364,7 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
     participants = []
     pbs = executor.distributed.get('pbs') or {}
     def accepting(host):
-        admission=executor._host_admission(host,policy,error)
-        observed=executor.hosts.get(host,{})
-        return (admission['accepting'] and admission.get('max_slots') != 0
-                and observed.get('accepting_new_jobs',True)
-                and ((observed.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs',True))
+        return accepts_probe(executor, host, policy, error)
 
     pbs_workers = {worker['host_id']: worker for worker in pbs.get('workers', [])
                    if pbs.get('walltime_policy') and accepting(worker['host_id'])}

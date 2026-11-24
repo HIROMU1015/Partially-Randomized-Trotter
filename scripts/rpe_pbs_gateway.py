@@ -285,6 +285,8 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
     excluded = incoming.get('exclude', {})
     requests = {}
     for directory in (root/'allocations').glob('*'):
+        if (directory/'SESSION_END.json').exists():
+            continue  # The ended pilot's owned results use selective harvest.
         values = []
         for path in sorted((directory/'requests').glob('*.json')):
             if remaining == 0:

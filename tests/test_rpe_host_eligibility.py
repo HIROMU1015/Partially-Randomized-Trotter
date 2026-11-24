@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from trottertracks import rpe_host_eligibility as H
-from trottertracks.rpe_live_q3_readiness import _HOST_PROBE, _supply_inputs, controller_input_hashes
+from trottertracks.rpe_live_q3_readiness import _HOST_PROBE, _supply_inputs, accepts_probe, controller_input_hashes
 from trottertracks.rpe_q3_coordinator import digest
 
 
@@ -23,6 +23,16 @@ def save(path, value):
 
 
 class HostEligibilityTests(unittest.TestCase):
+    def test_old_pbs_offer_does_not_prevent_probing_a_new_session(self):
+        host = 'pbs-0'
+        manager = SimpleNamespace(configured={host}, allocations=[dict(host_id=host, status='F')])
+        executor = SimpleNamespace(hosts={host:dict(accepting_new_jobs=False)}, pbs_manager=manager,
+                                   _host_admission=lambda host, policy, _: policy)
+        self.assertTrue(accepts_probe(executor, host, dict(accepting=True), None))
+        self.assertFalse(accepts_probe(executor, host, dict(accepting=False), None))
+        manager.allocations[0]['status'] = 'R'
+        self.assertFalse(accepts_probe(executor, host, dict(accepting=True), None))
+
     def test_live_readiness_supplies_saved_input_objects_without_changing_head(self):
         with tempfile.TemporaryDirectory() as directory:
             top=Path(directory);controller=top/'controller';worker=top/'worker'
