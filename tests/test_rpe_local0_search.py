@@ -67,9 +67,9 @@ class Tests(unittest.TestCase):
         from trottertracks.rpe_local0_search import execute_run
         from trottertracks.rpe_q3_store import JobStore
 
-        for stopped in (False, True):
-            with self.subTest(stopped=stopped):
-                run = self.home/f'driver-{stopped}'
+        for stopped, overlay in ((False, False), (True, False), (False, True), (True, True)):
+            with self.subTest(stopped=stopped, overlay=overlay):
+                run = self.home/f'driver-{stopped}-{overlay}'
                 problem = dict(problem=dict(system='ARTIFICIAL'))
                 spec = dict(round_id='artificial', search_to_rule_stop=True,
                             search_overrides=dict(work_conserving_search=True),
@@ -91,9 +91,13 @@ class Tests(unittest.TestCase):
                 first.wait.return_value = -signal.SIGKILL
                 second = Mock(pid=11)
                 second.wait.return_value = 0
+                selection = (dict(source='updated-operations', driver_sha256='fixture',
+                                  restart_driver_after_kill=True) if overlay else None)
                 with patch('trottertracks.rpe_local0_search.fixed_implementation', return_value={}), \
+                     patch('trottertracks.rpe_local0_search.schedule_driver',
+                           return_value=ROOT/'scripts/run_rpe_schedule_search.py'), \
                      patch('trottertracks.rpe_local0_search.subprocess.Popen', side_effect=[first, second]) as spawn:
-                    execute_run(self.config, run, 'same-invocation')
+                    execute_run(self.config, run, 'same-invocation', schedule_resume=selection)
                 recovery = load(run/'invocations/same-invocation/DRIVER_INTERRUPTION.json')
                 self.assertEqual(recovery['recovery_hold'], 'STOP_OR_SEARCH_TERMINATION' if stopped else None)
                 self.assertEqual(spawn.call_count, 1 if stopped else 2)

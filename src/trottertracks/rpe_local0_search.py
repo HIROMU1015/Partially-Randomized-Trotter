@@ -1740,7 +1740,8 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         for key in ('batch','max_cycles'):
             if key in stop:command+=['--'+key.replace('_','-'),str(stop[key])]
     restartable = (scope['entry'] == 'schedule'
-                   and (schedule_resume is None or schedule_resume['source'] == config['code_source'])
+                   and (schedule_resume is None or schedule_resume['source'] == config['code_source']
+                        or schedule_resume.get('restart_driver_after_kill') is True)
                    and not config.get('artificial_controller_directory')
                    and bool(spec.get('executor', {}).get('distributed'))
                    and spec.get('search_overrides', {}).get('work_conserving_search') is True
