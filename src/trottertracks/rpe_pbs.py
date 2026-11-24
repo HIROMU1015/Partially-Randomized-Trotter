@@ -85,6 +85,26 @@ with tempfile.NamedTemporaryFile(dir=path.parent, prefix=expected+'.transfer-', 
         temporary.unlink()
 """
 
+_CHECK_STORAGE_LAUNCHER = """
+import hashlib, json, os, stat, subprocess, sys, tempfile
+from pathlib import Path
+
+path, expected = Path(sys.argv[1]), sys.argv[2]
+with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as launcher:
+    info = os.fstat(launcher.fileno())
+    if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid():
+        raise ValueError('PBS storage launcher must be a regular file owned by this user')
+    if hashlib.sha256(launcher.read()).hexdigest() != expected:
+        raise ValueError('PBS storage launcher differs from the selected deployment')
+    if not info.st_mode & stat.S_IXUSR:
+        os.fchmod(launcher.fileno(), stat.S_IMODE(info.st_mode) | stat.S_IXUSR)
+with tempfile.TemporaryDirectory(prefix='rpe-pbs-launcher-check-') as directory:
+    profile = Path(directory)/'PROFILE.json'
+    profile.write_text(json.dumps(dict(pbs=dict(allocation_dir=directory, compute_storage_sampling=True))))
+    subprocess.run([str(path), '--check-imports', '-B', sys.argv[3], '--profile', str(profile)],
+                   stdout=subprocess.DEVNULL, check=True, timeout=12)
+"""
+
 
 class SharedSSH:
     """One authenticated transport and reconnect deadline per login host."""
@@ -206,7 +226,12 @@ class Gateway:
             raise ValueError('PBS gateway file differs from the selected deployment')
 
     def verify_storage_launcher(self, launcher):
-        self.verify_gateway_file(launcher['path'], launcher['sha256'])
+        config = self.settings
+        command = [config['gateway_python'], '-B', '-c', _CHECK_STORAGE_LAUNCHER,
+                   launcher['path'], launcher['sha256'],
+                   str(Path(config['transport_root'])/'scripts/run_rpe_pbs_worker.py')]
+        subprocess.run([*self.ssh.command(), shlex.join(command)], check=True,
+                       stdin=subprocess.DEVNULL, capture_output=True, timeout=20)
 
     def stage_artifact(self, source, destination, sha):
         config = self.settings

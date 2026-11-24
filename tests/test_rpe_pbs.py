@@ -34,6 +34,20 @@ spec.loader.exec_module(W)
 
 
 class StorageSampleTests(unittest.TestCase):
+    def test_storage_launcher_verifies_bytes_before_restoring_execute_permission(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'worker launcher'
+            path.write_text('#!/bin/sh\ntest "$1" = --check-imports && test "$4" = --profile && test -f "$5"\n')
+            path.chmod(0o600)
+            gateway = P.Gateway(dict(gateway_python=sys.executable, transport_root=directory),
+                                ssh=SimpleNamespace(command=lambda: ['/bin/sh', '-c']))
+            with self.assertRaises(subprocess.CalledProcessError):
+                gateway.verify_storage_launcher(dict(path=str(path), sha256='0'*64))
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            expected = hashlib.sha256(path.read_bytes()).hexdigest()
+            gateway.verify_storage_launcher(dict(path=str(path), sha256=expected))
+            self.assertEqual(path.stat().st_mode & 0o777, 0o700)
+
     def test_slow_compute_scan_respects_headroom_and_does_not_change_byte_limit(self):
         from trottertracks import rpe_worker_storage as storage
 
