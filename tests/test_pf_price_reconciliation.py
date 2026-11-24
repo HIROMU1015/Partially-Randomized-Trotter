@@ -289,6 +289,29 @@ class PFPriceReconciliationTests(unittest.TestCase):
         self.assertEqual(audits, [dict(compiled=receipt, axes_by_round={'1': ['Y']})])
         self.assertEqual(prices.independent_plan(plan, blocked)['new_compile_cells'], [dict(m=2, axes=['Y'])])
 
+    def test_exploratory_refresh_only_hydrates_new_pf_entries(self):
+        from trottertracks import rpe_method_optimizer as optimizer
+
+        old = {'schema': selection.PF.SCHEMA, 'configurations': {'retained': {'id': 'retained'}}}
+        received = dict(old, configurations=dict(old['configurations'], new={'id': 'new'}))
+        context = dict(facts={}, expected={'retained': {'binding_id': 'same'}},
+                       candidates=[dict(configuration_id='new', ready=False)],
+                       pf_evidence_registry=old)
+        problem = {'methods': {'FULL_PF': {}}, 'search': {'exploratory_cost': True}}
+
+        def hydrate(root, reader, plan, candidates, delta, facts):
+            self.assertEqual(delta['configurations'], {'new': {'id': 'new'}})
+            candidates[0]['ready'] = True
+            return {'new': {'binding_id': 'new'}}
+
+        with patch.object(selection.PF, 'hydrate', side_effect=hydrate), patch.object(optimizer, 'prepare') as prepare:
+            actual = selection._refresh(ROOT, problem, context, ['FULL_PF'], received, False)
+        prepare.assert_not_called()
+        self.assertTrue(actual['candidates'][0]['ready'])
+        self.assertFalse(context['candidates'][0]['ready'])
+        self.assertEqual(actual['expected'], {'retained': {'binding_id': 'same'}, 'new': {'binding_id': 'new'}})
+        self.assertEqual(actual['pf_evidence_registry'], received)
+
     def test_normal_completion_uses_saved_price_and_adopts_each_needed_stage_once(self):
         from trottertracks import pf_distributed_preparation as distributed
         from trottertracks.pf_optimizer_connection import complete_selected

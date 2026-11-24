@@ -79,6 +79,36 @@ def _artifact_mode(settings,routes,methods):
 
 def _refresh(root,problem,context,methods,registry,artificial):
     from . import rpe_method_optimizer as O
+    if (not artificial and problem.get('search', {}).get('exploratory_cost') is True
+            and 'facts' in context and 'expected' in context):
+        from .rpe_preparation_round import snapshot_context
+
+        # Only PF registry entries changed. Hydrate their existing scoped
+        # candidates with the same guards used by O.prepare.
+        reader = O.Reader(Path(root))
+        received = PF.load_registry(root, reader, registry)
+        old = context['pf_evidence_registry']['configurations']
+        additions = {cid: entry for cid, entry in received['configurations'].items() if entry != old.get(cid)}
+        if not additions:
+            return context
+        updated = snapshot_context(context)
+        plan = dict(problem, methods={m: problem['methods'][m] for m in methods})
+        expected = PF.hydrate(root, reader, plan, updated['candidates'],
+                              dict(received, configurations=additions), context['facts'])
+        for cid, binding in expected.items():
+            previous = updated['expected'].get(cid) or {}
+            for key in ('total_configuration_id', 'binding_id'):
+                if previous.get(key) is not None and binding.get(key) is not None and previous[key] != binding[key]:
+                    raise ValueError('PF registry conflicts with saved Q3 binding: ' + key)
+            updated['expected'][cid] = dict(previous, **{k: v for k, v in binding.items() if v is not None})
+        if updated.get('saved') is not None and expected:
+            prices = {c['configuration_id']: c['prices'] for c in updated['candidates']
+                      if c['configuration_id'] in expected and c['prices'] is not None}
+            restored = O.SavedBackend([p for p in context['catalog']['candidates']
+                                       if p['configuration_id'] in expected], prices)
+            updated['saved'].table.update(restored.table)
+        updated['pf_evidence_registry']['configurations'].update(additions)
+        return updated
     updated=dict(problem,pf_evidence_registry=registry,artificial_pf_evidence=artificial)
     after=O.prepare(root,updated,methods=methods,preparation_dir=context.get('preparation_dir'))
     return after
@@ -162,7 +192,21 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
     if mode=='plan':
         status=dict(status='D_PLAN_ONLY_NO_SCIENCE',selection=selection,response=response,copied_plans=copied,new_scientific_calls=0)
     else:
-        context=_refresh(root,problem,context,methods,response['registry_file'],artificial)
+        registered = response['registry_file']
+        if settings.get('exploratory_cost') and chosen_id is not None:
+            previous = context['pf_evidence_registry']['configurations'].get(chosen_id)
+            if previous and previous.get('signal_packet') and previous.get('q3_inputs'):
+                registered = json.loads(Path(registered).read_bytes())
+                entry = registered['configurations'].get(chosen_id)
+                if entry:
+                    fields = ('method', 'p', 'formula', 'delta_over_h', 'total_configuration_id')
+                    if any(entry.get(k) != previous.get(k) for k in fields):
+                        raise ValueError('PF shortlist price update changed its configuration')
+                    # Keep the exact canonical signal and route already used by Q3.
+                    registered['configurations'][chosen_id] = (
+                        dict(previous, prices=entry['prices'], price_scope=entry['price_scope'])
+                        if entry.get('prices') else previous)
+        context=_refresh(root,problem,context,methods,registered,artificial)
         registry=context['pf_evidence_registry'];routes=PF.registry_routes(routes,registry)
         if chosen_id is not None:
             returned=next(c for c in context['candidates']if c['configuration_id']==chosen_id)
@@ -616,15 +660,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         one_spec = dict(spec, pf_completion=one_settings)
         after,_,status=prepare(root,problem,snapshot_context(context),one_spec,base/'candidates'/cid,
                               deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
-        entry = after['pf_evidence_registry']['configurations'].get(cid)
-        previous = context['pf_evidence_registry']['configurations'].get(cid)
-        if (cid in shortlist and entry and previous and previous.get('signal_packet') and previous.get('q3_inputs')):
-            # The shortlist needs an optional price update. Keep the original
-            # route and Q3 template identity already in use by the ledger.
-            if any(entry.get(k) != previous.get(k) for k in ('method', 'p', 'formula', 'delta_over_h', 'total_configuration_id')):
-                raise ValueError('PF shortlist price update changed its configuration')
-            entry = dict(previous, prices=entry['prices'], price_scope=entry['price_scope']) if entry.get('prices') else previous
-        return chosen,status,entry
+        return chosen,status,after['pf_evidence_registry']['configurations'].get(cid)
 
     updated=False;processed=False
     current = None
