@@ -4457,7 +4457,9 @@ class DistributedExecutor(ConcurrentExecutor):
     def _receive_completion(self, value):
         """Verify independent transfers before taking the shared queue lock."""
         from . import rpe_q3_coordinator as Q
-        from .rpe_completion_acceptance import MissingPreparationArtifacts, validate_preparation_result
+        from .rpe_completion_acceptance import (
+            MissingPreparationArtifacts, preparation_transfer_retry_matches, validate_preparation_result,
+        )
 
         host, job_id, attempt = (value[k] for k in ('host_id', 'job_id', 'attempt_id'))
         with self.transfer_locks[hash((job_id, attempt)) % len(self.transfer_locks)]:
@@ -4469,8 +4471,12 @@ class DistributedExecutor(ConcurrentExecutor):
             files = value['files']
             completion_sha = Q.digest(files)
             job = self.run_dir/'jobs'/row['method']/job_id
+            transfer = self.run_dir/'distributed'/'transfers'/job_id/attempt
+            preparation = self._preparation_request(row['request'])
             if row['state'] == 'ACCEPTED':
-                if row['completion_sha256'] != completion_sha:
+                if row['completion_sha256'] != completion_sha and not (
+                        preparation and preparation_transfer_retry_matches(
+                            files, transfer/'TRANSPORT_TIMING.jsonl', row['completion_sha256'])):
                     raise ValueError('Duplicate completion changed artifacts')
                 self._publish_transfer(row)
                 receipt = json.loads((job/'PROCESS_RETURN.json').read_text())
@@ -4481,14 +4487,12 @@ class DistributedExecutor(ConcurrentExecutor):
             started = time.monotonic()
             view = self.for_method(row['method'])
             view.log(event='RESULT_RECEIVED', job=job_id, host_id=host, attempt_id=attempt)
-            transfer = self.run_dir/'distributed'/'transfers'/job_id/attempt
             transfer.mkdir(parents=True, exist_ok=True)
             Q.install_files(transfer, files)
             if not (transfer/'REQUEST.json').exists():
                 _write(transfer/'REQUEST.json', row['request'])
             receipt = json.loads((transfer/'PROCESS_RETURN.json').read_text())
             outcome = json.loads((transfer/'OUTCOME.json').read_text(), parse_int=O._outcome_int)
-            preparation = self._preparation_request(row['request'])
             validation, rejection, validation_key = None, None, None
             if preparation:
                 try:

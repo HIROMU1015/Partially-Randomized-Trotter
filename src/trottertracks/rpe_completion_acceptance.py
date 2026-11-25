@@ -1,5 +1,8 @@
 """Checks shared by the normal executor and completion-only collection."""
 
+import base64
+import json
+
 
 class MissingPreparationArtifacts(ValueError):
     """The completion can be checked again after the declared blobs arrive."""
@@ -29,3 +32,21 @@ def validate_preparation_result(row, receipt, outcome, artifact_cache):
     # outside the small immutable completion bundle, including on replay.
     from .rpe_preparation_artifacts import artifact_path
     for name in artifacts: artifact_path(name)
+
+
+def preparation_transfer_retry_matches(files, accepted_timing, accepted_digest):
+    """Match the original result when a PBS resend only appends upload timings."""
+    from .rpe_q3_coordinator import digest
+
+    name = 'TRANSPORT_TIMING.jsonl'
+    try:
+        original = accepted_timing.read_bytes()
+        retried = base64.b64decode(files[name], validate=True)
+        suffix = retried[len(original):]
+        if not original.endswith(b'\n') or not retried.startswith(original) or not suffix.endswith(b'\n'):
+            return False
+        if any(json.loads(line).get('event') != 'WORKER_TRANSFER_START' for line in suffix.splitlines()):
+            return False
+    except (AttributeError, KeyError, OSError, TypeError, ValueError):
+        return False
+    return digest(dict(files, **{name: base64.b64encode(original).decode('ascii')})) == accepted_digest

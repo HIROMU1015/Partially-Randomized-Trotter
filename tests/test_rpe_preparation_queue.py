@@ -34,6 +34,34 @@ class PreparationQueue(Base.ControllerFailures):
         return dict(host_id=row['host_id'],job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],request_sha256=assignment['request_sha256'],
             files={name:base64.b64encode(json.dumps(value).encode()).decode() for name,value in files.items()})
 
+    def test_preparation_resend_accepts_only_appended_transfer_timings(self):
+        executor = self.executor()
+        job = self.submit(executor, 'compile', 'completion-retry')
+        assignment, = self.poll_host(executor, 'server1')['assignments']
+        self.assertEqual(assignment['job_id'], job)
+        payload = self.prep_complete(executor, assignment)
+        name = 'TRANSPORT_TIMING.jsonl'
+        original = b'{"event":"RESULT_BUNDLE_READY"}\n'
+        retry_timing = b'{"event":"WORKER_TRANSFER_START"}\n'
+        encode = lambda raw: base64.b64encode(raw).decode('ascii')
+        payload['files'][name] = encode(original)
+        self.assertFalse(executor.rpc('/v1/complete', payload)['duplicate'])
+        executor.adopt_preparation(job)
+        accepted = executor.store.row(job)
+
+        retry = dict(payload, files=dict(payload['files'], **{name: encode(original + retry_timing)}))
+        self.assertEqual(executor.rpc('/v1/complete', retry), dict(ok=True, duplicate=True))
+        for change in ({'OUTCOME.json': encode(b'{}')}, {name: encode(retry_timing)},
+                       {name: encode(original + b'{"event":"ADAPTER_PROCESS_END"}\n')}):
+            modified = dict(retry, files={**retry['files'], **change})
+            with self.assertRaisesRegex(ValueError, 'Duplicate completion changed artifacts'):
+                executor.rpc('/v1/complete', modified)
+        self.assertEqual(executor.store.row(job), accepted)
+        self.assertEqual([row['event'] for row in executor.store.events()].count('ACCEPT'), 1)
+        self.assertEqual([row['event'] for row in executor.store.events()].count('ADOPT'), 1)
+        transfer = self.run/'distributed'/'transfers'/job/assignment['attempt_id']
+        self.assertEqual((transfer/name).read_bytes(), original)
+
     def test_resume_retires_only_unclaimed_incomplete_max_width_delivery(self):
         from copy import deepcopy
         from trottertracks.rpe_optimizer_concurrent import stale_max_width_readiness, max_width_signal_missing_frozen_input
