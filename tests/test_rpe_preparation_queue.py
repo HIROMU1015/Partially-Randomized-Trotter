@@ -50,6 +50,51 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(stale_max_width_readiness(store,pending,states),['unreserved','cancelled','queued'])
         self.assertEqual(calls,['queued'])
 
+    def test_max_width_bundle_alias_reuses_one_frozen_request_across_resume(self):
+        from copy import deepcopy
+        from trottertracks.rpe_optimizer_concurrent import max_width_signal_key, max_width_signal_owner
+        from trottertracks.rpe_preparation_queue import normalize_preparation_request
+        request = self.request('signal', 'same-science')
+        request['original_contract'] = {'rounds': [1, 2]}
+        blobs = {hashlib.sha256(body).hexdigest(): base64.b64encode(body).decode()
+                 for body in (b'mapper', b'input', b'bundle-one', b'bundle-two')}
+        mapper_sha, input_sha, bundle_one, bundle_two = blobs
+        prep = request['preparation']
+        prep.update(provider='DF_SIGNALS', controller_root=str(ROOT),
+            command=['ARTIFICIAL_ONLY','--input',str(ROOT/'fixture.json'),'--inputs-commit','c'*40,
+                     '--transport-source','m'*40],
+            inputs={'private/df-terminal-transport/src/trottertracks/pr_df_max_width.py':mapper_sha,
+                    'workspace/fixture.json':input_sha},
+            input_hashes=[dict(commit='c'*40,path='fixture.json',sha256=input_sha)],
+            input_git_bundles=[{'sha256':bundle_one}])
+        alias = deepcopy(request)
+        alias['preparation']['input_git_bundles'] = [{'sha256':bundle_two}]
+        # The same bytes may also be referenced by a later Git commit.
+        alias['preparation']['command'][alias['preparation']['command'].index('--inputs-commit')+1] = 'f'*40
+        alias['preparation']['input_hashes'][0]['commit'] = 'f'*40
+        first = self.executor()
+        first.artifact_cache.put(blobs)
+        one = first.submit_preparation(request, approved=True, budget=1, contract=request['original_contract'])
+        normalized = normalize_preparation_request(alias, source_manifest=first.source_manifest)
+        self.assertNotEqual(one, normalized['request_id'])
+        self.assertEqual(max_width_signal_key(first.store.row(one)['request']), max_width_signal_key(normalized))
+        self.assertEqual(first.submit_preparation(alias, approved=True, budget=1, contract=request['original_contract']), one)
+        self.assertEqual(max_width_signal_owner(first.store, normalized)['job_id'], one)
+        first.state.retain_queued_preparation = True
+        self.close_one(first)
+        second = self.executor()
+        self.assertEqual(second.submit_preparation(alias, approved=True, budget=1, contract=request['original_contract']), one)
+        self.assertEqual(second.store.preparation_reservations(), {'signal': 1})
+        assignment, = self.poll_host(second, 'server1')['assignments']
+        self.assertEqual(assignment['job_id'], one)
+        second.rpc('/v1/complete', self.prep_complete(second, assignment))
+        second.adopt_preparation(one)
+        self.assertEqual(second.submit_preparation(alias, approved=True, budget=1, contract=request['original_contract']), one)
+        second.adopt_preparation(one)
+        events = second.store.events()
+        self.assertEqual(sum(row['event'] == 'ASSIGN' for row in events), 1)
+        self.assertEqual(sum(row['event'] == 'ADOPT' for row in events), 1)
+
     def test_planning_boundary_retains_preparation_and_reuses_reservation(self):
         first = self.executor()
         job = self.submit(first, 'signal', 'independent', budget=1)

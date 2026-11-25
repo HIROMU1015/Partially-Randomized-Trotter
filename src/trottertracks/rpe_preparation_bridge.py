@@ -2347,6 +2347,20 @@ class DistributedPreparationBridge:
         dependencies = self._dependencies(directory, stage)
         job_id = self.executor.submit_preparation(request, budget=budget, approved=self.approved,
             contract=request['original_contract'], dependencies=dependencies, expected_job_id=submitted.get('job_id'))
+        if stage == 'DF_SIGNALS' and self.max_width_signal_locator(request['preparation']) is not None:
+            # The queue may reuse an older physical owner even when the
+            # transport manifest changed. Keep its exact request for intake.
+            row = self.executor.store.row(job_id)
+            pending = getattr(self.executor, 'preparation_pending', {}).get(job_id)
+            owned = row['request'] if row else pending['request'] if pending else None
+            if owned is not None and owned.get('request_id') != request.get('request_id'):
+                archive = marker.with_name(stage+'.TRANSPORT_ALIAS.json')
+                if (marker.exists() and submitted.get('job_id') not in (None, job_id)
+                        and not archive.exists()):
+                    put(archive, submitted)
+                request = owned
+                submitted = dict(request=owned, source=owned['preparation']['source']['commit'],
+                                 automatic_retry=False)
         put(marker, dict(submitted, job_id=job_id))
         result = self.executor.preparation_result(job_id, wait=wait, adopt=False)
         if result is None and not wait:

@@ -951,11 +951,50 @@ def max_width_signal_missing_frozen_input(request):
                                     for x in preparation.get('input_hashes',())))
 
 
+def max_width_signal_key(request):
+    """The numerical signal request, independent of Git bundle packaging."""
+    from .rpe_preparation_bridge import DistributedPreparationBridge
+    preparation = request.get('preparation') or {}
+    locator = DistributedPreparationBridge.max_width_signal_locator(preparation)
+    if not locator:
+        return None
+    digest = preparation.get('inputs', {}).get('workspace/'+locator['path'])
+    if not digest:
+        return None
+    command = preparation['command']
+    return (locator['path'], digest, preparation['source']['commit'],
+            command[command.index('--transport-source')+1], tuple(preparation.get('dependencies', ())),
+            json.dumps(request.get('original_contract'), sort_keys=True))
+
+
+def max_width_signal_owner(store, request):
+    """Reuse an owned numerical input; an explicit successor may exclude only its old attempt."""
+    key = max_width_signal_key(request)
+    if key is None:
+        return None
+    superseded = (request['preparation'].get('supersedes_preparation') or {}).get('job_id')
+    with store._connection() as db:
+        ids = [row[0] for row in db.execute("SELECT job_id FROM jobs WHERE method='PREPARATION:signal' "
+            "AND request LIKE ? AND NOT (state='CANCELLED' AND attempt_id IS NULL)", ('%'+key[1]+'%',))]
+    owners = [row for job in ids if job != superseded and (row := store.row(job)) is not None
+              and max_width_signal_key(row['request']) == key]
+    if not owners:
+        return None
+    # Historical duplicates are evidence, not a new retry or a second adoption.
+    # Prefer the already adopted owner; an existing successor is preferred over
+    # its failed predecessor, then the first durable reservation.
+    return min(owners, key=lambda row: (row.get('adopted_epoch') is None,
+        not bool(row['request']['preparation'].get('supersedes_preparation')),
+        row.get('attempt_id') is None, row.get('enqueued_epoch', 0), row['job_id']))
+
+
 def stale_max_width_readiness(store,pending,states):
     """Return only old, unclaimed delivery records safe to retire on Resume."""
     retired=[]
     for job,record in pending.items():
-        if not max_width_signal_missing_frozen_input(record['request']):continue
+        owner = max_width_signal_owner(store, record['request'])
+        if not (max_width_signal_missing_frozen_input(record['request']) or
+                owner is not None and owner['job_id'] != job):continue
         state=states.get(job,(None,None))[1]
         if state not in (None,'QUEUED','CANCELLED'):continue
         row=store.row(job)
@@ -1120,8 +1159,11 @@ class DistributedExecutor(ConcurrentExecutor):
                 for row in self.store.rows():
                     if row['state'] == 'UNKNOWN' and self._restore_pbs_unstarted(row):
                         row = self.store.row(row['job_id'])
+                    existing = (max_width_signal_owner(self.store, row['request'])
+                                if row['state']=='QUEUED' and row.get('attempt_id') is None else None)
                     if (row['state']=='QUEUED' and row.get('attempt_id') is None
-                            and max_width_signal_missing_frozen_input(row['request'])):
+                            and (max_width_signal_missing_frozen_input(row['request']) or
+                                 existing is not None and existing['job_id'] != row['job_id'])):
                         self.store.cancel(row['method'],row['job_id'])
                         self.store.save_preparation_readiness({row['job_id']:None})
                         self.preparation_pending.pop(row['job_id'],None)
@@ -2871,6 +2913,33 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
                 return job_id
             row = self.store.row(job_id)
+            if (row is None or row.get('attempt_id') is None or
+                    row['state'] == 'ACCEPTED' and row.get('adopted_epoch') is None):
+                owner = max_width_signal_owner(self.store, request)
+                if owner is not None and owner['job_id'] != job_id:
+                    if row is not None and row['state'] == 'QUEUED':
+                        task = self.state.tasks.get(self.run_dir/'jobs'/method/job_id)
+                        if task is not None and task.status == 'QUEUED':
+                            self._cancel(task)
+                        else:
+                            self.store.cancel(method, job_id)
+                    self.discard_pending_preparation(job_id)
+                    self.log(event='PREPARATION_REUSE_NUMERICAL_OWNER', job=job_id,
+                             original_job=owner['job_id'], stage=preparation['stage'])
+                    return owner['job_id']
+                key = max_width_signal_key(request)
+                if owner is None and key is not None:
+                    # Readiness itself owns no execution, but keep only one
+                    # complete request while parallel worker preflights finish.
+                    pending = [other for other, record in self.preparation_pending.items()
+                               if other != job_id and max_width_signal_key(record['request']) == key
+                               and not max_width_signal_missing_frozen_input(record['request'])
+                               and (record['request']['preparation'].get('supersedes_preparation') or {}) ==
+                                   (preparation.get('supersedes_preparation') or {})]
+                    chosen = min([job_id, *pending]) if job_id in self.preparation_pending else min(pending, default=job_id)
+                    if chosen != job_id:
+                        self.discard_pending_preparation(job_id)
+                        return chosen
             if (max_width_signal_missing_frozen_input(request)
                     and (row is None or row['state'] in ('QUEUED','CANCELLED') and row.get('attempt_id') is None)):
                 from .pr_candidate_completion import PreparationWait
