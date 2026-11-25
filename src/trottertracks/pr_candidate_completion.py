@@ -2681,13 +2681,13 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
             # Reconcile the original durable task before counting attempted
             # candidates. It may have finished while this controller was down.
             for record in current:
-                if not preparation_retry_protected(record)and(record['status']=='SELECTED'or record.get('recoverable_preparation')):
+                if completion.metadata_retry_path(record) is not None or (not preparation_retry_protected(record) and (record['status']=='SELECTED'or record.get('recoverable_preparation'))):
                     completion.complete(deepcopy(record['request']))
             current=[r for r in completion.state['records'].values()if r['method']==method]
         maximum=settings.get('max_completed_per_method')
         if isinstance(maximum,dict):maximum=maximum.get(method)
         if maximum is not None and sum(r['status']=='READY_FOR_SEARCH'for r in current)>=maximum:return current
-        deferred=[r for r in current if not r.get('scientific_failure') and (
+        deferred=[r for r in current if not preparation_retry_protected(r) and (
                   r.get('signal_deferred_for_price') and r['status']=='WAITING_INPUTS'
                   or r['status'] in DF_PRICE_RECHECK_STATES)]
         if deferred:
