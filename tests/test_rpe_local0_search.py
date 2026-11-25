@@ -150,6 +150,31 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(RequestError, 'rpe_method_optimizer'):
             schedule_driver(self.config, run, selection)
 
+    def test_selected_resume_accepts_pinned_old_and_new_local_transport(self):
+        from hashlib import sha256
+        from trottertracks.rpe_local0_search import schedule_driver
+        run = self.home/'rollover-run'
+        write(run/'APPLIED_SCOPE.json', dict(run_id=run.name, entry='schedule'))
+        operations, legacy = self.home/'new-transport', self.home/'old-transport'
+        driver = operations/'scripts/run_rpe_schedule_search.py'
+        concurrent = operations/'src/trottertracks/rpe_optimizer_concurrent.py'
+        worker = 'scripts/run_rpe_q3_worker.py'
+        for path in (driver, concurrent, operations/worker, legacy/worker):
+            path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_text('# Artificial fixed transport\n')
+        def digest(path):return sha256(path.read_bytes()).hexdigest()
+        selected = dict(run_id=run.name,base_source=self.config['code_source'],root=str(operations),
+                        driver_sha256=digest(driver),resume_controller_kill='fixture',
+                        worker_trial=dict(optimizer_sha256=digest(concurrent),local_resource_worker=dict(
+                            root=str(legacy),files={worker:digest(legacy/worker)},
+                            transport_files={worker:digest(operations/worker)})))
+        for bound in (legacy/worker, operations/worker):
+            with patch('trottertracks.rpe_local0_search.local_worker_for_reattachment',return_value=bound):
+                self.assertEqual(schedule_driver(self.config,run,selected),driver)
+        with patch('trottertracks.rpe_local0_search.local_worker_for_reattachment',return_value=self.home/worker):
+            with self.assertRaisesRegex(RequestError,'second local worker'):
+                schedule_driver(self.config,run,selected)
+
     def test_explicit_resume_preserves_killed_controller_attempts_and_stop(self):
         import signal
         from trottertracks.rpe_q3_store import JobStore

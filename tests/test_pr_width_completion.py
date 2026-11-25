@@ -633,6 +633,17 @@ class WidthCompletionTests(unittest.TestCase):
                 routes=c.install(ctx,problem,[rec])
                 self.assertEqual([r['configuration_ids'] for r in routes['PR_DF']],[[carrier['id']]])
                 self.assertEqual([p['configuration_id'] for p in ctx['candidates']],[carrier['id']])
+                # A distinct existing Q3 owner under the old ID must not be bypassed.
+                from trottertracks.rpe_q3_store import JobStore
+                store = JobStore(c.directory.parent/'distributed/QUEUE.sqlite3')
+                store.reserve('PR_DF','old-q3',dict(configuration_id='DF_LOGICAL',route={'kind':'artificial'}),1,True)
+                fresh = dict(candidates=[],expected={})
+                guarded = dict(rec)
+                guarded.pop('installation_hold',None)
+                outcome = c.install(fresh,problem,[guarded])
+                self.assertEqual(guarded['installation_hold'],'REUSED_SIGNAL_ALIAS_EXISTING_Q3_OWNER')
+                self.assertEqual(store.row('old-q3')['state'],'QUEUED')
+                self.assertFalse(fresh['candidates'])
 
     def test_scoped_audit_metadata_validates_only_covered_actual_step(self):
         module=load_script('pauli_split_cal_audit_request.py')

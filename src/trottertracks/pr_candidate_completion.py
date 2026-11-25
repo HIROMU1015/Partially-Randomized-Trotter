@@ -2623,6 +2623,7 @@ class Completion:
     def install(self,context,problem,records):
         from . import rpe_method_optimizer as O,rpe_candidate_preparation as R
         routes=deepcopy(problem['execution_routes'])
+        existing_q3_owners = None
         for rec in records:
             if rec['status']!='READY_FOR_SEARCH':continue
             config=value(rec['configuration']);method=rec['method'];binding=rec['intake'];cid=config['id']
@@ -2638,6 +2639,26 @@ class Completion:
                 if carrier['id'] != declared_id:
                     if physical_evaluation_contract(carrier) != physical_evaluation_contract(declared_config):
                         raise ValueError('REUSED_SIGNAL_CARRIER_PHYSICAL_CONTRACT_DIFFERS')
+                    # An older declaration may already own a distinct Q3
+                    # reservation. Do not replace or launch around such an
+                    # owner; reconcile it as its own immutable attempt.
+                    if existing_q3_owners is None:
+                        import sqlite3
+                        db_path = self.directory.parent/'distributed/QUEUE.sqlite3'
+                        existing_q3_owners = set()
+                        if db_path.is_file():
+                            from contextlib import closing
+                            try:
+                                with closing(sqlite3.connect(db_path.resolve().as_uri()+'?mode=ro', uri=True, timeout=5)) as db:
+                                    existing_q3_owners = {tuple(row) for row in db.execute(
+                                        "SELECT DISTINCT method,json_extract(request,'$.configuration_id') "
+                                        "FROM jobs WHERE state!='CANCELLED' AND method NOT LIKE 'PREPARATION:%'")}
+                            except sqlite3.Error as error:
+                                existing_q3_owners = None
+                                raise ValueError('REUSED_SIGNAL_ALIAS_OWNER_RECONCILIATION_REQUIRED') from error
+                    if (method, declared_id) in existing_q3_owners:
+                        rec['installation_hold'] = 'REUSED_SIGNAL_ALIAS_EXISTING_Q3_OWNER'
+                        continue
                     config, cid = carrier, carrier['id']
                 if not self.horizon_parent_bound(rec):
                     raise ValueError('DF_HORIZON_PREFIX_REBIND_REQUIRED')

@@ -1676,10 +1676,21 @@ def schedule_driver(config, run, selection):
                 worker = local_worker_for_reattachment(run)
                 settings = trial.get('local_resource_worker', {})
                 if worker is not None:
-                    worker_root = Path(settings.get('root', driver.parents[1])).resolve()
-                    if worker != worker_root/'scripts/run_rpe_q3_worker.py' or not settings.get('files'):
+                    legacy_root = Path(settings.get('root', driver.parents[1])).resolve()
+                    transport_root = driver.parents[1].resolve()
+                    # A completed rollover is also a legitimate owner on a
+                    # later Resume. Admit only the two explicitly selected
+                    # implementations, never another run/spool.
+                    if worker == legacy_root/'scripts/run_rpe_q3_worker.py':
+                        worker_root, files = legacy_root, settings.get('files')
+                    elif (settings.get('transport_from_release', True)
+                          and worker == transport_root/'scripts/run_rpe_q3_worker.py'):
+                        worker_root, files = transport_root, settings.get('transport_files')
+                    else:
+                        worker_root, files = None, None
+                    if not files:
                         raise ValueError('selected resume would start a second local worker')
-                    for name, sha in settings['files'].items():
+                    for name, sha in files.items():
                         if hashlib.sha256((worker_root/name).read_bytes()).hexdigest() != sha:
                             raise ValueError('selected local worker file differs: '+name)
             except (OSError, ValueError, KeyError) as error:

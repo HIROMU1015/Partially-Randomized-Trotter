@@ -358,6 +358,10 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         # Legacy per-run selections still pin the scientific worker profile,
         # but must not accidentally keep an obsolete polling implementation.
         transport_root = Path(__file__).resolve().parents[1] if selected.get('transport_from_release', True) else root
+        if transport_root != root and selected.get('transport_files'):
+            for file, expected in selected['transport_files'].items():
+                if hashlib.sha256((transport_root/file).read_bytes()).hexdigest() != expected:
+                    raise ValueError('Selected release transport differs: '+file)
         distributed['worker_script'] = str(transport_root/'scripts/run_rpe_q3_worker.py')
         distributed['local_worker'].setdefault('slot_policy', {}).update(selected['slot_policy'])
         # The resumed controller starts with the frozen release on sys.path.

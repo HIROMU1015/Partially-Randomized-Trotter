@@ -1277,6 +1277,7 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_coordinator import atomic_json
         directory=self.run_dir/'distributed'/'relay';directory.mkdir(parents=True,exist_ok=True)
         path=directory/'CONFIG.json'
+        relay = self.distributed.get('relay_script', str(self.root/'scripts/run_rpe_q3_relay.py'))
         config=dict(deepcopy(settings),state_directory=str(directory),external_tunnel=True,controller=dict(local_port=port))
         # A crashed controller can leave its polling relay alive. Reuse only
         # that exact endpoint/configuration; never create a second poller.
@@ -1288,9 +1289,25 @@ class DistributedExecutor(ConcurrentExecutor):
                 if (directory/'STOP').exists():
                     raise ValueError('Existing run relay is still draining; resume after its mailbox transfer finishes')
                 self.state.controller_relay_directory=directory
-                self.log(event='CONTROLLER_RELAY_REUSED',configuration=str(path));return
+                marker = json.loads((directory/'LAUNCH.json').read_text())
+                pid = marker['pid']
+                args = Path('/proc', str(pid), 'cmdline').read_bytes().rstrip(b'\0').split(b'\0')
+                if (len(args) < 6 or args[1:2] != [b'-B']
+                        or args[3:6] != [b'--config', os.fsencode(path), b'--run']
+                        or Path(os.fsdecode(args[2])).name != 'run_rpe_q3_relay.py'
+                        or marker.get('command', [])[2:6] != [os.fsdecode(x) for x in args[2:6]]):
+                    raise ValueError('Existing run relay identity differs; preserve owner')
+                if Path(os.fsdecode(args[2])).resolve() != Path(relay).resolve():
+                    # Finish its current mailbox exchange before replacing
+                    # the old poller. Remote workers keep their attempts.
+                    (directory/'STOP').touch()
+                    self.state.relay_release_rollover = True
+                    self.log(event='CONTROLLER_RELAY_RELEASE_DRAIN',pid=pid,selected_relay=relay)
+                else:
+                    self.log(event='CONTROLLER_RELAY_REUSED',configuration=str(path))
+                return
             atomic_json(path,config);(directory/'STOP').unlink(missing_ok=True)
-        relay = self.distributed.get('relay_script', str(self.root/'scripts/run_rpe_q3_relay.py'))
+            self.state.relay_release_rollover = False
         command = [sys.executable, '-B', relay, '--config', str(path), '--run']
         with (directory/'RELAY.log').open('a')as log:
             process=subprocess.Popen(command,cwd=self.root,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
@@ -1350,6 +1367,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 if (str(profile_path) in args and '--profile' in args
                         and args[args.index('--profile')+1] == str(profile_path)
                         and any(Path(x).name == 'run_rpe_q3_worker.py' for x in args)):
+                    if ('--controller' not in args
+                            or args[args.index('--controller')+1] != self.controller_url):
+                        raise RuntimeError('Existing local worker profile has another controller endpoint')
                     self.local_worker_pid = pid
                     if getattr(self, '_local_rollover_pid', None) != pid:
                         os.kill(pid, signal.SIGTERM)
@@ -1381,7 +1401,8 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _check_relay_process(self):
         directory = getattr(self.state, 'controller_relay_directory', None)
-        if directory is None or (directory/'STOP').exists():
+        if directory is None or ((directory/'STOP').exists()
+                                  and not getattr(self.state,'relay_release_rollover',False)):
             return
         # The relay can be adopted from a surviving controller invocation.
         # Its lifetime flock, rather than a possibly reused PID, is decisive.
