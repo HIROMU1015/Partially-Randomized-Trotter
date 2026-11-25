@@ -115,6 +115,22 @@ p=Path(sys.argv[sys.argv.index('--output')+1]);p.mkdir()
             self.assertEqual(git(view, 'show', revision+':unrelated.bin'), 'belongs to another request')
             self.assertEqual(git(view, 'rev-parse', 'HEAD'), base)
 
+    def test_fixed_provider_dependencies_are_resolved_for_delivery(self):
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        source="B_SOURCE='FIXED'\n_load(root,'one.py',names,scope)\n_load(root,'two.py',names,scope)\n"
+        executor=SimpleNamespace(root=Path(__file__).parents[1],computation_root=Path(__file__).parents[1],input_hash_cache={})
+        from trottertracks import rpe_live_q3_readiness as readiness
+        request=dict(route=dict(kind='prdf_d2_common_entry', max_width_source='MAPPER',
+                                fixed_input_dependencies=[dict(commit='ANOTHER',path='explicit.json')]))
+        with patch.object(readiness.subprocess,'check_output',return_value=source.encode()) as git, \
+             patch.object(readiness,'controller_input_hashes',side_effect=lambda ex,req:req['route']['sources']):
+            deps=readiness.q3_input_dependencies(executor,request)
+            self.assertEqual(deps,[dict(commit='ANOTHER',path='explicit.json'),
+                                   dict(commit='FIXED',path='one.py'),dict(commit='FIXED',path='two.py')])
+            self.assertEqual(readiness.q3_input_dependencies(executor,request),deps)
+            self.assertEqual(git.call_count,1)
+
     def runtime_guard_fixture(self):
         root = Path(__file__).resolve().parents[1]
         base = root / 'docs/research/rpe_q3_host_eligibility/pauli_descriptor_route'

@@ -618,15 +618,20 @@ class Relay:
             self.log('ARTIFACT_RECOVERED', host_id=worker['host_id'], sha256=sha)
 
     def _deliver_artifacts(self, worker, assignment):
-        request=assignment.get('request', {})
-        if (request.get('route') or {}).get('kind') != 'preparation':return
-        spec=request['preparation'];inputs=assignment.get('artifact_manifest', spec.get('inputs', {}))
-        hashes=list(inputs.values()) if isinstance(inputs,dict) else [row['sha256'] for row in inputs]
-        hashes += [row['sha256'] for row in spec.get('input_git_bundles', [])]
-        for workspace in spec.get('workspaces', {}).values():
-            hashes += [row['sha256'] for row in workspace.get('input_git_bundles', [])]
+        return self._deliver_batch_artifacts(worker, [assignment])
+
+    def _deliver_batch_artifacts(self, worker, assignments):
+        hashes=[]
+        for assignment in assignments:
+            request=assignment.get('request', {})
+            if (request.get('route') or {}).get('kind') != 'preparation':continue
+            spec=request['preparation'];inputs=assignment.get('artifact_manifest', spec.get('inputs', {}))
+            hashes.extend(inputs.values() if isinstance(inputs,dict) else [row['sha256'] for row in inputs])
+            hashes.extend(row['sha256'] for row in spec.get('input_git_bundles', []))
+            for workspace in spec.get('workspaces', {}).values():
+                hashes.extend(row['sha256'] for row in workspace.get('input_git_bundles', []))
         if not hashes:return
-        response, _=self.remote(worker,'artifacts-missing',dict(hashes=list(dict.fromkeys(hashes))))
+        response,_=self.remote(worker,'artifacts-missing',dict(hashes=list(dict.fromkeys(hashes))))
         for sha in response['missing']:
             result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
             self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
@@ -840,16 +845,20 @@ class Relay:
         batches = []
         for assignment in assignments:
             preparation = assignment['request'].get('route', {}).get('kind') == 'preparation'
-            grouped = not preparation and worker['host_id'] in self.config.get(
+            # The mailbox batch endpoint validates each exact assignment,
+            # including preparation. Group only within the same offered wave,
+            # without delaying a Q3 behind a later preparation transfer.
+            grouped = worker['host_id'] in self.config.get(
                 'q3_batch_hosts', ('server1', 'server2', 'local0-wsl'))
-            if grouped and batches and batches[-1][0]:
+            if (grouped and batches and batches[-1][0]
+                    and (batches[-1][1][0]['request'].get('route', {}).get('kind') == 'preparation') == preparation):
                 batches[-1][1].append(assignment)
             else:
                 batches.append((grouped, [assignment]))
         for grouped, batch in batches:
             info['phase'] = 'MAILBOX_ARTIFACTS'
-            for assignment in batch:
-                self._deliver_artifacts(worker, assignment)
+            if len(batch)>1:self._deliver_batch_artifacts(worker,batch)
+            else:self._deliver_artifacts(worker,batch[0])
             info['phase'] = 'MAILBOX_SUBMIT'
             relay_wait = time.monotonic() - response_time
             owners = [dict(host_id=host, job_id=a['job_id'], attempt_id=a['attempt_id']) for a in batch]
@@ -857,7 +866,7 @@ class Relay:
                 self.log('REQUEST_DELIVERY_START', **owner)
             if grouped and len(batch) > 1:
                 results, seconds = self.submit_batch(worker, batch)
-                self.log('Q3_BATCH_DELIVERED', host_id=host, count=len(batch), seconds=seconds)
+                self.log('PREPARATION_BATCH_DELIVERED' if batch[0]['request'].get('route',{}).get('kind')=='preparation' else 'Q3_BATCH_DELIVERED', host_id=host, count=len(batch), seconds=seconds)
             else:
                 individual, seconds = self.remote(worker, 'submit', batch[0])
                 results = [individual]

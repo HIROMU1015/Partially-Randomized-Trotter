@@ -210,6 +210,25 @@ class RelayTests(unittest.TestCase):
                 self.assertEqual(calls, ['status', 'bundle', 'readiness'])
                 self.assertNotIn('observe_only', post.call_args_list[-1].args[1])
 
+    def test_mixed_preparation_artifact_batch_requests_shared_blobs_once(self):
+        relay=R.Relay.__new__(R.Relay)
+        worker=dict(host_id='ARTIFICIAL')
+        def assignment(stage, hashes, bundles):
+            return dict(request=dict(route=dict(kind='preparation'),preparation=dict(
+                stage=stage,inputs=hashes,input_git_bundles=[dict(sha256=x) for x in bundles])))
+        first=assignment('signal',dict(input='shared'),['bundle'])
+        second=assignment('audit',dict(input='shared',receipt='new'),['bundle'])
+        calls=[]
+        def remote(worker, action, payload):
+            calls.append((action,payload))
+            return (dict(missing=['new']) if action=='artifacts-missing' else {},0)
+        relay.remote=remote
+        relay.post=lambda path, data:dict(blobs=dict(new='content'))
+        relay.log=lambda *args,**kwargs:None
+        relay._deliver_batch_artifacts(worker,[first,second])
+        self.assertEqual(calls,[('artifacts-missing',dict(hashes=['shared','bundle','new'])),
+                                ('artifacts-put',dict(blobs=dict(new='content')))])
+
     def test_discovery_reports_shared_preparation_inputs_in_one_batch(self):
         with tempfile.TemporaryDirectory() as temporary:
             config = Path(temporary)/'relay.json'

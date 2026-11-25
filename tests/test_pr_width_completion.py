@@ -575,6 +575,65 @@ class WidthCompletionTests(unittest.TestCase):
                 problem['methods']['PR_PAULI']['requested_delta_pf_values']=[exact(.1)]
                 c.install(ctx,problem,[blocked]);self.assertEqual(len(ctx['candidates']),2)
 
+    def test_reused_signal_uses_carrier_id_and_preserves_price_and_declared_alias(self):
+        reader,carrier,imp,package=pauli_fixture();enrich(carrier)
+        carrier_ref=reader.add('CARRIER.json',carrier)
+        declared=deepcopy(carrier);declared['id']='DECLARED'
+        declared['spec']['delta_pf']=exact(.3)
+        declared_ref=reader.add('DECLARED.json',declared)
+        packet=reader.add('PACKET.json',dict(configuration_id=carrier['id']))
+        quote=reader.add('Q.json',dict(complete=True,rows=[]))
+        with tempfile.TemporaryDirectory() as tmp:
+            c,_=self.setup_completion(Path(tmp),reader)
+            ctx=dict(candidates=[dict(method='PR_PAULI',family='PR',configuration_id=None,
+                ready=False,caps={},key=dict(L_D=3,formula='2nd',delta_pf=exact(.3)))],expected={})
+            problem=dict(methods={'PR_PAULI':dict(requested_delta_pf_values=[exact(.3)])},execution_routes={'PR_PAULI':[]})
+            rec=dict(method='PR_PAULI',status='READY_FOR_SEARCH',configuration=declared_ref,
+                signal=dict(configuration_source=carrier_ref,packet_source=packet),
+                intake=dict(binding_id='B',total_configuration_id='T',configuration=carrier_ref,signal_packet=packet),
+                prices=[exact(3)]*26,quote=quote)
+            with patch.object(C,'value',side_effect=reader.read),patch.object(C,'git',return_value='ARTIFICIAL'):
+                routes=c.install(ctx,problem,[rec])
+                self.assertEqual(rec['installed_configuration_id'],carrier['id'])
+                self.assertEqual(routes['PR_PAULI'][0]['configuration_ids'],[carrier['id']])
+                self.assertEqual(ctx['candidates'][0]['physical_aliases'][0]['configuration_id'],'DECLARED')
+                self.assertEqual(ctx['candidates'][0]['configuration_source'],carrier_ref)
+                problem['execution_routes']=routes
+                rec['prices']=None
+                c.install(ctx,problem,[rec])
+                self.assertEqual(len(ctx['candidates']),1)
+                self.assertEqual(ctx['candidates'][0]['prices'],[Fraction(3)]*26)
+                different=deepcopy(declared);different['id']='WRONG'
+                different['spec']['split']['tail_dictionary']['dictionary_sha256']='OTHER'
+                rec['configuration']=reader.add('WRONG.json',different)
+                c.install(ctx,problem,[rec])
+                self.assertIn('PHYSICAL_CONTRACT_DIFFERS',rec['installation_hold'])
+
+    def test_df_reused_signal_carrier_does_not_keep_invalid_logical_route(self):
+        reader=Documents()
+        carrier=enrich(config(pauli=False))
+        declared=deepcopy(carrier);declared['id']='DF_LOGICAL'
+        cref=reader.add('CARRIER.json',carrier);dref=reader.add('LOGICAL.json',declared)
+        packet=reader.add('PACKET.json',dict(configuration_id=carrier['id']))
+        quote=reader.add('Q.json',dict(complete=False,rows=[]))
+        old=dict(kind='prdf_d2_common_entry',configuration_ids=['DF_LOGICAL'],
+                 configurations={'DF_LOGICAL':dict(configuration=cref,signal_packet=packet)})
+        with tempfile.TemporaryDirectory() as tmp:
+            c,_=self.setup_completion(Path(tmp),reader)
+            ctx=dict(candidates=[dict(method='PR_DF',family='PR',configuration_id='DF_LOGICAL',
+                ready=True,caps={},key=dict(L_D=carrier['spec']['L_D']),generated_configuration=declared,
+                configuration_source=dref,schedule_keys=O.schedule_keys(declared),saved_points=[])],expected={})
+            problem=dict(methods={'PR_DF':{}},execution_routes={'PR_DF':[old]})
+            rec=dict(method='PR_DF',status='READY_FOR_SEARCH',configuration=dref,
+                signal=dict(configuration_source=cref,packet_source=packet),
+                intake=dict(binding_id='B',total_configuration_id='T',configuration=cref,signal_packet=packet),
+                prices=None,quote=quote)
+            with patch.object(C,'value',side_effect=reader.read),patch.object(C,'git',return_value='ARTIFICIAL'), \
+                 patch.object(c,'max_width_source',return_value=None):
+                routes=c.install(ctx,problem,[rec])
+                self.assertEqual([r['configuration_ids'] for r in routes['PR_DF']],[[carrier['id']]])
+                self.assertEqual([p['configuration_id'] for p in ctx['candidates']],[carrier['id']])
+
     def test_scoped_audit_metadata_validates_only_covered_actual_step(self):
         module=load_script('pauli_split_cal_audit_request.py')
         reader,cfg,imp,package=pauli_fixture();binding=reader.read(package['binding_source'])

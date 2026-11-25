@@ -299,26 +299,41 @@ def controller_input_hashes(executor, request):
 
 
 def q3_input_dependencies(executor, request):
-    """Find the raw signal blobs read by a saved PR-DF signal packet."""
+    """Resolve provider/source and packet dependencies before any worker dry-check."""
     route = request['route']
-    if route['kind'] not in ('prdf_d2_split', 'prdf_d2_common_entry'):
-        return []
-    binding = route.get('configurations', {}).get(request.get('configuration_id'), route)
-    locator = binding.get('signal_packet')
-    if not locator:
-        return []
-    key = ('prdf_signal_inputs', Q.digest(locator))
-    cache = executor.input_hash_cache
-    if key not in cache:
-        packet = json.loads(subprocess.check_output(
-            ['git', 'show', locator['commit']+':'+locator['path']], cwd=executor.computation_root))
-        for selector in locator.get('selector', ()):
-            packet = packet[selector]
-        means = [row['source'] for row in packet.get('means', ())]
-        # These raw rows are transport dependencies of the fixed packet.
-        # Preserve the request hash and the existing assignment input identity.
-        cache[key] = controller_input_hashes(executor, dict(route=dict(kind=route['kind'], sources=means)))
-    return cache[key]
+    locators = list(route.get('fixed_input_dependencies', ()))
+    if route.get('max_width_source'):
+        # The fixed mapper calls B's helpers by Git locator, not by ordinary
+        # Python import. Read the provider's own dependency declaration.
+        import ast
+        source = route['max_width_source']
+        provider = 'src/trottertracks/pr_df_max_width.py'
+        key = ('q3_provider_deps', source, provider)
+        cache = executor.input_hash_cache
+        if key not in cache:
+            raw = subprocess.check_output(['git','show',source+':'+provider],cwd=executor.root)
+            tree = ast.parse(raw)
+            [ref] = [ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign)
+                     and any(isinstance(t,ast.Name) and t.id=='B_SOURCE' for t in n.targets)]
+            paths = sorted({ast.literal_eval(n.args[1]) for n in ast.walk(tree)
+                            if isinstance(n,ast.Call) and isinstance(n.func,ast.Name)
+                            and n.func.id=='_load' and len(n.args)>1 and isinstance(n.args[1],ast.Constant)})
+            if not paths:raise ValueError('Fixed mapper dependency declaration absent')
+            cache[key] = [dict(commit=ref,path=path) for path in paths]
+        locators.extend(cache[key])
+    if route['kind'] in ('prdf_d2_split', 'prdf_d2_common_entry'):
+        binding = route.get('configurations', {}).get(request.get('configuration_id'), route)
+        locator = binding.get('signal_packet')
+        if locator:
+            key = ('prdf_signal_inputs', Q.digest(locator))
+            cache = executor.input_hash_cache
+            if key not in cache:
+                packet = json.loads(subprocess.check_output(
+                    ['git','show',locator['commit']+':'+locator['path']],cwd=executor.computation_root))
+                for selector in locator.get('selector', ()):packet=packet[selector]
+                cache[key]=[row['source'] for row in packet.get('means', ())]
+            locators.extend(cache[key])
+    return controller_input_hashes(executor, dict(route=dict(kind=route['kind'], sources=locators))) if locators else []
 
 
 _SCOPE_CHECK = """

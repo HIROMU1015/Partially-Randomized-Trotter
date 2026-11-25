@@ -354,11 +354,15 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         for file, expected in selected['files'].items():
             if hashlib.sha256((root/file).read_bytes()).hexdigest() != expected:
                 raise ValueError('Selected local worker implementation differs: '+file)
-        distributed['worker_script'] = str(root/'scripts/run_rpe_q3_worker.py')
+        # The combined release owns transport and resource classification.
+        # Legacy per-run selections still pin the scientific worker profile,
+        # but must not accidentally keep an obsolete polling implementation.
+        transport_root = Path(__file__).resolve().parents[1] if selected.get('transport_from_release', True) else root
+        distributed['worker_script'] = str(transport_root/'scripts/run_rpe_q3_worker.py')
         distributed['local_worker'].setdefault('slot_policy', {}).update(selected['slot_policy'])
         # The resumed controller starts with the frozen release on sys.path.
         name = 'trottertracks.rpe_q3_resources'
-        path = root/'src/trottertracks/rpe_q3_resources.py'
+        path = transport_root/'src/trottertracks/rpe_q3_resources.py'
         if 'src/trottertracks/rpe_q3_resources.py' not in selected['files']:
             raise ValueError('Selected local worker requires fixed resource logic')
         helper = importlib.util.spec_from_file_location(name, path)

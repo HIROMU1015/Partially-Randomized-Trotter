@@ -2629,8 +2629,16 @@ class Completion:
             requested=(problem.get('methods',{}).get(method,{})or{}).get('requested_delta_pf_values')
             if requested is not None and dec(config['spec']['delta_pf'])not in{dec(v)for v in requested}:
                 continue
+            declared_config, declared_id = config, cid
             try:
                 configuration, packet = intake_locators(rec)
+                # An immutable reused signal may be carried by another declaration.
+                # Bind the evaluator to the actual carrier, not the requested alias.
+                carrier = declared_config if configuration == rec['configuration'] else value(configuration)
+                if carrier['id'] != declared_id:
+                    if physical_evaluation_contract(carrier) != physical_evaluation_contract(declared_config):
+                        raise ValueError('REUSED_SIGNAL_CARRIER_PHYSICAL_CONTRACT_DIFFERS')
+                    config, cid = carrier, carrier['id']
                 if not self.horizon_parent_bound(rec):
                     raise ValueError('DF_HORIZON_PREFIX_REBIND_REQUIRED')
             except (KeyError, ValueError, subprocess.CalledProcessError) as error:
@@ -2653,12 +2661,12 @@ class Completion:
                     return False
                 width=(dec(k['delta_pf'])if k.get('delta_pf')is not None else
                        dec(config['spec']['h'])*dec(k.get('delta_over_h','1')))
-                return width==dec(config['spec']['delta_pf'])
+                return width==dec(declared_config['spec']['delta_pf'])
             old=next((c for c in context['candidates']if c['method']==method and
-                (c.get('configuration_id')==cid or same_placeholder(c))),None)
+                (c.get('configuration_id')==cid or (c.get('configuration_id')==declared_id and not c.get('saved_points')) or same_placeholder(c))),None)
             ready_before={c['configuration_id']:c for c in context['candidates']if c['method']==method and c.get('ready')and c.get('configuration_id')}
             item=dict(status='GENERATED',configuration=deepcopy(config),configuration_id=cid,
-                configuration_source=rec['configuration'],L_D=config['spec']['L_D'],
+                configuration_source=configuration,L_D=config['spec']['L_D'],
                 readiness=dict(configuration_complete=True),requested_changes={})
             # Legacy register() uses a smaller schedule key. Do not let that
             # key alias different dictionaries, targets, SOURCE or law contracts.
@@ -2667,7 +2675,8 @@ class Completion:
                 if candidate['method']!=method or candidate.get('schedule_keys')!=new_keys:continue
                 try:existing,_=Selection.configuration_for(context,candidate['configuration_id'],value)
                 except (ValueError,KeyError):existing=None
-                if existing is None or physical_evaluation_contract(existing)!=physical_evaluation_contract(config):
+                if (existing is None or physical_evaluation_contract(existing)!=physical_evaluation_contract(config)
+                        or (declared_id != cid and candidate.get('configuration_id') != cid)):
                     if candidate.get('configuration_id')==cid:raise ValueError('CANONICAL_CONFIGURATION_PHYSICAL_CONTRACT_DIFFERS')
                     hidden.append((candidate,candidate.get('schedule_keys')));candidate['schedule_keys']=None
             try:
@@ -2679,6 +2688,8 @@ class Completion:
             alias=disposition.split(':',1)[1]if disposition.startswith('PHYSICALLY_IDENTICAL_TO:')else None
             installed=alias or cid
             rec.update(installed_configuration_id=installed,installation_disposition=disposition)
+            if declared_id != cid:
+                rec['signal_carrier_configuration_id'] = cid
             if alias is not None and installed in ready_before:
                 # Keep the original candidate, its own prices/evaluations and route.
                 # The new declaration remains visible as B2's physical_alias record.
@@ -2688,11 +2699,29 @@ class Completion:
                     reason='Preserve existing partial prices/Q3; prepared metadata needs rebinding to the original canonical view')
                 continue
             cand=next(c for c in context['candidates']if c['method']==method and c.get('configuration_id')==installed)
+            if declared_id != cid:
+                aliases=cand.setdefault('physical_aliases', [])
+                if not any(a.get('configuration_id')==declared_id for a in aliases):
+                    aliases.append(dict(configuration_id=declared_id, configuration_source=rec['configuration'],
+                        kappa_value=str(dec(declared_config['spec']['kappa']['value'])),
+                        requested_delta_pf=declared_config['spec']['delta_pf']))
+                # A stale generated declaration with no independent observed result
+                # must not emit a second Q3 request against the carrier input.
+                context['candidates'][:]=[c for c in context['candidates'] if not (
+                    c is not cand and c.get('method')==method and c.get('configuration_id')==declared_id
+                    and not c.get('saved_points'))]
+                routes[method]=[r for r in routes.get(method,[]) if not (
+                    r.get('kind') in ('prdf_d2_common_entry','pauli_b_common_entry')
+                    and list(r.get('configuration_ids',()))==[declared_id]
+                    and r.get('configurations',{}).get(declared_id,{}).get('configuration')==configuration)]
+            prior_price = {k:cand[k] for k in ('prices','price_status','price_quote') if k in cand}
             cand.update(kappa_value=str(dec(config['spec']['kappa']['value'])),ready=True,needs=[],
-                generated=True,generated_configuration=config,configuration_source=rec['configuration'],
+                generated=True,generated_configuration=config,configuration_source=configuration,
                 signal_source=packet,prices=None if rec['prices'] is None else [dec(x)for x in rec['prices']],
                 price_status=rec.get('price_status') or 'MODEL_REFERENCE',price_quote=value(rec['quote']),
                 schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
+            if rec['prices'] is None and prior_price.get('prices') is not None:
+                cand.update(prior_price)
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
             rule=self.common_route(method,cid,configuration,packet,binding)
             parent = rec.get('request',{}).get('horizon_parent')

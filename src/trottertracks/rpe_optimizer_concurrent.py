@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from copy import copy, deepcopy
 import fcntl
+import hashlib
 import json
 import os
 import re
@@ -25,6 +26,32 @@ from . import rpe_method_optimizer as O
 from .rpe_q3_timing import stamp
 
 LIVE_READINESS_RETRY_SECONDS = 10
+
+
+def readiness_hold_signature(decision):
+    if decision is None:return None
+    def reason(text):
+        lines=[line.strip() for line in str(text).splitlines() if line.strip() and 'nesting too deep' not in line]
+        return lines[-1] if lines else ''
+    return (decision.get('request_sha256'),decision.get('source_manifest_sha256'),
+            tuple(sorted(decision.get('eligible_host_ids',()))),tuple(sorted(reason(x) for x in decision.get('reasons',()))),
+            tuple(sorted((host,row.get('status'),tuple(reason(x) for x in row.get('reasons',())))
+                         for host,row in (decision.get('host_decisions') or {}).items())))
+
+
+def readiness_retry_seconds(decision):
+    # Input identity errors cannot be repaired by polling the same bytes every
+    # ten seconds. Keep a watchdog for changed remote deployments; do not
+    # suppress transient failures or any independent candidate.
+    reasons=[str(x) for row in (decision.get('host_decisions') or {}).values() for x in row.get('reasons',())]
+    def static_failure(message):
+        lower=message.lower()
+        return (bool(re.search(r'(?:id|source|configuration|input|binding|manifest).{0,100}(?:mismatch|differs|not found|missing)',lower))
+                or ('git' in lower and 'returned non-zero exit status 128' in lower))
+    if reasons and all(static_failure(x) for x in reasons):
+        return 120
+    return LIVE_READINESS_RETRY_SECONDS
+
 _CHECK_PENDING = object()
 _REUSE_HISTORY_LOCK = threading.Lock()
 _REUSE_HISTORY = {}
@@ -1308,9 +1335,29 @@ class DistributedExecutor(ConcurrentExecutor):
         directory = profile_path.parent
         daemon = directory/'LOCAL_DAEMON.json'
         previous = json.loads(daemon.read_bytes()) if daemon.exists() else {}
-        if self._local_daemon_alive(previous.get('pid'), profile_path):
+        profile_digest = hashlib.sha256(profile_path.read_bytes()).hexdigest()
+        if (self._local_daemon_alive(previous.get('pid'), profile_path)
+                and previous.get('profile_sha256') == profile_digest):
             self.local_worker_pid = previous['pid']
             return
+        # A different transport release may still own the spool. Drain that
+        # polling daemon, not its detached scientific supervisors. The next
+        # supervisor tick starts this release after the old owner exits.
+        pid = previous.get('pid')
+        if type(pid) is int and pid > 0:
+            try:
+                args = Path('/proc/%s/cmdline' % pid).read_bytes().decode(errors='replace').split('\0')
+                if (str(profile_path) in args and '--profile' in args
+                        and args[args.index('--profile')+1] == str(profile_path)
+                        and any(Path(x).name == 'run_rpe_q3_worker.py' for x in args)):
+                    self.local_worker_pid = pid
+                    if getattr(self, '_local_rollover_pid', None) != pid:
+                        os.kill(pid, signal.SIGTERM)
+                        self._local_rollover_pid = pid
+                        self.log(event='LOCAL_WORKER_RELEASE_DRAIN', pid=pid, selected_worker=str(self.worker_script))
+                    return
+            except (OSError, ValueError, IndexError):
+                pass
         command = [sys.executable, '-B', str(self.worker_script), '--profile', str(profile_path),
                    '--controller', self.controller_url, '--poll-seconds', '.1']
         if self.distributed.get('controller_queue_first'):
@@ -1320,7 +1367,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
                 env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
         self.local_worker_pid = self.local_worker.pid
-        atomic_json(daemon, dict(pid=self.local_worker_pid, profile=str(profile_path)))
+        atomic_json(daemon, dict(pid=self.local_worker_pid, profile=str(profile_path),
+                                 worker_script=str(self.worker_script), profile_sha256=profile_digest))
 
     def _supervise_worker_services(self):
         if self.state.closed or self.state.failure or self._user_stop_requested():
@@ -2382,7 +2430,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     bool(deferred.intersection(targets or seen)) or
                     cached[1] != seen or not fixed_scope_hold
                     and (not eligible['eligible_host_ids'] or missing_host)
-                    and time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS))
+                    and time.monotonic() - cached[0] >= readiness_retry_seconds(eligible)))
                 if (stale and future is None and not self.state.closed and not self._user_stop_requested()
                         and (blocking or self._live_readiness_has_room(host if targets == {host} else None))):
                     started = time.monotonic()
@@ -3334,8 +3382,10 @@ class DistributedExecutor(ConcurrentExecutor):
             if not self.store.eligible(request, eligibility):
                 if row and row['state'] == 'QUEUED':
                     self.store.set_eligibility(job.name, eligibility)
+                previous_hold = self.eligibility_holds.get(job.name)
                 self.eligibility_holds[job.name] = eligibility
-                self.log(event='HOST_ELIGIBILITY_HOLD', job=job.name, eligibility=eligibility)
+                if readiness_hold_signature(previous_hold) != readiness_hold_signature(eligibility):
+                    self.log(event='HOST_ELIGIBILITY_HOLD', job=job.name, eligibility=eligibility)
                 return False
             self.eligibility_holds.pop(job.name, None)
             if row and row['state'] == 'QUEUED':
