@@ -4,6 +4,7 @@ The controller and each worker have their own cache. Only missing hashes cross
 SSH/HTTP; no filesystem or direct host-to-host connection is assumed.
 """
 from contextlib import closing, suppress
+from functools import lru_cache
 import base64
 import errno
 import hashlib
@@ -296,5 +297,11 @@ def read_preparation_readiness(directory, database=None):
     return tasks
 
 
+@lru_cache(maxsize=32)
+def _worker_cache(root):
+    return ArtifactCache(root)
+
+
 def worker_cache(profile):
-    return ArtifactCache(profile.get('artifact_cache_directory') or Path(profile['work_dir']) / 'artifacts')
+    root = Path(profile.get('artifact_cache_directory') or Path(profile['work_dir']) / 'artifacts').resolve()
+    return _worker_cache(root)

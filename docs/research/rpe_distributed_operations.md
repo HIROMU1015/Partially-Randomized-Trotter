@@ -647,3 +647,13 @@ Statusの最新観測では、公開時点のsnapshotがmapper追加前で構成
 - 通常Resumeは固定SOURCE・要求ハッシュ・現行policyと一致する保存待機要求のhost判定を再利用し、workerの現在fingerprintを照合するまで新規claimしない。現行policyが変更された要求は通常照合へ戻す。固定endpointを公開する前に中央だけが終了した場合も、その期間の新規台帳イベントがないこと、旧所有・各ロック・STOPの状態を既存の起動前照合で確認してから通常Resumeする。終了票の捏造や実計算の再試行はしない。
 - 通常Resumeの採用済み台帳確認はjob・工程・attempt等の小さな列のみ取得し、保存済み全REQUEST・host適格性JSONを一括展開しない。既存の全ステージファイルが同じ通常ファイルとして公開済みなら重複fsyncを省き、欠落・不一致は元の公開処理で照合する。候補登録の変更されない完全Git commit参照は小容量のJSONバイトだけを限定キャッシュし、大きな信号・成果本体や可変refはキャッシュしない。
 - 中央の固定Git・候補metadata生成は科学workerのCPU枠とは別のメモリを使う。実メモリ余裕とCPU許容量の小さい方で同時metadata準備を決め、並行する候補・価格・PF準備の予算を分ける。重いGit処理とPython一時データを含む1 GiB/metadata laneを未測定時の運用見積りとし、現在の空きの半分を既存実行・回収・OSに残す。変動時は既存の所有を止めず新規metadata投入数だけ調整する。科学条件や実際に割り当てる科学workerのCPU上限は変更しない。
+
+### 2026-11-26: 全worker共通の準備workspace・失敗データ・Git bundle再利用
+
+- 事前照合では、実行時のsparse checkoutに必要なGit tree/blobだけを確認する。rootのファイル、選択coneの祖先直下のファイル、宣言した出力coneを含め、無関係な大きなarchiveは開かない。事前照合のためのclone・実ファイル展開は行わない。実行時は従来どおり試行ごとの所有workspaceで処理し、固定SOURCE、固定入力の内容照合、個別Git deltaと結果受領を維持する。共有科学コードをproviderが直接変更しない。
+- 失敗・中断で終了と中央の受領が確定した準備attemptは、従来の容量整理（独立したproactive watcher、40 GiBから整理・50 GiB上限）で、元の固定SOURCEと同じGit blobで実ファイルも一致する再展開可能なコードだけを整理する。入力・出力の宣言、変更済みファイル・untracked/ignoredファイル、途中成果、失敗理由、Git objects、台帳を残す。実行中・UNKNOWN・未回収は対象外。sparse-checkout setによる他coneの再展開はしない。削除した正確なパスを `FAILED_WORKSPACE_LAYOUT.json` に残し、必要に応じて `rpe_worker_storage.restore_failed_workspace` で検査用に復元できる。新規計算の再試行には用いない。ACKや次の割当にこの整理の終了を待たせない。
+- 元bundleのSHA-256・refと取込み先Git objectsを `BUNDLE_HEADS.json` に対応付け、同じSOURCEの取込み済み参照が使える場合は元bundleを再取得しない。既存 `IMPORTED.json` の取込み済みbundleは、ローカルrawの整理時にref情報を移行できる。refs・必要なinput blobが欠損した場合は当該再利用を無効にして元bundleを通常取得・復旧する。科学的に必要な元入力ファイルが普通のartifactとして要求される場合は、bundleの取込み済み状態で代用しない。CASへの入力配置はストリーミング・私有コピーとし、安定した同一CASファイルの照合結果をプロセス内で再利用する。
+- RomuTailの直接worker、WSL/Server1/Server2のmailbox/relay、PBS通常worker、PBSのpipeline/collection版、計算ノードの容量整理の共通経路で使用する。PBSの既存pilot/予約管理の機能を落とさず、同じ固定worker版と `scripts/refresh_rpe_pbs_worker_launcher.py` で更新した別名launcherを組み合わせる。旧run・別chatの稼働版を暗黙に変更しない。共有環境のCPU、50 GiB上限、科学条件は変更しない。
+- 人工の64 MiB SOURCE・32 MiB bundle、各5回中央値（RomuTail）：workspace事前照合 0.2182秒→0.0180秒、展開約64.1 MiB→0。元bundleのローカル再配置＋確認 0.0429秒→0.0066秒、再送必要量約32.0 MiB→0（SSH通信時間は含まない）。人工の終了済み失敗workspace 64.1 MiB→約129 KiB、部分成果保持・復元確認済み。実際のRomuTailの終了済み失敗5件も、固定コードのみを整理して781.6 MiB→568.4 MiB（約27.3%減）、ASSIGNMENT・OUTCOME・PROCESS_RETURNは全件同じ。人工の前後比較は `scripts/benchmark_rpe_worker_storage_reuse.py` で再現できる。探索全体の速度向上率や別ホストの実測値とは区別する。
+
+- 実際の保存済み準備要求3件でも、科学bodyを起動せずGit workspace照合部分を各3回測定した。DF_SIGNALSは1.382→0.055秒（約25倍）、PAULI_SIGNALSは2.231→0.156秒（約14.3倍）、PF_COMPILEは1.350→0.076秒（約17.7倍）。回避した一時展開は各39.6、110.0、118.8 MiB。新方式の事前照合に必要なGit tree/blobと固定inputの検査は残している。ホスト間輸送と科学bodyの時間を含む全体値ではない。

@@ -1073,7 +1073,7 @@ class PbsManager:
             return result
         from .rpe_preparation_worker import metadata_bundle_hashes
 
-        reported = set(payload['cached_artifact_sha256'])
+        reported = set(payload['cached_artifact_sha256']) | set(payload.get('cached_metadata_bundle_sha256', ()))
         profile = self.state['allocations'][token]['spec']['profile']
         ready = []
         for challenge in result['eligibility_challenges']:

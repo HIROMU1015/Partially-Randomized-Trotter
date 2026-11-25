@@ -226,7 +226,8 @@ class RelayTests(unittest.TestCase):
         relay.post=lambda path, data:dict(blobs=dict(new='content'))
         relay.log=lambda *args,**kwargs:None
         relay._deliver_batch_artifacts(worker,[first,second])
-        self.assertEqual(calls,[('artifacts-missing',dict(hashes=['shared','bundle','new'])),
+        self.assertEqual(calls,[('artifacts-missing',dict(hashes=['shared','bundle','new'], direct_hashes=['shared','new'],
+                                                             preparation_challenges=R.Relay._metadata_requirements([first,second]))),
                                 ('artifacts-put',dict(blobs=dict(new='content')))])
 
     def test_discovery_reports_shared_preparation_inputs_in_one_batch(self):

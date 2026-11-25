@@ -106,6 +106,9 @@ def create(tasks,source,output):
         'scripts/run_pr_pauli_candidate_signals.py','scripts/run_pr_pauli_candidate_prices.py',
         'scripts/run_pr_df_candidate_signal_jobs.py','scripts/run_pr_df_candidate_prices.py',
         'scripts/derive_pr_df_candidate_descriptor.py','scripts/run_rpe_price_validation_job.py']
+    if subprocess.run(['git', 'cat-file', '-e', source+':src/trottertracks/rpe_metadata_bundle.py'],
+                      cwd=ROOT, capture_output=True).returncode == 0:
+        adapter_files.append('src/trottertracks/rpe_metadata_bundle.py')
     adapter=source_manifest(source,adapter_files)
     all_sources={}
     for task in tasks:

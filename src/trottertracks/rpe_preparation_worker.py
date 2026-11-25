@@ -20,7 +20,7 @@ import tempfile
 import threading
 import time
 from .rpe_preparation_artifacts import (
-    ArtifactCache, artifact_path, artifact_hash, df_calibration_receipt, input_manifest, worker_cache,
+    ArtifactCache, artifact_path, artifact_hash, df_calibration_receipt, input_manifest, worker_cache, file_digest,
 )
 from .rpe_q3_timing import append as timing_append
 
@@ -230,11 +230,15 @@ def pauli_calibration_command(command, runtime_paths, directory, source):
     return [*launcher, '--', *command]
 
 
+def metadata_bundles(spec):
+    return [*spec.get('input_git_bundles', []),
+            *(bundle for workspace in spec.get('workspaces', {}).values()
+              for bundle in workspace.get('input_git_bundles', []))]
+
+
 def metadata_bundle_hashes(assignment):
-    spec=assignment.get('request',assignment)['preparation']
-    bundles=list(spec.get('input_git_bundles',[]))
-    for workspace in spec.get('workspaces',{}).values():bundles.extend(workspace.get('input_git_bundles',[]))
-    return list(dict.fromkeys(artifact_hash(bundle['sha256'])for bundle in bundles))
+    spec = assignment.get('request', assignment)['preparation']
+    return list(dict.fromkeys(artifact_hash(bundle['sha256']) for bundle in metadata_bundles(spec)))
 
 
 def _metadata_repository_path(profile, root):
@@ -244,37 +248,146 @@ def _metadata_repository_path(profile, root):
     return directory.resolve()/digest(str(common.resolve()))[:16]/'objects.git'
 
 
+def _bundle_receipts(repo):
+    path = repo.parent/'BUNDLE_HEADS.json'
+    try:
+        value = read(path)
+        return value if isinstance(value, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def imported_bundle_heads(repo, bundle, receipts=None):
+    """A receipt binds original bundle ref names to actual retained Git objects."""
+    sha = artifact_hash(bundle['sha256'])
+    receipts = _bundle_receipts(repo) if receipts is None else receipts
+    heads = receipts.get(sha)
+    if not repo.is_dir() or not isinstance(heads, list) or not heads:
+        return None
+    try:
+        if not all(isinstance(row, list) and len(row) == 2 and
+                   isinstance(row[0], str) and len(row[0]) in (40, 64) and
+                   all(c in '0123456789abcdef' for c in row[0]) and isinstance(row[1], str)
+                   for row in heads):
+            return None
+        if sum(name == bundle.get('ref', 'HEAD') for _, name in heads) != 1:
+            return None
+        refs = subprocess.check_output(['git', 'for-each-ref', '--format=%(refname) %(objectname)',
+                  'refs/rpe-metadata/'+sha+'/'], cwd=repo, text=True, stderr=subprocess.PIPE)
+        expected = {'refs/rpe-metadata/'+sha+'/'+str(i): oid for i, (oid, _) in enumerate(heads)}
+        if dict(line.split() for line in refs.splitlines()) != expected:
+            return None
+        checked = subprocess.check_output(['git', 'cat-file', '--batch-check'], cwd=repo,
+                  input=''.join(oid+'\n' for oid in expected.values()), text=True, stderr=subprocess.PIPE)
+        rows = checked.splitlines()
+        if len(rows) != len(heads) or any(row.endswith(' missing') for row in rows):
+            return None
+        return heads
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return None
+
+
+def missing_metadata_bundle_hashes(assignment, base_profile):
+    """Only bundles not already usable in this exact source's metadata store."""
+    spec = assignment.get('request', assignment)['preparation']
+    bundles = metadata_bundles(spec)
+    if not bundles:
+        return []
+    try:
+        profile = select_preparation_profile(base_profile, assignment)
+        manifest = spec['source']
+        root = (profile.get('preparation_sources') or {}).get(manifest['commit'])
+        if isinstance(root, dict): root = root.get('root')
+        root = root or profile['root']
+        repo = _metadata_repository_path(profile, root)
+        receipts = _bundle_receipts(repo)
+        return list(dict.fromkeys(artifact_hash(b['sha256']) for b in bundles
+                                  if imported_bundle_heads(repo, b, receipts) is None))
+    except (OSError, KeyError, ValueError, subprocess.SubprocessError):
+        return metadata_bundle_hashes(assignment)
+
+
+def cached_metadata_bundle_hashes(profile):
+    """Optimistic delivery hints. The worker checks exact refs before reuse."""
+    root = Path(profile.get('preparation_metadata_cache_directory') or
+                Path(profile['work_dir']).parent/'preparation-metadata-cache')
+    hashes = set()
+    for path in root.glob('*/BUNDLE_HEADS.json'):
+        hashes.update(sha for sha, heads in _bundle_receipts(path.parent/'objects.git').items() if heads)
+    return sorted(hashes)
+
+
+def _invalidate_bundle_receipts(profile, root, spec):
+    if not metadata_bundles(spec):
+        return
+    repo = _metadata_repository_path(profile, root)
+    if not repo.is_dir():
+        return
+    with (repo.parent/'IMPORT.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        receipts = _bundle_receipts(repo)
+        changed = False
+        for bundle in metadata_bundles(spec):
+            sha = artifact_hash(bundle['sha256'])
+            if receipts.get(sha) is not None:
+                receipts[sha] = None
+                changed = True
+        if changed:
+            put(repo.parent/'BUNDLE_HEADS.json', receipts)
+
+
+def remember_imported_bundle(repo, path, sha):
+    """Migrate old IMPORTED.json entries before discarding a verified raw copy."""
+    from .rpe_metadata_bundle import bundle_heads
+    with (repo.parent/'IMPORT.lock').open('a') as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return False
+        receipts = _bundle_receipts(repo)
+        if sha in receipts:
+            return True  # Includes invalidated receipts; do not revive them.
+        heads = bundle_heads(path, repo)
+        if imported_bundle_heads(repo, dict(sha256=sha, ref=heads[0][1]), {sha:heads}) is not None:
+            receipts[sha] = heads
+            put(repo.parent/'BUNDLE_HEADS.json', receipts)
+        return True  # Missing refs can be repaired by retrieving the original.
+
+
 def _metadata_input_repository(profile, root, spec):
-    bundles=list(spec.get('input_git_bundles',[]))
-    for workspace in spec.get('workspaces',{}).values():bundles.extend(workspace.get('input_git_bundles',[]))
-    if not bundles:return root
-    cache=worker_cache(profile)
-    hashes=[artifact_hash(bundle['sha256'])for bundle in bundles]
-    if cache.missing(hashes):raise ValueError('Preparation metadata Git bundle missing before preflight')
-    target=_metadata_repository_path(profile,root)
-    directory=target.parent;directory.mkdir(parents=True,exist_ok=True)
-    marker=directory/'IMPORTED.json'
-    with(directory/'IMPORT.lock').open('a')as lock:
-        fcntl.flock(lock,fcntl.LOCK_EX)
-        if not target.exists():subprocess.run(['git','clone','--shared','--bare',str(root),str(target)],check=True,capture_output=True)
-        imported=read(marker)if marker.exists()else[]
+    bundles = metadata_bundles(spec)
+    if not bundles: return root
+    cache = worker_cache(profile)
+    target = _metadata_repository_path(profile, root)
+    directory = target.parent; directory.mkdir(parents=True, exist_ok=True)
+    marker = directory/'IMPORTED.json'
+    from .rpe_metadata_bundle import bundle_heads, restore_bundle
+    with (directory/'IMPORT.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if not target.exists():
+            subprocess.run(['git','clone','--shared','--bare',str(root),str(target)],check=True,capture_output=True)
+        imported = read(marker) if marker.exists() else []
+        receipts = _bundle_receipts(target)
+        changed = False
         for bundle in bundles:
-            sha=bundle['sha256']
-            if sha in imported:continue
-            path=cache.path(sha)
-            subprocess.run(['git','bundle','verify',str(path)],cwd=target,check=True,capture_output=True)
-            ref = bundle.get('ref','HEAD')
-            heads=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=target,text=True).splitlines()
-            if not any(line.split(maxsplit=1)[1] == ref for line in heads):
-                raise ValueError('Preparation metadata bundle lacks its declared ref: '+ref)
-            # Import this verified local bundle directly. A fetch checks the
-            # connectivity of unrelated history, which can be sparse locally.
-            # The fingerprint below still reads and hashes every declared input.
-            subprocess.run(['git','bundle','unbundle',str(path),ref],cwd=target,check=True,capture_output=True)
-            for index,line in enumerate(heads):
-                commit=line.split()[0]
-                subprocess.run(['git','update-ref','refs/rpe-metadata/'+sha+'/'+str(index),commit],cwd=target,check=True,capture_output=True)
-            imported.append(sha);put(marker,imported)
+            sha = artifact_hash(bundle['sha256'])
+            if imported_bundle_heads(target, bundle, receipts) is not None:
+                continue
+            if cache.missing([sha]):
+                if receipts.get(sha) is not None:
+                    receipts[sha] = None
+                    put(directory/'BUNDLE_HEADS.json', receipts)
+                raise ValueError('Preparation metadata Git bundle missing before preflight: '+sha)
+            path = cache.path(sha)
+            heads = bundle_heads(path, target)
+            if (sha in receipts or imported_bundle_heads(target, bundle, {sha: heads}) is None):
+                restore_bundle(target, path, sha, required_ref=bundle.get('ref', 'HEAD'))
+            receipts[sha] = heads
+            changed = True
+            if sha not in imported: imported.append(sha)
+        if changed:
+            put(marker, imported)
+            put(directory/'BUNDLE_HEADS.json', receipts)
     return target
 
 
@@ -351,7 +464,12 @@ def current_preparation_fingerprint(assignment, base_profile, *, check_workspace
     path_facts=_required_path_facts(profile,spec.get('required_paths',{}))
     pauli_runtime=pauli_calibration_runtime(profile) if spec.get('publish_pauli_binding') is True else None
     input_root=_metadata_input_repository(profile,root,spec)
-    _verify_fixed_git_inputs(input_root, spec.get('input_hashes', []))
+    try:
+        _verify_fixed_git_inputs(input_root, spec.get('input_hashes', []))
+    except (ValueError, subprocess.CalledProcessError) as error:
+        if 'unavailable' in str(error) or 'Truncated fixed Git input' in str(error) or isinstance(error, subprocess.CalledProcessError):
+            _invalidate_bundle_receipts(profile, root, spec)
+        raise
     declared=input_manifest(request)
     for locator in spec.get('working_input_hashes',[]):
         if declared.get(locator['path'])!=locator['sha256']:raise ValueError('Preparation WORKING input is not bound to its immutable artifact')
@@ -372,7 +490,12 @@ def current_preparation_fingerprint(assignment, base_profile, *, check_workspace
     if not spec.get('outputs'):raise ValueError('Declared preparation outputs required')
     for name in spec['outputs']:artifact_path(name)
     if check_workspace and (spec.get('source_workspace') or spec.get('workspaces')):
-        _check_owned_workspaces(spec, profile, views)
+        try:
+            _check_owned_workspaces(spec, profile, views)
+        except ValueError as error:
+            if 'missing object' in str(error) or 'not a tree' in str(error) or 'unable to read' in str(error):
+                _invalidate_bundle_receipts(profile, root, spec)
+            raise
     facts = dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=source,input_hashes=spec.get('input_hashes',[]),working_input_hashes=spec.get('working_input_hashes',[]),required_views=spec.get('required_views',{}),required_paths=spec.get('required_paths',{}),runtime_paths=path_facts,input_artifacts=inputs,profile=preparation_profile_core(profile),views=views,runtime=runtime,tools=tools)
     if pauli_runtime is not None:
         facts['pauli_calibration_runtime'] = pauli_runtime
@@ -444,19 +567,23 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
     subprocess.run(['git','remote','remove','origin'],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','config','user.name','HIROMU1015'],cwd=destination,check=True)
     subprocess.run(['git','config','user.email','u411612g@ecs.osaka-u.ac.jp'],cwd=destination,check=True)
+    receipts = _bundle_receipts(metadata_repository) if metadata_repository else {}
     for bundle in bundles:
-        sha=bundle['sha256'];path=cache.path(sha)
-        if cache.missing([sha]):raise ValueError('Missing source Git bundle')
-        subprocess.run(['git','bundle','verify',str(path)],cwd=destination,check=True,capture_output=True)
-        ref=bundle.get('ref','HEAD')
-        heads=subprocess.check_output(['git','bundle','list-heads',str(path),ref],cwd=destination,text=True).splitlines()
-        if len(heads)!=1:raise ValueError('Preparation bundle does not declare its unique checkout ref: '+ref)
-        if metadata_repository is None:
-            subprocess.run(['git','bundle','unbundle',str(path),ref],cwd=destination,check=True,capture_output=True)
-        tip=heads[0].split()[0]
+        sha = bundle['sha256']; ref = bundle.get('ref', 'HEAD')
+        heads = imported_bundle_heads(metadata_repository, bundle, receipts) if metadata_repository else None
+        if heads is None:
+            path = cache.path(sha)
+            if cache.missing([sha]): raise ValueError('Missing source Git bundle: '+sha)
+            subprocess.run(['git','bundle','verify',str(path)],cwd=destination,check=True,capture_output=True)
+            heads = [line.split(maxsplit=1) for line in subprocess.check_output(
+                     ['git','bundle','list-heads',str(path)],cwd=destination,text=True).splitlines()]
+            if metadata_repository is None:
+                subprocess.run(['git','bundle','unbundle',str(path),ref],cwd=destination,check=True,capture_output=True)
+        tips = [oid for oid, name in heads if name == ref]
+        if len(tips) != 1: raise ValueError('Preparation bundle does not declare its unique checkout ref: '+ref)
+        tip = tips[0]
         subprocess.run(['git','cat-file','-e',tip+'^{commit}'],cwd=destination,check=True,capture_output=True)
-        if checkout_input_head and bundle.get('checkout_input_head',True):
-            commit=tip
+        if checkout_input_head and bundle.get('checkout_input_head',True): commit=tip
     subprocess.run(['git','checkout','-b','preparation-owned',commit],cwd=destination,check=True,capture_output=True)
     return destination
 
@@ -490,20 +617,84 @@ def _clone_owned_workspaces(spec, profile, views, directory, cache):
 
 
 def _check_owned_workspaces(spec, profile, views):
-    # Reproduce the worker's Git checkout, including files made visible by
-    # widening a cone for the output paths. Input locator hashes miss those
-    # files on partially populated Git object stores.
+    """Validate the same sparse cones without writing a second working tree."""
+    source = Path(views[spec['source']['commit']])
+    metadata = _metadata_repository_path(profile, source) if metadata_bundles(spec) else None
+    entries = []
+    if spec.get('source_workspace'):
+        entries.append((Path('workspace'), source, spec, True))
+    for alias, workspace in spec.get('workspaces', {}).items():
+        if not alias.replace('_', '').replace('-', '').isalnum():
+            raise ValueError('Unsafe preparation workspace alias')
+        entries.append((Path('workspaces')/alias, Path(views[alias]), workspace,
+                        workspace.get('checkout_input_head', True)))
     try:
-        with tempfile.TemporaryDirectory(prefix='rpe-preparation-readiness-') as temporary:
-            directory = Path(temporary)
-            _, owned = _clone_owned_workspaces(spec, profile, views, directory, worker_cache(profile))
-            _include_declared_outputs(owned, directory, list(spec['outputs']) + list(spec.get('optional_outputs', [])))
+        for prefix, root, workspace, checkout_input_head in entries:
+            repo = metadata if workspace.get('input_git_bundles') else root
+            env = dict(os.environ)
+            if repo != root:
+                objects = subprocess.check_output(
+                    ['git', 'rev-parse', '--git-path', 'objects'], cwd=root, text=True).strip()
+                objects = str((root/objects).resolve())
+                env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(
+                    filter(None, (objects, env.get('GIT_ALTERNATE_OBJECT_DIRECTORIES'))))
+            commit = workspace['source']['commit']
+            receipts = _bundle_receipts(repo) if repo == metadata else {}
+            for bundle in workspace.get('input_git_bundles', []):
+                heads = imported_bundle_heads(repo, bundle, receipts)
+                if heads is None:
+                    raise ValueError('Preparation metadata Git bundle missing before preflight: '+bundle['sha256'])
+                if checkout_input_head and bundle.get('checkout_input_head', True):
+                    commit = next(oid for oid, ref in heads if ref == bundle.get('ref', 'HEAD'))
+
+            def tree(*args):
+                raw = subprocess.check_output(['git', '--literal-pathspecs', 'ls-tree', '-z', *args],
+                                              cwd=repo, env=env, stderr=subprocess.PIPE)
+                return [(mode, kind, oid, os.fsdecode(name)) for row in raw.split(b'\0') if row
+                        for header, name in [row.split(b'\t', 1)]
+                        for mode, kind, oid in [header.decode().split()]]
+
+            initial_cones = checkout_directories(workspace['source']['files'])
+            cones = set(initial_cones)
+            for name in list(spec['outputs']) + list(spec.get('optional_outputs', [])):
+                try:
+                    relative = Path(*artifact_path(name).parts).relative_to(prefix)
+                except ValueError:
+                    continue
+                if not relative.parts:
+                    continue
+                # A file outside the initial sparse cones is not present in
+                # the old checkout. Account for its initial visibility.
+                visible = any(relative.is_relative_to(Path(cone)) for cone in initial_cones)
+                visible |= any(Path(cone).is_relative_to(relative.parent) for cone in initial_cones)
+                rows = tree(commit, '--', relative.as_posix()) if visible else []
+                kind = rows[0][1] if rows else None
+                cone = relative if kind == 'tree' or (kind is None and not relative.suffix) else relative.parent
+                if cone.parts:
+                    cones.add(cone.as_posix())
+            parents = {'.'}
+            for cone in cones:
+                parents.update(p.as_posix() for p in Path(cone).parents)
+            # Cone mode includes immediate sibling files at each ancestor,
+            # but not the contents of unrelated archive directories.
+            oids = {oid for _, kind, oid, _ in tree(commit) if kind == 'blob'}
+            for parent in sorted(parents - {'.'}):
+                rows = tree(commit, '--', parent)
+                if rows and rows[0][1] == 'tree':
+                    oids.update(oid for _, kind, oid, _ in tree(commit+':'+parent) if kind == 'blob')
+            if cones:
+                oids.update(oid for _, kind, oid, _ in tree('-r', commit, '--', *sorted(cones)) if kind == 'blob')
+            if oids:
+                checked = subprocess.check_output(['git', 'cat-file', '--batch-check'],
+                    cwd=repo, env=env, input=''.join(oid+'\n' for oid in sorted(oids)),
+                    text=True, stderr=subprocess.PIPE).splitlines()
+                if len(checked) != len(oids) or any(row.endswith(' missing') for row in checked):
+                    raise ValueError('Preparation Git workspace preflight failed at git sparse-checkout add: missing object')
     except subprocess.CalledProcessError as error:
         detail = error.stderr or ''
         if isinstance(detail, bytes):
             detail = detail.decode(errors='replace')
-        command = ' '.join(error.cmd[:3])
-        raise ValueError(f'Preparation Git workspace preflight failed at {command}: {detail.strip()[:500]}') from error
+        raise ValueError('Preparation Git workspace preflight failed at git sparse-checkout add: '+detail.strip()[:500]) from error
 
 
 def _export_bundle(root, source, output, input_head=None):
@@ -632,14 +823,19 @@ def execute(assignment, base_profile, directory):
     target_inputs=spec.get('materialize_inputs')
     if target_inputs is None:
         target_inputs={name:name for name in artifact_inputs if name.startswith(('workspace/','workspaces/','private/'))}
-    for input_name,destination in target_inputs.items():
-        path=directory.joinpath(*artifact_path(destination).parts)
-        path.parent.mkdir(parents=True,exist_ok=True)
-        original=((directory/'inputs').joinpath(*artifact_path(input_name).parts) if stage_inputs
-                  else cache.path(artifact_inputs[input_name]))
-        data=original.read_bytes()
-        if path.exists()and path.read_bytes()!=data:raise ValueError('Input would replace different fixed workspace bytes')
-        if not path.exists():path.write_bytes(data)
+    materialized = {}
+    for input_name, destination in target_inputs.items():
+        relative = artifact_path(destination).as_posix()
+        sha = artifact_inputs[input_name]
+        if relative in materialized and materialized[relative] != sha:
+            raise ValueError('Different input artifacts use the same working destination')
+        materialized[relative] = sha
+    # Use the existing streaming, atomic, private-copy path for both staged
+    # and unstaged input contracts. The original bytes are already in the CAS.
+    try:
+        cache.materialize(materialized, directory)
+    except ValueError as error:
+        raise ValueError('Input would replace different fixed workspace bytes: '+str(error)) from error
     _guard_owned_source(source,spec['source'])
     for alias,(workspace,manifest)in owned.items():_guard_owned_source(workspace,manifest)
     input_heads={}

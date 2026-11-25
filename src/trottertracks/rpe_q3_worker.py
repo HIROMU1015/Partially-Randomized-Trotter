@@ -613,9 +613,7 @@ class Worker:
             cache = worker_cache(self.profile)
             cache.put(incoming)
             hashes = list(Preparation.assigned_artifacts(assignment).values())
-            hashes += [row['sha256'] for row in assignment['request']['preparation'].get('input_git_bundles', [])]
-            for workspace in assignment['request']['preparation'].get('workspaces', {}).values():
-                hashes += [row['sha256'] for row in workspace.get('input_git_bundles', [])]
+            hashes += Preparation.missing_metadata_bundle_hashes(assignment, self.profile)
             missing = cache.missing(hashes)
             if missing:
                 cache.put(self._post('/v1/artifacts/get', dict(hashes=missing))['blobs'])
@@ -712,7 +710,7 @@ class Worker:
     def _prepare_challenge_artifacts(self, challenges):
         hashes=[]
         for assignment in challenges:
-            if Preparation.is_preparation(assignment):hashes.extend(Preparation.metadata_bundle_hashes(assignment))
+            if Preparation.is_preparation(assignment):hashes.extend(Preparation.missing_metadata_bundle_hashes(assignment,self.profile))
         if not hashes:return
         cache=worker_cache(self.profile)
         for sha in cache.missing(hashes):
@@ -821,7 +819,8 @@ class Worker:
             try:
                 storage_accepting = report.get('storage', {}).get('accepting_new_jobs', True)
                 payload = dict(slots=report['slots'], capacity=self.slots, resource_report=report, cached_prefixes=cached,
-                               cached_artifact_sha256=worker_cache(self.profile).hashes(), source_sha=self.source_sha,
+                               cached_artifact_sha256=worker_cache(self.profile).hashes(),
+                               cached_metadata_bundle_sha256=Preparation.cached_metadata_bundle_hashes(self.profile), source_sha=self.source_sha,
                                accepting_new_jobs=storage_accepting, **self._poll_readiness(report, storage_accepting))
                 response = self._post('/v1/poll', payload)
                 self._capacity_feedback(response)
@@ -975,7 +974,17 @@ def mailbox(profile, action, payload=None):
     payload = payload or {}
     if action in ('artifacts-missing', 'artifacts-get', 'artifacts-put'):
         cache = worker_cache(profile)
-        if action == 'artifacts-missing':return dict(missing=cache.missing(payload.get('hashes', [])))
+        if action == 'artifacts-missing':
+            hashes = payload.get('hashes', [])
+            if 'preparation_challenges' in payload and 'direct_hashes' in payload:
+                challenges = payload['preparation_challenges']
+                direct = set(payload['direct_hashes'])
+                declared = {sha for row in challenges for sha in Preparation.metadata_bundle_hashes(row)}
+                if set(hashes) != direct | declared:
+                    raise ValueError('Different declared preparation artifact hashes')
+                hashes = list(direct | {sha for row in challenges
+                        for sha in Preparation.missing_metadata_bundle_hashes(row, profile)})
+            return dict(missing=cache.missing(hashes))
         if action == 'artifacts-get':return dict(blobs=cache.get(payload.get('hashes', [])))
         return dict(ok=True, **cache.put(payload.get('blobs', {})))
     if action == 'readiness':
@@ -1048,6 +1057,7 @@ def mailbox(profile, action, payload=None):
             return dict(host_id=worker.host_id, slots=report['slots'], capacity=worker.slots, resource_report=report, source_sha=worker.source_sha,
                         accepting_new_jobs=report.get('storage', {}).get('accepting_new_jobs', True),
                         cached_prefixes=sorted(cached), cached_artifact_sha256=worker_cache(profile).hashes(),
+                        cached_metadata_bundle_sha256=Preparation.cached_metadata_bundle_hashes(profile),
                         attempts=attempts, metadata_only=metadata_only)
         raise ValueError('Unknown mailbox action')
     finally:

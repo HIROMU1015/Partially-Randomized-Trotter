@@ -258,6 +258,121 @@ Path(r'@WORK@/result.json').write_text(json.dumps({k:os.environ.get(k) for k in 
         with self.assertRaises(FileExistsError):P.execute(audit,self.profile('server1'),audit_dir)
         self.assertEqual((audit_dir/'result.json').read_text(),'14')
 
+    def test_imported_bundle_is_reused_without_original_bytes_on_all_worker_profiles(self):
+        from trottertracks import _pipeline_pbs_q3_worker as pipeline
+        producer = self.root/'producer'
+        subprocess.run(['git','clone','-q',str(self.root/'source'),str(producer)],check=True)
+        (producer/'docs').mkdir()
+        (producer/'docs'/'partial.json').write_text('fixed synthetic input')
+        subprocess.run(['git','add','docs'],cwd=producer,check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid',
+                        'commit','-qm','partial'],cwd=producer,check=True)
+        head = P._head(producer)
+        bundle = self.root/'input.bundle'
+        subprocess.run(['git','bundle','create',str(bundle),'HEAD','^'+self.source['commit']],
+                       cwd=producer,check=True)
+        sha = hashlib.sha256(bundle.read_bytes()).hexdigest()
+        task = self.task('audit', "from pathlib import Path;Path('result.json').write_text(Path('docs/partial.json').read_text())",
+                         source_workspace=True, return_git_delta=True, outputs=['workspace/result.json','workspace/docs/partial.json'],
+                         input_git_bundles=[dict(sha256=sha,ref='HEAD')],
+                         input_hashes=[dict(commit=head,path='docs/partial.json',
+                                            sha256=hashlib.sha256(b'fixed synthetic input').hexdigest())])
+        for host, worker in [('local',W),('local0-wsl',W),('server1',W),('server2',W),('pbs',pipeline)]:
+            with self.subTest(host=host):
+                profile = self.profile(host)
+                cache = P.worker_cache(profile)
+                self.assertEqual(P.missing_metadata_bundle_hashes(task,profile),[sha])
+                cache.put_file(bundle,sha)
+                self.assertEqual(P.dry_check(task['request'],profile)['scientific_calls'],0)
+                metadata=P._metadata_repository_path(profile,self.root/'source')
+                # Simulate metadata imported by a previous release that only
+                # wrote IMPORTED.json. Preserve ref selectors on cleanup.
+                (metadata.parent/'BUNDLE_HEADS.json').unlink()
+                self.assertTrue(P.remember_imported_bundle(metadata,cache.path(sha),sha))
+                cache.path(sha).unlink()
+                self.assertEqual(P.missing_metadata_bundle_hashes(task,profile),[])
+                payload = dict(hashes=[sha],direct_hashes=[],preparation_challenges=[task])
+                self.assertEqual(worker.mailbox(profile,'artifacts-missing',payload),dict(missing=[]))
+                # A regular input with the same bytes still needs the raw file.
+                self.assertEqual(worker.mailbox(profile,'artifacts-missing',
+                    dict(payload,direct_hashes=[sha])),dict(missing=[sha]))
+                self.assertEqual(P.dry_check(task['request'],profile)['scientific_calls'],0)
+                attempt=self.root/host/'spool'/task['job_id']/'attempt'
+                result=P.execute(task,profile,attempt)
+                self.assertEqual(result['status'],'PREPARATION_COMPLETE')
+                self.assertEqual((attempt/'workspace/result.json').read_text(),'fixed synthetic input')
+                metadata=P._metadata_repository_path(profile,self.root/'source')
+                subprocess.run(['git','update-ref','-d','refs/rpe-metadata/'+sha+'/0'],cwd=metadata,check=True)
+                self.assertEqual(P.missing_metadata_bundle_hashes(task,profile),[sha])
+                self.assertEqual(worker.mailbox(profile,'artifacts-missing',payload),dict(missing=[sha]))
+                cache.put_file(bundle,sha)
+                self.assertEqual(P.dry_check(task['request'],profile)['scientific_calls'],0)
+                self.assertEqual(P.missing_metadata_bundle_hashes(task,profile),[])
+                if host == 'local':
+                    # Keep the imported commit but remove one required blob
+                    # from the derived store. Tip checks alone cannot prove it.
+                    object_dir=metadata/'objects'
+                    for pack in (object_dir/'pack').glob('*.pack'):
+                        saved=self.root/pack.name
+                        pack.rename(saved)
+                        pack.with_suffix('.idx').unlink(missing_ok=True)
+                        with saved.open('rb') as stream:
+                            subprocess.run(['git','unpack-objects'],cwd=metadata,stdin=stream,check=True)
+                    oid=subprocess.check_output(['git','rev-parse',head+':docs/partial.json'],
+                                                cwd=metadata,text=True).strip()
+                    (object_dir/oid[:2]/oid[2:]).unlink()
+                    cache.path(sha).unlink()
+                    with self.assertRaisesRegex(ValueError,'fixed Git input is unavailable'):
+                        P.dry_check(task['request'],profile)
+                    self.assertEqual(worker.mailbox(profile,'artifacts-missing',payload),dict(missing=[sha]))
+                    cache.put_file(bundle,sha)
+                    self.assertEqual(P.dry_check(task['request'],profile)['scientific_calls'],0)
+
+    def test_failed_attempt_compacts_only_unchanged_source_and_restores_for_inspection(self):
+        source=self.root/'source'
+        for name in ('src/large.txt','scripts/keep.py','configs/keep.json','docs/results/seed.json'):
+            path=source/name
+            path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_bytes((name.encode()+b'\n')*65536)
+        (source/'.gitignore').write_text('*.tmp\n')
+        subprocess.run(['git','add','.'],cwd=source,check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid',
+                        'commit','-qm','static tree'],cwd=source,check=True)
+        self.source['commit']=P._head(source)
+        profile=self.profile('local')
+        task=self.task('compile', """from pathlib import Path
+Path('scripts/partial.tmp').write_text('ignored partial')
+Path('configs/keep.json').write_text('modified input')
+Path('docs/results/result.json').write_text('partial evidence')
+raise SystemExit(2)
+""",source_workspace=True,outputs=['workspace/docs/results'])
+        attempt=Path(profile['work_dir'])/task['job_id']/task['attempt_id']
+        outcome=P.execute(task,profile,attempt)
+        self.assertEqual(outcome['status'],'PREPARATION_FAILED')
+        W.atomic(attempt/'ASSIGNMENT.json',task)
+        W.atomic(attempt/'PROCESS_RETURN.json',dict(returncode=2))
+        (attempt/'WORKER_PROCESS.lock').touch()
+        work=attempt/'workspace'
+        before=(work/'src/large.txt').read_bytes()
+        W.save_state(attempt,'UNKNOWN')
+        self.assertEqual(Storage.compact_failed_preparation_workspaces(attempt),0)
+        self.assertTrue((work/'src/large.txt').exists())
+        W.save_state(attempt,'TRANSFERRED')
+        Storage.reclaim_transferred_attempt(dict(roots=[profile['work_dir']]),attempt)
+        self.assertTrue((work/'src/large.txt').exists())  # ACK remains inexpensive
+        used = Storage._used_bytes([profile['work_dir']])
+        after, removed = Storage._reclaim([profile['work_dir']], [profile['work_dir']], used, 0)
+        self.assertGreater(removed, 0)
+        self.assertLess(after, used)
+        self.assertFalse((work/'src/large.txt').exists())
+        self.assertEqual((work/'scripts/partial.tmp').read_text(),'ignored partial')
+        self.assertEqual((work/'configs/keep.json').read_text(),'modified input')
+        self.assertEqual((work/'docs/results/result.json').read_text(),'partial evidence')
+        self.assertEqual(P.read(attempt/'OUTCOME.json'),outcome)
+        self.assertEqual(Storage.compact_failed_preparation_workspaces(attempt),0)
+        Storage.restore_failed_workspace(attempt)
+        self.assertEqual((work/'src/large.txt').read_bytes(),before)
+
     def test_git_workspace_exports_new_objects_without_changing_source(self):
         code="""from pathlib import Path
 import subprocess

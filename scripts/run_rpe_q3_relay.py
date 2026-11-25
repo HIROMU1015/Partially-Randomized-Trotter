@@ -496,7 +496,8 @@ class Relay:
     def _poll_value(self, status):
         value = dict(host_id=status['host_id'], slots=status['slots'], capacity=status.get('capacity'),
                      source_sha=status['source_sha'], cached_prefixes=status['cached_prefixes'],
-                     cached_artifact_sha256=status.get('cached_artifact_sha256', []))
+                     cached_artifact_sha256=status.get('cached_artifact_sha256', []),
+                     cached_metadata_bundle_sha256=status.get('cached_metadata_bundle_sha256', []))
         if 'accepting_new_jobs' in status:
             value['accepting_new_jobs'] = status['accepting_new_jobs']
         if status.get('resource_report') is not None:
@@ -515,10 +516,29 @@ class Relay:
                 hashes.update(row['sha256']for row in workspace.get('input_git_bundles',[]))
         return hashes
 
+    @staticmethod
+    def _metadata_requirements(assignments):
+        """Only send the fixed SOURCE and bundle selectors, not full requests."""
+        rows = []
+        for assignment in assignments:
+            request = assignment['request']
+            spec = request['preparation']
+            fields = {key: spec[key] for key in ('stage', 'provider', 'artificial', 'input_git_bundles') if key in spec}
+            source = spec.get('source')
+            if source:
+                fields['source'] = {'commit':source['commit']}
+            fields['workspaces'] = {alias:{'input_git_bundles':workspace.get('input_git_bundles', [])}
+                                    for alias,workspace in spec.get('workspaces', {}).items()
+                                    if workspace.get('input_git_bundles')}
+            rows.append({'preparation':fields})
+        return rows
+
     def _deliver_challenge_artifacts(self, worker, challenges):
         hashes = self._readiness_bundle_hashes(challenges)
         if not hashes:return
-        response,_=self.remote(worker,'artifacts-missing',dict(hashes=sorted(hashes)))
+        preparation = [row for row in challenges if row.get('request', {}).get('route', {}).get('kind') == 'preparation']
+        response,_=self.remote(worker,'artifacts-missing',dict(hashes=sorted(hashes),
+                    direct_hashes=[],preparation_challenges=self._metadata_requirements(preparation)))
         for sha in response['missing']:
             try:
                 result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
@@ -580,7 +600,8 @@ class Relay:
         # mailbox is busy. The real slot count still governs every claim.
         if (challenges and status.get('accepting_new_jobs', True)
                 and (observed.get('host_admission') or {}).get('accepting', True)):
-            cached = status.get('cached_artifact_sha256')
+            cached = (None if status.get('cached_artifact_sha256') is None else
+                      set(status['cached_artifact_sha256']) | set(status.get('cached_metadata_bundle_sha256', [])))
             cached = set(cached) if cached is not None else None
             slots = max(1, status['slots'])
             if worker.get('transport') == 'ssh-wsl' and cached is not None:
@@ -592,7 +613,11 @@ class Relay:
             # A fresh worker inventory avoids an SSH round trip. The worker
             # still verifies and binds all metadata in its readiness check.
             try:
-                if cached is None or self._readiness_bundle_hashes(challenges) - cached:
+                # Imported hints are not a proof for this particular fixed
+                # SOURCE view. Ask the worker's exact metadata store if the raw
+                # file is absent, even when a different view advertises it.
+                raw_cached = status.get('cached_artifact_sha256')
+                if raw_cached is None or self._readiness_bundle_hashes(challenges) - set(raw_cached):
                     self._deliver_challenge_artifacts(worker,challenges)
                 facts, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
             except (TimeoutError, subprocess.TimeoutExpired, RuntimeError) as error:
@@ -621,17 +646,19 @@ class Relay:
         return self._deliver_batch_artifacts(worker, [assignment])
 
     def _deliver_batch_artifacts(self, worker, assignments):
-        hashes=[]
+        hashes=[]; direct=[]; preparation=[]
         for assignment in assignments:
             request=assignment.get('request', {})
             if (request.get('route') or {}).get('kind') != 'preparation':continue
             spec=request['preparation'];inputs=assignment.get('artifact_manifest', spec.get('inputs', {}))
-            hashes.extend(inputs.values() if isinstance(inputs,dict) else [row['sha256'] for row in inputs])
+            need=list(inputs.values() if isinstance(inputs,dict) else [row['sha256'] for row in inputs])
+            direct.extend(need); hashes.extend(need); preparation.append(assignment)
             hashes.extend(row['sha256'] for row in spec.get('input_git_bundles', []))
             for workspace in spec.get('workspaces', {}).values():
                 hashes.extend(row['sha256'] for row in workspace.get('input_git_bundles', []))
         if not hashes:return
-        response,_=self.remote(worker,'artifacts-missing',dict(hashes=list(dict.fromkeys(hashes))))
+        response,_=self.remote(worker,'artifacts-missing',dict(hashes=list(dict.fromkeys(hashes)),
+                    direct_hashes=list(dict.fromkeys(direct)),preparation_challenges=self._metadata_requirements(preparation)))
         for sha in response['missing']:
             result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
             self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
@@ -822,7 +849,8 @@ class Relay:
                 challenges = [item for item in challenges if
                               item.get('request', {}).get('route', {}).get('kind') != 'preparation']
             else:
-                cached = status.get('cached_artifact_sha256')
+                cached = (None if status.get('cached_artifact_sha256') is None else
+                      set(status['cached_artifact_sha256']) | set(status.get('cached_metadata_bundle_sha256', [])))
                 challenges = self._readiness_batch(worker, challenges,
                     set(cached) if cached is not None else None, slots=status['slots'])
             if challenges:

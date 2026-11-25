@@ -180,6 +180,24 @@ def reclaim_verified_duplicates(profile, proof, *, spools=None, compute_samples=
                 path = marker.with_name(name)
                 if path.is_file():
                     retained.update(_referenced_hashes(json.loads(path.read_bytes())))
+        # Older metadata caches record only imported hashes. Keep their ref
+        # selector receipts before removing the last local raw bundle copy.
+        imported = {}
+        metadata_root = Path(profile.get('preparation_metadata_cache_directory') or
+                             Path(profile['work_dir']).parent/'preparation-metadata-cache')
+        try:
+            from .rpe_preparation_worker import remember_imported_bundle
+        except ImportError:  # A maintenance process on an older fixed worker.
+            remember_imported_bundle = None
+        if remember_imported_bundle is not None:
+            for marker in metadata_root.glob('*/IMPORTED.json'):
+                try:
+                    repo = marker.parent/'objects.git'
+                    for sha in json.loads(marker.read_bytes()):
+                        if sha in proof and repo.is_dir():
+                            imported.setdefault(sha, []).append(repo)
+                except (OSError, ValueError, TypeError):
+                    continue
         inventory = duplicate_inventory(profile)
         removed = {}
         for sha, size in proof.items():
@@ -192,6 +210,11 @@ def reclaim_verified_duplicates(profile, proof, *, spools=None, compute_samples=
             with path.open('rb') as stream:
                 if hashlib.file_digest(stream, 'sha256').hexdigest() != sha:
                     continue
+            try:
+                if any(not remember_imported_bundle(repo, path, sha) for repo in imported.get(sha, ())):
+                    continue
+            except (OSError, ValueError, subprocess.SubprocessError):
+                continue
             removed[sha] = path.stat().st_blocks * 512
             path.unlink()
             if sum(removed.values()) >= target:
@@ -332,12 +355,152 @@ def _remove_copy(path):
         return False
 
 
+def compact_failed_preparation_workspaces(attempt):
+    """Drop only clean, reproducible source files after a failed result is ACKed.
+
+    All scientific output, modified/untracked (including ignored) files, input
+    paths and Git objects remain. A running or uncertain owner is never touched.
+    """
+    attempt = Path(attempt)
+    lock = attempt/'WORKER_PROCESS.lock'
+    layout = attempt/'FAILED_WORKSPACE_LAYOUT.json'
+    try:
+        if attempt.resolve() != attempt or not stat.S_ISREG(lock.lstat().st_mode):
+            return 0
+        with lock.open('r+b') as owner:
+            fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            state = json.loads((attempt/'WORKER_STATE.json').read_bytes())
+            assignment = json.loads((attempt/'ASSIGNMENT.json').read_bytes())
+            if (state.get('state') != 'TRANSFERRED' or assignment['request']['route']['kind'] != 'preparation'
+                    or (assignment['job_id'], assignment['attempt_id']) != (attempt.parent.name, attempt.name)):
+                return 0
+            outcome = json.loads((attempt/'OUTCOME.json').read_bytes())
+            receipt = json.loads((attempt/'PROCESS_RETURN.json').read_bytes())
+            if (outcome['status'] != 'PREPARATION_FAILED'
+                    or outcome['request_id'] != assignment['job_id']
+                    or outcome['request_sha256'] != assignment['request_sha256']
+                    or (receipt.get('returncode') in (None, 0) and receipt.get('signal') is None)):
+                return 0
+            spec = assignment['request']['preparation']
+            declared = list(spec.get('outputs', [])) + list(spec.get('optional_outputs', []))
+            declared += list((spec.get('materialize_inputs') or {}).values())
+            declared += list(assignment.get('artifact_manifest', {}))
+            declared += list(outcome.get('artifacts', {}))
+            declared += [row['path'] for row in spec.get('working_input_hashes', [])]
+            if spec.get('materialize_inputs') is None:
+                inputs = spec.get('inputs', {})
+                declared += list(inputs) if isinstance(inputs, dict) else [row['path'] for row in inputs]
+            records = json.loads(layout.read_bytes()) if layout.is_file() else {}
+            count = 0
+            for workspace in [attempt/'workspace', *sorted((attempt/'workspaces').glob('*'))]:
+                if (not workspace.is_dir() or workspace.resolve() != workspace or
+                        not (workspace/'.git').is_dir()):
+                    continue
+                prefix = workspace.relative_to(attempt).as_posix()
+                source = spec['source'] if prefix == 'workspace' else spec['workspaces'][workspace.name]['source']
+                def git(*args):
+                    return subprocess.check_output(['git', *args], cwd=workspace,
+                                                   stderr=subprocess.PIPE, timeout=30)
+                head = git('rev-parse', 'HEAD').decode().strip()
+                saved = records.get(prefix, {})
+                if saved and saved['head'] != head:
+                    continue
+                # Only source files identical to the immutable base qualify.
+                # Leave tracked provider changes, partial outputs and all
+                # untracked files, even if Git would consider them clean.
+                def blobs(revision):
+                    raw = git('ls-tree', '-r', '-z', revision, '--', 'src', 'scripts',
+                              'configs', 'schemas', 'references')
+                    return {os.fsdecode(name): header.split()[2] for row in raw.split(b'\0') if row
+                            for header, name in [row.split(b'\t',1)]
+                            if header.split()[0] in (b'100644', b'100755')}
+                base_blobs = blobs(source['commit'])
+                current_blobs = blobs(head)
+                candidates = {}
+                for name, oid in base_blobs.items():
+                    if current_blobs.get(name) != oid or '\n' in name or '\r' in name:
+                        continue
+                    rel = Path(prefix)/name
+                    if any(rel.is_relative_to(Path(value)) for value in declared):
+                        continue
+                    path = workspace/name
+                    if path.is_symlink() or not path.is_file() or path.resolve() != path:
+                        continue
+                    candidates[name] = oid
+                if not candidates:
+                    continue
+                # A damaged metadata cache may be missing the only recoverable
+                # Git object. Verify source availability and actual file bytes.
+                names = sorted(candidates)
+                oids = set(candidates.values())
+                checked = subprocess.check_output(['git','cat-file','--batch-check'],
+                    cwd=workspace, input=b'\n'.join(sorted(oids))+b'\n',
+                    stderr=subprocess.PIPE,timeout=30).splitlines()
+                known = {oid for oid,row in zip(sorted(oids),checked) if not row.endswith(b' missing')}
+                if len(checked) != len(oids):
+                    continue
+                names = [name for name in names if candidates[name] in known]
+                if not names:
+                    continue
+                actual = subprocess.check_output(['git','hash-object','--no-filters','--stdin-paths'],
+                    cwd=workspace, input=os.fsencode('\n'.join(names)+'\n'),
+                    stderr=subprocess.PIPE,timeout=30).splitlines()
+                if len(actual) != len(names):
+                    continue
+                removable = [name for name,oid in zip(names,actual) if candidates[name] == oid]
+                if not removable:
+                    continue
+                # Do not run sparse-checkout set here: it can unexpectedly
+                # materialize other cones and increase the storage footprint.
+                # The terminal workspace is for inspection only; record exact
+                # removed paths before unlinking, and restore only those paths.
+                records[prefix] = dict(saved, head=head,
+                    files=sorted(set(saved.get('files', [])) | set(removable)))
+                atomic_json(layout, records)
+                for name in removable:
+                    (workspace/name).unlink()
+                count += 1
+            records['_cleanup_complete'] = True
+            atomic_json(layout, records)
+            return count
+    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
+        return 0
+
+
+def restore_failed_workspace(attempt, relative='workspace'):
+    """Restore a compacted terminal workspace for inspection, not execution."""
+    attempt = Path(attempt).resolve()
+    workspace = attempt/relative
+    if not workspace.resolve().is_relative_to(attempt) or workspace.resolve() != workspace:
+        raise ValueError('Invalid retained workspace')
+    with (attempt/'WORKER_PROCESS.lock').open('r+b') as owner:
+        fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        record = json.loads((attempt/'FAILED_WORKSPACE_LAYOUT.json').read_bytes())[relative]
+        if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=workspace, text=True).strip() != record['head']:
+            raise ValueError('Retained workspace HEAD changed')
+        if record.get('cones'):  # Layout from the earlier sparse-cone implementation.
+            subprocess.run(['git', 'sparse-checkout', 'add', '--stdin'], cwd=workspace,
+                input='\n'.join(record['cones'])+'\n', text=True, check=True, capture_output=True)
+        missing = [name for name in record.get('files', [])
+                   if not (workspace/name).exists() and not (workspace/name).is_symlink()]
+        if missing:
+            subprocess.run(['git','--literal-pathspecs','restore','--source='+record['head'],
+                            '--worktree','--ignore-skip-worktree-bits',
+                            '--pathspec-from-file=-','--pathspec-file-nul'],
+                cwd=workspace, input=b'\0'.join(map(os.fsencode,missing))+b'\0',
+                check=True,capture_output=True)
+
+
+
 def reclaim_transferred_attempt(policy, attempt):
     """Discard acknowledged working copies, retaining receipts and result blobs."""
     if policy is None or not any(attempt.is_relative_to(Path(root).resolve()) for root in policy['roots']):
         return
     for _, _, path in _attempt_copies(attempt/'WORKER_STATE.json'):
         _remove_copy(path)
+    # Failed workspaces are compacted by the existing storage maintenance
+    # pass, not synchronously in ACK/claim; Git and I/O must not delay the
+    # next job.
 
 
 def pending_pbs_completions(spool):
@@ -427,6 +590,29 @@ def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=()):
         used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
         if used <= target:
             break
+    if used > target:
+        monitored = [Path(root).resolve() for root in roots]
+        compacted = 0
+        for spool in sorted({Path(path).resolve() for path in spools}):
+            if not any(spool.is_relative_to(root) for root in monitored):
+                continue
+            for marker in spool.glob('*/*/WORKER_STATE.json'):
+                layout = marker.parent/'FAILED_WORKSPACE_LAYOUT.json'
+                if layout.is_file():
+                    try:
+                        if json.loads(layout.read_bytes()).get('_cleanup_complete'):
+                            continue
+                    except (OSError, ValueError):
+                        continue
+                if compact_failed_preparation_workspaces(marker.parent):
+                    compacted += 1
+                    removed += 1
+                    if compacted >= 8:
+                        break
+            if compacted >= 8:
+                break
+        if compacted:
+            used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
     return used, removed
 
 

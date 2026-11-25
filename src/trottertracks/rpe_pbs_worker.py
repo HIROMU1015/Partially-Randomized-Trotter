@@ -22,7 +22,7 @@ import uuid
 from . import rpe_q3_resources as Resources
 from .rpe_host_profiles import check_runtime_profile
 from .rpe_preparation_artifacts import worker_cache
-from .rpe_preparation_worker import metadata_bundle_hashes
+from .rpe_preparation_worker import missing_metadata_bundle_hashes
 from .rpe_q3_timing import stamp
 from .rpe_q3_worker import Worker, atomic, digest, event, head, host_fingerprints, read, save_state
 
@@ -458,7 +458,7 @@ class AllocationWorker(Worker):
                 if preparation_running >= preparation_limit:
                     continue
                 try:
-                    needs_transfer = any(not cache.path(sha).is_file() for sha in metadata_bundle_hashes(challenge))
+                    needs_transfer = any(not cache.path(sha).is_file() for sha in missing_metadata_bundle_hashes(challenge, self.profile))
                 except (OSError, ValueError, KeyError, TypeError):
                     # The full input check reports the malformed requirement.
                     needs_transfer = False
