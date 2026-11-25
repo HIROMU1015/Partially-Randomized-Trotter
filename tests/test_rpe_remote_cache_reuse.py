@@ -155,8 +155,9 @@ class LocalFilesystemPressure(unittest.TestCase):
         prior = self.owner('prior')
         sha, size, central = self.blob(prior, b'D'*131072)
         retained, _, retained_central = self.blob(prior, b'U'*131072)
+        other_sha, _, other_central = self.blob(prior, b'W'*131072)
         worker = self.state/'worker-cache'
-        for original in (central, retained_central):
+        for original in (central, retained_central, other_central):
             target = worker/original.parent.name/original.name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(original.read_bytes())
@@ -179,11 +180,15 @@ class LocalFilesystemPressure(unittest.TestCase):
             put(worker_profile, dict(work_dir=str(self.state/'different-spool'),
                                      artifact_cache_directory=str(worker)))
             self.assertEqual(R.local_duplicate_cache(self.current, profile), {})
-            worker_profile.unlink()
+            put(worker_profile, dict(profile, work_dir=str(self.state/'different-spool')))
+            with sqlite3.connect(other/'distributed/QUEUE.sqlite3') as db:
+                db.execute('CREATE TABLE jobs (host_id TEXT, state TEXT, request TEXT)')
+                db.execute('INSERT INTO jobs VALUES (?,?,?)', ('local','QUEUED',json.dumps({'input':other_sha})))
             removed = R.local_duplicate_cache(self.current, profile)
         self.assertEqual(set(removed), {sha})
         self.assertFalse((worker/sha[:2]/sha).exists())
         self.assertTrue((worker/retained[:2]/retained).exists())
+        self.assertTrue((worker/other_sha[:2]/other_sha).exists())
         self.assertEqual(central.read_bytes(), b'D'*size)
         self.assertEqual(json.loads((unknown/'WORKER_STATE.json').read_text()), dict(state='UNKNOWN'))
 

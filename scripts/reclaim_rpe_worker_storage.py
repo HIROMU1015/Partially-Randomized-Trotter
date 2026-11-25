@@ -14,6 +14,7 @@ import shutil
 import sqlite3
 import subprocess
 import sys
+import threading
 import time
 
 from run_rpe_q3_relay import Relay, acquire_lock
@@ -459,6 +460,19 @@ def verified_completion_rpcs(run, host, items):
     return receipts, owners
 
 
+_SWEEP_LOCK = threading.Lock()
+_SWEEP_HOSTS = {}
+
+
+def sweep_host(key, action):
+    # Several registered runs may reach the same login node. Serialize their
+    # maintenance only, not ordinary worker dispatch, and let other hosts run.
+    with _SWEEP_LOCK:
+        lock = _SWEEP_HOSTS.setdefault(key, threading.Lock())
+    with lock:
+        return action()
+
+
 def cleanup(run, source, *, audit=False):
     distributed = run/'distributed'
     conf = distributed/'relay'/'CONFIG.json'
@@ -477,7 +491,7 @@ def cleanup(run, source, *, audit=False):
             if audit:
                 return audit_q3(run, 'local', {'q3_inventory': q3_result_copy_inventory(profile, [profile['work_dir']])})
             return local_report(run, profile)
-        work.append(('local', local_check))
+        work.append(('local', 'local', local_check))
     if relay is not None:
         for worker in relay.config['workers']:
             host = worker['host_id']
@@ -501,7 +515,7 @@ def cleanup(run, source, *, audit=False):
                 if proof or q3_proof:
                     result = check(verified_duplicates=proof, verified_q3_copies=q3_proof)
                 return result
-            work.append((host, remote))
+            work.append((host, worker.get('ssh_alias', host), remote))
     if pbs.exists():
         settings = read(pbs)
         namespace = Path(settings['remote_root'])
@@ -534,9 +548,9 @@ def cleanup(run, source, *, audit=False):
                     result = check(verified_duplicates=proof, pbs_ack_receipts=receipts, verified_q3_copies=q3_proof,
                                    verified_completion_rpcs=rpc_proof, adopted_completion_owners=rpc_owners)
                 return result
-            work.append((worker['host_id'], gateway))
+            work.append((worker['host_id'], settings['ssh_alias'], gateway))
     with ThreadPoolExecutor(max_workers=max(1, len(work))) as pool:
-        for host, future in [(host, pool.submit(check)) for host, check in work]:
+        for host, future in [(host, pool.submit(sweep_host, key, check)) for host, key, check in work]:
             try:
                 result = future.result()
             except (OSError, KeyError, ValueError, RuntimeError, sqlite3.Error, subprocess.SubprocessError) as error:

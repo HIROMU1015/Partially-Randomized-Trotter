@@ -3730,10 +3730,18 @@ class DistributedExecutor(ConcurrentExecutor):
             with self.lock:
                 snapshot.state.allocation_wait_totals = dict(state.allocation_wait_totals)
                 snapshot.state.allocation_waits = {job: tuple(starts) for job, starts in state.allocation_waits.items()}
-            pending = [task for task in snapshot.state.tasks.values() if task.status == 'QUEUED']
+            # Use the same incremental queue reader as the production poll.
+            # Copy its version and rows together; an observer must not force
+            # another full queue decode or mutate the scheduler's cache.
+            if hasattr(self, 'queue_snapshot_lock'):
+                with self.queue_snapshot_lock:
+                    snapshot.queue_snapshot_revision = self.queue_snapshot_revision
+                    snapshot.queue_snapshot_rows = dict(self.queue_snapshot_rows)
+                    snapshot.queue_dependency_ready = dict(self.queue_dependency_ready)
+                snapshot.queue_snapshot_lock = threading.Lock()
+            ready, rows = snapshot._ready_queue_snapshot()
             owned = snapshot._owned_attempts()
-            rows = snapshot.store.rows_for([task.job.name for task in pending]+[row['job_id'] for row in owned])
-            ready = snapshot._ready_queue(rows=rows)
+            rows.update(snapshot.store.rows_for(row['job_id'] for row in owned))
             snapshot._report_queue_snapshot(observed_queue=ready, observed_rows=rows, observed_owned=owned)
             feedback = {host: snapshot._capacity_feedback(host, observed_queue=ready, observed_rows=rows)
                         for host in snapshot.hosts}
