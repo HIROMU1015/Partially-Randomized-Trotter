@@ -1756,6 +1756,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 refresh_completions = None
                 answer_now = None
                 await_dispatch = None
+                if executor is not None and price_work_pending is not None:
+                    candidate_ready = getattr(ex, 'ready_pending', lambda: False)
+                    ex.ready_pending = lambda: price_work_pending() or candidate_ready()
                 if search.get('controller_parallel') is True and getattr(executor, 'answer_now', None):
                     def answer_now(proposal):
                         cached = context['saved'].answer(proposal)

@@ -65,6 +65,17 @@ class OriginalPFOwner(unittest.TestCase):
             if original:self.assertEqual(before,original.read_bytes())
             return row
 
+    def test_exploratory_partial_price_locator_is_not_complete(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('owner_check', ROOT/'scripts/check_pf_preparation_owner.py')
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        entry = dict(signal_packet={'saved': True}, q3_inputs={'saved': True},
+                     prices=dict(axes=[{'m': 0, 'axis': 'X'}], coverage='PARTIAL_DIRECT_PRICE_EVIDENCE'))
+        self.assertFalse(helper.reusable_entry(ROOT, entry, exploratory=True, selected_axes=True))
+        entry['prices']['coverage'] = 'COMPLETE'
+        self.assertTrue(helper.reusable_entry(ROOT, entry, exploratory=True, selected_axes=True))
+
     def test_original_partial_or_unknown_stop_holds_without_producer(self):
         self.assertEqual(self.check('partial')['status'],'PRIOR_OWNER_HOLD')
         self.assertEqual(self.check('stop')['status'],'PRIOR_OWNER_HOLD')

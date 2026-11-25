@@ -18,13 +18,23 @@ def reusable_entry(root, entry, *, exploratory, selected_axes):
         return False
     if not (exploratory and selected_axes):
         return True
-    from trottertracks.pf_optimizer_connection import read_source
-    from trottertracks.rpe_method_optimizer import Reader
+    # The fixed provider may predate the controller's registry reader.
+    # Inspect only the original locator, without importing another optimizer.
+    source = entry['prices']
     try:
-        table = read_source(root, Reader(root), entry['prices'])
-    except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
+        if isinstance(source, dict) and 'commit' in source and 'path' in source:
+            table = json.loads(subprocess.check_output(
+                ['git', 'show', source['commit']+':'+source['path']], cwd=root, stderr=subprocess.DEVNULL))
+            for key in source.get('selector', ()):
+                table = table[int(key)] if isinstance(table, list) else table[key]
+        elif isinstance(source, str):
+            table = json.loads((root/Path(source)).read_bytes())
+        else:
+            table = source
+        return (isinstance(table, dict) and bool(table.get('axes'))
+                and table.get('coverage') != 'PARTIAL_DIRECT_PRICE_EVIDENCE')
+    except (OSError, ValueError, KeyError, TypeError, IndexError, subprocess.CalledProcessError):
         return False
-    return table.get('coverage') != 'PARTIAL_DIRECT_PRICE_EVIDENCE'
 
 
 def inspect(root,request,observations,signal_index=None,saved_price_index=None):

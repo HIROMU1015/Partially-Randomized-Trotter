@@ -1015,8 +1015,15 @@ class LivePriceWork:
             if cost is None and parent not in self.targets.setdefault(method, set()):
                 self.targets[method].add(parent)
                 self.pending.set()
+            order = sorted((row for row in self.rows.values() if row['estimated_total_RZ'] is not None),
+                           key=lambda row: (row['M'], KS._frac(row['estimated_total_RZ']),
+                                            row['method'], row['configuration_id']))
             atomic_json(self.path, dict(schema='RPE_LIVE_SHORTLIST_V1',
-                                        points=list(self.rows.values()), targets=self.snapshot()))
+                                        points=list(self.rows.values()), targets=self.snapshot(),
+                                        estimated_order=[dict(method=row['method'], M=row['M'],
+                                            configuration_id=row['configuration_id'],
+                                            estimated_total_RZ=row['estimated_total_RZ']) for row in order],
+                                        cost_stage='EXPLORATORY_SHORTLIST_NOT_FINAL'))
 
 
 class WidthDriver:
