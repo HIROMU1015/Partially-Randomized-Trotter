@@ -374,7 +374,8 @@ _PREPARATION_FILES = frozenset(('OUTCOME.json','PROCESS_RETURN.json','ARTIFACT_M
     'PREPARATION_RECEIPT.json','JOB_STAGES.jsonl','TRANSPORT_TIMING.jsonl','WORKER_COLLECT_RETURN.json'))
 _OMIT_HARVEST = frozenset(('ASSIGNMENT.json','WORKER_PROFILE.json','WORKER_STATE.json','WORKER_PROCESS.lock','PBS_CORE_ACK.json',
     'SUPERVISOR_STARTED.json','SCIENTIFIC_STARTING.json','WORKER_LAUNCH.json','WORKER_SUPERVISOR.log',
-    'SUPERVISOR_LAUNCH.json','STARTING.json','LAUNCH.json','REQUEST.json'))
+    'SUPERVISOR_LAUNCH.json','STARTING.json','LAUNCH.json','REQUEST.json','PBS_ATTEMPT_OWNER.json',
+    'PBS_ATTEMPT_STOP_REQUEST.json','PBS_ATTEMPT_INTERRUPTED.json'))
 
 
 def harvest_path(relative, preparation):
@@ -467,6 +468,11 @@ def harvest(directory, wanted=None, owners=None, completed_only=False, manifest_
         state = read(path.parent/'WORKER_STATE.json', {})
         if completed_only and state.get('state') != 'COMPLETED_PENDING_TRANSFER':
             continue
+        exit_proof = state.get('detail', {}).get('pbs_attempt_exit', {})
+        if state.get('state') == 'UNKNOWN' and exit_proof:
+            if exit_proof.get('allocation_dir') == str(directory.resolve()):
+                incomplete.append(dict(assignment=assignment, state=state))
+            continue
         if not (path.parent/'PROCESS_RETURN.json').exists():
             # The same host directory can contain attempts from several
             # shared-pilot sessions. Only this session's own worker can prove
@@ -516,8 +522,48 @@ def harvest(directory, wanted=None, owners=None, completed_only=False, manifest_
                 host_id=spec['profile']['host_id'])
 
 
+def attempt_control(root, value):
+    """Address an already owned attempt on its original PBS worker only."""
+    token, job, attempt_id = (safe_id(value[key]) for key in ('token', 'job_id', 'attempt_id'))
+    directory = root/'allocations'/token
+    allocation = read(directory/'ALLOCATION.json', {})
+    if not value.get('pbs_job_id') or allocation.get('job_id') != value['pbs_job_id']:
+        raise ValueError('PBS job differs from the saved allocation')
+    profile = read(directory/'PROFILE.json')
+    work = Path(profile['work_dir']).resolve()
+    if not work.is_relative_to(root.resolve()/'workers'/safe_id(profile['host_id'])):
+        raise ValueError('PBS worker spool is outside the fixed run')
+    attempt = work/job/attempt_id
+    if not attempt.is_dir() or attempt.resolve() != attempt:
+        raise ValueError('PBS attempt spool is missing or redirected')
+    identity = dict(job_id=job, attempt_id=attempt_id, request_sha256=value['request_sha256'])
+    assignment = read(attempt/'ASSIGNMENT.json', {})
+    saved = read(attempt/'WORKER_PROFILE.json', {})
+    if (any(assignment.get(k) != v for k, v in identity.items()) or
+            (saved.get('pbs') or {}).get('allocation_dir') != str(directory.resolve())):
+        raise ValueError('PBS attempt does not belong to the selected request and allocation')
+    owner = read(attempt/'PBS_ATTEMPT_OWNER.json', {})
+    if (any(owner.get(k) != v for k, v in identity.items()) or owner.get('token') != token
+            or owner.get('pbs_job_id') != value['pbs_job_id'] or owner.get('allocation_dir') != str(directory.resolve())):
+        raise ValueError('This attempt has no individual stop support')
+    request = attempt/'PBS_ATTEMPT_STOP_REQUEST.json'
+    state = read(attempt/'WORKER_STATE.json', {})
+    if value['action'] == 'attempt_stop' and not request.exists():
+        if state.get('state') not in ('STARTING', 'RUNNING'):
+            return dict(disposition='ALREADY_FINISHED', worker_state=state)
+        worker = read(directory/'STATE.json', {})
+        if (worker.get('state') == 'EXITED' or owner['clock_id'] != worker.get('clock_id') or
+                qstat(value['pbs_job_id']).get(value['pbs_job_id'], {}).get('job_state') != 'R'):
+            raise ValueError('Original PBS worker is not live on this allocation')
+        atomic(request, owner)
+    return dict(stop_requested=read(request) == owner, worker_state=state,
+                interruption=read(attempt/'PBS_ATTEMPT_INTERRUPTED.json'))
+
+
 def handle(root, value, finished=None, scheduler=None):
     action = value['action']
+    if action in ('attempt_stop', 'attempt_status'):
+        return attempt_control(root, value)
     if action == 'intent_present':
         directory = root/'allocations'/safe_id(value['token'])
         if directory.is_dir() and not directory.is_symlink():

@@ -948,6 +948,13 @@ class PbsManager:
         try:
             payload = deepcopy(request['payload'])
             allocation = next((a for a in self.allocations if a['token'] == token), None)
+            detail = payload.get('detail') or {}
+            if request['endpoint'] == '/v1/state' and detail.get('pbs_attempt_exit'):
+                observed = allocation or self.state['allocations'][token].get('observed', {})
+                row = self.executor.store.row(payload['job_id'])
+                if (payload['state'] != 'UNKNOWN' or not row or payload['attempt_id'] != row['attempt_id']
+                        or not self._attempt_released(detail, token, observed.get('job_id'), row)):
+                    raise ValueError('PBS attempt release differs from its saved owner')
             if request['endpoint'] == '/v1/poll':
                 spec = self.state['allocations'][token]['spec']
                 replacement = spec.get('reason', {}).get('retained_replacement')
@@ -1487,7 +1494,9 @@ class PbsManager:
                 detail.get('automatic_retry') is False and detail.get('scientific_execution_started') is False and
                 row.get('started_epoch') is None and admission_exit.get('token') == token and
                 all(admission_exit.get(k) == row[k] for k in ('job_id', 'attempt_id', 'request_sha256')))
-            if (item['state'].get('state') == 'UNKNOWN' and (detail.get('prelaunch_rejection') or released_before_launch)
+            released_attempt = self._attempt_released(detail, token, allocation.get('job_id'), row)
+            if (item['state'].get('state') == 'UNKNOWN'
+                    and (detail.get('prelaunch_rejection') or released_before_launch or released_attempt)
                     and row['state'] not in ('ACCEPTED', 'CANCELLED')
                     and row['request_sha256'] == assignment['request_sha256']):
                 self.executor.rpc('/v1/state', dict(host_id=data['host_id'], job_id=row['job_id'],
@@ -1509,6 +1518,14 @@ class PbsManager:
         if ended and self.settings.get('gateway_sha256'):
             record['harvest_gateway_sha256'] = self.settings['gateway_sha256']
         self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=len(data['attempts']))
+
+    @staticmethod
+    def _attempt_released(detail, token, pbs_job_id, row):
+        proof = detail.get('pbs_attempt_exit') or {}
+        return (bool(pbs_job_id) and proof.get('pbs_job_id') == pbs_job_id and proof.get('token') == token
+                and proof.get('session_ended') is True and type(proof.get('operator_stop')) is bool
+                and detail.get('resource_released') is True and detail.get('automatic_retry') is False
+                and all(proof.get(k) == row.get(k) for k in ('job_id', 'attempt_id', 'request_sha256')))
 
     def _collect_live_results(self, allocation, owners):
         data, blobs = self._fetch_harvest(self.harvest_gateway, allocation['token'], owners, live=True)

@@ -42,6 +42,14 @@ ssh -o BatchMode=yes prism /home/AbeHiromu/projects/rpe-pbs-20261118/runtime/ven
 
 旧ノードを維持して空き次第切り替える場合は `--action stage-when-available --replace-job-id OLD_ID` を使う。PBSの空き待ちに1件登録し、先に作った旧終了待ちの予約がある場合は未起動・依存一致を照合して置き換える。後継が実ノードを取得すると新規接続先を切り替え、旧workerに割当済みの仕事は元のノードで終了・回収する。通常の中央管理は受付終了済みの旧セッションを検知し、後継用の別作業領域を開く。古い割当の再送を後継から除外し、通常の容量・入力・科学条件のチェックを通った新規仕事を送る。
 
+## PBS予約を維持したまま試行を停止する
+
+Codexは利用者の指定がある場合、対象runのPBS gatewayに `attempt_stop` を送る。`token`（workerセッション）、`pbs_job_id`、`job_id`、`attempt_id`、`request_sha256` を元の割当と照合する。同じ項目を `attempt_status` に渡すと、停止要求と終了状態を確認できる。旧版で開始済みの試行は個別停止の対象外。
+
+対応する監督プロセスは自分のadapter専用プロセスグループを停止する。TERMから10秒後もグループに処理が残る場合は、そのグループだけを強制終了する。監督プロセスは得られた実終了票を記録し、作業ファイルを残す。別グループに移った子プロセス等の終了を証明できない場合は枠を保留する。
+
+監督プロセスとその子の終了を確認できる場合は、正常な結果やadapter終了票がなくても `UNKNOWN` の元attemptに終了証跡を付け、CPU・メモリの枠だけを戻す。保存済みの所有・消費予算・途中成果を維持し、自動再試行は行わない。PBS予約を維持し、現行の受付条件を通る独立タスクは通常キューから実行する。
+
 ## 実配置と確認範囲
 
 RomuTailの配置記録は `.rpe-central/deployment/shared-pbs-pilot-20261121/`。PBSの物理予約の記録は `runs/shared-node/`、個々のworkerと受領待ちの成果は従来の `runs/<runの名前空間>/` に残る。通常入口の運用設定では、対応するreleaseの `worker_trial.pbs_dispatch_gateway` と `pbs_storage_launcher` の2組のパス・SHA-256を同時に選ぶ。展開先の照合値は[配置設定](DEPLOYMENT.json)。

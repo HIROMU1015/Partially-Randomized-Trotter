@@ -6,6 +6,7 @@ or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 from copy import deepcopy
 from .rpe_dry_check_recovery import dry_check_rejection, failed_dry_check_released
 from .rpe_q3_timing import stamp, append as timing_append
+from . import rpe_pbs_attempt_control as PBSAttempt
 from . import rpe_q3_resources as Resources
 from . import rpe_worker_storage as Storage
 from .rpe_host_profiles import select_host_profile as _select_q3_profile, validate_adapter_profile, check_runtime_profile
@@ -140,6 +141,9 @@ def resource_state(attempt, state):
     """Keep recovery ownership separate from CPU occupancy with exit evidence."""
     if state != 'UNKNOWN':
         return state
+    if (attempt / PBSAttempt.OWNER).is_file():
+        detail = read(attempt/'WORKER_STATE.json').get('detail', {})
+        return 'EXITED' if detail.get('resource_released') is True else state
     for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json', 'WORKER_LAUNCH.json'):
         marker = attempt / name
         if marker.is_file() and process_alive(read(marker).get('pid'), attempt):
@@ -311,10 +315,14 @@ def _adapter_command(profile, attempt, mode, output):
 
 def _run_adapter(profile, attempt, mode, output):
     started = time.monotonic()
-    timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_START',mode=mode)
+    attempt = Path(attempt)
+    owner = PBSAttempt.local_supervisor(attempt) if mode in ('dry-check', 'execute') else None
+    PBSAttempt.before_launch(attempt, owner, exclusive)
+    timing_append(attempt/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_START',mode=mode)
     with (Path(attempt) / ('WORKER_' + mode.upper() + '.log')).open('a') as log:
         process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile.get('adapter_root', profile['root']),
-            env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), stdout=log, stderr=subprocess.STDOUT)
+            env=PBSAttempt.adapter_environment(owner), stdout=log, stderr=subprocess.STDOUT,
+            **({'process_group': 0} if owner else {}))
         launch_error = None
         if mode == 'execute':
             try:
@@ -324,12 +332,14 @@ def _run_adapter(profile, attempt, mode, output):
             except Exception as error:
                 # A launched adapter still needs its exit receipt on marker/log failure.
                 launch_error = error
-        code = process.wait()
+        code, stopped = PBSAttempt.wait_adapter(process, attempt, owner, exclusive)
     receipt = dict(returncode=code if code >= 0 else None, signal=-code if code < 0 else None,
                    wall_seconds=time.monotonic() - started, automatic_retry=False)
     destination = 'PROCESS_RETURN.json' if mode == 'execute' else 'WORKER_' + mode.upper() + '_RETURN.json'
     atomic(Path(attempt) / destination, receipt, publish_once=True)
     timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_END',mode=mode,returncode=code)
+    if stopped:
+        raise PBSAttempt.AttemptStopped
     if launch_error is not None:
         raise launch_error
     return code
@@ -396,6 +406,7 @@ def supervise(attempt):
     try:
         exclusive(attempt / 'SUPERVISOR_STARTED.json',
                   dict(pid=os.getpid(), session_id=os.getsid(0), epoch=time.time()))
+        PBSAttempt.register(profile, attempt, assignment, exclusive)
         resolved = validate_assignment(profile, assignment)
         exclusive(attempt / 'RESOLVED_REQUEST.json', resolved)
         dry = attempt / '_dry_check'; dry.mkdir()
@@ -403,6 +414,7 @@ def supervise(attempt):
             raise ValueError('Existing adapter dry-check failed')
         # Recheck the supplied fixed bytes immediately before the scientific launch.
         validate_assignment(profile, assignment)
+        PBSAttempt.before_launch(attempt, PBSAttempt.local_supervisor(attempt), exclusive)
         exclusive(attempt / 'SCIENTIFIC_STARTING.json', dict(epoch=time.time(), automatic_retry=False))
         _run_adapter(profile, attempt, 'execute', attempt)
         observed = validate_completed(profile, assignment, attempt)
@@ -411,6 +423,9 @@ def supervise(attempt):
         event(profile, 'COMPLETE', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
               status=observed['status'], process_return=read(attempt / 'PROCESS_RETURN.json'))
         return 0
+    except PBSAttempt.AttemptStopped:
+        save_state(attempt, 'UNKNOWN', reason='OPERATOR_PBS_ATTEMPT_STOP', automatic_retry=False)
+        return 2
     except Exception as error:
         reason = type(error).__name__ + ': ' + str(error)
         save_state(attempt, 'UNKNOWN', reason=reason, automatic_retry=False)
@@ -431,6 +446,7 @@ def supervise(attempt):
 _TRANSFER_OMIT = {'ASSIGNMENT.json', 'WORKER_PROFILE.json', 'WORKER_STATE.json', 'WORKER_PROCESS.lock',
     'SUPERVISOR_STARTED.json', 'SCIENTIFIC_STARTING.json', 'WORKER_LAUNCH.json', 'WORKER_SUPERVISOR.log',
     'SUPERVISOR_LAUNCH.json', 'STARTING.json', 'LAUNCH.json', 'REQUEST.json'}
+_TRANSFER_OMIT.update((PBSAttempt.OWNER, PBSAttempt.REQUEST, PBSAttempt.INTERRUPTED))
 
 
 def result_bundle(attempt):
@@ -511,7 +527,13 @@ class Worker:
 
     def _resource_offer(self):
         if (self.profile.get('slot_policy') or {}).get('mode') != 'auto':
-            jobs = [dict(state=read(path / 'WORKER_STATE.json')['state']) for path in self.records]
+            jobs = []
+            for path in self.records:
+                saved = read(path/'WORKER_STATE.json')
+                state = saved['state']
+                if state == 'UNKNOWN' and saved.get('detail', {}).get('resource_released') is True:
+                    state = 'EXITED'
+                jobs.append(dict(state=state))
             _, report = Resources.decide_slots(self.profile, {}, {}, jobs)
             self.slots = report['capacity']
             return self._storage_offer(report)
@@ -611,6 +633,8 @@ class Worker:
             return
         # ASSIGNMENT becomes visible only after the exact request/profile are durable.
         selected_profile = select_host_profile(self.profile, assignment)
+        if 'pbs' in self.profile:
+            selected_profile['pbs'] = deepcopy(self.profile['pbs'])
         atomic(attempt / 'ORIGINAL_REQUEST.json', assignment['request'])
         atomic(attempt / 'WORKER_PROFILE.json', selected_profile)
         save_state(attempt, 'ASSIGNED')
@@ -645,8 +669,18 @@ class Worker:
             event(self.profile, 'SUPERVISOR_RETURN', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                   returncode=code if code >= 0 else None, signal=-code if code < 0 else None)
             state = read(attempt / 'WORKER_STATE.json')
+        proof = state.get('detail', {}).get('pbs_attempt_exit')
+        if state['state'] in ('STARTING', 'RUNNING', 'UNKNOWN') and (attempt / PBSAttempt.OWNER).is_file():
+            if not proof:
+                proof = PBSAttempt.exit_evidence(attempt, assignment, self.profile, supervisor_session_ended)
+            if proof and proof['operator_stop']:
+                if state['detail'].get('pbs_attempt_exit') != proof:
+                    state = save_state(attempt, 'UNKNOWN', reason='OPERATOR_PBS_ATTEMPT_STOP',
+                                       automatic_retry=False, resource_released=True, pbs_attempt_exit=proof)
+                return state
         if state['state'] in ('STARTING', 'RUNNING') or (
-                state['state'] == 'UNKNOWN' and (attempt / 'OUTCOME.json').is_file()
+                state['state'] == 'UNKNOWN' and not (attempt / PBSAttempt.INTERRUPTED).is_file()
+                and (attempt / 'OUTCOME.json').is_file()
                 and (attempt / 'PROCESS_RETURN.json').is_file()):
             for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json'):
                 marker = attempt / name
@@ -665,10 +699,14 @@ class Worker:
                 state = save_state(attempt, 'UNKNOWN', reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
         if state['state'] == 'UNKNOWN':
             detail = state['detail']
-            if detail.get('prelaunch_rejection') is None and (proof := dry_check_rejection(attempt, assignment)):
-                state = save_state(attempt, 'UNKNOWN', **dict(detail, resource_released=True, prelaunch_rejection=proof))
-            elif not detail.get('resource_released') and resource_state(attempt, 'UNKNOWN') == 'EXITED':
-                state = save_state(attempt, 'UNKNOWN', **dict(detail, resource_released=True))
+            if detail.get('prelaunch_rejection') is None and (rejection := dry_check_rejection(attempt, assignment)):
+                state = save_state(attempt, 'UNKNOWN', **dict(detail, resource_released=True, prelaunch_rejection=rejection))
+            elif not detail.get('resource_released'):
+                if proof:
+                    state = save_state(attempt, 'UNKNOWN', **dict(
+                        detail, resource_released=True, automatic_retry=False, pbs_attempt_exit=proof))
+                elif not (attempt / PBSAttempt.OWNER).is_file() and resource_state(attempt, 'UNKNOWN') == 'EXITED':
+                    state = save_state(attempt, 'UNKNOWN', **dict(detail, resource_released=True))
         return state
 
     def _prepare_challenge_artifacts(self, challenges):
@@ -841,7 +879,12 @@ class Worker:
         return self._poll_assignments(acquire)
 
     def pending(self):
-        return any(read(p / 'WORKER_STATE.json')['state'] not in ('TRANSFERRED', 'UNKNOWN') for p in self.records)
+        for attempt in self.records:
+            state = read(attempt/'WORKER_STATE.json')
+            if (state['state'] not in ('TRANSFERRED', 'UNKNOWN')
+                    or PBSAttempt.unreleased_unknown(attempt, state)):
+                return True
+        return False
 
     def _open_native_lanes(self):
         # Keep at least one other receipt/launch moving during a bulk transfer.

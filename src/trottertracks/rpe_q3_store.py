@@ -522,7 +522,7 @@ class JobStore:
                 started = now
             if state == old['state'] == 'UNKNOWN':
                 previous = json.loads(old['detail'])
-                for field in ('prelaunch_rejection', 'pbs_admission_exit'):
+                for field in ('prelaunch_rejection', 'pbs_admission_exit', 'pbs_attempt_exit'):
                     if previous.get(field) and not (detail or {}).get(field):
                         detail = previous  # an older poll cannot discard a verified exit
                         break

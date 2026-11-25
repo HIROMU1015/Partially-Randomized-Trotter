@@ -93,6 +93,8 @@ def configure_allocation_worker(profile, launcher):
                 from trottertracks import _pipeline_q3_resources as resources
                 cycle.Resources = transport.Resources = resources
 
+    from trottertracks import rpe_pbs_attempt_control as attempt_control
+
     class MeasuredAllocationWorker(transport.AllocationWorker):
         def pending(self):
             if (not self.draining or not (self.directory/'PILOT.json').is_file()
@@ -101,7 +103,10 @@ def configure_allocation_worker(profile, launcher):
             # A disconnected controller may be unable to ACK before Stop. Its
             # normal harvest must still validate these files in the original run.
             for attempt in self.records:
-                state = worker.read(attempt/'WORKER_STATE.json')['state']
+                saved = worker.read(attempt/'WORKER_STATE.json')
+                state = saved['state']
+                if attempt_control.unreleased_unknown(attempt, saved):
+                    return True
                 if state in ('TRANSFERRED', 'UNKNOWN'):
                     continue
                 if (state != 'COMPLETED_PENDING_TRANSFER' or

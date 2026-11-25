@@ -39,7 +39,7 @@ def source_manifest(root, commit):
     # A separately pinned old computation root keeps its old byte manifest.
     # New roots which import timing must bind that additional dependency.
     for name in ('rpe_q3_evidence', 'rpe_q3_timing', 'rpe_large_shot_bounds', 'rpe_q3_round_tables',
-                 'rpe_dry_check_recovery'):
+                 'rpe_dry_check_recovery', 'rpe_pbs_attempt_control'):
         path = f'src/trottertracks/{name}.py'
         if (Path(root)/path).exists():
             paths += (path,)
