@@ -774,6 +774,21 @@ class Completion:
         return handles is not None and all(handles(stage) for stage in
                                           ('PAULI_SIGNALS','PAULI_COMPILE','PAULI_AUDIT'))
 
+    def preparation_dependency_key(self, request):
+        """Only unresolved shared inputs serialize candidate preparation.
+
+        Exact physical-evaluation and price-group locks still protect shared
+        scientific work after the descriptor/dictionary is available.
+        """
+        method=request['method']
+        if method == 'PR_DF':
+            if self.saved_df_descriptor(request):
+                return None
+            return ('descriptor', request.get('design', {}).get('L_D'))
+        if method == 'PR_PAULI' and self.parallel_pauli_preparation():
+            return None  # metadata/cache and shared prices have their own locks
+        return ('method', method)
+
     def shared_preparation_lock(self,identity):
         """One producer for an exact physical contract or calibration group."""
         token=key(dict(source=self.source,identity=identity))
@@ -887,7 +902,7 @@ class Completion:
         if supplied:
             return supplied
         for record in list(self.state['records'].values()):
-            source=record.get('request',{}).get('tail_descriptor')
+            source=record.get('resolved_tail_descriptor') or record.get('request',{}).get('tail_descriptor')
             if record['method']=='PR_DF'and source and (record.get('design')or record.get('request',{}).get('design',{})).get('L_D')==prefix:
                 return source
         for record in self.state.get('family_metadata',{}).values():
@@ -1216,6 +1231,7 @@ class Completion:
                 d = d/'saved-input-recheck'
             df_recheck = False
             received_preparation = bool(old and not getattr(self, 'stop_requested', lambda: False)()
+                                        and not old['status'].startswith('STOP')
                                         and self.recoverable_transport(old))
             metadata_retry = self.metadata_retry_path(old) if old else None
             metadata_repair = metadata_retry or (self.inherited_metadata_repair(old) if received_preparation else None)
@@ -1319,6 +1335,9 @@ class Completion:
                     self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),'--configuration','0defa286c53a1b9acf513be453907bcad83102b3:docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json','--output',str(descriptor),'--source',self.stage_source('DF_DESCRIPTOR'),'--signal-view',str(self.path('SIGNAL_VIEW'))],d,'DF_DESCRIPTOR',descriptor,science=True)
                     dc=publish([d],'Fix derived DF tail descriptor and scientific SOURCE')
                     request['tail_descriptor']=dict(commit=dc,path=rel(descriptor))
+                    with self.lock:
+                        rec['resolved_tail_descriptor']=request['tail_descriptor']
+                        self.save()
                     generated=self.service('df-generate',request,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
                 if generated['status']!='CONFIGURATION_READY':raise Held('CONFIGURATION:'+str(generated))
                 config=generated['configuration'];prepared=None

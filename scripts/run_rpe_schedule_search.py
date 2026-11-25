@@ -1084,6 +1084,12 @@ class WidthDriver:
             raise ValueError('Preserve the old single-width run; use an independent multi-width directory')
         if self.state['round_id'] != self.spec['round_id'] or self.state['requested_widths'] != self.widths:
             raise ValueError('Run belongs to different requested widths or round')
+        # Resume overlays keep the old scientific checkout on sys.path.
+        from importlib.util import module_from_spec, spec_from_file_location
+        journal_path = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_width_checkpoint.py'
+        loader = spec_from_file_location('trottertracks.rpe_width_checkpoint', journal_path)
+        journal = module_from_spec(loader);loader.loader.exec_module(journal)
+        self.point_journal = journal.PointJournal(self.run/'POINT_PROGRESS.jsonl', self.state)
         self.wide = self.spec.get('search_overrides', {}).get('schedule_wide', {})
         self.completion = None
         self.check_fixed_inputs()
@@ -1102,9 +1108,20 @@ class WidthDriver:
         with (self.run/'DRIVER_PROGRESS.jsonl').open('a') as f:
             f.write(json.dumps(dict(UTC=K.now(),cycle=self.state['cycle'],**row),default=str)+'\n')
 
+    def checkpoint_point(self, point):
+        if journal := getattr(self, 'point_journal', None):
+            journal.record(point)
+
     def save(self):
-        tmp=self.state_file.with_suffix('.tmp');tmp.write_text(json.dumps(O.jsonable(self.state),indent=2)+'\n')
-        tmp.replace(self.state_file)
+        def write():
+            tmp=self.state_file.with_suffix('.tmp')
+            tmp.write_text(json.dumps(O.jsonable(self.state),indent=2)+'\n')
+            tmp.replace(self.state_file)
+        journal = getattr(self, 'point_journal', None)
+        if journal is not None:
+            journal.checkpoint(self.state, write)
+        else:
+            write()
 
     def write_scope_map(self, results=None):
         """Materialize every declared logical coordinate, including rejected families."""
@@ -1607,6 +1624,7 @@ class WidthDriver:
                         continue
                     point.update(status='REGISTERED', previous_hold=point.pop('reason'),
                                  configuration_id=record['configuration_id'])
+                    self.checkpoint_point(point)
                     self.log(event='CONTINUATION_INPUT_READY', family=point['family'], key=record['key'],
                              configuration_id=record['configuration_id'])
                     if announce_ready is not None:
@@ -1744,12 +1762,14 @@ class WidthDriver:
                 if record['status']=='READY_FOR_SEARCH':
                     try:self.check_completed_configuration(p,record)
                     except (ValueError,KeyError,TypeError) as exc:
-                        p.update(status='HELD',reason='COMPLETED_CONFIGURATION_MISMATCH:'+str(exc));continue
+                        p.update(status='HELD',reason='COMPLETED_CONFIGURATION_MISMATCH:'+str(exc));self.checkpoint_point(p);continue
                     p.update(status='REGISTERED',configuration_id=record['configuration_id'])
+                    self.checkpoint_point(p)
                     if announce_ready is not None:
                         announce_ready(p['method'], record)
                 elif record['status']=='SELECTED'and str(record.get('reason','')).startswith('ORCHESTRATOR_YIELD_BEFORE_STAGE:'):
                     p.update(status='COMPLETION',reason=record['reason'])
+                    self.checkpoint_point(p)
                     self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
                     break
                 elif record['status'] in ('PRICE_ACTION_UNAVAILABLE', 'PRICE_NOT_EVALUATED'):
@@ -1762,6 +1782,7 @@ class WidthDriver:
                     p.update(status='HELD',reason=record.get('reason',record['status']))
                 else:
                     p.update(status='WAITING_INPUTS',reason=record.get('reason',record['status']))
+                self.checkpoint_point(p)
         if announce_ready is None:
             prepare_points(selected)
         elif selected:
@@ -1777,10 +1798,13 @@ class WidthDriver:
             for point in selected:
                 method = point['method']
                 split = self.state['families'][point['family']]['L_D'] if method in parallel_methods else None
-                if id(point) in priced_points and method in parallel_methods:
-                    # Exact configurations already have their saved descriptor
-                    # and share no signal assignment.
-                    split = (split, id(point))
+                if method in parallel_methods:
+                    classify = getattr(comp, 'preparation_dependency_key', None)
+                    dependency = classify(point['completion_request']) if classify is not None else split
+                    # Keep only unresolved common prerequisites in one lane.
+                    # Independent candidates share immutable descriptor inputs,
+                    # while Completion owns the exact physical/price locks.
+                    split = (split, id(point)) if dependency is None or id(point) in priced_points else dependency
                 groups.setdefault(method, {}).setdefault(split, []).append(point)
             if self.spec.get('search_overrides', {}).get('controller_parallel') is True:
                 from trottertracks.rpe_q3_resources import controller_cpu_count
@@ -1788,7 +1812,9 @@ class WidthDriver:
             else:
                 parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
             lane_limit = parallel if continuous else min(limit, parallel)
-            lanes = {m: max(1, min(lane_limit, len(splits)) if m in parallel_methods else 1)
+            dynamic_dependencies = getattr(comp, 'preparation_dependency_key', None)
+            lanes = {m: max(1, min(lane_limit, sum(map(len,splits.values())) if dynamic_dependencies else len(splits))
+                                 if m in parallel_methods else 1)
                      for m, splits in groups.items()}
             with ExitStack() as stack:
                 pools = {method: stack.enter_context(ThreadPoolExecutor(max_workers=workers))
@@ -1803,29 +1829,78 @@ class WidthDriver:
                                     for split, points in splits.items() for point in points}
                         backlog = deque(selected)
                         active = {}
+                        watching = {}
+                        recovered_receipts = set()
+                        bridge = getattr(comp, 'stage_executor', None)
+                        store = getattr(getattr(bridge, 'executor', None), 'store', None)
+                        revision = None
                         max_active = sum(lanes.values())
-                        while backlog or active:
+                        while backlog or active or watching:
                             if stop_requested is not None and stop_requested():
                                 backlog.clear()
-                            busy = set(active.values())
+                                watching.clear()
+                            if watching and store is not None:
+                                # A result may arrive after its candidate yielded
+                                # an operational wait. Revisit only changed queue
+                                # evidence, without waiting for this whole wave.
+                                import sqlite3
+                                try:
+                                    with store._connection() as db:
+                                        changed = db.execute('SELECT max(sequence) FROM events').fetchone()[0]
+                                except sqlite3.Error:
+                                    changed = revision
+                                if changed != revision:
+                                    revision = changed
+                                    for point_id, point in list(watching.items()):
+                                        evidence = point.get('completion', {}).get('preparation_recovery') or {}
+                                        job = evidence.get('job_id')
+                                        row = store.row(job) if job else None
+                                        if not row or row['state'] != 'ACCEPTED':
+                                            continue
+                                        receipt = (point_id, job, row['attempt_id'], row['completion_sha256'])
+                                        if receipt in recovered_receipts:
+                                            watching.pop(point_id, None)
+                                            continue
+                                        record = comp.state['records'].get(point['completion'].get('key'))
+                                        if record and comp.recoverable_transport(record):
+                                            recovered_receipts.add(receipt)
+                                            watching.pop(point_id, None)
+                                            point['status'] = 'WAITING_INPUTS'
+                                            self.checkpoint_point(point)
+                                            backlog.append(point)
+                                            self.log(event='READY_RECEIPT_REQUEUED',job=job,family=point['family'])
+                            busy = {by_point[id(p)] for p in active.values()}
                             used = Counter(method for method, _ in busy)
                             for _ in range(len(backlog)):
                                 if len(active) >= max_active:
                                     break
                                 point = backlog.popleft()
                                 method, split = by_point[id(point)]
+                                if dynamic_dependencies is not None and method in parallel_methods and continuous:
+                                    dependency = dynamic_dependencies(point['completion_request'])
+                                    resolved = (point['family'], id(point)) if dependency is None or id(point) in priced_points else dependency
+                                    split = resolved
+                                    by_point[id(point)] = (method, split)
                                 if used[method] >= lanes[method] or (method, split) in busy:
                                     backlog.append(point)
                                     continue
-                                active[pools[method].submit(prepare_points, [point])] = (method, split)
+                                active[pools[method].submit(prepare_points, [point])] = point
                                 busy.add((method, split))
                                 used[method] += 1
                                 wave['dispatched'][method] = wave['dispatched'].get(method, 0) + 1
+                            if not active and not backlog:
+                                break
                             if active:
-                                finished, _ = wait(active, return_when=FIRST_COMPLETED)
+                                finished, _ = wait(active, return_when=FIRST_COMPLETED,
+                                                   timeout=1 if watching else None)
                                 for task in finished:
-                                    del active[task]
+                                    point = active.pop(task)
                                     task.result()
+                                    evidence = point.get('completion', {}).get('preparation_recovery') or {}
+                                    if (store is not None and evidence.get('job_id')
+                                            and point.get('status') in ('WAITING_INPUTS','HELD')):
+                                        watching[id(point)] = point
+                                        revision = None
                     else:
                         for method, splits in groups.items():
                             tasks.extend(pools[method].submit(prepare_points, points) for points in splits.values())
@@ -2064,6 +2139,34 @@ class WidthDriver:
         return announce, wait_for_preparation, SimpleNamespace(subscribe=subscriber, has_new=has_new,
                                                               announce_pf=announce_pf)
 
+    def cycle_executor(self, routes, expected, problem, active_spec, budgets):
+        """Reuse the same run-owned queue and services across planning cycles."""
+        persistent = (self.work_conserving_search and bool(active_spec['executor'].get('distributed')))
+        existing = getattr(self, 'waiting_executor', None)
+        if existing is not None and getattr(existing.state, 'failure', None):
+            self.finish_waiting_executor()
+            raise RuntimeError('Persistent executor failure: '+str(existing.state.failure))
+        if (persistent and existing is not None and not existing.state.closed
+                and existing.state.failure is None and not existing._user_stop_requested()):
+            executor, optimize = existing, self.waiting_optimize
+            with executor.state.cv:
+                executor.routes, executor.expected = routes, expected
+                for method, limit in executor.state.budgets.items():
+                    if method in budgets and type(limit) is int and type(budgets[method]) is int:
+                        budgets[method] = max(limit, budgets[method])
+                executor.state.budgets = budgets
+                executor.state.cv.notify_all()
+            self.waiting_executor = None
+            self.log(event='CONTROLLER_CYCLE_REUSED')
+        else:
+            self.finish_waiting_executor()
+            executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,expected,problem,active_spec)
+        if persistent and hasattr(executor, 'state'):
+            with executor.state.cv:
+                executor.state.retain_between_cycles = True
+                executor.state.cycle_metric_baseline = {m:dict(counts) for m,counts in getattr(executor.state, 'by_method', {}).items()}
+        return executor,optimize
+
     def batch(self, prepare_during=False):
         # Same V2/Executor and risk contract as the old ordinary round entry.
         # Completion selects no new designs here: the width planner already did.
@@ -2101,7 +2204,9 @@ class WidthDriver:
             installed={r['key']:r.get('installed_configuration_id',r.get('configuration_id'))for r in records}
             for p in self.state['points']:
                 canonical=installed.get(p.get('completion',{}).get('key'))
-                if canonical:p['evaluation_configuration_id']=canonical
+                if canonical and p.get('evaluation_configuration_id') != canonical:
+                    p['evaluation_configuration_id']=canonical
+                    self.checkpoint_point(p)
             return current_routes
         if exploratory and hasattr(comp, 'refresh_exploratory_prices'):
             comp.refresh_exploratory_prices()
@@ -2154,9 +2259,9 @@ class WidthDriver:
             active_spec['pf_completion'] = dict(active_spec.get('pf_completion') or pf_settings,
                                                 max_candidates=controller_cpu_count(),
                                                 refill_candidate_preparation=True)
-        executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
-        # Executors are renewed every cycle. Keep the run's bounded history
-        # cache so unchanged exact values also survive successive cycles.
+        executor,optimize = self.cycle_executor(routes, context['expected'], problem, active_spec, budgets)
+        # Keep the bounded history inventory when a nonpersistent caller
+        # still needs a new executor or a normal cycle reuses the existing one.
         inventory = getattr(executor, 'prior_history_inventory', None)
         if inventory is not None and getattr(executor, 'optimizer_history_directory', None) is not None:
             if self.prior_history_inventory is None:
@@ -2600,9 +2705,10 @@ class WidthDriver:
             keep_connected = (original_error is None and self.work_conserving_search
                               and getattr(executor, 'rpc_server', None) is not None
                               and not executor._user_stop_requested() and not O.shared_stop(result)
-                              and not any(r['new_calls'] for r in result.values()))
+                              and getattr(executor.state,'failure',None) is None)
             if keep_connected:
                 self.waiting_executor = executor
+                self.waiting_optimize = optimize
                 self.waiting_revision = self.recovery_revision(executor)
             actions = [] if keep_connected else [('EXECUTOR_DRAIN', executor.finish)]
             if preparation_pool is not None:
@@ -2834,7 +2940,8 @@ class WidthDriver:
         recheck_delay = 15
         held_q3, unresolved = False, []
         while end is None or self.state['cycle']<end:
-            self.finish_waiting_executor()
+            if (self.run/'STOP_REQUESTED.json').exists():
+                self.finish_waiting_executor()
             if (self.run/'STOP_REQUESTED.json').exists():
                 self.state.pop('recovery_wait', None)
                 self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
@@ -3106,13 +3213,13 @@ def main(argv=None, *, driver_factory=None):
         raise
     finally:
         try:
-            finish_report = getattr(d, 'finish_report', None)
-            if finish_report is not None:
-                finish_report()
+            if finish_waiting := getattr(d, 'finish_waiting_executor', None):
+                finish_waiting()
         finally:
             try:
-                if finish_waiting := getattr(d, 'finish_waiting_executor', None):
-                    finish_waiting()
+                finish_report = getattr(d, 'finish_report', None)
+                if finish_report is not None:
+                    finish_report()
             finally:
                 manager = getattr(d, 'run_pbs_manager', None)
                 if manager is not None and manager.detached:

@@ -516,10 +516,23 @@ class ConcurrentExecutor(O.Executor):
                         and task.rule['kind']!='preparation':
                     self._cancel(task)
 
+    def retire_queued_allocations(self, keys):
+        """Retire only explicitly resolved/pruned allocations, not a changed ranking."""
+        keys = set(keys)
+        if not keys:return
+        def identity(proposal):
+            return proposal['configuration_id'], tuple(proposal['vector'])
+        with self.state.cv:
+            self.standby = deque(p for p in getattr(self, 'standby', ()) if identity(p) not in keys)
+            for task in self.state.tasks.values():
+                if (task.status == 'QUEUED' and task.owner[0] == self.method
+                        and task.rule['kind'] != 'preparation' and identity(task.proposal) in keys):
+                    self._cancel(task)
+
     def _enqueue_demand(self, proposal):
         return self._enqueue(proposal, demand=True)
 
-    def prefetch_standby(self, choice, proposals):
+    def prefetch_standby(self, choice, proposals, *, retain_independent=False):
         """Reserve the demand first and retain the rest as unreserved alternatives."""
         proposals = deque(proposals)
         offered = tuple(proposals)
@@ -536,7 +549,9 @@ class ConcurrentExecutor(O.Executor):
                 for t in speculative:
                     if (self.standby is proposals and t.status == 'QUEUED' and not t.demand
                             and self.state.tasks.get(t.job) is t
-                            and t.job not in desired and t.job != demand):
+                            and t.job not in desired and t.job != demand
+                            and not (retain_independent and t.proposal.get('origin', {}).get('kind')
+                                     != 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES')):
                         self._cancel(t)
         if choice is not None and self._enqueue_demand(choice) is False:
             with self.state.cv:
@@ -2655,7 +2670,7 @@ class DistributedExecutor(ConcurrentExecutor):
         return self._enqueue(proposal, demand=True,
                              defer_readiness=self.controller_parallel and self.live_readiness_pool is not None)
 
-    def prefetch_standby(self, choice, proposals):
+    def prefetch_standby(self, choice, proposals, *, retain_independent=False):
         self._awaiting_probe_revision = None
         if (self.controller_parallel or self.distributed.get('controller_queue_first')) and self.live_readiness_pool:
             # Start the fixed-input checks for the demand and independent next
@@ -2678,7 +2693,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 request = self.request(proposal, job, route)
                 self._eligibility_for(request, job.name, blocking=False, prefetch=True)
                 checked += 1
-        return super().prefetch_standby(choice, proposals)
+        return super().prefetch_standby(choice, proposals, retain_independent=retain_independent)
 
     @staticmethod
     def _preparation_request(request):
@@ -4790,9 +4805,9 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     methods=list(methods or problem['methods'])
     finalizers = {}
     ready_source = kwargs.get('ready_source')
-    keep_active = (not close_executor and ready_source is not None
-                   and isinstance(executor, DistributedExecutor)
-                   and executor.distributed.get('work_conserving_search'))
+    keep_active = (not close_executor and isinstance(executor, DistributedExecutor)
+                   and executor.distributed.get('work_conserving_search')
+                   and (ready_source is not None or getattr(executor.state, 'retain_between_cycles', False)))
     try:
         if kwargs.get('context') is None:kwargs['context']=O.prepare(root,problem,methods=methods)
         with ThreadPoolExecutor(max_workers=max(1,len(methods)))as pool:
@@ -4862,7 +4877,9 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     for m,result in out.items():
         counts=metrics['by_method'].get(m,{})
         result['adopted_new_calls']=result['new_calls']
-        result['new_calls']=counts.get('launched',0)
+        baseline = getattr(executor.state, 'cycle_metric_baseline', {}).get(m, {})
+        result['new_calls']=max(0,counts.get('launched',0)-baseline.get('launched',0))
         result['budget']['new_calls']=result['new_calls']
-        result['executor_metrics']=dict(metrics,method_launched=counts.get('launched',0),method_adopted=counts.get('adopted',0))
+        result['executor_metrics']=dict(metrics,method_launched=result['new_calls'],
+            method_adopted=max(0,counts.get('adopted',0)-baseline.get('adopted',0)))
     return out

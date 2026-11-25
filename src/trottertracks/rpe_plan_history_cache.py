@@ -185,6 +185,23 @@ def _validation_digest_bytes(filename, raw):
                             or (isinstance(receiver, ast.Call) and isinstance(receiver.func, ast.Name)
                                 and receiver.func.id == 'super')):
                         roots.add(dep.attr)
+    # Imports used exclusively by unrelated controller functions are not a
+    # change to the saved-result validator. Keep third-party imports (their
+    # initialization may affect the process), dynamic global access and all
+    # executable module statements conservative.
+    used = {n.id for node in selected for n in ast.walk(node) if isinstance(n, ast.Name)}
+    dynamic = bool(used & {'globals', 'locals', 'eval', 'exec', '__import__'})
+    if not dynamic:
+        filtered = []
+        for node in selected:
+            if isinstance(node, ast.Import):
+                aliases = [a for a in node.names if a.name.split('.')[0] not in sys.stdlib_module_names
+                           or (a.asname or a.name.split('.')[0]) in used]
+                if not aliases:
+                    continue
+                node = ast.copy_location(ast.Import(names=aliases), node)
+            filtered.append(node)
+        selected = filtered
     return hashlib.sha256('\n'.join(ast.dump(n, include_attributes=False) for n in
                                   sorted(selected, key=lambda n: n.lineno)).encode()).hexdigest()
 

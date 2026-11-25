@@ -31,6 +31,7 @@ Windowsクライアントは既存のSSH bootstrapに要求ファイルをバイ
 | `REUSED_SAVED_RESULT` | 保存成果を再利用 |
 | `PREPARATION_WAITING` / `PREPARATION_RUNNING` | 準備待ち / 準備実行中 |
 | `EVALUATION_WAITING` / `EVALUATION_RUNNING` / `EVALUATION_COMPLETED` | 評価待ち / 評価実行中 / 評価完了 |
+| `EVALUATION_PARTIAL` | 一部の配分を採用済み（格子全体の完了ではない） |
 | `BUDGET_HOLD` | 予算不足 |
 | `UNSUPPORTED_GENERATION` | 未対応の生成規則 |
 | `MISSING_FIXED_INPUT` | 固定入力不足 |

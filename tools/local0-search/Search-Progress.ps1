@@ -18,6 +18,7 @@ function Get-RpeCandidateStateLabel([string]$State) {
         PREPARATION_WAITING = 'Waiting for preparation'
         PREPARATION_RUNNING = 'Preparing'
         EVALUATION_WAITING = 'Waiting for evaluation'
+        EVALUATION_PARTIAL = 'Evaluations adopted; search in progress'
         EVALUATION_RUNNING = 'Evaluating'
         EVALUATION_COMPLETED = 'Evaluation completed'
         BUDGET_HOLD = 'Budget exhausted'
