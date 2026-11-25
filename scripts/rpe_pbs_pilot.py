@@ -97,7 +97,7 @@ def reserve_locked(pool, *, replace_job_id=None, alongside_search_job_id=None, a
     return token
 
 
-def prepare_generation(pool, resources, predecessor=None):
+def prepare_generation(pool, resources, predecessor=None, *, after_exit=False):
     token = uuid.uuid4().hex
     directory = pool/'allocations'/token
     directory.mkdir(parents=True)
@@ -105,26 +105,37 @@ def prepare_generation(pool, resources, predecessor=None):
                '--serve', str(directory)]
     script = ['#!/bin/bash', '#PBS -N RPE' + token[:12], '#PBS -q ' + resources['queue'],
               '#PBS -l select=1:ncpus={ncpus}:mem={mem}'.format(**resources),
-              '#PBS -l walltime=' + resources['walltime'], '#PBS -r n',
+              '#PBS -l walltime=' + resources['walltime'], '#PBS -r n']
+    if after_exit:
+        job_id = predecessor['job_id']
+        if not re.fullmatch(r'[0-9]+\.[A-Za-z0-9.-]+', job_id):
+            raise ValueError('A qualified PBS dependency job ID is required')
+        script.append('#PBS -W depend=afterany:' + job_id)
+    script += [
               '#PBS -o ' + str(directory/'PBS.stdout'), '#PBS -e ' + str(directory/'PBS.stderr'),
               'set -eu', 'umask 077', 'exec ' + shlex.join(command)]
     (directory/'worker.pbs').write_text('\n'.join(script) + '\n')
     spec = dict(token=token, resources=resources, profile=dict(host_id='pbs-0'))
     if predecessor:
         spec['predecessor'] = predecessor
+    if after_exit:
+        spec['after_predecessor_exit'] = True
     atomic(directory/'SPEC.json', spec)
     return token
 
 
-def stage_successor(pool, job_id):
+def stage_successor(pool, job_id, *, after_exit=False):
     with locked(pool):
         current = read(pool/'CURRENT.json', {})['token']
         old = pool/'allocations'/safe_id(current)
         spec = read(old/'SPEC.json')
         if spec.get('predecessor', {}).get('job_id') == job_id:
+            if bool(spec.get('after_predecessor_exit')) != after_exit:
+                raise ValueError('The existing successor has a different handover mode')
             return physical(pool, current)
-        if read(old/'JOB_ID.json', {}).get('job_id') != job_id or spec['resources'] != RESOURCES:
-            raise ValueError('Selected 24-hour pilot is no longer current')
+        allowed_resources = (RESOURCES, SUCCESSOR_RESOURCES) if after_exit else (RESOURCES,)
+        if read(old/'JOB_ID.json', {}).get('job_id') != job_id or spec['resources'] not in allowed_resources:
+            raise ValueError('The selected PBS predecessor is no longer current')
         if (old/'RELEASE.json').exists():
             raise ValueError('Current pilot already has a release request')
         successor = read(old/'SUCCESSOR.json')
@@ -133,18 +144,26 @@ def stage_successor(pool, job_id):
             if observed['job_id'] != job_id or observed['status'] != 'R':
                 raise ValueError('Expected a running predecessor')
             jobs = owned_live_jobs()
-            if any(key != job_id and detail.get('Job_Name', '').startswith('RPE')
-                   and detail.get('job_state') not in TERMINAL for key, detail in jobs.items()):
-                raise ValueError('Unrelated RPE reservation in queue')
-            token = prepare_generation(pool, SUCCESSOR_RESOURCES, dict(token=current, job_id=job_id))
+            # A scheduler dependency serializes this pool's reservations.
+            # Separate pools (e.g. other research runs) keep their own queues.
+            pool_names = {'RPE'+p.name[:12] for p in (pool/'allocations').iterdir() if (p/'SPEC.json').is_file()}
+            for key, detail in jobs.items():
+                name = detail.get('Job_Name', '')
+                if (key != job_id and detail.get('job_state') not in TERMINAL
+                        and (name in pool_names if after_exit else name.startswith('RPE'))):
+                    raise ValueError('Conflicting RPE reservation in queue')
+            token = prepare_generation(pool, SUCCESSOR_RESOURCES, dict(token=current, job_id=job_id),
+                                       after_exit=after_exit)
             successor = dict(token=token)
             atomic(old/'SUCCESSOR.json', successor)
         directory = pool/'allocations'/safe_id(successor['token'])
+        if bool(read(directory/'SPEC.json').get('after_predecessor_exit')) != after_exit:
+            raise ValueError('The staged successor has a different handover mode')
         gateway.submit_once(directory)
         return physical(pool, directory.name)
 
 
-def retire_predecessor(pool, generation, predecessor, job_id):
+def retire_predecessor(pool, generation, predecessor, job_id, *, natural_exit=None):
     """Called on the acquired successor, before allowing any worker to start."""
     old = pool/'allocations'/safe_id(predecessor['token'])
     with locked(pool):
@@ -157,6 +176,11 @@ def retire_predecessor(pool, generation, predecessor, job_id):
         release = read(old/'RELEASE.json')
         if release and release.get('successor') != generation.name:
             raise ValueError('Independent release of predecessor')
+        if natural_exit:
+            atomic(pool/'CURRENT.json', dict(token=generation.name))
+            atomic(generation/'HANDOVER.json', dict(state='ACTIVE', old_job_id=predecessor['job_id'],
+                old_scheduler_state=natural_exit, new_job_id=job_id, epoch=time.time()))
+            return
         if not release:
             atomic(old/'RELEASE.json', dict(epoch=time.time(), successor=generation.name))
         for directory in sessions(old):
@@ -349,7 +373,9 @@ def claim(pool, generation, job_id):
 
 def serve(generation):
     pool = generation.parents[1]
-    predecessor = read(generation/'SPEC.json').get('predecessor')
+    generation_spec = read(generation/'SPEC.json')
+    predecessor = generation_spec.get('predecessor')
+    after_exit = generation_spec.get('after_predecessor_exit') is True
     while True:
         try:
             actual = gateway.record_allocation(generation)
@@ -377,15 +403,19 @@ def serve(generation):
     with (generation/'NODE.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         if predecessor:
-            retire_predecessor(pool, generation, predecessor, job_id)
+            if not after_exit:
+                retire_predecessor(pool, generation, predecessor, job_id)
             while time.monotonic() < deadline and not (generation/'RELEASE.json').exists():
                 try:
                     state = predecessor_finished(pool, predecessor)
                 except (OSError, RuntimeError, subprocess.SubprocessError):
                     state = None  # A transient scheduler outage must not open admission.
                 if state:
-                    atomic(generation/'HANDOVER.json', dict(state='ACTIVE', old_job_id=predecessor['job_id'],
-                        old_scheduler_state=state, new_job_id=job_id, epoch=time.time()))
+                    if after_exit:
+                        retire_predecessor(pool, generation, predecessor, job_id, natural_exit=state)
+                    else:
+                        atomic(generation/'HANDOVER.json', dict(state='ACTIVE', old_job_id=predecessor['job_id'],
+                            old_scheduler_state=state, new_job_id=job_id, epoch=time.time()))
                     break
                 time.sleep(5)
         while time.monotonic() < deadline and not (generation/'RELEASE.json').exists():
@@ -448,17 +478,18 @@ def main():
     group.add_argument('--root', type=Path)
     group.add_argument('--serve', type=Path)
     group.add_argument('--pool', type=Path)
-    parser.add_argument('--action', choices=('reserve','reacquire','status','release','stage-72h'), default='status')
+    parser.add_argument('--action', choices=('reserve','reacquire','status','release','stage-72h','stage-after-exit'), default='status')
     parser.add_argument('--replace-job-id')
     parser.add_argument('--alongside-search-job-id')
     args = parser.parse_args()
     os.umask(0o077)
     if args.alongside_search_job_id and args.action != 'reacquire':
         parser.error('--alongside-search-job-id is only valid for reacquire')
-    if args.action == 'stage-72h':
+    if args.action in ('stage-72h', 'stage-after-exit'):
         if not args.pool or not args.replace_job_id:
-            parser.error('stage-72h needs --pool and --replace-job-id')
-        print(json.dumps(stage_successor(args.pool.resolve(), args.replace_job_id)))
+            parser.error(args.action + ' needs --pool and --replace-job-id')
+        print(json.dumps(stage_successor(args.pool.resolve(), args.replace_job_id,
+                                        after_exit=args.action == 'stage-after-exit')))
     elif args.action == 'reacquire':
         if not args.pool or not args.replace_job_id:
             parser.error('reacquire needs --pool and --replace-job-id')

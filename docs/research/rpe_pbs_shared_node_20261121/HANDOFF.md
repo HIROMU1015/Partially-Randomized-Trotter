@@ -38,6 +38,8 @@ ssh -o BatchMode=yes prism /home/AbeHiromu/projects/rpe-pbs-20261118/runtime/ven
 
 状態確認には `qstat -x -f 267684.CPUcluster-PRISM 267693.CPUcluster-PRISM` を使用する。後継のノード起動後は `runs/shared-node/allocations/48c932d5b0ef43c69f712aac11c0c274/HANDOVER.json` の `DRAINING_PREDECESSOR` が旧側の処理終了待ち、`ACTIVE` が切替完了。通常入口の既存runは従来の共通予約プロトコルで接続し、workerが実ノードの残り時間を読む。
 
+旧予約の自然終了を待つ先行予約には `--action stage-after-exit --replace-job-id OLD_ID` を使う。現行の24時間または72時間の枠を識別し、同じ共通プールに72時間の後継を1件登録する。PBSの `afterany` 依存で旧予約が終了するまで後継を待機させる。後継ノード自身も旧予約の終了と所有を照合し、旧workerの制御と終了記録を保全したまま共通プールを引き継ぐ。
+
 ## 実配置と確認範囲
 
 RomuTailの配置記録は `.rpe-central/deployment/shared-pbs-pilot-20261121/`。PBSの物理予約の記録は `runs/shared-node/`、個々のworkerと受領待ちの成果は従来の `runs/<runの名前空間>/` に残る。通常入口の運用設定では、対応するreleaseの `worker_trial.pbs_dispatch_gateway` と `pbs_storage_launcher` の2組のパス・SHA-256を同時に選ぶ。展開先の照合値は[配置設定](DEPLOYMENT.json)。
