@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import shutil
 import sqlite3
 import uuid
 
@@ -40,6 +41,20 @@ def df_calibration_receipt(name, output):
     return None
 
 
+def file_digest(path):
+    with Path(path).open('rb') as stream:
+        digest = hashlib.sha256()
+        for block in iter(lambda: stream.read(1024 * 1024), b''):digest.update(block)
+        return digest.hexdigest()
+
+
+def copy_file(source, target):
+    with Path(source).open('rb') as reader, Path(target).open('xb') as writer:
+        shutil.copyfileobj(reader, writer, length=1024 * 1024)
+        writer.flush()
+        os.fsync(writer.fileno())
+
+
 class ArtifactCache:
     def __init__(self, root):
         self.root = Path(root).resolve()
@@ -54,7 +69,7 @@ class ArtifactCache:
             path = self.path(sha)
             if not path.is_file():
                 result.append(sha)
-            elif path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest() != sha:
+            elif path.is_symlink() or file_digest(path) != sha:
                 raise ValueError('Corrupt cached artifact: ' + sha)
         return result
 
@@ -111,25 +126,38 @@ class ArtifactCache:
                     continue
             if immutable and target.is_file() and not target.is_symlink() and source.samefile(target):
                 continue
-            raw = source.read_bytes()
             if target.exists():
-                if not target.is_file() or target.read_bytes() != raw:raise ValueError('Changed immutable input artifact: ' + name)
+                if not target.is_file() or file_digest(target) != sha:raise ValueError('Changed immutable input artifact: ' + name)
                 continue
             temporary=target.with_name(target.name+'.materialize-'+uuid.uuid4().hex)
-            with temporary.open('xb') as stream:
-                stream.write(raw);stream.flush();os.fsync(stream.fileno())
             try:
+                copy_file(source, temporary)
+                if file_digest(temporary) != sha:raise ValueError('Cached artifact changed during materialization: '+name)
                 # Publish only complete bytes. Two candidates may adopt the
                 # same accepted calibration concurrently; neither sees a
                 # partial write or needs to run that scientific task again.
                 os.link(temporary,target)
             except FileExistsError:
-                if target.is_symlink()or not target.is_file()or target.read_bytes()!=raw:
+                if target.is_symlink()or not target.is_file()or file_digest(target)!=sha:
                     raise ValueError('Changed immutable input artifact: '+name)
-            finally:temporary.unlink()
+            finally:temporary.unlink(missing_ok=True)
+
+    def put_file(self, source, sha):
+        """Install an immutable file without building a whole-file byte/base64 copy."""
+        path = self.path(sha)
+        if not self.missing([sha]):return
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_name(path.name + '.transfer-' + uuid.uuid4().hex)
+        try:
+            copy_file(source, temporary)
+            if file_digest(temporary) != sha:raise ValueError('Captured artifact changed: '+sha)
+            try:os.link(temporary, path)
+            except FileExistsError:
+                if self.missing([sha]):raise ValueError('Concurrent artifact install failed')
+        finally:temporary.unlink(missing_ok=True)
 
     def capture(self, directory, outputs):
-        directory = Path(directory).resolve();manifest = {}
+        directory = Path(directory).resolve();manifest = {}; files = {}
         for name in outputs:
             relative = artifact_path(name);path = directory.joinpath(*relative.parts)
             if not path.resolve().is_relative_to(directory):raise ValueError('Output escapes owned workspace')
@@ -139,8 +167,13 @@ class ArtifactCache:
                 if item.is_symlink():raise ValueError('Symlink preparation artifact')
                 if not item.is_file():continue
                 rel = item.relative_to(directory).as_posix();artifact_path(rel)
-                raw = item.read_bytes();sha = hashlib.sha256(raw).hexdigest()
-                self.put({sha:base64.b64encode(raw).decode('ascii')});manifest[rel] = sha
+                stat = item.stat()
+                inode = (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+                sha = files.get(inode)
+                if sha is None:
+                    sha = file_digest(item)
+                    self.put_file(item, sha);files[inode] = sha
+                manifest[rel] = sha
         return manifest
 
     def share_completed_inputs(self, directory, outputs, inputs):

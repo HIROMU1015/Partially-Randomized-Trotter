@@ -532,6 +532,7 @@ class Worker:
             self.slots = report['capacity']
             return self._storage_offer(report)
         jobs = []
+        preparation_observations = []
         for attempt, assignment in self.records.items():
             if attempt in self.transferred_attempts:
                 continue
@@ -557,7 +558,8 @@ class Worker:
             same_clock = previous.get('clock_id') == observed['clock_id']
             cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
             resource = 'EXITED' if state == 'UNKNOWN' and persisted['detail'].get('resource_released') is True else resource_state(attempt, state)
-            kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True)
+            kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True,
+                                                     workload=assignment.get('preparation_workload'))
             # Previously assigned attempts may predate evaluator metadata. Their
             # samples stay in the conservative count-DP profile.
             job = dict(state=resource, resource_class=kind, dp_workers=max(saved.get('dp_workers') or 1,
@@ -567,13 +569,16 @@ class Worker:
             if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
                 atomic(path, dict(observed, **job))
             jobs.append(job)
+            observation = Resources.owned_preparation_observation(attempt, assignment, saved, peak)
+            if observation is not None:preparation_observations.append(observation)
         feedback_path = self.capacity_state_dir / 'CAPACITY_FEEDBACK.json'
         state_path = self.capacity_state_dir / 'SLOT_STATE.json'
         feedback = read(feedback_path) if feedback_path.exists() else {}
         previous = read(state_path) if state_path.exists() else {}
         resources = self.resource_snapshot() if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}
         state, report = Resources.decide_slots(self.profile, previous, resources, jobs, feedback)
-        report['preparation_class_version'] = 2
+        if preparation_observations:report['preparation_observations'] = preparation_observations
+        report['preparation_class_version'] = 3
         self.slots = report['capacity']
         self._storage_offer(report)
         if report['mode'] == 'AUTO':

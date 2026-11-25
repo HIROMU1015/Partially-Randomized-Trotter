@@ -74,6 +74,10 @@ def configure_allocation_worker(profile, launcher):
         trottertracks.__path__.append(str(launcher)+'/trottertracks')
         from trottertracks import _collection_pbs_worker as transport
         from trottertracks import _collection_q3_worker as cycle
+        with zipfile.ZipFile(launcher) as package:
+            if 'trottertracks/_pipeline_q3_resources.py' in package.namelist():
+                from trottertracks import _pipeline_q3_resources as resources
+                cycle.Resources = transport.Resources = resources
 
     class MeasuredAllocationWorker(transport.AllocationWorker):
         def pending(self):
@@ -93,25 +97,32 @@ def configure_allocation_worker(profile, launcher):
 
         def _resource_offer(self):
             report = super()._resource_offer()
+            observations = {item['attempt_id']: item for item in report.get('preparation_observations', ())}
             for attempt, assignment in self.records.items():
                 spec = assignment['request'].get('preparation', {})
-                if spec.get('provider') not in ('DF_CALIBRATION', 'DF_HOLDOUT'):
+                if not spec or assignment['attempt_id'] in observations:
                     continue
-                if worker.read(attempt/'WORKER_STATE.json')['state'] != 'RUNNING':
+                state = worker.read(attempt/'WORKER_STATE.json')['state']
+                if state not in ('RUNNING', 'COMPLETED_PENDING_TRANSFER'):
                     continue
                 marker = attempt/'SUPERVISOR_STARTED.json'
-                if not marker.is_file():
-                    continue
-                pid = worker.read(marker).get('pid')
-                if not worker.process_alive(pid, attempt):
-                    continue
-                sample = worker.Resources.owned_tree_sample(pid)
                 path = attempt/'OWNED_RESOURCES.json'
                 prior = worker.read(path) if path.is_file() else {}
-                if sample['rss_bytes'] > prior.get('peak_rss_bytes', 0):
-                    profile = worker.read(attempt/'WORKER_PROFILE.json')
-                    worker.atomic(path, dict(worker.stamp(), peak_rss_bytes=sample['rss_bytes'],
-                        task_cpu_count=profile.get('task_cpu_count'), provider=spec['provider']))
+                profile = worker.read(attempt/'WORKER_PROFILE.json')
+                peak = prior.get('peak_rss_bytes', 0)
+                if state == 'RUNNING' and marker.is_file():
+                    pid = worker.read(marker).get('pid')
+                    if worker.process_alive(pid, attempt):
+                        sample = cycle.Resources.owned_tree_sample(pid)
+                        if sample['rss_bytes'] > peak:
+                            peak = sample['rss_bytes']
+                            worker.atomic(path, dict(worker.stamp(), peak_rss_bytes=peak,
+                                task_cpu_count=profile.get('task_cpu_count'), provider=spec['provider']))
+                observe = getattr(cycle.Resources, 'owned_preparation_observation', None)
+                if observe:
+                    item = observe(attempt, assignment, profile, peak)
+                    if item:observations[item['attempt_id']] = item
+            if observations:report['preparation_observations'] = list(observations.values())
             return report
 
     pbs.AllocationWorker = MeasuredAllocationWorker

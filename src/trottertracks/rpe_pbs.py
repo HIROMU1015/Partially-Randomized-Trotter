@@ -372,7 +372,10 @@ def task_rule(request, settings, host_id=None):
 
 
 def task_estimate(request, settings, host_id=None):
-    return (task_rule(request, settings, host_id) or {}).get('seconds')
+    from .rpe_q3_resources import preparation_forecast
+    baseline = (task_rule(request, settings, host_id) or {}).get('seconds')
+    forecast = preparation_forecast(request, settings.get('preparation_resource_observations'), host=host_id).get('seconds')
+    return max(baseline or 0, forecast or 0) or None
 
 
 def task_memory_estimate(request, settings, host_id=None):
@@ -464,8 +467,10 @@ def resource_need(request, profile, settings, host):
     measured = measured_q3_memory(request, runtime, host, settings.get('q3_measured_memory'))
     if measured is not None:
         memory = measured
-    return (runtime_cpu_footprint(profile, runtime),
-            max(1, memory, (profile.get('pbs') or {}).get('task_memory_bytes') or 0))
+    from .rpe_q3_resources import preparation_forecast
+    cpu = runtime_cpu_footprint(profile, runtime)
+    forecast = preparation_forecast(request, settings.get('preparation_resource_observations'), cpu_count=cpu, host=host)
+    return (cpu, max(1, memory, forecast.get('memory_bytes', 0), (profile.get('pbs') or {}).get('task_memory_bytes') or 0))
 
 
 def packed_resources(requests, profile, settings, host, *, selected=None):
@@ -473,7 +478,9 @@ def packed_resources(requests, profile, settings, host, *, selected=None):
     limits = profile.get('slot_policy', {}).get('resource_limits', {})
     cpu_limit = min(resources['ncpus'], limits.get('cpu_count', resources['ncpus']))
     memory_limit = usable_memory(profile, settings)
-    cpus = memory = count = 0
+    cpus = memory = count = reserved_storage = 0
+    storage_limit = (profile.get('storage_limit') or {}).get('limit_bytes')
+    from .rpe_q3_resources import preparation_forecast
     max_slots = profile.get('slot_policy', {}).get('max_slots') or cpu_limit
     # A preparation task without a memory estimate needs the whole pool. Give
     # tasks with a usable estimate a chance to share it before that fallback.
@@ -486,7 +493,11 @@ def packed_resources(requests, profile, settings, host, *, selected=None):
             cpu, ram = resource_need(request, profile, settings, host)
         except (KeyError, ValueError):
             continue
-        if cpus + cpu <= cpu_limit and memory + ram <= memory_limit:
+        storage = preparation_forecast(request, settings.get('preparation_resource_observations'),
+                                       cpu_count=cpu, host=host).get('storage_bytes', 0)
+        if (cpus + cpu <= cpu_limit and memory + ram <= memory_limit
+                and (storage_limit is None or reserved_storage + storage <= storage_limit)):
+            reserved_storage += storage
             cpus += cpu
             memory += ram
             count += 1
@@ -1598,11 +1609,25 @@ class PbsManager:
             admission = {host: self.executor._host_admission(host, policy, error) for host in self.configured}
             hosts = [host for host, rule in admission.items() if rule['accepting'] and rule.get('max_slots') != 0]
             def compatible(request, eligibility, *, unchecked=False):
+                from .rpe_q3_resources import preparation_forecast
                 artificial = self.executor.store.artificial(request)
-                return [host for host in hosts if self.executor._host_supports_stage(host, request) and
-                    (artificial or (task_estimate(request, self.settings, host) or 0) > 0) and
-                    (unchecked or (eligibility is None and artificial) or
-                     host in (eligibility or {}).get('eligible_host_ids', []))]
+                result = []
+                for host in hosts:
+                    if not (self.executor._host_supports_stage(host, request) and
+                            (artificial or (task_estimate(request, self.settings, host) or 0) > 0) and
+                            (unchecked or (eligibility is None and artificial) or
+                             host in (eligibility or {}).get('eligible_host_ids', []))):continue
+                    forecast = preparation_forecast(request, self.settings.get('preparation_resource_observations'), host=host)
+                    if forecast:
+                        profile = self.configured[host]['profile']
+                        storage_limit = (profile.get('storage_limit') or {}).get('limit_bytes')
+                        if type(storage_limit) is int and forecast.get('storage_bytes', 0) > storage_limit:continue
+                        try:
+                            cpu, memory = resource_need(request, profile, self.settings, host)
+                            if cpu > self.settings['resources']['ncpus'] or memory > usable_memory(profile, self.settings):continue
+                        except (KeyError, ValueError):continue
+                    result.append(host)
+                return result
 
             # A task can already be reserved on another host before a PBS
             # allocation exists to check it. Retain that eligible demand if
@@ -1627,8 +1652,13 @@ class PbsManager:
                     if needs_reservation and budget not in (None, 'UNLIMITED'):
                         budgets[stage] = budgets.get(stage, 0) + 1
             ready = []
-            for task in self.executor._ready_queue():
-                row = self.executor.store.row(task.job.name)
+            if hasattr(self.executor, '_ready_queue_snapshot'):
+                queue, queue_rows = self.executor._ready_queue_snapshot()
+            else:
+                queue = self.executor._ready_queue()
+                queue_rows = {task.job.name:self.executor.store.row(task.job.name) for task in queue}
+            for task in queue:
+                row = queue_rows.get(task.job.name)
                 if row is None or row['state'] != 'QUEUED':
                     continue
                 usable = compatible(row['request'], row['eligibility'])

@@ -476,6 +476,13 @@ class JobStore:
                     if previous.get(field) and not (detail or {}).get(field):
                         detail = previous  # an older poll cannot discard a verified exit
                         break
+            # Preserve the exact operational envelope while replay is still
+            # possible. A worker's status detail is not a new assignment.
+            if state == 'ASSIGNED':
+                previous = json.loads(old['detail'])
+                detail = dict(detail or {})
+                for field in ('preparation_workload', 'pbs_launch_resources'):
+                    if field in previous:detail[field] = previous[field]
             value = canonical(detail or {})
             db.execute('UPDATE jobs SET state=?,detail=?,updated_epoch=?,started_epoch=? WHERE job_id=?',
                        (state, value, now, started, job_id))

@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 import time
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from collections import Counter
 from types import SimpleNamespace
 import tempfile
@@ -119,6 +119,26 @@ class AutoAllocationTests(unittest.TestCase):
             cached_prefixes=[], host_fingerprints={job:d[host] for job,d in (facts or {}).items() if host in d},
             observe_only=observe))
 
+    def feedback(self, ex, host, expected):
+        # Capacity reports are produced in the background, not on the poll's
+        # latency-critical path. Wait for the matching observation.
+        end = time.monotonic() + 6
+        while time.monotonic() < end:
+            current = getattr(ex.state, 'queue_feedback', {}).get(host)
+            if current is not None and all(current.get(k) == v for k, v in expected.items()):
+                return current
+            ex._timing_queue()
+            with ex.state.cv:ex.state.cv.wait(.05)
+        self.fail(f'Expected background feedback for {host}: {expected}, got {current}')
+
+    def test_disabled_host_does_not_scan_global_ready_queue(self):
+        ex = self.executor(); _, facts = self.jobs(ex, 3)
+        ex.distributed['host_admission'] = dict(hosts={'server1':dict(accepting=False, optional=True, max_slots=1)})
+        with patch.object(ex, '_ready_queue_snapshot', wraps=ex._ready_queue_snapshot) as read:
+            self.assertEqual(self.poll(ex, 'server1', facts, slots=9)['assignments'], [])
+            self.assertEqual(read.call_count, 0)
+        self.assertEqual(len(self.poll(ex, 'server2', facts)['assignments']), 1)
+
     def test_two_preferred_free_slots_take_first_two_and_wsl_takes_surplus_now(self):
         ex = self.executor(); proposals, facts = self.jobs(ex, 3)
         self.poll(ex, 'server2', facts, observe=True)
@@ -144,7 +164,7 @@ class AutoAllocationTests(unittest.TestCase):
         ex = self.executor();_, facts = self.jobs(ex, 3, ['server2'])
         self.poll(ex, 'server2', facts, slots=1, observe=True)
         incapable = self.poll(ex, 'server1', facts, slots=9, observe=True)
-        self.assertEqual(incapable['capacity_feedback']['ready_jobs'], 0)
+        self.feedback(ex, 'server1', {'ready_jobs': 0})
         self.assertEqual(ex.capacity, 1)
         self.assertEqual(len(self.poll(ex, 'server2', facts)['assignments']), 1)
         self.assertEqual(ex.capacity, 1)
@@ -154,13 +174,12 @@ class AutoAllocationTests(unittest.TestCase):
         ex = self.executor()
         _, facts = self.jobs(ex, 3, ['server2'])
         busy = self.poll(ex, 'server2', slots=0, capacity=1)
-        feedback = busy['capacity_feedback']
-        self.assertEqual(feedback['ready_jobs'], 0)
-        self.assertEqual(feedback['capacity_ready_jobs'], 3)
+        self.feedback(ex, 'server2', {'ready_jobs': 0, 'capacity_ready_jobs': 3})
         self.assertEqual(self.poll(ex, 'server2', slots=2)['assignments'], [])
         stale = {job: {'server2': dict(row['server2'], runtime='CHANGED')}
                  for job, row in facts.items()}
-        self.assertEqual(self.poll(ex, 'server2', stale, slots=0)['capacity_feedback']['capacity_ready_jobs'], 0)
+        self.poll(ex, 'server2', stale, slots=0)
+        self.feedback(ex, 'server2', {'capacity_ready_jobs': 0})
         self.assertEqual(len(self.poll(ex, 'server2', facts, slots=2)['assignments']), 2)
 
     def test_busy_preferred_hosts_do_not_delay_only_free_wsl(self):
@@ -173,8 +192,10 @@ class AutoAllocationTests(unittest.TestCase):
     def test_incompatible_or_changed_fingerprint_is_not_a_preferred_slot(self):
         ex = self.executor(); _, facts = self.jobs(ex, 2, [WSL, 'server1'])
         changed = {j:dict(d, server1=dict(d['server1'],runtime='CHANGED')) for j,d in facts.items()}
-        self.assertEqual(self.poll(ex, 'server1', changed, slots=2, observe=True)['capacity_feedback']['ready_jobs'], 0)
-        self.assertEqual(self.poll(ex, 'server2', facts, slots=9, observe=True)['capacity_feedback']['ready_jobs'], 0)
+        self.poll(ex, 'server1', changed, slots=2, observe=True)
+        self.feedback(ex, 'server1', {'ready_jobs': 0})
+        self.poll(ex, 'server2', facts, slots=9, observe=True)
+        self.feedback(ex, 'server2', {'ready_jobs': 0})
         self.assertEqual(len(self.poll(ex, WSL, facts)['assignments']), 1)
 
     def test_stale_preferred_offer_is_not_waited_for(self):
@@ -219,6 +240,7 @@ class AutoAllocationTests(unittest.TestCase):
         ex.distributed.update(required_hosts=[WSL], host_admission=dict(hosts={
             WSL:dict(accepting=False, optional=True, max_slots=1)}))
         self.poll(ex, 'server1', facts, observe=True)
+        self.feedback(ex, 'server1', {'ready_jobs': 1})
         events = [json.loads(line) for line in (self.run/'PROGRESS.jsonl').read_text().splitlines()]
         reasons = [event['reasons'] for event in events if event['event'] == 'QUEUE_WAIT_STATE'][-1]
         self.assertNotIn('REQUIRED_HOST_PARTICIPATION_WAIT', reasons.values())

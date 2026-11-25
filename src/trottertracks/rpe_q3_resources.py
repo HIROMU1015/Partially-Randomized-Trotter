@@ -5,6 +5,8 @@ idle memory is only a pressure observation. No scheduler or OS control is change
 The cold-start offer is empirical, and never presented as measured H4 capacity.
 """
 from copy import deepcopy
+from functools import lru_cache
+import hashlib
 import json
 import math
 import os
@@ -223,6 +225,157 @@ def owned_tree_sample(pid, *, proc_root='/proc'):
     return dict(rss_bytes=rss, cpu_seconds=cpu, sampled_pids=len(seen))
 
 
+
+def _fixed_workload_document(root, name, sha):
+    """Read only the declared immutable planning input (never scientific execution)."""
+    path = Path(root) / name.removeprefix('workspace/')
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != sha:
+        raise ValueError('Workload input hash differs')
+    return json.loads(raw)
+
+
+def preparation_workload(request):
+    """Physical work counts, independent of configuration ID or target host.
+
+    Unknown/older schemas retain their existing resource policy. Counts are
+    operational proxies, not RZ estimates or scientific admission decisions.
+    """
+    prep = request.get('preparation') or {}
+    inputs = prep.get('inputs', {})
+    if not isinstance(inputs, dict) or not prep.get('controller_root'):
+        return None
+    candidates = [(name, sha) for name, sha in inputs.items() if name.startswith('workspace/') and
+                  (name.endswith('/df_prices/INPUTS.json') or name.endswith('/PF_COMPILE.INPUT.json'))]
+    if len(candidates) != 1:
+        return None
+    name, sha = candidates[0]
+    return _workload_from_input(prep['controller_root'], name, sha, prep.get('stage'), prep.get('provider'),
+                                (prep.get('source') or {}).get('commit'), bool(prep.get('parallel_df_price_axes')))
+
+
+@lru_cache(maxsize=2048)
+def _workload_from_input(root, name, sha, stage, provider, source, parallel_axes):
+    try:
+        doc = _fixed_workload_document(root, name, sha)
+        cells = []
+        if name.endswith('/df_prices/INPUTS.json'):
+            family = 'DF_EVENT_COUNT_V1'
+            for cell in doc['cells']:
+                req = cell['request']; ctx = req['physical_context']; physical = ctx['physical_candidate']
+                binding = ctx['binding']
+                shape = [physical['system'], physical['method'], physical['formula'], binding['basis'],
+                         binding['rank'], binding['compiler'], binding['control']]
+                count = ctx['structure']['event_count']
+                if type(count) is not int or count < 1:
+                    return None
+                paths = len(cell['indices']); axes = len(req['axes'])
+                if paths and axes:
+                    cells.append((shape, count, paths, axes, count + physical['q'] * (physical['prefix'] + 1)))
+        else:
+            family = 'PF_STEP_COUNT_V1'
+            configuration = doc['value']['configuration']; spec = configuration['spec']; binding = spec['binding']
+            shape = [binding['system'], spec['method'], spec['formula'], binding['basis'],
+                     binding['rank'], binding['compiler'], binding['control']]
+            rounds = {r['m']: r for r in configuration['rounds']}
+            for m in doc['rounds']:
+                physical = rounds[m].get('physical', rounds[m]); count = physical.get('q_PF')
+                axes = len(doc['axes_by_round'][str(m)])
+                if type(count) is not int or count < 1:
+                    return None
+                if axes:cells.append((shape, count, 1, axes, count * (spec['L_D'] + 1)))
+        if not cells or any(c[0] != cells[0][0] for c in cells):
+            return None
+        return dict(family=family, shape=cells[0][0], stage=stage, provider=provider, source=source,
+                    peak_units=max(c[4] for c in cells), total_units=sum(c[4]*c[2]*c[3] for c in cells),
+                    path_units=sum(c[1]*c[2] for c in cells), axis_jobs=sum(c[2]*c[3] for c in cells),
+                    path_count=sum(c[2] for c in cells),
+                    parallel_axes=parallel_axes)
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, IndexError):
+        return None
+
+
+
+@lru_cache(maxsize=1024)
+def _event_path_counts(root, name, sha):
+    doc = _fixed_workload_document(root, name, sha)
+    return [(cell['m'], cell['request']['physical_context']['structure']['event_count'], tuple(cell['indices']))
+            for cell in doc['cells']]
+
+
+def owned_preparation_observation(attempt, assignment, profile, peak):
+    """Read only size/usage from this attempt; no new result or raw file is made."""
+    request = assignment['request']; prep = request.get('preparation') or {}
+    if not prep or type(peak) is not int or peak <= 0:return None
+    observation = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
+                       request_sha256=assignment['request_sha256'], peak_rss_bytes=peak,
+                       cpu_count=max(1, profile.get('task_cpu_count') or profile.get('dp_workers') or 1))
+    attempt = Path(attempt)
+    # Count each completed raw path once, even with both axis hard links.
+    inputs = prep.get('inputs') or {}
+    if not isinstance(inputs, dict):return observation
+    for name, sha in inputs.items():
+        if not name.startswith('workspace/') or not name.endswith('/df_prices/INPUTS.json'):continue
+        try:
+            cells = _event_path_counts(str(attempt/'workspace'), name, sha)
+            base = (attempt/name).parent
+            data = base/'calibration'/'acquisition'
+            if not data.exists():data = base/'holdout'/'acquisition'
+            units = size = 0
+            for m, count, indices in cells:
+                for index in indices:
+                    path = data/f'm{m}'/f'p{index}'
+                    common = path/'events_PRIVATE.json'
+                    if (common.is_file() and ((path/'SHARED_EVENTS.json').is_file()
+                            or (path/'STRUCTURAL.json').is_file())):
+                        units += count; size += common.stat().st_size
+            if units and size:observation.update(stored_path_units=units, unique_event_bytes=size)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError):pass
+    try:
+        receipt = json.loads((attempt/'PROCESS_RETURN.json').read_text())
+        outcome = json.loads((attempt/'OUTCOME.json').read_text())
+        observation['completed'] = (receipt.get('returncode') == 0 and receipt.get('signal') is None
+                                    and outcome.get('status') == 'PREPARATION_COMPLETE')
+        elapsed = receipt.get('wall_seconds')
+        if type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed > 0:
+            observation['elapsed_seconds'] = elapsed
+    except (OSError, ValueError, TypeError):pass
+    return observation
+
+def preparation_forecast(request, observations, *, cpu_count=None, host=None):
+    """Conservative envelope from comparable owned attempts, including partial peaks.
+
+    Time only uses completed observations. Storage is based on unique path
+    records (not X/Y hard-link counts). A smaller trial cannot silently lower
+    the static reservation. An unfinished peak is a lower bound, not a timing sample.
+    """
+    if not observations:return {}
+    target = preparation_workload(request)
+    if target is None:return {}
+    forecasts = {}
+    keys = ('family', 'shape', 'provider', 'stage', 'source', 'parallel_axes')
+    def add(key, value):
+        forecasts[key] = max(forecasts.get(key, 0), math.ceil(value))
+    for observation in observations or ():
+        sample = observation.get('workload') or {}
+        if any(sample.get(k) != target[k] for k in keys):continue
+        if not all(type(sample.get(k)) is int and sample[k] > 0 for k in ('peak_units','total_units','path_units','axis_jobs')):
+            continue
+        workers = observation.get('cpu_count')
+        peak = observation.get('peak_rss_bytes')
+        if type(workers) is int and workers > 0 and type(peak) is int and peak > 0:
+            concurrent = min(target['axis_jobs'], cpu_count or workers) / min(sample['axis_jobs'], workers)
+            add('memory_bytes', peak * target['peak_units']/sample['peak_units'] * concurrent * 1.5)
+        stored = observation.get('unique_event_bytes'); units = observation.get('stored_path_units')
+        if type(stored) is int and stored > 0 and type(units) is int and units > 0:
+            add('storage_bytes', stored * target['path_units']/units)
+        elapsed = observation.get('elapsed_seconds')
+        if (observation.get('completed') is True and host == observation.get('host') and
+                type(elapsed) in (int,float) and math.isfinite(elapsed) and elapsed > 0 and
+                type(workers) is int and workers > 0):
+            add('seconds', elapsed * max(1, target['total_units']/sample['total_units']) * max(1, workers/(cpu_count or workers)))
+    return forecasts
+
 def resource_class(request, evaluator=None):
     preparation = request.get('preparation')
     if preparation:
@@ -230,7 +383,7 @@ def resource_class(request, evaluator=None):
     return 'q3:' + ('finite_support' if evaluator == 'RPE_FINITE_SUPPORT_MSE_V1' else 'count_dp')
 
 
-def measured_resource_class(request, evaluator=None, runtime=None, *, preparation_detail=False):
+def measured_resource_class(request, evaluator=None, runtime=None, *, preparation_detail=False, workload=None):
     """Group comparable requests for capacity estimates, not result identity."""
     category = resource_class(request, evaluator)
     runtime = runtime or {}
@@ -240,8 +393,15 @@ def measured_resource_class(request, evaluator=None, runtime=None, *, preparatio
         # Source and the fixed resource footprint affect memory measurements.
         # A previous provider's peak must not govern every later provider.
         source = (preparation.get('source') or {}).get('commit', '')
-        return ':'.join(map(str, (category, source, runtime.get('task_cpu_count', ''),
-                                  runtime.get('task_memory_bytes', ''), runtime.get('dp_workers', ''))))
+        category = ':'.join(map(str, (category, source, runtime.get('task_cpu_count', ''),
+                                      runtime.get('task_memory_bytes', ''), runtime.get('dp_workers', ''))))
+        if workload:
+            # Powers-of-two classes reuse nearby scales instead of making a
+            # class for every candidate. They are never scientific identities.
+            factors = [workload[k].bit_length() for k in ('peak_units', 'total_units', 'axis_jobs', 'path_units')]
+            shape = hashlib.sha256(json.dumps(workload['shape'], separators=(',', ':')).encode()).hexdigest()
+            category += ':' + ':'.join(map(str, (workload['family'], shape, workload['parallel_axes'], *factors)))
+        return category
     shots = tuple(request.get('N_X', ())) + tuple(request.get('N_Y', ()))
     if not shots or any(type(value) is not int or value < 1 for value in shots):
         return category

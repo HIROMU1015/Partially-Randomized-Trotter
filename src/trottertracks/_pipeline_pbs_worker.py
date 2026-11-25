@@ -777,6 +777,7 @@ class AllocationWorker(Worker):
         slots = self.slots
         cpus = self.pbs_resources['cpu_count']
         memory = self.pbs_resources['memory_bytes'] - 1024**3
+        reserved_storage = 0
         for attempt in tuple(self.launch_tracking):
             assignment = self.records[attempt]
             state = read(attempt/'WORKER_STATE.json')
@@ -789,6 +790,7 @@ class AllocationWorker(Worker):
                     and not (status == 'UNKNOWN' and self._known_decline(attempt, state))
                     and resource_state(attempt, status) != 'EXITED'):
                 slots -= 1
+                reserved_storage += (resources or {}).get('storage_bytes', 0)
                 cpus -= resources['cpu'] if resources else self.pbs_resources['cpu_count']
                 if resources and getattr(self, 'memory_backfill', False):
                     reserved, _ = self._q3_memory_reservation(attempt, resources)
@@ -818,6 +820,11 @@ class AllocationWorker(Worker):
                 continue
             if slots <= 0 or resources['cpu'] > cpus:
                 continue
+            needed = resources.get('storage_bytes', 0)
+            if needed and storage:
+                used, limit = storage.get('used_bytes'), storage.get('limit_bytes')
+                if type(used) is not int or type(limit) is not int or used + reserved_storage + needed > limit:
+                    continue
             request = self.records[attempt].get('request', {})
             q3 = getattr(self, 'memory_backfill', False) and 'preparation' not in request
             reserved, calibrated = self._q3_memory_reservation(attempt, resources)
@@ -835,6 +842,7 @@ class AllocationWorker(Worker):
             slots -= 1
             cpus -= resources['cpu']
             memory -= reserved
+            reserved_storage += needed
             if blocked is not None and q3:
                 self.backfills_left -= 1
                 event(self.profile, 'PBS_CALIBRATED_Q3_BACKFILL', job_id=attempt.parent.name,
@@ -865,14 +873,31 @@ class AllocationWorker(Worker):
     def accepting(self):
         return not self.draining and not self.stop.is_set() and self.remaining() > self.drain_seconds + self.minimum_task_seconds
 
+    def _sync_drain(self, control):
+        """Resume a reversible controller drain, never a local signal/deadline."""
+        if self.stop.is_set():
+            self.draining = True
+            self.exit_reason = 'WORKER_STOP_DRAIN'
+        elif self.remaining() <= self.drain_seconds + self.minimum_task_seconds:
+            self.draining = True
+            self.exit_reason = 'WALLTIME_ADMISSION_CUTOFF'
+        elif control.get('stop') is True:
+            self.draining = True
+            self.exit_reason = self.exit_reason or 'CONTROLLER_STOP_DRAIN'
+        elif control.get('stop') is False and self.exit_reason == 'CONTROLLER_STOP_DRAIN':
+            # A normal Resume reopens the same allocation's control channel.
+            # Existing attempts remain in the same spool; only new admission
+            # changes. Maintenance/resize continues to publish stop=True.
+            self.draining = False
+            self.exit_reason = None
+
     def heartbeat(self, *, state=None, force=False):
         now = time.monotonic()
         if not force and now - self.last_heartbeat < 1.:
             return
         self.last_heartbeat = now
         control = self.control()
-        if control.get('stop') or self.remaining() <= self.drain_seconds + self.minimum_task_seconds:
-            self.draining = True
+        if state != 'EXITED':self._sync_drain(control)
         value = dict(stamp(), schema='RPE_PBS_WORKER_STATE_V1',
                      state=state or ('DRAINING' if self.draining else 'READY'),
                      ready=state != 'EXITED', accepting=self.accepting() and not getattr(self, 'offline_active', False),
@@ -941,12 +966,7 @@ class AllocationWorker(Worker):
                 self.readiness_thread.start()
             while self.remaining() > 0:
                 control = self.control()
-                if control.get('stop') or self.stop.is_set():
-                    self.draining = True
-                    self.exit_reason = self.exit_reason or 'CONTROLLER_STOP_DRAIN'
-                if self.remaining() <= self.drain_seconds + self.minimum_task_seconds:
-                    self.draining = True
-                    self.exit_reason = self.exit_reason or 'WALLTIME_ADMISSION_CUTOFF'
+                self._sync_drain(control)
                 self.dispatch_wakeup.clear()
                 offline_busy = self._offline_tick(control)
                 if not offline_busy:

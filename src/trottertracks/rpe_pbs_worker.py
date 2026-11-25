@@ -548,14 +548,31 @@ class AllocationWorker(Worker):
     def accepting(self):
         return not self.draining and not self.stop.is_set() and self.remaining() > self.drain_seconds + self.minimum_task_seconds
 
+    def _sync_drain(self, control):
+        """Resume a reversible controller drain, never a local signal/deadline."""
+        if self.stop.is_set():
+            self.draining = True
+            self.exit_reason = 'WORKER_STOP_DRAIN'
+        elif self.remaining() <= self.drain_seconds + self.minimum_task_seconds:
+            self.draining = True
+            self.exit_reason = 'WALLTIME_ADMISSION_CUTOFF'
+        elif control.get('stop') is True:
+            self.draining = True
+            self.exit_reason = self.exit_reason or 'CONTROLLER_STOP_DRAIN'
+        elif control.get('stop') is False and self.exit_reason == 'CONTROLLER_STOP_DRAIN':
+            # A normal Resume reopens the same allocation's control channel.
+            # Existing attempts remain in the same spool; only new admission
+            # changes. Maintenance/resize continues to publish stop=True.
+            self.draining = False
+            self.exit_reason = None
+
     def heartbeat(self, *, state=None, force=False):
         now = time.monotonic()
         if not force and now - self.last_heartbeat < 1.:
             return
         self.last_heartbeat = now
         control = self.control()
-        if control.get('stop') or self.remaining() <= self.drain_seconds + self.minimum_task_seconds:
-            self.draining = True
+        if state != 'EXITED':self._sync_drain(control)
         value = dict(stamp(), schema='RPE_PBS_WORKER_STATE_V1',
                      state=state or ('DRAINING' if self.draining else 'READY'),
                      ready=state != 'EXITED', accepting=self.accepting(),
@@ -604,12 +621,7 @@ class AllocationWorker(Worker):
                 self.readiness_thread.start()
             while self.remaining() > 0:
                 control = self.control()
-                if control.get('stop') or self.stop.is_set():
-                    self.draining = True
-                    self.exit_reason = self.exit_reason or 'CONTROLLER_STOP_DRAIN'
-                if self.remaining() <= self.drain_seconds + self.minimum_task_seconds:
-                    self.draining = True
-                    self.exit_reason = self.exit_reason or 'WALLTIME_ADMISSION_CUTOFF'
+                self._sync_drain(control)
                 self.tick(acquire=self.accepting())
                 self.heartbeat()
                 if self.draining and not self.pending():

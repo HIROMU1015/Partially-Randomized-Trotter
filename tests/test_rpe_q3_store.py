@@ -55,6 +55,17 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(len({row['attempt_id'] for row in jobs}), 10)
         self.assertEqual(self.store.counts('PR_PAULI', started_only=True), 10)
 
+    def test_workload_envelope_survives_same_attempt_replay(self):
+        self.reserve()
+        envelope = dict(preparation_workload={'peak_units': 42}, pbs_launch_resources={'memory_bytes': 5})
+        first = self.store.claim('server1', 1, assignment_detail=envelope)[0]
+        self.store.update('server1', 'j1', first['attempt_id'], 'ASSIGNED', {'worker': 'durable'})
+        current = JobStore(self.path).row('j1')
+        self.assertEqual(current['attempt_id'], first['attempt_id'])
+        self.assertEqual(current['detail']['preparation_workload'], envelope['preparation_workload'])
+        self.assertEqual(current['detail']['pbs_launch_resources'], envelope['pbs_launch_resources'])
+        self.assertEqual(self.store.claim('server1', 1), [])
+
     def test_assignment_never_expires_after_disconnect(self):
         self.reserve()
         first = self.store.claim('server1', 1)[0]

@@ -1,6 +1,10 @@
 """Reuse the fixed DF provider's deterministic S2 flanks within one price task."""
 from contextlib import ExitStack, contextmanager
 from functools import lru_cache
+from collections import OrderedDict
+import hashlib
+import json
+from pathlib import Path
 from unittest.mock import patch
 
 
@@ -73,6 +77,70 @@ def reuse_df_price_events(rte):
         yield
 
 
+def streaming_digest(value):
+    """The fixed canonical JSON digest, without producing a giant string/bytes pair."""
+    hasher = hashlib.sha256()
+    encoder = json.JSONEncoder(sort_keys=True, separators=(',', ':'), allow_nan=False)
+    def emit(value):
+        if isinstance(value, (tuple, list)):
+            hasher.update(b'[')
+            # Event rows are lists of small dictionaries. Use the C encoder
+            # on bounded batches; never encode the whole path in one string.
+            if all(not isinstance(item, (tuple, list)) for item in value):
+                for start in range(0, len(value), 256):
+                    if start:hasher.update(b',')
+                    hasher.update(encoder.encode(value[start:start+256])[1:-1].encode())
+            else:
+                for position, item in enumerate(value):
+                    if position:hasher.update(b',')
+                    emit(item)
+            hasher.update(b']')
+        elif isinstance(value, dict) and all(isinstance(key, str) for key in value):
+            hasher.update(b'{')
+            for position, key in enumerate(sorted(value)):
+                if position:hasher.update(b',')
+                hasher.update(encoder.encode(key).encode()+b':');emit(value[key])
+            hasher.update(b'}')
+        else:
+            for piece in encoder.iterencode(value):hasher.update(piece.encode())
+    emit(value)
+    return hasher.hexdigest()
+
+
+def compact_event_writer(original):
+    """Same complete JSON document and path; avoid indentation overhead.
+
+    Keep the existing writer for all other receipts, and retain exclusive
+    creation, seed order, and the content digest. The existing split-axis
+    writer still hard-links one common event document.
+    """
+    def write(path, value):
+        path = Path(path)
+        if path.name != 'events_PRIVATE.json':return original(path, value)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open('x') as stream:
+            json.dump(value, stream, ensure_ascii=False, separators=(',', ':'), allow_nan=False)
+            stream.write('\n')
+    return write
+
+
+@contextmanager
+def shared_event_dicts(event_type):
+    """Price-provider-only bounded cache; its consumers read event rows only."""
+    original = event_type.to_dict
+    cache = OrderedDict()
+    def as_dict(event):
+        key = id(event)
+        if key in cache:
+            cache.move_to_end(key)
+            return cache[key][1]
+        result = original(event)
+        cache[key] = (event, result)
+        if len(cache) > 4096:cache.popitem(last=False)
+        return result
+    with patch.object(event_type, 'to_dict', as_dict):yield
+
+
 @contextmanager
 def reuse_df_price_flanks(runner):
     """Warm templates after the existing input checks and before the workers fork."""
@@ -82,12 +150,15 @@ def reuse_df_price_flanks(runner):
         caches = {}
         warmed = {}
         event_modules = set()
+        science_modules = set()
+        digest_modules = set()
 
         def runtime():
             provider = load_runtime()
             from trotterlib import rte
             if rte not in event_modules:
                 stack.enter_context(reuse_df_price_events(rte))
+                stack.enter_context(shared_event_dicts(rte.RTEEvent))
                 event_modules.add(rte)
             runtime_type = provider.D.NativeRuntime
             if runtime_type in patched:
@@ -96,6 +167,17 @@ def reuse_df_price_flanks(runner):
 
             def context(instance, request):
                 result = original_context(instance, request)
+                science = getattr(instance, 'science', None)
+                if science is not None and science not in science_modules:
+                    stack.enter_context(patch.object(science, 'write', compact_event_writer(science.write)))
+                    science_modules.add(science)
+                if science is not None and science.m not in digest_modules:
+                    # Bind only when the fixed provider really uses this canonical
+                    # representation; never change a different hash algorithm.
+                    probe = {'events': [('X', -0.0, 'λ')], 'seed': 17}
+                    if science.m.digest(probe) == streaming_digest(probe):
+                        stack.enter_context(patch.object(science.m, 'digest', streaming_digest))
+                        digest_modules.add(science.m)
                 if id(result) in warmed:
                     return result
                 native = result.native

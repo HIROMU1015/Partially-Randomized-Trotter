@@ -673,6 +673,12 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         spec['pf_price_recheck_provider'] = deepcopy(provider)
     if trial.get('pbs_only'):
         distributed['execution_hosts'] = [worker['host_id'] for worker in distributed['pbs']['workers']]
+    if 'preparation_resource_observations' in trial:
+        observations = deepcopy(trial['preparation_resource_observations'])
+        distributed['preparation_resource_observations'] = observations
+        if distributed.get('pbs'):
+            distributed.setdefault('pbs_pinned_settings', deepcopy(distributed['pbs']))
+            distributed['pbs']['preparation_resource_observations'] = observations
     if trial.get('pbs_preparation_resources'):
         from trottertracks.rpe_pbs import apply_preparation_resources
         apply_preparation_resources(distributed, trial['pbs_preparation_resources'])
