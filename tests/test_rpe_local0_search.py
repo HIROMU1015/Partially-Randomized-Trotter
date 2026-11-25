@@ -151,6 +151,7 @@ class Tests(unittest.TestCase):
             schedule_driver(self.config, run, selection)
 
     def test_selected_resume_accepts_pinned_old_and_new_local_transport(self):
+        from unittest.mock import patch
         from hashlib import sha256
         from trottertracks.rpe_local0_search import schedule_driver
         run = self.home/'rollover-run'

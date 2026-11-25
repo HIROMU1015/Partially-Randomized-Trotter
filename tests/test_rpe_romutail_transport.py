@@ -36,7 +36,11 @@ class DirectRelayTests(unittest.TestCase):
             import fcntl
             with (path.parent/'RELAY.lock').open('a')as lock:
                 fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-                with patch('trottertracks.rpe_optimizer_concurrent.subprocess.Popen',side_effect=AssertionError('duplicate relay')):
+                original_read = Path.read_bytes
+                args = json.loads((path.parent/'LAUNCH.json').read_text())['command']
+                with patch.object(Path,'read_bytes',autospec=True,side_effect=lambda p:
+                                  ('\0'.join(args)+'\0').encode() if str(p)=='/proc/999999/cmdline' else original_read(p)), \
+                     patch('trottertracks.rpe_optimizer_concurrent.subprocess.Popen',side_effect=AssertionError('duplicate relay')):
                     executor.start_controller_relay(12345)
                     with self.assertRaisesRegex(ValueError,'configuration differs'):
                         executor.start_controller_relay(54321)

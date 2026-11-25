@@ -1248,8 +1248,10 @@ class DistributedExecutor(ConcurrentExecutor):
             self._close_live_readiness()
             self.stop_controller_relay()
             if self.pbs_manager:
-                self.pbs_manager.close(retain_allocation=self.pbs_manager.hold_node
-                                       and not self._user_stop_requested())
+                if self.pbs_manager.hold_node is True and not self._user_stop_requested():
+                    self.pbs_manager.close(retain_allocation=True)
+                else:
+                    self.pbs_manager.close()
             if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
             fcntl.flock(self.state.driver, fcntl.LOCK_UN); self.state.driver.close()
             raise
@@ -1396,7 +1398,7 @@ class DistributedExecutor(ConcurrentExecutor):
         for name, restart in (('relay', self._check_relay_process), ('local', self._check_local_process)):
             try:
                 restart()
-            except (OSError, ValueError, subprocess.SubprocessError) as error:
+            except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
                 self.log(event='WORKER_SERVICE_RESTART_PENDING', service=name, reason=str(error))
 
     def _check_relay_process(self):
