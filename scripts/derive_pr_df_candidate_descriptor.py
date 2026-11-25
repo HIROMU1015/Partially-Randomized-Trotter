@@ -60,10 +60,11 @@ def saved_context(completion, config):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prefix',type=int,required=True);p.add_argument('--configuration',required=True);p.add_argument('--selector',default='[]');p.add_argument('--output',type=Path,required=True);p.add_argument('--source',required=True)
     p.add_argument('--signal-view', type=Path, default=VIEW)
+    p.add_argument('--max-width-endpoint', action='store_true')
     a=p.parse_args()
     if subprocess.check_output(['git','show',a.source+':'+CALLER],cwd=ROOT)!=Path(__file__).read_bytes():raise ValueError('Descriptor runner differs from fixed SOURCE')
     source_loc=dict(commit=a.source,path=CALLER);c,path=a.configuration.split(':',1);config_loc=dict(commit=c,path=path,selector=json.loads(a.selector));config=read(config_loc)
-    if not 1<=a.prefix<config['spec']['binding']['rank']:raise ValueError('Nonempty head/tail prefix required')
+    if not (0 if a.max_width_endpoint else 1)<=a.prefix<config['spec']['binding']['rank']:raise ValueError('Nonempty head/tail prefix required')
     view=a.signal_view.resolve()
     if subprocess.check_output(['git','rev-parse','HEAD'],cwd=view,text=True).strip()!=SIGNAL:raise ValueError('Fixed signal view differs')
     sys.path[:0]=[str(view/'src'),str(view/'scripts')]

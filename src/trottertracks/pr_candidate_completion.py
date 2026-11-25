@@ -184,7 +184,7 @@ def physical_evaluation_contract(config):
     if isinstance(spec.get('A_input'),dict):
         spec['A_input'].pop('kappa_paper',None)
         design=spec['A_input'].get('design',{})
-        for field in ('delta','delta_pf','delta_over_h'):design.pop(field,None)
+        for field in ('delta','delta_pf','delta_over_h','requested_delta_pf'):design.pop(field,None)
     rows=[]
     for row in sorted(config['rounds'],key=lambda r:r['m']):
         physical=deepcopy(row.get('physical_candidate',{}));physical.pop('id',None)

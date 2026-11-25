@@ -92,8 +92,12 @@ def point(row):
     t, step = frac(row['T']), frac(row['actual_delta_pf'])
     st = deepcopy(row['structure'])
     weights, pieces = st['signed_weights'], st['allocation']
-    if t <= 0 or step <= 0 or t != q * step:
-        raise ValueError('T, q and actual_delta_pf disagree')
+    if t <= 0 or step <= 0:
+        raise ValueError('Nonpositive time/step')
+    if t != q * step:
+        from .pr_df_max_width import actual_step_matches
+        if not actual_step_matches(row):
+            raise ValueError('T, q and actual_delta_pf disagree')
     if len(pieces) != len(weights) or not pieces or sum(pieces) != r:
         raise ValueError('Piece allocation/R mismatch')
     if any(type(n) is not int or n < 1 for n in pieces):

@@ -559,7 +559,7 @@ def extend_prdf_intake(module):
     module.U.metadata = scope['metadata']
 
 
-def route(view, kind, route_views=None, *, extended_horizon=False):
+def route(view, kind, route_views=None, *, extended_horizon=False, max_width_source=None):
     """(metadata, installed-context, supervise, validate, bounds) of an existing route, loaded unchanged."""
     if kind == 'pf_b_pf6':
         F = load(view, '_rpe_opt_pf6', 'scripts/run_pf6_cost_budget_q3_fixed.py');F.check_source()
@@ -585,6 +585,14 @@ def route(view, kind, route_views=None, *, extended_horizon=False):
                   binding=X.T, binding_root=view)
     if kind in ('prdf_d2_split','prdf_d2_common_entry'):
         W, resolution = load_prdf_route(view, route_views or {})
+        if max_width_source:
+            import types, importlib
+            dirname=Path(__file__).resolve().parents[1]/'src/trottertracks'
+            package='_rpe_max_width_q3'
+            if package not in sys.modules:
+                module=types.ModuleType(package);module.__path__=[str(dirname)];sys.modules[package]=module
+            maximum=importlib.import_module(package+'.pr_df_max_width')
+            maximum.install_q3(W,(view,))
         if extended_horizon:
             extend_prdf_intake(W)
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
@@ -840,7 +848,7 @@ def main():
         case, inputs = scoped_case(view, request)
         inputs = execution_profile(inputs, request)
         df_extension = M == 13 and kind in ('prdf_d2_split', 'prdf_d2_common_entry')
-        r = route(view, kind, route_views, extended_horizon=df_extension)
+        r = route(view, kind, route_views, extended_horizon=df_extension, max_width_source=request['route'].get('max_width_source'))
         extension = None
         if M == 13:
             if len(inputs['options']['phase_radii']) != 14:

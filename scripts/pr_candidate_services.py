@@ -63,6 +63,16 @@ def check_intake_inputs(view, locators):
         subprocess.run(['git', 'cat-file', '-e', ref], cwd=view, env=env, check=True)
 
 
+def max_width_api():
+    """Load the selected mapper without replacing the frozen provider package."""
+    import sys, types, importlib
+    directory=Path(__file__).resolve().parents[1]/'src/trottertracks'
+    name='_rpe_selected_max_width'
+    if name not in sys.modules:
+        package=types.ModuleType(name);package.__path__=[str(directory)];sys.modules[name]=package
+    return importlib.import_module(name+'.pr_df_max_width')
+
+
 def df_extension():
     path = Path(__file__).resolve().parents[1]/'src/trottertracks/pr_df_descriptor_extension.py'
     spec=importlib.util.spec_from_file_location('_df_supplied_descriptor',path)
@@ -424,6 +434,24 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=
     entry=(DFSignalEntry(ROOT,runtime=runtime)if tail_descriptor is None else
            df_extension().entry(ROOT,tail_descriptor,DFSignalEntry,runtime=runtime))
     entry.saved.extend(x for x in saved_bundles if x not in entry.saved)
+    if configuration is not None and max_width_api().selected(configuration):
+        maximum=max_width_api();runtime.b=maximum.wrap_b(ROOT,runtime.b)
+        old_jobs=runtime.jobs
+        def jobs(config):
+            if not maximum.selected(config):return old_jobs(config)
+            return maximum.jobs(config,{row['m']:row['physical_candidate'] for row in config['rounds']},
+                b_validate=runtime.b.validate,b_exact_scalar=dec,
+                numerical_recipe=runtime.provider.numerical_recipe(dict(commit='fefd548ecd56f60d72031b3d385f6f5e6ee95d06',
+                    path='src/trottertracks/pr_rpe_signal_provider.py',recipe='DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1')))['jobs']
+        runtime.jobs=jobs
+        old_support=entry._support
+        def support(config):
+            reasons=old_support(config)
+            if (maximum.selected(config) and config['spec']['L_D']==0 and '0' in entry.info['prefixes']
+                    and config['spec']['split'].get('one_body_policy')=='DETERMINISTIC'):
+                return [reason for reason in reasons if reason!='NONEMPTY_PREFIX_AND_TAIL_REQUIRED']
+            return reasons
+        entry._support=support
     if terminal_reference is not None:
         if configuration is None or configuration['spec']['M'] != 13:
             raise ValueError('Terminal reference requires a fourteen-round DF configuration')
@@ -461,6 +489,10 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=
 def df_generate(request):
     if request.get('configuration'):
         config = read(request['configuration'])
+        if max_width_api().selected(config):
+            max_width_api().validate(ROOT,config)
+            if request.get('M',config['spec']['M'])!=config['spec']['M']:raise ValueError('Max-width horizon change is a separate scope')
+            return dict(status='CONFIGURATION_READY',configuration=config)
         b = df_entry(request.get('tail_descriptor')).runtime.b
         b.validate(config)
         horizon = request.get('M', config['spec']['M'])
@@ -478,14 +510,15 @@ def df_generate(request):
             config = extended
         return dict(status='CONFIGURATION_READY',configuration=config)
     S=module(DF_VIEW,'_df_auto_generate_fixed','scripts/run_pr_df_ld7_v0.py');S.ROOT=ROOT
-    _,_,_,b=S.signal_modules();base=read(request.get('base')or DF_TEMPLATE)
+    _,_,_,b=S.signal_modules();base=read(request.get('base')or request.get('template_source')or DF_TEMPLATE)
     design=request['design'];ld=design['L_D'];inputs=deepcopy(base['spec']['A_input'])
     inputs['design']['prefix']=ld
     if 'PF'in inputs['design']:inputs['design']['PF']['prefix']=ld
     if design.get('formula'):inputs['design']['formula']=design['formula']
     h=Fraction(inputs['design']['base_time'])
     delta=dec(design['delta_pf'])if design.get('delta_pf')is not None else h*dec(design['delta_over_h'])
-    if Fraction(float(delta))!=delta:
+    max_source=request.get('df_max_width_source');new_mapper=bool(max_source and (ld==0 or delta!=h))
+    if not new_mapper and Fraction(float(delta))!=delta:
         return dict(status='UNSUPPORTED',reason='REQUESTED_DF_DELTA_NOT_EXACT_BINARY64',requested=str(delta),
                     requested_delta_pf=deepcopy(design.get('delta_pf')),requested_delta_over_h=deepcopy(design.get('delta_over_h')))
     inputs['design']['delta']=float(delta)
@@ -495,7 +528,7 @@ def df_generate(request):
     raw=Path(request.get('controller_paths',{}).get('DF_DESCRIPTOR',desc['path'])).read_bytes()
     if hashlib.sha256(raw).hexdigest()!=desc['sha256']:raise ValueError('Saved DF descriptor bytes differ')
     context=json.loads(raw)
-    if type(ld)is not int or not 1<=ld<context['binding']['rank']:
+    if type(ld)is not int or not (0 if new_mapper else 1)<=ld<context['binding']['rank']:
         return dict(status='UNSUPPORTED',reason='NONEMPTY_DF_HEAD_TAIL_REQUIRED',L_D=ld)
     if request.get('tail_descriptor'):
         source=request['tail_descriptor'];document=read(source)
@@ -509,6 +542,10 @@ def df_generate(request):
     else:
         tail=context['prefixes'][str(ld)]
         source=dict(index=INDEX,context_sha256=desc['sha256'],selector=['prefixes',str(ld)])
+    if new_mapper:
+        maximum=max_width_api();config=maximum.build(ROOT,base,design,tail=tail,tail_source=source,source=max_source)
+        maximum.validate(ROOT,config)
+        return dict(status='CONFIGURATION_READY',configuration=config,tail_descriptor=tail,descriptor_source=source)
     inputs['tail_norm'].update(prefix=ld,lambda_R=tail['lambda_R'],source=source)
     try:config=b.generate(b.a_spec(inputs,'PR'))
     except ValueError as exc:
@@ -636,7 +673,12 @@ def main():
         value=P.prepare(Path(r.get('workspace',ROOT)),preparation,r['price_quote'])
     elif a.mode=='quote':
         view=Path(r['view']);sys.path.insert(0,str(view/'src'))
-        from trottertracks.pr_price_rules import PriceRules,GitReader
+        config=read(r['configuration'])
+        if max_width_api().selected(config):
+            rule_api=importlib.import_module('_rpe_selected_max_width.pr_price_rules')
+            PriceRules,GitReader=rule_api.PriceRules,rule_api.GitReader
+        else:
+            from trottertracks.pr_price_rules import PriceRules,GitReader
         registry=json.loads(Path(r['registry_file']).read_text())
         rules=PriceRules(GitReader(ROOT),registry)
         config=read(r['configuration']);method='PR_PAULI'if config['spec']['split'].get('tail_dictionary')else'PR_DF'
@@ -660,11 +702,14 @@ def main():
             got=A.accept_saved(view,integration=T.C.interfaces(str(view)).pipeline,handoff_source=r['packet'])
             item=got['results'][0];binding=T.create(view,item['configuration'],original_source=r['configuration']);T.bind_signal(view,binding,item['signal_packet'])
         else:
-            adapter_root = Path(__file__).resolve().parents[1] if r.get('M') == 13 else ROOT
+            config=read(r['configuration'])
+            maximum=max_width_api()
+            adapter_root = Path(__file__).resolve().parents[1] if r.get('M') == 13 or maximum.selected(config) else ROOT
             adapter=module(adapter_root,'_portable_prdf_intake','scripts/run_rpe_optimizer_q3_job.py')
             W,_=adapter.load_prdf_route(view,r.get('controller_paths',{}).get('route_views',{}))
             check_intake_inputs(W.U.ROOT, inputs)
-            config=read(r['configuration']);binding,_=W.U.T.create(view,config,original_source=r['configuration']),None
+            if maximum.selected(config):maximum.install_q3(W,(view,))
+            binding,_=W.U.T.create(view,config,original_source=r['configuration']),None
             if r.get('M') == 13:
                 if config['spec']['M'] != 13:
                     raise ValueError('DF intake horizon differs from configuration')

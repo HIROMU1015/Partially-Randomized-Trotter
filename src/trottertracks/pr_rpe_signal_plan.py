@@ -41,7 +41,7 @@ def plan(config, physical_by_round, *, b_validate, b_exact_scalar, numerical_rec
         if row['q_RPE']!=1<<row['m']:
             raise ValueError('q_RPE and q_PF are distinct fields')
         # Full-H pure RTE and full PF endpoints are separate comparison methods.
-        if not 1<=c['prefix']<spec['binding']['rank']:
+        if not (0 if spec.get('schedule_adapter') in ('A_PR_DF_REQUESTED_MAX_WIDTH_V1','A_PR_DF_REQUESTED_MAX_WIDTH_V1_TOTAL_DECODER_VIEW') else 1)<=c['prefix']<spec['binding']['rank']:
             raise ValueError('Nonempty saved DF tail and deterministic prefix required')
         context=dict(physical_candidate=c,structure=deepcopy(st),binding=deepcopy(spec['binding']),
             profile=deepcopy(spec['profile']),split=deepcopy(spec['split']),law=deepcopy(spec['law']),
