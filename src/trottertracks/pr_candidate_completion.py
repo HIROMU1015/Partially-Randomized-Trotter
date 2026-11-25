@@ -680,6 +680,15 @@ class Completion:
             return self.settings.get('df_price_source', self.source)
         return self.source
 
+    def max_width_source(self, configuration):
+        if not configuration or not isinstance(configuration,dict):return None
+        config=value(configuration) if 'commit' in configuration and 'path' in configuration else configuration
+        spec=config.get('spec',{})
+        if spec.get('schedule_adapter')!='A_PR_DF_REQUESTED_MAX_WIDTH_V1':return None
+        source=self.settings.get('df_max_width_source')
+        if not source or spec.get('A_release')!=source:raise Held('MAX_WIDTH_SOURCE_NOT_SELECTED')
+        return source
+
     def call(self,cmd,d,stage,output=None,science=False,*,poll=False):
         d=Path(d);d.mkdir(parents=True,exist_ok=True);done=d/(stage+'.RETURN.json');started=d/(stage+'.STARTED.json')
         runtime=getattr(self,'stage_executor',None)
@@ -740,7 +749,9 @@ class Completion:
         terminal_request = (request.get('terminal_reference') is not None
                             or (mode in ('df-generate','intake') and request.get('M') == 13))
         obtained_signal_stage = mode == 'df-stage' and request.get('obtained_request') is not None
-        if metadata_entry and (mode in ('df-plan', 'df-price-design') or terminal_request or obtained_signal_stage):
+        max_width = (request.get('df_max_width_source') or self.max_width_source(request.get('configuration') or request.get('configuration_source'))) if self.settings.get('df_max_width_source') else None
+        if max_width and max_width!=self.settings['df_max_width_source']:raise Held('MAX_WIDTH_SERVICE_SOURCE_MISMATCH')
+        if metadata_entry and (max_width or mode in ('df-plan', 'df-price-design') or terminal_request or obtained_signal_stage):
             command = [python, '-B', '-c',
                        'import runpy,sys\n'
                        'root,entry=sys.argv[1:3]\n'
@@ -1653,6 +1664,7 @@ class Completion:
         if repair is not None:
             obtained, obtained_request, result = (repair[k] for k in ('obtained','obtained_request','result'))
         elif recovering or any(row['decision']=='REQUEST' for row in plan['rounds']):
+            max_width=self.max_width_source(config)
             source=self.stage_source('DF_SIGNALS')
             normalizer = self.settings.get('df_normalizer_revision')
             request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=source,
@@ -1679,7 +1691,7 @@ class Completion:
                               if (terminal or normalizer) and globals().get('FIXED_RUN_PR_PRICE_SERVICE') else ROOT)
             result=self.call([self.path('NATIVE'),'-B',str(transport_root/'scripts/run_pr_df_candidate_signal_jobs.py'),
                 '--input',str(inp),'--inputs-commit',input_commit,'--source',source,
-                *(['--transport-source', self.settings['df_signal_caller_source']] if normalizer else [])],
+                *(['--transport-source', max_width or self.settings['df_signal_caller_source']] if normalizer or max_width else [])],
                 d,'DF_SIGNALS',output,science=True,
                 **({'poll':True} if terminal else {}))
             if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
@@ -2402,7 +2414,8 @@ class Completion:
     def common_route(self,method,cid,configuration,packet,binding):
         """The same fixed worker/contract for newly prepared and saved candidates."""
         view=self.path('B_VIEW') if method=='PR_PAULI'else self.path('DF_Q3_VIEW')
-        return dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=self.path('NATIVE'),
+        maximum=self.max_width_source(configuration) if method=='PR_DF' else None
+        return dict(**({'max_width_source':maximum} if maximum else {}),kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=self.path('NATIVE'),
             view=str(view),view_commit=git('rev-parse','HEAD',cwd=view),configuration_ids=[cid],
             contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
             configurations={cid:dict(configuration=configuration,signal_packet=packet,

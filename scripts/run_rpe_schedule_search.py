@@ -234,6 +234,25 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if settings['interpreter'] != binding['replaces']:
             raise ValueError('PF controller runtime predecessor differs')
         settings['interpreter'] = binding['interpreter']
+    if selection := trial.get('df_max_width'):
+        code_root = Path(__file__).resolve().parents[1]
+        source = selection['source']
+        for name in ('src/trottertracks/pr_df_max_width.py', 'src/trottertracks/pr_rpe_rmse.py',
+                     'src/trottertracks/rpe_scope_map.py', 'src/trottertracks/pr_rpe_signal_plan.py',
+                     'scripts/run_pr_df_candidate_signal_jobs.py'):
+            if subprocess.check_output(['git', 'show', source+':'+name], cwd=ROOT) != (code_root/name).read_bytes():
+                raise ValueError('Selected max-width mapper differs: '+name)
+        settings = spec['candidate_completion']
+        settings['df_max_width_source'] = source
+        settings['df_max_width_code_root'] = str(code_root)
+        settings.setdefault('saved_df_descriptors', {})['0'] = selection['endpoint_descriptor']
+        if selection.get('local_adapter'):
+            adapter=selection['local_adapter']
+            from trottertracks.rpe_host_profiles import validate_adapter_profile
+            validate_adapter_profile(adapter)
+            for rule in distributed['local_worker'].get('route_profiles', ()):
+                if rule['route_kind'] in ('prdf_d2_split','prdf_d2_common_entry'):
+                    rule['profile'].update(adapter)
     if trial.get('controller_parallel') is True:
         spec['search_overrides']['controller_parallel'] = True
         # Derive overlap from CPUs visible to this controller, rather than
@@ -628,6 +647,13 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         apply_q3_measured_memory(distributed, trial['pbs_q3_measured_memory'])
     if 'pf_price_recheck_provider' in trial:
         bind_pf_continuation_release(distributed, provider, root)
+    if selection := trial.get('df_max_width'):
+        for host, path in selection.get('relay_profiles', {}).items():
+            worker=next(w for w in distributed['relay']['workers'] if w['host_id']==host)
+            worker['profile']=path
+        if selection.get('pbs_adapter'):
+            from trottertracks.rpe_pbs import apply_q3_adapter
+            apply_q3_adapter(distributed,selection['pbs_adapter'])
     if trial.get('pbs_stage_artifacts_over_ssh'):
         pbs = distributed['pbs']
         if not pbs.get('gateway_python') or not pbs.get('ssh_alias'):
@@ -1098,8 +1124,50 @@ class WidthDriver:
         except (ValueError,KeyError,TypeError) as exc:
             family.update(status='UNSUPPORTED_MAPPER',reason=str(exc))
 
+    def admit_max_width_families(self):
+        settings=self.spec.get('candidate_completion') or {}
+        source=settings.get('df_max_width_source')
+        if not source:return
+        import importlib, types
+        dirname=Path(settings['df_max_width_code_root'])/'src/trottertracks'
+        package='_rpe_controller_max_width'
+        if package not in sys.modules:
+            module=types.ModuleType(package);module.__path__=[str(dirname)];sys.modules[package]=module
+        maximum=importlib.import_module(package+'.pr_df_max_width')
+        families=self.state['families']
+        bases={f['L_D']:f for f in families.values() if f['method']=='PR_DF' and f['status']=='READY_METADATA'
+               and not maximum.selected(f['configuration'])}
+        if not bases:return
+        descriptor=settings['saved_df_descriptors']['0']
+        from importlib.util import spec_from_file_location, module_from_spec
+        ext=spec_from_file_location('_rpe_max_width_descriptor',dirname/'pr_df_descriptor_extension.py')
+        helper=module_from_spec(ext);ext.loader.exec_module(helper)
+        count=0
+        for key,f in families.items():
+            if f.get('method')!='PR_DF' or f.get('status')!='UNSUPPORTED_MAPPER':continue
+            ld=f['L_D'];base_family=bases.get(ld) if ld else next(iter(bases.values()))
+            if base_family is None:continue
+            base=base_family['configuration'];tail=base['spec']['A_input']['tail_norm'];loc=tail['source']
+            if ld==0:
+                provisional=deepcopy(base);provisional['spec']['L_D']=0
+                tail=helper.validate(helper.read(ROOT,descriptor),descriptor,provisional);loc=descriptor
+            design=dict(L_D=ld,formula=f['formula'],K=f['K'],delta_pf=f['requested_delta_pf'],
+                        kappa=str(KS._frac(base['spec']['kappa']['value'])))
+            cfg=maximum.build(ROOT,base,design,tail=tail,tail_source=loc,source=source)
+            maximum.validate(ROOT,cfg)
+            f.setdefault('mapper_rejections',[]).append(dict(revision=f.get('mapper_source'),reason=f.get('reason')))
+            self.admit_generated_family(f,base['spec'],dict(status='GENERATED',configuration=cfg))
+            if f['status']=='READY_METADATA':
+                f.update(mapper_source=source)
+                if base_loc:=base_family.get('base_source') or base_family.get('template_source'):f['template_source']=base_loc
+                if 'commit' in loc and 'path' in loc:f['tail_descriptor']=loc
+                count+=1
+            self.log(event='MAPPER_FAMILY_RECHECK',family=key,status=f['status'],reason=f.get('reason'))
+        if count:self.save()
+
     def recheck_unsupported_families(self):
         """A changed selected generator may repair a rejected logical family."""
+        self.admit_max_width_families()
         revisions={method:hashlib.sha256(json.dumps(self.problem['methods'][method].get('generation',{}),
                                          sort_keys=True).encode()).hexdigest() for method in self.widths}
         prior=self.state.get('mapper_revisions')
@@ -1398,6 +1466,10 @@ class WidthDriver:
             request=dict(method=f['method'],selection=dict(rule=W.RULE,family=family,reason=proposal['reason']),
                 design=dict(L_D=f['L_D'],formula=f['formula'],K=f['K'],delta_pf=f['requested_delta_pf'],
                             kappa=str(proposal['kappa'])))
+            if f.get('mapper_source') and f.get('mapper_source')==(self.spec.get('candidate_completion') or {}).get('df_max_width_source'):
+                request['df_max_width_source']=f['mapper_source']
+                if f.get('template_source'):request['template_source']=f['template_source']
+                if f.get('tail_descriptor'):request['tail_descriptor']=f['tail_descriptor']
             self.state['points'].append(dict(family=family,method=f['method'],L_D=f['L_D'],
                 requested_delta_pf=f['requested_delta_pf'],kappa=str(proposal['kappa']),
                 status='COMPLETION',completion_request=request,request_reason=proposal['reason']))

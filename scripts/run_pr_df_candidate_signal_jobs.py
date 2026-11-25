@@ -306,12 +306,17 @@ def main():
         for key in request['configuration'].get('selector', []):
             config = config[key]
     if config['spec'].get('schedule_adapter')=='A_PR_DF_REQUESTED_MAX_WIDTH_V1':
-        from trottertracks import pr_df_max_width as maximum
-        if config['spec']['A_release']!=source:
-            raise ValueError('Max-width worker SOURCE differs from the selected mapper')
-        for name in ('pr_df_max_width.py','pr_rpe_rmse.py','rpe_scope_map.py','pr_rpe_signal_plan.py'):
+        import types
+        caller_root=Path(__file__).resolve().parents[1]
+        if config['spec']['A_release']!=caller_source:
+            raise ValueError('Max-width caller SOURCE differs from the selected mapper')
+        for name in ('pr_df_max_width.py','pr_rpe_rmse.py','rpe_scope_map.py','pr_rpe_signal_plan.py',
+                     'pf_pr_rpe_pipeline.py','h4_df10_rpe_connection.py','c1_stage3_accuracy.py'):
             path='src/trottertracks/'+name
-            if read_git(source,path)!=(ROOT/path).read_bytes():raise ValueError('Max-width scientific helper differs: '+path)
+            if read_git(caller_source,path)!=(caller_root/path).read_bytes():raise ValueError('Max-width scientific helper differs: '+path)
+        package='_rpe_selected_max_width_signal'
+        module=types.ModuleType(package);module.__path__=[str(caller_root/'src/trottertracks')];sys.modules[package]=module
+        maximum=importlib.import_module(package+'.pr_df_max_width')
         b=maximum.wrap_b(ROOT,b)
         if config['spec']['L_D']==0:provider=maximum.enable_endpoint(provider)
     if a.check_input_only:

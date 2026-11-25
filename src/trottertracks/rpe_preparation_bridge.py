@@ -1651,7 +1651,12 @@ class DistributedPreparationBridge:
                 df_terminal = requested[0]['job']['physical_context']['physical_candidate']['id']
         if script.name in ('run_pr_pauli_candidate_signals.py','run_pr_pauli_candidate_prices.py')and'--no-push'not in command:
             command.append('--no-push')
-        df_transport = df_terminal or df_normalizer
+        maximum = getattr(completion,'settings',{}).get('df_max_width_source')
+        df_max_width = bool(stage=='DF_SIGNALS' and maximum and '--transport-source' in command
+                            and command[command.index('--transport-source')+1]==maximum)
+        if df_max_width and completion.max_width_source(df_input['configuration'])!=maximum:
+            raise ValueError('Max-width transport configuration SOURCE differs')
+        df_transport = df_terminal or df_normalizer or df_max_width
         if script.is_relative_to(root) or df_transport:
             script_relative = ('scripts/run_pr_df_candidate_signal_jobs.py' if df_transport
                                else script.relative_to(root).as_posix())
@@ -1704,7 +1709,7 @@ class DistributedPreparationBridge:
         if df_transport:
             if not snapshot or (df_terminal and not re.fullmatch(r'[0-9a-f]{20}', df_terminal)):
                 raise ValueError('DF terminal signal requires a fixed physical round and snapshot')
-            caller = (completion.settings['df_signal_caller_source'] if df_normalizer else
+            caller = (maximum if df_max_width else completion.settings['df_signal_caller_source'] if df_normalizer else
                       completion.settings.get('df_terminal_transport_source') or self.settings.get('horizon_transport_source'))
             if caller is None:
                 caller = subprocess.check_output(['git','rev-parse','HEAD'],cwd=script.parents[1],text=True).strip()
@@ -1718,6 +1723,16 @@ class DistributedPreparationBridge:
                 inputs[destination] = sha = self._blob(raw)
                 df_inputs.append(dict(path=destination, sha256=sha))
                 df_locators.append(dict(commit=caller, path=name))
+            if df_max_width:
+                for name in ('pr_df_max_width.py','pr_rpe_rmse.py','rpe_scope_map.py','pr_rpe_signal_plan.py',
+                             'pf_pr_rpe_pipeline.py','h4_df10_rpe_connection.py','c1_stage3_accuracy.py'):
+                    path='src/trottertracks/'+name
+                    raw=subprocess.check_output(['git','show',caller+':'+path],cwd=root)
+                    if raw!=(script.parents[1]/path).read_bytes():raise ValueError('Fixed max-width transport differs: '+path)
+                    destination='private/df-terminal-transport/'+path
+                    inputs[destination]=sha=self._blob(raw)
+                    df_inputs.append(dict(path=destination,sha256=sha))
+                    df_locators.append(dict(commit=caller,path=path))
             bindings[str(script)] = '@WORK@/private/df-terminal-transport/' + script_relative
             if '--transport-source' not in command:
                 command.extend(('--transport-source', caller))

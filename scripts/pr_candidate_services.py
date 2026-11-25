@@ -509,8 +509,7 @@ def df_generate(request):
                 raise ValueError('DF prefix physical schedule changed during horizon extension')
             config = extended
         return dict(status='CONFIGURATION_READY',configuration=config)
-    S=module(DF_VIEW,'_df_auto_generate_fixed','scripts/run_pr_df_ld7_v0.py');S.ROOT=ROOT
-    _,_,_,b=S.signal_modules();base=read(request.get('base')or request.get('template_source')or DF_TEMPLATE)
+    base=read(request.get('base')or request.get('template_source')or DF_TEMPLATE)
     design=request['design'];ld=design['L_D'];inputs=deepcopy(base['spec']['A_input'])
     inputs['design']['prefix']=ld
     if 'PF'in inputs['design']:inputs['design']['PF']['prefix']=ld
@@ -546,6 +545,8 @@ def df_generate(request):
         maximum=max_width_api();config=maximum.build(ROOT,base,design,tail=tail,tail_source=source,source=max_source)
         maximum.validate(ROOT,config)
         return dict(status='CONFIGURATION_READY',configuration=config,tail_descriptor=tail,descriptor_source=source)
+    S=module(DF_VIEW,'_df_auto_generate_fixed','scripts/run_pr_df_ld7_v0.py');S.ROOT=ROOT;S.VIEW=SIGNAL_VIEW
+    _,_,_,b=S.signal_modules()
     inputs['tail_norm'].update(prefix=ld,lambda_R=tail['lambda_R'],source=source)
     try:config=b.generate(b.a_spec(inputs,'PR'))
     except ValueError as exc:

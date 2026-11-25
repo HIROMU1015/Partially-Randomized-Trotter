@@ -592,6 +592,13 @@ def route(view, kind, route_views=None, *, extended_horizon=False, max_width_sou
             if package not in sys.modules:
                 module=types.ModuleType(package);module.__path__=[str(dirname)];sys.modules[package]=module
             maximum=importlib.import_module(package+'.pr_df_max_width')
+            root=Path(__file__).resolve().parents[1]
+            for name in ('scripts/run_rpe_optimizer_q3_job.py','src/trottertracks/pr_df_max_width.py',
+                         'src/trottertracks/pr_rpe_rmse.py','src/trottertracks/pr_rpe_signal_plan.py',
+                         'src/trottertracks/rpe_scope_map.py','src/trottertracks/pf_pr_rpe_pipeline.py',
+                         'src/trottertracks/h4_df10_rpe_connection.py','src/trottertracks/c1_stage3_accuracy.py'):
+                if subprocess.check_output(['git','show',max_width_source+':'+name],cwd=root)!=(root/name).read_bytes():
+                    raise ValueError('Fixed max-width Q3 caller differs: '+name)
             maximum.install_q3(W,(view,))
         if extended_horizon:
             extend_prdf_intake(W)
@@ -848,7 +855,14 @@ def main():
         case, inputs = scoped_case(view, request)
         inputs = execution_profile(inputs, request)
         df_extension = M == 13 and kind in ('prdf_d2_split', 'prdf_d2_common_entry')
-        r = route(view, kind, route_views, extended_horizon=df_extension, max_width_source=request['route'].get('max_width_source'))
+        maximum_source=request['route'].get('max_width_source')
+        if maximum_source:
+            loc=case['configuration']
+            cfg=json.loads(subprocess.check_output(['git','show',loc['commit']+':'+loc['path']],cwd=view))
+            for key in loc.get('selector',[]):cfg=cfg[key]
+            if cfg['spec'].get('A_release')!=maximum_source or cfg['spec'].get('schedule_adapter')!='A_PR_DF_REQUESTED_MAX_WIDTH_V1':
+                raise ValueError('Q3 configuration differs from selected max-width mapper')
+        r = route(view, kind, route_views, extended_horizon=df_extension, max_width_source=maximum_source)
         extension = None
         if M == 13:
             if len(inputs['options']['phase_radii']) != 14:
