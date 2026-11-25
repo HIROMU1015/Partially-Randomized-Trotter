@@ -483,11 +483,11 @@ class PreparationQueue(Base.ControllerFailures):
         self.poll_host(ex,'server1')
         inspecting=threading.Event();release=threading.Event();joining=threading.Event();joined=threading.Event()
         original=ex._offer_free;results=[];errors=[]
-        def offer(host,policy,error=None,*,owned=None):
+        def offer(host,policy,error=None,*,owned=None,current_poll=None):
             if threading.current_thread().name=='PREPARATION_METRICS_FIXTURE':
                 inspecting.set()
                 if not release.wait(3):raise AssertionError('Fixture did not release metrics')
-            return original(host,policy,error,owned=owned)
+            return original(host,policy,error,owned=owned,current_poll=current_poll)
         ex._offer_free=offer
         def measure():
             try:results.append(ex.metrics())
