@@ -830,24 +830,29 @@ class Completion:
         if not candidates or not self.settings.get('exploratory_cost') or getattr(self, 'stage_executor', None) is None:
             return
         store = self.stage_executor.executor.store
-        for record in list(self.state['records'].values()):
+        eligible = [record for record in list(self.state['records'].values())
+                    if record.get('method') == 'PR_DF' and record.get('status') == 'READY_FOR_SEARCH'
+                    and record.get('prices') is None and not record.get('scientific_failure')
+                    and ({record.get('configuration_id'), record.get('installed_configuration_id')} & candidates)]
+
+        def prepare_record(record):
             if stop_requested():
                 return
-            if (record.get('method') != 'PR_DF' or record.get('status') != 'READY_FOR_SEARCH'
-                    or record.get('prices') is not None or record.get('scientific_failure')
-                    or not ({record.get('configuration_id'), record.get('installed_configuration_id')} & candidates)):
-                continue
             request = record['request']
             directory = (ROOT/record['directory']).resolve()
             if (request.get('horizon_parent') or not directory.is_relative_to(self.directory.resolve())
                     or (directory/'STOP.json').exists()):
-                continue
+                record['stage_progress'] = dict(q3='READY', price='PRICE_OWNER_WAITING',
+                    price_requested=True, price_reason='ORIGINAL_WORKSPACE_OR_STOP_REQUIRES_RECONCILIATION')
+                self.save()
+                return
             previous = record.get('shortlist_price_attempt', {})
             job = previous.get('job_id') or record.get('pending_preparation_job')
             row = store.row(job) if job else None
-            evidence = [self.price_registry_digest(), self.df_price_evidence_snapshot(record), row and row['state']]
+            evidence = [self.price_registry_digest(), self.df_price_evidence_snapshot(record), row and row['state'],
+                        'SHORTLIST_DIRECT_RESOLUTION_V1']
             if previous.get('evidence') == evidence:
-                continue
+                return
             attempt = dict(evidence=evidence, job_id=job)
             try:
                 cref = record['configuration']
@@ -856,7 +861,8 @@ class Completion:
                 quote = self.initial_quote(config, cref, directory)
                 if not quote['complete']:
                     self.df_price(cref, quote, directory, directory/'PRICE_RULES.json',
-                                  request.get('tail_descriptor') or record.get('deferred_tail_descriptor'))
+                                  request.get('tail_descriptor') or record.get('deferred_tail_descriptor'),
+                                  shortlist=True)
                 self.refresh_price_hold(record, force=True)
                 attempt['reason'] = 'PRICES_READY' if record.get('prices') is not None else 'PRICE_EVIDENCE_INCOMPLETE'
                 if on_ready is not None and record.get('prices') is not None:
@@ -870,7 +876,29 @@ class Completion:
             if (directory/'DF_PRICE_DECISIONS.json').is_file():
                 record['price_actions'] = read(directory/'DF_PRICE_DECISIONS.json')
             record['shortlist_price_attempt'] = attempt
+            record['stage_progress'] = dict(q3='READY',
+                price='AVAILABLE' if record.get('prices') is not None else 'REQUIRED_FOR_RANKING',
+                price_requested=True, price_reason=attempt.get('reason'))
             self.save()
+
+        # Keep the same split serial (early rounds and price groups commonly
+        # alias); independent splits can replenish the distributed queue now.
+        lanes = {}
+        for record in eligible:
+            split = (record.get('design') or record['request'].get('design') or {}).get('L_D')
+            lanes.setdefault(split, []).append(record)
+        def prepare_lane(records):
+            for record in records:
+                if stop_requested():
+                    break
+                prepare_record(record)
+        if len(lanes) > 1:
+            with ThreadPoolExecutor(max_workers=len(lanes)) as pool:
+                for _ in pool.map(prepare_lane, lanes.values()):
+                    pass
+        else:
+            for records in lanes.values():
+                prepare_lane(records)
 
     def reconcile_committed_df_holdout(self, record):
         """Reopen a publication mismatch only after the original results pass intake."""
@@ -1835,11 +1863,13 @@ class Completion:
         put(d/'FINAL_QUOTE.json',quote)
         return quote
 
-    def df_price_plan(self,config,quote,d):
+    def df_price_plan(self,config,quote,d,*,shortlist=False):
         request = dict(configuration=config, price_quote=quote, resolve_axes=True)
         exploratory = self.settings.get('exploratory_cost') is True
         if exploratory:
             request['exploratory_cost'] = True
+            if shortlist:
+                request['shortlist_price_resolution'] = True
         plan = self.service('df-price-design', request, d,
                             tag='DF_PRICE_PLAN_'+key(request if exploratory else quote['rows']))
         prior = d/'DF_PRICE_GROUPS.json'
@@ -1906,7 +1936,9 @@ class Completion:
         """Only live ledger owners keep the unattended recovery loop active."""
         with self.lock:
             markers = {a['original_marker'] for r in self.state['records'].values()
-                       if r['status'] in DF_PRICE_RECHECK_STATES for a in r.get('price_actions', ())
+                       if (r['status'] in DF_PRICE_RECHECK_STATES or
+                           (r['status'] == 'READY_FOR_SEARCH' and r.get('prices') is None
+                            and r.get('shortlist_price_attempt'))) for a in r.get('price_actions', ())
                        if a.get('original_marker') and a.get('action') == 'RECONCILE_ORIGINAL_ATTEMPT'}
         return any(self.df_attempt_observation(Path(path)).get('state') in
                    ('QUEUED','ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')
@@ -2066,9 +2098,9 @@ class Completion:
                             return marker
         return None
 
-    def df_price(self,cref,quote,d,registry,descriptor=None):
+    def df_price(self,cref,quote,d,registry,descriptor=None,*,shortlist=False):
         config=value(cref)
-        planned=self.df_price_plan(config,quote,d)
+        planned=self.df_price_plan(config,quote,d,**({'shortlist': True} if shortlist else {}))
         put(d/'DF_PRICE_GROUPS.json', planned)
         groups=[g for g in planned.get('groups',[]) if g['status']=='CALIBRATION_DESIGN_READY']
         packages=[];decisions=[];waiting=None
@@ -2166,10 +2198,22 @@ class Completion:
                         if isinstance(error, DFOriginalPriceAttempt):
                             disposition.update(original_marker=str(error.marker), recheck_on='ORIGINAL_ATTEMPT_RECEIPT',
                                                original_attempt=self.df_attempt_observation(error.marker))
+                        # A consumed attempt cannot be retried, but it does
+                        # not own any independent price group in this candidate.
+                        scoped_terminal = (shortlist and any(str(error).startswith(
+                            'STAGE_FAILED:'+stage+':DISTRIBUTED_') for stage in ('DF_CALIBRATION','DF_HOLDOUT'))
+                            and ':NO_AUTOMATIC_RETRY:' in str(error))
+                        if scoped_terminal:
+                            stage = str(error).split(':', 2)[1]
+                            leaf = self.df_execution_leaf(directory)
+                            marker = leaf/(stage+'.DISTRIBUTED.json')
+                            if marker.is_file():
+                                disposition.update(original_marker=str(marker), recheck_on='ORIGINAL_ATTEMPT_RECEIPT',
+                                                   original_attempt=self.df_attempt_observation(marker))
                         put(directory/'NO_SAFE_ACTION.json',disposition)
-                        if not str(error).startswith(DF_PRICE_UNAVAILABLE):
+                        if not str(error).startswith(DF_PRICE_UNAVAILABLE) and not scoped_terminal:
                             raise
-                        decisions.extend(dict(axis,action='RECONCILE_ORIGINAL_ATTEMPT' if isinstance(error, DFOriginalPriceAttempt)
+                        decisions.extend(dict(axis,action='RECONCILE_ORIGINAL_ATTEMPT' if disposition.get('original_marker')
                                               else 'NO_SAFE_PRICE_ACTION',group_id=gid,new_calculation=False, **disposition)
                                          for axis in group['axis_keys'])
                         continue

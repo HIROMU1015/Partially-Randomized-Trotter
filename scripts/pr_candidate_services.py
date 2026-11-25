@@ -522,7 +522,7 @@ def df_generate(request):
     return dict(status='CONFIGURATION_READY',configuration=config,tail_descriptor=tail,descriptor_source=source)
 
 
-def df_price_disposition(config, quote, runner, *, exploratory=False):
+def df_price_disposition(config, quote, runner, *, exploratory=False, shortlist=False):
     """Keep valid prices and choose the existing minimum acquisition scope."""
     plan = runner.design_groups(config, quote)
     rows = {(r['m'], r['axis']): r for r in quote['rows']}
@@ -544,7 +544,7 @@ def df_price_disposition(config, quote, runner, *, exploratory=False):
                 and not any(rows[k].get('direct_alternatives') for k in pending)):
             groups.append(group)
             continue
-        if exploratory:
+        if exploratory and not shortlist:
             # Ambiguities in a quote can be investigated on the shortlist.
             # A parametric survey does not replace the model with direct
             # compilations of every missing axis.
@@ -623,7 +623,8 @@ def main():
         spec=importlib.util.spec_from_file_location('_df_candidate_price_design',ROOT/'scripts/run_pr_df_candidate_prices.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
         config=read(r['configuration'])
-        value=(df_price_disposition(config,r['price_quote'],helper, exploratory=r.get('exploratory_cost') is True)
+        value=(df_price_disposition(config,r['price_quote'],helper, exploratory=r.get('exploratory_cost') is True,
+                                    shortlist=r.get('shortlist_price_resolution') is True)
                if r.get('resolve_axes')
                else helper.design_groups(config,r.get('price_quote')))
         for group in value.get('groups',[]):group.get('design',{}).pop('matrix',None)

@@ -696,3 +696,23 @@ def test_exploratory_price_conflict_does_not_fan_out_into_direct_compiles():
     outcome = services.df_price_disposition({}, dict(rows=[known, missing]), runner, exploratory=True)
     assert outcome['groups'] == []
     assert outcome['round_actions'][0]['reasons'] == ['EXPLORATORY_PRICE_NOT_IDENTIFIED']
+
+
+def test_shortlist_unpriced_df_uses_existing_scoped_direct_price_design():
+    import pr_candidate_services as services
+    from types import SimpleNamespace
+    known = dict(m=0, axis='X', physical_id='axis-x', unit_price_RZ=10)
+    missing = dict(m=0, axis='Y', physical_id='axis-y', unit_price_RZ=None,
+                   needs={'entry_ids': ['competing-model']})
+    plan = dict(groups=[dict(status='CALIBRATION_DESIGN_READY', axis_keys=[missing])],
+                round_actions=[dict(m=0, axis='Y', action='CALIBRATE')])
+    config = dict(spec={k: 'fixed' for k in ('binding','split','formula','finite_K','law','profile')},
+                  rounds=[dict(physical_candidate={'id':'fixed'}, structure={}, actual_delta_pf='1/10')])
+    runner = SimpleNamespace(design_groups=lambda config, quote: deepcopy(plan),
+                             design=lambda config, rounds: dict(reasons=[]))
+    outcome = services.df_price_disposition(config, dict(rows=[known, missing]), runner,
+                                             exploratory=True, shortlist=True)
+    assert len(outcome['groups']) == 1
+    group = outcome['groups'][0]
+    assert group['direct_resolution'] and group['required_saved_companions'] == ['X']
+    assert group['axis_keys'] == [dict(m=0, axis='Y')]

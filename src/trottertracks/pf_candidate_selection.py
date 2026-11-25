@@ -20,6 +20,19 @@ PRICE_RECHECK_STATES = frozenset(('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD',
                                 'PRICE_OWNER_WAITING', 'PRICE_NOT_EVALUATED'))
 
 
+def preparation_progress(candidate, record, *, price_requested=False):
+    """Readiness for Q3 and completeness of pricing are different facts."""
+    ready = bool(candidate.get('ready') and not candidate.get('execution_needs'))
+    if candidate.get('prices') is not None:
+        price = 'AVAILABLE'
+    elif record.get('status') in PRICE_RECHECK_STATES:
+        price = record['status']
+    else:
+        price = 'REQUIRED_FOR_RANKING' if price_requested else 'DEFERRED_UNTIL_MSE'
+    return dict(q3='READY' if ready else 'INPUTS_REQUIRED', price=price,
+                price_requested=bool(price_requested))
+
+
 def write(path,value):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     text=json.dumps(value,ensure_ascii=False,indent=2,default=str)+'\n'
@@ -406,6 +419,12 @@ def reconsider_prices(root, run, spec, settings, records, *, shortlist=()):
         if scoped and (row.get('price_reconciliation', {}).get('original_signal_holds')
                        or str(row.get('reason') or '').startswith('PF_SAVED_SIGNAL_REUSE_HOLD:')):
             version = 'RECEIPT_RECOVERY_SIGNAL_V1'
+        if scoped and cid in shortlist and (spec.get('pf_price_recheck_provider')
+                                             or settings.get('selected_axis_compile')):
+            # The new planner can price a candidate even when the strict
+            # calibration+holdout design was impossible.  Wake once for a
+            # changed decision rule, not on every idle cycle.
+            version += ':EXPLORATORY_DIRECT_V1'
         fingerprint = version + ':' + reconciliation_snapshot(root, row, locators[cid], objects=objects, scoped=scoped)
         provider = spec.get('pf_price_recheck_provider')
         if provider:
@@ -640,6 +659,12 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         newly_ready = False
         for candidate in context['candidates']:
             record = records.get(candidate['configuration_id'])
+            if record is not None:
+                progress = preparation_progress(candidate, record,
+                    price_requested=candidate['configuration_id'] in shortlist)
+                if record.get('stage_progress') != progress:
+                    record['stage_progress'] = progress
+                    newly_ready = True
             if (candidate['ready'] and candidate['configuration_id'] not in shortlist
                     and record and record['status'] in
                     PRICE_RECHECK_STATES | {'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE'}):
@@ -800,6 +825,14 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 records[cid].pop('price_axis_actions', None)
             if entry is not None:
                 registry['configurations'][cid]=entry;updated=True
+            # Never label an unpriced MSE-feasible candidate as fully prepared.
+            # The canonical signal/Q3 entry remains in the registry regardless.
+            progress_candidate = next(c for c in context['candidates'] if c['configuration_id'] == cid)
+            progress_candidate = dict(progress_candidate,
+                ready=bool(entry and entry.get('signal_packet') and entry.get('q3_inputs')) or progress_candidate['ready'],
+                prices=(entry.get('prices') if entry is not None else progress_candidate.get('prices')))
+            records[cid]['stage_progress'] = preparation_progress(
+                progress_candidate, records[cid], price_requested=cid in shortlist)
             processed |= cid not in waiting or status['status'] != 'PREPARATION_WAITING'
             atomic_write(index,records)
             if entry is not None and announce is not None:

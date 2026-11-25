@@ -24,6 +24,24 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_exploratory_price_recovery_when_model_design_is_impossible(self):
+        from run_pf_preparation_stage import exploratory_direct_cells
+
+        requests = [{'m': m} for m in range(3)]
+        direct = [dict(m=0, axis='X'), dict(m=0, axis='Y'), dict(m=1, axis='X')]
+        self.assertEqual(exploratory_direct_cells(requests, direct, allow_single_axis=True), [
+            dict(m=1, axes=['Y'], role='EARLY_DIRECT'),
+            dict(m=2, axes=['X','Y'], role='EARLY_DIRECT')])
+        self.assertEqual(exploratory_direct_cells(requests, direct, allow_single_axis=False), [
+            dict(m=2, axes=['X','Y'], role='EARLY_DIRECT')])
+
+    def test_q3_readiness_does_not_hide_missing_price(self):
+        candidate = dict(ready=True, prices=None)
+        record = dict(status='READY_RETURNED_TO_SAME_OPTIMIZER')
+        self.assertEqual(selection.preparation_progress(candidate, record, price_requested=True),
+                         dict(q3='READY', price='REQUIRED_FOR_RANKING', price_requested=True))
+        self.assertEqual(selection.preparation_progress(dict(candidate, prices=[1]), record)['price'], 'AVAILABLE')
+
     def test_original_audit_reopens_only_before_reservation_and_after_git_recovery(self):
         from trottertracks import pf_distributed_preparation as distributed
 

@@ -25,6 +25,48 @@ from .rpe_q3_timing import stamp
 
 LIVE_READINESS_RETRY_SECONDS = 10
 _CHECK_PENDING = object()
+_REUSE_HISTORY_LOCK = threading.Lock()
+_REUSE_HISTORY = {}
+
+
+def reuse_history(path):
+    """Incremental diagnostic index, shared by executor instances of a run."""
+    path = Path(path).resolve()
+    with _REUSE_HISTORY_LOCK, path.open('rb') as progress:
+        stat = os.fstat(progress.fileno())
+        identity = (stat.st_dev, stat.st_ino)
+        previous, offset, counts, jobs = _REUSE_HISTORY.get(path, (None, 0, None, None))
+        if previous != identity or stat.st_size < offset:
+            offset, counts, jobs = 0, Counter(), set()
+        progress.seek(offset)
+        for line in progress:
+            if not line.endswith(b'\n'):
+                break
+            if b'RESULT_REUSE' in line:
+                try:
+                    row = json.loads(line)
+                except (ValueError, UnicodeDecodeError):
+                    offset += len(line)
+                    continue
+                if row.get('event') == 'RESULT_REUSE' and row.get('host_id'):
+                    job = row.get('job')
+                    if not job or job not in jobs:
+                        counts[row['host_id']] += 1
+                    if job:
+                        jobs.add(job)
+            offset += len(line)
+        _REUSE_HISTORY[path] = (identity, offset, counts, jobs)
+        return counts.copy(), jobs.copy()
+
+
+def queue_wait_signature(payload):
+    """Resource byte counters are telemetry, not changes in eligibility."""
+    stable = deepcopy(payload)
+    for host in stable.get('hosts', {}).values():
+        storage = host.get('storage') or {}
+        for field in ('used_bytes', 'filesystem_free_bytes'):
+            storage.pop(field, None)
+    return json.dumps(stable, sort_keys=True)
 
 
 def _write(path, value):
@@ -3264,6 +3306,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 if not state.closed:
                     state.queue_feedback = feedback
                     state.last_timing_queue = getattr(snapshot.state, 'last_timing_queue', None)
+                    state.last_timing_queue_at = getattr(snapshot.state, 'last_timing_queue_at', 0)
                     state.ready_cpu_supply = getattr(snapshot.state, 'ready_cpu_supply', {})
                     state.host_ready_backlog = snapshot.state.host_ready_backlog
         except (OSError, KeyError, TypeError, ValueError, RuntimeError, sqlite3.Error) as error:
@@ -3371,9 +3414,11 @@ class DistributedExecutor(ConcurrentExecutor):
                     else:
                         observation['idle_reason'] = ('NO_READY_TASK' if not ready else
                             'DISPATCH_READINESS_OR_POLL_WAIT' if compatible else 'NO_ELIGIBLE_READY_TASK')
-        marker=json.dumps(payload,sort_keys=True)
-        if marker!=getattr(s,'last_timing_queue',None):
-            s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE', report_seconds=time.monotonic()-started,**payload)
+        marker=queue_wait_signature(payload)
+        now=time.monotonic()
+        if marker!=getattr(s,'last_timing_queue',None) or now-getattr(s,'last_timing_queue_at',0)>=30:
+            s.last_timing_queue=marker;s.last_timing_queue_at=now
+            self.log(event='QUEUE_WAIT_STATE', report_seconds=now-started,**payload)
 
     @contextmanager
     def _rpc_queue_lock(self, path, host):
@@ -4124,6 +4169,10 @@ class DistributedExecutor(ConcurrentExecutor):
         # This set only suppresses duplicate timing events. The caller has
         # already checked the current outcome, route and input evidence.
         with self.state.reuse_lock:
+            if not getattr(self.state, 'reuse_history_loaded', False):
+                _, jobs = reuse_history(self.run_dir/'PROGRESS.jsonl')
+                self.state.reused_jobs.update(jobs)
+                self.state.reuse_history_loaded = True
             if job.name in self.state.reused_jobs:
                 return
         host = self.store.accepted_host(job.name, job.parent.name)
@@ -4199,25 +4248,9 @@ class DistributedExecutor(ConcurrentExecutor):
         return snapshot._metrics_snapshot(self._reuse_counts())
 
     def _reuse_counts(self):
-        # All method views share the progress log and this cursor. A fresh
-        # controller rebuilds counts from the durable log on its first query.
-        with getattr(self.state, 'reuse_lock', self.lock), (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
-            stat = os.fstat(progress.fileno())
-            identity = (stat.st_dev, stat.st_ino)
-            previous, offset, counts = getattr(self.state, 'reuse_cursor', (None, 0, None))
-            if previous != identity or stat.st_size < offset:
-                offset, counts = 0, Counter()
-            progress.seek(offset)
-            for line in progress:
-                if not line.endswith(b'\n'):
-                    break
-                if b'RESULT_REUSE' in line:
-                    row = json.loads(line)
-                    if row.get('event') == 'RESULT_REUSE' and row.get('host_id'):
-                        counts[row['host_id']] += 1
-                offset += len(line)
-            self.state.reuse_cursor = (identity, offset, counts)
-            return counts
+        # Reuses are distinct saved jobs, not the number of times the same
+        # optimizer reread one receipt. Keep legacy jobless log rows readable.
+        return reuse_history(self.run_dir/'PROGRESS.jsonl')[0]
 
     def _metrics_snapshot(self, reused):
         result = super().metrics()

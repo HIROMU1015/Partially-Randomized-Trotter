@@ -106,6 +106,21 @@ PRICE_PLAN_HOLDS = {
 }
 
 
+def exploratory_direct_cells(requests, direct, *, allow_single_axis):
+    """Only when a fixed model cannot be designed: explicit missing direct axes.
+
+    The selected-axis provider still runs its ordinary duplicate preflight and
+    C admission.  No coefficient or price is transported across actual widths.
+    """
+    existing = {(row['m'], row['axis']) for row in direct}
+    cells = []
+    for row in requests:
+        axes = [axis for axis in ('X', 'Y') if (row['m'], axis) not in existing]
+        if axes and (allow_single_axis or len(axes) == 2):
+            cells.append(dict(m=row['m'], axes=axes, role='EARLY_DIRECT'))
+    return cells
+
+
 def use_exploratory_plan():
     from trottertracks import pf_evidence_preparation as evidence
     original = evidence.make_plan
@@ -130,6 +145,13 @@ def use_exploratory_plan():
                          direct_prices=direct, signal_rounds=means, new_signal_means=sum(not r['saved_source'] for r in means),
                          calibration_rounds=[], holdout_round=None, new_compile_cells=[], actual_width=cfg['spec']['delta_pf'],
                          new_Q3=0, price_plan_issue=str(error))
+            # Initial broad signal screening may leave price unknown.  The
+            # axis-capable shortlist recheck supplies only missing wrappers,
+            # even when the strict model+holdout design cannot exist.
+            if options.get('allow_single_axis'):
+                value.update(selected_axis_compile=True,
+                             new_compile_cells=exploratory_direct_cells(
+                                 prepared['pending']['requests'], direct, allow_single_axis=True))
         value['new_compile_cells'] = [r for r in value['new_compile_cells'] if r['role'] != 'HOLDOUT']
         value['maximum_new_compile'] = sum(len(r['axes']) for r in value['new_compile_cells'])
         value['price_scope'] = 'EXPLORATORY_CALIBRATION_ONLY'

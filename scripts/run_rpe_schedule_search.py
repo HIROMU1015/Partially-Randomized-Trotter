@@ -113,7 +113,9 @@ def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
             round=spec, methods=result, optimizer_source=optimizer_source),
             **({'bound_cache': cache} if 'bound_cache' in (cli.slim.__kwdefaults__ or {}) else {}))
     with cli.round_phase(run, 'WIDTH_RESULT_JSON'):
-        summary = json.dumps(O.jsonable(summary), ensure_ascii=False, indent=2)
+        # This report is a machine-readable checkpoint; keep every field and
+        # exact value, without repeatedly writing indentation for each row.
+        summary = json.dumps(O.jsonable(summary), ensure_ascii=False, separators=(',', ':'))
     with (run/'ROUND_REPORT.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         if owner is not None and O.load_json(run/'NORMAL_DRIVER.json').get('pid') != owner:
@@ -356,6 +358,11 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             module.__file__ = str(path)
         if module_name == 'pr_candidate_completion':
             module.FIXED_RUN_CODE_ROOT = ROOT
+            if trial.get('pr_price_service_sha256'):
+                price_service = Path(__file__).resolve().with_name('pr_candidate_services.py')
+                if hashlib.sha256(price_service.read_bytes()).hexdigest() != trial['pr_price_service_sha256']:
+                    raise ValueError('Selected PR price metadata service differs')
+                module.FIXED_RUN_PR_PRICE_SERVICE = str(price_service)
         helper.loader.exec_module(module)
         sys.modules[name] = module
         # The optimizer also imports from the package directly.
@@ -1947,7 +1954,9 @@ class WidthDriver:
                     if notify:
                         notify('PR_DF',record)
                 if exploratory:
-                    comp.prepare_shortlist_prices(set(shortlist.get('PR_DF', ())), stop_requested=stop_requested,
+                    available = {cid for candidate in scope for cid in
+                                 (candidate.get('configuration_id'), candidate.get('source_configuration_id')) if cid}
+                    comp.prepare_shortlist_prices(set(shortlist.get('PR_DF', ())) & available, stop_requested=stop_requested,
                                                   on_ready=ready)
                 horizons = scaled_settings(search['scaled_shots'])['M']
                 if 13 not in horizons:
@@ -2675,6 +2684,17 @@ class WidthDriver:
         if executor is not None:
             with executor.store._connection() as db:
                 result.append(db.execute("SELECT max(sequence) FROM events").fetchone()[0])
+                unresolved = [tuple(row) for row in db.execute("SELECT method,job_id FROM jobs WHERE state='UNKNOWN'")]
+            # An imported owner receipt can arrive outside the queue RPC.  It
+            # must wake its current-run owner even before a ledger event.
+            for method, job in sorted(unresolved):
+                for name in ('OUTCOME.json', 'PROCESS_RETURN.json'):
+                    path = self.run/'jobs'/method/job/name
+                    try:
+                        stat = path.stat()
+                        result.append((method, job, name, stat.st_size, stat.st_mtime_ns))
+                    except FileNotFoundError:
+                        result.append((method, job, name, None))
             # A returning worker can make an unqueued candidate eligible.
             # Poll timestamps and fluctuating memory readings are not changes
             # to its identity or admission.
@@ -2694,7 +2714,13 @@ class WidthDriver:
         self.log(event='WAITING_FOR_RECOVERY', **self.state['recovery_wait'])
         deadline = time.monotonic() + seconds
         # Old run evidence edited outside this controller has no queue event.
-        external_recheck = time.monotonic() + 900
+        # Current-run UNKNOWN attempts already have durable queue events.  Do
+        # not rebuild every saved candidate periodically while those events
+        # and all other inputs are unchanged. Prior-run owners still require
+        # the conservative periodic reconciliation of external evidence.
+        local_owners_only = (set(reasons) == {'OWNED_ATTEMPT'} and executor is not None
+                             and not getattr(executor, 'prior_q3_holds', ()))
+        external_recheck = float('inf') if local_owners_only else time.monotonic() + 900
         stop = self.run/'STOP_REQUESTED.json'
         while not stop.exists():
             if self.recovery_revision(executor) != baseline or time.monotonic() >= external_recheck:

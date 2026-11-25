@@ -731,6 +731,23 @@ class ScaleTests(unittest.TestCase):
             with patch.object(entry.time, 'sleep', side_effect=AssertionError('new event is already available')):
                 driver.wait_for_recovery(['OWNED_ATTEMPT'], 15)
 
+    def test_unchanged_current_owner_does_not_restart_full_search_on_timer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            driver = entry.WidthDriver.__new__(entry.WidthDriver)
+            driver.run = Path(directory)
+            driver.state_file = driver.run/'KAPPA_STATE.json'
+            driver.state = {'cycle': 1}
+            driver.waiting_revision = 'unchanged'
+            driver.waiting_executor = SimpleNamespace(prior_q3_holds=[], state=SimpleNamespace(failure=None))
+            now = [0]
+            def sleep(_):
+                now[0] += 1000
+            with patch.object(driver, 'recovery_revision', side_effect=lambda _: 'changed' if now[0] >= 2000 else 'unchanged'), \
+                 patch.object(entry.time, 'monotonic', side_effect=lambda: now[0]), \
+                 patch.object(entry.time, 'sleep', side_effect=sleep):
+                driver.wait_for_recovery(['OWNED_ATTEMPT'], 15)
+            self.assertEqual(now[0], 2000)
+
     def test_artificial_normal_start_queue_resume_and_legacy_pin(self):
         with tempfile.TemporaryDirectory(prefix='artificial-scaled-rpe-') as tmp:
             root=Path(tmp)

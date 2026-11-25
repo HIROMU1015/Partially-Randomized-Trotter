@@ -56,6 +56,23 @@ class ControllerFailures(unittest.TestCase):
         replacement.replace(log)
         self.assertEqual(count(), {'server2': 1})
 
+    def test_reuse_history_deduplicates_same_job_across_invocations(self):
+        from trottertracks.rpe_optimizer_concurrent import reuse_history, queue_wait_signature
+        self.run.mkdir()
+        log = self.run/'PROGRESS.jsonl'
+        log.write_text('\n'.join(json.dumps(dict(event='RESULT_REUSE', host_id='server1', job='original', invocation=i))
+                                 for i in (1, 2))+'\n')
+        counts, jobs = reuse_history(log)
+        self.assertEqual(dict(counts), {'server1': 1})
+        self.assertEqual(jobs, {'original'})
+        payload = {'hosts': {'server1': {'storage': {'used_bytes': 10, 'filesystem_free_bytes': 20,
+                                                   'reason': None, 'accepting_new_jobs': True}}}}
+        changed = deepcopy(payload)
+        changed['hosts']['server1']['storage']['used_bytes'] = 11
+        self.assertEqual(queue_wait_signature(payload), queue_wait_signature(changed))
+        changed['hosts']['server1']['storage']['accepting_new_jobs'] = False
+        self.assertNotEqual(queue_wait_signature(payload), queue_wait_signature(changed))
+
     def test_delayed_result_file_write_does_not_block_independent_poll(self):
         executor = self.executor()
         self.enqueue(executor, 'slow-transfer')
