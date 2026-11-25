@@ -13,6 +13,9 @@ from pathlib import Path, PurePosixPath
 import re
 import shutil
 import sqlite3
+import stat
+import threading
+import time
 import uuid
 
 
@@ -58,6 +61,16 @@ def copy_file(source, target):
 class ArtifactCache:
     def __init__(self, root):
         self.root = Path(root).resolve()
+        self._verified = {}
+        self._verification_locks = {}
+        self._verification_lock = threading.Lock()
+
+    @staticmethod
+    def _identity(path):
+        st=path.lstat()
+        if not stat.S_ISREG(st.st_mode):
+            raise ValueError('Cached artifact is not an ordinary file: '+str(path))
+        return (st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns,st.st_ctime_ns)
 
     def path(self, sha):
         sha = artifact_hash(sha)
@@ -67,10 +80,22 @@ class ArtifactCache:
         result = []
         for sha in dict.fromkeys(hashes):
             path = self.path(sha)
-            if not path.is_file():
-                result.append(sha)
-            elif path.is_symlink() or file_digest(path) != sha:
-                raise ValueError('Corrupt cached artifact: ' + sha)
+            # Immutable CAS files may be shared by dozens of queued requests.
+            # Rehash at first use or after any inode/content metadata change,
+            # rather than reading multi-GiB inputs on every scheduler poll.
+            with self._verification_lock:
+                lock=self._verification_locks.setdefault(sha,threading.Lock())
+            with lock:
+                try:
+                    identity=self._identity(path)
+                except FileNotFoundError:
+                    self._verified.pop(sha,None);result.append(sha);continue
+                stable=time.time_ns()-max(identity[-2:])>=1_000_000_000
+                if stable and self._verified.get(sha)==identity:continue
+                if file_digest(path)!=sha or self._identity(path)!=identity:
+                    self._verified.pop(sha,None)
+                    raise ValueError('Corrupt or changed cached artifact: '+sha)
+                if stable:self._verified[sha]=identity
         return result
 
     def hashes(self):

@@ -711,6 +711,7 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     # execution profile contains its exact paths. Rebind only future host
     # probes; existing owner/attempt profiles continue to be replayed as saved.
     mappings=deepcopy(trial.get('relay_transport_paths') or {})
+    mappings.update(deepcopy(trial.get('worker_transport_paths') or {}))
     if trial.get('pbs_dispatch_gateway') and distributed.get('pbs'):
         pbs_paths=(trial['pbs_dispatch_gateway'].get('transport') or {}).get('paths',{})
         for worker in distributed['pbs'].get('workers',()):
@@ -727,6 +728,9 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                 profile=profiles[host]
                 if not isinstance(profile,dict):profile=O.load_json(Path(profile))
                 profiles[host]=pbs_transport_paths(profile,paths)
+                local=distributed.get('local_worker') or {}
+                if local.get('host_id')==host:
+                    distributed['local_worker']=pbs_transport_paths(local,paths)
         distributed['host_transport_paths']=mappings
 
 

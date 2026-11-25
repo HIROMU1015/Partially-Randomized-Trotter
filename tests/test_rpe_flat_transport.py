@@ -13,6 +13,7 @@ def test_profile_flattening_preserves_fixed_heads_and_unrelated_paths(tmp_path):
     root=first
     for i in range(4):
         child=base/str(i);git(base,'clone','--shared','-q',str(root),str(child));root=child
+    alternate=root/'.git/objects/info/alternates';alternate.write_text(alternate.read_text()+'\n')
     profile=base/'profile.json';profile.write_text(json.dumps({'root':str(root),'route_views':{'old':str(first)},'work_dir':str(base/'spool')}))
     report=api['stage_profile'](base,base/'flat',profile,minimum_depth=2)
     assert list(report['paths'])==[str(root)] and report['alternate_depth']==1

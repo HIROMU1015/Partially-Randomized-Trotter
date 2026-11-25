@@ -55,7 +55,7 @@ COMMON_WORKER_POLICY_FIELDS = frozenset((
     'pf_price_recheck_provider', 'pf_controller_runtime',
     'local_resource_worker', 'local_memory_reserve_bytes', 'local_pf_preparation_pair',
     'local_q3_horizon_adapter', 'local_q3_horizon_adapters', 'large_shot_adapter',
-    'relay_q3_profiles', 'relay_transport_paths', 'relay_batch_worker_sources', 'relay_cpu_limits',
+    'relay_q3_profiles', 'relay_transport_paths', 'worker_transport_paths', 'relay_batch_worker_sources', 'relay_cpu_limits',
     'server2_profile',
     'preparation_host_preference', 'preparation_provider_hosts', 'pbs_collection_workers',
     'pbs_gateway_completion_workers', 'pbs_dispatch_gateway',

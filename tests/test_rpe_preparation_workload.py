@@ -183,3 +183,23 @@ def test_direct_inflight_offer_not_reused_by_other_or_late_poll():
     assert not executor._inflight_direct_offer('remote',current)
     executor.hosts['direct']['poll_started']=current-20
     assert not executor._inflight_direct_offer('direct',current-20)
+
+
+def test_cached_artifact_rehashes_only_after_inode_metadata_change(tmp_path, monkeypatch):
+    import hashlib
+    from trottertracks import rpe_preparation_artifacts as A
+    data=b'fixed artifact'; sha=hashlib.sha256(data).hexdigest(); cache=A.ArtifactCache(tmp_path)
+    path=cache.path(sha);path.parent.mkdir();path.write_bytes(data)
+    import time
+    time.sleep(1.05)  # do not cache a just-written inode within one FS clock tick
+    original=A.file_digest; reads=[]
+    def counted(p):reads.append(p);return original(p)
+    monkeypatch.setattr(A,'file_digest',counted)
+    assert not cache.missing([sha]) and not cache.missing([sha]) and len(reads)==1
+    path.write_bytes(b'different data')
+    import pytest
+    with pytest.raises(ValueError,match='Corrupt'):
+        cache.missing([sha])
+    assert len(reads)==2
+    path.unlink(); assert cache.missing([sha])==[sha]
+    path.write_bytes(data);assert not cache.missing([sha]) and len(reads)==3

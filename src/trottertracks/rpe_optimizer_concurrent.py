@@ -1147,7 +1147,6 @@ class DistributedExecutor(ConcurrentExecutor):
         self.queue_snapshot_lock = threading.Lock()
         self.queue_snapshot_revision = None
         self.queue_snapshot_rows = {}
-        self.queue_dependency_ready = {}
         self.preparation_observations_path = run/'distributed'/'PREPARATION_RESOURCE_OBSERVATIONS.json'
         self.preparation_observation_lock = threading.Lock()
         self.preparation_observations = {item['attempt_id']:item for item in
@@ -1704,7 +1703,7 @@ class DistributedExecutor(ConcurrentExecutor):
                          request_compatible_slots=usable,
                          reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
 
-    def _ready_queue(self, *, rows=None, readiness=None):
+    def _ready_queue(self, *, rows=None, readiness=None, tasks=None):
         manager = getattr(self, 'pbs_manager', None)
         offline_priority = manager.offline_priority() if hasattr(manager, 'offline_priority') else {}
 
@@ -1724,38 +1723,31 @@ class DistributedExecutor(ConcurrentExecutor):
                     offline_priority.get(task.owner, offline_priority.get(task.view.method, len(offline_priority))),
                     self.state.owner_clock.get(task.owner, -1), task.enqueue)
 
-        with self.state.cv:
-            tasks = tuple(self.state.tasks.values())
+        if tasks is None:
+            with self.state.cv:
+                tasks = tuple(self.state.tasks.values())
         return sorted((task for task in tasks if task.status == 'QUEUED'
                        and (task.rule['kind'] != 'preparation' or (rows is None or task.job.name in rows)
                             and (readiness.get(task.job.name,False) if readiness is not None else
                                  self._task_ready(task, None if rows is None else rows[task.job.name])))), key=priority)
 
     def _ready_queue_snapshot(self):
+        # This is the dispatch lane: read durable rows once and defer the
+        # preparation dependency/artifact scan until a matching host exists.
         with self.state.cv:
             tasks = {task.job.name:task for task in self.state.tasks.values() if task.status == 'QUEUED'}
         if not hasattr(self,'queue_snapshot_lock') or not hasattr(self.store,'queue_rows_delta'):
             rows = self.store.rows_for(tasks)
-            return self._ready_queue(rows=rows), rows
-        with self.queue_snapshot_lock:
-            revision, changed, updates = self.store.queue_rows_delta(tasks,self.queue_snapshot_revision,self.queue_snapshot_rows)
-            self.queue_snapshot_revision=revision
-            rows={job:row for job,row in self.queue_snapshot_rows.items() if job in tasks and job not in changed}
-            rows.update(updates);self.queue_snapshot_rows=rows
-            now=time.monotonic();ready={};cache={}
-            for job,task in tasks.items():
-                row=rows.get(job)
-                if row is None or row['state']!='QUEUED' or task.rule['kind']!='preparation':continue
-                prep=row['request']['preparation'];dependencies=set(prep.get('dependencies',()))|set(prep.get('dependency_inputs',{}))
-                prior=self.queue_dependency_ready.get(job)
-                if (prior is not None and prior[0]==row['request_sha256'] and not dependencies.intersection(changed)
-                        and now-prior[1]<30):
-                    ready[job]=True;cache[job]=prior
-                else:
-                    ready[job]=self._task_ready(task,row)
-                    if ready[job]:cache[job]=(row['request_sha256'],now)
-            self.queue_dependency_ready=cache
-        return self._ready_queue(rows=rows,readiness=ready), dict(rows)
+        else:
+            with self.queue_snapshot_lock:
+                revision, changed, updates = self.store.queue_rows_delta(tasks,self.queue_snapshot_revision,self.queue_snapshot_rows)
+                self.queue_snapshot_revision=revision
+                rows={job:row for job,row in self.queue_snapshot_rows.items() if job in tasks and job not in changed}
+                rows.update(updates);self.queue_snapshot_rows=rows
+        # Only queue candidates, not ready proof. _match_ready_jobs and the
+        # claim path check actual dependencies before using these rows.
+        possible={job:True for job,row in rows.items() if row['state']=='QUEUED'}
+        return self._ready_queue(rows=rows,readiness=possible,tasks=tuple(tasks.values())), dict(rows)
 
     def _budget_reserved(self):
         cap = self.state.budgets.get(self.method)
@@ -2220,6 +2212,7 @@ class DistributedExecutor(ConcurrentExecutor):
             row = rows.get(task.job.name)
             if row is None or row['state'] != 'QUEUED':
                 continue
+            dependency_ready=None
             for h in available:
                 if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
                     skipped[h] = True
@@ -2233,6 +2226,11 @@ class DistributedExecutor(ConcurrentExecutor):
                         or not self._local_calibration_pair_allows(h, row['request'], owned=owned)):
                     skipped[h] = True
                     continue
+                if task.rule['kind']=='preparation':
+                    if dependency_ready is None:dependency_ready=self._task_ready(task,row)
+                    if not dependency_ready:
+                        skipped[h]=True
+                        continue
                 conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
                 if not (conditional and skipped[h] and not task.demand):
                     compatible[task.job.name].append(h)
@@ -3026,6 +3024,14 @@ class DistributedExecutor(ConcurrentExecutor):
         rows = self.store.rows_for(reports)
         modified = set()
         for job_id, (record, checked, error) in reports.items():
+            old=rows.get(job_id)
+            # Identical successful metadata reports do not change a queued
+            # reservation. Avoid taking the global lock and DB write per poll.
+            if (error is None and checked is not None and old is not None
+                    and old['state']=='QUEUED' and old['eligibility']==record['decision']
+                    and host not in record.get('failures',{})
+                    and record['decision']['host_fingerprints'].get(host)==checked[2]):
+                continue
             with self.state.cv:
                 if self.hosts[host]['poll_started'] != poll_started or self._user_stop_requested():
                     break
@@ -3059,7 +3065,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     if old is None or old['state']=='CANCELLED':
                         self.submit_preparation(record['request'],budget=record['budget'],approved=record['approved'],
                             contract=record['contract'],eligibility=decision)
-                    elif old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
+                    elif old['state']=='QUEUED' and (changed or old['eligibility']!=decision):self.store.set_eligibility(job_id,decision)
                     if changed:
                         preparation = record['request']['preparation']
                         started = record.get('probe_started_epoch')
@@ -3081,7 +3087,7 @@ class DistributedExecutor(ConcurrentExecutor):
                         modified.add(job_id)
                     if changed:
                         self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='UNCHECKED',stage=record['request']['preparation']['stage'],reason=failure)
-                    if old is not None and old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
+                    if old is not None and old['state']=='QUEUED' and (changed or old['eligibility']!=decision):self.store.set_eligibility(job_id,decision)
                     hold=self._preparation_probe_hold(record)
                     if hold is not None:self.preparation_holds[job_id]=hold
         if modified:
@@ -4048,6 +4054,7 @@ class DistributedExecutor(ConcurrentExecutor):
         queue = rows = None
         if may_probe and (new_slots or buffer_slots):
             queue, rows = self._ready_queue_snapshot()
+            mark('queue_snapshot')
             self._refresh_capacity(admission_policy, admission_error, queue=queue, rows=rows, owned=owned,
                                    current_offer=(host, poll_started))
         mark("match_capacity")
@@ -4063,6 +4070,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 ordered = self._prioritize_probe_classes(host, probe_rows[start:]+probe_rows[:start], limit, new_slots)
                 for row in ordered:
                     try:
+                        if self._preparation_request(row['request']) is not None:
+                            task=s.tasks.get(self.run_dir/'jobs'/row['method']/row['job_id'])
+                            if task is None or not self._task_ready(task,row):continue
                         challenge = self._assignment(row, host_id=host)
                     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
                         self.log(event='HOST_PROBE_INPUT_UNAVAILABLE', host_id=host,
@@ -4178,6 +4188,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 continue
             if not self._fits_host_task_class(host, dict(row, eligibility=decision)):
                 skipped = True
+                continue
+            if task.rule['kind']=='preparation' and not self._task_ready(task,row):
+                skipped=True
                 continue
             conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
             if skipped and conditional and not task.demand:
@@ -4403,7 +4416,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self._timing_queue()
         # The claim transaction rechecked every current owner. The same
         # immutable request snapshot can be reused for advisory capacity.
-        if claimed:
+        if claimed and not self.distributed.get('work_conserving_search'):
             claimed_ids = {row['job_id'] for row in claimed}
             left = [task for task in queue if task.job.name not in claimed_ids and task.status == 'QUEUED']
             self._refresh_capacity(admission_policy, admission_error, queue=left, rows=rows)

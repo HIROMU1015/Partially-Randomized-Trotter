@@ -25,6 +25,7 @@ def object_directories(root, base, seen, ancestors):
     alternate_file = root/'info'/'alternates'
     if alternate_file.is_file():
         for name in alternate_file.read_text().splitlines():
+            if not name:continue  # Git ignores blank alternate records.
             object_directories((root/name).resolve(), base, seen, ancestors | {root})
     seen.add(root)
 
