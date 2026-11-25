@@ -69,6 +69,22 @@ if '--input' in sys.argv and ('freeze' in sys.argv[1:] or 'compare-holdout' in s
     module.write = write_audit
 raise SystemExit(module.main())
 """
+
+
+def max_width_price_bootstrap(helper_root, mapper_source):
+    patch=f"""import types, importlib
+package=types.ModuleType('_rpe_selected_max_width_price');package.__path__=[{str(Path(helper_root)/'src/trottertracks')!r}];sys.modules[package.__name__]=package
+maximum=importlib.import_module(package.__name__+'.pr_df_max_width_price')
+fixed_runtime=module.runtime
+def runtime():
+    selected=fixed_runtime()
+    maximum.install(module.ROOT,selected.D,{mapper_source!r})
+    return selected
+module.runtime=runtime
+raise SystemExit(module.main())"""
+    return _DF_PRICE_BOOTSTRAP.replace('raise SystemExit(module.main())',patch)
+
+
 _LEGACY_DF_PRICE_BOOTSTRAP = (
     _DF_PRICE_BOOTSTRAP.split('# Pool jobs resolve functions', 1)[0]
     .replace('import importlib.util, json, sys', 'import json, runpy, sys')
@@ -675,7 +691,7 @@ class Completion:
             return self.settings.get('pauli_price_wrapper_source', self.source)
         if stage == 'DF_SIGNALS':
             return self.settings.get('df_signal_source', self.source)
-        if stage in ('DF_PRICE_PREPARE', 'DF_CALIBRATION', 'DF_MODEL_FREEZE',
+        if stage in ('DF_PRICE_PREPARE', 'DF_MAX_WIDTH_PRICE_PREPARE', 'DF_CALIBRATION', 'DF_MODEL_FREEZE',
                      'DF_HOLDOUT', 'DF_HOLDOUT_COMPARE'):
             return self.settings.get('df_price_source', self.source)
         return self.source
@@ -2336,7 +2352,13 @@ class Completion:
                 if unavailable:
                     raise Held(DF_PRICE_UNAVAILABLE+' SAVED_AXIS_RECEIPT_OBJECT_UNAVAILABLE: '+str(unavailable))
             saved_axes=['--saved-axis-quotes',str(saved_file)]
-        self.call(args+['prepare']+parallel+saved_axes+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort',cohort,'--source',price_source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
+        prepare_args=args
+        prepare_stage='DF_PRICE_PREPARE'
+        if self.settings.get('df_max_width_price_helper') and (maximum:=self.max_width_source(cref)):
+            prepare_args=list(args);prepare_args[3]=max_width_price_bootstrap(self.settings['df_max_width_code_root'],maximum)
+            prepare_stage='DF_MAX_WIDTH_PRICE_PREPARE'
+        if prepare_stage=='DF_PRICE_PREPARE' or not inp.exists():
+            self.call(prepare_args+['prepare']+parallel+saved_axes+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort',cohort,'--source',price_source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,prepare_stage)
         if not inp.exists():
             raise Held(DF_PRICE_UNAVAILABLE+' PRICE_RULE_OR_RECEIPT_REUSE_REQUIRED:'+str(read(base/'NEEDS.json')))
         frozen_inputs=read(inp)

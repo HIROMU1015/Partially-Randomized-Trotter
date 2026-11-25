@@ -246,6 +246,11 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         settings['df_max_width_source'] = source
         settings['df_max_width_code_root'] = str(code_root)
         settings.setdefault('saved_df_descriptors', {})['0'] = selection['endpoint_descriptor']
+        if price_source:=selection.get('price_helper_source'):
+            name='src/trottertracks/pr_df_max_width_price.py'
+            if subprocess.check_output(['git','show',price_source+':'+name],cwd=ROOT)!=(code_root/name).read_bytes():
+                raise ValueError('Selected max-width price metadata helper differs')
+            settings['df_max_width_price_helper']=price_source
         if selection.get('local_adapter'):
             adapter=selection['local_adapter']
             from trottertracks.rpe_host_profiles import validate_adapter_profile

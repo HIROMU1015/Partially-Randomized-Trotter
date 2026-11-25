@@ -48,3 +48,22 @@ def test_step_registry_accepts_explicit_physical_binary64_only(base):
     with pytest.raises(ValueError):price_api(str(ROOT))['point'](legacy)
     invalid=deepcopy(row);invalid['mapping']['actual_delta_binary64']='0x1.0p+0'
     with pytest.raises(ValueError):price_api(str(ROOT))['point'](invalid)
+
+@pytest.mark.parametrize('ld',[0,7])
+def test_price_metadata_reuses_native_contract_for_new_mapper(base,ld):
+    from types import SimpleNamespace
+    from trottertracks import pr_df_max_width_price as P
+    from trottertracks import pf_pr_rpe_pipeline as common
+    adapter=SimpleNamespace(p=common,deepcopy=deepcopy,AXES={'X':'cosine','Y':'sine'},
+        zz=SimpleNamespace(LOWERING_ID='FIXTURE'),IMPLEMENTATION={'fixture':'unchanged-native'},
+        _real=lambda value:float(W.exact(value)),_key=lambda x:W.A.digest(x),
+        from_b=lambda *_args,**_kw:'legacy')
+    P.install(ROOT,adapter,'ARTIFICIAL_TEST')
+    cfg=config(base,ld,3);r=cfg['rounds'][3]
+    request=adapter.from_b(cfg,3,r['physical_candidate'],input_source={'fixture':'input'},execution_source={'fixture':'native'})
+    assert request['physical_context']['one_body_policy']=='DETERMINISTIC'
+    assert request['physical_context']['physical_candidate']==r['physical_candidate']
+    assert request['physical_context']['implementation']=={'fixture':'unchanged-native'}
+    assert adapter.from_b(base,0,base['rounds'][0]['physical_candidate'])=='legacy'
+    bad=deepcopy(cfg);bad['spec']['A_release']='WRONG_SOURCE'
+    with pytest.raises(ValueError):adapter.from_b(bad,3,r['physical_candidate'],input_source={'fixture':True},execution_source={'fixture':True})
