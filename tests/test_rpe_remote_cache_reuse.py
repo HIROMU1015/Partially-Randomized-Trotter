@@ -104,7 +104,7 @@ class RemoteCacheProof(unittest.TestCase):
             self.job(state, {'nested': [dict(blob=sha)]}, host='other-worker')
         sha, n, _ = self.blob(prior, b'pending')
         inventory[sha] = n
-        put(self.current/'distributed/PREPARATION_PENDING.json', {'inputs': [sha]})
+        put(self.current/'distributed/PREPARATION_PENDING.json', {'schema': 'RPE_PENDING_PREPARATION_READINESS_V1', 'inputs': [sha]})
         self.assertEqual(R.verified_remote_duplicates(self.current, 'server2', inventory, 1000), {})
 
     def test_closed_preparation_reference_can_be_reclaimed_but_unknown_is_retained(self):
@@ -115,7 +115,7 @@ class RemoteCacheProof(unittest.TestCase):
             db.execute("INSERT INTO jobs VALUES ('pbs-0','ACCEPTED','{}','done')")
             db.execute("INSERT INTO jobs VALUES ('pbs-0','UNKNOWN','{}','unresolved')")
         put(self.current/'distributed/PREPARATION_PENDING.json',
-            {'tasks': {'done': {'input': closed}, 'unresolved': {'input': pending}}})
+            {'schema': 'RPE_PENDING_PREPARATION_READINESS_V1', 'tasks': {'done': {'input': closed}, 'unresolved': {'input': pending}}})
         self.assertEqual(R.verified_remote_duplicates(self.current, 'pbs-0',
                                                       {closed: size, pending: n}, 1000), {closed: size})
 
