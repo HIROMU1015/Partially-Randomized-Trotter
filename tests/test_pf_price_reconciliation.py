@@ -703,7 +703,8 @@ class PFPriceReconciliationTests(unittest.TestCase):
                 cid = selection['selected']['configuration_id']
                 if cid == 'second':
                     self.assertTrue(ready.wait(timeout=3))
-                return {'pf_evidence_registry': {'configurations': {cid: {'id': cid}}}}, {}, {
+                return {'pf_evidence_registry': {'configurations': {cid: {'id': cid, 'prices': {'path': 'partial'}}}},
+                        'candidates': [dict(configuration_id=cid, ready=True, prices=None)]}, {}, {
                     'status': 'READY_RETURNED_TO_SAME_OPTIMIZER'}
 
             def announce(updated, routes):
@@ -711,6 +712,7 @@ class PFPriceReconciliationTests(unittest.TestCase):
                 announced.append(updated['pf_evidence_registry']['configurations'])
                 if list(announced[-1]) == ['first']:
                     self.assertEqual(saved['first']['status'], 'READY_RETURNED_TO_SAME_OPTIMIZER')
+                    self.assertNotEqual(saved['first']['stage_progress']['price'], 'AVAILABLE')
                     self.assertEqual(saved['second']['status'], 'PREPARATION_SCHEDULED')
                     ready.set()
 
@@ -743,7 +745,8 @@ class PFPriceReconciliationTests(unittest.TestCase):
                 self.assertTrue(slow.wait(3))
             else:
                 replenished.set()
-            return {'pf_evidence_registry': {'configurations': {cid: {'id': cid}}}}, {}, {
+            return {'pf_evidence_registry': {'configurations': {cid: {'id': cid}}},
+                    'candidates': [dict(configuration_id=cid, ready=True, prices=None)]}, {}, {
                 'status': 'READY_RETURNED_TO_SAME_OPTIMIZER'}
 
         def refresh(root, problem, old, methods, registry, artificial):

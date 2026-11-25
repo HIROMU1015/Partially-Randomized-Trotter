@@ -752,7 +752,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         one_spec = dict(spec, pf_completion=one_settings)
         after,_,status=prepare(root,problem,snapshot_context(context),one_spec,base/'candidates'/cid,
                               deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
-        return chosen,status,after['pf_evidence_registry']['configurations'].get(cid)
+        returned = next(c for c in after['candidates'] if c['configuration_id'] == cid)
+        return chosen,status,after['pf_evidence_registry']['configurations'].get(cid),returned
 
     updated=False;processed=False
     current = None
@@ -793,7 +794,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         for task in completed():
             result=task.result()
             if result is None:continue
-            chosen,status,entry=result;cid=chosen['configuration_id']
+            chosen,status,entry,returned=result;cid=chosen['configuration_id']
             disposition = status['status']
             price_actions = price_axis_actions(status['price_reconciliation']) if 'price_reconciliation' in status else []
             if (distributed_completion and settings.get('recover_saved_price_rounds', True) and
@@ -827,12 +828,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 registry['configurations'][cid]=entry;updated=True
             # Never label an unpriced MSE-feasible candidate as fully prepared.
             # The canonical signal/Q3 entry remains in the registry regardless.
-            progress_candidate = next(c for c in context['candidates'] if c['configuration_id'] == cid)
-            progress_candidate = dict(progress_candidate,
-                ready=bool(entry and entry.get('signal_packet') and entry.get('q3_inputs')) or progress_candidate['ready'],
-                prices=(entry.get('prices') if entry is not None else progress_candidate.get('prices')))
             records[cid]['stage_progress'] = preparation_progress(
-                progress_candidate, records[cid], price_requested=cid in shortlist)
+                returned, records[cid], price_requested=cid in shortlist)
             processed |= cid not in waiting or status['status'] != 'PREPARATION_WAITING'
             atomic_write(index,records)
             if entry is not None and announce is not None:
