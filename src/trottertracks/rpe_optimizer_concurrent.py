@@ -1807,7 +1807,8 @@ class DistributedExecutor(ConcurrentExecutor):
                         continue
                     compatible_jobs += 1
                     if ((free_cpu is None or cpu <= free_cpu)
-                            and (free_memory is None or memory <= free_memory)):
+                            and (free_memory is None or memory <= free_memory)
+                            and self._fits_host_preparation_forecast(host, row, live=True)):
                         fits_now += 1
                     stage = (request.get('preparation') or {}).get('stage', 'q3')
                     seconds = task_estimate(request, manager.settings, host) if pool is not None else None
@@ -2387,7 +2388,8 @@ class DistributedExecutor(ConcurrentExecutor):
             eligibility = row['eligibility'] or {}
             fresh = self.store.eligible(row['request'], row['eligibility'], host, fingerprints, row['job_id'],
                                         request_sha256=row['request_sha256'])
-            ready += int(fresh)
+            live_fit = self._fits_host_preparation_forecast(host, row, live=True)
+            ready += int(fresh and live_fit)
             # A request-specific dry-check establishes demand even while the
             # busy worker has no claim-time fingerprint in its current poll.
             if not fresh and (row['job_id'] in fingerprints or row['job_id'] in rejected
@@ -2398,7 +2400,11 @@ class DistributedExecutor(ConcurrentExecutor):
             if classify:
                 kind = self._task_resource_class(row, host)
                 ready_classes.add(kind)
-                if class_admission:
+                if class_admission and live_fit:
+                    # Keep future-fit demand in capacity_ready, but do not
+                    # isolate this worker for a class that cannot currently
+                    # start due to RAM or storage. Independent classes remain
+                    # eligible for a cold trial or a measured free slot.
                     class_order.append(kind)
         ready_now = ready
         if self.distributed.get('work_conserving_search'):

@@ -139,6 +139,18 @@ class AutoAllocationTests(unittest.TestCase):
             self.assertEqual(read.call_count, 0)
         self.assertEqual(len(self.poll(ex, 'server2', facts)['assignments']), 1)
 
+    def test_cold_class_with_insufficient_live_memory_does_not_hide_smaller_work(self):
+        ex=self.executor(); _, facts=self.jobs(ex, 2, ['local'])
+        ex.distributed.update(live_readiness_max_workers=2, local_worker=dict(host_id='local',
+            slot_policy={'separate_task_resources':True}))
+        ids=list(facts); huge, small=ids[0], ids[1]
+        with patch.object(ex,'_task_resource_class',side_effect=lambda row,host:'large' if row['job_id']==huge else 'small'),                 patch.object(ex,'_fits_host_preparation_forecast',side_effect=lambda host,row,live=False: not live or row['job_id']==small):
+            self.poll(ex,'local',facts,slots=1,observe=True)
+            feedback=ex._capacity_feedback('local')
+            self.assertEqual(feedback['capacity_ready_jobs'],2)
+            self.assertEqual(feedback['ready_jobs'],1)
+            self.assertEqual(feedback['ready_task_class_order'],['small'])
+
     def test_two_preferred_free_slots_take_first_two_and_wsl_takes_surplus_now(self):
         ex = self.executor(); proposals, facts = self.jobs(ex, 3)
         self.poll(ex, 'server2', facts, observe=True)
