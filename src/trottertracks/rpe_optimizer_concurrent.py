@@ -4074,7 +4074,8 @@ class DistributedExecutor(ConcurrentExecutor):
                             (row['state'] == 'QUEUED' or
                              row['state'] == 'UNKNOWN' and item.get('prelaunch_recovery_probe'))):
                         pending_challenges.append(item)
-            self._timing_queue()
+            if admission['accepting'] and admission['max_slots'] != 0 and not stopping:
+                self._timing_queue()
             return dict(assignments=[], stop=False,
                 host_admission=dict(accepting=False, reason='USER_REQUESTED_STOP') if stopping else admission,
                 eligibility_challenges=pending_challenges,
@@ -4122,7 +4123,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     hints[host] = tuple(item for item in fields['eligibility_challenges']
                                         if not self._preparation_request(item['request'])
                                         or item.get('prelaunch_recovery_probe'))
-            self._timing_queue()
+            if admission['accepting'] and admission['max_slots'] != 0 and not stopping:
+                self._timing_queue()
             return dict(fields, capacity_feedback=getattr(s, 'queue_feedback', {}).get(host))
         # A lost response is reconciled with its original owner even
         # if current readiness changed or another host is offline.
@@ -4144,7 +4146,6 @@ class DistributedExecutor(ConcurrentExecutor):
             return reply(assignments=assignments, stop=False,
                          host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
         if not new_slots and not (buffer_slots and may_probe):
-            self._timing_queue()
             return reply(assignments=assignments, stop=False, host_admission=admission,
                         eligibility_challenges=[])
         if queue is None:
