@@ -119,10 +119,57 @@ class RemoteCacheProof(unittest.TestCase):
         self.assertEqual(R.verified_remote_duplicates(self.current, 'pbs-0',
                                                       {closed: size, pending: n}, 1000), {closed: size})
 
+    def test_current_cas_can_refetch_queued_inputs_but_not_owned_inputs(self):
+        queued, size, _ = self.blob(self.current, b'refetchable queued input')
+        assigned, other_size, _ = self.blob(self.current, b'owned input')
+        self.job('QUEUED', {'input': queued}, host=None)
+        self.job('ASSIGNED', {'input': assigned}, host='server2')
+        with patch.object(R, 'read_preparation_readiness', return_value={}):
+            self.assertEqual(R.verified_remote_duplicates(self.current, 'server2',
+                         {queued: size, assigned: other_size}, 1000), {queued: size})
+
     def test_active_remote_execution_disables_proofs(self):
         sha, n, _ = self.blob(self.owner('prior'), b'input')
         self.job('RUNNING', {}, host='server2')
         self.assertEqual(R.verified_remote_duplicates(self.current, 'server2', {sha: n}, 1000), {})
+
+
+class ComputeStorageFence(unittest.TestCase):
+    def test_live_worker_reclaims_only_verified_unowned_cache_at_actual_limit(self):
+        import fcntl
+        from trottertracks import rpe_worker_storage as S
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spool = root/'spool'; spool.mkdir()
+            cache = root/'cache'; cache.mkdir()
+            sample = root/'sample.json'; sample.with_suffix('.lock').touch()
+            policy = dict(limit_bytes=1, roots=[str(cache), str(spool)], sample_path=str(sample))
+            profile = dict(storage_limit=policy, artifact_cache_directory=str(cache), work_dir=str(spool))
+            compute = root/'compute'/'STORAGE_USAGE_GATEWAY.json'
+            report = dict(limit_bytes=1, used_bytes=8192, reason='STORAGE_LIMIT_REACHED', accepting_new_jobs=False)
+            put(compute, dict(policy=S.policy_identity(policy), report=report, sampled_epoch=0))
+            blobs = {}
+            for raw in (b'refetchable', b'owned'):
+                sha = hashlib.sha256(raw).hexdigest()
+                blob = cache/sha[:2]/sha; blob.parent.mkdir(exist_ok=True); blob.write_bytes(raw)
+                blobs[sha] = len(raw)
+            refetchable, owned = blobs
+            attempt = spool/'job'/'attempt'
+            put(attempt/'WORKER_STATE.json', {'state': 'ASSIGNED'})
+            put(attempt/'ASSIGNMENT.json', {'input': owned})
+            stale = spool/'old'/'attempt'
+            put(stale/'WORKER_STATE.json', {'state': 'RUNNING'})
+            put(stale/'ASSIGNMENT.json', {'input': owned})
+            (stale/'WORKER_PROCESS.lock').touch()
+            with (spool/'WORKER.lock').open('a+b') as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX)
+                self.assertEqual(S.reclaim_verified_duplicates(profile, blobs), {})
+                self.assertEqual(set(S.reclaim_verified_duplicates(profile, blobs, compute_samples=[str(compute)])), {refetchable})
+                self.assertTrue((cache/owned[:2]/owned).is_file())
+                self.assertEqual(R.read(stale/'WORKER_STATE.json'), {'state': 'RUNNING'})
+                put(compute, dict(policy=S.policy_identity(policy), report=dict(report, accepting_new_jobs=True, reason=None, used_bytes=0), sampled_epoch=0))
+                self.assertEqual(S.reclaim_verified_duplicates(profile, blobs, compute_samples=[str(compute)]), {})
+
 
 
 class LocalFilesystemPressure(unittest.TestCase):

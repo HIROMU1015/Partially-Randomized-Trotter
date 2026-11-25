@@ -63,29 +63,84 @@ def _referenced_hashes(value):
             yield from _referenced_hashes(item)
 
 
-def reclaim_verified_duplicates(profile, proof, *, spools=None):
+def compute_storage_observation(policy, samples, *, max_age=330):
+    """Read authoritative compute-node measurements without a login-node du.
+
+    Use the shared filesystem modification time for age (node clocks differ).
+    Reports are maintenance observations, not new worker admission offers.
+    """
+    if not policy:
+        return None
+    observations = []
+    for value in samples:
+        path = Path(value)
+        try:
+            if path.is_symlink() or (path.parent/'OFFLINE_ACTIVE').exists():
+                continue
+            data = json.loads(path.read_bytes())
+            age = time.time() - path.stat().st_mtime
+            measured = data['report']
+            if (data['policy'] != policy_identity(policy) or not 0 <= age <= max_age
+                    or measured['limit_bytes'] != policy['limit_bytes']
+                    or type(measured['used_bytes']) is not int or measured['used_bytes'] < 0):
+                continue
+            observations.append(dict(report=measured, age_seconds=age, path=str(path)))
+        except (OSError, KeyError, TypeError, ValueError):
+            continue
+    return min(observations, key=lambda value: value['age_seconds'], default=None)
+
+
+def _compute_quota_hold(policy, samples):
+    """Only an actual hard limit observation fences a legacy live spool."""
+    if not samples:
+        return False
+    for path in samples:
+        observation = compute_storage_observation(policy, [path])
+        if observation is None:
+            return False
+        measured = observation['report']
+        if (measured['accepting_new_jobs'] is not False or
+                measured['reason'] != 'STORAGE_LIMIT_REACHED' or
+                measured['used_bytes'] < policy['limit_bytes']):
+            return False
+    return True
+
+
+def reclaim_verified_duplicates(profile, proof, *, spools=None, compute_samples=(), diagnostic=None):
     """Reclaim transport cache copies verified from the central CAS."""
     policy = profile['storage_limit']
+    diagnostic = diagnostic if diagnostic is not None else {}
     sample = Path(policy['sample_path'])
     spools = sorted(set(map(Path, spools or [profile['work_dir']])))
     cache = Path(profile.get('artifact_cache_directory') or '.')
     if str(cache) not in policy['roots'] or not spools:
+        diagnostic['reason'] = 'CACHE_OR_SPOOL_OUTSIDE_POLICY'
         return {}
     with ExitStack() as locks:
+        fenced_live_spool = False
         for spool in spools:
             if spool.resolve() != spool or not spool.is_dir() or spool.stat().st_uid != os.getuid():
+                diagnostic.update(reason='SPOOL_UNAVAILABLE', spool=str(spool))
                 return {}
             worker_lock = locks.enter_context((spool/'WORKER.lock').open('a+b'))
             try:
                 fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
-                return {}
+                # The active allocation daemon retains WORKER.lock even when
+                # its real quota prevents intake. Its already-owned inputs
+                # remain pinned; a verified unowned CAS copy is refetchable.
+                if spool != Path(profile['work_dir']) or not _compute_quota_hold(policy, compute_samples):
+                    diagnostic.update(reason='WORKER_LOCKED_NO_CONFIRMED_QUOTA_HOLD', spool=str(spool))
+                    return {}
+                fenced_live_spool = True
         storage_lock = locks.enter_context(sample.with_suffix('.lock').open('r+b'))
         fcntl.flock(storage_lock, fcntl.LOCK_EX)
-        observation = json.loads(sample.read_bytes())
+        observation = compute_storage_observation(policy, compute_samples)
+        if observation is None:
+            observation = json.loads(sample.read_bytes())
+            if observation['policy'] != policy_identity(policy):
+                return {}
         report = observation['report']
-        if observation['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots']):
-            return {}
         target = duplicate_reclaim_target(report)
         if target <= 0:
             return {}
@@ -100,7 +155,26 @@ def reclaim_verified_duplicates(profile, proof, *, spools=None):
                 if not all(marker.with_name(name).is_file() for name in
                            ('ASSIGNMENT.json', 'OUTCOME.json', 'PROCESS_RETURN.json')):
                     return {}
+            elif status == 'ASSIGNED':
+                if not marker.with_name('ASSIGNMENT.json').is_file():
+                    return {}
+            elif status in ('STARTING', 'RUNNING'):
+                # A stale historical RUNNING marker does not pin the entire
+                # host. Hold its individual execution lock for this cleanup,
+                # retain its referenced blobs, and leave its state untouched.
+                process = marker.with_name('WORKER_PROCESS.lock')
+                if (not marker.with_name('ASSIGNMENT.json').is_file()
+                        or process.is_symlink() or not process.is_file()):
+                    diagnostic.update(reason='ATTEMPT_LOCK_UNAVAILABLE', attempt=str(marker.parent))
+                    return {}
+                attempt_lock = locks.enter_context(process.open('rb'))
+                try:
+                    fcntl.flock(attempt_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    diagnostic.update(reason='WORKER_HAS_ACTIVE_ATTEMPT', attempt=str(marker.parent), state=status)
+                    return {}
             elif status != 'UNKNOWN':
+                diagnostic.update(reason='WORKER_HAS_ACTIVE_ATTEMPT', attempt=str(marker.parent), state=status)
                 return {}
             for name in ('ASSIGNMENT.json', 'ARTIFACT_MANIFEST.json', 'OUTCOME.json'):
                 path = marker.with_name(name)
@@ -109,6 +183,9 @@ def reclaim_verified_duplicates(profile, proof, *, spools=None):
         inventory = duplicate_inventory(profile)
         removed = {}
         for sha, size in proof.items():
+            if fenced_live_spool and not _compute_quota_hold(policy, compute_samples):
+                diagnostic['reason'] = 'QUOTA_HOLD_CLEARED'
+                break
             if sha in retained or inventory.get(sha) != size:
                 continue
             path = cache/sha[:2]/sha
@@ -119,6 +196,8 @@ def reclaim_verified_duplicates(profile, proof, *, spools=None):
             path.unlink()
             if sum(removed.values()) >= target:
                 break
+        diagnostic['removed'] = len(removed)
+        diagnostic.setdefault('reason', 'REMOVED' if removed else 'NO_UNPINNED_MATCHING_COPY')
         return removed
 
 
@@ -128,7 +207,39 @@ def prefix_caches(profile):
                                if p.get('prefix_cache_directory')))
 
 
-def _used_bytes(roots, *, timeout=10):
+def storage_exclusion_file(policy):
+    return Path(policy.get('exclusion_file', Path(policy['sample_path']).with_name('STORAGE_EXCLUSIONS.json')))
+
+
+def policy_identity(policy):
+    """Account for explicitly designated, retained legacy paths only.
+
+    Exclusions are exact absolute descendants, not glob patterns. They affect
+    quota accounting, never the actual filesystem-free check or raw retention.
+    A removed config immediately invalidates a prior discounted sample.
+    """
+    identity = dict(limit_bytes=policy['limit_bytes'], roots=policy['roots'])
+    try:
+        config = json.loads(storage_exclusion_file(policy).read_bytes())
+    except FileNotFoundError:
+        return identity
+    paths = config.get('excluded_paths')
+    if not isinstance(paths, list) or any(not isinstance(p, str) for p in paths):
+        raise ValueError('Invalid storage exclusions')
+    roots = [Path(p).resolve() for p in policy['roots']]
+    checked = []
+    for name in paths:
+        path = Path(name)
+        if (not path.is_absolute() or path.resolve() != path or any(c in name for c in '*?[]\\')
+                or not any(path != root and path.is_relative_to(root) for root in roots)):
+            raise ValueError('Storage exclusion is not an exact monitored descendant')
+        checked.append(str(path))
+    if checked:
+        identity['excluded_paths'] = sorted(set(checked))
+    return identity
+
+
+def _used_bytes(roots, *, timeout=10, excluded_paths=()):
     existing = set()
     for path in roots:
         try:
@@ -143,9 +254,17 @@ def _used_bytes(roots, *, timeout=10):
                 if not any(root.is_relative_to(parent) for parent in ordered[:i])]
     if not distinct:
         return 0
-    output = subprocess.check_output(
-        ['du', '--summarize', '--total', '--block-size=1', '--', *map(str, distinct)],
-        text=True, stderr=subprocess.PIPE, timeout=timeout)
+    command = ['du', '--summarize', '--total', '--block-size=1',
+               *('--exclude='+path for path in excluded_paths), '--', *map(str, distinct)]
+    try:
+        output = subprocess.check_output(command, text=True, stderr=subprocess.PIPE, timeout=timeout)
+    except subprocess.CalledProcessError as error:
+        # A worker can retire files during du. Retry only that ordinary race;
+        # permission errors and a real timeout must remain unavailable.
+        errors = [line for line in (error.stderr or '').splitlines() if line.strip()]
+        if not errors or not all('No such file or directory' in line for line in errors):
+            raise
+        output = subprocess.check_output(command, text=True, stderr=subprocess.PIPE, timeout=timeout)
     return int(output.splitlines()[-1].split('\t', 1)[0])
 
 
@@ -288,7 +407,7 @@ def acknowledge_pbs_completions(profile, spool, receipts):
     return dict(acknowledged=acknowledged, mismatch=mismatch, deferred=deferred)
 
 
-def _reclaim(spools, roots, used, target, *, du_timeout=10):
+def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=()):
     copies = sorted(_acknowledged_copies(spools, roots))
     removed = 0
     # Recheck the host total after each batch. Separate copies can share blocks.
@@ -305,7 +424,7 @@ def _reclaim(spools, roots, used, target, *, du_timeout=10):
                 remaining -= sizes.get(filename, 0)
                 if remaining <= target:
                     break
-        used = _used_bytes(roots, timeout=du_timeout)
+        used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
         if used <= target:
             break
     return used, removed
@@ -552,7 +671,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             or not isinstance(roots, list) or any(not Path(p).is_absolute() for p in roots)
             or not sample.is_absolute()):
         raise ValueError('Worker storage requires a positive byte limit and absolute paths')
-    identity = dict(limit_bytes=limit, roots=roots)
+    identity = policy_identity(policy)
+    excluded_paths = identity.get('excluded_paths', ())
     start, target = reclaim_watermarks(limit, proactive=proactive)
     caches = list(dict.fromkeys([*([prefix_cache] if prefix_cache else []), *cache_directories]))
     cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_caches=caches)
@@ -600,7 +720,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 return cached
             started = time.monotonic()
             try:
-                used = _used_bytes(roots, timeout=du_timeout)
+                used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
                 before, reclaimed = used, 0
                 cleanup_due = used >= start
                 if cleanup_due and (spools or pbs_runs):
@@ -608,10 +728,10 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     if pbs_runs:
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
                     # Leave room for new attempts before the next cleanup pass.
-                    used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout)
+                    used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout, excluded_paths=excluded_paths)
                 if cleanup_due and used > target and (spools or pbs_runs):
                     if _share_transferred_git_packs(candidates, roots, used-target):
-                        used = _used_bytes(roots, timeout=du_timeout)
+                        used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
                 evicted = 0
                 if cleanup_due and used > target:
                     for path in caches:
@@ -619,7 +739,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                         if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
                             cache_size = _used_bytes([str(cache)], timeout=du_timeout)
                             evicted += PrefixStore(cache).reclaim(cache_size - (used-target))
-                            used = _used_bytes(roots, timeout=du_timeout)
+                            used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
                             if used <= target:
                                 break
                 filesystem_free = {}
@@ -650,6 +770,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     measured['compacted_metadata_bytes'] = compacted
                 if abandoned:
                     measured['reclaimed_metadata_temporary_bytes'] = abandoned
+            if excluded_paths:
+                measured['excluded_paths'] = list(excluded_paths)
             measured['measurement_seconds'] = time.monotonic()-started
             atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
             return measured

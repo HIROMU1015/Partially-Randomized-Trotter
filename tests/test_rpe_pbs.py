@@ -58,7 +58,7 @@ class StorageSampleTests(unittest.TestCase):
             with patch.object(storage, '_used_bytes', return_value=42*P.GIB) as measure:
                 report = storage.report(policy, du_timeout=W.COMPUTE_DU_TIMEOUT)
                 self.assertTrue(report['accepting_new_jobs'])
-                measure.assert_called_once_with([directory], timeout=W.COMPUTE_DU_TIMEOUT)
+                measure.assert_called_once_with([directory], timeout=W.COMPUTE_DU_TIMEOUT, excluded_paths=())
             sample = Path(policy['sample_path'])
             facts = json.loads(sample.read_bytes())
             facts.update(sampled_epoch=100.)
@@ -70,6 +70,21 @@ class StorageSampleTests(unittest.TestCase):
                 facts['report']['used_bytes'] = 49*P.GIB
                 P.atomic(sample, facts)
                 self.assertFalse(observer.report(policy)['accepting_new_jobs'])
+
+    def test_slow_compute_scan_keeps_actual_hold_but_never_uses_stale_positive(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'sample.json'
+            policy = dict(limit_bytes=50*P.GIB, roots=['/shared'])
+            report = dict(limit_bytes=policy['limit_bytes'], used_bytes=51*P.GIB,
+                          accepting_new_jobs=False, reason='STORAGE_LIMIT_REACHED', measurement_seconds=127)
+            P.atomic(path, dict(policy=policy, sampled_epoch=100., report=report))
+            observer = W.GatewayStorage(path, max_age=10, local_clock=True)
+            with patch.object(W.time, 'time', return_value=180.):
+                self.assertEqual(observer.report(policy)['reason'], 'STORAGE_LIMIT_REACHED')
+                self.assertFalse(observer.report(policy)['accepting_new_jobs'])
+                report.update(used_bytes=49*P.GIB, accepting_new_jobs=True, reason=None)
+                P.atomic(path, dict(policy=policy, sampled_epoch=100., report=report))
+                self.assertEqual(observer.report(policy)['reason'], 'STORAGE_USAGE_UNAVAILABLE')
 
     def test_compute_worker_uses_first_fresh_sample_and_rejects_stale_sample(self):
         with tempfile.TemporaryDirectory() as directory:

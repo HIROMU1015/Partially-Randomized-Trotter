@@ -14,7 +14,8 @@ COMPUTE_DU_TIMEOUT = 150
 
 
 class GatewayStorage:
-    def __init__(self, sample, *, max_age, local_clock=False):
+    def __init__(self, sample, *, max_age, local_clock=False, policy_fingerprint=None):
+        self.policy_fingerprint = policy_fingerprint or (lambda policy: {key: policy[key] for key in ('limit_bytes', 'roots')})
         self.sample = sample
         self.max_age = max_age
         self.local_clock = local_clock
@@ -28,7 +29,7 @@ class GatewayStorage:
                            accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
         try:
             data = json.loads(self.sample.read_bytes())
-            if data['policy'] != {key: policy[key] for key in ('limit_bytes', 'roots')}:
+            if data['policy'] != self.policy_fingerprint(policy):
                 return unavailable
             generation = data['sampled_epoch']
             if type(generation) not in (int, float):
@@ -44,8 +45,16 @@ class GatewayStorage:
                 if (type(used) is int and 0 <= used <= policy['limit_bytes'] * 95 // 100
                         and type(measured) in (int, float) and 0 <= measured <= COMPUTE_DU_TIMEOUT):
                     age += measured
-                if 0 <= time.time()-generation <= age:
+                elapsed = time.time() - generation
+                if 0 <= elapsed <= age:
                     return report
+                # During a slow new sweep an actual observed capacity hold
+                # remains actionable. Never promote a stale positive offer.
+                if (self.max_age < elapsed <= 2 * COMPUTE_DU_TIMEOUT + self.max_age
+                        and report.get('accepting_new_jobs') is False
+                        and report.get('reason') in ('STORAGE_LIMIT_REACHED', 'FILESYSTEM_SPACE_LOW')
+                        and type(used) is int):
+                    return dict(report, measurement_stale=True)
                 return unavailable
             if self.generation is not None and generation != self.generation:
                 self.observed = now
@@ -189,20 +198,26 @@ def main():
     sample = directory/'STORAGE_USAGE_GATEWAY.json'
     compute_sampling = profile['pbs'].get('compute_storage_sampling') is True
     sample_report = storage.report
-    observer = GatewayStorage(sample, max_age=2*storage.SAMPLE_SECONDS, local_clock=compute_sampling)
+    sampler = None
+    if compute_sampling and launcher.suffix == '.pyz':
+        import trottertracks
+        trottertracks.__path__.append(str(launcher)+'/trottertracks')
+        from trottertracks import _pbs_storage_report as sampler
+        sample_report = sampler.report
+    observer = GatewayStorage(sample, max_age=2*storage.SAMPLE_SECONDS, local_clock=compute_sampling,
+                              policy_fingerprint=sampler.policy_identity if sampler else None)
     storage.report = observer.report
     os.environ.update(RPE_PBS_OPERATIONAL_LAUNCHER=str(launcher),
                       RPE_PBS_TRANSPORT_ROOT=str(script.parents[1]))
     configure_allocation_worker(profile, launcher)
-    if compute_sampling and launcher.suffix == '.pyz':
-        from trottertracks import _pbs_storage_report as sampler
-        sample_report = sampler.report
     if check_imports:
         print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path))))
         return
     stop_sampling = threading.Event()
     if compute_sampling and profile.get('storage_limit'):
         policy = dict(profile['storage_limit'], sample_path=str(sample))
+        if sampler:
+            policy['exclusion_file'] = str(sampler.storage_exclusion_file(profile['storage_limit']))
 
         def sample_storage():
             # On the PBS Linux nodes nice applies to this background thread.
@@ -214,6 +229,7 @@ def main():
                 if not (directory/'OFFLINE_ACTIVE').exists():
                     sample_report(policy, spools=[profile['work_dir']],
                                   cache_directories=storage.prefix_caches(profile), refresh=True,
+                                  proactive=True, pbs_runs=str(directory.parents[2]),
                                   du_timeout=COMPUTE_DU_TIMEOUT)
                 stop_sampling.wait(storage.SAMPLE_SECONDS)
 

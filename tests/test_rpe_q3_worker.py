@@ -369,7 +369,7 @@ class WorkerTests(unittest.TestCase):
             W.atomic(run/'EXIT.json', dict(invocation_id='new'))
             self.assertFalse(invocation_active(run))
 
-    def test_local_cache_duplicate_reclaim_preserves_queued_and_unmatched_files(self):
+    def test_local_cache_duplicate_reclaim_refetches_queued_and_preserves_unmatched_files(self):
         sys.path.insert(0, str(ROOT/'scripts'))
         from reclaim_rpe_worker_storage import local_duplicate_cache
         with tempfile.TemporaryDirectory() as temporary:
@@ -405,12 +405,13 @@ class WorkerTests(unittest.TestCase):
             with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
                 db.execute('CREATE TABLE jobs(host_id,state,request)')
                 db.execute('INSERT INTO jobs VALUES (NULL,?,?)', ('QUEUED',json.dumps({'sha':eligible['queued']})))
-            self.assertEqual(set(local_duplicate_cache(run,profile)),{eligible['duplicate'],eligible['previous']})
-            for name in ('queued','private'):
+            self.assertEqual(set(local_duplicate_cache(run,profile)),{eligible['duplicate'],eligible['previous'],eligible['queued']})
+            for name in ('different','private'):
                 digest = eligible[name]
                 self.assertEqual((cache/digest[:2]/digest).read_text(),name)
-            digest = eligible['duplicate']
-            self.assertEqual((central/digest[:2]/digest).read_text(),'duplicate')
+            for name in ('duplicate','queued'):
+                digest = eligible[name]
+                self.assertEqual((central/digest[:2]/digest).read_text(),name)
 
     def test_remote_cache_reclaim_preserves_unknown_and_unverified_copies(self):
         from trottertracks.rpe_worker_storage import duplicate_inventory, reclaim_verified_duplicates

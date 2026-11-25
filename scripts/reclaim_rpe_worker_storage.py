@@ -35,6 +35,9 @@ from trottertracks import rpe_worker_storage as storage
 exec(compile(payload['source'], 'rpe_worker_storage.py', 'exec'), vars(storage))
 profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload['profile']
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
+# PBS SETTINGS has a manager-owned placeholder; use the actual session spool.
+if not sys.argv[2]:
+    profile = dict(profile, work_dir=str(spools[0]))
 q3_spools = set(spools)
 if payload.get('pbs_runs'):
     q3_spools.update(Path(payload['pbs_runs']).glob('*/workers/' + profile['host_id']))
@@ -45,23 +48,41 @@ receipts = payload.get('pbs_ack_receipts')
 if receipts:
     acknowledgements = storage.acknowledge_pbs_completions(profile, spools[0], receipts)
 options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile), compact_metadata=True, proactive=True)
-result = storage.report(profile.get('storage_limit'), **options)
+samples = payload.get('compute_storage_samples', [])
+# The worker on the compute node already pays for the expensive directory scan.
+# Reuse its actual observation for maintenance decisions; never publish it as a
+# new admission offer from the login node.
+compute = storage.compute_storage_observation(profile.get('storage_limit'), samples)
+if payload.get('pbs_namespace'):
+    options['du_timeout'] = 60
+result = dict(compute['report']) if compute else storage.report(profile.get('storage_limit'), **options)
+if compute:
+    result['measurement_source'] = 'COMPUTE_NODE_SAMPLE'
+    result['measurement_sample_age_seconds'] = compute['age_seconds']
+
+def refresh_after_cleanup():
+    # Let the running compute sampler remeasure its own storage. Do not
+    # launch another full scan on the login node for each batch of copies.
+    return result if compute else storage.report(profile['storage_limit'], refresh=True, **options)
 if result and storage.duplicate_reclaim_target(result) > 0 and payload.get('duplicate_inventory'):
     result['duplicate_inventory'] = storage.duplicate_inventory(profile)
 if result and storage.duplicate_reclaim_target(result) > 0 and payload.get('verified_duplicates'):
     guarded_spools = set(spools)
     if payload.get('pbs_runs'):
         guarded_spools.update(Path(payload['pbs_runs']).glob('*/workers/*'))
-    removed = storage.reclaim_verified_duplicates(profile, payload['verified_duplicates'], spools=guarded_spools)
+    diagnostic = {}
+    removed = storage.reclaim_verified_duplicates(profile, payload['verified_duplicates'], spools=guarded_spools, compute_samples=samples, diagnostic=diagnostic)
+    result['duplicate_reclaim'] = diagnostic
+    result['verified_duplicate_candidates'] = len(payload['verified_duplicates'])
     if removed:
-        result = storage.report(profile['storage_limit'], refresh=True, **options)
+        result = refresh_after_cleanup()
         result.update(reclaimed_duplicate_artifacts=len(removed), reclaimed_duplicate_bytes=sum(removed.values()))
 if result and storage.duplicate_reclaim_target(result) > 0:
     if payload.get('verified_q3_copies'):
         target = min(storage.duplicate_reclaim_target(result), storage._Q3_COPY_SWEEP_BYTES)
         removed = storage.reclaim_q3_result_copies(profile, q3_spools, payload['verified_q3_copies'], target)
         if removed['files']:
-            result = storage.report(profile['storage_limit'], refresh=True, **options)
+            result = refresh_after_cleanup()
         result['q3_copies_removed'] = removed
     elif payload.get('duplicate_inventory'):
         result['q3_inventory'] = storage.q3_result_copy_inventory(profile, q3_spools)
@@ -72,7 +93,7 @@ if result and storage.duplicate_reclaim_target(result) > 0 and payload.get('pbs_
                       payload['verified_completion_rpcs'], payload['adopted_completion_owners'], target)
         if removed['pairs']:
             q3_removed = result.get('q3_copies_removed')
-            result = storage.report(profile['storage_limit'], refresh=True, **options)
+            result = refresh_after_cleanup()
             if q3_removed is not None:
                 result['q3_copies_removed'] = q3_removed
         result['completion_rpcs_removed'] = removed
@@ -121,8 +142,11 @@ def local_reclaim_target(policy, latest, worker):
     return duplicate_reclaim_target(usage)
 
 
-def retained_artifact_hashes(run, db):
-    requests = db.execute("SELECT request FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED')").fetchall()
+def retained_artifact_hashes(run, db, *, refetch_queued=False):
+    """Pin owned or unresolved inputs. Unassigned inputs can be fetched again
+    when the current controller CAS has independently verified their bytes."""
+    inactive = "'ACCEPTED','CANCELLED','QUEUED'" if refetch_queued else "'ACCEPTED','CANCELLED'"
+    requests = db.execute(f"SELECT request FROM jobs WHERE state NOT IN ({inactive})").fetchall()
     retained = {sha for (request,) in requests for sha in _hashes(json.loads(request))}
     pending = run/'distributed/PREPARATION_PENDING.json'
     if pending.is_file():
@@ -131,7 +155,7 @@ def retained_artifact_hashes(run, db):
             retained.update(_hashes(record))
     tasks = read_preparation_readiness(run/'distributed', db)
     finished = {row[0] for row in db.execute(
-        "SELECT job_id FROM jobs WHERE state IN ('ACCEPTED','CANCELLED')")} if tasks else set()
+        f"SELECT job_id FROM jobs WHERE state IN ({inactive})")} if tasks else set()
     for job_id, task in tasks.items():
         if job_id not in finished:
             retained.update(_hashes(task))
@@ -159,6 +183,7 @@ def local_duplicate_cache(run, profile):
                           (profile['host_id'],)).fetchone():
                 return None
             retained = retained_artifact_hashes(run, db)
+            owned = retained_artifact_hashes(run, db, refetch_queued=True)
         for marker in spool.glob('*/*/WORKER_STATE.json'):
             status = read(marker)['state']
             if status == 'TRANSFERRED':
@@ -168,8 +193,10 @@ def local_duplicate_cache(run, profile):
             for name in ('ASSIGNMENT.json', 'OUTCOME.json', 'ARTIFACT_MANIFEST.json'):
                 path = marker.with_name(name)
                 if path.is_file():
-                    retained.update(_hashes(read(path)))
-        return retained
+                    hashes = set(_hashes(read(path)))
+                    retained.update(hashes)
+                    owned.update(hashes)
+        return retained, owned
 
     def sha(path):
         with path.open('rb') as stream:
@@ -187,14 +214,16 @@ def local_duplicate_cache(run, profile):
         target = local_reclaim_target(policy, latest, worker)
         if target <= 0:
             return {}
-        retained = protected()
-        if retained is None:
+        protection = protected()
+        if protection is None:
             return {}
+        retained, owned = protection
+        current_cache = (run/'distributed/artifacts').resolve()
         verified = []
         verified_bytes = 0
         # Large duplicates restore intake with fewer registry checks.
         for path in sorted(worker.glob('*/*'), key=lambda path: -path.stat().st_size):
-            if (path.name in retained or path.parent.name != path.name[:2]
+            if (path.name in owned or path.parent.name != path.name[:2]
                     or not re.fullmatch('[a-f0-9]{64}', path.name) or path.is_symlink() or not path.is_file()):
                 continue
             stat = path.stat()
@@ -202,6 +231,8 @@ def local_duplicate_cache(run, profile):
                 continue
             relative = path.relative_to(worker)
             for cache in canonical:
+                if path.name in retained and cache != current_cache:
+                    continue
                 original = cache/relative
                 if not original.is_file() or original.is_symlink():
                     continue
@@ -227,7 +258,9 @@ def local_duplicate_cache(run, profile):
                     return {}
                 removed = {}
                 for path, local_id, original, central_id, size in verified:
-                    if path.name in current or path.is_symlink() or original.is_symlink():
+                    current_retained, current_owned = current
+                    if (path.name in current_owned or (path.name in current_retained and
+                            not original.is_relative_to(current_cache)) or path.is_symlink() or original.is_symlink()):
                         continue
                     try:
                         if identity(path.stat()) != local_id or identity(original.stat()) != central_id:
@@ -296,14 +329,18 @@ def verified_remote_duplicates(run, host, inventory, target):
                       ('STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""", (host,)).fetchone():
             return {}
         retained = retained_artifact_hashes(run, db)
+        owned = retained_artifact_hashes(run, db, refetch_queued=True)
+    current_cache = (run/'distributed/artifacts').resolve()
     proof = {}
     size_verified = 0
     canonical = central_artifact_caches(run)
     for sha, size in sorted(inventory.items(), key=lambda pair: -pair[1]):
-        if sha in retained or not re.fullmatch('[a-f0-9]{64}', sha):
+        if sha in owned or not re.fullmatch('[a-f0-9]{64}', sha):
             continue
         verified = False
         for central in canonical:
+            if sha in retained and central != current_cache:
+                continue
             original = central/sha[:2]/sha
             if original.is_symlink() or not original.is_file() or original.stat().st_size != size:
                 continue
@@ -430,6 +467,19 @@ def verified_completion_rpcs(run, host, items):
     return receipts, owners
 
 
+def compute_storage_samples(pbs, namespace, host):
+    state = pbs/'STATE.json'
+    if not state.is_file():
+        return []
+    records = read(state).get('allocations', {})
+    return [str(namespace/'allocations'/token/'STORAGE_USAGE_GATEWAY.json')
+            for token, row in records.items()
+            if re.fullmatch('[a-f0-9]{32}', token) and row.get('status') == 'R'
+            and row.get('spec', {}).get('profile', {}).get('host_id') == host
+            and row.get('spec', {}).get('profile', {}).get('pbs', {}).get('compute_storage_sampling')
+            and (row.get('observed', {}).get('worker') or {}).get('accepting') is not False]
+
+
 def cleanup(run, source, *, audit=False):
     distributed = run/'distributed'
     conf = distributed/'relay'/'CONFIG.json'
@@ -482,7 +532,8 @@ def cleanup(run, source, *, audit=False):
                 command = [settings['gateway_python'], '-B', '-c', REMOTE_ENTRY,
                            settings['transport_root'], '']
                 payload = dict(report_payload, profile=w['profile'],
-                               spools=[str(namespace/'workers'/w['host_id'])], pbs_runs=runs, pbs_namespace=str(namespace))
+                               spools=[str(namespace/'workers'/w['host_id'])], pbs_runs=runs, pbs_namespace=str(namespace),
+                               compute_storage_samples=compute_storage_samples(distributed/'pbs', namespace, w['host_id']))
                 def check(**options):
                     output = subprocess.check_output(
                         ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
@@ -497,8 +548,10 @@ def cleanup(run, source, *, audit=False):
                 rpc_items = result.pop('ended_rpc_inventory', []) if result else []
                 pending = result.pop('pbs_ack_inventory', []) if result else []
                 receipts = accepted_pbs_receipts(run, w['host_id'], pending)
-                proof = (verified_remote_duplicates(run, w['host_id'], inventory, duplicate_reclaim_target(result))
-                         if inventory else {})
+                # Bound remote byte verification per maintenance pass. The
+                # compute sampler provides the next actual measurement.
+                proof = (verified_remote_duplicates(run, w['host_id'], inventory,
+                            min(duplicate_reclaim_target(result), 4 * 1024**3)) if inventory else {})
                 q3_proof = verified_q3_copies(run, w['host_id'], copies, duplicate_reclaim_target(result)) if copies else []
                 rpc_proof, rpc_owners = verified_completion_rpcs(run, w['host_id'], rpc_items)
                 if receipts or proof or q3_proof or rpc_proof:
@@ -511,7 +564,7 @@ def cleanup(run, source, *, audit=False):
             try:
                 result = future.result()
             except (OSError, KeyError, ValueError, RuntimeError, sqlite3.Error, subprocess.SubprocessError) as error:
-                result = dict(error_type=type(error).__name__)
+                result = dict(error_type=type(error).__name__, error=str(error)[-240:])
             print(json.dumps(dict(epoch=time.time(), host_id=host, storage=result)), flush=True)
 
 
