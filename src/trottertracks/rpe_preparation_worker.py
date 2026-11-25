@@ -728,12 +728,17 @@ def execute(assignment, base_profile, directory):
         artifacts=cache.capture(directory,outputs)
     else:
         artifacts = cache.capture(directory, failed_preparation_outputs(directory, spec))
-        if spec.get('provider') in ('DF_CALIBRATION', 'DF_SIGNALS', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
-            with (directory/'PREPARATION_BODY.log').open('rb') as body:
-                body.seek(-min(os.fstat(body.fileno()).st_size, 4096), os.SEEK_END)
-                tail = body.read().decode(errors='replace').strip().splitlines()
-            if tail:
-                outcome['failure_summary'] = tail[-1][:600]
+        # Every provider reports enough information to classify an exited
+        # body, even when it produces no stdout or result artifacts. Do not
+        # infer numerical failure from a generic process exit code.
+        with (directory/'PREPARATION_BODY.log').open('rb') as body:
+            body.seek(-min(os.fstat(body.fileno()).st_size, 4096), os.SEEK_END)
+            tail = body.read().decode(errors='replace').strip().splitlines()
+        outcome['failure_summary'] = tail[-1][:600] if tail else 'Provider returned without diagnostic output'
+        outcome['failure_diagnostic'] = dict(phase='PROVIDER_RETURN', provider=spec.get('provider'),
+            returncode=process.returncode if process.returncode>=0 else None,
+            signal=-process.returncode if process.returncode<0 else None,
+            scientific_body_started=True, returned_artifacts=len(artifacts))
     outcome.update(status='PREPARATION_COMPLETE'if process.returncode==0 else'PREPARATION_FAILED',
                    artifacts=artifacts,git_bundles=bundles)
     put(directory/'ARTIFACT_MANIFEST.json',artifacts);put(directory/'OUTCOME.json',outcome)

@@ -778,6 +778,8 @@ class DistributedPreparationBridge:
                         result['pre_science_failure'] = workspace_error
                     if isinstance(outcome.get('failure_summary'), str):
                         result['failure_summary'] = outcome['failure_summary']
+                    if isinstance(outcome.get('failure_diagnostic'), dict):
+                        result['failure_diagnostic'] = outcome['failure_diagnostic']
                     if stage == 'DF_SIGNALS' and artifacts:
                         numerical = self.df_signal_failure_rounds(request['preparation']['outputs'], artifacts)
                         if numerical:

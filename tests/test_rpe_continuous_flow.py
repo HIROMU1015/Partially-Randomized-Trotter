@@ -229,6 +229,13 @@ def test_real_queue_can_dispatch_while_planner_advances_cycle(tmp_path):
         another,=ex.rpc('/v1/poll',next_poll)['assignments']
         assert another['job_id'] in (second.job.name,third.job.name)
         assert another['job_id']!=assigned['job_id']
+        # Repeated cycles release obsolete in-memory views, not durable jobs.
+        disposable=ex.for_method('PR_PAULI')._enqueue(proposal('disposable'),demand=True)
+        ex._cancel(disposable)
+        ex.advance_cycle()
+        assert disposable.job not in ex.state.tasks
+        assert ex.store.row(disposable.job.name)['state']=='CANCELLED'
+        assert ex.store.row(first.job.name)['attempt_id']==assigned['attempt_id']
     finally:
         # The fixture deliberately owns no actual scientific child.
         with ex.state.cv:
@@ -238,3 +245,29 @@ def test_real_queue_can_dispatch_while_planner_advances_cycle(tmp_path):
             ex.state.active=0
             ex.state.cv.notify_all()
         ex.finish()
+
+
+def test_verified_pre_body_failure_retries_once_for_any_provider(tmp_path):
+    stage='PF_AUDIT'
+    request=normalize_preparation_request(dict(route=dict(kind='preparation'), original_contract={},
+        preparation=dict(stage='audit',provider=stage,source=dict(commit='fixed',files={}),
+                         command=['python','audit'],controller_root=str(tmp_path),input_hashes=[],inputs={})))
+    job=request['request_id']
+    row=dict(job_id=job,method='PREPARATION:audit',request=request,request_sha256=digest(request),
+             state='ACCEPTED',attempt_id='ATTEMPT',completion_sha256='accepted',detail={'outcome_status':'PREPARATION_FAILED'})
+    def put(path,value):
+        path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value))
+    marker=dict(job_id=job,request=request,source='fixed')
+    put(tmp_path/(stage+'.DISTRIBUTED.json'),marker)
+    output=tmp_path/'jobs'/row['method']/job
+    put(output/'OUTCOME.json',dict(status='PREPARATION_FAILED',request_id=job,request_sha256=row['request_sha256'],
+        artifacts={},workspace_error=dict(step='fixed workspace load',scientific_body_started=False)))
+    put(output/'PROCESS_RETURN.json',dict(returncode=2,signal=None))
+    bridge=B.DistributedPreparationBridge(SimpleNamespace(run_dir=tmp_path,store=SimpleNamespace(row=lambda _:row),
+        _user_stop_requested=lambda:False),tmp_path,approved=True)
+    replacement=bridge._transport_repair(tmp_path,stage,marker)
+    assert replacement['request']['preparation']['supersedes_preparation']['job_id']==job
+    assert replacement['request']['preparation']['source']==request['preparation']['source']
+    assert replacement['request']['preparation']['command']==request['preparation']['command']
+    (tmp_path/'STOP.json').write_text('{}')
+    assert bridge._transport_repair(tmp_path,stage,marker) is None
