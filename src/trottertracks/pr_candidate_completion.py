@@ -227,6 +227,15 @@ def physical_evaluation_contract(config):
 class Held(Exception):pass
 
 
+def existing_df_price_owner(directory):
+    """Do not defer a price leaf that already has execution or saved evidence."""
+    for stage in ('DF_CALIBRATION', 'DF_MODEL_FREEZE', 'DF_HOLDOUT'):
+        for suffix in ('.DISTRIBUTED.json', '.STARTED.json', '.RETURN.json'):
+            if next(directory.rglob(stage+suffix), None) is not None:
+                return True
+    return next(directory.rglob('PRICE_EVIDENCE.json'), None) is not None
+
+
 def preparation_failure_class(reason, evidence=None):
     """Classify diagnostics separately from the existing no-retry guard."""
     evidence = evidence or {}
@@ -580,6 +589,31 @@ class Completion:
         if directory.is_relative_to(self.directory.resolve()):
             return self.metadata_path_failure(record, directory) or check(directory, record.get('reason') or '')
         return self.inherited_metadata_repair(record) is not None
+
+    def selected_signal_recovery_requests(self):
+        """Scheduling priority for selected old signal owners, not a retry grant."""
+        runtime = getattr(self, 'stage_executor', None)
+        if runtime is None:
+            return []
+        selected = getattr(runtime, 'settings', {}).get('failed_preparation_recalculations', {})
+        root = (self.directory/'candidates').resolve()
+        requests = []
+        for job, plan in selected.items():
+            if plan.get('df_signal_input_recovery') is not True:
+                continue
+            row = runtime.executor.store.row(job)
+            preparation = (row or {}).get('request', {}).get('preparation', {})
+            command = preparation.get('command', ())
+            if preparation.get('provider') != 'DF_SIGNALS' or '--input' not in command:
+                continue
+            try:
+                candidate = Path(command[command.index('--input')+1]).resolve().relative_to(root).parts[0]
+            except (ValueError, IndexError):
+                continue
+            record = self.state['records'].get(candidate)
+            if record and record.get('status') != 'READY_FOR_SEARCH' and record.get('request'):
+                requests.append(record['request'])
+        return requests
 
     def inherited_metadata_repair(self, record):
         """Replan a proved metadata failure in this run, keeping the old owner intact."""
@@ -1318,6 +1352,14 @@ class Completion:
             # executor rather than independently reserving CPU resources.
             def available_price():
                 if not quote_available:
+                    return initial_quote
+                # The maximum-width grid is exploratory: a price model is
+                # needed for ranking only after Q3 finds feasible allocations.
+                # Do not wait on a new expensive price group to admit signals;
+                # preserve any price group that already owns an attempt.
+                if (exploratory and request.get('df_max_width_source') and not initial_quote['complete']
+                        and not existing_df_price_owner(d)):
+                    rec['exploratory_price_reason'] = 'PRICE_DEFERRED_UNTIL_Q3_FEASIBILITY'
                     return initial_quote
                 try:
                     return self.price(config, cref, prepared, request, d, initial_quote)

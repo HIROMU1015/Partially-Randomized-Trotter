@@ -495,6 +495,13 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             if hashlib.sha256(helper.read_bytes()).hexdigest() != trial['pf_native_paths_sha256']:
                 raise ValueError('Selected PF native path resolver differs')
         placement.update(PF_COMPILE=list(hosts), PF_HOLDOUT_COMPILE=list(hosts))
+    if placements := trial.get('preparation_provider_hosts'):
+        from trottertracks.rpe_preparation_bridge import STAGES
+        configured = distributed['preparation_profiles']
+        if any(provider not in STAGES or not isinstance(hosts, list) or not hosts
+               or not set(hosts) <= configured.keys() for provider, hosts in placements.items()):
+            raise ValueError('Preparation provider placement requires existing providers and hosts')
+        distributed.setdefault('preparation_provider_hosts', {}).update(deepcopy(placements))
     if trial.get('pbs_storage_launcher'):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:
@@ -1609,6 +1616,12 @@ class WidthDriver:
                 W.coarse_priority(axes, p['method'], dict(L_D=p['L_D'],
                     delta_pf=self.state['families'][p['family']]['requested_delta_pf'],
                     kappa=p['kappa']))))
+        # An explicitly selected predecessor is reconciled ahead of new grid
+        # points. This changes only the order: normal ownership/delivery gates
+        # still decide whether its existing result or a successor is usable.
+        recovery = getattr(comp, 'selected_signal_recovery_requests', lambda: ())()
+        if recovery:
+            selected.sort(key=lambda p: p.get('completion_request') not in recovery)
         reason = ('CONTINUOUS_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if continuous else
                   'PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search else
                   'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')

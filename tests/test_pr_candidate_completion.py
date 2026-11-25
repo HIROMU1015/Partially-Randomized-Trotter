@@ -10,12 +10,44 @@ import sys
 import tempfile
 import threading
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'src'),str(ROOT/'tests')]
 from trottertracks import pr_candidate_completion as C,rpe_method_optimizer as O,rpe_priority_search as P
 
 
 class CompletionTests(unittest.TestCase):
+    def test_df_price_owner_is_not_deferred_by_exploratory_q3(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            leaf = directory/'df_price_groups'/'one'
+            leaf.mkdir(parents=True)
+            (leaf/'DF_MAX_WIDTH_PRICE_PREPARE.RETURN.json').touch()
+            self.assertFalse(C.existing_df_price_owner(directory))
+            for name in ('DF_CALIBRATION.DISTRIBUTED.json', 'DF_MODEL_FREEZE.STARTED.json',
+                         'DF_HOLDOUT.RETURN.json', 'PRICE_EVIDENCE.json'):
+                path = leaf/name
+                path.touch()
+                self.assertTrue(C.existing_df_price_owner(directory))
+                path.unlink()
+
+    def test_selected_signal_recovery_prioritizes_only_run_owned_pending_candidates(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            def row(candidate, provider='DF_SIGNALS'):
+                return dict(request=dict(preparation=dict(provider=provider, command=[
+                    'python', '--input', str(directory/'candidates'/candidate/'DF_SIGNAL_REQUEST.json')])))
+            rows = {'a': row('pending'), 'b': row('ready'), 'c': row('other', 'DF_CALIBRATION'),
+                    'd': row('nonselected'), 'e': row('../outside')}
+            plans = {key: {'df_signal_input_recovery': key != 'd'} for key in rows}
+            completion = object.__new__(C.Completion)
+            completion.directory = directory
+            completion.state = {'records': {name: {'status': 'READY_FOR_SEARCH' if name=='ready' else 'HELD_WITH_REASON',
+                'request': {'candidate': name}} for name in ('pending','ready','other','nonselected','outside')}}
+            completion.stage_executor = SimpleNamespace(settings={'failed_preparation_recalculations': plans},
+                executor=SimpleNamespace(store=SimpleNamespace(row=rows.get)))
+            self.assertEqual(completion.selected_signal_recovery_requests(), [{'candidate': 'pending'}])
+
     def test_restored_intake_uses_checked_locators_and_preserves_typed_inputs(self):
         config = dict(commit='prepared-config', path='config.json')
         packet = dict(commit='prepared-packet', path='packet.json')
