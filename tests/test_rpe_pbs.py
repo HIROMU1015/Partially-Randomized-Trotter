@@ -586,6 +586,22 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(len(manager.state['allocations']), 1)
             self.assertEqual(sum(call['action']=='ensure' for call in gateway.calls), 1)
 
+    def test_controller_transport_detachment_never_sends_pilot_stop(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            manager.hold_node = manager.retain_between_batches = True
+            token = self.submit(manager)
+            row = manager.state['allocations'][token]
+            row.update(status='R')
+            allocation = dict(token=token, status='R', job_id='SAVED.PBS', host_id='pbs-0',
+                              worker=dict(accepting=True), pilot_token='shared')
+            gateway.call = Mock(return_value=dict(allocations=[allocation], requests={}))
+            manager.detached = True
+            manager.stop.set()
+            executor.state.closed = True
+            manager.cycle()
+            self.assertFalse(manager.controls.get(token, {}).get('stop', False))
+
     def test_full_shared_pilot_drains_only_its_session_after_owned_work(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, gateway = self.manager(directory)

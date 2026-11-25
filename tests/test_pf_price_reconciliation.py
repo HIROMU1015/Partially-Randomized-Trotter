@@ -244,6 +244,14 @@ class PFPriceReconciliationTests(unittest.TestCase):
                          ['NO_NEW_CALCULATION_UNEVALUATED', 'RECONCILE_ORIGINAL_ATTEMPT'])
         self.assertTrue(all(not row['new_calculation'] for row in actions))
 
+    def test_partial_price_actions_include_unplanned_axes_without_clearing_stop(self):
+        stopped = dict(m=3, axis='X', action='NO_NEW_CALCULATION_UNEVALUATED', new_calculation=False)
+        candidate = dict(price_needs=[dict(m=3, axis='X'), dict(m=3, axis='Y')])
+        actions = selection.missing_price_actions(candidate, [stopped])
+        self.assertEqual(actions[0], stopped)
+        self.assertEqual(actions[1]['action'], 'CHECK_MISSING_AXIS_OWNER')
+        self.assertFalse(actions[1]['new_calculation'])
+
     def test_legacy_receipt_index_only_reopens_affected_price_plans(self):
         x = dict(commit='a'*40, path='old/PRICES.json', selector=[0])
         y = dict(commit='b'*40, path='other/PRICES.json', selector=[1])

@@ -652,6 +652,20 @@ class Tests(unittest.TestCase):
         self.assertEqual(observed['candidates'][0]['state'],'EVALUATION_RUNNING')
         self.assertEqual(store.row('job')['state'],'ASSIGNED')
 
+    def test_status_prefers_live_pf_wave_over_completed_cycle_snapshot(self):
+        from trottertracks.rpe_local0_search import local0_progress
+        run = self.home/'live-progress'
+        (run/'pf_auto').mkdir(parents=True)
+        write(run/'PF_PREPARATION_STATUS.json', dict(records={'c': dict(method='FULL_PF',
+            status='PRICE_OWNER_WAITING', reason='old')}))
+        write(run/'pf_auto/WAVES.json', {'c': dict(method='FULL_PF', status='PRICE_NOT_EVALUATED',
+            reason='new', price_axis_actions=[dict(m=0, axis='Y', action='NO_NEW_CALCULATION_UNEVALUATED')])})
+        write(run/'LIVE_SHORTLIST.json', dict(points=[dict(configuration_id='c', M=12)]))
+        progress = local0_progress({}, {}, run)
+        self.assertEqual(progress['candidates'][0]['reason'], 'new')
+        self.assertEqual(progress['candidates'][0]['price_actions'][0]['axis'], 'Y')
+        self.assertEqual(progress['live_shortlist']['points'][0]['configuration_id'], 'c')
+
     def test_status_keeps_individual_recoveries_for_candidates_in_same_family(self):
         from trottertracks.rpe_local0_search import local0_progress
 

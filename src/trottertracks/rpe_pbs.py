@@ -2102,8 +2102,11 @@ class PbsManager:
         self._dispatch_requests(data['requests'])
         if self.selective_harvest:
             self._advance_harvest()
-        user_stop = self.stop.is_set() or self.executor._user_stop_requested()
-        if self.executor.state.closed and self.retain_between_batches and not user_stop:
+        # The manager's thread-stop flag also closes a transport during
+        # controller reattachment. Only a real user Stop (or a non-retaining
+        # close) may turn that into the pilot's irreversible STOP fence.
+        user_stop = self.executor._user_stop_requested() or (self.stop.is_set() and not self.detached)
+        if (self.detached or self.executor.state.closed and self.retain_between_batches) and not user_stop:
             self.save()
             return
         # A held running node already has its full resource pool. Routine

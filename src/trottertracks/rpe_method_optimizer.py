@@ -1550,7 +1550,7 @@ def scope_absolute_kappa(context, problem):
 
 def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None,
              executor=None, saved_is_free=True, science_approved=True, ready_source=None, scaled_finalizers=None,
-             close_executor=True):
+             close_executor=True, on_feasible=None, price_work_pending=None):
     """Run the per-method search.
 
     initial: 'all' saved results, 'none', or {method: [saved labels]} (replay from seeds).
@@ -1693,7 +1693,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 def await_ready():
                     with ex.state.cv:
                         while not ready_pending():
-                            if (not ready_history or ex.state.closed or ex.state.failure is not None
+                            if ((price_work_pending is not None and price_work_pending())
+                                    or not ready_history or ex.state.closed or ex.state.failure is not None
                                     or (ex.run_dir/'STOP_REQUESTED.json').exists()):
                                 return False
                             ex.state.cv.wait(.5)
@@ -1797,6 +1798,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                         method_scope=method_scope, refresh_ready=refresh_ready, submit_standby=submit_standby,
                                         await_ready=await_ready if parallel_history else None,
                                         answer_now=answer_now, await_dispatch=await_dispatch,
+                                        on_feasible=on_feasible, price_work_pending=price_work_pending,
                                         read_completed=read_completed, refresh_completions=refresh_completions,
                                         after_drain=after_drain if scaled_finalizers is not None else None,
                                         held=prior_q3_holds,

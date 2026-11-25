@@ -1220,7 +1220,9 @@ class DistributedExecutor(ConcurrentExecutor):
             self.dispatcher.join(); self.monitor.join()
             self._close_live_readiness()
             self.stop_controller_relay()
-            if self.pbs_manager: self.pbs_manager.close()
+            if self.pbs_manager:
+                self.pbs_manager.close(retain_allocation=self.pbs_manager.hold_node
+                                       and not self._user_stop_requested())
             if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
             fcntl.flock(self.state.driver, fcntl.LOCK_UN); self.state.driver.close()
             raise
@@ -4466,7 +4468,10 @@ class DistributedExecutor(ConcurrentExecutor):
         super().finish()
         self._close_live_readiness()
         if self.pbs_manager:
-            retain = (self.pbs_manager.retain_between_batches and not self.state.failure
+            # A closed controller grants no further jobs. Retain the shared
+            # reservation even after a technical controller failure; the
+            # ordinary Resume must still reconcile every owned attempt.
+            retain = (self.pbs_manager.retain_between_batches
                       and not self._user_stop_requested())
             self.pbs_manager.close(retain_allocation=retain)
         self.stop_controller_relay()

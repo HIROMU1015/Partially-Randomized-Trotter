@@ -21,6 +21,16 @@ PRICE_RECHECK_STATES = frozenset(('PRICE_EVIDENCE_REQUIRED', 'PRIOR_OWNER_HOLD',
                                 'PRICE_OWNER_WAITING', 'PRICE_NOT_EVALUATED'))
 
 
+def missing_price_actions(candidate, actions):
+    """Explicitly record axes absent from both partial evidence and owner decisions."""
+    accounted = {(row['m'], row['axis']) for row in actions}
+    return [*actions, *(dict(m=row['m'], axis=row['axis'], action='CHECK_MISSING_AXIS_OWNER',
+                            reason='Missing price: run the original owner and saved-price preflight',
+                            new_calculation=False)
+                        for row in candidate.get('price_needs', ())
+                        if (row['m'], row['axis']) not in accounted)]
+
+
 def preparation_progress(candidate, record, *, price_requested=False):
     """Readiness for Q3 and completeness of pricing are different facts."""
     ready = bool(candidate.get('ready') and not candidate.get('execution_needs'))
@@ -432,11 +442,12 @@ def restore_price_checks(waves, records):
             break
 
 
-def reconsider_prices(root, run, spec, settings, records, *, shortlist=()):
+def reconsider_prices(root, run, spec, settings, records, *, shortlist=(), partial_axes=None):
     from concurrent.futures import ThreadPoolExecutor
     from .pf_saved_prices import (catalog_receipt_locators, completed_partial, prior_waves, receipt_locators,
                                   receipt_objects, reconciliation_locators, reconciliation_snapshot)
 
+    partial_axes = partial_axes or {}
     waves = [run/'pf_auto', *prior_waves(run, spec)]
     restore_price_checks(waves, records)
     pending = [(cid, row) for cid, row in records.items()
@@ -479,6 +490,8 @@ def reconsider_prices(root, run, spec, settings, records, *, shortlist=()):
             # calibration+holdout design was impossible.  Wake once for a
             # changed decision rule, not on every idle cycle.
             version += ':EXPLORATORY_DIRECT_V1'
+            if cid in partial_axes:
+                version += ':PARTIAL_AXES_V2:' + json.dumps(partial_axes[cid], sort_keys=True)
         fingerprint = version + ':' + reconciliation_snapshot(root, row, locators[cid], objects=objects, scoped=scoped)
         provider = spec.get('pf_price_recheck_provider')
         if provider:
@@ -710,7 +723,9 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 # Recheck only before a producer or scientific attempt existed.
                 row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE', price_receipt_recheck=True)
         price_settings = dict(settings, exploratory_cost=problem.get('search', {}).get('exploratory_cost') is True)
-        reconsider_prices(root, run, spec, price_settings, records, shortlist=shortlist - resumed_audits)
+        reconsider_prices(root, run, spec, price_settings, records, shortlist=shortlist - resumed_audits,
+                          partial_axes={c['configuration_id']: c['price_needs'] for c in context['candidates']
+                                        if c.get('price_needs')})
         for row in records.values():
             if row['status'] in PRICE_RECHECK_STATES and 'price_reconciliation' in row:
                 row['price_axis_actions'] = price_axis_actions(row['price_reconciliation'])
@@ -723,6 +738,11 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             if record is not None:
                 progress = preparation_progress(candidate, record,
                     price_requested=candidate['configuration_id'] in shortlist)
+                if candidate['configuration_id'] in shortlist and candidate.get('price_needs'):
+                    actions = missing_price_actions(candidate, price_axis_actions(record.get('price_reconciliation', {})))
+                    if actions != record.get('price_axis_actions'):
+                        record['price_axis_actions'] = actions
+                        newly_ready = True
                 if record.get('stage_progress') != progress:
                     record['stage_progress'] = progress
                     newly_ready = True
@@ -808,6 +828,13 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             one_settings['prior_owner_directories'] = sorted(
                 set(settings.get('prior_owner_directories', ())) | set(record['price_prior_owner_directories']))
             one_settings['previously_audited_price_axes'] = record['previously_audited_price_axes']
+            owner_file = base/'candidates'/cid/'pf_auto/pf_completion/ORIGINAL_OWNER_REQUEST.json'
+            if owner_file.is_file():
+                if json.loads(owner_file.read_text()).get('partial_price_recovery'):
+                    one_settings['partial_price_recovery'] = True
+            elif cid in shortlist and one_settings.get('selected_axis_compile') and any(
+                    c.get('price_needs') for c in context['candidates'] if c['configuration_id'] == cid):
+                one_settings['partial_price_recovery'] = True
         else:
             base = recovery if record.get('price_receipt_recheck') else run/'pf_auto'
         one_spec = dict(spec, pf_completion=one_settings)
@@ -891,7 +918,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 records[cid].pop('previous_preparation_hold', None)
             if 'price_reconciliation' in status:
                 records[cid]['price_prior_owner_directories'] = status['price_reconciliation']['original_owner_directories']
-                records[cid]['price_axis_actions'] = price_actions
+                records[cid]['price_axis_actions'] = missing_price_actions(returned, price_actions)
             else:
                 records[cid].pop('price_axis_actions', None)
             if entry is not None:

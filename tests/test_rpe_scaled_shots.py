@@ -709,6 +709,27 @@ class ScaleTests(unittest.TestCase):
             self.assertNotIn('recovery_wait', driver.state)
             self.assertEqual(driver.state['stop']['reason'], 'REQUESTED_WIDTH_RULE_EXHAUSTED')
 
+    def test_feasible_point_wakes_price_work_before_remaining_grid_and_replays_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = entry.LivePriceWork(Path(directory), {})
+            c = self.candidate('c', None)
+            c['source_configuration_id'] = 'parent'
+            policy = S.settings(dict(M=[0], grid=dict(min_k=-2,max_k=0,divisor=2), compare_paper=False))
+            knowledge = {}
+            first = S.run('PR_PAULI', [c], knowledge, O.FixtureBackend(lambda *_: self.bounds(True), TAU),
+                          dict(scaled_shots=policy, exploratory_cost=True, feasibility_first=True),
+                          TAU, None, on_feasible=work.observe, price_work_pending=work.pending.is_set)
+            self.assertEqual(first['stop_reason'], 'WORK_SLICE_YIELDED')
+            self.assertEqual(work.snapshot(), {'PR_PAULI': ['parent']})
+            self.assertEqual(len(first['trace']), 1)
+            replay = entry.LivePriceWork(Path(directory), {})
+            self.assertFalse(replay.pending.is_set())
+            self.assertEqual(replay.snapshot(), work.snapshot())
+            replay.observe('PR_PAULI', c, dict(M=0, cost=None))
+            self.assertFalse(replay.pending.is_set())
+            replay.observe('PR_PAULI', dict(c, prices=[1, 1]), dict(M=0, cost=F(22)))
+            self.assertEqual(load(replay.path)['points'][0]['estimated_total_RZ'], O.enc(F(22)))
+
     def test_shortlist_rechecks_track_the_fixed_pricing_candidate(self):
         methods = dict(PR_DF=dict(scaled_shots=dict(unpriced_feasible=[dict(configuration_id='projected', M=11)]),
                                   by_configuration=[dict(configuration_id='projected', M=11,

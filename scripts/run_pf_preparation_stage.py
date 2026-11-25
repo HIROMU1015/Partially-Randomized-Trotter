@@ -121,7 +121,7 @@ def exploratory_direct_cells(requests, direct, *, allow_single_axis):
     return cells
 
 
-def use_exploratory_plan():
+def use_exploratory_plan(*, recover_partial=False):
     from trottertracks import pf_evidence_preparation as evidence
     original = evidence.make_plan
 
@@ -152,6 +152,15 @@ def use_exploratory_plan():
                 value.update(selected_axis_compile=True,
                              new_compile_cells=exploratory_direct_cells(
                                  prepared['pending']['requests'], direct, allow_single_axis=True))
+        if recover_partial and options.get('allow_single_axis'):
+            # The previous exploratory publication did not price the full
+            # requested vector. Do not reserve its same incomplete model
+            # cohort again: give every missing axis to the normal duplicate
+            # and original-owner preflight. Only clear axes can compile.
+            value.update(selected_axis_compile=True,
+                         new_compile_cells=exploratory_direct_cells(
+                             value['prepared']['pending']['requests'], value['direct_prices'],
+                             allow_single_axis=True))
         value['new_compile_cells'] = [r for r in value['new_compile_cells'] if r['role'] != 'HOLDOUT']
         value['maximum_new_compile'] = sum(len(r['axes']) for r in value['new_compile_cells'])
         value['price_scope'] = 'EXPLORATORY_CALIBRATION_ONLY'
@@ -413,7 +422,7 @@ def main():
     request=load(a.input)
     if a.plan_signal_index is not None:
         if request.get('exploratory_cost') is True:
-            use_exploratory_plan()
+            use_exploratory_plan(recover_partial=request.get('partial_price_recovery') is True)
         if a.saved_price_index is not None:
             saved_price_helpers()['use_saved_prices'](a.saved_price_index)
         cache_mean_pool(a.provider_root,a.plan_signal_index)

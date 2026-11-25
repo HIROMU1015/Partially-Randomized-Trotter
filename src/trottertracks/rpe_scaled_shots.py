@@ -136,7 +136,8 @@ def scope_coverage(method_scope, horizons, rows):
 def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spent=0, free=None,
         science_approved=True, refresh_ready=None, submit_standby=None, held=(), flagged_stop=None,
         read_completed=None, after_drain=None, await_ready=None, method_scope=None,
-        refresh_completions=None, answer_now=None, await_dispatch=None):
+        refresh_completions=None, answer_now=None, await_dispatch=None,
+        on_feasible=None, price_work_pending=None):
     """Search the fixed allocation grid, with no assumed MSE monotonicity."""
     from decimal import DecimalException
     from . import rpe_method_optimizer as O
@@ -180,6 +181,9 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             key = (c['configuration_id'], row['vector'])
             verified = dict(answer, status=status, cost=row['cost'])
             knowledge[key] = known[key] = verified
+            if (exploratory and on_feasible is not None and status == O.PASS
+                    and row['smallest_grid_k'] is not None):
+                on_feasible(name, c, row)
 
     native_parents = set()
 
@@ -323,6 +327,9 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         if collect_completed():
             deferred.clear()
         if fatal:
+            break
+        if price_work_pending is not None and price_work_pending():
+            requested_stop = 'WORK_SLICE_YIELDED'
             break
         series = [rows for group in groups.values() if (rows := pending_allocations(group, depth))]
         heads = [rows[0] for rows in series]

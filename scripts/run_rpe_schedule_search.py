@@ -975,6 +975,50 @@ def shortlist_price_ids(results):
     return unresolved
 
 
+class LivePriceWork:
+    """Persist selector-confirmed feasible points before the full batch ends."""
+    def __init__(self, run, initial):
+        from threading import RLock, Event
+        self.path = run/'LIVE_SHORTLIST.json'
+        self.lock = RLock()
+        self.pending = Event()
+        self.targets = {method: set(ids) for method, ids in initial.items()}
+        self.rows = {}
+        if self.path.is_file():
+            for row in O.load_json(self.path).get('points', ()):
+                key = (row['method'], row['configuration_id'], row['M'])
+                self.rows[key] = row
+                if row['estimated_total_RZ'] is None:
+                    self.targets.setdefault(row['method'], set()).add(row['source_configuration_id'])
+
+    def snapshot(self):
+        with self.lock:
+            return {method: sorted(ids) for method, ids in self.targets.items()}
+
+    def observe(self, method, candidate, allocation):
+        from trottertracks.rpe_q3_coordinator import atomic_json
+        cid = candidate['configuration_id']
+        parent = candidate.get('source_configuration_id') or cid
+        key = (method, cid, allocation['M'])
+        cost = allocation['cost']
+        price_key = hashlib.sha256(str(candidate.get('prices')).encode()).hexdigest() if cost is not None else None
+        with self.lock:
+            previous = self.rows.get(key)
+            if previous is not None and previous['estimated_total_RZ'] is not None:
+                if cost is None or (previous.get('price_key') == price_key and KS._frac(previous['estimated_total_RZ']) <= cost):
+                    return
+            row = dict(method=method, configuration_id=cid, source_configuration_id=parent,
+                       M=allocation['M'], estimated_total_RZ=O.enc(cost) if cost is not None else None, price_key=price_key)
+            if previous == row:
+                return
+            self.rows[key] = row
+            if cost is None and parent not in self.targets.setdefault(method, set()):
+                self.targets[method].add(parent)
+                self.pending.set()
+            atomic_json(self.path, dict(schema='RPE_LIVE_SHORTLIST_V1',
+                                        points=list(self.rows.values()), targets=self.snapshot()))
+
+
 class WidthDriver:
     """Declared widths for both PR methods, reusing common completion and V2.
 
@@ -2062,12 +2106,15 @@ class WidthDriver:
         if exploratory and self.work_conserving_search:
             search.setdefault('feasibility_first',True)
         shortlist = {}
+        live_price = None
         if exploratory:
             shortlist = self.state.get('shortlist_price_candidates')
             if shortlist is None:
                 previous_report = self.run/'ROUND_RESULT.json'
                 shortlist = shortlist_price_ids(O.load_json(previous_report)['methods']) if previous_report.is_file() else {}
                 self.state['shortlist_price_candidates'] = shortlist
+            live_price = LivePriceWork(self.run, shortlist)
+            shortlist = live_price.snapshot()
             active_spec['exploratory_price_candidates'] = [
                 cid for method in ('FULL_PF', 'TRUNCATED_PF') for cid in shortlist.get(method, ())]
         active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
@@ -2122,11 +2169,17 @@ class WidthDriver:
             def user_stopped():
                 return (self.run/'STOP_REQUESTED.json').exists()
 
+            from threading import RLock
+            df_price_lock = RLock()
+
+            def df_enabled():
+                return (runtime is not None and 'PR_DF' in self.methods and self.spec.get('science_approved') is True
+                        and search.get('rule') == 'RPE_SCALED_SHOTS_V1' and not context.get('artificial')
+                        and problem.get('problem',{}).get('system') == 'H4'
+                        and not context.get('pf_evidence_registry',{}).get('artificial'))
+
             def prepare_df(scope, notify=None, stop_requested=user_stopped):
-                if (runtime is None or 'PR_DF' not in self.methods or self.spec.get('science_approved') is not True
-                        or search.get('rule') != 'RPE_SCALED_SHOTS_V1' or context.get('artificial')
-                        or problem.get('problem',{}).get('system') != 'H4'
-                        or context.get('pf_evidence_registry',{}).get('artificial')):
+                if not df_enabled():
                     return
                 def ready(record):
                     horizon_keys.add(record['key'])
@@ -2135,8 +2188,9 @@ class WidthDriver:
                 if exploratory:
                     available = {cid for candidate in scope for cid in
                                  (candidate.get('configuration_id'), candidate.get('source_configuration_id')) if cid}
-                    comp.prepare_shortlist_prices(set(shortlist.get('PR_DF', ())) & available, stop_requested=stop_requested,
-                                                  on_ready=ready)
+                    with df_price_lock:
+                        comp.prepare_shortlist_prices(set(live_price.snapshot().get('PR_DF', ())) & available,
+                                                      stop_requested=stop_requested, on_ready=ready)
                 horizons = scaled_settings(search['scaled_shots'])['M']
                 if 13 not in horizons:
                     return
@@ -2164,7 +2218,9 @@ class WidthDriver:
                 comp.stop_requested=stop_preparation.is_set
                 supports_stop='stop_requested'in inspect.signature(self.complete_points).parameters
                 prepare_options = {'stop_requested': stop_preparation.is_set} if supports_stop else {}
-                search_options = {}
+                price_options = (dict(on_feasible=live_price.observe,
+                                      price_work_pending=live_price.pending.is_set) if live_price else {})
+                search_options = dict(price_options)
                 if self.live_ready_refill:
                     continuous = self.work_conserving_search and runtime is not None
                     announce, wait_for_preparation, subscriber = self.live_ready_source(
@@ -2385,6 +2441,8 @@ class WidthDriver:
                             if p['status'] in ('REGISTERED', 'EVALUATED') and p.get('completion', {}).get('key')} | horizon_keys.copy()
 
                 installed=ready_keys()
+                pf_price_submitted = set(active_spec.get('exploratory_price_candidates', ()))
+                df_price_submitted = set(shortlist.get('PR_DF', ())) if df_future is not None else set()
                 bootstrap = preparation_pool.submit(self.bootstrap_families) if parallel_families else None
                 pending=preparation_pool.submit(prepare)
                 can_search=any(c['ready']for c in context['candidates'])
@@ -2400,6 +2458,8 @@ class WidthDriver:
                         can_search=any(c['ready']for c in context['candidates'])
                         self.log(event='PF_READY_INSTALLED_DURING_PREPARATION',pr_pending=not pending.done())
                     if can_search:
+                        if live_price:
+                            live_price.pending.clear()
                         with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION',on_error=lambda error:stop_preparing()):
                             interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
                                 initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True,
@@ -2410,6 +2470,27 @@ class WidthDriver:
                             if df_future is not None:
                                 df_future.result()
                             break
+                    live_refill = bool(live_price and live_price.pending.is_set())
+                    if live_price and not stopped():
+                        # New points may arrive while a previous producer owns
+                        # its workspace. Refill after that producer returns.
+                        shortlist = live_price.snapshot()
+                        pf_ids = {cid for method in ('FULL_PF', 'TRUNCATED_PF') for cid in shortlist.get(method, ())}
+                        df_ids = set(shortlist.get('PR_DF', ()))
+                        if pf_enabled and pf_future is None and pf_ids - pf_price_submitted:
+                            active_spec['exploratory_price_candidates'] = sorted(pf_ids)
+                            args = (ROOT, problem, snapshot_context(context), active_spec, self.run, deepcopy(routes), runtime)
+                            pf_price_submitted = pf_ids
+                            pf_future = preparation_pool.submit(prepare_pf)
+                        if df_enabled() and df_future is None and df_ids - df_price_submitted:
+                            df_price_submitted = df_ids
+                            def live_df():
+                                with df_price_lock:
+                                    comp.prepare_shortlist_prices(set(live_price.snapshot().get('PR_DF', ())),
+                                        stop_requested=stopped,
+                                        on_ready=lambda record: notify_df('PR_DF', record) if notify_df else None)
+                            df_future = preparation_pool.submit(live_df)
+                        live_price.pending.clear()
                     if pending.done():
                         pending.result()
                         if pf_future is None and df_future is None and bootstrap is None: break
@@ -2434,7 +2515,7 @@ class WidthDriver:
                         O.apply_published(context['candidates'],routes, exploratory=exploratory);installed=ready
                         self.log(event='LATE_READY_INSTALLED_DURING_PREPARATION',keys=sorted(changed))
                     pf_ready = self.live_ready_refill and any(subscriber.has_new(m) for m in self.methods)
-                    can_search=bool(changed or replenished or remaining_ready_work or pf_ready)
+                    can_search=bool(changed or replenished or remaining_ready_work or pf_ready or live_refill)
                     if not can_search:
                         producers=[f for f in (pending,pf_future,df_future,bootstrap) if f is not None and not f.done()]
                         wait(producers,timeout=1,return_when=FIRST_COMPLETED)
@@ -2456,7 +2537,9 @@ class WidthDriver:
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
                     result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
                         initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,
-                        science_approved=self.spec.get('science_approved')is True)
+                        science_approved=self.spec.get('science_approved')is True,
+                        **(dict(on_feasible=live_price.observe, price_work_pending=live_price.pending.is_set)
+                           if live_price else {}))
             actionable = any(req['kind'] != 'HORIZON_INPUTS_MISSING'
                              for r in result.values() for req in r.get('input_requests', []))
             if not O.shared_stop(result) and actionable:
@@ -2536,7 +2619,10 @@ class WidthDriver:
             self.shortlist_price_changed = False
             if exploratory:
                 current = shortlist_price_ids(result)
-                self.shortlist_price_changed = any(set(ids) - set(shortlist.get(method, ()))
+                if live_price:
+                    for method, ids in live_price.snapshot().items():
+                        current[method] = sorted(set(current.get(method, ())) | set(ids))
+                self.shortlist_price_changed = any(set(ids) - set(self.state.get('shortlist_price_candidates', {}).get(method, ()))
                                                    for method, ids in current.items())
                 self.state['shortlist_price_candidates'] = current
             self.save()

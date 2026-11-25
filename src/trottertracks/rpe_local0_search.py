@@ -575,12 +575,16 @@ def local0_progress(applied, spec, run=None):
                     if (detail := completion.get(field)):
                         observations[key][field] = detail
     pf_status = run/'PF_PREPARATION_STATUS.json'
-    if pf_status.is_file():
+    waves = run/'pf_auto/WAVES.json'
+    if pf_status.is_file() or waves.is_file():
         pending = {'PREPARATION_WAITING': 'PREPARATION_WAITING', 'PREPARATION_INCOMPLETE': 'TECHNICAL_FAILURE',
                    'PRIOR_OWNER_HOLD': 'TECHNICAL_FAILURE', 'PRICE_EVIDENCE_REQUIRED': 'PREPARATION_WAITING',
                    'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE', 'PRICE_RECHECK_AVAILABLE': 'PREPARATION_WAITING',
                    'PRICE_OWNER_WAITING': 'PREPARATION_WAITING', 'PRICE_NOT_EVALUATED': 'NOT_EVALUATED'}
-        for key, record in load(pf_status).get('records', {}).items():
+        pf_records = load(pf_status).get('records', {}) if pf_status.is_file() else {}
+        if waves.is_file():
+            pf_records.update(load(waves))
+        for key, record in pf_records.items():
             preparation_records.append(dict(record, configuration_id=key))
             if record.get('method') in ('FULL_PF', 'TRUNCATED_PF') and record.get('status') in pending:
                 observations[key] = dict(candidate_id=key, method=record['method'], state=pending[record['status']],
@@ -590,12 +594,12 @@ def local0_progress(applied, spec, run=None):
                 if record.get('preparation_recovery'):
                     observations[key]['preparation_recovery'] = record['preparation_recovery']
     if scope is not None:
-        waves = run/'pf_auto/WAVES.json'
-        if waves.is_file():
-            preparation_records.extend(dict(record, configuration_id=key) for key,record in load(waves).items())
         completion = run/'completion/STATE.json'
         if completion.is_file():
             preparation_records.extend(load(completion).get('records', {}).values())
+    shortlist = run/'LIVE_SHORTLIST.json'
+    if shortlist.is_file():
+        progress['live_shortlist'] = dict(load(shortlist), snapshot_epoch=shortlist.stat().st_mtime)
     method_by_candidate = {row.get('configuration_id'): row.get('method') for row in preparation_records
                            if row.get('configuration_id') and row.get('method')}
     database = run/'distributed/QUEUE.sqlite3'

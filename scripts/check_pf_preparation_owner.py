@@ -6,10 +6,25 @@ Unregistered partial results and consumed STOPs remain at their original owner.
 import argparse
 import importlib.util
 import json
+import subprocess
 from pathlib import Path
 import sys
 from run_pf_preparation_stage import (PRICE_PLAN_HOLDS, bind_preflight_snapshot, cache_mean_pool,
                                       saved_price_helpers, use_exploratory_plan)
+
+
+def reusable_entry(root, entry, *, exploratory, selected_axes):
+    if not entry or not all(entry.get(k) for k in ('signal_packet', 'prices', 'q3_inputs')):
+        return False
+    if not (exploratory and selected_axes):
+        return True
+    from trottertracks.pf_optimizer_connection import read_source
+    from trottertracks.rpe_method_optimizer import Reader
+    try:
+        table = read_source(root, Reader(root), entry['prices'])
+    except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
+        return False
+    return table.get('coverage') != 'PARTIAL_DIRECT_PRICE_EVIDENCE'
 
 
 def inspect(root,request,observations,signal_index=None,saved_price_index=None):
@@ -20,7 +35,7 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
     bind_preflight_snapshot()
     exploratory = request.get('exploratory_cost') is True
     if exploratory:
-        use_exploratory_plan()
+        use_exploratory_plan(recover_partial=request.get('partial_price_recovery') is True)
     scoped_recovery = exploratory and saved_price_index is not None
     evidence_root = Path(json.loads(Path(saved_price_index).read_bytes())['root']) if scoped_recovery else root
     helpers, extra = None, None
@@ -28,7 +43,7 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
         configuration=provider.selected_configuration(item);cid=configuration['id']
         registry=Path(request['registry_file']);entry=None
         if registry.is_file():entry=json.loads(registry.read_text()).get('configurations',{}).get(cid)
-        if entry and all(entry.get(k)for k in ['signal_packet','prices','q3_inputs']):
+        if reusable_entry(root, entry, exploratory=exploratory, selected_axes=request.get('selected_axis_compile')):
             rows.append(dict(configuration_id=cid,status='REUSE_COMPLETE_ORIGINAL_OWNER',entry=entry));continue
         owners={Path(request['output_root'])/cid,root/provider.STUDY/'selected'/cid,
                 root/'.pf_evidence_private'/cid}
@@ -46,9 +61,10 @@ def inspect(root,request,observations,signal_index=None,saved_price_index=None):
             completed=directory/'COMPLETION.json'
             if completed.is_file():
                 saved=json.loads(completed.read_text());candidate=saved.get('registry_entry')
-                if saved.get('configuration_id')==cid and candidate and all(candidate.get(k)for k in ['signal_packet','prices','q3_inputs']):
+                if saved.get('configuration_id')==cid and reusable_entry(root, candidate, exploratory=exploratory,
+                        selected_axes=request.get('selected_axis_compile')):
                     entry=candidate;break
-        if entry:
+        if reusable_entry(root, entry, exploratory=exploratory, selected_axes=request.get('selected_axis_compile')):
             rows.append(dict(configuration_id=cid,status='REUSE_COMPLETE_ORIGINAL_OWNER',entry=entry));continue
         if found:
             rows.append(dict(configuration_id=cid,status='PRIOR_OWNER_HOLD',
