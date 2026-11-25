@@ -38,3 +38,13 @@ def test_one_body_endpoint_plan_is_not_pure_rte(base):
     plan=W.jobs(cfg,{r['m']:r['physical_candidate'] for r in cfg['rounds']},b_validate=lambda c:W.validate(ROOT,c),
         b_exact_scalar=W.exact,numerical_recipe=dict(source={'fixture':True},deterministic_PF='DIRECT_EXPM',finite_RTE='FIXTURE',sampling=False))
     assert len(plan['jobs'])==13 and all(j['physical_context']['physical_candidate']['prefix']==0 for j in plan['jobs'])
+
+
+def test_step_registry_accepts_explicit_physical_binary64_only(base):
+    from trottertracks.pr_step_price_registry import price_api
+    cfg=config(base,7,3);row=next(r for r in cfg['rounds'] if W.exact(r['T'])!=r['q_PF']*W.exact(r['actual_delta_pf']))
+    assert price_api(str(ROOT))['point'](row)==prices.point(row)
+    legacy=deepcopy(row);legacy.pop('mapping')
+    with pytest.raises(ValueError):price_api(str(ROOT))['point'](legacy)
+    invalid=deepcopy(row);invalid['mapping']['actual_delta_binary64']='0x1.0p+0'
+    with pytest.raises(ValueError):price_api(str(ROOT))['point'](invalid)

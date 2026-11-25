@@ -66,6 +66,20 @@ def price_api(root):
     raw = subprocess.check_output(['git', 'show', PRICE_SOURCE+':'+PRICE_MODULE], cwd=root)
     scope = dict(__name__='_fixed_actual_step_price_rules', __file__=str(Path(root)/PRICE_MODULE))
     exec(compile(raw, PRICE_SOURCE+':'+PRICE_MODULE, 'exec'), scope)
+    legacy_point=scope['point']
+    def point(row):
+        if (row.get('mapping') or {}).get('pf_grid_policy')!='PR_DF_REQUESTED_MAX_WIDTH_V1':
+            return legacy_point(row)
+        # The fixed API's consumers share the same global point function.
+        # Only this explicit mapper may encode its physical step as binary64.
+        import importlib,sys,types
+        package='_rpe_step_price_max_width'
+        if package not in sys.modules:
+            module=types.ModuleType(package);module.__path__=[str(Path(__file__).resolve().parent)];sys.modules[package]=module
+        maximum=importlib.import_module(package+'.pr_df_max_width')
+        if not maximum.actual_step_matches(row):raise ValueError('Invalid exact max-width/B64 price row')
+        return importlib.import_module(package+'.pr_price_rules').point(row)
+    scope['point']=point
     return scope
 
 
