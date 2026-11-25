@@ -707,6 +707,28 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
         pbs['stage_artifacts_over_ssh'] = True
 
+    # Relocating a fixed Git view does not change science, but the selected
+    # execution profile contains its exact paths. Rebind only future host
+    # probes; existing owner/attempt profiles continue to be replayed as saved.
+    mappings=deepcopy(trial.get('relay_transport_paths') or {})
+    if trial.get('pbs_dispatch_gateway') and distributed.get('pbs'):
+        pbs_paths=(trial['pbs_dispatch_gateway'].get('transport') or {}).get('paths',{})
+        for worker in distributed['pbs'].get('workers',()):
+            mappings[worker['host_id']]=pbs_paths
+    if mappings:
+        from trottertracks.rpe_pbs import pbs_transport_paths
+        profiles=distributed.get('preparation_profiles') or {}
+        for host,paths in mappings.items():
+            if (host not in profiles or not isinstance(paths,dict)
+                    or any(not isinstance(old,str) or not isinstance(new,str)
+                           or not Path(old).is_absolute() or not Path(new).is_absolute() for old,new in paths.items())):
+                raise ValueError('Invalid relocated worker profile: '+host)
+            if paths:
+                profile=profiles[host]
+                if not isinstance(profile,dict):profile=O.load_json(Path(profile))
+                profiles[host]=pbs_transport_paths(profile,paths)
+        distributed['host_transport_paths']=mappings
+
 
 @contextmanager
 def serialize_legacy_ast():

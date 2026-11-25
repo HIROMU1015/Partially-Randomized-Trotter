@@ -321,3 +321,15 @@ def test_legacy_validator_cache_reuses_only_verified_original_source(tmp_path):
     assert not _same_validator(previous,changed)
     old.write_bytes(source.replace(b"return 1",b"return 3"))
     assert not _same_validator(previous,current)
+
+
+def test_only_relocated_host_proof_becomes_stale():
+    from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+    ex=object.__new__(DistributedExecutor)
+    ex.distributed={'host_transport_paths':{'wsl':{'/old/source':'/flat/source'}}}
+    old={'execution_profiles':{'wsl':{'route_views':{'commit':'/old/source'}},'local':{'root':'/old/source'}}}
+    new={'execution_profiles':{'wsl':{'route_views':{'commit':'/flat/source'}}}}
+    assert ex._relocated_host_profile('wsl',old)
+    assert not ex._relocated_host_profile('local',old)
+    assert not ex._relocated_host_profile('wsl',new)
+    assert not ex._relocated_host_profile('wsl',None)

@@ -2453,6 +2453,13 @@ class DistributedExecutor(ConcurrentExecutor):
             ready_task_classes=sorted(ready_classes), capacity=self.capacity,
             **({'ready_task_class_order': class_order} if class_admission else {}))
 
+    def _relocated_host_profile(self, host, eligibility):
+        paths=(self.distributed.get('host_transport_paths') or {}).get(host)
+        profile=((eligibility or {}).get('execution_profiles') or {}).get(host)
+        if not paths or profile is None:return False
+        from .rpe_pbs import pbs_transport_paths
+        return pbs_transport_paths(profile,paths)!=profile
+
     def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None,
                          prefetch=False, queued=False):
         """Bind a prepared host decision to this exact scientific request."""
@@ -2630,8 +2637,8 @@ class DistributedExecutor(ConcurrentExecutor):
             eligible = self.live_readiness_partial.get(key, eligible)
             future = self.live_readiness_inflight.get(key)
             facts=(self.hosts.get(host,{}).get('host_fingerprints') or {}).get(job_id) if host else None
-            if (isinstance(facts,dict) and host in eligible['eligible_host_ids']
-                    and digest(facts)!=eligible.get('host_fingerprints',{}).get(host)):
+            if (host in eligible['eligible_host_ids'] and (self._relocated_host_profile(host,eligible)
+                    or isinstance(facts,dict) and digest(facts)!=eligible.get('host_fingerprints',{}).get(host))):
                 eligible=deepcopy(eligible)
                 eligible['eligible_host_ids'].remove(host)
                 eligible.get('host_fingerprints',{}).pop(host,None)
@@ -4119,6 +4126,12 @@ class DistributedExecutor(ConcurrentExecutor):
                 continue
             saved = row['eligibility']
             facts = fingerprints.get(row['job_id'])
+            if (self._preparation_request(row['request']) is None and self._relocated_host_profile(host,saved)
+                    and self.distributed.get('live_q3_readiness') is True):
+                self._live_eligibility(row['request'],row['job_id'],saved,blocking=False,
+                                       previous=saved,host=host,prefetch=True)
+                skipped=True
+                continue  # keep reservation until the fresh host proof is published
             # Live evidence is bound to the immutable request at reservation
             # and claim requires this host's current exact fingerprint.
             # A host without a stored PASS still goes through live readiness.
