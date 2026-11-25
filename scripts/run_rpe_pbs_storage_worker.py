@@ -77,10 +77,11 @@ def configure_allocation_worker(profile, launcher):
 
     transport = pbs
     cycle = worker
-    bundled = False
+    members = set()
     if launcher.suffix == '.pyz':
         with zipfile.ZipFile(launcher) as package:
-            bundled = 'trottertracks/_collection_pbs_worker.py' in package.namelist()
+            members = set(package.namelist())
+    bundled = 'trottertracks/_collection_pbs_worker.py' in members
     if bundled:
         # The deployment bundles only the operational implementation.
         # SOURCE, adapter and result validation still use the fixed checkout.
@@ -88,10 +89,9 @@ def configure_allocation_worker(profile, launcher):
         trottertracks.__path__.append(str(launcher)+'/trottertracks')
         from trottertracks import _collection_pbs_worker as transport
         from trottertracks import _collection_q3_worker as cycle
-        with zipfile.ZipFile(launcher) as package:
-            if 'trottertracks/_pipeline_q3_resources.py' in package.namelist():
-                from trottertracks import _pipeline_q3_resources as resources
-                cycle.Resources = transport.Resources = resources
+        if 'trottertracks/_pipeline_q3_resources.py' in members:
+            from trottertracks import _pipeline_q3_resources as resources
+            cycle.Resources = transport.Resources = resources
 
     class MeasuredAllocationWorker(transport.AllocationWorker):
         def pending(self):
@@ -152,6 +152,14 @@ def configure_allocation_worker(profile, launcher):
                 request_validator=cycle.validate_assignment)
 
         MeasuredAllocationWorker._validate_release_assignment = validate_release
+
+        if 'trottertracks/_pipeline_pbs_preparation_batch.py' in members:
+            from trottertracks import _pipeline_pbs_preparation_batch as preparation_batch
+
+            class CombinedAllocationWorker(preparation_batch.BatchPreparationAcquisition, MeasuredAllocationWorker):
+                preparation_acquisition_workers = transport.READINESS_WORKERS
+
+            pbs.AllocationWorker = CombinedAllocationWorker
 
 
 def main():
