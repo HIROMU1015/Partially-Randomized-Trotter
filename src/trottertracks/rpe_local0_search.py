@@ -1518,8 +1518,8 @@ def reconcile_controller_detachment(run, launch, invocation):
         driver = load(run/'NORMAL_DRIVER.json')
         endpoint = load(run/'distributed/ENDPOINT.json')
         relay = load(run/'distributed/relay/STATUS.json')
-        if driver['invocation_id'] != invocation or endpoint['pid'] != driver['pid']:
-            raise ValueError('the detached driver and endpoint differ')
+        if driver['invocation_id'] != invocation:
+            raise ValueError('the detached driver differs')
         for name, owner in (('launcher', launch), ('driver', driver), ('relay', relay)):
             pid = owner['pid']
             if type(pid) is not int or pid <= 0:
@@ -1533,6 +1533,13 @@ def reconcile_controller_detachment(run, launch, invocation):
         hold = driver_restart_hold(run, spec)
         if hold:
             raise ValueError(hold)
+        if endpoint['pid'] != driver['pid']:
+            # A startup interrupted before the fixed endpoint was published
+            # has exactly the previous queue owners. Do not invent a receipt
+            # or require the scientific workers to end in this case.
+            proof=verify_pre_dispatch_failure(run,history,driver)
+            if proof is None:raise ValueError('the detached driver and endpoint differ')
+            return proof
         local_worker_for_reattachment(run)
         with ExitStack() as locks:
             for name in ('FAST_DRIVER.lock', 'distributed/relay/RELAY.lock', 'distributed/pbs/MANAGER.lock'):

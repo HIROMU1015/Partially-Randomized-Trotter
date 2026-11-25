@@ -651,6 +651,22 @@ class Tests(unittest.TestCase):
         self.assertEqual(proof['reason'], 'CONTROLLER_DETACHED_WITHOUT_EXIT_RECEIPT')
         self.assertFalse((history/'EXIT.json').exists())
         self.assertEqual(store.row('test-job')['attempt_id'], assignment['attempt_id'])
+        # A later interrupted startup has not changed the previous endpoint,
+        # durable requests, or any launch/adoption event.
+        import os,time
+        write(run/'distributed/ENDPOINT.json', {'pid': 2147483646})
+        (run/'PROGRESS.jsonl').touch()
+        (run/'distributed/relay/RELAY.lock').touch()
+        (run/'distributed/pbs').mkdir(exist_ok=True)
+        (run/'distributed/pbs/MANAGER.lock').touch()
+        latest=time.time()+1
+        os.utime(history/'LAUNCH.json',(latest,latest))
+        proof=reconcile_controller_detachment(run,launch,invocation)
+        self.assertEqual(proof['reason'],'CONTROLLER_STARTUP_EXIT_BEFORE_DISPATCH')
+        self.assertEqual(store.row('test-job')['attempt_id'],assignment['attempt_id'])
+        os.utime(run/'PROGRESS.jsonl',(latest+1,latest+1))
+        with self.assertRaisesRegex(RequestError,'endpoint differ'):
+            reconcile_controller_detachment(run,launch,invocation)
 
     def test_status_observes_local_q3_body_before_the_worker_state_report(self):
         from trottertracks.rpe_local0_search import local0_progress

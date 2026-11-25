@@ -333,3 +333,22 @@ def test_only_relocated_host_proof_becomes_stale():
     assert not ex._relocated_host_profile('local',old)
     assert not ex._relocated_host_profile('wsl',new)
     assert not ex._relocated_host_profile('wsl',None)
+
+
+def test_resume_reuses_current_durable_live_eligibility_but_not_changed_policy():
+    from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+    from trottertracks.rpe_q3_coordinator import digest
+    from trottertracks.rpe_q3_store import JobStore
+    from unittest.mock import Mock
+    ex=object.__new__(DistributedExecutor);ex.source_manifest={'commit':'fixed'};ex.store=JobStore.__new__(JobStore)
+    ex._eligibility_for=Mock(return_value={'rechecked':True})
+    req={'route':{'kind':'real'}};sha=digest(req)
+    decision={'request_sha256':sha,'source_manifest_sha256':digest(ex.source_manifest),'input_hashes':[],
+              'eligible_host_ids':['host'],'host_fingerprints':{'host':'fixed'},'decision_sha256':'old'}
+    row={'request':req,'request_sha256':sha,'eligibility':decision,'job_id':'q','detail':{}}
+    policy={'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
+    assert ex._restore_queued_eligibility(row,policy) is decision
+    ex._eligibility_for.assert_not_called()
+    policy['jobs']['q']={'decision_sha256':'new'}
+    assert ex._restore_queued_eligibility(row,policy)=={'rechecked':True}
+    ex._eligibility_for.assert_called_once()

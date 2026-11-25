@@ -1227,6 +1227,17 @@ class DistributedExecutor(ConcurrentExecutor):
             if contract_path.exists() and json.loads(contract_path.read_text()) != fixed:
                 raise ValueError('Distributed run SOURCE/evaluation contract changed; use a new run')
             if not contract_path.exists(): Q.atomic_json(contract_path, fixed)
+            # A Resume must restore round ownership before worker communication.
+            # Read current policy once; valid durable decisions are rechecked at
+            # the next actual host claim instead of dry-checking every queued
+            # candidate while the fixed endpoint is still offline.
+            resume_policy=self.distributed.get('host_eligibility')
+            if isinstance(resume_policy,(str,Path)):
+                try:
+                    policy_path=Path(resume_policy)
+                    if not policy_path.is_absolute():policy_path=self.root/policy_path
+                    resume_policy=json.loads(policy_path.read_text())
+                except (OSError,ValueError):resume_policy=None
             with self.state.cv:
                 for row in self.store.rows():
                     if row['state'] == 'UNKNOWN' and self._restore_pbs_unstarted(row):
@@ -1241,13 +1252,13 @@ class DistributedExecutor(ConcurrentExecutor):
                         self.preparation_pending.pop(row['job_id'],None)
                         continue
                     if row['state'] == 'QUEUED':
-                        decision = (row['eligibility'] if row['detail'].get('prelaunch_recovery') is True
-                                    else self._eligibility_for(row['request'], row['job_id'], blocking=False,
-                                                               previous=row['eligibility']))
-                        if not self.store.set_eligibility(row['job_id'], decision):
-                            self.eligibility_holds[row['job_id']] = decision
-                            continue
-                        row = self.store.row(row['job_id'])
+                        decision=self._restore_queued_eligibility(row,resume_policy)
+                        if decision!=row['eligibility'] or not self.store.eligible(
+                                row['request'],decision,request_sha256=row['request_sha256']):
+                            if not self.store.set_eligibility(row['job_id'], decision):
+                                self.eligibility_holds[row['job_id']] = decision
+                                continue
+                            row=self.store.row(row['job_id'])
                     if row['state'] not in ('CANCELLED', 'ACCEPTED'):
                         self._restore_task(row)
                     elif row['state'] == 'ACCEPTED':
@@ -2450,6 +2461,22 @@ class DistributedExecutor(ConcurrentExecutor):
             ready_jobs=ready, ready_jobs_now=ready_now, capacity_ready_jobs=capacity_ready,
             ready_task_classes=sorted(ready_classes), capacity=self.capacity,
             **({'ready_task_class_order': class_order} if class_admission else {}))
+
+    def _restore_queued_eligibility(self,row,policy):
+        """Reuse the fixed durable request's proof, not any stale worker offer."""
+        from .rpe_q3_coordinator import digest
+        saved=row['eligibility']; request=row['request']; job=row['job_id']
+        if row['detail'].get('prelaunch_recovery') is True:return saved
+        if self._preparation_request(request) is None and isinstance(saved,dict):
+            if isinstance(policy,dict) and policy.get('schema')=='RPE_Q3_HOST_ELIGIBILITY_V1':
+                record=(policy.get('jobs') or {}).get(job)
+                if ((record is None or record.get('decision_sha256')==saved.get('decision_sha256'))
+                        and digest(request)==row['request_sha256']
+                        and saved.get('source_manifest_sha256')==digest(self.source_manifest)
+                        and isinstance(saved.get('input_hashes'),list)
+                        and self.store.eligible(request,saved,request_sha256=row['request_sha256'])):
+                    return saved
+        return self._eligibility_for(request,job,blocking=False,previous=saved,queued=True)
 
     def _relocated_host_profile(self, host, eligibility):
         paths=(self.distributed.get('host_transport_paths') or {}).get(host)
