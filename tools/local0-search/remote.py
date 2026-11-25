@@ -129,6 +129,20 @@ try:
             else:
                 gateway = Gateway(config, launch=launch)
             result = gateway.handle(request)
+            if request['action'] == 'status' and result.get('run_directory'):
+                scope_path = pathlib.Path(result['run_directory']) / 'SCOPE_MAP.json'
+                if scope_path.is_file() and 'scope_map' not in result.get('progress', {}):
+                    try:
+                        scope = json.loads(scope_path.read_bytes())
+                        if scope.get('schema') == 'RPE_SCOPE_MAP_V1':
+                            result.setdefault('progress', {})['scope_map'] = dict(
+                                path=str(scope_path), schema=scope['schema'],
+                                mapper_version=scope.get('mapper_version'),
+                                snapshot_epoch=scope_path.stat().st_mtime,
+                                methods={method: {key: value for key, value in row.items() if key != 'rows'}
+                                         for method, row in scope['methods'].items()})
+                    except (OSError, ValueError, KeyError, TypeError):
+                        pass  # Keep the pinned Status; never replace its live summary.
             transport_hook=config.get('relay_transport_command')
             if (request['action']in('start','resume')and transport_hook
                     and result.get('status')in('STARTED','ALREADY_RUNNING')):

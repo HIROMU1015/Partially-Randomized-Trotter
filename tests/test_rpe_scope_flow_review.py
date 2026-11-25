@@ -267,3 +267,15 @@ def test_supervisor_failure_proof_requires_ended_original_attempt_and_no_science
         assert dry_check_rejection(tmp_path,assignment) is None
     (tmp_path/'SCIENTIFIC_STARTING.json').touch()
     assert dry_check_rejection(tmp_path,assignment) is None
+
+
+def test_live_q3_observation_is_horizon_specific():
+    from trottertracks.rpe_scope_progress import scope_progress
+    document=dict(methods={'FULL_PF':dict(requested=2,rows=[
+        dict(coordinates={'M':11},configuration_id='a',status='EVALUATION_PENDING'),
+        dict(coordinates={'M':12},configuration_id='a',status='EVALUATION_PENDING')])})
+    observations={'a':dict(candidate_id='a',method='FULL_PF',state='EVALUATION_RUNNING',
+                          q3_horizons={11:{'EVALUATION_RUNNING':1},12:{'UNKNOWN_ATTEMPT':1}})}
+    result=scope_progress(document,observations=observations)
+    assert result['FULL_PF']['live_counts']=={'EVALUATION_RUNNING':1,'UNKNOWN_ATTEMPT':1}
+    assert observations['a']['state']=='MIXED_SCOPE_PROGRESS'

@@ -599,6 +599,7 @@ def local0_progress(applied, spec, run=None):
             rows = db.execute('''SELECT job_id,method,request,state,adopted_epoch,detail,
                 host_id,attempt_id,request_sha256 FROM jobs ORDER BY rowid''').fetchall()
         stages = {}
+        q3_horizons = {}
         def body_events(directory):
             events = set()
             for name in ('JOB_STAGES.jsonl','Q3_BODY_TIMING.jsonl'):
@@ -662,6 +663,10 @@ def local0_progress(applied, spec, run=None):
                 if state in ('FAILED', 'UNKNOWN') or (state == 'ACCEPTED' and not prep and adopted is None):
                     code = ('UNKNOWN_ATTEMPT' if state == 'UNKNOWN' else
                             'TECHNICAL_FAILURE' if state == 'FAILED' else 'EVALUATION_WAITING')
+                if not prep and isinstance(request.get('N_X'), list):
+                    horizon = len(request['N_X'])-1
+                    counts = q3_horizons.setdefault(candidate, {}).setdefault(horizon, {})
+                    counts[code] = counts.get(code, 0) + 1
                 key = (candidate, stage)
                 priority = 3 if active else 2 if state in ('QUEUED', 'ASSIGNED') else 1
                 if key not in identified or priority >= identified[key][0]:
@@ -674,6 +679,8 @@ def local0_progress(applied, spec, run=None):
                     if field in previous:
                         row[field] = previous[field]
                 observations[candidate] = row
+        for candidate, horizons in q3_horizons.items():
+            observations[candidate]['q3_horizons'] = horizons
         progress['stages'] = list(stages.values())
     except (sqlite3.Error, OSError, ValueError) as error:
         progress['receipt_status'] = str(error)
