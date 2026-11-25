@@ -1736,9 +1736,12 @@ class DistributedPreparationBridge:
                 df_inputs.append(dict(path=destination, sha256=sha))
                 df_locators.append(dict(commit=caller, path=name))
             if df_max_width:
-                for name in ('pr_df_max_width.py','pr_rpe_rmse.py','rpe_scope_map.py','pr_rpe_signal_plan.py',
-                             'pf_pr_rpe_pipeline.py','h4_df10_rpe_connection.py','c1_stage3_accuracy.py'):
-                    path='src/trottertracks/'+name
+                helpers=('pr_df_max_width.py','pr_rpe_rmse.py','rpe_scope_map.py','pr_rpe_signal_plan.py',
+                         'pf_pr_rpe_pipeline.py','h4_df10_rpe_connection.py','c1_stage3_accuracy.py')
+                # The passive scheduling code extracts two fixed AST functions
+                # and imports the allocation helper relative to its own file.
+                for path in (*(f'src/trottertracks/{name}' for name in helpers),
+                             'src/trotterlib/h46_m5_plan.py','scripts/h46_new2_core.py','scripts/h46_long_time_signal.py'):
                     raw=subprocess.check_output(['git','show',caller+':'+path],cwd=root)
                     if raw!=(script.parents[1]/path).read_bytes():raise ValueError('Fixed max-width transport differs: '+path)
                     destination='private/df-terminal-transport/'+path
