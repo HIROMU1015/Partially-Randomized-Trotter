@@ -1,9 +1,9 @@
-"""Canonical H4 deterministic-PF candidates and saved prefix priority evidence.
+"""Canonical deterministic-PF metadata from a fixed provider base.
 
 This is metadata only: configuration/schedule generation uses the existing C/B
 API. It does not construct operators, prepare a physical runtime, evaluate a
-signal/price/Q3, or eliminate a prefix using its truncation shift. Widths are
-requested PF widths relative to the unchanged binary64 h_RPE=0.1.
+signal/price/Q3, or eliminate a prefix using its truncation shift. Widths are relative to the h_RPE in that fixed base. H4 saved priority
+evidence is used only for the original H4 base.
 """
 from copy import deepcopy
 import csv
@@ -58,9 +58,9 @@ def _prefix(method, p, rank=10):
 
 
 def configure(root, method, p, formula, delta_over_h, *, base_spec=None):
-    """Return C's canonical configuration; B0I p10 aliases Full PF exactly.
+    """Return C's canonical configuration; B0I p=rank aliases Full PF exactly.
 
-    p0 is legal one-body-only B0I; p1..9 retain fragments 0..p-1.
+    p=0 is one-body-only; p below rank retains fragments 0..p-1.
     ``delta_over_h`` is not restricted to the metadata shortlist/grid.
     """
     locator = base_spec or BASE_SPEC

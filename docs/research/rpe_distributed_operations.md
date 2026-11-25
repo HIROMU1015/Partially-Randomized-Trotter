@@ -542,3 +542,7 @@ PBSのCPU・RAM会計では、要求が固定したラウンド評価器に一�
 - 同じ物理入力の再利用では、DF信号packetのラウンド数を固定の13ではなく宣言と実際の行数で照合する。比較に使う科学入力・数値・評価契約の一致は引き続き必要。既存の固定数値契約の完全一致を勝手に許容差へ変更しない。
 - 新しい共通releaseは通常入口と人工jobで検収し、各workerの対応を確認後に採用する。稼働中の旧run・別担当の配置を暗黙に変更しない。採用時は、共通版が全runで選ばれることと、全適格hostで入力・準備・Q3・回収が通ることを確認する。
 - workerの科学起動前例外は、元のsupervisorが例外終了と同じassignmentの証跡を保存する。プロセスロック解放・科学起動markerなし・元所有の照合を通った場合に限り、既存のdry-check復旧と同じ予約で別の適格host（または環境が変わった元host）へ1回再配送できる。元の科学起動が不明な旧attemptにはこの証跡を後から作らない。
+
+新規release採用時の引継ぎ: 2026-11-25の共通化ブランチは、実稼働基点 `bc945e9b20c6ee2c1cdd7e4bcef692d1ececa3c2` の上に統合する。通常入口の `SERVICE.json` にreleaseに共通するworker policyを設定するか、同等の設定を固定ROUND・ホストprofileへ反映する。`pf_controller_runtime` は `run_root` を用い、既存の `run_directory`、個別の再試行対象、個別の強制配送、旧run向けのserver1有効化操作は持ち込まない。PBS/WSL等のworkerについては実際の配備版を照合する（新しい起動前失敗receiptと資源分類は対応版workerでのみ有効）。外側のStatus gatewayを更新する際は、新版が返す `progress.scope_map` を旧snapshotのfallbackで上書きしない。
+
+この変更は科学条件・探索許可・既存STOPを変更するものではない。旧UNKNOWNは終了証拠がなければ回収待ちのままとし、旧科学入力の回復は現行の正規手順を使う。別系の数値provider、Mやλの検証範囲の拡張は、それぞれの固定科学条件と検証に基づく。

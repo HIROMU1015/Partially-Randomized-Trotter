@@ -1196,7 +1196,7 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None, 
                     needs = ['CONFIGURATION_PUBLICATION']
                     if missing_signal:
                         needs.append('SIGNAL_ROUNDS:' + ','.join(map(str, missing_signal)))
-                    if len(missing_signal) < 13:
+                    if len(missing_signal) < len(keys):
                         needs.append('SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS')
                     if missing_price:
                         needs.append('PRICE_AXES:%d_of_%d' % (len(missing_price), len(keys)*len(AXES)))
