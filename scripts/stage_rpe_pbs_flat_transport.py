@@ -97,10 +97,68 @@ def stage(base, destination, sources):
     return report
 
 
+
+def profile_sources(profile, base, *, minimum_depth=5):
+    """Return declared clean private views with an overly deep alternate graph.
+
+    Memoizing shared ancestors is essential: fleet views often have many
+    overlapping alternate branches even when the number of stores is small.
+    """
+    roots, depths = set(), {}
+    def walk(value):
+        if isinstance(value, dict):
+            for item in value.values():walk(item)
+        elif isinstance(value, list):
+            for item in value:walk(item)
+        elif isinstance(value, str) and value.startswith(str(base)+'/'):
+            path = Path(value)
+            if (path/'.git').exists():roots.add(path)
+    def depth(root, ancestors=frozenset()):
+        if root in ancestors:raise ValueError('Cyclic Git alternate: '+str(root))
+        if root in depths:return depths[root]
+        path=root/'info'/'alternates'
+        result=(1+max((depth((root/name).resolve(), ancestors|{root})
+                       for name in path.read_text().splitlines() if name), default=-1)) if path.is_file() else 0
+        depths[root]=result
+        return result
+    walk(profile)
+    sources=[];issues={}
+    for root in sorted(roots):
+        try:
+            common=(root/git(root,'rev-parse','--git-common-dir')).resolve()
+            if depth(common/'objects')<=minimum_depth:continue
+            # Check private scope and tracked identity before adding any view.
+            object_directories(common/'objects',base,set(),set())
+            git(root,'diff','--exit-code','HEAD','--')
+            sources.append(root)
+        except (OSError,ValueError,subprocess.CalledProcessError) as error:
+            issues[str(root)]=str(error)
+    return sources,issues
+
+
+def stage_profile(base, destination, profile_path, *, minimum_depth=5):
+    base=base.resolve();profile=json.loads(profile_path.read_text())
+    sources,issues=profile_sources(profile,base,minimum_depth=minimum_depth)
+    if not sources:return dict(paths={},issues=issues)
+    report=stage(base,destination,sources)
+    def relocate(value):
+        if isinstance(value,dict):return {key:relocate(item) for key,item in value.items()}
+        if isinstance(value,list):return [relocate(item) for item in value]
+        return report['paths'].get(value,value) if isinstance(value,str) else value
+    output=destination/'PROFILE.json'
+    output.write_text(json.dumps(relocate(profile),sort_keys=True,indent=2)+'\n')
+    return dict(report,profile=str(output),issues=issues)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True, type=Path)
     parser.add_argument('--destination', required=True, type=Path)
-    parser.add_argument('sources', nargs='+', type=Path)
+    parser.add_argument('--profile', type=Path)
+    parser.add_argument('--minimum-depth', type=int, default=5)
+    parser.add_argument('sources', nargs='*', type=Path)
     options = parser.parse_args()
-    print(json.dumps(stage(options.base, options.destination, options.sources), sort_keys=True))
+    if bool(options.profile)==bool(options.sources):parser.error('select a profile or explicit source views')
+    result=(stage_profile(options.base,options.destination,options.profile,minimum_depth=options.minimum_depth)
+            if options.profile else stage(options.base, options.destination, options.sources))
+    print(json.dumps(result, sort_keys=True))
