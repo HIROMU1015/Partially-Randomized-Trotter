@@ -313,6 +313,13 @@ PBSの容量計測を同梱したworkerは、セッションを作る前に実�
 
 RomuTailには `.rpe-central/deployment/central-maintenance-2c68c0544b/` の固定ツールとユーザータイマーを配置した。タイマーは約1分ごとに起動し、重い容量整理の判定は約5分ごとに行う。定期処理で既存runの起動・停止・再開は行わない。通常Statusに保守記録が出ることと、ホスト側で稼働中のcontrollerがある間は容量整理を延期することを確認した。保存済み旧runの2件で配送bundleのSHA、空の作業領域への入力、保存成果の再読を照合した。人工ジョブでは同じattemptからの受領を一度だけ行い、欠けた監査入力を元の成果から戻した。今回の新規科学実行は0件。
 
+### RomuTailの内蔵ディスクとT7の定期整理（2026-11-26）
+
+- ユーザータイマー `rpe-romutail-disk-maintenance.timer` が、前回の整理終了後約5分で `run_romutail_disk_maintenance.py` を起動する。既存のworkerの40 GiB先行整理と独立している。Gitの未圧縮blobは10分以上経過した対象から選び、空き率20%未満または整理可能なblobが5 GiB以上で、必要な作業空きを確保して小分けに圧縮する。研究元repoと、同じ実体を共有する宣言済みprivate transportストアは一緒に圧縮する。
+- native Git packを作り、対象object IDの集合、pack検証、各参照ストアからの読み出しを確認してから `git prune-packed` で重複looseを整理する。共有packは同じSSD内でhardlinkして重複を避ける。到達不能objectの削除、Git履歴の書換え、探索の停止や追加計算は行わない。別の未知のhardlink先があるblobは対象外にする。計測は `state/maintenance/GIT_COMPACTION.json`。
+- T7が独立したディスクとしてマウントされ、内蔵空きが120 GiB未満の場合は、登録済みの古い終了runの配送CASを候補とする。終了receiptが一致し未確定・実行所有がなく、1 GiB以上の実容量を回収できるものを一度に1runずつ全SHA照合して退避する。原パスの読取りを維持し、通常Start/Resume時には固定preflightでローカルext4へ復元してから既存のbundle回復処理を行う。旧手動退避manifestの2形式も読める。未確定attemptや科学成果・台帳は保全する。計測は `state/maintenance/COLD_ARTIFACTS.json`。
+- T7に対象がない場合もGit整理と既存worker整理は継続する。物理容量は有限なので、整理速度より新規データ増加が速い場合や再開用原本の不足がある場合は実測を見て対処する。通常の50 GiB受付上限や他ホストの設定は変更しない。
+
 ## 探索データの保存期間と整理
 
 | 区分 | 対象と扱い |
