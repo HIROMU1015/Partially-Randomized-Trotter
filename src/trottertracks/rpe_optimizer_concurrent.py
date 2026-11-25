@@ -937,6 +937,12 @@ class ConcurrentExecutor(O.Executor):
             active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.
             first=last=None
             interval_capacity=self.capacity
+            seed = getattr(s, 'cycle_measurement_seed', None)
+            if seed is not None:
+                active, queued = set(seed['active']), set(seed['queued'])
+                first = last = seed['monotonic']
+                interval_capacity = seed['capacity']
+                adopted.update(job.name for job in s.adopted_jobs)
             unreadable_lines = 0
             with (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
                 with self.lock:
@@ -969,7 +975,8 @@ class ConcurrentExecutor(O.Executor):
                     elif event in('EXIT','RESUME_EXIT'):active.discard(job)
                     elif event=='RESUME_RUNNING':active.add(job)
             elapsed=last-first if first is not None else 0.
-            real=sum(t.rule['kind'] not in ('artificial','preparation') and t.started for t in s.tasks.values())
+            real=s.metrics.get('archived_real_route_launches',0)+sum(
+                t.rule['kind'] not in ('artificial','preparation') and t.started for t in s.tasks.values())
             counts={k:s.metrics[k]for k in ('submitted','queued_cancelled','launched','finished','adopted','speculative_launched','speculative_adopted')}
             return dict(**counts,peak_active=s.peak_active,sampled_owned_tree_peak_RSS_KiB=s.peak_RSS_KiB,
                 completed_not_adopted=sum(Path(j).name not in adopted for j in launched),
@@ -4737,6 +4744,32 @@ class DistributedExecutor(ConcurrentExecutor):
             self._finish_local_worker()
         finally:
             self._close_worker_rpc()
+
+    def advance_cycle(self):
+        """Keep live ownership; drop only terminal, durably adopted task objects.
+
+        Long-lived services must not keep every previous candidate's copied
+        route/context in memory or rescan the entire invocation log per cycle.
+        """
+        terminal = {r['job_id']:r for r in self.store.metric_rows()
+                    if r['state']=='ACCEPTED' and r['adopted_epoch'] is not None
+                    or r['state']=='CANCELLED' and r['attempt_id'] is None}
+        with self.state.cv:
+            s=self.state
+            for job, task in list(s.tasks.items()):
+                row=terminal.get(job.name)
+                if row is None or job in s.pids or job in s.external:
+                    continue
+                if ((task.status=='DONE' and row['state']=='ACCEPTED') or
+                        (task.status=='CANCELLED' and row['state']=='CANCELLED')):
+                    if task.started and task.rule['kind'] not in ('artificial','preparation'):
+                        s.metrics['archived_real_route_launches'] += 1
+                    del s.tasks[job]
+            with self.lock:
+                self.progress_start=(self.run_dir/'PROGRESS.jsonl').stat().st_size
+            s.cycle_measurement_seed=dict(monotonic=time.monotonic(),capacity=self.capacity,
+                active=[job.name for job,task in s.tasks.items() if task.status=='RUNNING'],
+                queued=[job.name for job,task in s.tasks.items() if task.status=='QUEUED'])
 
     def queued_preparation_count(self):
         with self.store._connection() as db:

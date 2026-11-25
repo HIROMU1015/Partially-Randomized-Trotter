@@ -2149,6 +2149,8 @@ class WidthDriver:
         if (persistent and existing is not None and not existing.state.closed
                 and existing.state.failure is None and not existing._user_stop_requested()):
             executor, optimize = existing, self.waiting_optimize
+            if advance := getattr(executor, 'advance_cycle', None):
+                advance()
             with executor.state.cv:
                 executor.routes, executor.expected = routes, expected
                 for method, limit in executor.state.budgets.items():

@@ -21,10 +21,11 @@ def identity(point):
 def replay(state, path):
     """Apply only events newer than the atomically written planner snapshot."""
     sequence = int(state.get('point_checkpoint_seq', 0))
-    points = {identity(p): p for p in state.get('points', ())}
     path = Path(path)
     if not path.is_file():
         return sequence
+    points = {identity(p): p for p in state.get('points', ())
+              if all(k in p for k in ('method','family','kappa'))}
     with path.open('rb') as stream:
         for raw in stream:
             if not raw.endswith(b'\n'):
