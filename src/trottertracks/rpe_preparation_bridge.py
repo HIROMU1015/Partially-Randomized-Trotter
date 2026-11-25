@@ -877,8 +877,16 @@ class DistributedPreparationBridge:
         owner=self.executor.run_dir/'jobs'/row['method']/job
         outcome=read(owner/'OUTCOME.json');receipt=read(owner/'PROCESS_RETURN.json')
         expected=repr(['git','show',locator['commit']+':'+locator['path']])
+        failure=outcome.get('failure_summary','')
+        if not failure and (body:=plan.get('df_signal_body_log')):
+            # Older PBS transports return the receipt but omit the body summary.
+            # Accept only the captured log of this selected, already-ended attempt.
+            if body.get('attempt_id')!=row['attempt_id']:return None
+            raw=Path(body['path']).read_bytes()
+            if hashlib.sha256(raw).hexdigest()!=body['sha256'] or b'raw = read_git(a.inputs_commit, relative)' not in raw:return None
+            failure=raw.decode(errors='replace')
         if (outcome.get('status')!='PREPARATION_FAILED' or outcome.get('request_sha256')!=row['request_sha256']
-                or expected not in outcome.get('failure_summary','') or 'exit status 128' not in outcome['failure_summary']
+                or expected not in failure or 'exit status 128' not in failure
                 or receipt.get('returncode') in (None,0) or receipt.get('signal') is not None
                 or receipt.get('automatic_retry') is not False
                 or any('/df_signals/' in path for path in outcome.get('artifacts',{}))

@@ -34,6 +34,22 @@ class PreparationQueue(Base.ControllerFailures):
         return dict(host_id=row['host_id'],job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],request_sha256=assignment['request_sha256'],
             files={name:base64.b64encode(json.dumps(value).encode()).decode() for name,value in files.items()})
 
+    def test_resume_retires_only_unclaimed_incomplete_max_width_delivery(self):
+        from copy import deepcopy
+        from trottertracks.rpe_optimizer_concurrent import stale_max_width_readiness, max_width_signal_missing_frozen_input
+        root=str(ROOT);request={'preparation':dict(provider='DF_SIGNALS',controller_root=root,
+            command=['python','-B','runner','--input',str(ROOT/'fixture.json'),'--inputs-commit','C','--transport-source','M'],
+            inputs={'private/df-terminal-transport/src/trottertracks/pr_df_max_width.py':'fixture'},input_hashes=[])}
+        good=deepcopy(request);good['preparation']['input_hashes']=[dict(commit='C',path='fixture.json')]
+        self.assertTrue(max_width_signal_missing_frozen_input(request));self.assertFalse(max_width_signal_missing_frozen_input(good))
+        pending={k:dict(request=good if k=='fixed' else request) for k in ('unreserved','cancelled','queued','running','assigned','attempted','fixed')}
+        kinds=dict(cancelled='CANCELLED',queued='QUEUED',running='RUNNING',assigned='ASSIGNED',attempted='QUEUED',fixed='QUEUED')
+        states={k:('PREPARATION:signal',v)for k,v in kinds.items()}
+        rows={k:dict(method='PREPARATION:signal',attempt_id='OWNER' if k in ('running','assigned','attempted') else None)for k in kinds}
+        calls=[];store=SimpleNamespace(row=rows.get,cancel=lambda m,j:calls.append(j)or True)
+        self.assertEqual(stale_max_width_readiness(store,pending,states),['unreserved','cancelled','queued'])
+        self.assertEqual(calls,['queued'])
+
     def test_planning_boundary_retains_preparation_and_reuses_reservation(self):
         first = self.executor()
         job = self.submit(first, 'signal', 'independent', budget=1)

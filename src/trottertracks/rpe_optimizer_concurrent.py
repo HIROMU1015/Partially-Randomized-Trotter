@@ -942,6 +942,29 @@ class ConcurrentExecutor(O.Executor):
                 memory_scope='sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted')
 
 
+def max_width_signal_missing_frozen_input(request):
+    """An unstarted private mapper request must carry its own Git input."""
+    from .rpe_preparation_bridge import DistributedPreparationBridge
+    preparation=request.get('preparation') or {}
+    locator=DistributedPreparationBridge.max_width_signal_locator(preparation)
+    return bool(locator and not any((x['commit'],x['path'])==(locator['commit'],locator['path'])
+                                    for x in preparation.get('input_hashes',())))
+
+
+def stale_max_width_readiness(store,pending,states):
+    """Return only old, unclaimed delivery records safe to retire on Resume."""
+    retired=[]
+    for job,record in pending.items():
+        if not max_width_signal_missing_frozen_input(record['request']):continue
+        state=states.get(job,(None,None))[1]
+        if state not in (None,'QUEUED','CANCELLED'):continue
+        row=store.row(job)
+        if row and row.get('attempt_id') is not None:continue
+        if state=='QUEUED' and not store.cancel(row['method'],job):continue
+        retired.append(job)
+    return retired
+
+
 class DistributedExecutor(ConcurrentExecutor):
     """The existing queue/adoption order, with persistent host-owned attempts.
 
@@ -1041,6 +1064,10 @@ class DistributedExecutor(ConcurrentExecutor):
         # Recheck unstarted reservations on Resume as well as unreserved work.
         saved_jobs = self.store.preparation_states(self.preparation_pending)
         finished=[job for job,value in saved_jobs.items() if value[1]=='ACCEPTED']
+        # A stopped controller may have persisted readiness before reserving a
+        # request. Retire only an unclaimed old transport; its owning candidate
+        # will rebuild the identical science input on the normal path.
+        finished.extend(stale_max_width_readiness(self.store,self.preparation_pending,saved_jobs))
         if finished:
             self.store.save_preparation_readiness({job:None for job in finished})
             for job in finished:self.preparation_pending.pop(job,None)
@@ -1093,6 +1120,12 @@ class DistributedExecutor(ConcurrentExecutor):
                 for row in self.store.rows():
                     if row['state'] == 'UNKNOWN' and self._restore_pbs_unstarted(row):
                         row = self.store.row(row['job_id'])
+                    if (row['state']=='QUEUED' and row.get('attempt_id') is None
+                            and max_width_signal_missing_frozen_input(row['request'])):
+                        self.store.cancel(row['method'],row['job_id'])
+                        self.store.save_preparation_readiness({row['job_id']:None})
+                        self.preparation_pending.pop(row['job_id'],None)
+                        continue
                     if row['state'] == 'QUEUED':
                         decision = (row['eligibility'] if row['detail'].get('prelaunch_recovery') is True
                                     else self._eligibility_for(row['request'], row['job_id'], blocking=False,
@@ -2838,6 +2871,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
                 return job_id
             row = self.store.row(job_id)
+            if (max_width_signal_missing_frozen_input(request)
+                    and (row is None or row['state'] in ('QUEUED','CANCELLED') and row.get('attempt_id') is None)):
+                from .pr_candidate_completion import PreparationWait
+                raise PreparationWait('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:MISSING_FROZEN_REQUEST_LOCATOR:'+job_id)
             if row is not None and (row['request_sha256'] != Q.digest(request) or row['contract'] != task_contract):
                 from .pr_candidate_completion import Held
                 raise Held('PREPARATION_REQUEST_MISMATCH:'+job_id)
