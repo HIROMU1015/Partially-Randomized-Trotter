@@ -36583,7 +36583,7 @@
           "reason": "WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED"
         }
       ],
-      "new_calls": 11,
+      "new_calls": 0,
       "evaluated_count": 560,
       "evaluated": [
         {
@@ -194111,47 +194111,38 @@
         "max_new_q3": "UNLIMITED_WITHIN_RANGE",
         "science_approved": true,
         "spent_before": 563,
-        "new_calls": 11
+        "new_calls": 0
       },
       "generation": null,
       "parameter_assessment": null,
       "adopted_new_calls": 0,
       "executor_metrics": {
-        "submitted": 34,
-        "queued_cancelled": 7,
-        "launched": 27,
-        "finished": 27,
-        "adopted": 27,
-        "speculative_launched": 25,
-        "speculative_adopted": 25,
-        "peak_active": 10,
+        "submitted": 0,
+        "queued_cancelled": 0,
+        "launched": 0,
+        "finished": 0,
+        "adopted": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 0,
         "sampled_owned_tree_peak_RSS_KiB": 0,
         "completed_not_adopted": 0,
-        "by_method": {
-          "FULL_PF": {
-            "launched": 11,
-            "adopted": 11
-          },
-          "TRUNCATED_PF": {
-            "launched": 16,
-            "adopted": 16
-          }
-        },
+        "by_method": {},
         "max_concurrent_jobs": 1,
         "dp_workers": 3,
-        "new_real_route_launches": 27,
+        "new_real_route_launches": 0,
         "executor_failure": null,
-        "elapsed_seconds": 915.0369032770395,
-        "busy_job_seconds": 1509.5700882002711,
-        "idle_slot_seconds_no_queued_candidate": 564.3060603544582,
+        "elapsed_seconds": 717.2891934229992,
+        "busy_job_seconds": 0.0,
+        "idle_slot_seconds_no_queued_candidate": 717.2891934229992,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 564.3060603544582,
-        "idle_slot_seconds_with_queued_candidate": 42.310296069364995,
-        "integrated_available_slot_seconds": 2114.151542746229,
-        "slot_utilization": 0.7140311645963553,
+        "idle_slot_seconds_no_queued_or_selected_result": 717.2891934229992,
+        "idle_slot_seconds_with_queued_candidate": 0.0,
+        "integrated_available_slot_seconds": 717.2891934229992,
+        "slot_utilization": 0.0,
         "unreadable_progress_lines": 0,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
-        "speculative_adoption_fraction": 1.0,
+        "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
         "distributed": true,
         "by_host": {
@@ -194160,35 +194151,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1210,
-            "reused": 45911
+            "reused": 48257
           },
           "local": {
             "assigned": 1849,
             "launched": 1849,
             "completed": 1849,
             "adopted": 1843,
-            "reused": 48066
+            "reused": 51488
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 524,
-            "reused": 19163
+            "reused": 20163
           },
           "local0-wsl": {
             "assigned": 1000,
             "launched": 992,
             "completed": 990,
             "adopted": 978,
-            "reused": 29034
+            "reused": 30916
           },
           "pbs-0": {
             "assigned": 4504,
             "launched": 3798,
             "completed": 4504,
             "adopted": 4456,
-            "reused": 131076
+            "reused": 139654
           }
         },
         "host_admission": {
@@ -197927,8 +197918,8 @@
               "status": "R",
               "worker": {
                 "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
-                "monotonic": 2912308.625493148,
-                "epoch": 1795565995.4410748,
+                "monotonic": 2913802.803400852,
+                "epoch": 1795567489.618983,
                 "schema": "RPE_PBS_WORKER_STATE_V1",
                 "state": "READY",
                 "ready": true,
@@ -198009,7 +198000,7 @@
                   "one_shared_slot_pool": true
                 },
                 "capacity": 96,
-                "remaining_seconds": 106123.62100507971,
+                "remaining_seconds": 104629.44308693381,
                 "start_clock": {
                   "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
                   "monotonic": 2911694.278117335,
@@ -199758,18 +199749,77 @@
           }
         ],
         "host_offers": {
+          "pbs-0": {
+            "capacity": 96,
+            "fresh_free_slots": 96,
+            "reported_free_slots": 96,
+            "observed_age_seconds": 10.239021844929084,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 96,
+              "slots": 96,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 42382692352,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 11240954920960,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": [],
+                "reclaim_start_bytes": 51002736640,
+                "reclaim_target_bytes": 48318382080,
+                "reclaim_checked": false,
+                "reclaim_pending": false,
+                "measurement_seconds": 30.149053514003754
+              },
+              "pbs": {
+                "job_id": "268201.CPUcluster-PRISM",
+                "remaining_seconds": 104634.52809951268,
+                "minimum_task_seconds": 60.0,
+                "drain_seconds": 30.0,
+                "accepting": true,
+                "resource_pool": {
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400
+                },
+                "launch_fit": true,
+                "ready_buffer": true
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2251768540591,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
           "local": {
-            "capacity": 1,
+            "capacity": 0,
             "fresh_free_slots": 0,
             "reported_free_slots": 0,
-            "observed_age_seconds": 1.6755626241210848,
+            "observed_age_seconds": 4.3901123439427465,
             "priority_group": 2,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
               "mode": "AUTO",
-              "capacity": 1,
+              "capacity": 0,
               "slots": 0,
-              "occupied": 1,
+              "occupied": 0,
               "stage": "MEASURED_TASK_HEADROOM",
               "reasons": [
                 "Offer fitting work by task class after reserving the costs of existing attempts"
@@ -199778,12 +199828,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1604982.378223134,
-                  "epoch": 1795564993.8238719
+                  "monotonic": 1606476.58616179,
+                  "epoch": 1795566488.0318103
                 },
                 "machine_cpu_count": 32,
                 "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 47915892736,
+                "machine_mem_available_bytes": 42060623872,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -199812,20 +199862,20 @@
                 "observational_only": true
               },
               "limits": {
-                "cpu_slots": 1,
-                "memory_slots": 1,
+                "cpu_slots": 0,
+                "memory_slots": 0,
                 "explicit_max_slots": null,
                 "memory_sample_headroom_factor": 1.5
               },
               "dp_workers_per_q3": 2,
-              "peak_job_rss_bytes": 1783406592,
-              "peak_job_cpu_cores": 5.713622056798504,
+              "peak_job_rss_bytes": 0,
+              "peak_job_cpu_cores": 0,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 912.6974283640739,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 711.2844287890475,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                "usable_results": 12,
-                "adopted_results": 11,
+                "usable_results": 0,
+                "adopted_results": 0,
                 "decision_wait_seconds": null,
                 "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
                 "ready_jobs": 0,
@@ -199841,10 +199891,10 @@
               "admitted_task_classes": [],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 39295836160,
+                "used_bytes": 39295905792,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 22259929088,
+                "filesystem_free_bytes": 39202406400,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": [],
                 "reclaim_start_bytes": 51002736640,
@@ -199854,11 +199904,11 @@
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0497726069298,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2256907830015,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 13,
-              "adopted_results": 13,
+              "usable_results": 0,
+              "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
               "ready_jobs": 0,
@@ -199873,7 +199923,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 1.7807523519732058,
+            "observed_age_seconds": 3.8659700679127127,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -199889,12 +199939,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2602947.85411926,
-                  "epoch": 1795564993.4257953
+                  "monotonic": 2604442.588305263,
+                  "epoch": 1795566488.1599813
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 494096941056,
+                "machine_mem_available_bytes": 494148034560,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -199942,8 +199992,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 908.2545718010515,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 707.2351347960066,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -199960,17 +200010,58 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37132558336,
+                "used_bytes": 37132644352,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 568540000256,
+                "filesystem_free_bytes": 568539856896,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0515987230465,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.227052299073,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "local0-wsl": {
+            "capacity": 4,
+            "fresh_free_slots": 4,
+            "reported_free_slots": 4,
+            "observed_age_seconds": 6.127724662888795,
+            "priority_group": 1,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 4,
+              "slots": 4,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 41991745536,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 929417256960,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": []
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2282103921752,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -199987,7 +200078,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.0761914351023734,
+            "observed_age_seconds": 3.9443120541982353,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -200003,12 +200094,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 468916.288770646,
-                  "epoch": 1795564991.9369104
+                  "monotonic": 470412.982765447,
+                  "epoch": 1795566488.6309052
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1055652409344,
+                "machine_mem_available_bytes": 1060367028224,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -200047,8 +200138,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 903.9541599249933,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 705.0230296631344,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -200065,120 +200156,20 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40658305024,
+                "used_bytes": 40658378752,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 61551493120,
+                "filesystem_free_bytes": 61576065024,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0528202739079,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2293842760846,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "local0-wsl": {
-            "capacity": 4,
-            "fresh_free_slots": 4,
-            "reported_free_slots": 4,
-            "observed_age_seconds": 3.0476626469753683,
-            "priority_group": 1,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 4,
-              "slots": 4,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 41991700480,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 929417310208,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": []
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0540259769186,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 12,
-              "adopted_results": 12,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "pbs-0": {
-            "capacity": 96,
-            "fresh_free_slots": 96,
-            "reported_free_slots": 96,
-            "observed_age_seconds": 5.006750714033842,
-            "priority_group": 0,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 96,
-              "slots": 96,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42382913536,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 11241084944384,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false,
-                "measurement_seconds": 9.245832913089544
-              },
-              "pbs": {
-                "job_id": "268201.CPUcluster-PRISM",
-                "remaining_seconds": 106126.67066348484,
-                "minimum_task_seconds": 60.0,
-                "drain_seconds": 30.0,
-                "accepting": true,
-                "resource_pool": {
-                  "cpu_count": 96,
-                  "memory_bytes": 375809638400
-                },
-                "launch_fit": true,
-                "ready_buffer": true
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0556171229109,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 2,
-              "adopted_results": 2,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
               "ready_jobs": 0,
@@ -200215,8 +200206,8 @@
         },
         "preparation_readiness_pending": {},
         "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
-        "method_launched": 11,
-        "method_adopted": 11
+        "method_launched": 0,
+        "method_adopted": 0
       },
       "rule_adopted_best": {
         "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
@@ -200357,438 +200348,6 @@
       "stop_reason": "UNRESOLVED_SCALED_SCOPE",
       "pending_request": null,
       "trace": [
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "method": "TRUNCATED_PF",
-          "M": 12,
-          "vector": [
-            71,
-            71,
-            66,
-            66,
-            61,
-            61,
-            56,
-            56,
-            52,
-            52,
-            47,
-            47,
-            42,
-            42,
-            37,
-            37,
-            33,
-            33,
-            28,
-            28,
-            23,
-            23,
-            18,
-            18,
-            14,
-            14
-          ],
-          "N_X": [
-            71,
-            66,
-            61,
-            56,
-            52,
-            47,
-            42,
-            37,
-            33,
-            28,
-            23,
-            18,
-            14
-          ],
-          "N_Y": [
-            71,
-            66,
-            61,
-            56,
-            52,
-            47,
-            42,
-            37,
-            33,
-            28,
-            23,
-            18,
-            14
-          ],
-          "origin": {
-            "kind": "RPE_SCALED_SHOTS_V1",
-            "M": 12,
-            "aliases": [
-              {
-                "kind": "GRID",
-                "k": 1,
-                "divisor": 4,
-                "value": "2^(1/4)"
-              }
-            ]
-          },
-          "aliases": [
-            {
-              "kind": "GRID",
-              "k": 1,
-              "divisor": 4,
-              "value": "2^(1/4)"
-            }
-          ],
-          "smallest_grid_k": 1,
-          "cost": {
-            "numerator": 1667456646,
-            "denominator": 1,
-            "display": "1,667,456,646.00"
-          },
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 574567395043654448055299780098680896791582425425,
-            "denominator": 1532495540865888858358347027150309183618739122183602176,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 574613312766447542224732852501873682798501079769,
-            "denominator": 1532495540865888858358347027150309183618739122183602176,
-            "display": "0.00"
-          },
-          "evidence": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/3c4bc83f9057c6e409cb",
-          "reason": null,
-          "calls": 1,
-          "answer_source": "NEW_Q3_JOB",
-          "cls": "SCALED_SHOTS",
-          "selected_by_rule": false
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "method": "TRUNCATED_PF",
-          "M": 12,
-          "vector": [
-            84,
-            84,
-            78,
-            78,
-            73,
-            73,
-            67,
-            67,
-            61,
-            61,
-            56,
-            56,
-            50,
-            50,
-            44,
-            44,
-            39,
-            39,
-            33,
-            33,
-            27,
-            27,
-            22,
-            22,
-            16,
-            16
-          ],
-          "N_X": [
-            84,
-            78,
-            73,
-            67,
-            61,
-            56,
-            50,
-            44,
-            39,
-            33,
-            27,
-            22,
-            16
-          ],
-          "N_Y": [
-            84,
-            78,
-            73,
-            67,
-            61,
-            56,
-            50,
-            44,
-            39,
-            33,
-            27,
-            22,
-            16
-          ],
-          "origin": {
-            "kind": "RPE_SCALED_SHOTS_V1",
-            "M": 12,
-            "aliases": [
-              {
-                "kind": "GRID",
-                "k": 2,
-                "divisor": 4,
-                "value": "2^(1/2)"
-              }
-            ]
-          },
-          "aliases": [
-            {
-              "kind": "GRID",
-              "k": 2,
-              "divisor": 4,
-              "value": "2^(1/2)"
-            }
-          ],
-          "smallest_grid_k": 2,
-          "cost": {
-            "numerator": 1960689588,
-            "denominator": 1,
-            "display": "1,960,689,588.00"
-          },
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 255324792382308465710829711500784823074864970175,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 255343135078563844534628130149075302765058338501,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "evidence": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/84e246fd504c9feab65a",
-          "reason": null,
-          "calls": 1,
-          "answer_source": "NEW_Q3_JOB",
-          "cls": "SCALED_SHOTS",
-          "selected_by_rule": false
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "method": "TRUNCATED_PF",
-          "M": 12,
-          "vector": [
-            100,
-            100,
-            93,
-            93,
-            86,
-            86,
-            80,
-            80,
-            73,
-            73,
-            66,
-            66,
-            59,
-            59,
-            53,
-            53,
-            46,
-            46,
-            39,
-            39,
-            32,
-            32,
-            26,
-            26,
-            19,
-            19
-          ],
-          "N_X": [
-            100,
-            93,
-            86,
-            80,
-            73,
-            66,
-            59,
-            53,
-            46,
-            39,
-            32,
-            26,
-            19
-          ],
-          "N_Y": [
-            100,
-            93,
-            86,
-            80,
-            73,
-            66,
-            59,
-            53,
-            46,
-            39,
-            32,
-            26,
-            19
-          ],
-          "origin": {
-            "kind": "RPE_SCALED_SHOTS_V1",
-            "M": 12,
-            "aliases": [
-              {
-                "kind": "GRID",
-                "k": 3,
-                "divisor": 4,
-                "value": "2^(3/4)"
-              }
-            ]
-          },
-          "aliases": [
-            {
-              "kind": "GRID",
-              "k": 3,
-              "divisor": 4,
-              "value": "2^(3/4)"
-            }
-          ],
-          "smallest_grid_k": 3,
-          "cost": {
-            "numerator": 2323586052,
-            "denominator": 1,
-            "display": "2,323,586,052.00"
-          },
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 219439637893326307682618195547372465655155011425,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 219469912824990954452570239551760621950657633613,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "evidence": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2b0c862b98873793ac72",
-          "reason": null,
-          "calls": 1,
-          "answer_source": "NEW_Q3_JOB",
-          "cls": "SCALED_SHOTS",
-          "selected_by_rule": false
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "method": "TRUNCATED_PF",
-          "M": 12,
-          "vector": [
-            42,
-            42,
-            39,
-            39,
-            37,
-            37,
-            34,
-            34,
-            31,
-            31,
-            28,
-            28,
-            25,
-            25,
-            22,
-            22,
-            20,
-            20,
-            17,
-            17,
-            14,
-            14,
-            11,
-            11,
-            8,
-            8
-          ],
-          "N_X": [
-            42,
-            39,
-            37,
-            34,
-            31,
-            28,
-            25,
-            22,
-            20,
-            17,
-            14,
-            11,
-            8
-          ],
-          "N_Y": [
-            42,
-            39,
-            37,
-            34,
-            31,
-            28,
-            25,
-            22,
-            20,
-            17,
-            14,
-            11,
-            8
-          ],
-          "origin": {
-            "kind": "RPE_SCALED_SHOTS_V1",
-            "M": 12,
-            "aliases": [
-              {
-                "kind": "GRID",
-                "k": -2,
-                "divisor": 4,
-                "value": "2^(-1/2)"
-              }
-            ]
-          },
-          "aliases": [
-            {
-              "kind": "GRID",
-              "k": -2,
-              "divisor": 4,
-              "value": "2^(-1/2)"
-            }
-          ],
-          "smallest_grid_k": -2,
-          "cost": {
-            "numerator": 990380296,
-            "denominator": 1,
-            "display": "990,380,296.00"
-          },
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "626330885800500562109627569966e-36",
-            "upper_30": "626330885800500562109627569967e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "626330885800504328526104983156e-36",
-            "upper_30": "626330885800504328526104983157e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "evidence": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/d9da2f4c8ee1badd71de",
-          "reason": null,
-          "calls": 1,
-          "answer_source": "NEW_Q3_JOB",
-          "cls": "SCALED_SHOTS",
-          "selected_by_rule": false
-        },
         {
           "configuration_id": "52a555dbbda7ecf2dc69c67348235c49630684c69f2b8cc6c85a1c83c62e613a",
           "candidate": "TRUNCATED_PF:p=4,formula=4th,delta_over_h=7:52a555db",
@@ -201372,338 +200931,6 @@
           "answer_source": "EXECUTOR_FAILURE",
           "cls": "SCALED_SHOTS",
           "selected_by_rule": true
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "method": "TRUNCATED_PF",
-          "M": 12,
-          "vector": [
-            36,
-            36,
-            33,
-            33,
-            31,
-            31,
-            28,
-            28,
-            26,
-            26,
-            24,
-            24,
-            21,
-            21,
-            19,
-            19,
-            17,
-            17,
-            14,
-            14,
-            12,
-            12,
-            9,
-            9,
-            7,
-            7
-          ],
-          "N_X": [
-            36,
-            33,
-            31,
-            28,
-            26,
-            24,
-            21,
-            19,
-            17,
-            14,
-            12,
-            9,
-            7
-          ],
-          "N_Y": [
-            36,
-            33,
-            31,
-            28,
-            26,
-            24,
-            21,
-            19,
-            17,
-            14,
-            12,
-            9,
-            7
-          ],
-          "origin": {
-            "kind": "RPE_SCALED_SHOTS_V1",
-            "M": 12,
-            "aliases": [
-              {
-                "kind": "GRID",
-                "k": -3,
-                "divisor": 4,
-                "value": "2^(-3/4)"
-              }
-            ]
-          },
-          "aliases": [
-            {
-              "kind": "GRID",
-              "k": -3,
-              "divisor": 4,
-              "value": "2^(-3/4)"
-            }
-          ],
-          "smallest_grid_k": -3,
-          "cost": {
-            "numerator": 841696450,
-            "denominator": 1,
-            "display": "841,696,450.00"
-          },
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "reason": null,
-          "MSE_lower": {
-            "lower_30": "754068853208893892937999571497e-36",
-            "upper_30": "754068853208893892937999571498e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "754068853209014277969110967887e-36",
-            "upper_30": "754068853209014277969110967888e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "evidence": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fad96a18b87d6439948",
-          "calls": 1,
-          "answer_source": "NEW_Q3_JOB",
-          "cls": "SCALED_SHOTS",
-          "selected_by_rule": false
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "method": "TRUNCATED_PF",
-          "M": 12,
-          "vector": [
-            50,
-            50,
-            47,
-            47,
-            43,
-            43,
-            40,
-            40,
-            37,
-            37,
-            33,
-            33,
-            30,
-            30,
-            27,
-            27,
-            23,
-            23,
-            20,
-            20,
-            16,
-            16,
-            13,
-            13,
-            10,
-            10
-          ],
-          "N_X": [
-            50,
-            47,
-            43,
-            40,
-            37,
-            33,
-            30,
-            27,
-            23,
-            20,
-            16,
-            13,
-            10
-          ],
-          "N_Y": [
-            50,
-            47,
-            43,
-            40,
-            37,
-            33,
-            30,
-            27,
-            23,
-            20,
-            16,
-            13,
-            10
-          ],
-          "origin": {
-            "kind": "RPE_SCALED_SHOTS_V1",
-            "M": 12,
-            "aliases": [
-              {
-                "kind": "GRID",
-                "k": -1,
-                "divisor": 4,
-                "value": "2^(-1/4)"
-              }
-            ]
-          },
-          "aliases": [
-            {
-              "kind": "GRID",
-              "k": -1,
-              "divisor": 4,
-              "value": "2^(-1/4)"
-            }
-          ],
-          "smallest_grid_k": -1,
-          "cost": {
-            "numerator": 1188356502,
-            "denominator": 1,
-            "display": "1,188,356,502.00"
-          },
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "reason": null,
-          "MSE_lower": {
-            "lower_30": "506935931673499181878921889455e-36",
-            "upper_30": "506935931673499181878921889456e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "506935931673499439338684667268e-36",
-            "upper_30": "506935931673499439338684667269e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "evidence": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2839ecfb11c284203cb6",
-          "calls": 1,
-          "answer_source": "NEW_Q3_JOB",
-          "cls": "SCALED_SHOTS",
-          "selected_by_rule": false
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "method": "TRUNCATED_PF",
-          "M": 12,
-          "vector": [
-            59,
-            59,
-            55,
-            55,
-            51,
-            51,
-            47,
-            47,
-            43,
-            43,
-            39,
-            39,
-            35,
-            35,
-            31,
-            31,
-            27,
-            27,
-            23,
-            23,
-            19,
-            19,
-            15,
-            15,
-            11,
-            11
-          ],
-          "N_X": [
-            59,
-            55,
-            51,
-            47,
-            43,
-            39,
-            35,
-            31,
-            27,
-            23,
-            19,
-            15,
-            11
-          ],
-          "N_Y": [
-            59,
-            55,
-            51,
-            47,
-            43,
-            39,
-            35,
-            31,
-            27,
-            23,
-            19,
-            15,
-            11
-          ],
-          "origin": {
-            "kind": "RPE_SCALED_SHOTS_V1",
-            "M": 12,
-            "aliases": [
-              {
-                "kind": "GRID",
-                "k": 0,
-                "divisor": 4,
-                "value": "2^(0)"
-              },
-              {
-                "kind": "UNIT_REFERENCE",
-                "value": "1"
-              }
-            ]
-          },
-          "aliases": [
-            {
-              "kind": "GRID",
-              "k": 0,
-              "divisor": 4,
-              "value": "2^(0)"
-            },
-            {
-              "kind": "UNIT_REFERENCE",
-              "value": "1"
-            }
-          ],
-          "smallest_grid_k": 0,
-          "cost": {
-            "numerator": 1354415508,
-            "denominator": 1,
-            "display": "1,354,415,508.00"
-          },
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "reason": null,
-          "MSE_lower": {
-            "lower_30": "464157656824097969861342292203e-36",
-            "upper_30": "464157656824097969861342292204e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "464157656824097969861432317658e-36",
-            "upper_30": "464157656824097969861432317659e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "evidence": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fc4be71b923fefb0bcb",
-          "calls": 1,
-          "answer_source": "NEW_Q3_JOB",
-          "cls": "SCALED_SHOTS",
-          "selected_by_rule": false
         }
       ],
       "held": [
@@ -202268,7 +201495,7 @@
           "reason": "WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED"
         }
       ],
-      "new_calls": 16,
+      "new_calls": 0,
       "evaluated_count": 7589,
       "evaluated": [
         {
@@ -203016,6 +202243,587 @@
           "result_sources": null,
           "point_id": null,
           "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/6c8bf23a6720247b5f0b",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "vector": [
+            36,
+            36,
+            33,
+            33,
+            31,
+            31,
+            28,
+            28,
+            26,
+            26,
+            24,
+            24,
+            21,
+            21,
+            19,
+            19,
+            17,
+            17,
+            14,
+            14,
+            12,
+            12,
+            9,
+            9,
+            7,
+            7
+          ],
+          "N_X": [
+            36,
+            33,
+            31,
+            28,
+            26,
+            24,
+            21,
+            19,
+            17,
+            14,
+            12,
+            9,
+            7
+          ],
+          "N_Y": [
+            36,
+            33,
+            31,
+            28,
+            26,
+            24,
+            21,
+            19,
+            17,
+            14,
+            12,
+            9,
+            7
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "754068853208893892937999571497e-36",
+            "upper_30": "754068853208893892937999571498e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "754068853209014277969110967887e-36",
+            "upper_30": "754068853209014277969110967888e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 841696450,
+            "denominator": 1,
+            "display": "841,696,450.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fad96a18b87d6439948",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "vector": [
+            42,
+            42,
+            39,
+            39,
+            37,
+            37,
+            34,
+            34,
+            31,
+            31,
+            28,
+            28,
+            25,
+            25,
+            22,
+            22,
+            20,
+            20,
+            17,
+            17,
+            14,
+            14,
+            11,
+            11,
+            8,
+            8
+          ],
+          "N_X": [
+            42,
+            39,
+            37,
+            34,
+            31,
+            28,
+            25,
+            22,
+            20,
+            17,
+            14,
+            11,
+            8
+          ],
+          "N_Y": [
+            42,
+            39,
+            37,
+            34,
+            31,
+            28,
+            25,
+            22,
+            20,
+            17,
+            14,
+            11,
+            8
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "626330885800500562109627569966e-36",
+            "upper_30": "626330885800500562109627569967e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "626330885800504328526104983156e-36",
+            "upper_30": "626330885800504328526104983157e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 990380296,
+            "denominator": 1,
+            "display": "990,380,296.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/d9da2f4c8ee1badd71de",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "vector": [
+            50,
+            50,
+            47,
+            47,
+            43,
+            43,
+            40,
+            40,
+            37,
+            37,
+            33,
+            33,
+            30,
+            30,
+            27,
+            27,
+            23,
+            23,
+            20,
+            20,
+            16,
+            16,
+            13,
+            13,
+            10,
+            10
+          ],
+          "N_X": [
+            50,
+            47,
+            43,
+            40,
+            37,
+            33,
+            30,
+            27,
+            23,
+            20,
+            16,
+            13,
+            10
+          ],
+          "N_Y": [
+            50,
+            47,
+            43,
+            40,
+            37,
+            33,
+            30,
+            27,
+            23,
+            20,
+            16,
+            13,
+            10
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "506935931673499181878921889455e-36",
+            "upper_30": "506935931673499181878921889456e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "506935931673499439338684667268e-36",
+            "upper_30": "506935931673499439338684667269e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 1188356502,
+            "denominator": 1,
+            "display": "1,188,356,502.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2839ecfb11c284203cb6",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            11,
+            11
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "464157656824097969861342292203e-36",
+            "upper_30": "464157656824097969861342292204e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "464157656824097969861432317658e-36",
+            "upper_30": "464157656824097969861432317659e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 1354415508,
+            "denominator": 1,
+            "display": "1,354,415,508.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fc4be71b923fefb0bcb",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "vector": [
+            71,
+            71,
+            66,
+            66,
+            61,
+            61,
+            56,
+            56,
+            52,
+            52,
+            47,
+            47,
+            42,
+            42,
+            37,
+            37,
+            33,
+            33,
+            28,
+            28,
+            23,
+            23,
+            18,
+            18,
+            14,
+            14
+          ],
+          "N_X": [
+            71,
+            66,
+            61,
+            56,
+            52,
+            47,
+            42,
+            37,
+            33,
+            28,
+            23,
+            18,
+            14
+          ],
+          "N_Y": [
+            71,
+            66,
+            61,
+            56,
+            52,
+            47,
+            42,
+            37,
+            33,
+            28,
+            23,
+            18,
+            14
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 574567395043654448055299780098680896791582425425,
+            "denominator": 1532495540865888858358347027150309183618739122183602176,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 574613312766447542224732852501873682798501079769,
+            "denominator": 1532495540865888858358347027150309183618739122183602176,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 1667456646,
+            "denominator": 1,
+            "display": "1,667,456,646.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/3c4bc83f9057c6e409cb",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "vector": [
+            84,
+            84,
+            78,
+            78,
+            73,
+            73,
+            67,
+            67,
+            61,
+            61,
+            56,
+            56,
+            50,
+            50,
+            44,
+            44,
+            39,
+            39,
+            33,
+            33,
+            27,
+            27,
+            22,
+            22,
+            16,
+            16
+          ],
+          "N_X": [
+            84,
+            78,
+            73,
+            67,
+            61,
+            56,
+            50,
+            44,
+            39,
+            33,
+            27,
+            22,
+            16
+          ],
+          "N_Y": [
+            84,
+            78,
+            73,
+            67,
+            61,
+            56,
+            50,
+            44,
+            39,
+            33,
+            27,
+            22,
+            16
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 255324792382308465710829711500784823074864970175,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 255343135078563844534628130149075302765058338501,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 1960689588,
+            "denominator": 1,
+            "display": "1,960,689,588.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/84e246fd504c9feab65a",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "vector": [
+            100,
+            100,
+            93,
+            93,
+            86,
+            86,
+            80,
+            80,
+            73,
+            73,
+            66,
+            66,
+            59,
+            59,
+            53,
+            53,
+            46,
+            46,
+            39,
+            39,
+            32,
+            32,
+            26,
+            26,
+            19,
+            19
+          ],
+          "N_X": [
+            100,
+            93,
+            86,
+            80,
+            73,
+            66,
+            59,
+            53,
+            46,
+            39,
+            32,
+            26,
+            19
+          ],
+          "N_Y": [
+            100,
+            93,
+            86,
+            80,
+            73,
+            66,
+            59,
+            53,
+            46,
+            39,
+            32,
+            26,
+            19
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 219439637893326307682618195547372465655155011425,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 219469912824990954452570239551760621950657633613,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 2323586052,
+            "denominator": 1,
+            "display": "2,323,586,052.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2b0c862b98873793ac72",
           "label": null
         },
         {
@@ -803224,587 +803032,6 @@
           "point_id": null,
           "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/022de34b5c572563d582",
           "label": null
-        },
-        {
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "vector": [
-            71,
-            71,
-            66,
-            66,
-            61,
-            61,
-            56,
-            56,
-            52,
-            52,
-            47,
-            47,
-            42,
-            42,
-            37,
-            37,
-            33,
-            33,
-            28,
-            28,
-            23,
-            23,
-            18,
-            18,
-            14,
-            14
-          ],
-          "N_X": [
-            71,
-            66,
-            61,
-            56,
-            52,
-            47,
-            42,
-            37,
-            33,
-            28,
-            23,
-            18,
-            14
-          ],
-          "N_Y": [
-            71,
-            66,
-            61,
-            56,
-            52,
-            47,
-            42,
-            37,
-            33,
-            28,
-            23,
-            18,
-            14
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 574567395043654448055299780098680896791582425425,
-            "denominator": 1532495540865888858358347027150309183618739122183602176,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 574613312766447542224732852501873682798501079769,
-            "denominator": 1532495540865888858358347027150309183618739122183602176,
-            "display": "0.00"
-          },
-          "cost": {
-            "numerator": 1667456646,
-            "denominator": 1,
-            "display": "1,667,456,646.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "result_sources": null,
-          "point_id": null,
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/3c4bc83f9057c6e409cb",
-          "label": null
-        },
-        {
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "vector": [
-            84,
-            84,
-            78,
-            78,
-            73,
-            73,
-            67,
-            67,
-            61,
-            61,
-            56,
-            56,
-            50,
-            50,
-            44,
-            44,
-            39,
-            39,
-            33,
-            33,
-            27,
-            27,
-            22,
-            22,
-            16,
-            16
-          ],
-          "N_X": [
-            84,
-            78,
-            73,
-            67,
-            61,
-            56,
-            50,
-            44,
-            39,
-            33,
-            27,
-            22,
-            16
-          ],
-          "N_Y": [
-            84,
-            78,
-            73,
-            67,
-            61,
-            56,
-            50,
-            44,
-            39,
-            33,
-            27,
-            22,
-            16
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 255324792382308465710829711500784823074864970175,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 255343135078563844534628130149075302765058338501,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "cost": {
-            "numerator": 1960689588,
-            "denominator": 1,
-            "display": "1,960,689,588.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "result_sources": null,
-          "point_id": null,
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/84e246fd504c9feab65a",
-          "label": null
-        },
-        {
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "vector": [
-            100,
-            100,
-            93,
-            93,
-            86,
-            86,
-            80,
-            80,
-            73,
-            73,
-            66,
-            66,
-            59,
-            59,
-            53,
-            53,
-            46,
-            46,
-            39,
-            39,
-            32,
-            32,
-            26,
-            26,
-            19,
-            19
-          ],
-          "N_X": [
-            100,
-            93,
-            86,
-            80,
-            73,
-            66,
-            59,
-            53,
-            46,
-            39,
-            32,
-            26,
-            19
-          ],
-          "N_Y": [
-            100,
-            93,
-            86,
-            80,
-            73,
-            66,
-            59,
-            53,
-            46,
-            39,
-            32,
-            26,
-            19
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 219439637893326307682618195547372465655155011425,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 219469912824990954452570239551760621950657633613,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "cost": {
-            "numerator": 2323586052,
-            "denominator": 1,
-            "display": "2,323,586,052.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "result_sources": null,
-          "point_id": null,
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2b0c862b98873793ac72",
-          "label": null
-        },
-        {
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "vector": [
-            42,
-            42,
-            39,
-            39,
-            37,
-            37,
-            34,
-            34,
-            31,
-            31,
-            28,
-            28,
-            25,
-            25,
-            22,
-            22,
-            20,
-            20,
-            17,
-            17,
-            14,
-            14,
-            11,
-            11,
-            8,
-            8
-          ],
-          "N_X": [
-            42,
-            39,
-            37,
-            34,
-            31,
-            28,
-            25,
-            22,
-            20,
-            17,
-            14,
-            11,
-            8
-          ],
-          "N_Y": [
-            42,
-            39,
-            37,
-            34,
-            31,
-            28,
-            25,
-            22,
-            20,
-            17,
-            14,
-            11,
-            8
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "626330885800500562109627569966e-36",
-            "upper_30": "626330885800500562109627569967e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "626330885800504328526104983156e-36",
-            "upper_30": "626330885800504328526104983157e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "cost": {
-            "numerator": 990380296,
-            "denominator": 1,
-            "display": "990,380,296.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "result_sources": null,
-          "point_id": null,
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/d9da2f4c8ee1badd71de",
-          "label": null
-        },
-        {
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "vector": [
-            36,
-            36,
-            33,
-            33,
-            31,
-            31,
-            28,
-            28,
-            26,
-            26,
-            24,
-            24,
-            21,
-            21,
-            19,
-            19,
-            17,
-            17,
-            14,
-            14,
-            12,
-            12,
-            9,
-            9,
-            7,
-            7
-          ],
-          "N_X": [
-            36,
-            33,
-            31,
-            28,
-            26,
-            24,
-            21,
-            19,
-            17,
-            14,
-            12,
-            9,
-            7
-          ],
-          "N_Y": [
-            36,
-            33,
-            31,
-            28,
-            26,
-            24,
-            21,
-            19,
-            17,
-            14,
-            12,
-            9,
-            7
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "754068853208893892937999571497e-36",
-            "upper_30": "754068853208893892937999571498e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "754068853209014277969110967887e-36",
-            "upper_30": "754068853209014277969110967888e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "cost": {
-            "numerator": 841696450,
-            "denominator": 1,
-            "display": "841,696,450.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "result_sources": null,
-          "point_id": null,
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fad96a18b87d6439948",
-          "label": null
-        },
-        {
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "vector": [
-            50,
-            50,
-            47,
-            47,
-            43,
-            43,
-            40,
-            40,
-            37,
-            37,
-            33,
-            33,
-            30,
-            30,
-            27,
-            27,
-            23,
-            23,
-            20,
-            20,
-            16,
-            16,
-            13,
-            13,
-            10,
-            10
-          ],
-          "N_X": [
-            50,
-            47,
-            43,
-            40,
-            37,
-            33,
-            30,
-            27,
-            23,
-            20,
-            16,
-            13,
-            10
-          ],
-          "N_Y": [
-            50,
-            47,
-            43,
-            40,
-            37,
-            33,
-            30,
-            27,
-            23,
-            20,
-            16,
-            13,
-            10
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "506935931673499181878921889455e-36",
-            "upper_30": "506935931673499181878921889456e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "506935931673499439338684667268e-36",
-            "upper_30": "506935931673499439338684667269e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "cost": {
-            "numerator": 1188356502,
-            "denominator": 1,
-            "display": "1,188,356,502.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "result_sources": null,
-          "point_id": null,
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2839ecfb11c284203cb6",
-          "label": null
-        },
-        {
-          "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=1:e6754564",
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "vector": [
-            59,
-            59,
-            55,
-            55,
-            51,
-            51,
-            47,
-            47,
-            43,
-            43,
-            39,
-            39,
-            35,
-            35,
-            31,
-            31,
-            27,
-            27,
-            23,
-            23,
-            19,
-            19,
-            15,
-            15,
-            11,
-            11
-          ],
-          "N_X": [
-            59,
-            55,
-            51,
-            47,
-            43,
-            39,
-            35,
-            31,
-            27,
-            23,
-            19,
-            15,
-            11
-          ],
-          "N_Y": [
-            59,
-            55,
-            51,
-            47,
-            43,
-            39,
-            35,
-            31,
-            27,
-            23,
-            19,
-            15,
-            11
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "464157656824097969861342292203e-36",
-            "upper_30": "464157656824097969861342292204e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "464157656824097969861432317658e-36",
-            "upper_30": "464157656824097969861432317659e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "cost": {
-            "numerator": 1354415508,
-            "denominator": 1,
-            "display": "1,354,415,508.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "result_sources": null,
-          "point_id": null,
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fc4be71b923fefb0bcb",
-          "label": null
         }
       ],
       "not_ready_candidates": [],
@@ -804829,6 +804056,328 @@
           },
           "source": "PRIOR_ROUND_JOB",
           "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/6c8bf23a6720247b5f0b"
+        },
+        {
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "N_X": [
+            36,
+            33,
+            31,
+            28,
+            26,
+            24,
+            21,
+            19,
+            17,
+            14,
+            12,
+            9,
+            7
+          ],
+          "N_Y": [
+            36,
+            33,
+            31,
+            28,
+            26,
+            24,
+            21,
+            19,
+            17,
+            14,
+            12,
+            9,
+            7
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "754068853208893892937999571497e-36",
+            "upper_30": "754068853208893892937999571498e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "754068853209014277969110967887e-36",
+            "upper_30": "754068853209014277969110967888e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fad96a18b87d6439948"
+        },
+        {
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "N_X": [
+            42,
+            39,
+            37,
+            34,
+            31,
+            28,
+            25,
+            22,
+            20,
+            17,
+            14,
+            11,
+            8
+          ],
+          "N_Y": [
+            42,
+            39,
+            37,
+            34,
+            31,
+            28,
+            25,
+            22,
+            20,
+            17,
+            14,
+            11,
+            8
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "626330885800500562109627569966e-36",
+            "upper_30": "626330885800500562109627569967e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "626330885800504328526104983156e-36",
+            "upper_30": "626330885800504328526104983157e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/d9da2f4c8ee1badd71de"
+        },
+        {
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "N_X": [
+            50,
+            47,
+            43,
+            40,
+            37,
+            33,
+            30,
+            27,
+            23,
+            20,
+            16,
+            13,
+            10
+          ],
+          "N_Y": [
+            50,
+            47,
+            43,
+            40,
+            37,
+            33,
+            30,
+            27,
+            23,
+            20,
+            16,
+            13,
+            10
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "506935931673499181878921889455e-36",
+            "upper_30": "506935931673499181878921889456e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "506935931673499439338684667268e-36",
+            "upper_30": "506935931673499439338684667269e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2839ecfb11c284203cb6"
+        },
+        {
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "464157656824097969861342292203e-36",
+            "upper_30": "464157656824097969861342292204e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "464157656824097969861432317658e-36",
+            "upper_30": "464157656824097969861432317659e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fc4be71b923fefb0bcb"
+        },
+        {
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "N_X": [
+            71,
+            66,
+            61,
+            56,
+            52,
+            47,
+            42,
+            37,
+            33,
+            28,
+            23,
+            18,
+            14
+          ],
+          "N_Y": [
+            71,
+            66,
+            61,
+            56,
+            52,
+            47,
+            42,
+            37,
+            33,
+            28,
+            23,
+            18,
+            14
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 574567395043654448055299780098680896791582425425,
+            "denominator": 1532495540865888858358347027150309183618739122183602176,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 574613312766447542224732852501873682798501079769,
+            "denominator": 1532495540865888858358347027150309183618739122183602176,
+            "display": "0.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/3c4bc83f9057c6e409cb"
+        },
+        {
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "N_X": [
+            84,
+            78,
+            73,
+            67,
+            61,
+            56,
+            50,
+            44,
+            39,
+            33,
+            27,
+            22,
+            16
+          ],
+          "N_Y": [
+            84,
+            78,
+            73,
+            67,
+            61,
+            56,
+            50,
+            44,
+            39,
+            33,
+            27,
+            22,
+            16
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 255324792382308465710829711500784823074864970175,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 255343135078563844534628130149075302765058338501,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/84e246fd504c9feab65a"
+        },
+        {
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "N_X": [
+            100,
+            93,
+            86,
+            80,
+            73,
+            66,
+            59,
+            53,
+            46,
+            39,
+            32,
+            26,
+            19
+          ],
+          "N_Y": [
+            100,
+            93,
+            86,
+            80,
+            73,
+            66,
+            59,
+            53,
+            46,
+            39,
+            32,
+            26,
+            19
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 219439637893326307682618195547372465655155011425,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 219469912824990954452570239551760621950657633613,
+            "denominator": 766247770432944429179173513575154591809369561091801088,
+            "display": "0.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2b0c862b98873793ac72"
         },
         {
           "configuration_id": "155a3a2e86ff9cde5ab580379050c915bbfee40edb2cd70ab33c1773363a4d14",
@@ -1153187,328 +1152736,6 @@
           },
           "source": "PRIOR_ROUND_JOB",
           "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/022de34b5c572563d582"
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "N_X": [
-            71,
-            66,
-            61,
-            56,
-            52,
-            47,
-            42,
-            37,
-            33,
-            28,
-            23,
-            18,
-            14
-          ],
-          "N_Y": [
-            71,
-            66,
-            61,
-            56,
-            52,
-            47,
-            42,
-            37,
-            33,
-            28,
-            23,
-            18,
-            14
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 574567395043654448055299780098680896791582425425,
-            "denominator": 1532495540865888858358347027150309183618739122183602176,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 574613312766447542224732852501873682798501079769,
-            "denominator": 1532495540865888858358347027150309183618739122183602176,
-            "display": "0.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/3c4bc83f9057c6e409cb"
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "N_X": [
-            84,
-            78,
-            73,
-            67,
-            61,
-            56,
-            50,
-            44,
-            39,
-            33,
-            27,
-            22,
-            16
-          ],
-          "N_Y": [
-            84,
-            78,
-            73,
-            67,
-            61,
-            56,
-            50,
-            44,
-            39,
-            33,
-            27,
-            22,
-            16
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 255324792382308465710829711500784823074864970175,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 255343135078563844534628130149075302765058338501,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/84e246fd504c9feab65a"
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "N_X": [
-            100,
-            93,
-            86,
-            80,
-            73,
-            66,
-            59,
-            53,
-            46,
-            39,
-            32,
-            26,
-            19
-          ],
-          "N_Y": [
-            100,
-            93,
-            86,
-            80,
-            73,
-            66,
-            59,
-            53,
-            46,
-            39,
-            32,
-            26,
-            19
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "numerator": 219439637893326307682618195547372465655155011425,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "MSE_upper": {
-            "numerator": 219469912824990954452570239551760621950657633613,
-            "denominator": 766247770432944429179173513575154591809369561091801088,
-            "display": "0.00"
-          },
-          "source": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2b0c862b98873793ac72"
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "N_X": [
-            42,
-            39,
-            37,
-            34,
-            31,
-            28,
-            25,
-            22,
-            20,
-            17,
-            14,
-            11,
-            8
-          ],
-          "N_Y": [
-            42,
-            39,
-            37,
-            34,
-            31,
-            28,
-            25,
-            22,
-            20,
-            17,
-            14,
-            11,
-            8
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "626330885800500562109627569966e-36",
-            "upper_30": "626330885800500562109627569967e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "626330885800504328526104983156e-36",
-            "upper_30": "626330885800504328526104983157e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "source": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/d9da2f4c8ee1badd71de"
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "N_X": [
-            36,
-            33,
-            31,
-            28,
-            26,
-            24,
-            21,
-            19,
-            17,
-            14,
-            12,
-            9,
-            7
-          ],
-          "N_Y": [
-            36,
-            33,
-            31,
-            28,
-            26,
-            24,
-            21,
-            19,
-            17,
-            14,
-            12,
-            9,
-            7
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "754068853208893892937999571497e-36",
-            "upper_30": "754068853208893892937999571498e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "754068853209014277969110967887e-36",
-            "upper_30": "754068853209014277969110967888e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "source": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fad96a18b87d6439948"
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "N_X": [
-            50,
-            47,
-            43,
-            40,
-            37,
-            33,
-            30,
-            27,
-            23,
-            20,
-            16,
-            13,
-            10
-          ],
-          "N_Y": [
-            50,
-            47,
-            43,
-            40,
-            37,
-            33,
-            30,
-            27,
-            23,
-            20,
-            16,
-            13,
-            10
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "506935931673499181878921889455e-36",
-            "upper_30": "506935931673499181878921889456e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "506935931673499439338684667268e-36",
-            "upper_30": "506935931673499439338684667269e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "source": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2839ecfb11c284203cb6"
-        },
-        {
-          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
-          "N_X": [
-            59,
-            55,
-            51,
-            47,
-            43,
-            39,
-            35,
-            31,
-            27,
-            23,
-            19,
-            15,
-            11
-          ],
-          "N_Y": [
-            59,
-            55,
-            51,
-            47,
-            43,
-            39,
-            35,
-            31,
-            27,
-            23,
-            19,
-            15,
-            11
-          ],
-          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-          "MSE_lower": {
-            "lower_30": "464157656824097969861342292203e-36",
-            "upper_30": "464157656824097969861342292204e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "MSE_upper": {
-            "lower_30": "464157656824097969861432317658e-36",
-            "upper_30": "464157656824097969861432317659e-36",
-            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-          },
-          "source": "NEW_Q3_JOB",
-          "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fc4be71b923fefb0bcb"
         }
       ],
       "by_configuration": [
@@ -1154673,7 +1153900,6 @@
                 "display": "841,696,450.00"
               },
               "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-              "reason": null,
               "MSE_lower": {
                 "lower_30": "754068853208893892937999571497e-36",
                 "upper_30": "754068853208893892937999571498e-36",
@@ -1154684,8 +1153910,9 @@
                 "upper_30": "754068853209014277969110967888e-36",
                 "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
               },
-              "evidence": "NEW_Q3_JOB",
-              "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fad96a18b87d6439948"
+              "evidence": "PRIOR_ROUND_JOB",
+              "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fad96a18b87d6439948",
+              "reason": null
             },
             {
               "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
@@ -1154787,7 +1154014,7 @@
                 "upper_30": "626330885800504328526104983157e-36",
                 "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
               },
-              "evidence": "NEW_Q3_JOB",
+              "evidence": "PRIOR_ROUND_JOB",
               "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/d9da2f4c8ee1badd71de",
               "reason": null
             },
@@ -1154881,7 +1154108,6 @@
                 "display": "1,188,356,502.00"
               },
               "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-              "reason": null,
               "MSE_lower": {
                 "lower_30": "506935931673499181878921889455e-36",
                 "upper_30": "506935931673499181878921889456e-36",
@@ -1154892,8 +1154118,9 @@
                 "upper_30": "506935931673499439338684667269e-36",
                 "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
               },
-              "evidence": "NEW_Q3_JOB",
-              "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2839ecfb11c284203cb6"
+              "evidence": "PRIOR_ROUND_JOB",
+              "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2839ecfb11c284203cb6",
+              "reason": null
             },
             {
               "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
@@ -1154993,7 +1154220,6 @@
                 "display": "1,354,415,508.00"
               },
               "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-              "reason": null,
               "MSE_lower": {
                 "lower_30": "464157656824097969861342292203e-36",
                 "upper_30": "464157656824097969861342292204e-36",
@@ -1155004,8 +1154230,9 @@
                 "upper_30": "464157656824097969861432317659e-36",
                 "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
               },
-              "evidence": "NEW_Q3_JOB",
-              "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fc4be71b923fefb0bcb"
+              "evidence": "PRIOR_ROUND_JOB",
+              "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/1fc4be71b923fefb0bcb",
+              "reason": null
             },
             {
               "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
@@ -1155107,7 +1154334,7 @@
                 "denominator": 1532495540865888858358347027150309183618739122183602176,
                 "display": "0.00"
               },
-              "evidence": "NEW_Q3_JOB",
+              "evidence": "PRIOR_ROUND_JOB",
               "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/3c4bc83f9057c6e409cb",
               "reason": null
             },
@@ -1155211,7 +1154438,7 @@
                 "denominator": 766247770432944429179173513575154591809369561091801088,
                 "display": "0.00"
               },
-              "evidence": "NEW_Q3_JOB",
+              "evidence": "PRIOR_ROUND_JOB",
               "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/84e246fd504c9feab65a",
               "reason": null
             },
@@ -1155315,7 +1154542,7 @@
                 "denominator": 766247770432944429179173513575154591809369561091801088,
                 "display": "0.00"
               },
-              "evidence": "NEW_Q3_JOB",
+              "evidence": "PRIOR_ROUND_JOB",
               "job": "search-evidence/search-78ee25e2f10dcaccee5c/jobs/TRUNCATED_PF/2b0c862b98873793ac72",
               "reason": null
             },
@@ -2035931,7 +2035158,7 @@
           "/home/abe/Project/Partially Randomized Trotter/.rpe-central/state/runs/search-bea22c38307bac0a734e",
           "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/romutail-h4-coarse-3ea3427947/search-evidence/search-78ee25e2f10dcaccee5c"
         ],
-        "loaded": 7835,
+        "loaded": 7842,
         "already_known": 0,
         "refused": 695,
         "refused_reasons": [
@@ -2036479,107 +2035706,38 @@
         "max_new_q3": "UNLIMITED_WITHIN_RANGE",
         "science_approved": true,
         "spent_before": 7575,
-        "new_calls": 16
+        "new_calls": 0
       },
       "generation": null,
       "parameter_assessment": null,
-      "rule_adopted_best": {
-        "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=2:155a3a2e",
-        "configuration_id": "155a3a2e86ff9cde5ab580379050c915bbfee40edb2cd70ab33c1773363a4d14",
-        "configuration": {
-          "p": 7,
-          "formula": "2nd",
-          "delta_over_h": "2"
-        },
-        "labels": [],
-        "N_X": [
-          30,
-          28,
-          26,
-          24,
-          22,
-          20,
-          18,
-          16,
-          14,
-          12,
-          10,
-          8,
-          6
-        ],
-        "N_Y": [
-          30,
-          28,
-          26,
-          24,
-          22,
-          20,
-          18,
-          16,
-          14,
-          12,
-          10,
-          8,
-          6
-        ],
-        "MSE_lower": {
-          "lower_30": "122406372518549563741242547330e-35",
-          "upper_30": "122406372518549563741242547331e-35",
-          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-        },
-        "MSE_upper": {
-          "lower_30": "122406372519331663950961751559e-35",
-          "upper_30": "122406372519331663950961751560e-35",
-          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
-        },
-        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
-        "cost": {
-          "numerator": 361421592,
-          "denominator": 1,
-          "display": "361,421,592.00"
-        },
-        "cost_display": "361,421,592.00",
-        "evidence": "PRIOR_ROUND_JOB",
-        "point_id": null,
-        "result_sources": null
-      },
-      "adopted_new_calls": 7,
+      "adopted_new_calls": 0,
       "executor_metrics": {
-        "submitted": 34,
-        "queued_cancelled": 7,
-        "launched": 27,
-        "finished": 27,
-        "adopted": 27,
-        "speculative_launched": 25,
-        "speculative_adopted": 25,
-        "peak_active": 10,
+        "submitted": 0,
+        "queued_cancelled": 0,
+        "launched": 0,
+        "finished": 0,
+        "adopted": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 0,
         "sampled_owned_tree_peak_RSS_KiB": 0,
         "completed_not_adopted": 0,
-        "by_method": {
-          "FULL_PF": {
-            "launched": 11,
-            "adopted": 11
-          },
-          "TRUNCATED_PF": {
-            "launched": 16,
-            "adopted": 16
-          }
-        },
+        "by_method": {},
         "max_concurrent_jobs": 1,
         "dp_workers": 3,
-        "new_real_route_launches": 27,
+        "new_real_route_launches": 0,
         "executor_failure": null,
-        "elapsed_seconds": 915.0369032770395,
-        "busy_job_seconds": 1509.5700882002711,
-        "idle_slot_seconds_no_queued_candidate": 564.3060603544582,
+        "elapsed_seconds": 717.2891934229992,
+        "busy_job_seconds": 0.0,
+        "idle_slot_seconds_no_queued_candidate": 717.2891934229992,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 564.3060603544582,
-        "idle_slot_seconds_with_queued_candidate": 42.310296069364995,
-        "integrated_available_slot_seconds": 2114.151542746229,
-        "slot_utilization": 0.7140311645963553,
+        "idle_slot_seconds_no_queued_or_selected_result": 717.2891934229992,
+        "idle_slot_seconds_with_queued_candidate": 0.0,
+        "integrated_available_slot_seconds": 717.2891934229992,
+        "slot_utilization": 0.0,
         "unreadable_progress_lines": 0,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
-        "speculative_adoption_fraction": 1.0,
+        "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
         "distributed": true,
         "by_host": {
@@ -2036588,35 +2035746,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1210,
-            "reused": 45911
+            "reused": 48257
           },
           "local": {
             "assigned": 1849,
             "launched": 1849,
             "completed": 1849,
             "adopted": 1843,
-            "reused": 48066
+            "reused": 51488
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 524,
-            "reused": 19163
+            "reused": 20163
           },
           "local0-wsl": {
             "assigned": 1000,
             "launched": 992,
             "completed": 990,
             "adopted": 978,
-            "reused": 29034
+            "reused": 30916
           },
           "pbs-0": {
             "assigned": 4504,
             "launched": 3798,
             "completed": 4504,
             "adopted": 4456,
-            "reused": 131076
+            "reused": 139654
           }
         },
         "host_admission": {
@@ -2040355,8 +2039513,8 @@
               "status": "R",
               "worker": {
                 "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
-                "monotonic": 2912308.625493148,
-                "epoch": 1795565995.4410748,
+                "monotonic": 2913802.803400852,
+                "epoch": 1795567489.618983,
                 "schema": "RPE_PBS_WORKER_STATE_V1",
                 "state": "READY",
                 "ready": true,
@@ -2040437,7 +2039595,7 @@
                   "one_shared_slot_pool": true
                 },
                 "capacity": 96,
-                "remaining_seconds": 106123.62100507971,
+                "remaining_seconds": 104629.44308693381,
                 "start_clock": {
                   "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
                   "monotonic": 2911694.278117335,
@@ -2042186,18 +2041344,77 @@
           }
         ],
         "host_offers": {
+          "pbs-0": {
+            "capacity": 96,
+            "fresh_free_slots": 96,
+            "reported_free_slots": 96,
+            "observed_age_seconds": 10.239021844929084,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 96,
+              "slots": 96,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 42382692352,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 11240954920960,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": [],
+                "reclaim_start_bytes": 51002736640,
+                "reclaim_target_bytes": 48318382080,
+                "reclaim_checked": false,
+                "reclaim_pending": false,
+                "measurement_seconds": 30.149053514003754
+              },
+              "pbs": {
+                "job_id": "268201.CPUcluster-PRISM",
+                "remaining_seconds": 104634.52809951268,
+                "minimum_task_seconds": 60.0,
+                "drain_seconds": 30.0,
+                "accepting": true,
+                "resource_pool": {
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400
+                },
+                "launch_fit": true,
+                "ready_buffer": true
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2251768540591,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
           "local": {
-            "capacity": 1,
+            "capacity": 0,
             "fresh_free_slots": 0,
             "reported_free_slots": 0,
-            "observed_age_seconds": 1.6755626241210848,
+            "observed_age_seconds": 4.3901123439427465,
             "priority_group": 2,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
               "mode": "AUTO",
-              "capacity": 1,
+              "capacity": 0,
               "slots": 0,
-              "occupied": 1,
+              "occupied": 0,
               "stage": "MEASURED_TASK_HEADROOM",
               "reasons": [
                 "Offer fitting work by task class after reserving the costs of existing attempts"
@@ -2042206,12 +2041423,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1604982.378223134,
-                  "epoch": 1795564993.8238719
+                  "monotonic": 1606476.58616179,
+                  "epoch": 1795566488.0318103
                 },
                 "machine_cpu_count": 32,
                 "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 47915892736,
+                "machine_mem_available_bytes": 42060623872,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2042240,20 +2041457,20 @@
                 "observational_only": true
               },
               "limits": {
-                "cpu_slots": 1,
-                "memory_slots": 1,
+                "cpu_slots": 0,
+                "memory_slots": 0,
                 "explicit_max_slots": null,
                 "memory_sample_headroom_factor": 1.5
               },
               "dp_workers_per_q3": 2,
-              "peak_job_rss_bytes": 1783406592,
-              "peak_job_cpu_cores": 5.713622056798504,
+              "peak_job_rss_bytes": 0,
+              "peak_job_cpu_cores": 0,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 912.6974283640739,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 711.2844287890475,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                "usable_results": 12,
-                "adopted_results": 11,
+                "usable_results": 0,
+                "adopted_results": 0,
                 "decision_wait_seconds": null,
                 "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
                 "ready_jobs": 0,
@@ -2042269,10 +2041486,10 @@
               "admitted_task_classes": [],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 39295836160,
+                "used_bytes": 39295905792,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 22259929088,
+                "filesystem_free_bytes": 39202406400,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": [],
                 "reclaim_start_bytes": 51002736640,
@@ -2042282,11 +2041499,11 @@
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0497726069298,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2256907830015,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 13,
-              "adopted_results": 13,
+              "usable_results": 0,
+              "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
               "ready_jobs": 0,
@@ -2042301,7 +2041518,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 1.7807523519732058,
+            "observed_age_seconds": 3.8659700679127127,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2042317,12 +2041534,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2602947.85411926,
-                  "epoch": 1795564993.4257953
+                  "monotonic": 2604442.588305263,
+                  "epoch": 1795566488.1599813
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 494096941056,
+                "machine_mem_available_bytes": 494148034560,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2042370,8 +2041587,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 908.2545718010515,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 707.2351347960066,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2042388,17 +2041605,58 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37132558336,
+                "used_bytes": 37132644352,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 568540000256,
+                "filesystem_free_bytes": 568539856896,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0515987230465,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.227052299073,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "local0-wsl": {
+            "capacity": 4,
+            "fresh_free_slots": 4,
+            "reported_free_slots": 4,
+            "observed_age_seconds": 6.127724662888795,
+            "priority_group": 1,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 4,
+              "slots": 4,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 41991745536,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 929417256960,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": []
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2282103921752,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -2042415,7 +2041673,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.0761914351023734,
+            "observed_age_seconds": 3.9443120541982353,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2042431,12 +2041689,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 468916.288770646,
-                  "epoch": 1795564991.9369104
+                  "monotonic": 470412.982765447,
+                  "epoch": 1795566488.6309052
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1055652409344,
+                "machine_mem_available_bytes": 1060367028224,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2042475,8 +2041733,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 903.9541599249933,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 705.0230296631344,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2042493,120 +2041751,20 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40658305024,
+                "used_bytes": 40658378752,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 61551493120,
+                "filesystem_free_bytes": 61576065024,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0528202739079,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2293842760846,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "local0-wsl": {
-            "capacity": 4,
-            "fresh_free_slots": 4,
-            "reported_free_slots": 4,
-            "observed_age_seconds": 3.0476626469753683,
-            "priority_group": 1,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 4,
-              "slots": 4,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 41991700480,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 929417310208,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": []
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0540259769186,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 12,
-              "adopted_results": 12,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "pbs-0": {
-            "capacity": 96,
-            "fresh_free_slots": 96,
-            "reported_free_slots": 96,
-            "observed_age_seconds": 5.006750714033842,
-            "priority_group": 0,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 96,
-              "slots": 96,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42382913536,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 11241084944384,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false,
-                "measurement_seconds": 9.245832913089544
-              },
-              "pbs": {
-                "job_id": "268201.CPUcluster-PRISM",
-                "remaining_seconds": 106126.67066348484,
-                "minimum_task_seconds": 60.0,
-                "drain_seconds": 30.0,
-                "accepting": true,
-                "resource_pool": {
-                  "cpu_count": 96,
-                  "memory_bytes": 375809638400
-                },
-                "launch_fit": true,
-                "ready_buffer": true
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0556171229109,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 2,
-              "adopted_results": 2,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
               "ready_jobs": 0,
@@ -2042643,8 +2041801,68 @@
         },
         "preparation_readiness_pending": {},
         "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
-        "method_launched": 16,
-        "method_adopted": 16
+        "method_launched": 0,
+        "method_adopted": 0
+      },
+      "rule_adopted_best": {
+        "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=2:155a3a2e",
+        "configuration_id": "155a3a2e86ff9cde5ab580379050c915bbfee40edb2cd70ab33c1773363a4d14",
+        "configuration": {
+          "p": 7,
+          "formula": "2nd",
+          "delta_over_h": "2"
+        },
+        "labels": [],
+        "N_X": [
+          30,
+          28,
+          26,
+          24,
+          22,
+          20,
+          18,
+          16,
+          14,
+          12,
+          10,
+          8,
+          6
+        ],
+        "N_Y": [
+          30,
+          28,
+          26,
+          24,
+          22,
+          20,
+          18,
+          16,
+          14,
+          12,
+          10,
+          8,
+          6
+        ],
+        "MSE_lower": {
+          "lower_30": "122406372518549563741242547330e-35",
+          "upper_30": "122406372518549563741242547331e-35",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "MSE_upper": {
+          "lower_30": "122406372519331663950961751559e-35",
+          "upper_30": "122406372519331663950961751560e-35",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 361421592,
+          "denominator": 1,
+          "display": "361,421,592.00"
+        },
+        "cost_display": "361,421,592.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
       },
       "confirmed_all_best": null
     },
@@ -2989033,41 +2988251,32 @@
       "parameter_assessment": null,
       "adopted_new_calls": 0,
       "executor_metrics": {
-        "submitted": 34,
-        "queued_cancelled": 7,
-        "launched": 27,
-        "finished": 27,
-        "adopted": 27,
-        "speculative_launched": 25,
-        "speculative_adopted": 25,
-        "peak_active": 10,
+        "submitted": 0,
+        "queued_cancelled": 0,
+        "launched": 0,
+        "finished": 0,
+        "adopted": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 0,
         "sampled_owned_tree_peak_RSS_KiB": 0,
         "completed_not_adopted": 0,
-        "by_method": {
-          "FULL_PF": {
-            "launched": 11,
-            "adopted": 11
-          },
-          "TRUNCATED_PF": {
-            "launched": 16,
-            "adopted": 16
-          }
-        },
+        "by_method": {},
         "max_concurrent_jobs": 1,
         "dp_workers": 3,
-        "new_real_route_launches": 27,
+        "new_real_route_launches": 0,
         "executor_failure": null,
-        "elapsed_seconds": 915.0369032770395,
-        "busy_job_seconds": 1509.5700882002711,
-        "idle_slot_seconds_no_queued_candidate": 564.3060603544582,
+        "elapsed_seconds": 717.2891934229992,
+        "busy_job_seconds": 0.0,
+        "idle_slot_seconds_no_queued_candidate": 717.2891934229992,
         "idle_slot_seconds_waiting_selected_result": 0.0,
-        "idle_slot_seconds_no_queued_or_selected_result": 564.3060603544582,
-        "idle_slot_seconds_with_queued_candidate": 42.310296069364995,
-        "integrated_available_slot_seconds": 2114.151542746229,
-        "slot_utilization": 0.7140311645963553,
+        "idle_slot_seconds_no_queued_or_selected_result": 717.2891934229992,
+        "idle_slot_seconds_with_queued_candidate": 0.0,
+        "integrated_available_slot_seconds": 717.2891934229992,
+        "slot_utilization": 0.0,
         "unreadable_progress_lines": 0,
         "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
-        "speculative_adoption_fraction": 1.0,
+        "speculative_adoption_fraction": null,
         "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
         "distributed": true,
         "by_host": {
@@ -2989076,35 +2988285,35 @@
             "launched": 1210,
             "completed": 1210,
             "adopted": 1210,
-            "reused": 45911
+            "reused": 48257
           },
           "local": {
             "assigned": 1849,
             "launched": 1849,
             "completed": 1849,
             "adopted": 1843,
-            "reused": 48066
+            "reused": 51488
           },
           "server2": {
             "assigned": 524,
             "launched": 524,
             "completed": 524,
             "adopted": 524,
-            "reused": 19163
+            "reused": 20163
           },
           "local0-wsl": {
             "assigned": 1000,
             "launched": 992,
             "completed": 990,
             "adopted": 978,
-            "reused": 29034
+            "reused": 30916
           },
           "pbs-0": {
             "assigned": 4504,
             "launched": 3798,
             "completed": 4504,
             "adopted": 4456,
-            "reused": 131076
+            "reused": 139654
           }
         },
         "host_admission": {
@@ -2992843,8 +2992052,8 @@
               "status": "R",
               "worker": {
                 "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
-                "monotonic": 2912308.625493148,
-                "epoch": 1795565995.4410748,
+                "monotonic": 2913802.803400852,
+                "epoch": 1795567489.618983,
                 "schema": "RPE_PBS_WORKER_STATE_V1",
                 "state": "READY",
                 "ready": true,
@@ -2992925,7 +2992134,7 @@
                   "one_shared_slot_pool": true
                 },
                 "capacity": 96,
-                "remaining_seconds": 106123.62100507971,
+                "remaining_seconds": 104629.44308693381,
                 "start_clock": {
                   "clock_id": "CPUcluster019:4a2ab0d0-0154-4cdb-b9a5-e0274685c557",
                   "monotonic": 2911694.278117335,
@@ -2994674,18 +2993883,77 @@
           }
         ],
         "host_offers": {
+          "pbs-0": {
+            "capacity": 96,
+            "fresh_free_slots": 96,
+            "reported_free_slots": 96,
+            "observed_age_seconds": 10.239021844929084,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 96,
+              "slots": 96,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 42382692352,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 11240954920960,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": [],
+                "reclaim_start_bytes": 51002736640,
+                "reclaim_target_bytes": 48318382080,
+                "reclaim_checked": false,
+                "reclaim_pending": false,
+                "measurement_seconds": 30.149053514003754
+              },
+              "pbs": {
+                "job_id": "268201.CPUcluster-PRISM",
+                "remaining_seconds": 104634.52809951268,
+                "minimum_task_seconds": 60.0,
+                "drain_seconds": 30.0,
+                "accepting": true,
+                "resource_pool": {
+                  "cpu_count": 96,
+                  "memory_bytes": 375809638400
+                },
+                "launch_fit": true,
+                "ready_buffer": true
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2251768540591,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
           "local": {
-            "capacity": 1,
+            "capacity": 0,
             "fresh_free_slots": 0,
             "reported_free_slots": 0,
-            "observed_age_seconds": 1.6755626241210848,
+            "observed_age_seconds": 4.3901123439427465,
             "priority_group": 2,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
               "mode": "AUTO",
-              "capacity": 1,
+              "capacity": 0,
               "slots": 0,
-              "occupied": 1,
+              "occupied": 0,
               "stage": "MEASURED_TASK_HEADROOM",
               "reasons": [
                 "Offer fitting work by task class after reserving the costs of existing attempts"
@@ -2994694,12 +2993962,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                  "monotonic": 1604982.378223134,
-                  "epoch": 1795564993.8238719
+                  "monotonic": 1606476.58616179,
+                  "epoch": 1795566488.0318103
                 },
                 "machine_cpu_count": 32,
                 "machine_mem_total_bytes": 67095015424,
-                "machine_mem_available_bytes": 47915892736,
+                "machine_mem_available_bytes": 42060623872,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2994728,20 +2993996,20 @@
                 "observational_only": true
               },
               "limits": {
-                "cpu_slots": 1,
-                "memory_slots": 1,
+                "cpu_slots": 0,
+                "memory_slots": 0,
                 "explicit_max_slots": null,
                 "memory_sample_headroom_factor": 1.5
               },
               "dp_workers_per_q3": 2,
-              "peak_job_rss_bytes": 1783406592,
-              "peak_job_cpu_cores": 5.713622056798504,
+              "peak_job_rss_bytes": 0,
+              "peak_job_cpu_cores": 0,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 912.6974283640739,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 711.2844287890475,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-                "usable_results": 12,
-                "adopted_results": 11,
+                "usable_results": 0,
+                "adopted_results": 0,
                 "decision_wait_seconds": null,
                 "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
                 "ready_jobs": 0,
@@ -2994757,10 +2994025,10 @@
               "admitted_task_classes": [],
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 39295836160,
+                "used_bytes": 39295905792,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 22259929088,
+                "filesystem_free_bytes": 39202406400,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": [],
                 "reclaim_start_bytes": 51002736640,
@@ -2994770,11 +2994038,11 @@
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0497726069298,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2256907830015,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 13,
-              "adopted_results": 13,
+              "usable_results": 0,
+              "adopted_results": 0,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
               "ready_jobs": 0,
@@ -2994789,7 +2994057,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 1.7807523519732058,
+            "observed_age_seconds": 3.8659700679127127,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2994805,12 +2994073,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
-                  "monotonic": 2602947.85411926,
-                  "epoch": 1795564993.4257953
+                  "monotonic": 2604442.588305263,
+                  "epoch": 1795566488.1599813
                 },
                 "machine_cpu_count": 64,
                 "machine_mem_total_bytes": 540802801664,
-                "machine_mem_available_bytes": 494096941056,
+                "machine_mem_available_bytes": 494148034560,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2994858,8 +2994126,8 @@
               "peak_job_rss_bytes": 74093199360.0,
               "peak_job_cpu_cores": 12.107291204226087,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 908.2545718010515,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 707.2351347960066,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2994876,17 +2994144,58 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 37132558336,
+                "used_bytes": 37132644352,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 568540000256,
+                "filesystem_free_bytes": 568539856896,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0515987230465,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.227052299073,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 0,
+              "adopted_results": 0,
+              "decision_wait_seconds": null,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "capacity_ready_jobs": 0,
+              "ready_task_classes": [],
+              "capacity": 1
+            }
+          },
+          "local0-wsl": {
+            "capacity": 4,
+            "fresh_free_slots": 4,
+            "reported_free_slots": 4,
+            "observed_age_seconds": 6.127724662888795,
+            "priority_group": 1,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 4,
+              "slots": 4,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "storage": {
+                "limit_bytes": 53687091200,
+                "used_bytes": 41991745536,
+                "accepting_new_jobs": true,
+                "reason": null,
+                "filesystem_free_bytes": 929417256960,
+                "filesystem_min_free_bytes": 5368709120,
+                "filesystem_low_space_roots": []
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2282103921752,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
@@ -2994903,7 +2994212,7 @@
             "capacity": 2,
             "fresh_free_slots": 0,
             "reported_free_slots": 2,
-            "observed_age_seconds": 3.0761914351023734,
+            "observed_age_seconds": 3.9443120541982353,
             "priority_group": 0,
             "resource_report": {
               "schema": "RPE_Q3_RESOURCE_OFFER_V1",
@@ -2994919,12 +2994228,12 @@
                 "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
                 "clock": {
                   "clock_id": "GPUA100-gleap-01:cc97c90c-2663-4b1f-9184-6bcb4b2c9c38",
-                  "monotonic": 468916.288770646,
-                  "epoch": 1795564991.9369104
+                  "monotonic": 470412.982765447,
+                  "epoch": 1795566488.6309052
                 },
                 "machine_cpu_count": 128,
                 "machine_mem_total_bytes": 1081968054272,
-                "machine_mem_available_bytes": 1055652409344,
+                "machine_mem_available_bytes": 1060367028224,
                 "allowed_cpu_count": 30,
                 "cpu_bounds": [
                   {
@@ -2994963,8 +2994272,8 @@
               "peak_job_rss_bytes": 55685152768.0,
               "peak_job_cpu_cores": 11.340099324131254,
               "feedback": {
-                "controller_invocation": "877735-1795564079361879778",
-                "measurement_seconds": 903.9541599249933,
+                "controller_invocation": "877735-1795565773488462521",
+                "measurement_seconds": 705.0230296631344,
                 "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
                 "usable_results": 0,
                 "adopted_results": 0,
@@ -2994981,120 +2994290,20 @@
               "running_jobs_may_exceed_reduced_capacity": false,
               "storage": {
                 "limit_bytes": 53687091200,
-                "used_bytes": 40658305024,
+                "used_bytes": 40658378752,
                 "accepting_new_jobs": true,
                 "reason": null,
-                "filesystem_free_bytes": 61551493120,
+                "filesystem_free_bytes": 61576065024,
                 "filesystem_min_free_bytes": 5368709120,
                 "filesystem_low_space_roots": []
               }
             },
             "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0528202739079,
+              "controller_invocation": "877735-1795565773488462521",
+              "measurement_seconds": 719.2293842760846,
               "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
               "usable_results": 0,
               "adopted_results": 0,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "local0-wsl": {
-            "capacity": 4,
-            "fresh_free_slots": 4,
-            "reported_free_slots": 4,
-            "observed_age_seconds": 3.0476626469753683,
-            "priority_group": 1,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 4,
-              "slots": 4,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 41991700480,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 929417310208,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": []
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0540259769186,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 12,
-              "adopted_results": 12,
-              "decision_wait_seconds": null,
-              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
-              "ready_jobs": 0,
-              "ready_jobs_now": 0,
-              "capacity_ready_jobs": 0,
-              "ready_task_classes": [],
-              "capacity": 1
-            }
-          },
-          "pbs-0": {
-            "capacity": 96,
-            "fresh_free_slots": 96,
-            "reported_free_slots": 96,
-            "observed_age_seconds": 5.006750714033842,
-            "priority_group": 0,
-            "resource_report": {
-              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
-              "mode": "FIXED",
-              "capacity": 96,
-              "slots": 96,
-              "occupied": 0,
-              "stage": "EXPLICIT_FIXED_PROFILE",
-              "reasons": [
-                "Legacy/explicit worker slots retained"
-              ],
-              "storage": {
-                "limit_bytes": 53687091200,
-                "used_bytes": 42382913536,
-                "accepting_new_jobs": true,
-                "reason": null,
-                "filesystem_free_bytes": 11241084944384,
-                "filesystem_min_free_bytes": 5368709120,
-                "filesystem_low_space_roots": [],
-                "reclaim_start_bytes": 51002736640,
-                "reclaim_target_bytes": 48318382080,
-                "reclaim_checked": false,
-                "reclaim_pending": false,
-                "measurement_seconds": 9.245832913089544
-              },
-              "pbs": {
-                "job_id": "268201.CPUcluster-PRISM",
-                "remaining_seconds": 106126.67066348484,
-                "minimum_task_seconds": 60.0,
-                "drain_seconds": 30.0,
-                "accepting": true,
-                "resource_pool": {
-                  "cpu_count": 96,
-                  "memory_bytes": 375809638400
-                },
-                "launch_fit": true,
-                "ready_buffer": true
-              }
-            },
-            "capacity_feedback": {
-              "controller_invocation": "877735-1795564079361879778",
-              "measurement_seconds": 916.0556171229109,
-              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
-              "usable_results": 2,
-              "adopted_results": 2,
               "decision_wait_seconds": null,
               "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
               "ready_jobs": 0,
