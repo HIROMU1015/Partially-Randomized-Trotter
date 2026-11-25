@@ -1077,8 +1077,8 @@ class Completion:
         # Do not serialize independent candidates by split or hold their lane
         # while a distributed acquisition is in flight.
         if len(eligible)>1:
-            from .rpe_q3_resources import controller_cpu_count
-            with ThreadPoolExecutor(max_workers=min(len(eligible),controller_cpu_count())) as pool:
+            from .rpe_q3_resources import controller_metadata_workers
+            with ThreadPoolExecutor(max_workers=min(len(eligible),controller_metadata_workers(concurrent_producers=3))) as pool:
                 for _ in pool.map(prepare_record,eligible):pass
         elif eligible:prepare_record(eligible[0])
 

@@ -203,3 +203,13 @@ def test_cached_artifact_rehashes_only_after_inode_metadata_change(tmp_path, mon
     assert len(reads)==2
     path.unlink(); assert cache.missing([sha])==[sha]
     path.write_bytes(data);assert not cache.missing([sha]) and len(reads)==3
+
+
+def test_controller_metadata_lanes_follow_memory_and_cpu_allowance():
+    from trottertracks.rpe_q3_resources import controller_metadata_workers
+    gib=1024**3
+    base={'allowed_cpu_count':32,'machine_mem_available_bytes':30*gib}
+    assert controller_metadata_workers(concurrent_producers=3,snapshot=base)==5
+    assert controller_metadata_workers(concurrent_producers=3,snapshot=dict(base,machine_mem_available_bytes=6*gib))==1
+    assert controller_metadata_workers(concurrent_producers=3,snapshot=dict(base,remaining_group_memory_bytes=12*gib))==2
+    assert controller_metadata_workers(concurrent_producers=3,snapshot=dict(base,allowed_cpu_count=2))==2

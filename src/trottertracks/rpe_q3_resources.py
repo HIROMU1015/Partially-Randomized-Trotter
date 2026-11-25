@@ -55,6 +55,24 @@ def controller_cpu_count():
     return max(1, int(report['allowed_cpu_count'] or report['machine_cpu_count'] or 1))
 
 
+def controller_metadata_workers(*, concurrent_producers=1, snapshot=None, lane_bytes=1024**3):
+    """Size metadata/pack-preparation lanes against observed free RAM and CPUs.
+
+    This is not a scientific worker or fixed host CPU limit. A controller
+    lane can retain JSON and a Git pack subprocess simultaneously. Keep half
+    of current available RAM for existing owners, collection and the OS;
+    divide the remaining budget among parallel producer families.
+    """
+    report=resource_snapshot({},environ={}) if snapshot is None else snapshot
+    cpus=max(1,int(report.get('allowed_cpu_count') or report.get('machine_cpu_count') or 1))
+    headroom=[report[k] for k in ('machine_mem_available_bytes','remaining_group_memory_bytes')
+              if type(report.get(k)) is int and report[k]>=0]
+    if not headroom:return cpus
+    if type(concurrent_producers) is not int or concurrent_producers<1 or type(lane_bytes) is not int or lane_bytes<1:
+        raise ValueError('Positive metadata resource estimate required')
+    return min(cpus,max(1,min(headroom)//(2*concurrent_producers*lane_bytes)))
+
+
 def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup', affinity=None, environ=None):
     """Observe process/allocation bounds; do not equate idle host CPUs to a grant."""
     proc, groups = Path(proc_root), Path(cgroup_root)

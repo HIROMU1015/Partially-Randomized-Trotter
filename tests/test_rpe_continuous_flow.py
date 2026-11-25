@@ -35,6 +35,8 @@ def test_background_receipts_follow_exact_owner_even_outside_selected_wave(tmp_p
 
 
 def test_same_split_shortlist_lanes_do_not_wait_for_other_candidates(tmp_path,monkeypatch):
+    from trottertracks import rpe_q3_resources
+    monkeypatch.setattr(rpe_q3_resources,'controller_metadata_workers',lambda **_:2)
     comp=P.Completion.__new__(P.Completion);comp.settings={'exploratory_cost':True};comp.directory=tmp_path
     comp.stage_executor=SimpleNamespace(executor=SimpleNamespace(store=SimpleNamespace(row=lambda _:None)))
     comp.state={'records':{}};barrier=threading.Barrier(2);calls=[]

@@ -1492,7 +1492,7 @@ class WidthDriver:
 
         if self.spec.get('search_overrides', {}).get('controller_parallel') is True:
             from concurrent.futures import ThreadPoolExecutor
-            from trottertracks.rpe_q3_resources import controller_cpu_count
+            from trottertracks.rpe_q3_resources import controller_metadata_workers
             groups = {}
             for family in pending:
                 groups.setdefault((family['method'], family['L_D']), []).append(family)
@@ -1503,7 +1503,7 @@ class WidthDriver:
                         break
                     prepare_family(family)
 
-            with ThreadPoolExecutor(max_workers=min(len(groups), controller_cpu_count()),
+            with ThreadPoolExecutor(max_workers=min(len(groups), controller_metadata_workers(concurrent_producers=3)),
                                     thread_name_prefix='rpe-family-inputs') as pool:
                 for _ in pool.map(prepare_split, groups.values()):
                     pass
@@ -1833,8 +1833,8 @@ class WidthDriver:
                     split = (split, id(point)) if dependency is None or id(point) in priced_points else dependency
                 groups.setdefault(method, {}).setdefault(split, []).append(point)
             if self.spec.get('search_overrides', {}).get('controller_parallel') is True:
-                from trottertracks.rpe_q3_resources import controller_cpu_count
-                parallel = controller_cpu_count()
+                from trottertracks.rpe_q3_resources import controller_metadata_workers
+                parallel = controller_metadata_workers(concurrent_producers=3)
             else:
                 parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
             lane_limit = parallel if continuous else min(limit, parallel)
@@ -1897,8 +1897,16 @@ class WidthDriver:
                                             self.log(event='READY_RECEIPT_REQUEUED',job=job,family=point['family'])
                             busy = {by_point[id(p)] for p in active.values()}
                             used = Counter(method for method, _ in busy)
+                            limit_now=max_active
+                            if self.spec.get('search_overrides',{}).get('controller_parallel') is True:
+                                # Already running metadata/worker attempts are
+                                # preserved; throttle only new candidate
+                                # submission as RAM pressure changes.
+                                limit_now=min(max_active,controller_metadata_workers(concurrent_producers=3)
+                                              *max(1,len(parallel_methods & lanes.keys()))
+                                              +len(lanes.keys()-parallel_methods))
                             for _ in range(len(backlog)):
-                                if len(active) >= max_active:
+                                if len(active) >= limit_now:
                                     break
                                 point = backlog.popleft()
                                 method, split = by_point[id(point)]
@@ -2283,9 +2291,9 @@ class WidthDriver:
         if exploratory:
             active_spec['pf_completion'] = dict(pf_settings, exploratory_cost=True) if pf_settings else {}
         if search.get('controller_parallel') is True and pf_enabled and pf_settings.get('mode') == 'complete':
-            from trottertracks.rpe_q3_resources import controller_cpu_count
+            from trottertracks.rpe_q3_resources import controller_metadata_workers
             active_spec['pf_completion'] = dict(active_spec.get('pf_completion') or pf_settings,
-                                                max_candidates=controller_cpu_count(),
+                                                max_candidates=controller_metadata_workers(concurrent_producers=3),
                                                 refill_candidate_preparation=True)
         executor,optimize = self.cycle_executor(routes, context['expected'], problem, active_spec, budgets)
         # Keep the bounded history inventory when a nonpersistent caller

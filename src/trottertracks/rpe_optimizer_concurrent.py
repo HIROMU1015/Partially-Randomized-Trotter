@@ -1094,9 +1094,12 @@ class DistributedExecutor(ConcurrentExecutor):
         self.live_readiness_workers = max(1, len(kwargs.get('problem', args[4] if len(args)>4 else {}).get('methods', {})))
         self.controller_parallel = distributed.get('controller_parallel') is True
         self.live_readiness_max_workers = distributed.get('live_readiness_max_workers')
-        if self.controller_parallel and self.live_readiness_max_workers is None:
-            from .rpe_q3_resources import controller_cpu_count
-            self.live_readiness_max_workers = controller_cpu_count()
+        if self.controller_parallel:
+            from .rpe_q3_resources import controller_metadata_workers
+            memory_workers=controller_metadata_workers(concurrent_producers=3)
+            if self.live_readiness_max_workers is None:self.live_readiness_max_workers=memory_workers
+            elif type(self.live_readiness_max_workers) is int and self.live_readiness_max_workers>0:
+                self.live_readiness_max_workers=min(self.live_readiness_max_workers,memory_workers)
         self.live_readiness_refill_seconds = distributed.get('live_readiness_refill_seconds', 5)
         if (self.live_readiness_max_workers is not None and
                 (type(self.live_readiness_max_workers) is not int or self.live_readiness_max_workers < 1)):
