@@ -236,6 +236,11 @@ def existing_df_price_owner(directory):
     return next(directory.rglob('PRICE_EVIDENCE.json'), None) is not None
 
 
+
+def defer_new_df_price(request, quote, directory, *, exploratory):
+    return (exploratory and request.get('method') == 'PR_DF' and not quote['complete']
+            and not existing_df_price_owner(directory))
+
 def preparation_failure_class(reason, evidence=None):
     """Classify diagnostics separately from the existing no-retry guard."""
     evidence = evidence or {}
@@ -1439,12 +1444,11 @@ class Completion:
             def available_price():
                 if not quote_available:
                     return initial_quote
-                # The maximum-width grid is exploratory: a price model is
-                # needed for ranking only after Q3 finds feasible allocations.
-                # Do not wait on a new expensive price group to admit signals;
-                # preserve any price group that already owns an attempt.
-                if (exploratory and request.get('df_max_width_source') and not initial_quote['complete']
-                        and not existing_df_price_owner(d)):
+                # In ordinary exploratory PR-DF, price work is needed only
+                # after Q3 finds feasible allocations. This applies to every
+                # mapper/width, not just the maximum-width mapper. Continue
+                # exact already-owned work through its existing result path.
+                if defer_new_df_price(request, initial_quote, d, exploratory=exploratory):
                     rec['exploratory_price_reason'] = 'PRICE_DEFERRED_UNTIL_Q3_FEASIBILITY'
                     return initial_quote
                 try:

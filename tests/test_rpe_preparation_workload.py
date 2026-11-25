@@ -109,6 +109,26 @@ def test_scale_classes_and_observation_do_not_double_count_axes(tmp_path):
     assert obs['peak_rss_bytes'] == 12345
 
 
+def test_paired_dictionary_uses_path_concurrency_and_matching_storage(tmp_path):
+    legacy=request(tmp_path/'controller');paired=request(tmp_path/'controller')
+    paired['preparation']['df_event_layout']='DICTIONARY_PAIRED_V1'
+    old=R.preparation_workload(legacy);new=R.preparation_workload(paired)
+    assert new['axis_jobs']==8 and new['path_workers']==4
+    old_sample=dict(workload=old,cpu_count=8,peak_rss_bytes=10000,unique_event_bytes=10000,stored_path_units=200)
+    new_sample=dict(workload=new,cpu_count=8,peak_rss_bytes=5000,unique_event_bytes=100,stored_path_units=200)
+    assert R.preparation_forecast(paired,[old_sample],cpu_count=8)==dict(memory_bytes=7500,storage_bytes=40000)
+    assert R.preparation_forecast(paired,[old_sample,new_sample],cpu_count=8)==dict(memory_bytes=7500,storage_bytes=400)
+    assert R.preparation_forecast(legacy,[old_sample,new_sample],cpu_count=8)['storage_bytes']==40000
+    assert R.preparation_forecast(legacy,[new_sample],cpu_count=8).get('storage_bytes') is None
+    attempt=tmp_path/'attempt';spec=paired['preparation'];name=next(iter(spec['inputs']))
+    fixed=attempt/name;fixed.parent.mkdir(parents=True);fixed.write_bytes((Path(spec['controller_root'])/name.removeprefix('workspace/')).read_bytes())
+    path=fixed.parent/'calibration/acquisition/m0/p0/axes_XY';path.mkdir(parents=True)
+    (path/'events_PRIVATE.json').write_bytes(b'paired codec')
+    (path/'STRUCTURAL.json').write_text('{}')
+    obs=R.owned_preparation_observation(attempt,dict(request=paired,job_id='j',attempt_id='a',request_sha256='sha'),dict(task_cpu_count=8),1000)
+    assert obs['unique_event_bytes']==len(b'paired codec') and obs['stored_path_units']==200
+
+
 def test_reversible_pbs_drain_keeps_deadline_and_process_stop():
     import threading
     import ast

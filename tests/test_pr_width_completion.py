@@ -765,7 +765,21 @@ def test_exploratory_price_conflict_does_not_fan_out_into_direct_compiles():
     runner = SimpleNamespace(design_groups=lambda config, quote: plan)
     outcome = services.df_price_disposition({}, dict(rows=[known, missing]), runner, exploratory=True)
     assert outcome['groups'] == []
-    assert outcome['round_actions'][0]['reasons'] == ['EXPLORATORY_PRICE_NOT_IDENTIFIED']
+    assert outcome['round_actions'][0]['reasons'] == ['EXPLORATORY_PRICE_DEFERRED_UNTIL_FEASIBLE']
+    assert outcome['round_actions'][0]['action'] == 'RECHECK_REGISTERED_PRICE_EVIDENCE'
+
+
+def test_exploratory_defers_even_identifiable_new_calibration_until_feasible():
+    import pr_candidate_services as services
+    from types import SimpleNamespace
+    missing = dict(m=0, axis='Y', physical_id='axis-y', unit_price_RZ=None)
+    plan = dict(groups=[dict(status='CALIBRATION_DESIGN_READY', axis_keys=[missing])],
+                round_actions=[dict(m=0, axis='Y', action='CALIBRATE')])
+    runner = SimpleNamespace(design_groups=lambda config, quote: deepcopy(plan))
+    for exploratory, shortlist, count in [(True,False,0),(True,True,1),(False,False,1)]:
+        outcome=services.df_price_disposition({}, dict(rows=[missing]), runner,
+                                               exploratory=exploratory, shortlist=shortlist)
+        assert len(outcome['groups'])==count
 
 
 def test_shortlist_unpriced_df_uses_existing_scoped_direct_price_design():

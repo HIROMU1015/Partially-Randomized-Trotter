@@ -578,17 +578,17 @@ def df_price_disposition(config, quote, runner, *, exploratory=False, shortlist=
     groups = []
     for group in plan['groups']:
         pending = {(r['m'], r['axis']) for r in group['axis_keys']}
-        if (group['status'] == 'CALIBRATION_DESIGN_READY' and not pending & scoped
-                and not any(rows[k].get('direct_alternatives') for k in pending)):
-            groups.append(group)
-            continue
         if exploratory and not shortlist:
             # Ambiguities in a quote can be investigated on the shortlist.
             # A parametric survey does not replace the model with direct
             # compilations of every missing axis.
             for index in pending:
-                actions[index].update(action='NO_SAFE_PRICE_ACTION', group_id=None,
-                                      reasons=['EXPLORATORY_PRICE_NOT_IDENTIFIED'])
+                actions[index].update(action='RECHECK_REGISTERED_PRICE_EVIDENCE', group_id=None,
+                                      reasons=['EXPLORATORY_PRICE_DEFERRED_UNTIL_FEASIBLE'])
+            continue
+        if (group['status'] == 'CALIBRATION_DESIGN_READY' and not pending & scoped
+                and not any(rows[k].get('direct_alternatives') for k in pending)):
+            groups.append(group)
             continue
         for m in sorted({m for m, _ in pending}):
             axes = [axis for axis in ('X', 'Y') if (m, axis) in pending]

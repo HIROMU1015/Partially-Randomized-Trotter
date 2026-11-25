@@ -1,8 +1,10 @@
 """Artificial design/model and already-completed-path resume; no compile."""
 from copy import deepcopy
+from contextlib import ExitStack
 from fractions import Fraction
 import importlib.util
 import json
+import pickle
 from pathlib import Path
 import sys
 import resource
@@ -13,6 +15,7 @@ import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+from trottertracks import rpe_df_price_flanks as codec
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('_generic_df_prices',ROOT/'scripts/run_pr_df_candidate_prices.py')
@@ -115,6 +118,45 @@ class PriceTests(unittest.TestCase):
             with patch.object(E,'read',return_value=prices),patch.object(E,'means',return_value=hold):E.compare(inputs,'ARTIFICIAL_HOLD','ARTIFICIAL_MODEL','ARTIFICIAL_SOURCE')
             result=json.loads((out/'HOLDOUT_COMPARISON.json').read_text());self.assertEqual(result['rows'][0]['signed_error'],E.enc(-1));self.assertEqual(result['rows'][1]['signed_relative_error'],E.enc(Fraction(-1,52)))
             self.assertEqual(result['model_verdict'],'NOT_ASSESSED_NO_ADOPTED_TOLERANCE')
+
+    def test_fixed_paired_acquirer_uses_lazy_rows_and_both_axes_once(self):
+        # Exercise the actual fixed-source specialization and worker entry
+        # with purely synthetic events and compiler, not scientific execution.
+        with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+            out=Path(tmp);(out/'acquisition').mkdir();calls=[]
+            event=dict(kind='fixture',angle=-0.0)
+            requests=[SimpleNamespace(rte_occurrence=SimpleNamespace(events=[SimpleNamespace(to_dict=lambda:event)]*3))]
+            def sample(*args):calls.append('sample');return requests,[17],[]
+            ctx=SimpleNamespace(compile=lambda *args,**kwargs:None,prep=object(),h={'sample_requests':sample})
+            def metrics(rows):
+                self.assertIsInstance(rows,codec.FlatEvents)
+                return {'events':sum(1 for _ in rows)}
+            science=SimpleNamespace(m=SimpleNamespace(digest=codec.streaming_digest),write=codec.dictionary_event_writer(E.write))
+            wrapper=SimpleNamespace(num_qubits=9,num_clbits=1,count_ops=lambda:{'measure':1})
+            class Adapter:
+                def __init__(self,*args,observer,**kwargs):self.stage=observer
+                def acquire(self,req,rows,*,cohort,index,directory):
+                    directory.mkdir(parents=True);view=codec.EventRows(rows)
+                    science.write(directory/'events_PRIVATE.json',dict(events=view,seeds=[17],laws=[],conditional=False))
+                    records=[]
+                    for axis in req['axes']:
+                        calls.append(axis);self.stage(axis+'_compile','STARTED');ctx.compile(wrapper,'COMPILER')
+                        E.write(directory/({'X':'cosine','Y':'sine'}[axis]+'.json'),dict(fingerprint=axis,compiler='COMPILER'))
+                        records.append(dict(axis=axis,C=13,metrics=dict(rz_count=13),fingerprint=axis))
+                    return dict(seeds=[17],event_digest=codec.streaming_digest(view),new_compiles=len(records),cache_hits=0,records=records)
+            helper=SimpleNamespace(ROOT=out,PUBLIC='',STATE=dict(runtimes={3:SimpleNamespace(science=science)},contexts={3:ctx},inputs=dict(cache_root=out/'cache')),
+                time=time,json=json,resource=resource,traceback=traceback,FAILURE=Event(),P=SimpleNamespace(event_metrics=metrics),write=E.write,
+                D=SimpleNamespace(Adapter=Adapter,AXES={'X':'cosine','Y':'sine'},p=SimpleNamespace(PROFILE={'compiler':'COMPILER'})),
+                F=SimpleNamespace(make_backend_class=lambda:None),blob=E.blob,BASE=E.ADAPTER_SOURCE)
+            stack.enter_context(patch.object(E,'runtime',return_value=helper))
+            self.assertTrue(codec.prepare_lazy_price_runner(E,helper,stack))
+            self.assertIs(pickle.loads(pickle.dumps(E.selected_acquire_path)),E.selected_acquire_path)
+            cell=dict(m=3,cohort='TEST',seeds=[[17]],request=dict(request_id='test',axes=['X','Y'],physical_context=dict(physical_candidate={})))
+            plan=codec.pair_pending_axis_jobs(E.pending_axis_jobs)(cell,0,out,{a:dict(status='MISSING') for a in 'XY'},parallel=True)
+            result=E.selected_acquire_path(plan[0]);self.assertEqual(result['status'],'VALID',result)
+            self.assertEqual(calls,['sample','X','Y']);self.assertEqual(result['events'],{'events':3})
+            raw=out/'acquisition/m3/p0/axes_XY/events_PRIVATE.json'
+            self.assertEqual([list(row) for row in codec.DictionaryEvents(raw,result['record']['event_digest']).batches()],[[event]*3])
 
     def test_reuse_complete_receipt_and_prior_start_no_retry(self):
         fixture_spec=importlib.util.spec_from_file_location('_df_price_receipt_fixtures',ROOT/'tests/test_partial_df_price_reuse.py')

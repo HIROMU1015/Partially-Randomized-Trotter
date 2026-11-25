@@ -2109,6 +2109,10 @@ class DistributedPreparationBridge:
                     workspace_roots[alias], view, Path('workspaces')/alias, declared,
                     extra_directories=extra_directories))
         if stage in ('DF_CALIBRATION', 'DF_HOLDOUT') and '--input' in command:
+            if any(name.startswith('private/df-price-transport/') for name in inputs):
+                # A new request pins the portable codec as an ordinary input.
+                # Existing submitted markers retain their original request.
+                prep['df_event_layout'] = 'DICTIONARY_PAIRED_V1'
             frozen = read(Path(command[command.index('--input')+1]))
             if frozen.get('parallel_axes') is True:
                 if frozen['source'] != source:

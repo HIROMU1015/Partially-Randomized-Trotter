@@ -16,7 +16,7 @@ C1_SOURCE = '1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7'
 B = 'f09af82482aad11460c4bb73d3e13d7ada40be6f'
 RUN = 'docs/research/r_price_phase1_results_20261111/run01/'
 CELLS = ('H4_q8_R8','H4_q16_R8','H6_q1_R32','H6_q2_R32')
-SOURCE_FILES = ('src/trottertracks/s0a_saved_structure.py',
+SOURCE_FILES = ('src/trottertracks/s0a_saved_structure.py','src/trottertracks/rpe_df_price_flanks.py',
                 'src/trottertracks/s0a_structure_context.py','scripts/run_s0a_saved_structure.py',
                 'src/trottertracks/mean_compiled_price.py','src/trottertracks/r_price_phase1.py',
                 'src/trottertracks/r_price_phase1_science.py','src/trottertracks/r_price_phase1_runner.py',
@@ -117,6 +117,29 @@ class SavedEvents:
         self.metadata={};self.digest=None
 
     def batches(self):
+        from .rpe_df_price_flanks import DictionaryEvents, is_dictionary_event_file
+        if is_dictionary_event_file(self.path):
+            reader=DictionaryEvents(self.path,self.expected,chunk=self.chunk)
+            tails=0
+            for raw in reader.batches():
+                j=tails;tails+=1
+                if tails>self.q*len(self.allocation):raise ValueError('EXTRA_TAIL')
+                complete=False
+                def checked():
+                    nonlocal complete
+                    count=0
+                    for event in raw:
+                        count+=1
+                        if count>self.allocation[j%len(self.allocation)]:raise ValueError('EXTRA_OR_INVALID_EVENT')
+                        self.validator(j,event)
+                        yield event
+                    if count!=self.allocation[j%len(self.allocation)]:raise ValueError('MISSING_EVENT')
+                    complete=True
+                yield checked()
+                if not complete:raise ValueError('TAIL_NOT_FULLY_CONSUMED')
+            if tails!=self.q*len(self.allocation):raise ValueError('MISSING_TAIL')
+            self.metadata=reader.metadata;self.digest=reader.digest
+            return
         h=hashlib.sha256();tails=0;seen=set()
         with self.path.open(encoding='utf-8') as file:
             p=_JSON(file,self.chunk);p.take('{')

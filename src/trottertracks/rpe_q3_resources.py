@@ -251,14 +251,15 @@ def preparation_workload(request):
         return None
     name, sha = candidates[0]
     return _workload_from_input(prep['controller_root'], name, sha, prep.get('stage'), prep.get('provider'),
-                                (prep.get('source') or {}).get('commit'), bool(prep.get('parallel_df_price_axes')))
+                                (prep.get('source') or {}).get('commit'), bool(prep.get('parallel_df_price_axes')),
+                                prep.get('df_event_layout'))
 
 
 @lru_cache(maxsize=2048)
-def _workload_from_input(root, name, sha, stage, provider, source, parallel_axes):
+def _workload_from_input(root, name, sha, stage, provider, source, parallel_axes, df_event_layout=None):
     try:
         doc = _fixed_workload_document(root, name, sha)
-        cells = []
+        cells = []; event_shapes = []
         if name.endswith('/df_prices/INPUTS.json'):
             family = 'DF_EVENT_COUNT_V1'
             for cell in doc['cells']:
@@ -272,6 +273,7 @@ def _workload_from_input(root, name, sha, stage, provider, source, parallel_axes
                 paths = len(cell['indices']); axes = len(req['axes'])
                 if paths and axes:
                     cells.append((shape, count, paths, axes, count + physical['q'] * (physical['prefix'] + 1)))
+                    event_shapes.append((physical['prefix'], physical.get('K')))
         else:
             family = 'PF_STEP_COUNT_V1'
             configuration = doc['value']['configuration']; spec = configuration['spec']; binding = spec['binding']
@@ -286,11 +288,16 @@ def _workload_from_input(root, name, sha, stage, provider, source, parallel_axes
                 if axes:cells.append((shape, count, 1, axes, count * (spec['L_D'] + 1)))
         if not cells or any(c[0] != cells[0][0] for c in cells):
             return None
-        return dict(family=family, shape=cells[0][0], stage=stage, provider=provider, source=source,
+        result = dict(family=family, shape=cells[0][0], stage=stage, provider=provider, source=source,
                     peak_units=max(c[4] for c in cells), total_units=sum(c[4]*c[2]*c[3] for c in cells),
                     path_units=sum(c[1]*c[2] for c in cells), axis_jobs=sum(c[2]*c[3] for c in cells),
                     path_count=sum(c[2] for c in cells),
                     parallel_axes=parallel_axes)
+        if df_event_layout and family == 'DF_EVENT_COUNT_V1':
+            result['df_event_layout'] = df_event_layout
+            result['event_shapes'] = [list(x) for x in sorted(set(event_shapes),key=repr)]
+            result['path_workers'] = result['path_count']
+        return result
     except (OSError, ValueError, TypeError, KeyError, AttributeError, IndexError):
         return None
 
@@ -325,10 +332,19 @@ def owned_preparation_observation(attempt, assignment, profile, peak):
             for m, count, indices in cells:
                 for index in indices:
                     path = data/f'm{m}'/f'p{index}'
-                    common = path/'events_PRIVATE.json'
-                    if (common.is_file() and ((path/'SHARED_EVENTS.json').is_file()
-                            or (path/'STRUCTURAL.json').is_file())):
-                        units += count; size += common.stat().st_size
+                    # Paired workers store a single axes_XY trajectory. Old
+                    # split workers may have X/Y hard links or separate files.
+                    candidates=[path/'events_PRIVATE.json', *[path/axis/'events_PRIVATE.json'
+                                for axis in ('axes_XY','axes_X','axes_Y')]]
+                    unique={}
+                    for event_file in candidates:
+                        if not event_file.is_file():continue
+                        parent=event_file.parent
+                        if not ((parent/'STRUCTURAL.json').is_file() or
+                                parent==path and (path/'SHARED_EVENTS.json').is_file()):continue
+                        stat=event_file.stat();unique[(stat.st_dev,stat.st_ino)]=stat.st_size
+                    if unique:
+                        units += count;size += sum(unique.values())
             if units and size:observation.update(stored_path_units=units, unique_event_bytes=size)
         except (OSError, ValueError, TypeError, KeyError, AttributeError):pass
     try:
@@ -352,7 +368,7 @@ def preparation_forecast(request, observations, *, cpu_count=None, host=None):
     if not observations:return {}
     target = preparation_workload(request)
     if target is None:return {}
-    forecasts = {}
+    forecasts = {}; legacy_storage=[]; matching_storage=[]
     keys = ('family', 'shape', 'provider', 'stage', 'source', 'parallel_axes')
     def add(key, value):
         forecasts[key] = max(forecasts.get(key, 0), math.ceil(value))
@@ -364,16 +380,25 @@ def preparation_forecast(request, observations, *, cpu_count=None, host=None):
         workers = observation.get('cpu_count')
         peak = observation.get('peak_rss_bytes')
         if type(workers) is int and workers > 0 and type(peak) is int and peak > 0:
-            concurrent = min(target['axis_jobs'], cpu_count or workers) / min(sample['axis_jobs'], workers)
+            concurrent = min(target.get('path_workers',target['axis_jobs']), cpu_count or workers) / min(sample.get('path_workers',sample['axis_jobs']), workers)
             add('memory_bytes', peak * target['peak_units']/sample['peak_units'] * concurrent * 1.5)
         stored = observation.get('unique_event_bytes'); units = observation.get('stored_path_units')
         if type(stored) is int and stored > 0 and type(units) is int and units > 0:
-            add('storage_bytes', stored * target['path_units']/units)
+            estimate = stored * target['path_units']/units
+            if target.get('df_event_layout'):
+                if (sample.get('df_event_layout') == target['df_event_layout']
+                        and sample.get('event_shapes') == target.get('event_shapes')):
+                    matching_storage.append(estimate)
+                elif not sample.get('df_event_layout'):
+                    legacy_storage.append(estimate)
+            elif not sample.get('df_event_layout'):
+                legacy_storage.append(estimate)
         elapsed = observation.get('elapsed_seconds')
         if (observation.get('completed') is True and host == observation.get('host') and
                 type(elapsed) in (int,float) and math.isfinite(elapsed) and elapsed > 0 and
                 type(workers) is int and workers > 0):
             add('seconds', elapsed * max(1, target['total_units']/sample['total_units']) * max(1, workers/(cpu_count or workers)))
+    if matching_storage or legacy_storage:add('storage_bytes',max(matching_storage or legacy_storage))
     return forecasts
 
 def resource_class(request, evaluator=None):
@@ -401,6 +426,7 @@ def measured_resource_class(request, evaluator=None, runtime=None, *, preparatio
             factors = [workload[k].bit_length() for k in ('peak_units', 'total_units', 'axis_jobs', 'path_units')]
             shape = hashlib.sha256(json.dumps(workload['shape'], separators=(',', ':')).encode()).hexdigest()
             category += ':' + ':'.join(map(str, (workload['family'], shape, workload['parallel_axes'], *factors)))
+            if workload.get('df_event_layout'):category += ':'+workload['df_event_layout']
         return category
     shots = tuple(request.get('N_X', ())) + tuple(request.get('N_Y', ()))
     if not shots or any(type(value) is not int or value < 1 for value in shots):
