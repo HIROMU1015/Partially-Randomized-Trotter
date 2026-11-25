@@ -481,6 +481,8 @@ class DistributedPreparationBridge:
         self.aliases=read(self.alias_path)if self.alias_path.exists()else{}
         self.lock=threading.RLock()
         self.bundle_hashes = {}
+        self.bundle_locks = {}
+        self.shared_bundle_heads = {}
         self.compact_bindings = {}
 
     @staticmethod
@@ -1477,62 +1479,72 @@ class DistributedPreparationBridge:
         return dict(runtime=dict(input_config=origin,
                                  provider_root=config['provider_root']))
 
-    def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False):
+    @staticmethod
+    def _input_tip(root, head, resolved):
+        parents=[head,*sorted(set(resolved)-{head})]
+        tree,date=subprocess.check_output(['git','show','-s','--format=%T %aI',head],cwd=root,text=True).split()
+        args=['git','-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp','commit-tree',tree]
+        for parent in parents:args.extend(['-p',parent])
+        return subprocess.check_output(args+['-m','Make declared preparation input commits reachable'],cwd=root,text=True,
+            env=dict(os.environ,GIT_AUTHOR_DATE=date,GIT_COMMITTER_DATE=date)).strip()
+
+    def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False, shared_base=False):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+        resolved=[]
+        if input_hashes:
+            commits=sorted({row['commit']+'^{commit}' for row in input_hashes})
+            resolved=subprocess.check_output(['git','rev-parse',*commits],cwd=root,text=True).split()
+        shared_locators=()
+        if shared_base:
+            # Private callers use the provider's fixed checkout. Carry the
+            # first request's fixed locator history in one common base bundle
+            # so later independent requests need only their own new objects.
+            if tracked_workspace or not input_hashes:raise ValueError('Shared root bundle requires only declared inputs')
+            identity=(str(root),source)
+            with self.lock:
+                if identity not in self.shared_bundle_heads:
+                    self.shared_bundle_heads[identity]=(self._input_tip(root,head,resolved),deepcopy(input_hashes))
+                head,shared_locators=self.shared_bundle_heads[identity]
         bundles = []
         namespace = 'refs/rpe-preparation/input-bundles/'
-        # A worker with only its fixed SOURCE cannot rely on a moving
-        # controller HEAD. In this mode carry that history in the same bundle
-        # as the inputs rather than making it a separate prerequisite.
-        fixed_source_only = bool(input_hashes) and self.settings.get('bundle_fixed_source_only') is True
-        # Send the shared checkout history once per worker cache. Retain that
-        # history for provider code that resolves hard-coded Git references.
+        # With an explicit common bundle, the worker receives this prerequisite
+        # from the same request, and does not rely on a moving controller HEAD.
+        fixed_source_only = not shared_base and bool(input_hashes) and self.settings.get('bundle_fixed_source_only') is True
         if not fixed_source_only and head != source and subprocess.check_output(
             ['git', 'rev-list', '-1', head, '^' + source], cwd=root, text=True,
         ).strip():
             ref = namespace + 'base-' + head
             with self.lock:
                 subprocess.run(['git', 'update-ref', ref, head], cwd=root, check=True)
-            bundles.append(self._pack_bundle(root, ref, [source], (), not input_hashes))
+            bundles.append(self._pack_bundle(root, ref, [source], shared_locators, not input_hashes))
         if not input_hashes:
             return bundles
-
-        # One advertised endpoint reaches the declared producer commits, even
-        # on separate branches, and preserves the same tracked workspace tree.
-        commits = sorted({row['commit'] + '^{commit}' for row in input_hashes})
-        resolved = subprocess.check_output(['git', 'rev-parse', *commits], cwd=root, text=True).split()
-        parents = [head, *sorted(set(resolved) - {head})]
-        tree, date = subprocess.check_output(
-            ['git', 'show', '-s', '--format=%T %aI', head], cwd=root, text=True,
-        ).split()
-        args = ['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp',
-                'commit-tree', tree]
-        for parent in parents:
-            args.extend(['-p', parent])
-        tip = subprocess.check_output(
-            args + ['-m', 'Make declared preparation input commits reachable'],
-            cwd=root, text=True, env=dict(os.environ, GIT_AUTHOR_DATE=date, GIT_COMMITTER_DATE=date),
-        ).strip()
+        # The per-request bundle reaches every declared producer commit even
+        # when they belong to different branches. The common base is imported
+        # first without replacing the scientific provider checkout.
+        tip=self._input_tip(root,head,resolved)
         ref = namespace + 'inputs-' + tip
         with self.lock:
-            subprocess.run(['git', 'update-ref', ref, tip], cwd=root, check=True)
+            subprocess.run(['git','update-ref',ref,tip],cwd=root,check=True)
         prerequisites = [source] if fixed_source_only else list(dict.fromkeys([source, head]))
-        bundles.append(self._pack_bundle(root, ref, prerequisites, input_hashes, tracked_workspace))
+        bundles.append(self._pack_bundle(root,ref,prerequisites,input_hashes,tracked_workspace))
         return bundles
 
     def _pack_bundle(self, root, ref, prerequisites, input_hashes, checkout, workspace_objects=()):
         locators = sorted({(row['commit'], row['path']) for row in input_hashes})
         key = (ref, tuple(prerequisites), tuple(locators), tuple(workspace_objects))
         with self.lock:
-            sha = self.bundle_hashes.get(key)
-        if sha and self.executor.artifact_cache.path(sha).is_file():
-            return dict(sha256=sha, ref=ref, checkout_input_head=checkout)
-        with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
-            path = Path(temporary) / 'input.bundle'
-            build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
-            sha = self._blob(path.read_bytes())
-        with self.lock:
-            self.bundle_hashes[key] = sha
+            lock=self.bundle_locks.setdefault(key,threading.Lock())
+        with lock:
+            with self.lock:
+                sha = self.bundle_hashes.get(key)
+            if not sha or not self.executor.artifact_cache.path(sha).is_file():
+                with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
+                    path = Path(temporary) / 'input.bundle'
+                    build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
+                    sha = self._blob(path.read_bytes())
+                with self.lock:
+                    self.bundle_hashes[key] = sha
         return dict(sha256=sha, ref=ref, checkout_input_head=checkout)
 
     def _workspace_bundle(self, root, view, prefix, outputs, *, extra_directories=()):
@@ -1925,8 +1937,9 @@ class DistributedPreparationBridge:
             aliases = dict(self.aliases)
         bindings.update(used_path_aliases(aliases, bindings, original_documents, command))
         root_bundles=self._bundle(root,source,input_hashes,
-                                 tracked_workspace=not script.is_relative_to(root))
-        if script.is_relative_to(root) or pf_terminal_signal or df_terminal:
+                                 tracked_workspace=not script.is_relative_to(root) and not df_max_width,
+                                 shared_base=df_max_width)
+        if script.is_relative_to(root) or pf_terminal_signal or df_transport:
             # This bundle supplies locators for frozen inputs. Checking out
             # its HEAD would substitute controller code for the provider.
             root_bundles=[dict(bundle,checkout_input_head=False)for bundle in root_bundles]

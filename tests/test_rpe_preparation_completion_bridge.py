@@ -733,6 +733,25 @@ class CompletionBridgeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'SOURCE hash differs'):
                 W.current_preparation_fingerprint(assignment,profile)
 
+    def test_shared_private_caller_bundles_keep_fixed_provider_checkout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)/'controller';root.mkdir()
+            def git(*args,cwd=root):
+                return subprocess.check_output(['git',*args],cwd=cwd,text=True,stderr=subprocess.DEVNULL).strip()
+            git('init');git('config','user.name','Fixture');git('config','user.email','fixture@example.invalid')
+            (root/'provider.py').write_text('fixed provider');git('add','.');git('commit','-m','provider')
+            source=git('rev-parse','HEAD');view=Path(tmp)/'provider';git('clone','--shared','-q',str(root),str(view));git('checkout','--detach',source,cwd=view)
+            (root/'provider.py').write_text('different controller code');git('add','.');git('commit','-m','controller')
+            cache=ArtifactCache(Path(tmp)/'artifacts');ex=SimpleNamespace(artifact_cache=cache,run_dir=Path(tmp)/'run')
+            bridge=B.DistributedPreparationBridge(ex,root,{'bundle_fixed_source_only':True})
+            first=bridge._bundle(root,source,[dict(commit=git('rev-parse','HEAD'),path='provider.py')],shared_base=True)
+            (root/'candidate.json').write_text('new input');git('add','.');git('commit','-m','candidate')
+            commit=git('rev-parse','HEAD');second=bridge._bundle(root,source,[dict(commit=commit,path='candidate.json')],shared_base=True)
+            self.assertEqual(first[0],second[0]);self.assertTrue(all(not v['checkout_input_head'] for v in second))
+            owned=W._clone(view,Path(tmp)/'owned',second,cache)
+            self.assertEqual((owned/'provider.py').read_text(),'fixed provider')
+            self.assertEqual(git('show',commit+':candidate.json',cwd=owned),'new input')
+
     def test_new_locator_bundle_reaches_distinct_owned_provider_workspace(self):
         with tempfile.TemporaryDirectory()as tmp:
             top=Path(tmp);root=top/'controller';root.mkdir()
