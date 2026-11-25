@@ -24,6 +24,57 @@ def write(path, value):
 
 
 class PFPriceReconciliationTests(unittest.TestCase):
+    def test_original_audit_reopens_only_before_reservation_and_after_git_recovery(self):
+        from trottertracks import pf_distributed_preparation as distributed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            leaf = root/'leaf'
+            workspace = leaf/'provider_workspace'
+            folder = workspace/'docs/research/distributed_selected_pf/config'
+            commit = 'a'*40
+            stage = folder/'recovered_prices'/commit
+            plan = dict(configuration=dict(id='config'), selected_axis_compile=True)
+            compiled = dict(original_compile=dict(commit=commit), axes_by_round={'1': ['Y']})
+            source = dict(commit='b'*40)
+            command = ['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false',
+                       '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/input.bundle',
+                       'refs/rpe-preparation/input-bundles/inputs-'+commit, '^'+source['commit']]
+            pending = stage/'AUDIT_PENDING.json'
+            payload = stage/'PF_AUDIT.INPUT.json'
+            for path, value in (
+                (pending, dict(reason="DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:PF_AUDIT:"
+                                      "INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '"
+                                      + str(command) + "' returned non-zero exit status 128.")),
+                (leaf/'PROVIDER_SOURCE.json', dict(source=source['commit'])),
+                (leaf/'ORIGINAL_OWNER_CHECK.json', dict(rows=[dict(configuration_id='config',
+                    original_audits=[dict(compiled=dict(raw_commit=commit), axes_by_round={'1': ['Y']})])])),
+                (folder/'preflight.METADATA_RESULT.json', dict(source=source)),
+                (folder/'PLAN.json', plan),
+                (stage/'ORIGINAL_COMPILE.RESULT.json', compiled),
+                (payload, dict(value=plan, relative_output=stage.relative_to(workspace).as_posix(),
+                               phase='audit', source=source, compiled=compiled)),
+            ):
+                write(path, value)
+            runtime = SimpleNamespace(call=lambda *args, **kwargs: calls.append((args, kwargs)))
+            calls = []
+            settings = dict(interpreter='fixed-python')
+            with patch.object(distributed.subprocess, 'run', return_value=SimpleNamespace(returncode=128)) as probe, \
+                 patch.object(distributed, 'provider_context', return_value='fixed-context'):
+                distributed.resume_unreserved_original_audit(root, folder, pending, settings, runtime)
+                self.assertEqual(calls, [])
+                probe.return_value.returncode = 0
+                distributed.resume_unreserved_original_audit(root, folder, pending, settings, runtime)
+                self.assertEqual(calls[0][0][2:4], (stage, 'PF_AUDIT'))
+                self.assertEqual(calls[0][1], dict(science=True, wait=False))
+                marker = stage/'PF_AUDIT.DISTRIBUTED.json'
+                marker.touch()
+                distributed.resume_unreserved_original_audit(root, folder, pending, settings, runtime)
+                marker.unlink()
+                (stage/'STOP.json').touch()
+                distributed.resume_unreserved_original_audit(root, folder, pending, settings, runtime)
+                self.assertEqual(len(calls), 1)
+
     def test_saved_signal_candidate_with_missing_route_reaches_preparation(self):
         def ready(cid):
             return dict(configuration_id=cid, method='FULL_PF', configuration_body={'id': cid},

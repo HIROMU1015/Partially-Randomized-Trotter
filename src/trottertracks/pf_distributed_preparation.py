@@ -314,6 +314,82 @@ def stage_original_audit(root, workspace, folder, value, audit):
         raise Held('PF_SAVED_CALIBRATION_REUSE_HOLD:'+str(error)) from error
 
 
+def provider_context(workspace, folder, settings, source, plan):
+    """Bind the same fixed provider files for the first call and its continuation."""
+    import hashlib
+
+    files = ['scripts/prepare_pf_candidate.py', 'src/trottertracks/pf_evidence_preparation.py',
+             'scripts/run_pf_m0_prices.py', 'scripts/run_pf_p7_h_prices.py', 'scripts/run_truncated_p7_prices.py']
+    if plan.get('selected_axis_compile'):
+        files += ['scripts/h46_long_time_native.py', 'scripts/pf_price_stages.py',
+                  'scripts/pf_native_price_fast.py', 'scripts/run_full_pf_shortlist_prices.py']
+    hashes = {name: hashlib.sha256(subprocess.check_output(
+        ['git', 'show', source + ':' + name], cwd=workspace)).hexdigest() for name in files}
+    return SimpleNamespace(directory=folder, settings=settings, source=source, preparation_root=workspace,
+                           log=lambda **row: None, preparation_source_manifest=dict(commit=source, files=hashes))
+
+
+def resume_unreserved_original_audit(root, folder, pending, settings, runtime):
+    """Continue an already projected audit once its exact Git input can be packed."""
+    import ast
+    import re
+
+    directory = pending.parent
+    stage = 'PF_AUDIT'
+    stage_input = directory/(stage+'.INPUT.json')
+    output = directory/(stage+'.RESULT.json')
+    if ((folder/'STOP.json').exists() or (directory/'STOP.json').exists()
+            or any((directory/(stage+suffix)).exists()
+                   for suffix in ('.DISTRIBUTED.json', '.STARTED.json', '.RESULT.json', '.RETURN.json'))
+            or not stage_input.is_file()):
+        return
+    # Existing holds predate typed Git errors. Recognize the exact bundle
+    # operation and verify its advertised ref and prerequisites in this workspace.
+    reason = read(pending)['reason']
+    prefix = "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:PF_AUDIT:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '"
+    suffix = "' returned non-zero exit status 128."
+    if not reason.startswith(prefix) or not reason.endswith(suffix):
+        return
+    command = ast.literal_eval(reason[len(prefix):-len(suffix)])
+    if (not isinstance(command, list) or len(command) < 12
+            or command[:8] != ['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false',
+                               '-c', 'pack.reuseObjects=false', 'bundle']
+            or command[8] != 'create'):
+        return
+    ref, *prerequisites = command[10:]
+    if (not re.fullmatch(r'refs/rpe-preparation/input-bundles/(?:inputs|base)-[0-9a-f]{40}', ref)
+            or not all(re.fullmatch(r'\^[0-9a-f]{40}', prior) for prior in prerequisites)):
+        return
+
+    workspace = folder.parents[3]
+    if subprocess.run(['git', 'rev-list', '--objects', '--missing=error', '--quiet', ref, *prerequisites],
+                      cwd=workspace, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
+        return
+    leaf = workspace.parent
+    fixed = read(leaf/'PROVIDER_SOURCE.json')
+    stage_data = read(stage_input)
+    plan = read(folder/'PLAN.json')
+    compiled = read(directory/'ORIGINAL_COMPILE.RESULT.json')
+    original = compiled.get('original_compile', {})
+    owner = next((row for row in read(leaf/'ORIGINAL_OWNER_CHECK.json')['rows']
+                  if row['configuration_id'] == folder.name), {})
+    if (stage_data != dict(value=plan, relative_output=directory.relative_to(workspace).as_posix(),
+                           phase='audit', source=read(folder/'preflight.METADATA_RESULT.json')['source'],
+                           compiled=compiled)
+            or plan['configuration']['id'] != folder.name
+            or original.get('commit') != directory.name
+            or not any(audit['compiled']['raw_commit'] == directory.name
+                       and audit['axes_by_round'] == compiled['axes_by_round']
+                       for audit in owner.get('original_audits', ()))):
+        raise ValueError('Pending audit differs from its original PF plan')
+    settings = dict(settings, selected_axis_compile=plan.get('selected_axis_compile', False))
+    context = provider_context(workspace, folder, settings, fixed['source'], plan)
+    command = [settings.get('interpreter', sys.executable), '-B',
+               str(Path(root)/'scripts/run_pf_preparation_stage.py'), '--provider-root', str(workspace),
+               '--input', str(stage_input), '--output', str(output)]
+    runtime.call(context, command, directory, stage, output, science=True, wait=False)
+
+
 def saved_for_configuration(settings, field, configuration_id):
     """Reuse a completed leaf only for its canonical configuration identity."""
     plural = {'saved_signal': 'saved_signals',
@@ -492,16 +568,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
                     subprocess.run(command,cwd=workspace,check=True,env=metadata_env)
             return read(phase_out)
         source=local('preflight', **({'deferred_price_rounds': deferred} if deferred else {}))['source']
-        provider_files = ['scripts/prepare_pf_candidate.py','src/trottertracks/pf_evidence_preparation.py',
-                          'scripts/run_pf_m0_prices.py','scripts/run_pf_p7_h_prices.py','scripts/run_truncated_p7_prices.py']
-        if value.get('selected_axis_compile'):
-            provider_files += ['scripts/h46_long_time_native.py','scripts/pf_price_stages.py',
-                               'scripts/pf_native_price_fast.py','scripts/run_full_pf_shortlist_prices.py']
-        context=SimpleNamespace(directory=folder,settings=spec.get('pf_completion',{}),
-            source=fixed['source'],preparation_root=workspace,log=lambda **row:None,
-            preparation_source_manifest=dict(commit=fixed['source'],files={name:__import__('hashlib').sha256(
-                subprocess.check_output(['git','show',fixed['source']+':'+name],cwd=workspace)).hexdigest()
-                for name in provider_files}))
+        context=provider_context(workspace, folder, spec.get('pf_completion', {}), fixed['source'], value)
         if inherited_registry is not None:
             context.inherited_preparation_root = original_folder.parents[3]
         def stage_input_for(phase, **fields):

@@ -504,17 +504,32 @@ def reconcile_received_preparation(run, records, stage_executor):
                 break
 
 
-def recover_candidate_price_receipts(run, candidates, stage_executor):
+def recover_candidate_price_receipts(run, candidates, stage_executor, *, root=None, settings=None, pending_roots=None):
     """Recover successful PF leaves even after their signal entered Q3."""
+    import subprocess
     from types import SimpleNamespace
+    from .pf_distributed_preparation import resume_unreserved_original_audit
     from .pf_saved_prices import candidate_roots
     from .pr_candidate_completion import Held, PreparationWait
     importer = getattr(stage_executor, 'import_received_stage', None)
     if importer is None or not candidates:
         return
+    resumed = set()
     for base in candidate_roots(run/'pf_auto'):
         for cid in candidates:
             folder = base/cid/'pf_auto/pf_completion/provider_workspace/docs/research/distributed_selected_pf'/cid
+            if pending_roots and pending_roots.get(cid) == base:
+                for pending in sorted((folder/'recovered_prices').glob('*/AUDIT_PENDING.json')):
+                    if not pending.resolve().is_relative_to(run.resolve()):
+                        continue
+                    try:
+                        resume_unreserved_original_audit(root, folder, pending, settings, stage_executor)
+                    except PreparationWait as error:
+                        if error.job_id:
+                            resumed.add(cid)
+                        stage_executor.executor.log(event='PF_ORIGINAL_AUDIT_WAIT', configuration=cid, reason=str(error))
+                    except (Held, OSError, KeyError, TypeError, ValueError, SyntaxError, subprocess.SubprocessError) as error:
+                        stage_executor.executor.log(event='PF_ORIGINAL_AUDIT_HOLD', configuration=cid, reason=str(error))
             markers = [folder/(name+'.DISTRIBUTED.json') for name in ('PF_COMPILE', 'PF_AUDIT')]
             markers.extend(sorted((folder/'recovered_prices').glob('*/PF_AUDIT.DISTRIBUTED.json')))
             for marker in markers:
@@ -522,11 +537,18 @@ def recover_candidate_price_receipts(run, candidates, stage_executor):
                 if not marker.is_file() or marker.with_name(stage+'.RETURN.json').exists():
                     continue
                 try:
-                    importer(SimpleNamespace(log=stage_executor.executor.log), marker, stage)
+                    imported = importer(SimpleNamespace(log=stage_executor.executor.log), marker, stage)
+                    if (not imported and pending_roots and pending_roots.get(cid) == base
+                            and marker.with_name('AUDIT_PENDING.json').is_file()):
+                        job = json.loads(marker.read_text())['job_id']
+                        row = stage_executor.executor.store.row(job)
+                        if row and row['state'] not in ('ACCEPTED', 'CANCELLED'):
+                            resumed.add(cid)
                 except (Held, PreparationWait, OSError, KeyError, ValueError) as error:
                     stage_executor.executor.log(event='PF_SHORTLIST_RECEIPT_PENDING',
                                                 configuration=cid, stage=stage, reason=str(error))
 
+    return resumed
 
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None,recheck_waiting=True,
                  announce=None, refill_requested=None):
@@ -575,8 +597,14 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
     distributed_completion = stage_executor is not None and settings.get('mode') == 'complete'
     shortlist = {c['configuration_id'] for c in context['candidates'] if c.get('prices') is None
                  and c['configuration_id'] in spec.get('exploratory_price_candidates', ())}
+    resumed_audits = set()
     if distributed_completion:
-        recover_candidate_price_receipts(run, records.keys() | shortlist, stage_executor)
+        pending_roots = {cid: run/record.get('price_recheck_directory', (
+            'pf_auto/price-recovery' if record.get('price_receipt_recheck') else 'pf_auto'))/'candidates'
+                         for cid, record in records.items() if cid in shortlist}
+        resumed_audits = recover_candidate_price_receipts(
+            run, records.keys() | shortlist, stage_executor, root=root, settings=settings,
+            pending_roots=pending_roots) or set()
     if distributed_completion and recheck_waiting:
         reconcile_received_preparation(run, records, stage_executor)
         for row in records.values():
@@ -602,7 +630,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 # Recheck only before a producer or scientific attempt existed.
                 row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE', price_receipt_recheck=True)
         price_settings = dict(settings, exploratory_cost=problem.get('search', {}).get('exploratory_cost') is True)
-        reconsider_prices(root, run, spec, price_settings, records, shortlist=shortlist)
+        reconsider_prices(root, run, spec, price_settings, records, shortlist=shortlist - resumed_audits)
         for row in records.values():
             if row['status'] in PRICE_RECHECK_STATES and 'price_reconciliation' in row:
                 row['price_axis_actions'] = price_axis_actions(row['price_reconciliation'])
