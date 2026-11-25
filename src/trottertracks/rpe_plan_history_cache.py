@@ -137,7 +137,7 @@ def _validation_digest(path):
 
 
 @lru_cache(maxsize=16)
-def _validation_digest_bytes(filename, raw):
+def _validation_digest_bytes(filename, raw, *, prune_imports=True):
     classes = {'rpe_method_optimizer.py': {'Executor'},
                'rpe_optimizer_concurrent.py': {'ConcurrentExecutor', 'DistributedExecutor'}}
     if filename not in classes:
@@ -191,7 +191,7 @@ def _validation_digest_bytes(filename, raw):
     # executable module statements conservative.
     used = {n.id for node in selected for n in ast.walk(node) if isinstance(n, ast.Name)}
     dynamic = bool(used & {'globals', 'locals', 'eval', 'exec', '__import__'})
-    if not dynamic:
+    if prune_imports and not dynamic:
         filtered = []
         for node in selected:
             if isinstance(node, ast.Import):
@@ -242,6 +242,46 @@ def _validator(executor):
 def _validator_sources(paths):
     # A fixed overlay may be installed under a new deployment directory.
     return sorted((Path(path).parent.name, Path(path).name, sha) for path, sha in paths.items())
+
+
+@lru_cache(maxsize=32)
+def _legacy_validator_digests(path, signature):
+    raw = Path(path).read_bytes()
+    info = Path(path).stat()
+    if (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns) != signature:
+        raise ValueError('Validator source changed while reading')
+    return (_validation_digest_bytes(Path(path).name,raw,prune_imports=False),
+            _validation_digest_bytes(Path(path).name,raw))
+
+
+def _same_validator(old, new):
+    """Read a retained old validator source only to migrate its proven digest.
+
+    An unavailable or modified old source cannot establish equivalence. The
+    ordinary exact validation path remains the fallback.
+    """
+    if _validator_sources(old) == _validator_sources(new):
+        return True
+    def key(path):
+        return Path(path).parent.name, Path(path).name
+    current = {key(path):sha for path,sha in new.items()}
+    if len(current)!=len(new) or len(old)!=len(new) or {key(path) for path in old}!=set(current):
+        return False
+    for path,sha in old.items():
+        expected = current[key(path)]
+        if sha == expected:
+            continue
+        if Path(path).name not in ('rpe_optimizer_concurrent.py','rpe_method_optimizer.py'):
+            return False
+        try:
+            info = Path(path).stat()
+            signature = (info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_ctime_ns)
+            legacy, normalized = _legacy_validator_digests(path,signature)
+        except (OSError, ValueError, SyntaxError):
+            return False
+        if legacy != sha or normalized != expected:
+            return False
+    return True
 
 
 def _context(executor, cid):
@@ -568,7 +608,7 @@ class HistoryCache:
                     try:
                         old = json.loads(header[1])
                         same_validator = (old.get('schema') == SCHEMA and
-                                          _validator_sources(old['validator']) == _validator_sources(validator))
+                                          _same_validator(old['validator'],validator))
                     except (ValueError, AttributeError, TypeError, KeyError):
                         continue  # let the normal cache reader handle damaged metadata
                     if same_validator:
@@ -724,7 +764,7 @@ class HistoryCache:
                                        or _json(old_context[field]) != _json(new_context[field])]
                             if old['schema'] != new['schema']:
                                 changed.append('schema')
-                            if _validator_sources(old['validator']) != _validator_sources(new['validator']):
+                            if not _same_validator(old['validator'],new['validator']):
                                 changed.append('validator')
                             comparisons[pair] = changed
                         hit = not comparisons[pair]

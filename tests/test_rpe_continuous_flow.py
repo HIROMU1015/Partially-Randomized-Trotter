@@ -231,7 +231,8 @@ def test_real_queue_can_dispatch_while_planner_advances_cycle(tmp_path):
         assert another['job_id']!=assigned['job_id']
         # Repeated cycles release obsolete in-memory views, not durable jobs.
         disposable=ex.for_method('PR_PAULI')._enqueue(proposal('disposable'),demand=True)
-        ex._cancel(disposable)
+        with ex.state.cv:
+            ex._cancel(disposable)
         ex.advance_cycle()
         assert disposable.job not in ex.state.tasks
         assert ex.store.row(disposable.job.name)['state']=='CANCELLED'
@@ -271,3 +272,23 @@ def test_verified_pre_body_failure_retries_once_for_any_provider(tmp_path):
     assert replacement['request']['preparation']['command']==request['preparation']['command']
     (tmp_path/'STOP.json').write_text('{}')
     assert bridge._transport_repair(tmp_path,stage,marker) is None
+
+
+def test_legacy_validator_cache_reuses_only_verified_original_source(tmp_path):
+    from trottertracks.rpe_plan_history_cache import _same_validator
+    name='rpe_optimizer_concurrent.py'
+    old=tmp_path/'old'/'trottertracks'/name
+    new=tmp_path/'new'/'trottertracks'/name
+    old.parent.mkdir(parents=True);new.parent.mkdir(parents=True)
+    source=b"import hashlib\nclass DistributedExecutor:\n def ingest(self):\n  return 1\n"
+    old.write_bytes(source)
+    updated=source.replace(b"import hashlib\n",b"import threading\n")
+    new.write_bytes(updated)
+    previous={str(old):_validation_digest_bytes(name,source,prune_imports=False)}
+    current={str(new):_validation_digest_bytes(name,updated)}
+    assert _same_validator(previous,current)
+    new.write_bytes(updated.replace(b"return 1", b"return 2"))
+    changed={str(new):_validation_digest_bytes(name,new.read_bytes())}
+    assert not _same_validator(previous,changed)
+    old.write_bytes(source.replace(b"return 1",b"return 3"))
+    assert not _same_validator(previous,current)
