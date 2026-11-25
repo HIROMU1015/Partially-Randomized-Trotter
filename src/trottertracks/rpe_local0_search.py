@@ -583,6 +583,8 @@ def local0_progress(applied, spec, run=None):
         completion = run/'completion/STATE.json'
         if completion.is_file():
             preparation_records.extend(load(completion).get('records', {}).values())
+    method_by_candidate = {row.get('configuration_id'): row.get('method') for row in preparation_records
+                           if row.get('configuration_id') and row.get('method')}
     database = run/'distributed/QUEUE.sqlite3'
     if not database.exists():
         join_scope()
@@ -612,8 +614,10 @@ def local0_progress(applied, spec, run=None):
             stage = prep.get('stage', 'q3')
             count = stages.setdefault(stage, dict(stage=stage, queue_accepted=0, execution_started=0,
                 execution_completed=0, execution_unit='evaluation' if stage == 'q3' else 'stage_task',
-                active_receipts_pending=0))
+                active_receipts_pending=0, unknown_attempts=0, accepted_results=0))
             count['queue_accepted'] += 1
+            count['unknown_attempts'] += int(state=='UNKNOWN')
+            count['accepted_results'] += int(adopted is not None)
             directory = run/'jobs'/method/job
             receipt = 'Q3_BODY' if stage == 'q3' else 'PREPARATION_BODY'
             terminal = (directory/'PREPARATION_RECEIPT.json').is_file() if prep else adopted is not None
@@ -635,7 +639,10 @@ def local0_progress(applied, spec, run=None):
             if prep:
                 if str(prep.get('provider', '')).startswith('PF_'):
                     candidate = next(iter(prep.get('outputs', [])), '').rsplit('/', 1)[-1]
-                    method = 'TRUNCATED_PF' if 'TRUNCATED_PF' in applied.get('methods', []) else 'FULL_PF'
+                    method = method_by_candidate.get(candidate) or observations.get(candidate, {}).get('method')
+                    if method is None:
+                        pf_methods = set(applied.get('methods', [])) & {'FULL_PF','TRUNCATED_PF'}
+                        method = next(iter(pf_methods)) if len(pf_methods) == 1 else 'PF_PREPARATION'
                 else:
                     candidate = ''
                 code = 'PREPARATION_RUNNING' if active else 'PREPARATION_WAITING'
@@ -653,7 +660,8 @@ def local0_progress(applied, spec, run=None):
             if candidate and state != 'CANCELLED':
                 metadata = json.loads(detail)
                 if state in ('FAILED', 'UNKNOWN') or (state == 'ACCEPTED' and not prep and adopted is None):
-                    code = 'TECHNICAL_FAILURE' if state != 'ACCEPTED' else 'EVALUATION_WAITING'
+                    code = ('UNKNOWN_ATTEMPT' if state == 'UNKNOWN' else
+                            'TECHNICAL_FAILURE' if state == 'FAILED' else 'EVALUATION_WAITING')
                 key = (candidate, stage)
                 priority = 3 if active else 2 if state in ('QUEUED', 'ASSIGNED') else 1
                 if key not in identified or priority >= identified[key][0]:

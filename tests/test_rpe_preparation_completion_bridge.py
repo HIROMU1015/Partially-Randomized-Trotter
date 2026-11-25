@@ -670,7 +670,8 @@ class CompletionBridgeTests(unittest.TestCase):
                     self.assertEqual(len(ex.requests),2);self.assertEqual(ex.requests[0],ex.requests[1])
                     self.assertEqual(len([e for e in ex.store.events()if e['event']=='ADOPT']),1)
                 else:
-                    self.assertTrue(first['scientific_failure']);self.assertTrue(second['resumed'])
+                    self.assertFalse(first['scientific_failure']);self.assertTrue(first['retry_protected'])
+                    self.assertTrue(second['resumed'])
                     self.assertEqual(len(ex.requests),1)
 
     def test_runtime_requirements_follow_original_input_and_fixed_worker_guard(self):

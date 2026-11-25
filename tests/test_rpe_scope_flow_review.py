@@ -246,3 +246,24 @@ def test_pf_metadata_uses_explicit_non_h4_base_without_borrowing_h4_priority():
     assert len(rows)==4
     assert rows[-1]['method']=='FULL_PF' and rows[-1]['p']==3
     assert all(r['priority_evidence']['T1'] is None for r in rows)
+
+
+def test_supervisor_failure_proof_requires_ended_original_attempt_and_no_science(tmp_path):
+    import fcntl
+    from trottertracks.rpe_dry_check_recovery import dry_check_rejection
+    assignment = dict(job_id='job', attempt_id='attempt', request_sha256='fixed')
+    detail = dict(reason='OSError: fixed input unavailable', automatic_retry=False)
+    def save(name,value): (tmp_path/name).write_text(json.dumps(value))
+    (tmp_path/'WORKER_PROCESS.lock').touch()
+    save('WORKER_STATE.json',dict(state='UNKNOWN',detail=detail))
+    save('SUPERVISOR_STARTED.json',dict(pid=30));save('SUPERVISOR_LAUNCH.json',dict(pid=30))
+    assert dry_check_rejection(tmp_path,assignment) is None
+    save('SUPERVISOR_PRELAUNCH_FAILURE.json',dict(assignment, reason=detail['reason'],
+        returncode=2, supervisor_pid=30, scientific_execution_started=False))
+    assert dry_check_rejection(tmp_path,assignment)['kind']=='SUPERVISOR_FAILED_BEFORE_EXECUTION'
+    assert dry_check_rejection(tmp_path,dict(assignment,attempt_id='other')) is None
+    with (tmp_path/'WORKER_PROCESS.lock').open('r+b') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        assert dry_check_rejection(tmp_path,assignment) is None
+    (tmp_path/'SCIENTIFIC_STARTING.json').touch()
+    assert dry_check_rejection(tmp_path,assignment) is None

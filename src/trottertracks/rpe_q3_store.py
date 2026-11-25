@@ -243,10 +243,15 @@ class JobStore:
                 return False
             detail = row['detail']
             proof = detail.get('prelaunch_rejection') or {}
+            is_dry = (proof.get('kind') == 'FAILED_DRY_CHECK_BEFORE_EXECUTION'
+                      and detail.get('reason') == 'ValueError: Existing adapter dry-check failed')
+            is_supervisor = (proof.get('kind') == 'SUPERVISOR_FAILED_BEFORE_EXECUTION'
+                             and proof.get('reason') == detail.get('reason')
+                             and proof.get('scientific_execution_started') is False
+                             and proof.get('returncode') == 2)
             if (not row['host_id'] or detail.get('automatic_retry') is not False
                     or detail.get('resource_released') is not True
-                    or detail.get('reason') != 'ValueError: Existing adapter dry-check failed'
-                    or proof.get('kind') != 'FAILED_DRY_CHECK_BEFORE_EXECUTION'
+                    or not (is_dry or is_supervisor)
                     or (proof.get('job_id'), proof.get('attempt_id'), proof.get('request_sha256'))
                        != (job_id, attempt_id, row['request_sha256'])
                     or type(proof.get('returncode')) is not int or proof['returncode'] <= 0

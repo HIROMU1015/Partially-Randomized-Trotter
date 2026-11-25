@@ -74,6 +74,12 @@ class EligibilityQueue(unittest.TestCase):
                       cached_prefixes=[], host_fingerprints=facts or {}))
 
     def test_prelaunch_failure_redispatches_once_with_same_reservation(self):
+        self.check_prelaunch_failure_redispatch(generic=False)
+
+    def test_supervisor_prelaunch_failure_redispatches_once_with_same_reservation(self):
+        self.check_prelaunch_failure_redispatch(generic=True)
+
+    def check_prelaunch_failure_redispatch(self, *, generic):
         ex = self.executor()
         proposal = self.proposal('prelaunch')
         view = ex.for_method('METHOD')
@@ -88,6 +94,10 @@ class EligibilityQueue(unittest.TestCase):
                             returncode=2, signal=None)
             detail = dict(reason='ValueError: Existing adapter dry-check failed', automatic_retry=False,
                           resource_released=True)
+            if generic:
+                detail['reason']='OSError: fixed metadata unavailable'
+                evidence.update(kind='SUPERVISOR_FAILED_BEFORE_EXECUTION',reason=detail['reason'],
+                                scientific_execution_started=False)
             if proof:
                 detail['prelaunch_rejection'] = evidence
             return ex.rpc('/v1/state', dict(host_id=host, job_id=job.name, attempt_id=assignment['attempt_id'],

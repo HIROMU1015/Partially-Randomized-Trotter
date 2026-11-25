@@ -412,7 +412,15 @@ def supervise(attempt):
               status=observed['status'], process_return=read(attempt / 'PROCESS_RETURN.json'))
         return 0
     except Exception as error:
-        save_state(attempt, 'UNKNOWN', reason=type(error).__name__ + ': ' + str(error), automatic_retry=False)
+        reason = type(error).__name__ + ': ' + str(error)
+        save_state(attempt, 'UNKNOWN', reason=reason, automatic_retry=False)
+        if not (attempt/'SCIENTIFIC_STARTING.json').exists():
+            # This receipt is written by the one-shot supervisor itself, not
+            # inferred later from a missing output or a lost connection.
+            exclusive(attempt/'SUPERVISOR_PRELAUNCH_FAILURE.json', dict(
+                job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
+                request_sha256=assignment['request_sha256'], supervisor_pid=os.getpid(),
+                reason=reason, returncode=2, scientific_execution_started=False))
         event(profile, 'UNCERTAIN', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], reason=str(error))
         return 2
     finally:
