@@ -296,6 +296,47 @@ while not (d/'CONTROL.json').is_file():
                 G.atomic(new/'RELEASE.json', {})
             server.result(timeout=7)
 
+    def test_available_successor_replaces_only_held_reservation_and_keeps_old_running(self):
+        first = pilot.admin(self.pool, 'reserve')
+        old = self.pool/'allocations'/first['token']
+        self.jobs['1.prism']['job_state'] = 'R'
+        session = self.attach(self.a, 'oldSession')
+        self.assertEqual(pilot.claim(self.pool, old, '1.prism'), session)
+        pilot.stage_successor(self.pool, '1.prism', after_exit=True)
+        self.jobs['2.prism'].update(job_state='H', depend='afterany:1.prism@prism')
+        replacement = pilot.stage_successor(self.pool, '1.prism', when_available=True)
+        self.assertEqual(replacement['job_id'], '3.prism')
+        self.assertEqual(pilot.stage_successor(self.pool, '1.prism', when_available=True)['job_id'], '3.prism')
+        self.assertEqual(self.jobs['2.prism']['job_state'], 'F')
+        new = self.pool/'allocations'/replacement['token']
+        self.assertNotIn('depend=', (new/'worker.pbs').read_text())
+        self.assertEqual(G.read(self.pool/'CURRENT.json')['token'], old.name)
+
+        self.jobs['3.prism']['job_state'] = 'R'
+        with patch.dict(os.environ, PBS_JOBID='3.prism'), ThreadPoolExecutor(1) as executor:
+            server = executor.submit(pilot.serve, new)
+            try:
+                until = time.monotonic()+3
+                while not (new/'HANDOVER.json').exists() and time.monotonic() < until:
+                    time.sleep(.02)
+                self.assertEqual(G.read(new/'HANDOVER.json')['retained_predecessor'], old.name)
+                self.assertEqual(G.read(self.pool/'CURRENT.json')['token'], new.name)
+                self.assertEqual(self.jobs['1.prism']['job_state'], 'R')
+                self.assertFalse((old/'RELEASE.json').exists())
+                self.assertFalse((session/'CONTROL.json').exists())
+                G.atomic(session/'CONTROL.json', dict(stop=True))
+                old_row, = pilot.session_snapshot(self.a)
+                self.assertEqual(old_row['retained_replacement'], new.name)
+                reason = dict(retained_replacement=dict(pilot_token=new.name, predecessor=old.name))
+                with patch.object(pilot, 'claim', return_value=None):
+                    attached = self.attach(self.a, 'newSession', reason)
+                    self.assertEqual(G.read(attached/'PROFILE.json')['work_dir'],
+                                     str(pilot.successor_work_dir(self.a, new)))
+                self.assertEqual(G.read(session/'PROFILE.json')['work_dir'], str(self.a/'workers'/'pbs-0'))
+            finally:
+                G.atomic(new/'RELEASE.json', {})
+            server.result(timeout=3)
+
     def test_wrong_successor_walltime_preserves_old_and_purged_history_needs_unlock(self):
         first = pilot.admin(self.pool, 'reserve')
         self.jobs['1.prism']['job_state'] = 'R'

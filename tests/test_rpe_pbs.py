@@ -1003,6 +1003,41 @@ class ManagerTests(unittest.TestCase):
                 self.assertEqual(payload['capacity'], 0)
                 self.assertFalse(payload['accepting_new_jobs'])
 
+    def test_retained_pbs_worker_ignores_old_replays_and_old_offer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, _ = self.manager(directory)
+            old = self.submit(manager)
+            new = manager._submit('pbs-0', settings()['workers'][0], dict(ready_tasks=3))['token']
+            owner = ['old-job', 'old-attempt', 'old-hash']
+            manager.state['allocations'][new]['spec']['reason']['retained_replacement'] = dict(old_owners=[owner])
+            manager.allocations = [dict(token=old, status='R', retained_replacement='new-pilot'),
+                dict(token=new, status='R', worker=dict(accepting=True))]
+            old_request = dict(request_id='old-poll', endpoint='/v1/poll',
+                               payload=dict(host_id='pbs-0', slots=0, capacity=0))
+            self.assertEqual(manager._dispatch(old, old_request)['result']['assignments'], [])
+            self.assertEqual(executor.calls, [])
+            new_request = dict(request_id='new-poll', endpoint='/v1/poll',
+                payload=dict(host_id='pbs-0', slots=1, capacity=1, durable_assignments=[['new','a','hash']]))
+            self.assertTrue(manager._dispatch(new, new_request)['ok'])
+            self.assertEqual(executor.calls[-1][1]['durable_assignments'], [['new','a','hash'], owner])
+
+    def test_retained_pbs_replacement_reuses_demand_but_connects_only_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            old = self.submit(manager)
+            manager.allocations = [dict(token=old, status='R', host_id='pbs-0',
+                                        pilot_token='old-pilot', retained_replacement='new-pilot')]
+            request = dict(request_id='queued')
+            with patch.object(manager, '_demand', return_value=([(['pbs-0'], request)], [], 1, 0)), \
+                    patch.object(executor.store, '_connection', create=True) as connection:
+                connection.return_value.__enter__.return_value.execute.return_value = [('old', 'attempt', 'hash')]
+                manager._connect_retained_replacement()
+                manager._connect_retained_replacement()
+            self.assertEqual(len(gateway.calls), 2)
+            self.assertEqual(gateway.calls[-1]['spec']['reason']['retained_replacement'],
+                             dict(pilot_token='new-pilot', predecessor='old-pilot',
+                                  old_owners=[['old', 'attempt', 'hash']]))
+
     def test_saved_cas_harvest_reuses_original_attempt_once(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, gateway = self.manager(directory)

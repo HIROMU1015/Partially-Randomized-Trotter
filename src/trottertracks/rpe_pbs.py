@@ -948,6 +948,16 @@ class PbsManager:
         try:
             payload = deepcopy(request['payload'])
             allocation = next((a for a in self.allocations if a['token'] == token), None)
+            if request['endpoint'] == '/v1/poll':
+                spec = self.state['allocations'][token]['spec']
+                replacement = spec.get('reason', {}).get('retained_replacement')
+                if replacement:
+                    # Replays belong to the worker that received the original
+                    # assignment. Treat its durable owners as already sent.
+                    payload.setdefault('durable_assignments', []).extend(replacement['old_owners'])
+                if (allocation or {}).get('retained_replacement'):
+                    return self._record_rpc_response(token, request_id, identity, dict(ok=True,
+                        result=dict(assignments=[], stop=False, eligibility_challenges=[])))
             if request['endpoint'] == '/v1/poll' and allocation is not None:
                 admission = (payload.get('resource_report') or {}).get('pbs')
                 current = allocation.get('worker') or {}
@@ -1841,6 +1851,32 @@ class PbsManager:
             self.offline_staged.add(sha)
         return self.gateway.call(dict(action='ensure', spec=spec))
 
+    def _connect_retained_replacement(self):
+        """Open one new worker session while the old session only drains."""
+        previous = next((row for row in self.allocations if row.get('retained_replacement')), None)
+        if previous is None:
+            return
+        pilot = previous['retained_replacement']
+        if any((record['spec'].get('reason', {}).get('retained_replacement') or {}).get('pilot_token') == pilot
+               or record.get('observed', {}).get('pilot_token') == pilot
+               for record in self.state['allocations'].values()):
+            return
+        host = previous['host_id']
+        worker = self.configured[host]
+        outstanding, pending, queued, free = self._demand()
+        requests = [request for hosts, request in outstanding + pending if host in hosts]
+        if not requests or not self._storage_accepting(worker):
+            return
+        with self.executor.store._connection() as db:
+            owners = [list(row) for row in db.execute(
+                "SELECT job_id,attempt_id,request_sha256 FROM jobs WHERE host_id=? AND state='ASSIGNED'", (host,))]
+        demand = dict(ready_tasks=queued, existing_host_free_slots=free,
+            retained_replacement=dict(pilot_token=pilot, predecessor=previous['pilot_token'], old_owners=owners))
+        try:
+            self._submit(host, worker, demand, requests)
+        except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+            self.log('PBS_RETAINED_REPLACEMENT_HELD', host_id=host, reason=f'{type(error).__name__}: {error}')
+
     def _assigned_pilot_replay(self, host, owned):
         """Select a closed session's live node for durable assignment replay only."""
         if not self.hold_node:
@@ -2153,7 +2189,10 @@ class PbsManager:
         # A held running node already has its full resource pool. Routine
         # exchanges do not need to rebuild admission demand or repack jobs.
         if self.split_exchange and self.hold_node and len(self.configured) == 1:
-            held = next((entry for entry in self.allocations if entry['status'] == 'R'), None)
+            if not user_stop and not self.executor.state.closed:
+                self._connect_retained_replacement()
+            live = [entry for entry in self.allocations if entry['status'] == 'R']
+            held = next((entry for entry in live if not entry.get('retained_replacement')), live[0] if live else None)
             if held and held.get('pilot_token'):
                 token = held['token']
                 record = self.state['allocations'][token]
