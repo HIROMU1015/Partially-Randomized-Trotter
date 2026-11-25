@@ -853,6 +853,70 @@ class DistributedPreparationBridge:
                 if path not in aliases or path in text
                 or json.dumps(path, ensure_ascii=True)[1:-1] in text}
 
+    @staticmethod
+    def max_width_signal_locator(preparation):
+        command=preparation.get('command',[])
+        if (preparation.get('provider')!='DF_SIGNALS' or '--transport-source' not in command
+                or 'private/df-terminal-transport/src/trottertracks/pr_df_max_width.py' not in preparation.get('inputs',{})):
+            return None
+        root=Path(preparation['controller_root']).resolve()
+        path=Path(command[command.index('--input')+1]).resolve().relative_to(root).as_posix()
+        commit=command[command.index('--inputs-commit')+1]
+        return dict(commit=commit,path=path)
+
+    def max_width_failed_input_owner(self, directory, job, row, locator):
+        plan=self.settings.get('failed_preparation_recalculations',{}).get(job,{})
+        if (not plan.get('df_signal_input_recovery') or not self.approved or self.executor._user_stop_requested()
+                or not row or row['state']!='ACCEPTED' or not row.get('completion_sha256')
+                or (row['attempt_id'],row['request_sha256'])!=(plan.get('attempt_id'),plan.get('request_sha256'))
+                or row['request']['preparation'].get('supersedes_preparation')):
+            return None
+        proof=self.recovery_evidence(directory,'DF_SIGNALS',job)
+        if proof.get('action') not in ('CHECK_FAILED_ATTEMPT_ARTIFACTS','PRESERVE_FAILED_ATTEMPT') or proof.get('failed_signal_rounds'):
+            return None
+        owner=self.executor.run_dir/'jobs'/row['method']/job
+        outcome=read(owner/'OUTCOME.json');receipt=read(owner/'PROCESS_RETURN.json')
+        expected=repr(['git','show',locator['commit']+':'+locator['path']])
+        if (outcome.get('status')!='PREPARATION_FAILED' or outcome.get('request_sha256')!=row['request_sha256']
+                or expected not in outcome.get('failure_summary','') or 'exit status 128' not in outcome['failure_summary']
+                or receipt.get('returncode') in (None,0) or receipt.get('signal') is not None
+                or receipt.get('automatic_retry') is not False
+                or any('/df_signals/' in path for path in outcome.get('artifacts',{}))
+                or any((directory/'df_signals').glob('started/*.json'))):
+            return None
+        return plan
+
+    def repair_max_width_signal_input(self, directory, stage, submitted):
+        """Repair an omitted frozen locator, never an executed numerical round."""
+        if stage!='DF_SIGNALS' or not submitted.get('job_id'):return None
+        job=submitted['job_id'];original=submitted['request'];prep=original['preparation']
+        locator=self.max_width_signal_locator(prep)
+        if locator is None or any((x['commit'],x['path'])==(locator['commit'],locator['path']) for x in prep['input_hashes']):return None
+        row=self.executor.store.row(job);plan=None
+        if row and row['state']=='ACCEPTED':
+            plan=self.max_width_failed_input_owner(directory,job,row,locator)
+            if plan is None:return None
+            with self.executor.store._connection() as db:
+                successors=db.execute("SELECT job_id FROM jobs WHERE json_extract(request,'$.preparation.supersedes_preparation.job_id')=?",(job,)).fetchall()
+            if len(successors)>1:raise ValueError('Multiple successors of a fixed failed signal request')
+            if successors:
+                request=deepcopy(self.executor.store.row(successors[0][0])['request']);request.pop('request_id',None)
+                return dict(request=request,source=submitted['source'],automatic_retry=False)
+        elif row and (row['state']!='CANCELLED' or row.get('attempt_id') is not None):
+            return None  # An assigned or running request remains owned by its original worker.
+        request=deepcopy(row['request'] if row else original);request.pop('request_id',None);prep=request['preparation']
+        root=Path(prep['controller_root']).resolve()
+        raw=subprocess.check_output(['git','show',locator['commit']+':'+locator['path']],cwd=root)
+        sha=hashlib.sha256(raw).hexdigest()
+        if prep['inputs'].get('workspace/'+locator['path'])!=sha:
+            raise ValueError('Original signal request bytes differ from the fixed Git input')
+        prep['input_hashes'].append(dict(locator,sha256=sha))
+        prep['input_git_bundles']=[dict(x,checkout_input_head=False) for x in self._bundle(root,prep['source']['commit'],prep['input_hashes'],shared_base=True)]
+        self._validate_bundle_inputs(prep)
+        if plan:
+            prep['supersedes_preparation']=dict(job_id=job,attempt_id=row['attempt_id'],reason=plan['reason'])
+        return dict(request=request,source=submitted['source'],automatic_retry=False)
+
     def _transport_repair(self, directory, stage, submitted):
         """Build a successor of a proved transport-only failure from its own request."""
         from .pr_candidate_completion import _DF_PRICE_BOOTSTRAP
@@ -1184,6 +1248,7 @@ class DistributedPreparationBridge:
         for original, plan in sorted(plans.items()):
             if self.executor._user_stop_requested():
                 break
+            if plan.get('df_signal_input_recovery'):continue  # the owning candidate submits and adopts this successor
             reason = plan['reason']
             try:
                 request = self.failed_preparation_request(original, plan)
@@ -1293,7 +1358,7 @@ class DistributedPreparationBridge:
         job = re.search(r'\bprep-[0-9a-f]{24}\b', reason)
         if not job:
             return False
-        for stage in ('DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
+        for stage in ('DF_SIGNALS', 'DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
             if stage not in reason and not reason.startswith('PREPARATION_RESULT_MISMATCH:ORIGINAL_AUDIT_OUTPUT_MISSING:'):
                 continue
             for path in directory.rglob(stage+'.DISTRIBUTED.json'):
@@ -1303,6 +1368,13 @@ class DistributedPreparationBridge:
                     if superseded.get('job_id') == job[0]:
                         return True  # Resume the already-recorded successor.
                     if submitted.get('job_id') == job[0]:
+                        if stage=='DF_SIGNALS':
+                            locator=self.max_width_signal_locator(submitted['request']['preparation'])
+                            row=self.executor.store.row(job[0])
+                            if locator and (row is None or (row['state']=='CANCELLED' and row.get('attempt_id') is None)):
+                                return True
+                            if locator and self.max_width_failed_input_owner(path.parent,job[0],row,locator):return True
+                            continue
                         if self.pf_delivery_failure(path.parent, stage, job[0]):
                             return True
                         if self._transport_repair(path.parent, stage, submitted):
@@ -1883,6 +1955,16 @@ class DistributedPreparationBridge:
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
         original_documents=[*pauli_locators, *df_locators]
+        if df_max_width:
+            # The command checks its own frozen request via git show. This
+            # locator must be explicit when a shared bundle predates the
+            # candidate, not merely present in a mutable controller HEAD.
+            request_file=Path(command[command.index('--input')+1]).resolve()
+            inputs_commit=command[command.index('--inputs-commit')+1]
+            request_locator=dict(commit=inputs_commit,path=request_file.relative_to(root).as_posix())
+            raw=subprocess.check_output(['git','show',inputs_commit+':'+request_locator['path']],cwd=root)
+            if raw!=request_file.read_bytes():raise ValueError('Max-width frozen signal request bytes differ')
+            original_documents.append(request_locator)
         if script.name == 'derive_pr_df_candidate_descriptor.py':
             original_documents.append(dict(commit='7f4c9a171a1d4caeaeaee6c443217edec761f4c9',
                                            path='scripts/h46_new2_core.py'))
@@ -2196,7 +2278,9 @@ class DistributedPreparationBridge:
         inherited_workspace = None
         if marker.exists():
             submitted = self.repair_compile_context(directory, stage, read(marker))
-            repair = self.redeliver_pf_compile(completion, command, directory, stage, output, submitted)
+            repair = self.repair_max_width_signal_input(directory,stage,submitted)
+            if repair is None:
+                repair = self.redeliver_pf_compile(completion, command, directory, stage, output, submitted)
             if repair is None and submitted.get('job_id'):
                 repair = self._transport_repair(directory, stage, submitted)
             if repair is not None:
