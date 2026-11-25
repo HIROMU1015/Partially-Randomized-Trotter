@@ -439,6 +439,15 @@ def _publication(reader, head, path, doc, paths):
     progress = doc.get('search_progress')
     if isinstance(progress, dict) and progress.get('schema') == 'H4_SEARCH_PROGRESS_V1':
         run['search_progress'] = dict(progress, source=dict(run['publication_source'], selector=['search_progress']))
+    shortlist = doc.get('live_shortlist')
+    if isinstance(shortlist, dict) and shortlist.get('schema') == 'RPE_LIVE_SHORTLIST_V1':
+        if 'LIVE_SHORTLIST.json' in verified:
+            original = reader.document(head, verified['LIVE_SHORTLIST.json'])
+            if dict(original, status='LIVE_EXPLORATORY_ESTIMATES') != shortlist:
+                raise ValueError('Live shortlist differs from its verified source')
+        run['live_shortlist'] = dict(shortlist, source=dict(run['publication_source'], selector=['live_shortlist']))
+    if doc.get('deferred_full_metadata'):
+        run['deferred_full_metadata'] = doc['deferred_full_metadata']
     return run
 
 

@@ -364,6 +364,7 @@ class HistoryInventory:
         self.pending = {}
         self.directories = {}
         self.decoded = OrderedDict()
+        self.warm_keys = {}
         self.decoded_bytes = 0
         self.route_equivalence = {}
         self.decode_pool = None
@@ -445,6 +446,15 @@ class HistoryInventory:
             if index is None or job_name in index.names or index.version != _directory_version(directory):
                 yield directory/job_name
 
+    def warm_payload(self, database, job, signature):
+        """Reuse the locally decoded proof only while all original markers match."""
+        with self.lock:
+            key = self.warm_keys.get((database, job))
+            if key is None or key[3] != signature or key not in self.decoded:
+                return None
+            self.decoded.move_to_end(key)
+            return (key[3], key[4]), self.decoded[key][0]
+
     def load_payload(self, key, read_payload):
         with self.lock:
             previous = self.decoded.get(key)
@@ -457,9 +467,12 @@ class HistoryInventory:
             with self.lock:
                 if key not in self.decoded:
                     self.decoded[key] = cached, len(raw)
+                    self.warm_keys[key[:2]] = key
                     self.decoded_bytes += len(raw)
                     while self.decoded_bytes > DECODED_CACHE_BYTES:
-                        _, (_, size) = self.decoded.popitem(last=False)
+                        old, (_, size) = self.decoded.popitem(last=False)
+                        if self.warm_keys.get(old[:2]) == old:
+                            self.warm_keys.pop(old[:2], None)
                         self.decoded_bytes -= size
         return cached, False
 
@@ -589,9 +602,9 @@ class HistoryCache:
                      indexed_out_of_scope=0, memory_hits=0, interrupted=False, process_decodes=0)
 
         def prefetch(batch):
-            pending = {}
+            pending, observed = {}, {}
             if details or inventory is None:
-                return pending
+                return pending, observed
             # Bound lookahead so several method lanes cannot fill RAM or delay
             # Stop with thousands of pending reads. Only large cold records.
             for job, _ in batch:
@@ -600,11 +613,18 @@ class HistoryCache:
                 if held and job.resolve() in held:
                     continue
                 signature = _signature(job)
+                observed[job] = (signature, None, None)
                 if max((value[2] for name, value in signature if value is not None
                         and name in ('OUTCOME.json', 'COLLECTED_OUTCOME.json')), default=0) < 100_000:
                     continue
-                header = self.db.execute('SELECT signature, context FROM evidence WHERE job=?',
-                                         (str(job.resolve()),)).fetchone()
+                key = str(job.resolve())
+                warm = inventory.warm_payload(self.path, key, _json(signature))
+                if warm is not None:
+                    observed[job] = (signature, None, warm)
+                    continue  # No speculative decode or SQLite read for a warm exact proof.
+                header = self.db.execute('SELECT signature, context, rowid FROM evidence WHERE job=?',
+                                         (key,)).fetchone()
+                observed[job] = (signature, header, None)
                 if header and header[0] == _json(signature) and header[1]:
                     try:
                         old = json.loads(header[1])
@@ -627,7 +647,7 @@ class HistoryCache:
                     pending[job] = (signature, inventory.decode_async(job, signature))
                 except (OSError, RuntimeError):
                     break  # canonical serial read remains available
-            return pending
+            return pending, observed
         for base in executor.prior_run_dirs:
             directory = Path(base) / 'jobs' / executor.method
             if inventory is None and not directory.exists():
@@ -648,12 +668,12 @@ class HistoryCache:
                         if (directory/name/'OUTCOME.json').is_file()]
             else:
                 jobs = [(outcome.parent, None) for outcome in sorted(directory.glob('*/OUTCOME.json'))]
-            pending = {}
+            pending, observed = {}, {}
             for offset, (job, observed_request) in enumerate(jobs):
                 if offset % 16 == 0:
                     for _, future in pending.values():
                         future.cancel()
-                    pending = prefetch(jobs[offset:offset+16])
+                    pending, observed = prefetch(jobs[offset:offset+16])
                 if stopped is not None and stopped():
                     stats['interrupted'] = True
                     break
@@ -673,7 +693,8 @@ class HistoryCache:
                         stats['unrelated_request_hits'] += 1
                         refused.append(dict(job=str(job), reason=unavailable_reason(previous[1])))
                         continue
-                signature = _signature(job)
+                observation = observed.get(job)
+                signature = observation[0] if observation is not None else _signature(job)
                 present = {name for name, value in signature if value is not None}
                 if not present.intersection(('REQUEST.json', 'LAUNCH.json', 'OUTCOME.json')):
                     continue
@@ -687,15 +708,23 @@ class HistoryCache:
                 request_signature = tuple(signature[0][1] or ())
                 key = str(job.resolve())
                 saved = writes.get(key)
-                row_id = None
+                row_id, cached = None, None
                 if saved is None and inventory is not None:
-                    header = self.db.execute('SELECT signature, context, rowid FROM evidence WHERE job=?', (key,)).fetchone()
-                    if header is not None:
-                        saved, row_id = header[:2], header[2]
+                    warm = observation[2] if observation is not None else None
+                    if warm is None:
+                        warm = inventory.warm_payload(self.path, key, _json(signature))
+                    if warm is not None:
+                        saved, cached = warm
+                        stats['memory_hits'] += 1
+                    else:
+                        header = observation[1] if observation is not None else None
+                        if header is None:
+                            header = self.db.execute('SELECT signature, context, rowid FROM evidence WHERE job=?', (key,)).fetchone()
+                        if header is not None:
+                            saved, row_id = header[:2], header[2]
                 elif saved is None:
                     saved = self.db.execute('SELECT signature, context, payload FROM evidence WHERE job=?', (key,)).fetchone()
-                cached = None
-                if saved is not None and saved[0] == _json(signature):
+                if cached is None and saved is not None and saved[0] == _json(signature):
                     try:
                         if row_id is None:
                             cached = _unpack(saved[2])

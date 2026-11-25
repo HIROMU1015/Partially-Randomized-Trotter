@@ -482,6 +482,12 @@ class DistributedPreparationBridge:
         self.lock=threading.RLock()
         self.bundle_hashes = {}
         self.bundle_locks = {}
+        self.bundle_index = Path(executor.run_dir)/'preparation'/'bundle-index'
+        configuration = Path(executor.run_dir)/'CONTROLLER_CONFIG.json'
+        if configuration.is_file():
+            state = read(configuration).get('state_directory')
+            if state and Path(state).is_absolute():
+                self.bundle_index = Path(state)/'bundle-index'
         self.shared_bundle_heads = {}
         self.compact_bindings = {}
         self.stage_return_locks={}
@@ -1695,17 +1701,42 @@ class DistributedPreparationBridge:
 
     def _pack_bundle(self, root, ref, prerequisites, input_hashes, checkout, workspace_objects=()):
         locators = sorted({(row['commit'], row['path']) for row in input_hashes})
-        key = (ref, tuple(prerequisites), tuple(locators), tuple(workspace_objects))
+        tip = subprocess.check_output(['git', 'rev-parse', '--verify', ref], cwd=root, text=True).strip()
+        key = (ref, tip, tuple(prerequisites), tuple(locators), tuple(workspace_objects))
+        # The bundle format is frozen by the existing builder. Its versioned
+        # disk index survives Resume, unlike the invocation-local dictionary.
+        index = self.bundle_index/(digest(('preparation-bundle-v2', key))+'.json')
         with self.lock:
             lock=self.bundle_locks.setdefault(key,threading.Lock())
-        with lock:
+        import fcntl
+        index.parent.mkdir(parents=True, exist_ok=True)
+        with lock, index.with_suffix('.lock').open('a+b') as shared:
+            # Only the identical recipe is serialized across controller runs.
+            fcntl.flock(shared, fcntl.LOCK_EX)
             with self.lock:
                 sha = self.bundle_hashes.get(key)
-            if not sha or not self.executor.artifact_cache.path(sha).is_file():
-                with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
-                    path = Path(temporary) / 'input.bundle'
-                    build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
-                    sha = self._blob(path.read_bytes())
+            cache = self.executor.artifact_cache
+            if not sha or not cache.path(sha).is_file():
+                try:
+                    stored = read(index)
+                    sha = stored['sha256'] if stored.get('identity') == digest(('preparation-bundle-v2', key)) else None
+                    if sha and cache.missing([sha]):
+                        source_cache = stored.get('cache_root')
+                        if source_cache:
+                            cache.import_cached(source_cache, sha)
+                        if cache.missing([sha]):sha = None
+                except (OSError, ValueError, KeyError, TypeError):
+                    sha = None
+                if not sha:
+                    with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
+                        path = Path(temporary) / 'input.bundle'
+                        build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
+                        with path.open('rb') as stream:
+                            sha = hashlib.file_digest(stream, 'sha256').hexdigest()
+                        cache.put_file(path, sha)
+                    index.parent.mkdir(parents=True, exist_ok=True)
+                    from .rpe_q3_worker import atomic
+                    atomic(index, dict(identity=digest(('preparation-bundle-v2', key)), sha256=sha, cache_root=str(cache.root)))
                 with self.lock:
                     self.bundle_hashes[key] = sha
         return dict(sha256=sha, ref=ref, checkout_input_head=checkout)

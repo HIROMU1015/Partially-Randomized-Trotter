@@ -913,7 +913,7 @@ class ControllerFailures(unittest.TestCase):
                           payload={key: payload[key] for key in ('job_id','attempt_id','request_sha256','host_id')})
             status['payload']['pbs_evidence_status'] = True
             self.assertTrue(manager._dispatch_ready('token', status)['result']['evidence_pending'])
-            with patch.object(manager, '_read_bulk', return_value=extra.read_bytes()) as read:
+            with patch.object(manager, '_iter_bulk', return_value=iter([extra.read_bytes()[:1024**2], extra.read_bytes()[1024**2:]])) as read:
                 manager._advance_deferred_evidence()
                 manager.evidence_pending[1].result(timeout=3)
                 self.assertEqual(read.call_args.kwargs['attempt_id'], owner['attempt_id'])
@@ -927,6 +927,26 @@ class ControllerFailures(unittest.TestCase):
                                            (owner['job_id'],)).fetchone()[0], 1)
         finally:
             manager.close(retain_allocation=True)
+
+    def test_large_spooled_completion_adopts_same_hash_once(self):
+        from trottertracks.rpe_pbs import PbsManager
+        executor = self.executor(capacity=1)
+        task = self.enqueue(executor, 'streamed-result')
+        owner, = executor.rpc('/v1/poll', dict(host_id='pbs-0', slots=1, source_sha=self.source))['assignments']
+        full = self.completion(owner)
+        full['files']['application/RESULT.json'] = base64.b64encode(b'fixture'*240000).decode()
+        packet = dict(request_id='complete-streamed',endpoint='/v1/complete',payload=dict(full,host_id='pbs-0'))
+        wire = json.dumps(packet).encode()
+        manager = PbsManager.__new__(PbsManager)
+        manager.directory = self.run/'stream-test';manager.directory.mkdir()
+        manager.executor = executor;manager.bulk_gateway=None
+        manager.state=dict(allocations={'token':dict(spec=dict(profile=dict(host_id='pbs-0')))})
+        manager._iter_bulk=lambda *args,**kw:(wire[i:i+65537] for i in range(0,len(wire),65537))
+        descriptor=dict(request_id=packet['request_id'],spool_bytes=len(wire))
+        result=manager._dispatch_ready('token',descriptor)
+        self.assertTrue(result['ok']);self.assertEqual(executor.store.row(task.job.name)['state'],'ACCEPTED')
+        self.assertEqual(executor.store.row(task.job.name)['completion_sha256'],Q.digest(full['files']))
+        self.assertEqual(manager._dispatch_ready('token',descriptor),result)
 
     def test_proved_unstarted_pbs_ordinary_assignment_returns_to_same_queue(self):
         executor = self.executor()

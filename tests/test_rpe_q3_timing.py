@@ -95,14 +95,16 @@ class TimingTests(unittest.TestCase):
             ex=DistributedExecutor.__new__(DistributedExecutor)
             ex.store=store;ex.distributed={'required_hosts':['server2','optional-wsl']}
             ex.hosts={'server2':{'capacity':1,'slots':1}}
-            ex.state=SimpleNamespace(tasks={Path('job'):SimpleNamespace(status='QUEUED',job=Path('job'))},active=0)
+            ex.state=SimpleNamespace(tasks={Path('job'):SimpleNamespace(status='QUEUED',job=Path('job'),rule={'kind':'q3'})},active=0)
+            ex._owned_attempts=lambda: []
+            ex._offer_fresh=lambda h:True
             ex.capacity=2;logs=[];ex.log=lambda **row:logs.append(row)
             accepting=[True]
             ex._host_admission_policy=lambda:({'hosts':{}},None)
             ex._host_admission=lambda h,p,e:dict(optional=h=='optional-wsl',accepting=accepting[0],max_slots=None)
-            ex._timing_queue()
+            ex._report_queue_snapshot()
             self.assertEqual(logs[-1]['reasons']['job'],'DISPATCH_READINESS_OR_POLL_WAIT')
-            accepting[0]=False;ex._timing_queue()
+            accepting[0]=False;ex._report_queue_snapshot()
             self.assertEqual(logs[-1]['reasons']['job'],'HOST_ADMISSION_HOLD')
 
     def test_saved_three_hosts_have_missing_body_not_fake_compute(self):

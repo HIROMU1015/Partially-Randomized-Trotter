@@ -13,7 +13,8 @@ import subprocess
 
 FILES = ('ROUND_RESULT.json', 'ROUND_RESULT_INTERRUPTED.json', 'EVALUATIONS.json',
          'NEEDS.json', 'SCOPE_METADATA.json', 'SEARCH_STATE.json', 'STATE.json',
-         'ROUND.json', 'STATUS.json', 'LIVE_START_SNAPSHOT.json', 'PRICE_MODEL_VALIDATIONS.json')
+         'ROUND.json', 'STATUS.json', 'LIVE_START_SNAPSHOT.json', 'PRICE_MODEL_VALIDATIONS.json',
+         'LIVE_SHORTLIST.json', 'LIVE_SEARCH_PROGRESS.json')
 
 
 def search_progress(path, root, run_id):
@@ -89,7 +90,7 @@ def _search_progress_summary(state):
                 planner_stop=report.get('stop'), families=families)
 
 
-def prepare(root, run_directory, output, *, run_id=None, execution_hosts=()):
+def prepare(root, run_directory, output, *, run_id=None, execution_hosts=(), unchanged_files=(), deferred_files=()):
     root=Path(root).resolve(); run=Path(run_directory).resolve(); output=Path(output).resolve()
     relative=run.relative_to(root).as_posix()
     if not relative.startswith('docs/research/'):
@@ -98,9 +99,16 @@ def prepare(root, run_directory, output, *, run_id=None, execution_hosts=()):
     if not out_relative.startswith('docs/research/')or output.name!='SEARCH_PUBLICATION.json':
         raise ValueError('Public index must be docs/research/.../SEARCH_PUBLICATION.json')
     files={}
+    try:
+        previous=json.loads(output.read_bytes()).get('files',{}) if unchanged_files else {}
+    except (OSError,ValueError,AttributeError):previous={}
     for name in FILES:
         p=run/name
         if p.exists():
+            old=previous.get(name,{})
+            if name in unchanged_files and old.get('path')==p.relative_to(root).as_posix() and old.get('sha256'):
+                files[name]=old
+                continue
             value=json.loads(p.read_text())
             if value.get('artificial_only') or value.get('artificial'):
                 raise ValueError('Artificial fixtures cannot be published to the production map')
@@ -113,9 +121,18 @@ def prepare(root, run_directory, output, *, run_id=None, execution_hosts=()):
         run_id=run_id or relative,run_directory=relative,execution_hosts=sorted(set(execution_hosts)),
         files=files,scope='SAVED_METADATA_ONLY_NO_SCIENTIFIC_EXECUTION',
         new_scientific_calls=0)
-    progress = search_progress(run / 'KAPPA_STATE.json', root, value['run_id'])
+    if deferred_files:value['deferred_full_metadata']=list(deferred_files)
+    live = run/'LIVE_SEARCH_PROGRESS.json'
+    progress = json.loads(live.read_bytes()) if live.is_file() else search_progress(run / 'KAPPA_STATE.json', root, value['run_id'])
     if progress is not None:
         value['search_progress'] = progress
+    shortlist = run/'LIVE_SHORTLIST.json'
+    if shortlist.is_file():
+        # These are selector-observed approximate prices, not additional
+        # exact Q3 evidence or a claim that the search is complete.
+        live_points = json.loads(shortlist.read_bytes())
+        if live_points.get('schema') == 'RPE_LIVE_SHORTLIST_V1':
+            value['live_shortlist'] = dict(live_points, status='LIVE_EXPLORATORY_ESTIMATES')
     text=json.dumps(value,ensure_ascii=False,indent=2)+'\n'
     if output.exists()and output.read_text()==text:return 'UNCHANGED',value
     output.parent.mkdir(parents=True,exist_ok=True);output.write_text(text)

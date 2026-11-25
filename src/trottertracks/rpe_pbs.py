@@ -28,6 +28,36 @@ from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUPERSEDED_UNSUBMITTED'}
+
+
+def store_pbs_spec(state_path, token, spec):
+    # Write an immutable allocation spec once, then refer to it by digest.
+    key = digest(spec)
+    directory = state_path.parent/'allocation-specs'
+    directory.mkdir(exist_ok=True)
+    path = directory/(key+'.json')
+    if path.exists():
+        if digest(read(path)) != key:
+            raise ValueError('PBS archived allocation spec differs')
+    else:
+        atomic(path, spec)
+    return key
+
+
+def load_pbs_manager_state(state_path):
+    # Old full-state snapshots and new compact snapshots are both readable.
+    state = read(state_path)
+    for token, record in state['allocations'].items():
+        key = record.pop('archived_spec', None)
+        if key is None:
+            continue
+        if not isinstance(key, str) or len(key) != 64 or any(c not in '0123456789abcdef' for c in key):
+            raise ValueError('Invalid archived PBS specification')
+        spec = read(state_path.parent/'allocation-specs'/(key+'.json'))
+        if digest(spec) != key or spec.get('token') != record.get('spec', {}).get('token'):
+            raise ValueError('PBS archived allocation specification differs')
+        record['spec'] = spec
+    return state
 GIB = 1024**3
 # The controller and the independently pinned worker use the same proof lifetime.
 Q3_WORKER_PROOF_SECONDS = 120
@@ -678,7 +708,8 @@ class PbsManager:
             raise ValueError('Existing run retains its pinned PBS settings')
         if not fixed.exists(): atomic(fixed, original)
         self.path = self.directory/'STATE.json'
-        self.state = read(self.path) if self.path.exists() else dict(allocations={}, requests={})
+        self.state = load_pbs_manager_state(self.path) if self.path.exists() else dict(allocations={}, requests={})
+        self._archived_specs = {}
         dispatch = getattr(executor, 'distributed', {}).get('pbs_dispatch_gateway')
         self.transport_paths = {}
         if dispatch:
@@ -773,7 +804,23 @@ class PbsManager:
         append(self.directory/'EVENTS.jsonl', event, **fields)
 
     def save(self):
-        atomic(self.path, self.state)
+        # Keep full specifications for replay/recovery, but never serialize
+        # the same large fixed profile for each ended allocation every poll.
+        archive = getattr(self, '_archived_specs', None)
+        if archive is None:
+            archive = self._archived_specs = {}
+        snapshot = dict(self.state, allocations={})
+        for token, record in self.state['allocations'].items():
+            if record.get('status') not in TERMINAL or not record.get('harvested'):
+                snapshot['allocations'][token] = record
+                continue
+            spec = record['spec']
+            if token not in archive:
+                archive[token] = store_pbs_spec(self.path, token, spec)
+            light = {key: spec[key] for key in ('token','run_id','python','resources','reason') if key in spec}
+            light['profile'] = {key: spec['profile'][key] for key in ('host_id','work_dir','root','interpreter') if key in spec.get('profile', {})}
+            snapshot['allocations'][token] = dict(record, spec=light, archived_spec=archive[token])
+        atomic(self.path, snapshot)
 
     def readiness_wait_seconds(self):
         # PBS queue latency varies by queue and resource request. Keep the
@@ -1094,9 +1141,51 @@ class PbsManager:
                 ready.append(challenge)
         return dict(result, eligibility_challenges=ready)
 
+    def _dispatch_streamed_spool(self, token, descriptor):
+        from .rpe_pbs_stream import SpoolReader, canonical_digest, DiskBlob
+        from .rpe_preparation_artifacts import artifact_hash
+        with tempfile.TemporaryDirectory(prefix='pbs-spool-', dir=self.directory) as directory:
+            request = SpoolReader(self._iter_bulk(self.bulk_gateway, token, 'spool', descriptor['request_id'],
+                                                 size=descriptor['spool_bytes']), directory).read()
+            if request['request_id'] != descriptor['request_id'] or request['endpoint'] not in ('/v1/complete', '/v1/artifacts/put'):
+                raise ValueError('PBS bulk request identity changed')
+            payload = request['payload']
+            host = self.state['allocations'][token]['spec']['profile']['host_id']
+            if payload.get('host_id') != host:
+                raise ValueError('PBS request host differs from its saved allocation')
+            identity = canonical_digest(request)
+            saved = self.directory/'responses'/token/(request['request_id']+'.json')
+            if saved.exists():
+                record = read(saved)
+                if record['request_sha256'] != identity:raise ValueError('Reused PBS RPC ID has changed content')
+                return record['response']
+            if request['endpoint'] == '/v1/complete' and payload.keys() & {'pbs_evidence','pbs_evidence_status','pbs_evidence_status_batch'}:
+                if 'pbs_evidence_status_batch' in payload:
+                    return self._batch_evidence_status(token, payload)
+                files = {name:blob.path for name,blob in payload.get('files', {}).items()}
+                return self._complete_with_deferred_evidence(token, request, staged_files=files, identity=identity)
+            try:
+                if request['endpoint'] == '/v1/artifacts/put':
+                    count = size = 0
+                    for sha, blob in payload.get('blobs', {}).items():
+                        artifact_hash(sha)
+                        if not isinstance(blob, DiskBlob):raise ValueError('Invalid PBS artifact payload')
+                        if self.executor.artifact_cache.put_file(blob.path, sha):
+                            count += 1;size += blob.path.stat().st_size
+                    result = dict(ok=True, result=dict(ok=True, files=count, bytes=size))
+                else:
+                    files = {name:blob.path for name,blob in payload.get('files', {}).items()}
+                    result = dict(ok=True, result=self.executor._receive_completion(payload, staged_files=files))
+            except (OSError, ValueError, KeyError) as error:
+                result = dict(ok=False, error=type(error).__name__+': '+str(error))
+            return self._record_rpc_response(token, request['request_id'], identity, result)
+
     def _dispatch_ready(self, token, request):
         """Bulk inputs use the worker's shared cache, leaving the poll lane free."""
         if 'spool_bytes' in request:
+            if (request['spool_bytes'] > 1024**2 and hasattr(self.executor, '_receive_completion')
+                    and hasattr(self.executor.artifact_cache, 'put_file')):
+                return self._dispatch_streamed_spool(token, request)
             raw = self._read_bulk(self.bulk_gateway, token, 'spool', request['request_id'],
                                   size=request['spool_bytes'])
             decoded = json.loads(raw)
@@ -1278,9 +1367,9 @@ class PbsManager:
                 ready.append({key: owner[key] for key in keys})
         return dict(ok=True, result=dict(evidence_complete=ready))
 
-    def _complete_with_deferred_evidence(self, token, request):
+    def _complete_with_deferred_evidence(self, token, request, *, staged_files=None, identity=None):
         """Commit the exact outcome before retrieving the worker's large evidence."""
-        from .rpe_q3_coordinator import _artifact_destination
+        from .rpe_q3_coordinator import _artifact_destination, _same_artifact
 
         payload = request['payload']
         job, attempt, sha = (payload[key] for key in ('job_id', 'attempt_id', 'request_sha256'))
@@ -1296,7 +1385,7 @@ class PbsManager:
             # decision. An observation must never submit or adopt another job.
             return dict(ok=True, result=dict(ok=True, duplicate=True, evidence_pending=marker.exists()))
         evidence = payload['pbs_evidence']
-        files = payload['files']
+        files = payload['files'] if staged_files is None else staged_files
         if (not isinstance(evidence, dict) or not evidence or evidence.keys() & files.keys()
                 or not {'OUTCOME.json', 'PROCESS_RETURN.json'} <= files.keys()
                 or any(type(size) is not int or size < 0 for size in evidence.values())):
@@ -1311,20 +1400,23 @@ class PbsManager:
             # A terminated worker may already have been recovered by ordinary
             # harvest. The returned outcome must still match the accepted one.
             for name in ('OUTCOME.json', 'PROCESS_RETURN.json'):
-                if (directory/name).read_bytes() != base64.b64decode(files[name], validate=True):
+                if (not _same_artifact(files[name], directory/name) if staged_files is not None else
+                        (directory/name).read_bytes() != base64.b64decode(files[name], validate=True)):
                     raise ValueError('Repeated PBS completion changed its outcome or exit receipt')
             result = dict(ok=True, duplicate=True)
             if not marker.exists() and all(path.is_file() and path.stat().st_size == evidence[name]
                                            for path, name in zip(destinations, evidence)):
                 final = dict(ok=True, result=dict(result, evidence_pending=False))
-                return self._record_rpc_response(token, request['request_id'], digest(request), final)
+                return self._record_rpc_response(token, request['request_id'], identity if identity is not None else digest(request), final)
         else:
             result = None
         if not marker.exists():
             marker.parent.mkdir(parents=True, exist_ok=True)
             atomic(marker, receipt)
         if result is None:
-            result = self.executor.rpc('/v1/complete', {k: v for k, v in payload.items() if k != 'pbs_evidence'})
+            core = {k: v for k, v in payload.items() if k != 'pbs_evidence'}
+            result = (self.executor.rpc('/v1/complete', core) if staged_files is None else
+                      self.executor._receive_completion(core, staged_files=files))
             if not result.get('duplicate'):
                 self.log('PBS_Q3_CORE_ACCEPTED', job_id=job, attempt_id=attempt,
                          deferred_bytes=sum(evidence.values()),
@@ -1334,7 +1426,8 @@ class PbsManager:
         return dict(ok=True, result=dict(result, evidence_pending=marker.exists()))
 
     def _archive_evidence(self, marker, receipt):
-        from .rpe_q3_coordinator import install_files, publish_staged_files
+        from tempfile import TemporaryDirectory
+        from .rpe_q3_coordinator import install_staged_files, publish_staged_files
 
         token, job, attempt = (receipt[key] for key in ('token', 'job_id', 'attempt_id'))
         row = self.executor.store.row(job)
@@ -1347,9 +1440,11 @@ class PbsManager:
         for name, size in receipt['files'].items():
             if self.stop.is_set():
                 return
-            raw = self._read_bulk(self.evidence_gateway, token, 'attempt', name, size=size,
-                                  job_id=job, attempt_id=attempt)
-            install_files(transfer, {name: base64.b64encode(raw).decode('ascii')})
+            with TemporaryDirectory(prefix='pbs-evidence-', dir=self.directory) as stage:
+                path = Path(stage)/'received'
+                self._read_bulk_file(self.evidence_gateway, token, 'attempt', name, path, size=size,
+                                     job_id=job, attempt_id=attempt)
+                install_staged_files(transfer, {name: path})
         publish_staged_files(transfer, target)
         marker.unlink()
         self.log('PBS_DEFERRED_EVIDENCE_COLLECTED', job_id=job, attempt_id=attempt,
@@ -1382,12 +1477,12 @@ class PbsManager:
             return
 
     @staticmethod
-    def _read_bulk(gateway, token, kind, name, *, size=None, **owner):
-        result = bytearray()
+    def _iter_bulk(gateway, token, kind, name, *, size=None, **owner):
+        offset = 0
         identity = {}
-        while size is None or len(result) < size:
+        while size is None or offset < size:
             chunk = gateway.call(dict(action='read_bulk_chunk', token=token, kind=kind,
-                                      name=name, offset=len(result), **owner,
+                                      name=name, offset=offset, **owner,
                                       **identity, **({'size': size} if size is not None else {})))
             if size is None:
                 size = chunk['size']
@@ -1396,10 +1491,21 @@ class PbsManager:
             identity = {'file_identity': chunk['file_identity']}
             raw = (chunk['text'].encode('ascii') if kind == 'spool' else
                    base64.b64decode(chunk['data'], validate=True))
-            if len(raw) > 1024*1024 or len(result)+len(raw) > size or (not raw and len(result) < size):
+            if len(raw) > 1024*1024 or offset+len(raw) > size or (not raw and offset < size):
                 raise ValueError('PBS bulk transfer made no valid progress')
-            result.extend(raw)
-        return result
+            offset += len(raw)
+            yield raw
+
+    @classmethod
+    def _read_bulk(cls, gateway, token, kind, name, *, size=None, **owner):
+        return bytearray().join(cls._iter_bulk(gateway, token, kind, name, size=size, **owner))
+
+    def _read_bulk_file(self, gateway, token, kind, name, destination, *, size=None, **owner):
+        with Path(destination).open('xb') as output:
+            for block in self._iter_bulk(gateway, token, kind, name, size=size, **owner):
+                output.write(block)
+            output.flush()
+            os.fsync(output.fileno())
 
     def _fetch_harvest(self, gateway, token, owners=None, *, live=False):
         request = dict(action='harvest', token=token)
@@ -1414,6 +1520,9 @@ class PbsManager:
             missing = self.executor.artifact_cache.missing(data.get('artifact_hashes', []))
             blobs = gateway.call(dict(request, hashes=missing))['blobs'] if missing else {}
             return data, blobs
+        if hasattr(self.executor, '_receive_completion') and hasattr(self.executor.artifact_cache, 'put_file'):
+            return self._fetch_staged_harvest(gateway, token, data, owners), {}
+        # Compatibility for older in-process adapters and standalone fixtures.
         hashes = set()
         for item in data['attempts']:
             assignment = item['assignment']
@@ -1430,7 +1539,57 @@ class PbsManager:
                  for sha in missing}
         return data, blobs
 
+    def _fetch_staged_harvest(self, gateway, token, data, owners):
+        from tempfile import TemporaryDirectory
+        from .rpe_q3_coordinator import _artifact_destination
+        from .rpe_preparation_artifacts import artifact_hash
+        stage = TemporaryDirectory(prefix='pbs-harvest-', dir=self.directory)
+        data['_local_stage'] = stage
+        try:
+            for index, item in enumerate(data['attempts']):
+                assignment = item['assignment']
+                job, attempt = assignment['job_id'], assignment['attempt_id']
+                if owners is not None and (job, attempt) not in owners:
+                    raise ValueError('Unrequested PBS attempt returned by harvest')
+                current = self.executor.store.row(job)
+                if current is not None and current['state'] == 'ACCEPTED':
+                    item['files'] = {}
+                    continue
+                if (current is None or (current['attempt_id'], current['host_id'], current['request_sha256']) !=
+                        (attempt, data['host_id'], assignment['request_sha256'])):
+                    raise ValueError('PBS harvest differs from the current owner')
+                root = Path(stage.name)/str(index)
+                root.mkdir()
+                files = {}
+                for number, (name, size) in enumerate(item['files'].items()):
+                    _artifact_destination(root, name)
+                    path = root/str(number)
+                    self._read_bulk_file(gateway, token, 'attempt', name, path, size=size,
+                                         job_id=job, attempt_id=attempt)
+                    files[name] = path
+                if 'OUTCOME.json' in files:
+                    with files['OUTCOME.json'].open('rb') as stream:
+                        outcome = json.load(stream)
+                    for sha in self.executor.artifact_cache.missing(outcome.get('artifacts', {}).values()):
+                        path = root/artifact_hash(sha)
+                        self._read_bulk_file(gateway, token, 'artifact', sha, path)
+                        self.executor.artifact_cache.put_file(path, sha)
+                        path.unlink()
+                item['files'] = files
+            return data
+        except BaseException:
+            stage.cleanup()
+            raise
+
     def _accept_harvested(self, allocation, data, blobs, owners, *, live=False):
+        stage = data.get('_local_stage')
+        try:
+            return self._accept_harvested_files(allocation, data, blobs, owners, live=live, staged=stage is not None)
+        finally:
+            if stage is not None:
+                stage.cleanup()
+
+    def _accept_harvested_files(self, allocation, data, blobs, owners, *, live=False, staged=False):
         if owners is not None and data['host_id'] != allocation['host_id']:
             raise ValueError('PBS harvest belongs to a different worker')
         if blobs:
@@ -1447,8 +1606,12 @@ class PbsManager:
             if live and item['state'].get('state') != 'COMPLETED_PENDING_TRANSFER':
                 raise ValueError('PBS did not provide a locally verified completion')
             try:
-                self.executor.rpc('/v1/complete', dict(host_id=data['host_id'], job_id=job, attempt_id=attempt,
-                    request_sha256=assignment['request_sha256'], files=item['files']))
+                identity = dict(host_id=data['host_id'], job_id=job, attempt_id=attempt,
+                                request_sha256=assignment['request_sha256'])
+                if staged:
+                    self.executor._receive_completion(identity, staged_files=item['files'])
+                else:
+                    self.executor.rpc('/v1/complete', dict(identity, files=item['files']))
                 count += 1
             except (OSError, ValueError) as error:
                 if not live:

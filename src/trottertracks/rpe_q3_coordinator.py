@@ -141,6 +141,48 @@ def install_files(job, files):
             _sync_directory(destination.parent)
 
 
+def staged_completion_digest(files):
+    # The old wire format hashes the canonical JSON mapping of base64 values.
+    # Reproduce precisely that digest without retaining the encoded file(s).
+    h = hashlib.sha256()
+    h.update(b'{')
+    for i, (name, path) in enumerate(sorted(files.items())):
+        if i:
+            h.update(b',')
+        h.update(json.dumps(name).encode()+b':"')
+        with Path(path).open('rb') as stream:
+            for block in iter(lambda: stream.read(3*256*1024), b''):
+                h.update(base64.b64encode(block))
+        h.update(b'"')
+    h.update(b'}')
+    return h.hexdigest()
+
+
+def install_staged_files(job, files):
+    from .rpe_preparation_artifacts import copy_file
+    job = Path(job)
+    for name, path in files.items():
+        source = Path(path)
+        target = _artifact_destination(job, name)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            if not _same_artifact(source, target):
+                raise ValueError('Changed immutable artifact: '+name)
+            continue
+        temporary = target.with_name(target.name+'.transfer')
+        try:
+            try:
+                os.link(source, temporary)
+            except OSError as error:
+                if error.errno not in (errno.EXDEV, errno.EOPNOTSUPP, errno.ENOSYS, errno.EMLINK):
+                    raise
+                copy_file(source, temporary)
+            temporary.replace(target)
+            _sync_directory(target.parent)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+
 def _same_artifact(source, destination):
     if destination.is_symlink() or not destination.is_file():
         return False

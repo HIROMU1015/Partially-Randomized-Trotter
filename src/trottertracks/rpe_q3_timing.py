@@ -205,7 +205,16 @@ def summarize(run, *, timeline=None, public_summary=None):
                         or str(event.get('method','')).startswith('PREPARATION:')]
     preparation=preparation_summary(run,preparation_events)
     events=[]
+    observed_reasons = {}
     for event in all_events:
+        if event.get('event') == 'QUEUE_WAIT_STATE':
+            key = (event.get('invocation'), event.get('clock_id'))
+            reasons = dict(observed_reasons.get(key, {})) if event.get('reason_delta') else {}
+            for job in event.get('reason_removed', ()):
+                reasons.pop(job, None)
+            reasons.update(event.get('reasons', {}))
+            observed_reasons[key] = reasons
+            event = dict(event, reasons=reasons)
         if (event.get('job')or event.get('job_id'))in preparation_jobs or str(event.get('method','')).startswith('PREPARATION:'):continue
         if event.get('event')=='QUEUE_WAIT_STATE':
             event=dict(event,reasons={job:reason for job,reason in event.get('reasons',{}).items()if job not in preparation_jobs})

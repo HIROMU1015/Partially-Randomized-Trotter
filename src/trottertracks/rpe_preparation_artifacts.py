@@ -145,16 +145,39 @@ class ArtifactCache:
     def put_file(self, source, sha):
         """Install an immutable file without building a whole-file byte/base64 copy."""
         path = self.path(sha)
-        if not self.missing([sha]):return
+        if not self.missing([sha]):
+            if file_digest(source) != sha:raise ValueError('Captured artifact changed: '+sha)
+            return False
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_name(path.name + '.transfer-' + uuid.uuid4().hex)
         try:
             copy_file(source, temporary)
             if file_digest(temporary) != sha:raise ValueError('Captured artifact changed: '+sha)
-            try:os.link(temporary, path)
+            try:
+                os.link(temporary, path)
+                return True
             except FileExistsError:
                 if self.missing([sha]):raise ValueError('Concurrent artifact install failed')
+                return False
         finally:temporary.unlink(missing_ok=True)
+
+    def import_cached(self, source_root, sha):
+        # A previously published CAS object is immutable; use a hardlink on
+        # the same filesystem rather than another copy of a large bundle.
+        other = ArtifactCache(source_root)
+        if other.missing([sha]):return False
+        target = self.path(sha)
+        if not self.missing([sha]):return False
+        target.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.link(other.path(sha), target)
+            return True
+        except FileExistsError:
+            if self.missing([sha]):raise ValueError('Conflicting imported cache object')
+            return False
+        except OSError as error:
+            if error.errno not in (errno.EXDEV, errno.EOPNOTSUPP, errno.ENOSYS, errno.EMLINK):raise
+            return self.put_file(other.path(sha), sha)
 
     def capture(self, directory, outputs):
         directory = Path(directory).resolve();manifest = {}; files = {}

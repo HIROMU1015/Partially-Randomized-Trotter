@@ -236,6 +236,16 @@ function tableHeader(titles){const table=el('table'),row=el('tr');for(const titl
 function progressView(run){
  const host=E('search-progress');host.replaceChildren();
  const p=run?.search_progress;
+ if(run?.deferred_full_metadata?.length)field(host,'全体結果の更新','大きな結果は更新待ち。最新概算・準備状態を表示中');
+ const live=run?.live_shortlist;
+ if(live){
+  const points=(live.points||[]).filter(x=>x.method===method);
+  field(host,'最新の概算比較候補',points.length+'件（探索中・確定最安ではない）');
+  const best=new Map();
+  for(const row of (live.estimated_order||[]).filter(x=>x.method===method))if(!best.has(row.M))best.set(row.M,row);
+  for(const [M,row] of best)field(host,'M='+M+' 最新概算総RZ',exact(row.estimated_total_RZ)+' · '+row.configuration_id);
+  if(live.source)host.append(link(live.source));
+ }
  if(!p){host.append(el('p',run?'このrunには方向別の探索判断が未収録です。':'表示範囲からrunを選ぶと、その時点の探索判断を確認できます。'));return}
  if(p.status!=='RECORDED'){field(host,'取得状況',p.status);return}
  const reason=p.controller_stop?.reason;

@@ -553,7 +553,11 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             or not sample.is_absolute()):
         raise ValueError('Worker storage requires a positive byte limit and absolute paths')
     identity = dict(limit_bytes=limit, roots=roots)
-    start, target = reclaim_watermarks(limit, proactive=proactive)
+    # All reporters expose the same early watermark. The independent watcher
+    # does the 80% sweep; the fast worker poll only performs emergency reclaim
+    # at 95%, so a cleanup scan does not delay ordinary assignment.
+    start, target = reclaim_watermarks(limit, proactive=True)
+    emergency_start, emergency_target = reclaim_watermarks(limit, proactive=False)
     caches = list(dict.fromkeys([*([prefix_cache] if prefix_cache else []), *cache_directories]))
     cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_caches=caches)
 
@@ -569,10 +573,12 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 same_watermarks = (
                     report.get('reclaim_start_bytes'), report.get('reclaim_target_bytes')
                 ) == (start, target)
-                if proactive and not same_watermarks:
+                if not same_watermarks:
+                    return None
+                if (proactive and report.get('reclaim_pending') and report.get('reclaim_mode') != 'proactive'):
                     return None
                 if (report['used_bytes'] is None or report['used_bytes'] < start
-                        or (same_watermarks and saved.get('cleanup') == cleanup)):
+                        or saved.get('cleanup') == cleanup):
                     return report
         except (OSError, KeyError, TypeError, ValueError):
             pass
@@ -602,25 +608,35 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             try:
                 used = _used_bytes(roots, timeout=du_timeout)
                 before, reclaimed = used, 0
-                cleanup_due = used >= start
+                try:
+                    previous = json.loads(sample.read_bytes())
+                    underway = (previous.get('policy') == identity and
+                                previous.get('report', {}).get('reclaim_pending') is True)
+                except (OSError, ValueError):
+                    underway = False
+                pending = used >= start or (underway and used > target)
+                cleanup_due = pending if proactive else used >= emergency_start
+                # Emergency cleanup is deliberately small; the watcher keeps
+                # working toward the lower target without blocking a poll.
+                sweep_target = target if proactive else emergency_target
                 if cleanup_due and (spools or pbs_runs):
                     candidates = list(spools)
                     if pbs_runs:
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
                     # Leave room for new attempts before the next cleanup pass.
-                    used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout)
-                if cleanup_due and used > target and (spools or pbs_runs):
-                    if _share_transferred_git_packs(candidates, roots, used-target):
+                    used, reclaimed = _reclaim(candidates, roots, used, sweep_target, du_timeout=du_timeout)
+                if cleanup_due and used > sweep_target and (spools or pbs_runs):
+                    if _share_transferred_git_packs(candidates, roots, used-sweep_target):
                         used = _used_bytes(roots, timeout=du_timeout)
                 evicted = 0
-                if cleanup_due and used > target:
+                if cleanup_due and used > sweep_target:
                     for path in caches:
                         cache = Path(path).resolve()
                         if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
                             cache_size = _used_bytes([str(cache)], timeout=du_timeout)
-                            evicted += PrefixStore(cache).reclaim(cache_size - (used-target))
+                            evicted += PrefixStore(cache).reclaim(cache_size - (used-sweep_target))
                             used = _used_bytes(roots, timeout=du_timeout)
-                            if used <= target:
+                            if used <= sweep_target:
                                 break
                 filesystem_free = {}
                 for name in roots:
@@ -640,8 +656,9 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                                 filesystem_free_bytes=min(filesystem_free.values()),
                                 filesystem_min_free_bytes=min_free,filesystem_low_space_roots=low_roots,
                                 reclaim_start_bytes=start, reclaim_target_bytes=target,
+                                reclaim_mode=('proactive' if proactive else 'emergency') if cleanup_due else 'observation',
                                 reclaim_checked=cleanup_due or bool(compacted or abandoned),
-                                reclaim_pending=(cleanup_due or bool(compacted or abandoned)) and used > target)
+                                reclaim_pending=(pending or bool(compacted or abandoned)) and used > target)
                 if used < before:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:

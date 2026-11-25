@@ -151,24 +151,53 @@ def local_duplicate_cache(run, profile):
                  if not central.is_relative_to(worker) and not worker.is_relative_to(central)]
 
     def protected():
-        if not registered_storage_owner_is_exclusive(state_dir, run, spool, worker, artifact_cache=True):
+        registered = {Path(entry['run_directory']).resolve() for entry in read(state_dir/'RUNS.json').values()}
+        if run.resolve() not in registered:
             return None
-        with sqlite3.connect((run/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
-            if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
-                            ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""",
-                          (profile['host_id'],)).fetchone():
-                return None
-            retained = retained_artifact_hashes(run, db)
-        for marker in spool.glob('*/*/WORKER_STATE.json'):
-            status = read(marker)['state']
-            if status == 'TRANSFERRED':
+        # Different runs may share the same immutable CAS and quota watcher.
+        # Protect the union of their pending/owned requests, not the whole
+        # host forever merely because another run is registered.
+        owners = [(run, profile, spool)]
+        for other in registered - {run.resolve()}:
+            if not invocation_active(other):
                 continue
-            if status != 'UNKNOWN':
+            worker_profile = other/'distributed/LOCAL_WORKER.json'
+            if worker_profile.is_file():
+                options = read(worker_profile)
+            elif (other/'ROUND.json').is_file():
+                options = ((read(other/'ROUND.json').get('executor') or {}).get('distributed') or {}).get('local_worker')
+                if options is None:continue
+            else:return None
+            if not isinstance(options, dict) or not options.get('work_dir'):
                 return None
-            for name in ('ASSIGNMENT.json', 'OUTCOME.json', 'ARTIFACT_MANIFEST.json'):
-                path = marker.with_name(name)
-                if path.is_file():
-                    retained.update(_hashes(read(path)))
+            other_spool = Path(options['work_dir']).resolve()
+            other_cache = Path(options.get('artifact_cache_directory') or other_spool/'artifacts').resolve()
+            if not (spool.is_relative_to(other_spool) or other_spool.is_relative_to(spool)
+                    or worker.is_relative_to(other_cache) or other_cache.is_relative_to(worker)):
+                continue
+            # The same sample lock must fence new admissions to a shared pool.
+            if ((options.get('storage_limit') or {}).get('sample_path') != str(sample)
+                    or not options.get('host_id')):
+                return None
+            owners.append((other, options, other_spool))
+        retained = set()
+        for owner, options, _ in owners:
+            dbpath = owner/'distributed/QUEUE.sqlite3'
+            if not dbpath.is_file():return None
+            with sqlite3.connect(dbpath.as_uri()+'?mode=ro', uri=True) as db:
+                if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
+                            ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""",
+                              (options['host_id'],)).fetchone():
+                    return None
+                retained.update(retained_artifact_hashes(owner, db))
+        for _, _, candidate_spool in owners:
+            for marker in candidate_spool.glob('*/*/WORKER_STATE.json'):
+                status = read(marker)['state']
+                if status == 'TRANSFERRED':continue
+                if status != 'UNKNOWN':return None
+                for name in ('ASSIGNMENT.json', 'OUTCOME.json', 'ARTIFACT_MANIFEST.json'):
+                    path = marker.with_name(name)
+                    if path.is_file():retained.update(_hashes(read(path)))
         return retained
 
     def sha(path):
@@ -543,32 +572,65 @@ def cleanup_stopped_local(state):
             print(json.dumps(dict(epoch=time.time(), host_id='local', storage=result)), flush=True)
 
 
+def cleanup_registered_run(run_id, entry, source):
+    try:
+        run = Path(entry['run_directory']).resolve()
+        distributed = run/'distributed'
+        if not distributed.is_dir() or not (run/'CONTROLLER_CONFIG.json').is_file() or not invocation_active(run):
+            return
+        with (distributed/'STORAGE_RECLAIM.lock').open('a+b') as run_lock:
+            try:
+                fcntl.flock(run_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                return
+            cleanup(run, source)
+    except (OSError, KeyError, TypeError, ValueError, sqlite3.Error, subprocess.SubprocessError) as error:
+        print(json.dumps(dict(event='STORAGE_RUN_DEFERRED', run_id=run_id,
+                              error_type=type(error).__name__)), flush=True)
+
+
 def cleanup_active_runs(state, source):
     for run_id, entry in read(state/'RUNS.json').items():
-        try:
-            run = Path(entry['run_directory']).resolve()
-            distributed = run/'distributed'
-            if not distributed.is_dir() or not (run/'CONTROLLER_CONFIG.json').is_file() or not invocation_active(run):
-                continue
-            with (distributed/'STORAGE_RECLAIM.lock').open('a+b') as run_lock:
-                try:
-                    fcntl.flock(run_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                except BlockingIOError:
-                    continue
-                cleanup(run, source)
-        except (OSError, KeyError, TypeError, ValueError, sqlite3.Error, subprocess.SubprocessError) as error:
-            print(json.dumps(dict(event='STORAGE_RUN_DEFERRED', run_id=run_id,
-                                  error_type=type(error).__name__)), flush=True)
+        cleanup_registered_run(run_id, entry, source)
 
 
 def watch_active_runs(state, source):
     """Follow normal Start and Resume, including after the active run changes."""
-    with closing((state/'STORAGE_RECLAIM.lock').open('a+b')) as lock:
+    # Git compaction is central-only and independent of the worker cleanup
+    # cycle. It does not hold the controller registry or PBS gateway lock.
+    from compact_rpe_git_objects import compact
+    repository = state.parent.parent
+    pending = None
+    ongoing = {}
+    with closing((state/'STORAGE_RECLAIM.lock').open('a+b')) as lock, ThreadPoolExecutor(max_workers=1) as packs, ThreadPoolExecutor() as sweeps:
         acquire_lock(lock)
         while True:
             try:
-                cleanup_active_runs(state, source)
-                cleanup_stopped_local(state)
+                if repository.joinpath('.git').exists() and (pending is None or pending.done()):
+                    if pending is not None:
+                        try:
+                            result = pending.result()
+                        except (OSError, ValueError, subprocess.SubprocessError) as error:
+                            result = dict(status='COMPACTION_PENDING', error_type=type(error).__name__)
+                        from trottertracks.rpe_q3_coordinator import atomic_json
+                        maintenance = state/'maintenance'
+                        maintenance.mkdir(exist_ok=True)
+                        atomic_json(maintenance/'GIT_COMPACTION.json', dict(result, epoch=time.time()))
+                    pending = packs.submit(compact, repository, state/'maintenance')
+                for run_id, future in list(ongoing.items()):
+                    if future.done():
+                        try:future.result()
+                        except Exception as error:
+                            print(json.dumps(dict(event='STORAGE_RUN_DEFERRED', run_id=run_id,
+                                                  error_type=type(error).__name__)), flush=True)
+                        del ongoing[run_id]
+                for run_id, entry in read(state/'RUNS.json').items():
+                    if run_id not in ongoing and invocation_active(Path(entry['run_directory'])):
+                        ongoing[run_id] = sweeps.submit(cleanup_registered_run, run_id, entry, source)
+                # A disconnected remote cleanup cannot delay the next sweep
+                # of another registered active run or a stopped local profile.
+                if 'stopped-local' not in ongoing:
+                    ongoing['stopped-local'] = sweeps.submit(cleanup_stopped_local, state)
             except (OSError, KeyError, ValueError, sqlite3.Error, subprocess.SubprocessError) as error:
                 print(json.dumps(dict(event='STORAGE_WATCH_WAIT', error_type=type(error).__name__)), flush=True)
             time.sleep(60)
