@@ -90,12 +90,27 @@ class ArtifactCache:
                     identity=self._identity(path)
                 except FileNotFoundError:
                     self._verified.pop(sha,None);result.append(sha);continue
-                stable=time.time_ns()-max(identity[-2:])>=1_000_000_000
-                if stable and self._verified.get(sha)==identity:continue
-                if file_digest(path)!=sha or self._identity(path)!=identity:
+                # Another consumer may materialize a hard link while we read
+                # the cache: this changes ctime, not the verified bytes. Use
+                # the new identity on a second read rather than fail adoption.
+                for attempt in range(4):
+                    stable=time.time_ns()-max(identity[-2:])>=1_000_000_000
+                    if stable and self._verified.get(sha)==identity:break
+                    if file_digest(path)!=sha:
+                        self._verified.pop(sha,None)
+                        raise ValueError('Corrupt cached artifact: '+sha)
+                    current=self._identity(path)
+                    if current==identity:
+                        if stable:self._verified[sha]=identity
+                        break
                     self._verified.pop(sha,None)
-                    raise ValueError('Corrupt or changed cached artifact: '+sha)
-                if stable:self._verified[sha]=identity
+                    if attempt==3:
+                        # Identical inode, size and mtime + a valid SHA is
+                        # sufficient for this read, but never cache it.
+                        if current[:4]!=identity[:4]:
+                            raise ValueError('Cached artifact changed during verification: '+sha)
+                        break
+                    identity=current
         return result
 
     def hashes(self):
