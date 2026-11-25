@@ -748,6 +748,25 @@ class ScaleTests(unittest.TestCase):
                 driver.wait_for_recovery(['OWNED_ATTEMPT'], 15)
             self.assertEqual(now[0], 2000)
 
+    def test_previous_run_owner_receipt_wakes_only_its_waiting_search(self):
+        from trottertracks.rpe_q3_store import JobStore
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            driver = entry.WidthDriver.__new__(entry.WidthDriver)
+            driver.run = root/'current'
+            store = JobStore(driver.run/'distributed/QUEUE.sqlite3')
+            prior = root/'previous'
+            previous = JobStore(prior/'distributed/QUEUE.sqlite3')
+            hold = dict(parent_directory=str(prior), method='FULL_PF', job_id='original')
+            executor = SimpleNamespace(store=store, hosts={}, prior_q3_holds=[hold])
+            initial = driver.recovery_revision(executor)
+            previous.reserve('FULL_PF', 'unrelated', {'route': {'kind': 'artificial'}}, 1, True)
+            self.assertEqual(initial, driver.recovery_revision(executor))
+            receipt = prior/'jobs/FULL_PF/original/OUTCOME.json'
+            receipt.parent.mkdir(parents=True)
+            write(receipt, {'finished': True})
+            self.assertNotEqual(initial, driver.recovery_revision(executor))
+
     def test_artificial_normal_start_queue_resume_and_legacy_pin(self):
         with tempfile.TemporaryDirectory(prefix='artificial-scaled-rpe-') as tmp:
             root=Path(tmp)

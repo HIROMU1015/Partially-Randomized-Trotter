@@ -2695,6 +2695,33 @@ class WidthDriver:
                         result.append((method, job, name, stat.st_size, stat.st_mtime_ns))
                     except FileNotFoundError:
                         result.append((method, job, name, None))
+            # Previous-run ownership is also addressable by its exact job.
+            # Observing only these receipts/ledger rows avoids waking the full
+            # planner because an unrelated job in the older run changed.
+            import sqlite3
+            from contextlib import closing
+            prior = {}
+            for hold in getattr(executor, 'prior_q3_holds', ()):
+                if all(hold.get(k) for k in ('parent_directory', 'method', 'job_id')):
+                    prior.setdefault(Path(hold['parent_directory']), set()).add((hold['method'], hold['job_id']))
+            for owner, jobs in sorted(prior.items()):
+                database = owner/'distributed/QUEUE.sqlite3'
+                try:
+                    with closing(sqlite3.connect(database.resolve().as_uri()+'?mode=ro', uri=True, timeout=.1)) as db:
+                        for method, job in sorted(jobs):
+                            row = db.execute('SELECT state, completion_sha256, adopted_epoch, updated_epoch FROM jobs WHERE job_id=?',
+                                             (job,)).fetchone()
+                            result.append((str(owner), method, job, 'ledger', row))
+                except (OSError, sqlite3.Error):
+                    result.append((str(owner), 'ledger', None))
+                for method, job in sorted(jobs):
+                    for name in ('OUTCOME.json', 'PROCESS_RETURN.json', 'LAUNCH.json'):
+                        path = owner/'jobs'/method/job/name
+                        try:
+                            stat = path.stat()
+                            result.append((str(owner), method, job, name, stat.st_size, stat.st_mtime_ns))
+                        except FileNotFoundError:
+                            result.append((str(owner), method, job, name, None))
             # A returning worker can make an unqueued candidate eligible.
             # Poll timestamps and fluctuating memory readings are not changes
             # to its identity or admission.
@@ -2714,13 +2741,14 @@ class WidthDriver:
         self.log(event='WAITING_FOR_RECOVERY', **self.state['recovery_wait'])
         deadline = time.monotonic() + seconds
         # Old run evidence edited outside this controller has no queue event.
-        # Current-run UNKNOWN attempts already have durable queue events.  Do
-        # not rebuild every saved candidate periodically while those events
-        # and all other inputs are unchanged. Prior-run owners still require
-        # the conservative periodic reconciliation of external evidence.
-        local_owners_only = (set(reasons) == {'OWNED_ATTEMPT'} and executor is not None
-                             and not getattr(executor, 'prior_q3_holds', ()))
-        external_recheck = float('inf') if local_owners_only else time.monotonic() + 900
+        # Do not rebuild every saved candidate periodically while exact
+        # current/prior ledger owners and their receipts are unchanged. For
+        # a hold without a readable owner location, keep the old watchdog.
+        known_owners_only = (set(reasons) == {'OWNED_ATTEMPT'} and executor is not None
+                             and all(all(h.get(k) for k in ('parent_directory','method','job_id'))
+                                     and Path(h['parent_directory']).is_dir()
+                                     for h in getattr(executor, 'prior_q3_holds', ())))
+        external_recheck = float('inf') if known_owners_only else time.monotonic() + 900
         stop = self.run/'STOP_REQUESTED.json'
         while not stop.exists():
             if self.recovery_revision(executor) != baseline or time.monotonic() >= external_recheck:
