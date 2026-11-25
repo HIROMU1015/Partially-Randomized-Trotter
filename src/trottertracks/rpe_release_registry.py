@@ -45,6 +45,38 @@ def input_files(config):
     return files
 
 
+# Reusable deployment settings; never put an old job, consumed budget or
+# run-specific retry authorization into a new release's default policy.
+COMMON_WORKER_POLICY_FIELDS = frozenset((
+    'controller_parallel', 'controller_queue_first', 'exploratory_cost',
+    'calibration_workers', 'ready_queue_waves', 'live_readiness_max_workers',
+    'live_readiness_refill_seconds', 'recover_saved_price_rounds',
+    'pf_compile_hosts', 'pf_legacy_compile_hosts', 'pf_preparation_cpu_backlog',
+    'pf_price_recheck_provider', 'pf_controller_runtime',
+    'local_resource_worker', 'local_memory_reserve_bytes', 'local_pf_preparation_pair',
+    'local_q3_horizon_adapter', 'local_q3_horizon_adapters', 'large_shot_adapter',
+    'relay_q3_profiles', 'relay_batch_worker_sources', 'relay_cpu_limits',
+    'server1_worker', 'server1_preparation_profile', 'server2_profile',
+    'preparation_host_preference', 'pbs_collection_workers',
+    'pbs_gateway_completion_workers', 'pbs_dispatch_gateway',
+    'pbs_storage_launcher', 'pbs_hold_node', 'pbs_preparation_resources',
+    'pbs_q3_adapter', 'pbs_q3_horizon', 'pbs_q3_measured_memory',
+    'pbs_q3_memory_backfill', 'pbs_ready_buffer', 'pbs_standby_waves',
+    'pbs_stage_artifacts_over_ssh', 'pbs_offline_search', 'df_max_width',
+))
+
+
+def common_worker_policy(value):
+    policy = deepcopy(value or {})
+    unsupported = set(policy) - COMMON_WORKER_POLICY_FIELDS
+    if unsupported:
+        raise ValueError('Run-specific or unsupported release worker policy: '+', '.join(sorted(unsupported)))
+    runtime = policy.get('pf_controller_runtime')
+    if runtime and ('run_directory' in runtime or not runtime.get('run_root')):
+        raise ValueError('Common PF runtime must use a release run root, not an existing run')
+    return policy
+
+
 def register(registry_path, release_id, service_path, *, activate=False, evidence=None, expected_current=None):
     """One registration/switch operation; retain existing registered versions."""
     service_path = str(Path(service_path).resolve())
@@ -52,6 +84,7 @@ def register(registry_path, release_id, service_path, *, activate=False, evidenc
     for key in ('code_root', 'code_source', 'computation_source', 'problem', 'round', 'python'):
         if not config.get(key):
             raise ValueError('Release service missing ' + key)
+    common_worker_policy(config.get('release_worker_policy'))
     inputs=input_files(config)
     for path in inputs.values():
         if not Path(path).is_file():

@@ -47,37 +47,46 @@ def encoded(value):
     return dict(numerator=value.numerator, denominator=value.denominator)
 
 
-def _prefix(method, p):
+def _prefix(method, p, rank=10):
     if method not in ('FULL', 'FULL_PF', 'B0I', 'B0I_P7', 'TRUNCATED_PF'):
         raise ValueError('Only Full PF and B0I deterministic PF are supported')
-    if type(p) is not int or p not in range(11):
-        raise ValueError('H4 DF10 prefix p must be an integer from 0 through 10')
-    if method in ('FULL', 'FULL_PF') and p != 10:
-        raise ValueError('Full PF must retain all 10 fragments')
-    return 'FULL_PF' if p == 10 else 'TRUNCATED_PF'
+    if type(p) is not int or p not in range(rank+1):
+        raise ValueError('PF prefix p must be an integer from zero through the bound rank')
+    if method in ('FULL', 'FULL_PF') and p != rank:
+        raise ValueError('Full PF must retain all fragments of the bound rank')
+    return 'FULL_PF' if p == rank else 'TRUNCATED_PF'
 
 
-def configure(root, method, p, formula, delta_over_h):
+def configure(root, method, p, formula, delta_over_h, *, base_spec=None):
     """Return C's canonical configuration; B0I p10 aliases Full PF exactly.
 
     p0 is legal one-body-only B0I; p1..9 retain fragments 0..p-1.
     ``delta_over_h`` is not restricted to the metadata shortlist/grid.
     """
-    mode = _prefix(method, p)
+    locator = base_spec or BASE_SPEC
+    base = base_configuration(root, locator)
+    rank = base['binding']['rank']
+    mode = _prefix(method, p, rank)
     if formula not in FORMULAS:
         raise ValueError('Supported PF formulas are S2, standard Yoshida4, M5')
     width = exact(delta_over_h)
     if width <= 0:
         raise ValueError('PF width must be positive')
     api = C.published_api(str(root))
-    base = deepcopy(_json(str(root), BASE_SPEC['commit'], BASE_SPEC['path'])['spec'])
     spec = api.D.full_pf_spec(base, formula=formula,
-                             delta_pf=encoded(width * H), M=12, rank=10)
+                             delta_pf=encoded(width * exact(base['h'])), M=base['M'], rank=rank)
     if mode == 'TRUNCATED_PF':
         spec['L_D'] = p
         spec['split'].update(L_D=p, deterministic_scope='TRUNCATED_H', original_PF_method='B0I')
         spec['split']['retained_hamiltonian'].update(construction='B0I', prefix=p)
     return C.configure(root, spec, api=api)
+
+
+def base_configuration(root, locator):
+    value = _json(str(root), locator['commit'], locator['path'])
+    for field in locator.get('selector', ('spec',)):
+        value = value[field]
+    return deepcopy(value)
 
 
 @lru_cache(maxsize=None)
@@ -129,7 +138,7 @@ def priority_evidence(root, p, formula, configuration):
     return evidence
 
 
-def candidates(root, formulas=None, widths=None, p_values=None):
+def candidates(root, formulas=None, widths=None, p_values=None, *, base_spec=None):
     """Declare metadata candidates, not a request to evaluate their Cartesian grid.
 
     Defaults represent all p0..9 plus the p10 Full-PF alias, using the original
@@ -137,16 +146,19 @@ def candidates(root, formulas=None, widths=None, p_values=None):
     a formula->iterable mapping; arbitrary positive widths remain legal.
     Search selection and shot optimization belong to B2, not this module.
     """
+    locator = base_spec or BASE_SPEC
+    base = base_configuration(root, locator)
+    rank = base['binding']['rank']
     formulas = tuple(FORMULAS if formulas is None else formulas)
-    p_values = tuple(range(11) if p_values is None else p_values)
+    p_values = tuple(range(rank+1) if p_values is None else p_values)
     if len(set(formulas)) != len(formulas) or any(f not in FORMULAS for f in formulas):
         raise ValueError('PF formulas must be supported and unique')
-    if any(type(p) is not int or p not in range(11) for p in p_values) or len(set(p_values)) != len(p_values):
-        raise ValueError('PF prefixes must be unique integers from 0 through 10')
+    if any(type(p) is not int or p not in range(rank+1) for p in p_values) or len(set(p_values)) != len(p_values):
+        raise ValueError('PF prefixes must be unique integers within the bound rank')
     shared_widths = None if widths is None or isinstance(widths, dict) else tuple(widths)
     out = []
     for p in p_values:
-        method = 'FULL_PF' if p == 10 else 'TRUNCATED_PF'
+        method = 'FULL_PF' if p == rank else 'TRUNCATED_PF'
         for formula in formulas:
             values = (DEFAULT_WIDTHS[formula] if widths is None else
                       widths.get(formula, ()) if isinstance(widths, dict) else shared_widths)
@@ -156,11 +168,12 @@ def candidates(root, formulas=None, widths=None, p_values=None):
                 if width in seen:
                     continue
                 seen.add(width)
-                cfg = configure(root, method, p, formula, width)
+                cfg = configure(root, method, p, formula, width, base_spec=locator)
                 out.append(dict(method=method, p=p, formula=formula, delta_over_h=encoded(width),
                     configuration=deepcopy(cfg), configuration_id=cfg['id'],
-                    configuration_source=dict(base=deepcopy(BASE_SPEC),
+                    configuration_source=dict(base=deepcopy(locator),
                         generator=dict(B=C.B_SOURCE, D=C.D_SOURCE), port_source=PORT_SOURCE),
-                    p10_alias_full_pf=(p == 10),
-                    priority_evidence=priority_evidence(root, p, formula, cfg)))
+                    p10_alias_full_pf=(p == rank),
+                    priority_evidence=(priority_evidence(root, p, formula, cfg) if locator==BASE_SPEC else
+                        dict(usage='PRIORITY_ONLY_NOT_Q3_ACCEPTANCE_OR_REJECTION', T1=None, T2=[]))))
     return out

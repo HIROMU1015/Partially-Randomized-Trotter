@@ -230,12 +230,18 @@ def resource_class(request, evaluator=None):
     return 'q3:' + ('finite_support' if evaluator == 'RPE_FINITE_SUPPORT_MSE_V1' else 'count_dp')
 
 
-def measured_resource_class(request, evaluator=None, runtime=None):
+def measured_resource_class(request, evaluator=None, runtime=None, *, preparation_detail=False):
     """Group comparable requests for capacity estimates, not result identity."""
     category = resource_class(request, evaluator)
-    if request.get('preparation'):
-        return category
     runtime = runtime or {}
+    if preparation := request.get('preparation'):
+        if not preparation_detail:
+            return category
+        # Source and the fixed resource footprint affect memory measurements.
+        # A previous provider's peak must not govern every later provider.
+        source = (preparation.get('source') or {}).get('commit', '')
+        return ':'.join(map(str, (category, source, runtime.get('task_cpu_count', ''),
+                                  runtime.get('task_memory_bytes', ''), runtime.get('dp_workers', ''))))
     shots = tuple(request.get('N_X', ())) + tuple(request.get('N_Y', ()))
     if not shots or any(type(value) is not int or value < 1 for value in shots):
         return category

@@ -11,6 +11,7 @@ from copy import copy, deepcopy
 import fcntl
 import json
 import os
+import re
 from pathlib import Path
 import threading
 import time
@@ -206,11 +207,13 @@ class ConcurrentExecutor(O.Executor):
             return False
         if isinstance(left, dict):
             if df_signal and left.get('status') == right.get('status'):
-                if left.get('status') == 'ALL13_PHYSICAL_MEANS_NUMERICALLY_CHECKED_RMSE_UNQUALIFIED':
+                signal_schema = re.fullmatch(r'ALL([1-9][0-9]*)_PHYSICAL_MEANS_NUMERICALLY_CHECKED_RMSE_UNQUALIFIED',
+                                             str(left.get('status','')))
+                if signal_schema:
                     # The raw carrier denotes the publication containing the
                     # per-round source records. Compare every referenced round.
                     if not all(isinstance(packet.get('raw_result_carrier'), str)
-                               and len(packet['means']) == 13 and all(
+                               and len(packet['means']) == int(signal_schema.group(1)) and all(
                                    row['source']['commit'] == packet['raw_result_carrier']
                                    and row['normalization']['source'] == row['source'] for row in packet['means'])
                                for packet in (left, right)):
@@ -2029,14 +2032,14 @@ class DistributedExecutor(ConcurrentExecutor):
         return fits_request(request, self.hosts.get(host, {}).get('resource_report'),
                             self.distributed.get('pbs') or {}, host)
 
-    @staticmethod
-    def _task_resource_class(row, host):
+    def _task_resource_class(self, row, host):
         from .rpe_q3_resources import measured_resource_class, resource_class
         eligibility = row['eligibility'] or {}
         decision = eligibility.get('host_decisions', {}).get(host, {})
         runtime = eligibility.get('execution_profiles', {}).get(host)
         if runtime is not None:
-            return measured_resource_class(row['request'], decision.get('evaluator'), runtime)
+            return measured_resource_class(row['request'], decision.get('evaluator'), runtime,
+                preparation_detail=(self.hosts.get(host, {}).get('resource_report') or {}).get('preparation_class_version') == 2)
         return resource_class(row['request'], decision.get('evaluator'))
 
     def _fits_host_task_class(self, host, row):

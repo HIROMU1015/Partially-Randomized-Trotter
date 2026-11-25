@@ -528,7 +528,7 @@ class Worker:
             same_clock = previous.get('clock_id') == observed['clock_id']
             cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
             resource = 'EXITED' if state == 'UNKNOWN' and persisted['detail'].get('resource_released') is True else resource_state(attempt, state)
-            kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved)
+            kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True)
             # Previously assigned attempts may predate evaluator metadata. Their
             # samples stay in the conservative count-DP profile.
             job = dict(state=resource, resource_class=kind, dp_workers=max(saved.get('dp_workers') or 1,
@@ -544,6 +544,7 @@ class Worker:
         previous = read(state_path) if state_path.exists() else {}
         resources = self.resource_snapshot() if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}
         state, report = Resources.decide_slots(self.profile, previous, resources, jobs, feedback)
+        report['preparation_class_version'] = 2
         self.slots = report['capacity']
         self._storage_offer(report)
         if report['mode'] == 'AUTO':

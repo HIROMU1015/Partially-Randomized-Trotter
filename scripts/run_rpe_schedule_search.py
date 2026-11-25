@@ -219,14 +219,28 @@ def bind_pf_continuation_release(distributed, provider, root):
                                                 references=references)
 
 
+def selected_worker_policy(spec):
+    from trottertracks.rpe_release_registry import common_worker_policy
+    common = common_worker_policy(spec.get('release_worker_policy'))
+    selected = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+    return dict(common, **selected)
+
+
 def apply_worker_trial(spec, trial, *, run_dir=None):
     """Install the selected execution policy in memory after fixed-input checks."""
     import importlib.util
 
     distributed = spec['executor']['distributed']
     if binding := trial.get('pf_controller_runtime'):
-        if run_dir is None or Path(binding['run_directory']).resolve() != Path(run_dir).resolve():
-            raise ValueError('PF controller runtime belongs to a different run')
+        if run_dir is None:
+            raise ValueError('PF controller runtime requires a run directory')
+        run_path = Path(run_dir).resolve()
+        if 'run_directory' in binding:
+            matches = Path(binding['run_directory']).resolve() == run_path
+        else:
+            matches = bool(binding.get('run_root')) and run_path.parent == Path(binding['run_root']).resolve()
+        if not matches:
+            raise ValueError('PF controller runtime belongs to a different run or release root')
         for name, expected in binding['files'].items():
             if hashlib.sha256(Path(name).read_bytes()).hexdigest() != expected:
                 raise ValueError('Fixed PF controller runtime differs: '+name)
@@ -990,8 +1004,8 @@ class WidthDriver:
         self.wide = self.spec.get('search_overrides', {}).get('schedule_wide', {})
         self.completion = None
         self.check_fixed_inputs()
-        trial = globals().get('FIXED_RUN_WORKER_TRIAL')
-        if trial is not None and not a.plan_only:
+        trial = selected_worker_policy(self.spec)
+        if trial and not a.plan_only:
             apply_worker_trial(self.spec, trial, run_dir=self.run)
         if not self.state['families']:
             started=time.monotonic();self.log(event='SEED_START')
@@ -1636,6 +1650,8 @@ class WidthDriver:
                     p['completion']['price_actions']=record['price_actions']
                 if record.get('preparation_recovery'):
                     p['completion']['preparation_recovery']=record['preparation_recovery']
+                for field in ('failure_class','retry_protected'):
+                    if field in record:p['completion'][field]=record[field]
                 if record['status']=='READY_FOR_SEARCH':
                     try:self.check_completed_configuration(p,record)
                     except (ValueError,KeyError,TypeError) as exc:
@@ -1653,7 +1669,7 @@ class WidthDriver:
                       or str(record.get('reason','')).startswith(('PREPARATION_REQUEST_MISMATCH:',
                                                                  'PREPARATION_RESULT_MISMATCH:'))
                       or 'NUMERICAL_GATE' in str(record.get('reason','')) or
-                      getattr(self,'rule_stop',False) and record.get('scientific_failure')):
+                      getattr(self,'rule_stop',False) and (record.get('retry_protected',record.get('scientific_failure')))):
                     p.update(status='HELD',reason=record.get('reason',record['status']))
                 else:
                     p.update(status='WAITING_INPUTS',reason=record.get('reason',record['status']))
@@ -2164,7 +2180,7 @@ class WidthDriver:
                 self.pf_more=False
                 if pf_enabled:
                     from trottertracks import pf_candidate_selection
-                    trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+                    trial = selected_worker_policy(self.spec)
                     if trial.get('recover_saved_price_rounds') and not active_spec.get('pf_completion'):
                         active_spec = dict(active_spec, pf_completion=dict(problem['pf_completion'],
                                                                            recover_saved_price_rounds=True))
@@ -2529,7 +2545,7 @@ class WidthDriver:
         write_width_report(Path(run), self.report_cli(), spec, result, source, owner=owner)
 
     def report_cli(self):
-        trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+        trial = selected_worker_policy(self.spec)
         if 'width_report_sha256' not in trial or 'large_shot_adapter' in trial:
             return K.CLI
         import runpy
@@ -2551,7 +2567,7 @@ class WidthDriver:
         # Publish changes synchronously before another executor can reserve work.
         same_holds = getattr(self, '_reported_holds', None) == holds
         self._reported_holds = deepcopy(holds)
-        trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+        trial = selected_worker_policy(self.spec)
         if (not same_holds or not getattr(self, 'scaled_shots', False)
                 or not trial.get('controller_queue_first')
                 or str(self.run).startswith(str(ROOT/'docs/research'))
@@ -2645,7 +2661,7 @@ class WidthDriver:
         previous=self.state.get('stop',{}).get('reason')
         transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','SCOPE_HELD_INPUTS',
                    'SCOPE_HELD_Q3','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY','DISCRETE_SCHEDULE_PLAN_ONLY'}
-        trial = globals().get('FIXED_RUN_WORKER_TRIAL') or {}
+        trial = selected_worker_policy(self.spec)
         recovery = trial.get('recovered_failure')
         if recovery is None and trial.get('resumed_ast_failure'):
             recovery = dict(kind='ast', invocation=trial['resumed_ast_failure'])
@@ -2925,7 +2941,7 @@ def main(argv=None, *, driver_factory=None):
         return prepare(a, code_root=ROOT, cli=K.CLI)
     problem=O.load_json(a.problem);spec=O.load_json(a.round)
     if a.import_check:
-        if trial := globals().get('FIXED_RUN_WORKER_TRIAL'):
+        if trial := selected_worker_policy(spec):
             apply_worker_trial(spec, trial, run_dir=a.run_dir)
         from trottertracks import rpe_scope_map, rpe_scaled_shots, rpe_optimizer_concurrent, rpe_pbs
         print(json.dumps(dict(status='IMPORT_CHECK_PASS', controller=str(Path(__file__).resolve()),

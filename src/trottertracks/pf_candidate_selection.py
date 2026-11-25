@@ -95,10 +95,11 @@ def inspect(context,methods,*,include_full=False):
 
 def select(context,methods,excluded=(),*,include_full=False,price_rechecks=(),route_rechecks=()):
     rows,evaluated=inspect(context,methods,include_full=include_full)
+    rounds={c['configuration_id']:len(c.get('caps', [None]*13)) for c in context['candidates']}
     for row in rows:
         if row['configuration_id'] in price_rechecks:
             row['ready'] = False
-            row['needs'] = ['PRICE_26AXIS']
+            row['needs'] = [f"PRICE_{2*rounds[row['configuration_id']]}AXIS"]
         if row['configuration_id'] in route_rechecks:
             row['ready'] = False
             row['needs'].append('Q3_ROUTE_CONFIGURATION_OR_TEMPLATE')

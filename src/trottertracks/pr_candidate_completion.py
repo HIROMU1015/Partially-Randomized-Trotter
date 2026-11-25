@@ -226,6 +226,38 @@ def preparation_failure_class(reason, evidence=None):
         return 'OPERATIONAL_WAIT'
     return 'TECHNICAL_INPUT_OR_TOOL_FAILURE'
 
+def preparation_retry_protected(record):
+    """Keep old no-retry evidence, independently of the scientific diagnosis."""
+    return bool(record.get('retry_protected', record.get('scientific_failure', False)))
+
+
+def metadata_only_failure(directory):
+    """Prove that a failed leaf never entered the scientific execution path.
+
+    Never infer non-execution merely from a missing OUTCOME. A metadata process
+    must have a return receipt and no science, distributed or STOP marker.
+    """
+    directory = Path(directory)
+    if not directory.is_dir() or any(next(directory.rglob(pattern), None) is not None
+            for pattern in ('*.DISTRIBUTED.json', '*STOP*.json', 'SCIENTIFIC_STARTING.json')):
+        return False
+    try:
+        markers = list(directory.rglob('*.STARTED.json'))
+        if not markers:
+            return False
+        failed = False
+        for marker in markers:
+            started = read(marker)
+            receipt = read(marker.with_name(marker.name.replace('.STARTED.json', '.RETURN.json')))
+            if (started.get('science') is not False or receipt.get('source') != started.get('source')
+                    or type(receipt.get('returncode')) is not int or receipt.get('signal') is not None):
+                return False
+            failed |= receipt['returncode'] != 0
+        return failed
+    except (OSError, ValueError, TypeError, KeyError):
+        return False
+
+
 class PreparationWait(Held):
     """A stage can be checked again through its original request and owner."""
 
@@ -302,7 +334,7 @@ class Completion:
         if not prior:
             for locator in settings.get('protected_stops_from',()):
                 for k,record in value(locator)['records'].items():
-                    if record.get('scientific_failure'):
+                    if preparation_retry_protected(record):
                         self.state['records'].setdefault(k,dict(record,reused_from=locator))
             for repair in settings.get('metadata_repair_from', ()):
                 path=Path(repair['state_file']).resolve()
@@ -531,7 +563,7 @@ class Completion:
             digest = self.price_registry_digest()
             return {record['key'] for record in waiting if self.price_evidence_unchanged(record, digest)
                     and not (self.settings.get('exploratory_cost') and record.get('intake') and record.get('signal')
-                             and not record.get('scientific_failure'))}
+                             and not preparation_retry_protected(record))}
 
     def deferred_stage_keys(self):
         """Check whether saved exact UNKNOWN owners are still unresolved."""
@@ -555,7 +587,38 @@ class Completion:
                     db.execute("SELECT 1 FROM jobs WHERE job_id=? AND state='UNKNOWN' AND attempt_id=?",
                                (evidence['job_id'], evidence['attempt_id'])).fetchone()}
 
+    def metadata_revision(self):
+        paths = [Path(__file__), Path(globals().get('FIXED_RUN_PR_PRICE_SERVICE') or ROOT/'scripts/pr_candidate_services.py')]
+        for name in ('NATIVE', 'PRICE'):
+            path = Path(self.path(name))
+            try:
+                stat = path.stat()
+                paths.append((str(path), stat.st_size, stat.st_mtime_ns))
+            except OSError:
+                paths.append((str(path), None))
+        data = [self.source, self.settings.get('controller_paths', {}), self.settings.get('df_max_width_source')]
+        for path in paths:
+            data.append(hashlib.sha256(path.read_bytes()).hexdigest() if isinstance(path, Path) and path.is_file() else str(path))
+        return hashlib.sha256(json.dumps(data, sort_keys=True, default=str).encode()).hexdigest()
+
+    def metadata_retry_path(self, record):
+        """Reopen only an exited metadata tool after its selected implementation changes."""
+        if (str(record.get('status','')).startswith('STOP')
+                or getattr(self, 'stop_requested', lambda: False)()
+                or record.get('failure_class') != 'TECHNICAL_INPUT_OR_TOOL_FAILURE'
+                or not record.get('metadata_revision') or not record.get('directory')):
+            return None
+        revision = self.metadata_revision()
+        if revision == record['metadata_revision']:
+            return None
+        directory = (ROOT/record['directory']).resolve()
+        if not directory.is_relative_to(self.directory.resolve()) or not metadata_only_failure(directory):
+            return None
+        return self.directory/'candidates'/record['key']/('metadata-revision-'+revision[:20])
+
     def recoverable_transport(self, record):
+        if self.metadata_retry_path(record) is not None:
+            return True
         check = getattr(getattr(self, 'stage_executor', None), 'recoverable_transport', None)
         if (check is None or not record.get('directory')
                 or not record['status'].startswith(('HELD', 'WAITING'))):
@@ -811,7 +874,7 @@ class Completion:
     def refresh_price_hold(self,record, *, admit_unpriced=False, force=False):
         """Requery after a registry or quote policy update, without scientific retry."""
         reason=str(record.get('reason',''))
-        if record.get('scientific_failure')or record.get('status','').startswith('STOP')or any(
+        if preparation_retry_protected(record)or record.get('status','').startswith('STOP')or any(
                 token in reason for token in ('STAGE_FAILED:','PRIOR_STAGE_FAILED','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')):
             return None
         if not all(record.get(k)for k in ('configuration','signal','intake')):return None
@@ -872,7 +935,7 @@ class Completion:
         store = self.stage_executor.executor.store
         eligible = [record for record in list(self.state['records'].values())
                     if record.get('method') == 'PR_DF' and record.get('status') == 'READY_FOR_SEARCH'
-                    and record.get('prices') is None and not record.get('scientific_failure')
+                    and record.get('prices') is None and not preparation_retry_protected(record)
                     and ({record.get('configuration_id'), record.get('installed_configuration_id')} & candidates)]
 
         def prepare_record(record):
@@ -992,7 +1055,7 @@ class Completion:
         """Resolve a copied metadata recheck using its original candidate and receipts."""
         missing_source = 'A_PREPARATION:NEEDS_INPUT_SOURCE:'
         history = (record.get('reason'), (record.get('previous_hold') or {}).get('reason'))
-        if (record.get('method') != 'PR_PAULI' or record.get('scientific_failure')
+        if (record.get('method') != 'PR_PAULI' or preparation_retry_protected(record)
                 or record.get('status') == 'READY_FOR_SEARCH'
                 or not any(str(reason).startswith(missing_source) for reason in history)):
             return None
@@ -1063,7 +1126,7 @@ class Completion:
             previous = self.state['records'].get(replacement['prior_key'])
             if (previous is None or previous['method'] != 'PR_DF'
                     or previous['request']['design'] != replacement['design']
-                    or not previous.get('scientific_failure') or previous['status'] != 'HELD_WITH_REASON'
+                    or not preparation_retry_protected(previous) or previous['status'] != 'HELD_WITH_REASON'
                     or not previous['reason'].startswith('STAGE_FAILED:DF_CALIBRATION:')):
                 raise ValueError('DF_DESCRIPTOR_REPLACEMENT_REQUIRES_PRESERVED_FAILURE')
             old_split = value(previous['configuration'])['spec']['split']
@@ -1104,19 +1167,21 @@ class Completion:
             df_recheck = False
             received_preparation = bool(old and not getattr(self, 'stop_requested', lambda: False)()
                                         and self.recoverable_transport(old))
-            metadata_repair = self.inherited_metadata_repair(old) if received_preparation else None
+            metadata_retry = self.metadata_retry_path(old) if old else None
+            metadata_repair = metadata_retry or (self.inherited_metadata_repair(old) if received_preparation else None)
             if received_preparation and metadata_repair is None and self.metadata_path_failure(old, d):
                 metadata_repair = d/'metadata-recheck'
             if metadata_repair is not None:
                 d = metadata_repair
-            recovered_terminal = (old and request.get('horizon_parent') and old.get('scientific_failure')
+                received_preparation = True
+            recovered_terminal = (old and request.get('horizon_parent') and preparation_retry_protected(old)
                                   and old['status'] == 'HELD_WITH_REASON'
                                   and str(old.get('reason')).startswith('STAGE_FAILED:df-stage:')
                                   and self.terminal_df_stage_recovery(d))
             if old and (old['status'].startswith(('HELD','STOP','WAITING')) or
                         old['status'] in DF_PRICE_RECHECK_STATES) and not (
                             recovered_input or recheck or recovered_terminal or received_preparation):
-                if old.get('scientific_failure'):return dict(old,resumed=True)
+                if preparation_retry_protected(old):return dict(old,resumed=True)
                 if not old.get('recoverable_preparation') and old['status'] == 'HELD_WITH_REASON':
                     bridge = getattr(self, 'stage_executor', None)
                     if not getattr(self, 'stop_requested', lambda: False)():
@@ -1158,7 +1223,7 @@ class Completion:
                     else:
                         return dict(self.refresh_price_hold(old)or old,resumed=True)
             rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
-                      reason=None,recoverable_preparation=False,scientific_failure=False)
+                      reason=None,recoverable_preparation=False,scientific_failure=False,retry_protected=False)
                  if old and (old.get('recoverable_preparation') or received_preparation or df_recheck or recovered_terminal) else
                  dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
             if df_recheck:
@@ -1167,7 +1232,9 @@ class Completion:
                            deferred_tail_descriptor=old.get('deferred_tail_descriptor') or
                                                     old['request'].get('tail_descriptor'))
             if metadata_repair is not None:
-                rec.update(directory=rel(d), deferred_configuration=old.get('configuration'))
+                rec.update(directory=rel(d))
+                if old.get('configuration'):
+                    rec['deferred_configuration']=old['configuration']
             if recovered_input or recheck:
                 previous_hold = old.get('previous_hold') or {}
                 if not str(previous_hold.get('reason')).startswith('A_PREPARATION:NEEDS_INPUT_SOURCE:'):
@@ -1227,7 +1294,7 @@ class Completion:
                     schedule=deepcopy(twin.get('schedule',[])))
                 self.save();return rec
             failed_twin=next((old for old in records
-                if old is not rec and old.get('method')==request['method']and old.get('scientific_failure')
+                if old is not rec and old.get('method')==request['method']and preparation_retry_protected(old)
                 and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if failed_twin is not None:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
@@ -1358,7 +1425,7 @@ class Completion:
                 rec.pop('price_actions', None)
             if exploratory and quote['complete']:
                 rec.pop('price_status', None)
-            rec.update(status='READY_FOR_SEARCH',quote=dict(commit=quote_commit,path=rel(d/'FINAL_QUOTE.json')),
+            rec.update(status='READY_FOR_SEARCH',retry_protected=False,scientific_failure=False,quote=dict(commit=quote_commit,path=rel(d/'FINAL_QUOTE.json')),
                 price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']] if quote['complete'] else None,
                 design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),
                     delta_pf=config['spec']['delta_pf']),schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']])
@@ -1379,16 +1446,21 @@ class Completion:
                 rec['pending_preparation_job'] = exc.job_id
             unavailable = (request['method']=='PR_DF' and text.startswith(DF_PRICE_UNAVAILABLE) or
                            request['method']=='PR_PAULI' and bool(rec.get('price_actions')) and waiting)
+            classification=preparation_failure_class(text,rec.get('preparation_recovery'))
+            if not operational and classification!='SCIENTIFIC_NUMERICAL_FAILURE' and metadata_only_failure(d):
+                classification='TECHNICAL_INPUT_OR_TOOL_FAILURE'
+                rec['metadata_revision']=self.metadata_revision()
             rec.update(status='WAITING_DISTRIBUTED_PREPARATION'if operational else
                        'PRICE_NOT_EVALUATED'if unavailable else'WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
                        recoverable_preparation=operational,
-                       failure_class=preparation_failure_class(text,rec.get('preparation_recovery')),
-                       retry_protected=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')),
-                       # Legacy readers on fixed releases interpret this bit
-                       # as a no-retry guard. Classification is failure_class.
-                       scientific_failure=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')))
-        except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),
-            failure_class='TECHNICAL_INPUT_OR_TOOL_FAILURE',retry_protected=True,scientific_failure=True)
+                       failure_class=classification,
+                       retry_protected=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY','NO_RETRY','NO_DUPLICATE')),
+                       scientific_failure=classification=='SCIENTIFIC_NUMERICAL_FAILURE')
+        except Exception as exc:
+            rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),
+                failure_class='TECHNICAL_INPUT_OR_TOOL_FAILURE',retry_protected=True,scientific_failure=False)
+            if metadata_only_failure(d):
+                rec['metadata_revision']=self.metadata_revision()
         finally:
             if physical_guard is not None:physical_guard.release()
         if request.get('horizon_parent'):
@@ -2609,7 +2681,7 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
             # Reconcile the original durable task before counting attempted
             # candidates. It may have finished while this controller was down.
             for record in current:
-                if not record.get('scientific_failure')and(record['status']=='SELECTED'or record.get('recoverable_preparation')):
+                if not preparation_retry_protected(record)and(record['status']=='SELECTED'or record.get('recoverable_preparation')):
                     completion.complete(deepcopy(record['request']))
             current=[r for r in completion.state['records'].values()if r['method']==method]
         maximum=settings.get('max_completed_per_method')
