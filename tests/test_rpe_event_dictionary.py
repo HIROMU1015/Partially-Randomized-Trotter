@@ -1,13 +1,15 @@
 """Technical codec/dispatch checks: synthetic events, no sampling or science."""
 import ast
-from contextlib import ExitStack
+from contextlib import ExitStack, nullcontext
 from pathlib import Path
 import hashlib
 import json
 import subprocess
+import sys
+import time
 from copy import deepcopy
 from types import SimpleNamespace
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 from trottertracks import rpe_df_price_flanks as E
@@ -88,6 +90,48 @@ def test_known_fixed_sources_match_lazy_representation_only():
     _,counts=E._event_materialization(fn)
     assert counts==(1,0)
     compile(ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[])),'fixture','exec')
+
+
+def test_fixed_backend_keeps_structural_input_and_composes_paired_axes_once(tmp_path):
+    """Run the pinned backend body with mock metrics/circuits only."""
+    import run_pr_df_candidate_prices as runner
+    import trotterlib
+    calls=[];events=[event(0),event(1)]
+    requests=[SimpleNamespace(step_time=1.,rte_occurrence=SimpleNamespace(events=[
+        SimpleNamespace(to_dict=lambda e=e:e) for e in events]))]
+    candidate=dict(system='H4',q=1,T=1.,id='fixture')
+    m=SimpleNamespace(row_for=lambda *a:dict(candidate=candidate,structure=dict(allocation=[2],signed_weights=[1.])),
+                      digest=E.streaming_digest,p=SimpleNamespace(PROFILE={'compiler':'FIXTURE'}))
+    def write(path,value):Path(path).write_text(json.dumps(value))
+    science=SimpleNamespace(m=m,write=E.dictionary_event_writer(write),read=lambda path:json.loads(Path(path).read_text()))
+    def structural(*args):
+        view=args[-1];assert isinstance(view,E.EventRows) and list(view[0])==events
+        return [{'structural_rz':3},{'structural_rz':4}]
+    def compose(*args):calls.append('compose');return SimpleNamespace(circuit=SimpleNamespace(data=[]))
+    def wrapper(evolution,*,axis,**kwargs):return SimpleNamespace(axis=axis)
+    def compile_wrapper(wrapper,*args,**kwargs):
+        calls.append(wrapper.axis);return SimpleNamespace(compiler_settings_hash='FIXTURE',
+            **dict.fromkeys(('rz_count','rz_depth','cx_count','cx_depth','total_depth','circuit_size'),5))
+    ctx=SimpleNamespace(Accounting=None,blocks=[],scalar=0.,prep=None,h={'compose':compose},compile=compile_wrapper,
+        native=SimpleNamespace(build_native_hadamard_wrapper=wrapper),CompilerSettings=lambda *a:None)
+    class Base:
+        def __init__(self):self.plan=dict(source='FIXTURE',runtime=dict(old_cache=str(tmp_path/'cache')))
+        def context(self,system):return ctx
+    dfq=SimpleNamespace(QiskitDFRTEEventCircuitBuilder=SimpleNamespace(lowering_id='FIXTURE'))
+    fp=SimpleNamespace(fingerprint=lambda w:w.axis,calls=0,hits=0,misses=0)
+    fingerprint=SimpleNamespace(use_fast_fingerprint=lambda:nullcontext(fp))
+    F=SimpleNamespace(make_backend_class=lambda:None,E=SimpleNamespace(LOWERING_ID='FIXTURE'),Path=Path,
+                      time=time,structural_pair=structural)
+    provider=SimpleNamespace(F=F,blob=runner.blob,BASE=runner.ADAPTER_SOURCE)
+    with ExitStack() as stack:
+        stack.enter_context(patch.dict(sys.modules,{'trotterlib.df_rte_qiskit':dfq,'h46_b3_fast_fingerprint':fingerprint}))
+        stack.enter_context(patch.object(trotterlib,'df_rte_qiskit',dfq,create=True))
+        assert E.prepare_lazy_price_runner(runner,provider,stack)
+        result=F.make_backend_class(Base,science)().price_requests(
+            dict(id='fixture',cohort='fixture',system='H4'),0,tmp_path/'paired',requests,[17],[],conditional=False)
+    assert calls==['compose','cosine','sine']
+    assert result['new_compiles']==2 and result['S']==[3,4] and result['C']==[5,5]
+    assert [list(row) for row in E.DictionaryEvents(tmp_path/'paired/events_PRIVATE.json',result['event_digest']).batches()]==[events]
 
 
 def test_empty_and_unique_event_rows_are_lossless(tmp_path):
