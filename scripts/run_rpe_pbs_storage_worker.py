@@ -57,7 +57,21 @@ class GatewayStorage:
         return unavailable
 
 
+def configure_artifact_transport(launcher):
+    """Use streaming CAS I/O without replacing a fixed provider or its receipts."""
+    if launcher.suffix != '.pyz':return
+    with zipfile.ZipFile(launcher) as package:
+        if 'trottertracks/_pipeline_preparation_artifacts.py' not in package.namelist():return
+    import trottertracks
+    path = str(launcher)+'/trottertracks'
+    if path not in trottertracks.__path__:trottertracks.__path__.append(path)
+    from trottertracks import rpe_preparation_artifacts as pinned, _pipeline_preparation_artifacts as transport
+    for name in ('missing', 'materialize', 'capture', 'put_file'):
+        setattr(pinned.ArtifactCache, name, getattr(transport.ArtifactCache, name))
+
+
 def configure_allocation_worker(profile, launcher):
+    configure_artifact_transport(launcher)
     from trottertracks import rpe_pbs_worker as pbs
     from trottertracks import rpe_q3_worker as worker
 
@@ -148,6 +162,7 @@ def main():
         sys.path.insert(0, str(Path(transport_root)/'src'))
         import trottertracks
         trottertracks.__path__.append(str(launcher)+'/trottertracks')
+        configure_artifact_transport(launcher)
         from trottertracks import _collection_q3_worker
         raise SystemExit(_collection_q3_worker.supervise(Path(attempt)))
     check_imports = args[:1] == ['--check-imports']

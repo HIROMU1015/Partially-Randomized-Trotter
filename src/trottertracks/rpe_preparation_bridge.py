@@ -739,6 +739,20 @@ class DistributedPreparationBridge:
             status = row['detail'].get('outcome_status')
             result = dict(job_id=job_id, attempt_id=row['attempt_id'], state=state, outcome_status=status)
             if state == 'ACCEPTED' and row['attempt_id'] and row['completion_sha256']:
+                # Older queue versions may omit the outcome status in detail.
+                # The fixed accepted outcome and process return still identify
+                # a completed stage. Do not turn that receipt into a retry.
+                if status is None:
+                    job = self.executor.run_dir/'jobs'/row['method']/job_id
+                    outcome = read(job/'OUTCOME.json')
+                    receipt = read(job/'PROCESS_RETURN.json')
+                    if (outcome.get('request_sha256') != row['request_sha256']
+                            or outcome.get('request_id') != job_id
+                            or (outcome.get('status') == 'PREPARATION_COMPLETE'
+                                and (receipt.get('returncode') != 0 or receipt.get('signal') is not None))):
+                        return unmatched
+                    status = outcome.get('status')
+                    result['outcome_status'] = status
                 action = 'CHECK_ORIGINAL_RECEIPT'
                 if status == 'PREPARATION_COMPLETE':
                     if stage == 'DF_MODEL_FREEZE' and not request['preparation'].get('artificial'):
@@ -760,8 +774,12 @@ class DistributedPreparationBridge:
                         return unmatched
                     result.update(returncode=receipt.get('returncode'), signal=receipt.get('signal'),
                                   partial_artifacts=len(artifacts))
+                    if (workspace_error := outcome.get('workspace_error')) and workspace_error.get('scientific_body_started') is False:
+                        result['pre_science_failure'] = workspace_error
                     if isinstance(outcome.get('failure_summary'), str):
                         result['failure_summary'] = outcome['failure_summary']
+                    if isinstance(outcome.get('failure_diagnostic'), dict):
+                        result['failure_diagnostic'] = outcome['failure_diagnostic']
                     if stage == 'DF_SIGNALS' and artifacts:
                         numerical = self.df_signal_failure_rounds(request['preparation']['outputs'], artifacts)
                         if numerical:
@@ -929,7 +947,7 @@ class DistributedPreparationBridge:
         """Build a successor of a proved transport-only failure from its own request."""
         from .pr_candidate_completion import _DF_PRICE_BOOTSTRAP
 
-        if stage not in ('DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT') or (directory/'STOP.json').exists():
+        if stage not in STAGES or (directory/'STOP.json').exists() or getattr(self.executor, '_user_stop_requested', lambda: False)():
             return None
         job = submitted['job_id']
         proof = self.recovery_evidence(directory, stage, job)
@@ -941,7 +959,7 @@ class DistributedPreparationBridge:
         preparation = request['preparation']
         if preparation.get('supersedes_preparation') or preparation.get('artificial'):
             return None
-        if stage == 'DF_MODEL_FREEZE':
+        if stage == 'DF_MODEL_FREEZE' and proof.get('action') == 'CHECK_ORIGINAL_OUTPUT':
             command = preparation['command']
             legacy = _DF_PRICE_BOOTSTRAP.split("if '--input' in sys.argv and ('freeze'", 1)[0]
             legacy = legacy.replace("    fixed_inputs = json.loads(document.read_bytes())\n"
@@ -961,7 +979,7 @@ class DistributedPreparationBridge:
                 return None
             command[command.index(legacy)] = _DF_PRICE_BOOTSTRAP
             reason = 'AUDIT_OUTPUT_REDIRECTION'
-        elif self._exec_rejected(row):
+        elif stage in ('DF_CALIBRATION','DF_HOLDOUT') and self._exec_rejected(row):
             compact = self.compact_bindings.get(job)
             if compact is None:
                 try:
@@ -983,6 +1001,9 @@ class DistributedPreparationBridge:
                 return None
             request = self.interrupted_calibration_request(job, plan)
             return dict(request=request, source=submitted['source'], automatic_retry=False)
+        elif (proof.get('pre_science_failure') and proof.get('action') == 'PRESERVE_FAILED_ATTEMPT'
+                and proof.get('state') == 'ACCEPTED' and self.approved):
+            reason = 'VERIFIED_PRE_SCIENCE_WORKSPACE_FAILURE'
         else:
             return None
         preparation['supersedes_preparation'] = dict(job_id=job, attempt_id=proof['attempt_id'], reason=reason)
@@ -1363,10 +1384,16 @@ class DistributedPreparationBridge:
         if not reason.startswith(('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:', 'STAGE_FAILED:',
                                   'PREPARATION_RESULT_MISMATCH:')):
             return False
+        if (Path(directory)/'STOP.json').exists() or getattr(self.executor, '_user_stop_requested', lambda: False)():
+            return False
+        # A later success receipt takes precedence over an old operational
+        # hold for this exact request, irrespective of provider/stage.
+        if self.received_after_reservation_stop(directory, reason):
+            return True
         job = re.search(r'\bprep-[0-9a-f]{24}\b', reason)
         if not job:
             return False
-        for stage in ('DF_SIGNALS', 'DF_MODEL_FREEZE', 'DF_CALIBRATION', 'DF_HOLDOUT', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
+        for stage in STAGES:
             if stage not in reason and not reason.startswith('PREPARATION_RESULT_MISMATCH:ORIGINAL_AUDIT_OUTPUT_MISSING:'):
                 continue
             for path in directory.rglob(stage+'.DISTRIBUTED.json'):
@@ -1382,7 +1409,6 @@ class DistributedPreparationBridge:
                             if locator and (row is None or (row['state']=='CANCELLED' and row.get('attempt_id') is None)):
                                 return True
                             if locator and self.max_width_failed_input_owner(path.parent,job[0],row,locator):return True
-                            continue
                         if self.pf_delivery_failure(path.parent, stage, job[0]):
                             return True
                         if self._transport_repair(path.parent, stage, submitted):
@@ -1486,14 +1512,12 @@ class DistributedPreparationBridge:
             result = ast.literal_eval(detail)
         except (SyntaxError, ValueError):
             return False
-        if not isinstance(result, dict) or not self.received_stage(directory, stage, result.get('job_id')):
+        if not isinstance(result, dict) or not self.received_stage(directory, stage, result.get('job_id') or result.get('request_id')):
             return False
         if result.get('status') == 'PREPARATION_RESULT_ARTIFACTS_MISSING':
             recovered = self.executor.preparation_result(result['job_id'], adopt=False)
             return bool(recovered and recovered.get('status') == 'PREPARATION_COMPLETE')
-        return result.get('status') in (
-                    'PREPARATION_STOPPED_BEFORE_RESERVATION',
-                    'UNKNOWN', 'HOST_ELIGIBILITY_HOLD', 'PREPARATION_DEPENDENCY_HOLD')
+        return True  # exact accepted success, regardless of the former operational wait
 
     def _blob(self, raw):
         sha = hashlib.sha256(raw).hexdigest()

@@ -45,11 +45,14 @@ def scope_progress(document, preparation_records=(), observations=None, *, famil
             # The publication snapshot can predate a mapper release. Its
             # unsupported rows have no physical ID, so join the exact declared
             # family/kappa to the current planner before reporting live state.
-            if (status == 'MAPPER_UNSUPPORTED' and family and kappa is not None
+            if (status not in ('EVALUATED_FEASIBLE','EVALUATED_NO_PASS','MSE_PASS_PRICE_REQUIRED',
+                                   'EVALUATION_INCONCLUSIVE','EVALUATION_HELD')
+                    and family and kappa is not None
                     and families.get(family, {}).get('status') == 'READY_METADATA'):
                 design_key = (method, family, normalized_kappa(kappa))
                 point = planned.get(design_key)
-                status = 'SCHEDULE_GENERATION_REQUIRED' if point is None else 'PREPARATION_WAITING'
+                if status == 'MAPPER_UNSUPPORTED':
+                    status = 'SCHEDULE_GENERATION_REQUIRED' if point is None else 'PREPARATION_WAITING'
                 matches = []
                 for candidate in by_design.get(design_key, ()):
                     request = candidate.get('request') or {}
@@ -87,6 +90,10 @@ def scope_progress(document, preparation_records=(), observations=None, *, famil
                 status = 'EVALUATION_RUNNING'
             elif live.get('UNKNOWN_ATTEMPT'):
                 status = 'UNKNOWN_ATTEMPT'
+            elif live.get('EVALUATION_COMPLETED') and status not in (
+                    'EVALUATED_FEASIBLE','EVALUATED_NO_PASS','MSE_PASS_PRICE_REQUIRED'):
+                # At least one allocation was adopted, not the entire grid.
+                status = 'EVALUATION_PARTIAL'
             elif old.get('state') == 'PREPARATION_RUNNING' and row.get('price_required'):
                 status = 'PREPARATION_RUNNING'
             counts[status] += 1

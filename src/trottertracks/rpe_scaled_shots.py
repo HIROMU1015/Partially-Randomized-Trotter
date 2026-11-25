@@ -137,7 +137,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         science_approved=True, refresh_ready=None, submit_standby=None, held=(), flagged_stop=None,
         read_completed=None, after_drain=None, await_ready=None, method_scope=None,
         refresh_completions=None, answer_now=None, await_dispatch=None,
-        on_feasible=None, price_work_pending=None):
+        on_feasible=None, price_work_pending=None, retire_allocations=None):
     """Search the fixed allocation grid, with no assumed MSE monotonicity."""
     from decimal import DecimalException
     from . import rpe_method_optimizer as O
@@ -152,6 +152,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
     registered = {}
     yielded = set()
     deferred = {}
+    retired = set()
     legacy = O.method_state([c for c in candidates if c.get('prices') is not None],
                             {key: row for key, row in knowledge.items() if row.get('allocation_rule') != RULE},
                             threshold)[1]
@@ -332,6 +333,12 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             requested_stop = 'WORK_SLICE_YIELDED'
             break
         series = [rows for group in groups.values() if (rows := pending_allocations(group, depth))]
+        if retire_allocations is not None:
+            terminal = {key for key, (_, row) in registered.items()
+                        if row['status'] in evaluated or row['status'] in ('COST_PRUNED', 'TECHNICAL_HOLD')}
+            if terminal - retired:
+                retire_allocations(terminal - retired)
+                retired.update(terminal)
         heads = [rows[0] for rows in series]
         proposals = [row for row in heads if (row['configuration_id'], row['vector']) not in deferred]
         if not proposals and deferred:

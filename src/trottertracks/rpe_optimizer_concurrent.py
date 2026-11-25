@@ -516,10 +516,23 @@ class ConcurrentExecutor(O.Executor):
                         and task.rule['kind']!='preparation':
                     self._cancel(task)
 
+    def retire_queued_allocations(self, keys):
+        """Retire only explicitly resolved/pruned allocations, not a changed ranking."""
+        keys = set(keys)
+        if not keys:return
+        def identity(proposal):
+            return proposal['configuration_id'], tuple(proposal['vector'])
+        with self.state.cv:
+            self.standby = deque(p for p in getattr(self, 'standby', ()) if identity(p) not in keys)
+            for task in self.state.tasks.values():
+                if (task.status == 'QUEUED' and task.owner[0] == self.method
+                        and task.rule['kind'] != 'preparation' and identity(task.proposal) in keys):
+                    self._cancel(task)
+
     def _enqueue_demand(self, proposal):
         return self._enqueue(proposal, demand=True)
 
-    def prefetch_standby(self, choice, proposals):
+    def prefetch_standby(self, choice, proposals, *, retain_independent=False):
         """Reserve the demand first and retain the rest as unreserved alternatives."""
         proposals = deque(proposals)
         offered = tuple(proposals)
@@ -536,7 +549,9 @@ class ConcurrentExecutor(O.Executor):
                 for t in speculative:
                     if (self.standby is proposals and t.status == 'QUEUED' and not t.demand
                             and self.state.tasks.get(t.job) is t
-                            and t.job not in desired and t.job != demand):
+                            and t.job not in desired and t.job != demand
+                            and not (retain_independent and t.proposal.get('origin', {}).get('kind')
+                                     != 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES')):
                         self._cancel(t)
         if choice is not None and self._enqueue_demand(choice) is False:
             with self.state.cv:
@@ -922,6 +937,12 @@ class ConcurrentExecutor(O.Executor):
             active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.
             first=last=None
             interval_capacity=self.capacity
+            seed = getattr(s, 'cycle_measurement_seed', None)
+            if seed is not None:
+                active, queued = set(seed['active']), set(seed['queued'])
+                first = last = seed['monotonic']
+                interval_capacity = seed['capacity']
+                adopted.update(job.name for job in s.adopted_jobs)
             unreadable_lines = 0
             with (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
                 with self.lock:
@@ -954,7 +975,8 @@ class ConcurrentExecutor(O.Executor):
                     elif event in('EXIT','RESUME_EXIT'):active.discard(job)
                     elif event=='RESUME_RUNNING':active.add(job)
             elapsed=last-first if first is not None else 0.
-            real=sum(t.rule['kind'] not in ('artificial','preparation') and t.started for t in s.tasks.values())
+            real=s.metrics.get('archived_real_route_launches',0)+sum(
+                t.rule['kind'] not in ('artificial','preparation') and t.started for t in s.tasks.values())
             counts={k:s.metrics[k]for k in ('submitted','queued_cancelled','launched','finished','adopted','speculative_launched','speculative_adopted')}
             return dict(**counts,peak_active=s.peak_active,sampled_owned_tree_peak_RSS_KiB=s.peak_RSS_KiB,
                 completed_not_adopted=sum(Path(j).name not in adopted for j in launched),
@@ -2682,7 +2704,7 @@ class DistributedExecutor(ConcurrentExecutor):
         return self._enqueue(proposal, demand=True,
                              defer_readiness=self.controller_parallel and self.live_readiness_pool is not None)
 
-    def prefetch_standby(self, choice, proposals):
+    def prefetch_standby(self, choice, proposals, *, retain_independent=False):
         self._awaiting_probe_revision = None
         if (self.controller_parallel or self.distributed.get('controller_queue_first')) and self.live_readiness_pool:
             # Start the fixed-input checks for the demand and independent next
@@ -2705,7 +2727,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 request = self.request(proposal, job, route)
                 self._eligibility_for(request, job.name, blocking=False, prefetch=True)
                 checked += 1
-        return super().prefetch_standby(choice, proposals)
+        return super().prefetch_standby(choice, proposals, retain_independent=retain_independent)
 
     @staticmethod
     def _preparation_request(request):
@@ -4752,6 +4774,32 @@ class DistributedExecutor(ConcurrentExecutor):
         finally:
             self._close_worker_rpc()
 
+    def advance_cycle(self):
+        """Keep live ownership; drop only terminal, durably adopted task objects.
+
+        Long-lived services must not keep every previous candidate's copied
+        route/context in memory or rescan the entire invocation log per cycle.
+        """
+        terminal = {r['job_id']:r for r in self.store.metric_rows()
+                    if r['state']=='ACCEPTED' and r['adopted_epoch'] is not None
+                    or r['state']=='CANCELLED' and r['attempt_id'] is None}
+        with self.state.cv:
+            s=self.state
+            for job, task in list(s.tasks.items()):
+                row=terminal.get(job.name)
+                if row is None or job in s.pids or job in s.external:
+                    continue
+                if ((task.status=='DONE' and row['state']=='ACCEPTED') or
+                        (task.status=='CANCELLED' and row['state']=='CANCELLED')):
+                    if task.started and task.rule['kind'] not in ('artificial','preparation'):
+                        s.metrics['archived_real_route_launches'] += 1
+                    del s.tasks[job]
+            with self.lock:
+                self.progress_start=(self.run_dir/'PROGRESS.jsonl').stat().st_size
+            s.cycle_measurement_seed=dict(monotonic=time.monotonic(),capacity=self.capacity,
+                active=[job.name for job,task in s.tasks.items() if task.status=='RUNNING'],
+                queued=[job.name for job,task in s.tasks.items() if task.status=='QUEUED'])
+
     def queued_preparation_count(self):
         with self.store._connection() as db:
             return db.execute("SELECT count(*) FROM jobs WHERE state='QUEUED' "
@@ -4819,9 +4867,9 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     methods=list(methods or problem['methods'])
     finalizers = {}
     ready_source = kwargs.get('ready_source')
-    keep_active = (not close_executor and ready_source is not None
-                   and isinstance(executor, DistributedExecutor)
-                   and executor.distributed.get('work_conserving_search'))
+    keep_active = (not close_executor and isinstance(executor, DistributedExecutor)
+                   and executor.distributed.get('work_conserving_search')
+                   and (ready_source is not None or getattr(executor.state, 'retain_between_cycles', False)))
     try:
         if kwargs.get('context') is None:kwargs['context']=O.prepare(root,problem,methods=methods)
         with ThreadPoolExecutor(max_workers=max(1,len(methods)))as pool:
@@ -4891,7 +4939,9 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     for m,result in out.items():
         counts=metrics['by_method'].get(m,{})
         result['adopted_new_calls']=result['new_calls']
-        result['new_calls']=counts.get('launched',0)
+        baseline = getattr(executor.state, 'cycle_metric_baseline', {}).get(m, {})
+        result['new_calls']=max(0,counts.get('launched',0)-baseline.get('launched',0))
         result['budget']['new_calls']=result['new_calls']
-        result['executor_metrics']=dict(metrics,method_launched=counts.get('launched',0),method_adopted=counts.get('adopted',0))
+        result['executor_metrics']=dict(metrics,method_launched=result['new_calls'],
+            method_adopted=max(0,counts.get('adopted',0)-baseline.get('adopted',0)))
     return out

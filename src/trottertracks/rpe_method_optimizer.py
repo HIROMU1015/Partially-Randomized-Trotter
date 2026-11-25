@@ -1750,7 +1750,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 def standby(choice, proposals):
                     def saved(p):
                         return (p['configuration_id'], p['vector']) in table
-                    ex.prefetch_standby(None if choice is None or saved(choice) else choice, [p for p in proposals if not saved(p)])
+                    ex.prefetch_standby(None if choice is None or saved(choice) else choice, [p for p in proposals if not saved(p)],
+                        **({'retain_independent': True} if search.get('rule') == 'RPE_SCALED_SHOTS_V1'
+                           and hasattr(ex, 'retire_queued_allocations') else {}))
             if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
                 read_completed = None
                 refresh_completions = None
@@ -1802,6 +1804,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                         await_ready=await_ready if parallel_history else None,
                                         answer_now=answer_now, await_dispatch=await_dispatch,
                                         on_feasible=on_feasible, price_work_pending=price_work_pending,
+                                        retire_allocations=getattr(ex, 'retire_queued_allocations', None) if executor is not None else None,
                                         read_completed=read_completed, refresh_completions=refresh_completions,
                                         after_drain=after_drain if scaled_finalizers is not None else None,
                                         held=prior_q3_holds,

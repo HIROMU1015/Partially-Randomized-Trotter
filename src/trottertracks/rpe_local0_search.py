@@ -551,6 +551,14 @@ def local0_progress(applied, spec, run=None):
     width_state = run/'KAPPA_STATE.json'
     if width_state.is_file():
         state = load(width_state)
+        # The fixed base package may be older than the active controller.
+        # Read the journal using this gateway release's implementation.
+        from importlib.util import module_from_spec, spec_from_file_location
+        journal_path = Path(__file__).resolve().with_name('rpe_width_checkpoint.py')
+        if journal_path.is_file():
+            loader = spec_from_file_location('trottertracks.rpe_width_checkpoint', journal_path)
+            journal = module_from_spec(loader);loader.loader.exec_module(journal)
+            progress['point_checkpoint_seq'] = journal.replay(state, run/'POINT_PROGRESS.jsonl')
         width_families, width_points = state.get('families', {}), state.get('points', [])
         if state.get('recovery_wait'):
             progress['recovery_wait'] = state['recovery_wait']
