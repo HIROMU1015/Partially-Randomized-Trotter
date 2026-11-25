@@ -79,14 +79,19 @@ try:
                     if process.returncode:raise RequestError('relay','legacy relay could not be started: '+process.stderr[-1000:])
             launch = None
             resume = None
+            status_selection = None
             schedule_resumes = config.get('schedule_resumes', {})
-            if request['action'] == 'resume' and not request.get('scope') and schedule_resumes:
+            if request['action'] in ('resume', 'status') and not request.get('scope') and schedule_resumes:
                 state = pathlib.Path(config['state_directory'])
                 target = state / 'CURRENT_TARGET.json'
                 run_id = request.get('run_id')
                 if run_id is None and target.exists():
                     run_id = json.loads(target.read_text())['run_id']
-                resume = schedule_resumes.get(run_id)
+                selection = schedule_resumes.get(run_id)
+                if request['action'] == 'resume':
+                    resume = selection
+                elif selection and selection.get('status_progress_sha256'):
+                    status_selection = selection
             release_policy = config.get('schedule_releases', {}).get(selected.get('release', {}).get('id'))
             if request['action'] in ('start', 'resume') and (resume is not None or release_policy is not None):
                 from importlib.util import module_from_spec, spec_from_file_location
@@ -115,7 +120,19 @@ try:
                         return operations.Gateway(pinned).normal_launch(run, problem, spec, schedule_resume=selection)
             recovery = {key: resume[key] for key in ('resume_ast_failure', 'resume_dispatch_failure')
                         if resume and resume.get(key)}
-            if recovery or (resume and resume.get('resume_input_holds') is True):
+            if status_selection:
+                from importlib.util import module_from_spec, spec_from_file_location
+                directory = pathlib.Path(status_selection['root'])/'src/trottertracks'
+                for name, field in (('rpe_local0_search','status_progress_sha256'),
+                                    ('rpe_scope_progress','scope_progress_sha256')):
+                    if hashlib.sha256((directory/(name+'.py')).read_bytes()).hexdigest() != status_selection.get(field):
+                        raise RequestError('status','Selected read-only progress implementation differs: '+name)
+                module_spec = spec_from_file_location('trottertracks._schedule_status', directory/'rpe_local0_search.py')
+                operations = module_from_spec(module_spec)
+                module_spec.loader.exec_module(operations)
+                operations.RequestError = RequestError
+                gateway = operations.Gateway(selected)
+            elif recovery or (resume and resume.get('resume_input_holds') is True):
                 operations.RequestError = RequestError
                 preflight = None
                 if not getattr(Gateway, 'restores_preparation_archives_on_resume', False):
@@ -129,6 +146,8 @@ try:
             else:
                 gateway = Gateway(config, launch=launch)
             result = gateway.handle(request)
+            if status_selection and result.get('progress', {}).get('scope_map'):
+                result['progress']['scope_map']['status_reader_source'] = status_selection['source']
             if request['action'] == 'status' and result.get('run_directory'):
                 scope_path = pathlib.Path(result['run_directory']) / 'SCOPE_MAP.json'
                 if scope_path.is_file() and 'scope_map' not in result.get('progress', {}):

@@ -279,3 +279,18 @@ def test_live_q3_observation_is_horizon_specific():
     result=scope_progress(document,observations=observations)
     assert result['FULL_PF']['live_counts']=={'EVALUATION_RUNNING':1,'UNKNOWN_ATTEMPT':1}
     assert observations['a']['state']=='MIXED_SCOPE_PROGRESS'
+
+
+def test_stale_mapper_snapshot_joins_current_family_without_promoting_other_horizons():
+    from trottertracks.rpe_scope_progress import scope_progress
+    rows = [dict(coordinates={'M': m, 'absolute_kappa': '1'}, family=f,
+                 status='MAPPER_UNSUPPORTED') for f,m in (('ready',12),('ready',13),('missing',12))]
+    document = dict(methods={'PR_DF': dict(requested=3, counts={'MAPPER_UNSUPPORTED':3}, rows=rows)})
+    families = {'ready': {'status':'READY_METADATA'}, 'missing': {'status':'UNSUPPORTED_MAPPER'}}
+    points = [dict(method='PR_DF',family='ready',kappa='1',status='COMPLETION')]
+    preparation = [dict(method='PR_DF',status='READY_FOR_SEARCH',configuration_id='cfg',
+        request=dict(selection={'family':'ready'},design={'kappa':'1'}),schedule=[{'m':12}])]
+    observations = {'cfg': dict(q3_horizons={12:{'EVALUATION_RUNNING':1}})}
+    result = scope_progress(document, preparation, observations, families=families, points=points)['PR_DF']
+    assert result['counts']=={'MAPPER_UNSUPPORTED':3}
+    assert result['live_counts']=={'EVALUATION_RUNNING':1,'PREPARATION_WAITING':1,'MAPPER_UNSUPPORTED':1}

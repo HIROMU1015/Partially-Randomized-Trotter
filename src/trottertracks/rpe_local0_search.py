@@ -522,12 +522,24 @@ def local0_progress(applied, spec, run=None):
     scope_path=run/'SCOPE_MAP.json'
     scope = load(scope_path) if scope_path.is_file() else None
     preparation_records = []
+    width_families, width_points = {}, []
     def join_scope():
         if scope is not None:
-            from .rpe_scope_progress import scope_progress
+            # During a selected Resume, this gateway is loaded by file path
+            # over the old scientific package. Its reporting helper belongs
+            # to this same controller release, not to the frozen base package.
+            from importlib.util import module_from_spec, spec_from_file_location
+            name = 'trottertracks.rpe_scope_progress'
+            path = Path(__file__).resolve().with_name('rpe_scope_progress.py')
+            module = sys.modules.get(name)
+            if module is None or Path(module.__file__).resolve() != path:
+                loader = spec_from_file_location(name, path)
+                module = module_from_spec(loader)
+                loader.loader.exec_module(module)
             progress['scope_map'] = dict(path=str(scope_path), schema=scope['schema'],
                 mapper_version=scope.get('mapper_version'), snapshot_epoch=scope_path.stat().st_mtime,
-                methods=scope_progress(scope, preparation_records, observations))
+                methods=module.scope_progress(scope, preparation_records, observations,
+                                              families=width_families, points=width_points))
 
     preflight = run/'DUPLICATE_PREFLIGHT.json'
     if preflight.is_file():
@@ -539,6 +551,7 @@ def local0_progress(applied, spec, run=None):
     width_state = run/'KAPPA_STATE.json'
     if width_state.is_file():
         state = load(width_state)
+        width_families, width_points = state.get('families', {}), state.get('points', [])
         if state.get('recovery_wait'):
             progress['recovery_wait'] = state['recovery_wait']
         pending = {'UNSUPPORTED_MAPPER': 'UNSUPPORTED_GENERATION', 'WAITING_INPUTS': 'PREPARATION_WAITING',
