@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import ExitStack, nullcontext
 from copy import deepcopy
 from fractions import Fraction
+from functools import lru_cache
 import hashlib
 import ast
 import json
@@ -144,8 +145,26 @@ with runpy.run_path(helper)['reuse_df_price_flanks'](module):
 
 def git(*args,cwd=ROOT):return subprocess.check_output(['git',*args],cwd=cwd,text=True).strip()
 def read(p):return json.loads(Path(p).read_text())
+class _LargeFixedLocator(Exception):
+    pass
+
+
+@lru_cache(maxsize=512)
+def _fixed_json_locator(root,commit,path):
+    # A full Git object ID is immutable. Cache only small serialized metadata,
+    # not expanded signal/evidence documents or branch/ref names.
+    raw=subprocess.check_output(['git','show',commit+':'+path],cwd=root)
+    if len(raw)>256*1024:raise _LargeFixedLocator(raw)
+    return raw
+
+
 def value(loc):
-    x=json.loads(subprocess.check_output(['git','show',loc['commit']+':'+loc['path']],cwd=ROOT))
+    commit=loc['commit'];path=loc['path']
+    if len(commit) in (40,64) and all(c in '0123456789abcdef' for c in commit):
+        try:raw=_fixed_json_locator(str(ROOT.resolve()),commit,path)
+        except _LargeFixedLocator as error:raw=error.args[0]  # exceptions are never cached
+    else:raw=subprocess.check_output(['git','show',commit+':'+path],cwd=ROOT)
+    x=json.loads(raw)
     for k in loc.get('selector',[]):x=x[k]
     return x
 

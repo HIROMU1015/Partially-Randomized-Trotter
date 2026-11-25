@@ -352,3 +352,32 @@ def test_resume_reuses_current_durable_live_eligibility_but_not_changed_policy()
     policy['jobs']['q']={'decision_sha256':'new'}
     assert ex._restore_queued_eligibility(row,policy)=={'rechecked':True}
     ex._eligibility_for.assert_called_once()
+
+
+def test_fixed_git_locator_reuse_does_not_share_mutable_values(monkeypatch):
+    from trottertracks import pr_candidate_completion as P
+    from unittest.mock import Mock
+    P._fixed_json_locator.cache_clear()
+    git=Mock(return_value=b'{"nested":{"x":1}}')
+    monkeypatch.setattr(P.subprocess,'check_output',git)
+    locator={'commit':'a'*40,'path':'fixed.json','selector':['nested']}
+    P.value(locator)['x']=2
+    assert P.value(locator)=={'x':1} and git.call_count==1
+    P.value(dict(locator,commit='HEAD'));P.value(dict(locator,commit='HEAD'))
+    assert git.call_count==3
+    P._fixed_json_locator.cache_clear()
+
+
+def test_resume_publication_skips_only_intact_hardlinks(tmp_path, monkeypatch):
+    from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+    from trottertracks import rpe_q3_coordinator as Q
+    from unittest.mock import Mock
+    ex=object.__new__(DistributedExecutor);ex.run_dir=tmp_path
+    row={'job_id':'q','method':'METHOD','attempt_id':'a','state':'ACCEPTED'}
+    stage=tmp_path/'distributed/transfers/q/a';stage.mkdir(parents=True)
+    for name in ('OUTCOME.json','PROCESS_RETURN.json','raw.json'):(stage/name).write_text('{}')
+    job=tmp_path/'jobs/METHOD/q';Q.publish_staged_files(stage,job)
+    repair=Mock(wraps=Q.publish_staged_files);monkeypatch.setattr(Q,'publish_staged_files',repair)
+    ex._publish_transfer(row,startup=True);repair.assert_not_called()
+    (job/'raw.json').unlink();ex._publish_transfer(row,startup=True);repair.assert_called_once()
+    assert (job/'raw.json').samefile(stage/'raw.json')

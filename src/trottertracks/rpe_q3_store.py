@@ -68,6 +68,7 @@ class JobStore:
                 );
                 CREATE INDEX IF NOT EXISTS method_state ON jobs(method, state);
                 CREATE INDEX IF NOT EXISTS jobs_enqueue_order ON jobs(enqueued_epoch, job_id);
+                CREATE INDEX IF NOT EXISTS jobs_state_enqueue ON jobs(state, enqueued_epoch, job_id);
                 CREATE INDEX IF NOT EXISTS host_state_queue ON jobs(host_id, state, enqueued_epoch, job_id);
                 CREATE INDEX IF NOT EXISTS host_completion ON jobs(host_id, completed_epoch);
                 CREATE INDEX IF NOT EXISTS host_adoption ON jobs(host_id, adopted_epoch);
@@ -210,6 +211,21 @@ class JobStore:
     def rows(self):
         with self._connection() as db:
             return [self._decoded(row) for row in db.execute('SELECT * FROM jobs ORDER BY enqueued_epoch,job_id')]
+
+    def resume_rows(self):
+        """Restore outstanding requests without parsing historical accepted JSON.
+
+        Accepted publication only needs the original method/job/attempt. The
+        exact full request and host evidence remain in the durable ledger for
+        validation, result reuse and science, but need not stay in RAM.
+        """
+        with self._connection() as db:
+            db.execute('BEGIN')
+            active=[self._decoded(row) for row in db.execute(
+                "SELECT * FROM jobs WHERE state IN ('QUEUED','ASSIGNED','STARTING','RUNNING','UNKNOWN','COMPLETED_PENDING_TRANSFER') ORDER BY enqueued_epoch,job_id")]
+            accepted=[dict(row) for row in db.execute(
+                "SELECT job_id,method,attempt_id,state FROM jobs WHERE state='ACCEPTED' ORDER BY enqueued_epoch,job_id")]
+            return active,accepted
 
     def metric_rows(self):
         # Requests and scientific evidence can be large. The driver only

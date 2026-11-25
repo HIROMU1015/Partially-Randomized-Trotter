@@ -1238,8 +1238,9 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not policy_path.is_absolute():policy_path=self.root/policy_path
                     resume_policy=json.loads(policy_path.read_text())
                 except (OSError,ValueError):resume_policy=None
+            active_rows,accepted_rows=self.store.resume_rows()
             with self.state.cv:
-                for row in self.store.rows():
+                for row in active_rows:
                     if row['state'] == 'UNKNOWN' and self._restore_pbs_unstarted(row):
                         row = self.store.row(row['job_id'])
                     existing = (max_width_signal_owner(self.store, row['request'])
@@ -1261,8 +1262,9 @@ class DistributedExecutor(ConcurrentExecutor):
                             row=self.store.row(row['job_id'])
                     if row['state'] not in ('CANCELLED', 'ACCEPTED'):
                         self._restore_task(row)
-                    elif row['state'] == 'ACCEPTED':
-                        self._publish_transfer(row)
+            # Completed results are immutable and need no scheduler lock. Only
+            # inspect actual staged paths, never allocate their huge REQUESTs.
+            for row in accepted_rows:self._publish_transfer(row,startup=True)
             self.rpc_server, self.rpc_thread = Q.serve(self, distributed.get('bind', '127.0.0.1'), distributed.get('port', 8763))
             address = self.rpc_server.server_address
             self.controller_url = 'http://127.0.0.1:'+str(address[1])
@@ -4586,7 +4588,7 @@ class DistributedExecutor(ConcurrentExecutor):
             attempt_id=row['attempt_id'], host_id=row['host_id'], reason=reason)
         raise ValueError(reason)
 
-    def _publish_transfer(self, row):
+    def _publish_transfer(self, row, *, startup=False):
         from .rpe_q3_coordinator import publish_staged_files
 
         job = self.run_dir/'jobs'/row['method']/row['job_id']
@@ -4594,6 +4596,19 @@ class DistributedExecutor(ConcurrentExecutor):
         if not stage.exists():
             if (job/'OUTCOME.json').exists(): return
             raise ValueError('Accepted completion is missing its transfer directory')
+        if startup and (job/'OUTCOME.json').is_file() and (job/'PROCESS_RETURN.json').is_file():
+            # OUTCOME was published last. Check every existing staged path is
+            # still the same ordinary-file hard link before avoiding redundant
+            # fsync; absent or independently copied paths use the normal repair.
+            def linked():
+                for source in stage.rglob('*'):
+                    if source==stage/'REQUEST.json' or not (source.is_file() or source.is_symlink()):continue
+                    target=job/source.relative_to(stage)
+                    if (source.is_symlink() or target.is_symlink() or not target.is_file()
+                            or not target.resolve().is_relative_to(job.resolve()) or not source.samefile(target)):
+                        return False
+                return True
+            if linked():return
         publish_staged_files(stage, job)
 
     def recover_scaled_completions(self):

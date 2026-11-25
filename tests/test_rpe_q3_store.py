@@ -191,3 +191,17 @@ class StoreTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_resume_rows_omit_accepted_request_and_eligibility(tmp_path):
+    from trottertracks.rpe_q3_store import JobStore
+    store=JobStore(tmp_path/'queue.sqlite3')
+    req={'route':{'kind':'artificial'},'large':'x'*500000}
+    assert store.reserve('METHOD','done',req,2,True)
+    row,=store.claim('host',1)
+    store.complete_hashed('host','done',row['attempt_id'],row['request_sha256'],'complete')
+    assert store.reserve('METHOD','pending',req,2,True)
+    active,accepted=store.resume_rows()
+    assert len(active)==1 and active[0]['request']==req
+    assert accepted==[{'job_id':'done','method':'METHOD','attempt_id':row['attempt_id'],'state':'ACCEPTED'}]
+    assert store.row('done')['request']==req
