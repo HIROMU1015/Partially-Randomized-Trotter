@@ -710,6 +710,25 @@ class Worker:
 
     def _poll_readiness(self, report, accepting):
         challenges = self.eligibility_challenges if accepting else []
+        if getattr(self, '_native_readiness', None) is not None:
+            result = {}
+            pending = self._native_probe
+            if pending is not None and pending[0].done():
+                future, checked = pending
+                self._native_probe = None
+                try:
+                    current = {item['job_id']: item for item in challenges}
+                    valid = {item['job_id'] for item in checked
+                             if accepting and current.get(item['job_id'], item) == item}
+                    result = {key: {job: fact for job, fact in rows.items() if job in valid}
+                              for key, rows in future.result().items()}
+                    challenges = [item for item in challenges if item['job_id'] not in valid]
+                except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+                    event(self.profile, 'READINESS_OFFLINE', reason=str(error))
+            if self._native_probe is None and challenges:
+                future = self._native_readiness.submit(self._check_readiness_batch, challenges, report)
+                self._native_probe = (future, challenges)
+            return result
         return self._check_readiness_batch(challenges, report)
 
     def _receive_assignment(self, assignment):
@@ -785,6 +804,33 @@ class Worker:
         return active
 
     def tick(self, acquire=True):
+        pool = getattr(self, '_native_collection', None)
+        if pool is not None:
+            for attempt, future in list(self._native_receipts.items()):
+                if future.done():
+                    del self._native_receipts[attempt]
+                    future.result()
+            for attempt, assignment in list(self.records.items()):
+                if len(self._native_receipts) >= self._native_collection_width:
+                    break
+                if attempt in self._native_receipts or attempt in self._native_retired:
+                    continue
+                state = read(attempt/'WORKER_STATE.json')
+                if state['state'] == 'TRANSFERRED':
+                    self._native_retired.add(attempt)
+                    continue
+                if attempt in getattr(self, 'unowned_attempts', ()):
+                    continue
+                if (state['state'] == 'UNKNOWN' and self.reported.get(attempt) == state
+                        and not (attempt/'OUTCOME.json').exists()):
+                    continue
+                if (state['state'] == 'RUNNING' and self.reported.get(attempt) == state
+                        and not (attempt/'PROCESS_RETURN.json').exists()):
+                    process = self.processes.get(attempt)
+                    if process is not None and process.poll() is None:
+                        continue
+                self._native_receipts[attempt] = pool.submit(self._service_attempt, attempt, assignment)
+            return self._poll_assignments(acquire)
         for attempt, assignment in list(self.records.items()):
             self._service_attempt(attempt, assignment)
         return self._poll_assignments(acquire)
@@ -792,9 +838,23 @@ class Worker:
     def pending(self):
         return any(read(p / 'WORKER_STATE.json')['state'] not in ('TRANSFERRED', 'UNKNOWN') for p in self.records)
 
+    def _open_native_lanes(self):
+        # Keep at least one other receipt/launch moving during a bulk transfer.
+        self._native_collection_width = max(2, self.slots + 1)
+        self._native_collection = ThreadPoolExecutor(max_workers=self._native_collection_width,
+                                                     thread_name_prefix='rpe-local-receipt')
+        self._native_readiness = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-local-readiness')
+        self._native_receipts, self._native_retired, self._native_probe = {}, set(), None
+        self.inline_readiness_retry = False
+
+    def _readiness_delivered(self, response):
+        """The next poll sends any finished proof for its current challenges."""
+
     def run(self, *, once=False, drain=False):
         polled = False
         try:
+            if type(self) is Worker and not once and not drain:
+                self._open_native_lanes()
             while True:
                 acquire = not drain and not self.stop.is_set() and not (once and polled)
                 self.tick(acquire=acquire)
@@ -806,9 +866,14 @@ class Worker:
         finally:
             # Stopping polling never signals the detached scientific process.
             event(self.profile, 'WORKER_STOP', pending=self.pending())
-            self.lock.close()
+            self.close()
 
     def close(self):
+        for name in ('_native_readiness', '_native_collection'):
+            pool = getattr(self, name, None)
+            if pool is not None:
+                pool.shutdown(wait=True, cancel_futures=True)
+                setattr(self, name, None)
         self.lock.close()
 
 
