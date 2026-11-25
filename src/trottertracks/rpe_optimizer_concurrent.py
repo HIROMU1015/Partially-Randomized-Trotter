@@ -253,11 +253,10 @@ class ConcurrentExecutor(O.Executor):
             expected = self.expected_for(cid, route)
             before = old['expected']
             if (old['configuration_id'] != cid or old['optimizer_source'] != self.optimizer_source
-                    or route.get('kind') not in ('prdf_d2_common_entry', 'pauli_b_common_entry')
+                    or route.get('kind') not in ('prdf_d2_common_entry', 'pauli_b_common_entry', 'pf_b_pf6')
                     or not before.get('binding_id') or not expected.get('binding_id')
                     or not expected.get('total_configuration_id')
-                    or {k: v for k, v in before.items() if k != 'binding_id'}
-                       != {k: v for k, v in expected.items() if k != 'binding_id'}):
+                    or before.get('total_configuration_id') != expected['total_configuration_id']):
                 return False
             receipt = O.load_json(job/'PROCESS_RETURN.json')
             if (old['request_id'] != job.name or type(receipt['returncode']) is not int
@@ -270,6 +269,24 @@ class ConcurrentExecutor(O.Executor):
                 if data['entry']['binding_id'] != identity['binding_id']:
                     return False
                 data['entry'] = {k: v for k, v in data['entry'].items() if k != 'binding_id'}
+                data['expected'] = {k: v for k, v in identity.items() if k != 'binding_id'}
+            if route['kind'] == 'pf_b_pf6':
+                # Compare the effective template case and its evaluator
+                # contract, not unrelated cases in the same publication.
+                import ast
+                names = {n.targets[0].id: ast.literal_eval(n.value)
+                         for n in ast.parse(Path(self.adapter).read_text()).body
+                         if isinstance(n, ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0], ast.Name)
+                         and n.targets[0].id in ('DROP','CONTRACT')}
+                reader=O.Reader(self.root)
+                for data, rule, identity in ((older,old['route'],before),(newer,route,expected)):
+                    template=reader.read(self.pf_template_source(rule,cid))
+                    source_cid=(rule.get('horizon_projection') or {}).get('source_configuration_id',cid)
+                    [case]=[c for c in template['cases'] if (c.get('configuration_id') or c.get('original_configuration_id'))==source_cid]
+                    if case.get('binding_id') != identity['binding_id']:
+                        return False
+                    data['template_case']={k:v for k,v in case.items() if k not in set(names['DROP'])|{'binding_id'}}
+                    data['template_contract']={k:template[k] for k in ('kernel_source','C_source','acceleration','price_policy',*names['CONTRACT']) if k in template}
             key = json.dumps([older, newer], sort_keys=True)
             inventory = self.prior_history_inventory
             with inventory.lock:
@@ -281,7 +298,7 @@ class ConcurrentExecutor(O.Executor):
             with inventory.lock:
                 inventory.route_equivalence[key] = same
             return same
-        except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
+        except (OSError, ValueError, KeyError, TypeError, SyntaxError, subprocess.CalledProcessError):
             return False
 
     def ingest_prior(self, job, proposal):
@@ -1023,6 +1040,10 @@ class DistributedExecutor(ConcurrentExecutor):
         # Readiness failures are observations, not permanent host exclusions.
         # Recheck unstarted reservations on Resume as well as unreserved work.
         saved_jobs = self.store.preparation_states(self.preparation_pending)
+        finished=[job for job,value in saved_jobs.items() if value[1]=='ACCEPTED']
+        if finished:
+            self.store.save_preparation_readiness({job:None for job in finished})
+            for job in finished:self.preparation_pending.pop(job,None)
         for job_id, record in self.preparation_pending.items():
             if job_id not in saved_jobs or saved_jobs[job_id][1] in ('QUEUED', 'CANCELLED'):
                 record['probe_started_epoch'] = time.time()
@@ -1314,9 +1335,19 @@ class DistributedExecutor(ConcurrentExecutor):
             return dict(accepting=False, optional=True, max_slots=0,
                         reason='OUTSIDE_FIXED_EXECUTION_HOSTS')
         rule = policy['hosts'].get(host, {})
-        return dict(accepting=rule.get('accepting', True) and error is None,
+        disposition=dict(accepting=rule.get('accepting', True) and error is None,
                     optional=rule.get('optional', False), max_slots=rule.get('max_slots'),
                     error=error)
+        if rule.get('accepting') is False:
+            disposition['reason']=rule.get('reason') or 'UNSPECIFIED_OPERATOR_HOLD'
+            expiry=rule.get('until_epoch')
+            disposition['until_epoch']=expiry
+            if not rule.get('reason') or type(expiry) not in (int,float):
+                disposition['review_needed']='OPERATOR_HOLD_WITHOUT_REASON_OR_REVIEW_TIME'
+            elif expiry <= time.time():
+                disposition['review_needed']='OPERATOR_HOLD_REVIEW_TIME_PASSED'
+            # Expiry requests a review, not automatic scientific admission.
+        return disposition
 
     def _host_new_slots(self, host, slots, admission, *, owned=None):
         if not admission['accepting']: return 0
@@ -3436,6 +3467,11 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
+        if path in ('/v1/complete','/v1/state') and value.get('job_id') and value.get('attempt_id'):
+            owner=self.store.attempt_owner(value['job_id'])
+            if owner is not None and (value.get('host_id'),value['attempt_id'])==(owner['host_id'],owner['attempt_id']):
+                with self.worker_contact_lock:
+                    self.worker_contact[value['host_id']]=time.time()
         if path == '/v1/complete':
             return self._receive_completion(value)
         s = self.state
@@ -4028,6 +4064,8 @@ class DistributedExecutor(ConcurrentExecutor):
         if (not self._preparation_request(row['request']) and row['adopted_epoch'] is None
                 and receipt.get('returncode') == 0):
             self._note_scaled_completion(row['method'], job, row['request'].get('origin') or {})
+        if self._preparation_request(row['request']) and row['state']=='ACCEPTED':
+            self.discard_pending_preparation(row['job_id'])
         self.state.cv.notify_all()
 
     def _hold_result_transfer(self, row, task, reason):

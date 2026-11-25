@@ -379,6 +379,41 @@ def task_memory_estimate(request, settings, host_id=None):
     return (task_rule(request, settings, host_id) or {}).get('memory_bytes')
 
 
+def known_independent_search_jobs(run_dir):
+    """Find only scheduler jobs bound to a different registered search."""
+    run_dir=Path(run_dir).resolve()
+    central=next((p for p in run_dir.parents if p.name=='.rpe-central'),None)
+    if central is None:
+        return []
+    try:
+        registry=json.loads((central/'state/RUNS.json').read_text())
+    except (OSError,ValueError):
+        return []
+    jobs=set()
+    for run_id,record in registry.items():
+        directory=Path(record.get('run_directory','')).resolve()
+        if directory==run_dir or not run_id.startswith('search-'):
+            continue
+        try:
+            state=json.loads((directory/'distributed/pbs/STATE.json').read_text())
+            records=state['allocations'].values()
+        except (OSError,ValueError,KeyError,TypeError):
+            continue
+        for allocation in records:
+            try:
+                if Path(allocation['spec']['run_id']).resolve()!=directory:
+                    continue
+                observed=allocation['observed'];scheduler=observed['scheduler']
+                if (allocation['status'] in ('Q','R','H','W','E') and
+                        scheduler['job_state'] in ('Q','R','H','W','E') and
+                        scheduler['Job_Name']=='RPEsearch-'+run_id[7:12] and observed.get('job_id')
+                        and not observed.get('pilot_token')):
+                    jobs.add(observed['job_id'])
+            except (OSError,ValueError,KeyError,TypeError):
+                continue
+    return sorted(jobs)
+
+
 def usable_memory(profile, settings):
     amount, unit = re.fullmatch(r'(\d+)([kmgt]?b)?', settings['resources']['mem'].lower()).groups()
     memory = int(amount) * (1024 ** ('b', 'kb', 'mb', 'gb', 'tb').index(unit or 'b'))
@@ -410,9 +445,6 @@ def resource_need(request, profile, settings, host):
     from .rpe_q3_worker import select_host_profile
 
     memory = task_memory_estimate(request, settings, host)
-    if memory is None:
-        # An unmeasured preparation stage runs alone from the memory pool.
-        memory = usable_memory(profile, settings) if request.get('preparation') else settings['allocation_sizing']['q3_startup_memory_bytes_per_task']
     # A resumed controller may import the original run's profile selector,
     # whose route key predates the horizon binding. Give it only the matching
     # horizon before accounting for that specific worker's CPUs.
@@ -422,6 +454,13 @@ def resource_need(request, profile, settings, host):
         profile = dict(profile, route_profiles=[row for row in profile['route_profiles']
                        if row.get('horizon_risk_commit') == horizon])
     runtime = select_host_profile(profile, {'request': request})
+    if memory is None:
+        # A stage-specific resource declaration is already a verified profile
+        # input; do not override it with the entire node. Unmeasured stages
+        # retain conservative isolation until comparable observations exist.
+        declared = runtime.get('task_memory_bytes') if request.get('preparation') else None
+        memory = declared if type(declared) is int and declared > 0 else (
+            usable_memory(profile, settings) if request.get('preparation') else settings['allocation_sizing']['q3_startup_memory_bytes_per_task'])
     measured = measured_q3_memory(request, runtime, host, settings.get('q3_measured_memory'))
     if measured is not None:
         memory = measured
@@ -1615,6 +1654,8 @@ class PbsManager:
 
     def _submit(self, host, worker, demand, requests=()):
         token = uuid.uuid4().hex
+        if self.hold_node and (alongside:=known_independent_search_jobs(self.executor.run_dir)):
+            demand=dict(demand,alongside_search_job_ids=alongside)
         profile = deepcopy(worker['profile'])
         resources = deepcopy(self.settings['resources'])
         sizing = self.settings.get('allocation_sizing')
@@ -1975,13 +2016,21 @@ class PbsManager:
             if record['status'] != 'INTENT' or time.monotonic() < self.ensure_retry_after.get(token, 0):
                 continue
             self.ensure_retry_after[token] = time.monotonic() + self.settings.get('request_timeout_seconds', 20)
-            if (self.live_harvest and self.storage_launcher and record['spec']['python'] != self.storage_launcher['path']
-                    and self.gateway.call(dict(action='intent_present', token=token))['present'] is False):
-                record['status'] = 'SUPERSEDED_UNSUBMITTED'
+            try:
+                if (self.live_harvest and self.storage_launcher and record['spec']['python'] != self.storage_launcher['path']
+                        and self.gateway.call(dict(action='intent_present', token=token))['present'] is False):
+                    record['status'] = 'SUPERSEDED_UNSUBMITTED'
+                    self.save()
+                    self.log('PBS_UNSUBMITTED_INTENT_SUPERSEDED', token=token)
+                    continue
+                self._ensure_spec(record['spec'])
+                record.pop('ensure_hold',None)
+            except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                # An unresolved allocation intent cannot prevent receipt
+                # exchange/harvest for other allocations already owned.
+                record['ensure_hold']=dict(reason=type(error).__name__+': '+str(error),retry_after=self.ensure_retry_after[token])
                 self.save()
-                self.log('PBS_UNSUBMITTED_INTENT_SUPERSEDED', token=token)
-                continue
-            self._ensure_spec(record['spec'])
+                self.log('PBS_ALLOCATION_ENSURE_HELD',token=token,reason=record['ensure_hold']['reason'])
         exchange_started = time.monotonic()
         response_count = sum(len(batch) for batch in self.responses.values())
         request = dict(action='exchange', responses=self.responses, controls=self.controls)
@@ -2223,7 +2272,11 @@ class PbsManager:
                     requests = original_requests + requests
                 if not requests: continue
                 if not self._storage_accepting(worker): continue
-                spec = self._submit(host, worker, demand, requests)
+                try:
+                    spec = self._submit(host, worker, demand, requests)
+                except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                    self.log('PBS_ALLOCATION_SUBMIT_HELD',host=host,reason=type(error).__name__+': '+str(error))
+                    continue
                 covered += spec['reason'].get('requested_task_capacity',
                     max(1, spec['resources']['ncpus']//task_cpu_footprint(spec['profile'])))
         self.last_error = None

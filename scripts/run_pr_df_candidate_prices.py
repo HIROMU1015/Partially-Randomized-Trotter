@@ -16,6 +16,7 @@ import json
 import multiprocessing as mp
 import os
 from pathlib import Path
+import struct
 import subprocess
 import sys
 import time
@@ -45,6 +46,14 @@ def read(loc):
 def enc(x):
     x=Fraction(x);return dict(numerator=x.numerator,denominator=x.denominator)
 def dec(x):return Fraction(x['numerator'],x['denominator'])if isinstance(x,dict)else Fraction(x)
+
+def require_tail_lambda(saved, observed, *, reason):
+    """Keep the existing exact gate; express a failure in binary64 units."""
+    a,b=float(dec(saved)),float(observed)
+    if a.hex()!=b.hex():
+        bits=lambda value:struct.unpack('>Q',struct.pack('>d',value))[0]
+        distance=abs(bits(a)-bits(b)) if a>=0 and b>=0 else None
+        raise ValueError(f'{reason}: saved={a.hex()}, observed={b.hex()}, positive_ulp_distance={distance}, policy=EXACT_BINARY64')
 def write(path,value):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     with path.open('x')as f:json.dump(value,f,indent=2,ensure_ascii=False,allow_nan=False);f.write('\n')
@@ -255,7 +264,7 @@ def validate_axis(cell,index,axis,witness,reader=None,source_reader=None):
     if record.get('resolved_context_key')!=canonical(dict(context=pc,resolved=resolved)):raise ValueError('RESOLVED_CONTEXT_HASH_MISMATCH')
     candidate=pc['physical_candidate'];prefix=candidate['prefix']
     if resolved.get('deterministic_fragments')!=list(range(prefix))or resolved.get('randomized_fragments')!=list(range(prefix,pc['binding']['rank'])):raise ValueError('RESOLVED_HEAD_TAIL_ORDER_MISMATCH')
-    if float(dec(pc['split']['lambda_R'])).hex()!=float(resolved['lambda_R']).hex():raise ValueError('RESOLVED_TAIL_LAMBDA_MISMATCH')
+    require_tail_lambda(pc['split']['lambda_R'],resolved['lambda_R'],reason='RESOLVED_TAIL_LAMBDA_MISMATCH')
     if resolved.get('scalar')!=pc['expected_scalar']or not resolved.get('preparation_hash')or not resolved.get('tail_hash'):raise ValueError('RESOLVED_PREPARATION_OR_SCALAR_MISMATCH')
     expected=pc.get('preparation_hash')
     if expected is not None and expected!=resolved['preparation_hash']:raise ValueError('PREPARATION_HASH_MISMATCH')
@@ -421,7 +430,8 @@ def scalar_metadata(config,tail_descriptor=None):
         extension_spec=importlib.util.spec_from_file_location('_df_price_descriptor_extension',ROOT/'src/trottertracks/pr_df_descriptor_extension.py')
         extension=importlib.util.module_from_spec(extension_spec);extension_spec.loader.exec_module(extension)
         tail=extension.validate(extension.read(ROOT,tail_descriptor),tail_descriptor,config);tail_source=tail_descriptor
-    if config['spec']['split']['lambda_source']!=tail_source or float(dec(config['spec']['split']['lambda_R'])).hex()!=float(tail['lambda_R']).hex():raise ValueError('Candidate tail binding differs')
+    if config['spec']['split']['lambda_source']!=tail_source:raise ValueError('Candidate tail binding differs')
+    require_tail_lambda(config['spec']['split']['lambda_R'],tail['lambda_R'],reason='Candidate tail binding differs')
     constant=read(SCALAR_CONSTANT)
     if constant['source']['hamiltonian_hash']!=config['spec']['binding']['hamiltonian']:raise ValueError('Hamiltonian constant binding differs')
     scalar=constant['value']+tail['scalar'];scalar_record=dict(hamiltonian_constant=constant,tail_identity=dict(value=tail['scalar'],source=tail_source),total=scalar,total_hex=scalar.hex(),application='ONCE_AT_TOTAL_T')

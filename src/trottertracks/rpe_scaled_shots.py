@@ -113,38 +113,17 @@ def scope_coverage(method_scope, horizons, rows):
     """Match the declared finite design axes before claiming scope exhaustion."""
     from itertools import islice, product
     from math import prod
-    from .rpe_kappa_schedule import _frac as frac
+    from .rpe_scope_map import scope_axes, coordinate, row_coordinates
 
     scope = method_scope or {}
-    generation = scope.get('generation') or {}
-    axes = {'M': horizons}
-    if scope.get('configuration_ids') is not None:
-        axes['source_configuration_id'] = scope['configuration_ids']
-    else:
-        for field, values in (
-            ('p', scope.get('p_values')), ('L_D', scope.get('L_D_values')),
-            ('formula', scope.get('formulas') or generation.get('formulas')),
-            ('delta_pf', scope.get('requested_delta_pf_values')),
-            ('delta_over_h', None if scope.get('requested_delta_pf_values') else
-             scope.get('delta_over_h_values') or generation.get('delta_over_h_values')),
-            ('absolute_kappa', scope.get('absolute_kappa_values')),
-        ):
-            if values:
-                axes[field] = values
-
-    def normalized(key, value):
-        if key in ('absolute_kappa', 'delta_over_h', 'delta_pf') and value is not None:
-            return str(frac(value))
-        return value
+    axes = scope_axes(scope, horizons)
 
     seen = set()
     for row in rows:
         if not row['configuration_id']:
             continue
-        key = dict(row['configuration'], M=row['M'],
-                   source_configuration_id=row.get('source_configuration_id') or row['configuration_id'])
-        seen.add(tuple(normalized(field, key.get(field)) for field in axes))
-    values = [dict.fromkeys(normalized(field, v) for v in grid) for field, grid in axes.items()]
+        seen.add(coordinate(axes, row_coordinates(row)))
+    values = list(axes.values())
     requested = prod(map(len, values))
     represented = sum(all(v in grid for v, grid in zip(key, values)) for key in seen)
     missing = requested - represented
@@ -167,6 +146,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         raise ValueError('Scaled search must use the exact saved R08 MSE threshold')
     policy = settings(search['scaled_shots'])
     exploratory = search.get('exploratory_cost') is True
+    feasibility_first = search.get('feasibility_first', False) is True and exploratory
     groups = {}
     registered = {}
     yielded = set()
@@ -259,8 +239,10 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                     (row['smallest_grid_k'] is not None) == grid),
                    key=lambda r: (r['cost'], r['smallest_grid_k'] or 0, r['vector']), default=None)
 
+    priorities = {}
+
     def allocation_order(row):
-        return (groups[name, row['configuration_id'], row['M']]['scope_priority'],
+        return (priorities.get(id(row), 1), groups[name, row['configuration_id'], row['M']]['scope_priority'],
                 row['cost'] is None, row['cost'] if row['cost'] is not None else sum(row['vector']),
                 row['M'], row['configuration_id'])
 
@@ -284,6 +266,21 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             else:
                 grid.append(row)
         if grid:
+            if feasibility_first:
+                all_grid = sorted((r for r in group['rows'] if r['smallest_grid_k'] is not None),
+                                  key=lambda r: r['smallest_grid_k'])
+                if feasible_k is None:
+                    # Probe the largest and then a middle distinct vector.
+                    # A FAIL does not imply anything about other shot counts.
+                    for probe in (all_grid[-1], all_grid[len(all_grid)//2]):
+                        if probe['status'] == 'PENDING' and probe in grid:
+                            priorities[id(probe)] = 0
+                            return [probe]
+                    for r in grid:
+                        priorities[id(r)] = 2
+                else:
+                    for r in grid:
+                        priorities[id(r)] = 1
             order = lambda r: (*allocation_order(r), r['smallest_grid_k'])
             return [min(grid, key=order)] if limit == 1 else sorted(grid, key=order)[:limit]
         return [min(reference, key=lambda r: (*allocation_order(r), r['vector']))] if reference else []
@@ -507,7 +504,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             stop = requested_stop
         elif budget_exhausted:
             stop = 'Q3_BUDGET_EXHAUSTED'
-        elif (not rows or coverage['missing_count']) or any(r['status'] in unresolved for g in rows for r in g['allocations']):
+        elif (not rows or coverage['missing_count']) or any(r['status'] in unresolved for g in rows for r in g['allocations']) or (
+                exploratory and any(row.get('mse_feasible') is not None and row.get('cost_status') == 'UNAVAILABLE' for row in rows)):
             stop = 'UNRESOLVED_SCALED_SCOPE'
         elif any(row['minimum_status'] == 'OUTSIDE_QUALIFIED_EVALUATOR_DOMAIN' for row in rows):
             stop = 'SCALED_SCOPE_INCLUDES_UNSUPPORTED_HORIZON'

@@ -191,7 +191,8 @@ class ReleaseTests(unittest.TestCase):
             self.assertEqual(process.call_count, 2)
             for call in process.call_args_list:
                 command = call.args[0]
-                self.assertEqual(json.loads(command[-1]), dict(policy, run_id=started['run_id']))
+                self.assertEqual(json.loads(command[command.index('--schedule-resume')+1]),
+                                 dict(policy, run_id=started['run_id']))
             self.assertEqual(fixed, (run / 'ROUND.json').read_bytes())
             self.assertEqual(load(run / 'CONTROLLER_CONFIG.json')['computation_source'], 'FROZEN_SCIENCE_A')
 

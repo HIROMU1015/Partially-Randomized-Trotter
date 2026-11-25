@@ -506,6 +506,12 @@ def local0_progress(applied, spec, run=None):
         progress['continuation'] = dict(parent_run_ids=[Path(row['path']).name for row in parents])
     if run is None:
         return progress
+    scope_path=run/'SCOPE_MAP.json'
+    if scope_path.is_file():
+        scope=load(scope_path)
+        progress['scope_map']=dict(path=str(scope_path), schema=scope['schema'],
+            mapper_version=scope.get('mapper_version'),methods={m:{k:v[k] for k in ('requested','counts','axes')}
+                                                               for m,v in scope['methods'].items()})
     preflight = run/'DUPLICATE_PREFLIGHT.json'
     if preflight.is_file():
         progress['saved_evaluations'] = load(preflight).get('reused', {})
@@ -534,7 +540,8 @@ def local0_progress(applied, spec, run=None):
                 status = 'REUSED_SAVED_RESULT'
             if key and status:
                 observations[key] = dict(candidate_id=key, method=point['method'], state=status, reason=point.get('reason'))
-                for field in ('price_actions', 'preparation_recovery', 'conflicting_signal_rounds'):
+                for field in ('price_actions', 'preparation_recovery', 'conflicting_signal_rounds',
+                              'failure_class','retry_protected'):
                     if (detail := completion.get(field)):
                         observations[key][field] = detail
     pf_status = run/'PF_PREPARATION_STATUS.json'
@@ -1803,6 +1810,12 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
                    and spec.get('search_overrides', {}).get('work_conserving_search') is True
                    and 'max_cycles' not in stop and spec.get('search_to_rule_stop') is True)
     try:
+        if scope['entry'] == 'schedule' and not config.get('artificial_controller_directory') and (
+                config.get('controller_import_check') or (schedule_resume or {}).get('controller_import_check')):
+            checked = subprocess.run([*command, '--import-check'], cwd=config['code_root'],
+                env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), capture_output=True, text=True, check=True)
+            if json.loads(checked.stdout.splitlines()[-1]).get('status') != 'IMPORT_CHECK_PASS':
+                raise ValueError('Selected controller import check did not complete')
         for generation in range(2):
             process = subprocess.Popen(command,cwd=config['code_root'],env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
             driver = dict(pid=process.pid, command=command, invocation_id=invocation,

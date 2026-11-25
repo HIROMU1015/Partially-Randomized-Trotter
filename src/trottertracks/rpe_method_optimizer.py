@@ -207,20 +207,26 @@ def resolve_unit(reader, axis):
     raise ValueError('No unit price in source row')
 
 
-def configuration_prices(reader, points):
-    """Own 26-axis unit prices of one configuration, checked against every saved total."""
-    priced = [p for p in points if len(p['price_axes']) == 26 and p['conditional_cost'] is not None]
+def configuration_prices(reader, points, *, rounds=None):
+    """Own axis prices of one configuration, checked against every saved total."""
+    if rounds is None:
+        lengths={len(point_vector(p))//len(AXES) for p in points if p.get('conditional_cost') is not None}
+        if len(lengths)>1:
+            return None,'INCONSISTENT_SAVED_HORIZON'
+        rounds=next(iter(lengths),13)
+    axis_count=rounds*len(AXES)
+    priced = [p for p in points if len(p['price_axes']) == axis_count and p['conditional_cost'] is not None]
     if not priced:
-        return None, 'NO_SAVED_26_AXIS_PRICE'
+        return None, 'NO_SAVED_%d_AXIS_PRICE'%axis_count
     units = {}
     for p in priced:
         for axis in p['price_axes']:
             unit = resolve_unit(reader, axis);key = (axis['m'], axis['axis'])
             if units.setdefault(key, unit) != unit:
                 return None, 'CONFLICTING_SAVED_UNIT_PRICES'
-    if sorted(units) != [(m, a) for m in range(13) for a in AXES]:
-        return None, 'INCOMPLETE_26_AXIS_PRICE'
-    prices = [units[(m, a)] for m in range(13) for a in AXES]
+    if sorted(units) != [(m, a) for m in range(rounds) for a in AXES]:
+        return None, 'INCOMPLETE_%d_AXIS_PRICE'%axis_count
+    prices = [units[(m, a)] for m in range(rounds) for a in AXES]
     for p in priced:
         if cost(point_vector(p), prices) != frac(p['conditional_cost']):
             return None, 'UNIT_PRICES_DO_NOT_REPRODUCE_SAVED_TOTAL'
@@ -351,9 +357,10 @@ def enumerate_candidates(reader, problem, facts, catalog):
     for c in out:
         ps = by_config.get(c['configuration_id'], [])
         signals = [p['signal_source'] for p in ps if p.get('signal_source')] or ([c['index_signal']] if c['index_signal'] else [])
-        prices, price_status = configuration_prices(reader, ps) if ps else (None, 'NO_SAVED_26_AXIS_PRICE')
+        rounds=len(c['caps']);axis_count=len(AXES)*rounds
+        prices, price_status = configuration_prices(reader, ps, rounds=rounds) if ps else (None, 'NO_SAVED_%d_AXIS_PRICE'%axis_count)
         labels = sorted({p['label'] for p in ps})
-        metadata=next((p for p in ps if len(p.get('price_axes',[]))==26 and p.get('conditional_cost')is not None),ps[0]if ps else {})
+        metadata=next((p for p in ps if len(p.get('price_axes',[]))==axis_count and p.get('conditional_cost')is not None),ps[0]if ps else {})
         c.update(labels=labels, signal_source=signals[0] if signals else None, prices=prices, price_status=price_status,
                  saved_points=[p['point_id'] for p in ps],
                  price_axes=deepcopy(metadata.get('price_axes',[])),
@@ -421,7 +428,7 @@ def proposals(candidates, knowledge, threshold, search, generate):
         if cid in best:
             base = best[cid];h = headroom(base['record'], threshold)
             steps = search['decrement_steps'] if h is not None and h < large else [min(search['decrement_steps'])]
-            for m in range(13):
+            for m in range(len(c['caps'])):
                 for group in axis_groups(prices, m):
                     for d in steps:
                         v = list(base['vector'])
@@ -852,6 +859,7 @@ class Executor:
             except (OSError, sqlite3.Error) as exc:
                 self.log(event='PRIOR_HISTORY_CACHE_UNAVAILABLE', reason=str(exc))
         ready = {c['configuration_id']: c for c in candidates if c['ready'] and c['configuration_id']}
+        declared = {c['configuration_id'] for c in candidates if c.get('configuration_id')}
         known, refused = {}, []
         held_jobs = {(Path(item['parent_directory'])/'jobs'/item['method']/item['job_id']).resolve()
                      for item in getattr(self,'prior_q3_holds', ())}
@@ -867,7 +875,8 @@ class Executor:
                     signature = (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
                     cached = self.prior_request_configurations.get(request)
                     if cached is not None and cached[0] == signature and cached[1] not in ready:
-                        refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
+                        refused.append(dict(job=str(job), reason='CONFIGURATION_PREPARATION_PENDING'
+                                            if cached[1] in declared else 'CONFIGURATION_NOT_IN_THIS_ROUND'))
                         continue
                     q = json.loads(request.read_text())
                 except (OSError, ValueError):
@@ -876,7 +885,8 @@ class Executor:
                 self.prior_request_configurations[request] = (signature, cid)
                 c = ready.get(cid)
                 if c is None:
-                    refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'));continue
+                    refused.append(dict(job=str(job), reason='CONFIGURATION_PREPARATION_PENDING'
+                                        if cid in declared else 'CONFIGURATION_NOT_IN_THIS_ROUND'));continue
                 proposal = dict(configuration_id=c['configuration_id'], vector=interleave(q['N_X'], q['N_Y']))
                 if self.job_dir(proposal).name != job.name or not self.prior_same_route(job, c['configuration_id'], request=q):
                     refused.append(dict(job=str(job), reason='DIFFERENT_JOB_KEY_OR_ROUTE'));continue

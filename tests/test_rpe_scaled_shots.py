@@ -152,7 +152,7 @@ class ScaleTests(unittest.TestCase):
                 if exploratory:
                     report = load(run/'ROUND_RESULT.json')['methods'][method]
                     self.assertIsNone(report['best'])
-                    self.assertEqual(report['stop_reason'], 'EXPLORATORY_GRID_COMPLETE')
+                    self.assertEqual(report['stop_reason'], 'UNRESOLVED_SCALED_SCOPE')
                     self.assertEqual(report['by_configuration'][0]['minimum_status'], 'MSE_PASS_COST_UNAVAILABLE')
                     self.assertTrue(all(load(p.with_name('REQUEST.json'))['cost'] is None for p in outcomes))
                 expected = [16*n for n in S.base_shots(horizon)]

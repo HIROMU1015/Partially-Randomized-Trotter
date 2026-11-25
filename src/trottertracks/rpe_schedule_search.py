@@ -88,7 +88,7 @@ def requested_widths(problem, spec):
 
 def width_family_key(method, ld, formula, delta, K=2):
     """A search family; kappa is deliberately absent from its identity."""
-    return '%s|LD%d|%s|delta=%s|K%d' % (method, ld, formula, KS._frac(delta), K)
+    return '%s|LD%d|%s|delta=%s|K%s' % (method, ld, formula, KS._frac(delta), 'UNRESOLVED' if K is None else str(K))
 
 
 def settings(s):

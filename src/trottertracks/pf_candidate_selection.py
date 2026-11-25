@@ -10,6 +10,7 @@ import json
 import hashlib
 from pathlib import Path
 import shutil
+import subprocess
 
 from . import pf_optimizer_connection as PF
 
@@ -31,6 +32,35 @@ def preparation_progress(candidate, record, *, price_requested=False):
         price = 'REQUIRED_FOR_RANKING' if price_requested else 'DEFERRED_UNTIL_MSE'
     return dict(q3='READY' if ready else 'INPUTS_REQUIRED', price=price,
                 price_requested=bool(price_requested))
+
+
+def metadata_tool_revision(settings, tool):
+    """Only the metadata tool and selected interpreter/provider can reopen it."""
+    path=Path(__file__).resolve().parents[2]/'scripts'/tool
+    data={'tool': hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None}
+    for key in ('interpreter','entry'):
+        item=Path(settings[key]) if settings.get(key) else None
+        try:
+            stat=item.stat() if item else None
+            data[key]=(str(item),stat.st_size,stat.st_mtime_ns) if stat else str(item)
+        except OSError:
+            data[key]=str(item)
+    return hashlib.sha256(json.dumps(data,sort_keys=True).encode()).hexdigest()
+
+
+def metadata_tool_failure(error, folder, settings):
+    if not isinstance(error,subprocess.CalledProcessError):
+        return None
+    command=error.cmd if isinstance(error.cmd,(list,tuple)) else []
+    tool=next((Path(str(arg)).name for arg in command if Path(str(arg)).name in
+               ('check_pf_preparation_owner.py','run_pf_preparation_stage.py')),None)
+    if tool is None or (tool=='run_pf_preparation_stage.py' and '--plan-signal-index' not in command):
+        return None
+    protected=any(next(folder.rglob(pattern),None) is not None for pattern in
+                  ('*.DISTRIBUTED.json','*.STARTED.json','*.RETURN.json','STOP.json'))
+    return dict(tool=tool,returncode=error.returncode,pre_dispatch=not protected,
+        revision=metadata_tool_revision(settings,tool),workspace=str(folder),
+        retry_policy='RECHECK_AFTER_METADATA_CHANGE' if not protected else 'RECONCILE_ORIGINAL_ATTEMPT')
 
 
 def write(path,value):
@@ -328,13 +358,36 @@ def prepare_available(root, problem, context, spec, run, routes, stage_executor,
 
     publish_ready(context, routes)
     refill = {} if refill_requested is None else {'refill_requested': refill_requested}
+    executor=getattr(stage_executor,'executor',None)
+    def receipt_revision():
+        if executor is None or not hasattr(executor,'store'):
+            return (),False
+        with executor.store._connection() as db:
+            rows=db.execute("""SELECT job_id,state,completion_sha256,adopted_epoch,request FROM jobs
+                WHERE method LIKE 'PREPARATION:%' AND (state IN ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')
+                OR (state='ACCEPTED' AND adopted_epoch IS NULL))""").fetchall()
+        selected=[tuple(row[:4]) for row in rows if str(json.loads(row[4]).get('preparation',{}).get('provider','')).startswith('PF_')]
+        return tuple(sorted(row for row in selected if row[1]=='ACCEPTED')),any(row[1]!='ACCEPTED' for row in selected)
+    consumed,_=receipt_revision()
     while True:
         context, routes, status = prepare_next(root, problem, context, spec, run, routes, stage_executor,
                                                stop_requested=stop_requested, recheck_waiting=recheck_waiting,
                                                announce=publish_ready, **refill)
         recheck_waiting = False
         publish_ready(context, routes)
-        if status['status'] != 'PREPARATION_WAVE_PROCESSED' or stop_requested():
+        if stop_requested():
+            return context, routes, status
+        if status['status'] != 'PREPARATION_WAVE_PROCESSED':
+            # A new PF receipt can immediately enable its audit or registration
+            # while the same executor and independent selectors remain alive.
+            current,active=receipt_revision()
+            while current==consumed and active and not stop_requested():
+                with executor.state.cv:
+                    executor.state.cv.wait(.5)
+                current,active=receipt_revision()
+            if current!=consumed and not stop_requested():
+                consumed=current;recheck_waiting=True
+                continue
             return context, routes, status
         if wait_for_work is not None and not wait_for_work():
             return context, routes, dict(status='PREPARATION_WAVE_YIELDED', records=status['records'])
@@ -627,6 +680,13 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
     if distributed_completion and recheck_waiting:
         reconcile_received_preparation(run, records, stage_executor)
         for row in records.values():
+            failure=row.get('metadata_tool_failure') or {}
+            if row.get('status')=='PREPARATION_INCOMPLETE' and failure.get('pre_dispatch'):
+                revision=metadata_tool_revision(settings,failure['tool'])
+                if revision!=failure['revision']:
+                    row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE',price_receipt_recheck=True,
+                        price_recheck_directory='pf_auto/tool-recovery/'+revision[:20],
+                        price_prior_owner_directories=[],previously_audited_price_axes=[])
             if (row.get('reason') == 'PF_COMPLETION_REQUEST_MISMATCH'
                     and not row.get('configurations')
                     and set(row.get('differing_fields', ())) <=
@@ -750,8 +810,17 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         else:
             base = recovery if record.get('price_receipt_recheck') else run/'pf_auto'
         one_spec = dict(spec, pf_completion=one_settings)
-        after,_,status=prepare(root,problem,snapshot_context(context),one_spec,base/'candidates'/cid,
-                              deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
+        candidate_folder=base/'candidates'/cid
+        try:
+            after,_,status=prepare(root,problem,snapshot_context(context),one_spec,candidate_folder,
+                                  deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
+        except subprocess.CalledProcessError as error:
+            failure=metadata_tool_failure(error,candidate_folder,one_settings)
+            if failure is None:
+                raise
+            after=snapshot_context(context)
+            status=dict(status='PREPARATION_INCOMPLETE',reason='PREPARATION_TOOL_FAILURE:'+failure['tool'],
+                        metadata_tool_failure=failure)
         returned = next(c for c in after['candidates'] if c['configuration_id'] == cid)
         return chosen,status,after['pf_evidence_registry']['configurations'].get(cid),returned
 
@@ -812,7 +881,7 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
             former = records[cid].get('configurations', {}) if cid in shortlist else {}
             records[cid].update(status=disposition,reason=reason,key=chosen['key'],method=chosen['method'],
                                 configurations={cid:entry} if entry is not None else former)
-            for field in ('request_path', 'differing_fields', 'price_reconciliation', 'remaining_needs'):
+            for field in ('request_path', 'differing_fields', 'price_reconciliation', 'remaining_needs','metadata_tool_failure'):
                 if field in status:
                     records[cid][field] = status[field]
                 else:

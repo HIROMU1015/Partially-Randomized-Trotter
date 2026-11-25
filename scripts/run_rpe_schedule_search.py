@@ -332,6 +332,7 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     for module_name, field in (('rpe_live_q3_readiness', 'live_readiness_sha256'),
                                ('rpe_plan_readiness', 'plan_readiness_sha256'),
                                ('rpe_host_eligibility', 'host_eligibility_sha256'),
+                               ('rpe_scope_map', 'scope_map_sha256'),
                                ('pf_saved_prices', 'pf_saved_prices_sha256'),
                                ('pf_distributed_preparation', 'pf_distributed_sha256'),
                                ('rpe_scaled_shots', 'scaled_shots_sha256'),
@@ -969,6 +970,10 @@ class WidthDriver:
         if not self.state['families']:
             started=time.monotonic();self.log(event='SEED_START')
             self.seed();self.log(event='SEED_END',wall_seconds=time.monotonic()-started,families=len(self.state['families']))
+        self.recheck_unsupported_families()
+        if self.scaled_shots and not (self.run/'SCOPE_MAP.json').is_file():
+            previous=self.run/'ROUND_RESULT.json'
+            self.write_scope_map(O.load_json(previous)['methods'] if previous.is_file() else None)
 
     def log(self, **row):
         with (self.run/'DRIVER_PROGRESS.jsonl').open('a') as f:
@@ -977,6 +982,30 @@ class WidthDriver:
     def save(self):
         tmp=self.state_file.with_suffix('.tmp');tmp.write_text(json.dumps(O.jsonable(self.state),indent=2)+'\n')
         tmp.replace(self.state_file)
+
+    def write_scope_map(self, results=None):
+        """Materialize every declared logical coordinate, including rejected families."""
+        from trottertracks.rpe_scope_map import build_scope_map
+        from trottertracks.rpe_scaled_shots import settings
+        from trottertracks.rpe_q3_coordinator import atomic_json
+        search=dict(self.problem['search'],**self.spec.get('search_overrides',{}))
+        horizons=settings(search.get('scaled_shots'))['M']
+        methods={m:self.problem['methods'][m] for m in self.methods}
+        document=build_scope_map(methods,horizons,families=self.state['families'],points=self.state['points'],
+                                 results=results,mapper_version={m:(v.get('generation')or{}).get('kind') for m,v in methods.items()})
+        if results is not None:
+            for method, scope in document['methods'].items():
+                coverage=results.get(method,{}).get('scaled_shots',{}).get('scope_coverage')
+                if coverage is None:
+                    continue
+                represented=sum(bool(row.get('configuration_id')) for row in scope['rows'])
+                coverage.update(requested=scope['requested'],represented=represented,
+                    missing_count=scope['requested']-represented,logical_status_counts=scope['counts'],
+                    scope_map='SCOPE_MAP.json')
+        path=self.run/'SCOPE_MAP.json'
+        self.scope_summary={m:{k:v for k,v in row.items() if k!='rows'} for m,row in document['methods'].items()}
+        if not path.is_file() or O.load_json(path)!=document:
+            atomic_json(path,document)
 
     def check_fixed_inputs(self):
         """Keep cached families tied to the same physical/evaluation inputs."""
@@ -1052,6 +1081,53 @@ class WidthDriver:
     def generate_families(self, method, items):
         return O.run_generator(ROOT,self.problem['methods'][method]['generation'],items)['items']
 
+    @staticmethod
+    def admit_generated_family(family,base,made):
+        try:
+            if made['status']!='GENERATED':raise ValueError(made.get('reason')or made['status'])
+            cfg=made['configuration'];s=cfg['spec']
+            if KS._frac(s['delta_pf'])!=KS._frac(family['requested_delta_pf']):
+                raise ValueError('MAPPER_DOES_NOT_PRESERVE_EXACT_REQUESTED_WIDTH')
+            if KS._frac(s['h'])!=KS._frac(base['h']) or s['M']!=base['M']:
+                raise ValueError('MAPPER_CHANGED_FIXED_RPE_TIME_GRID')
+            rows=KS.constants(cfg);k=KS._frac(s['kappa']['value'])
+            if KS.R_vector(rows,k)!=[v['R_outer']for v in sorted(cfg['rounds'],key=lambda r:r['m'])]:
+                raise ValueError('SCHEDULE_CONSTANTS_DO_NOT_REPRODUCE_CANONICAL_MAPPER')
+            family.update(status='READY_METADATA',rows=KS.encode_rows(rows),configuration=cfg)
+            family.pop('reason',None)
+        except (ValueError,KeyError,TypeError) as exc:
+            family.update(status='UNSUPPORTED_MAPPER',reason=str(exc))
+
+    def recheck_unsupported_families(self):
+        """A changed selected generator may repair a rejected logical family."""
+        revisions={method:hashlib.sha256(json.dumps(self.problem['methods'][method].get('generation',{}),
+                                         sort_keys=True).encode()).hexdigest() for method in self.widths}
+        prior=self.state.get('mapper_revisions')
+        if prior is None:
+            self.state['mapper_revisions']=revisions;self.save();return
+        for method,revision in revisions.items():
+            if prior.get(method)==revision:continue
+            reader=O.Reader(ROOT);items=[];selected={}
+            for key,f in self.state['families'].items():
+                if f.get('method')!=method or f.get('status')!='UNSUPPORTED_MAPPER':continue
+                f.setdefault('mapper_rejections',[]).append(dict(revision=prior.get(method),reason=f.get('reason')))
+                if f.get('base_source'):
+                    base=reader.read(f['base_source']);base=base.get('configuration',base)['spec']
+                    ratio=KS._frac(f['requested_delta_pf'])/KS._frac(base['h'])
+                    items.append(dict(item_id=key,base=f['base_source'],changes=dict(formula=f['formula'],delta_over_h=str(ratio))))
+                    selected[key]=(f,base)
+                elif f.get('preparation_request'):
+                    f['status']='FAMILY_PREPARATION_PENDING'
+            if items:
+                results=self.generate_families(method,items)
+                if len(results)!=len(selected) or {r['item_id'] for r in results}!=selected.keys():
+                    raise ValueError('Width mapper recheck results differ from requested families')
+                for result in results:
+                    f,base=selected[result['item_id']];self.admit_generated_family(f,base,result)
+                    self.log(event='MAPPER_FAMILY_RECHECK',family=result['item_id'],status=f['status'],reason=f.get('reason'))
+        self.state['mapper_revisions']=revisions
+        if prior!=revisions:self.save()
+
     def seed(self):
         reader,catalog=self.catalog();sources={}
         for point in catalog['candidates']:
@@ -1092,33 +1168,22 @@ class WidthDriver:
                     raise ValueError('Width mapper results differ from the requested families')
                 self.log(event='SEED_MAPPER_END',method=method,families=len(items),wall_seconds=time.monotonic()-started)
                 for key,(family,base) in families.items():
-                    made=by_id[key]
-                    try:
-                        if made['status']!='GENERATED':
-                            raise ValueError(made.get('reason')or made['status'])
-                        cfg=made['configuration'];s=cfg['spec']
-                        if KS._frac(s['delta_pf'])!=KS._frac(family['requested_delta_pf']):
-                            raise ValueError('MAPPER_DOES_NOT_PRESERVE_EXACT_REQUESTED_WIDTH')
-                        if KS._frac(s['h'])!=KS._frac(base['h']) or s['M']!=base['M']:
-                            raise ValueError('MAPPER_CHANGED_FIXED_RPE_TIME_GRID')
-                        rows=KS.constants(cfg); k=KS._frac(s['kappa']['value'])
-                        if KS.R_vector(rows,k)!=[v['R_outer']for v in sorted(cfg['rounds'],key=lambda r:r['m'])]:
-                            raise ValueError('SCHEDULE_CONSTANTS_DO_NOT_REPRODUCE_CANONICAL_MAPPER')
-                        family.update(status='READY_METADATA',rows=KS.encode_rows(rows),configuration=cfg)
-                    except (ValueError,KeyError,TypeError) as exc:
-                        family.update(status='UNSUPPORTED_MAPPER',reason=str(exc))
+                    self.admit_generated_family(family,base,by_id[key])
                     self.log(event='SEED_FAMILY_END',family=key,status=family['status'],reason=family.get('reason'))
             # Bootstrap a missing split through D2's ordinary preparation entry.
             # A template supplies only the fixed time grid / binding and a
             # metadata kappa.  The target split supplies its own descriptor and
             # lambda before W chooses any scientific schedule.
             templates=[loc for (name,_),loc in sources.items()if name==method]
+            template=None if not templates else reader.read(templates[0])
+            if template is not None:template=template.get('configuration',template)
+            bootstrap_K=(setting.get('generation') or {}).get('finite_K') if template is None else template['spec']['finite_K']
             for ld in allowed or []:
                 if not any(v['method']==method and v['L_D']==ld for v in self.state['families'].values()):
                     for formula in(setting.get('generation')or{}).get('formulas',['2nd']):
                         for width in widths:
-                            key=W.width_family_key(method,ld,formula,width['raw'])
-                            f=dict(method=method,L_D=ld,formula=formula,K=2,
+                            key=W.width_family_key(method,ld,formula,width['raw'],bootstrap_K)
+                            f=dict(method=method,L_D=ld,formula=formula,K=bootstrap_K,
                                 requested_delta_pf=width['raw'],delta_pf=O.enc(KS._frac(width['raw'])),
                                 status='NEEDS_FAMILY_CONFIGURATION_SOURCE',
                                 reason='No same-method saved template: fixed H/state/snapshot/h/M and metadata kappa are required')
@@ -1126,7 +1191,7 @@ class WidthDriver:
                             if method == 'PR_DF' and ld == 0:
                                 f.update(status='UNSUPPORTED_MAPPER', reason='NONEMPTY_DF_HEAD_TAIL_REQUIRED')
                             elif templates:
-                                source=templates[0];template=reader.read(source);template=template.get('configuration',template)
+                                source=templates[0]
                                 f.update(status='FAMILY_PREPARATION_PENDING',template_source=source,template=template,
                                     preparation_request=dict(method=method,template_source=source,
                                         selection=dict(stage='FAMILY_CONSTANTS_METADATA_ONLY',family=key),
@@ -1882,6 +1947,8 @@ class WidthDriver:
         # The width planner still chooses designs. Continuation may refresh and
         # install its existing waiting records, without a second design chooser.
         active_spec=deepcopy(self.spec);active_spec['max_new_q3_per_method']=budgets
+        if exploratory and self.work_conserving_search:
+            search.setdefault('feasibility_first',True)
         shortlist = {}
         if exploratory:
             shortlist = self.state.get('shortlist_price_candidates')
@@ -2352,6 +2419,8 @@ class WidthDriver:
                 stop={m:r['stop_reason']for m,r in result.items()},new_calls={m:r['new_calls']for m,r in result.items()})))+'\n')
         with K.CLI.round_phase(self.run, 'WIDTH_UPDATE_CANDIDATE_STATE'):
             self.update_evaluated_points(context, search, result)
+            if getattr(self, 'scaled_shots', False):
+                self.write_scope_map(result)
             self.shortlist_price_changed = False
             if exploratory:
                 current = shortlist_price_ids(result)
@@ -2622,6 +2691,7 @@ class WidthDriver:
                     p['status'] in ('HELD','PRICE_ACTION_UNAVAILABLE','PRICE_NOT_EVALUATED')
                     for p in self.state['points']) or pf_held or any(
                     r.get('not_ready_candidates') or r.get('scaled_shots', {}).get('scope_coverage', {}).get('missing_count')
+                    or r.get('scaled_shots', {}).get('unpriced_feasible')
                     for r in result.values())
                 reason=('SCOPE_HELD_INPUTS' if blocked else 'REQUESTED_WIDTH_RULE_EXHAUSTED') if getattr(self,'rule_stop',False) else (
                     'WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED')
@@ -2655,7 +2725,8 @@ class WidthDriver:
                     continue
                 self.state['stop']=dict(reason=reason,
                     UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()},
-                    unresolved_q3_attempts=unresolved);self.save();return
+                    unresolved_q3_attempts=unresolved,
+                    scope_summary=getattr(self,'scope_summary',None));self.save();return
             recheck_delay = 15
         self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'MAX_CYCLES',
             UTC=K.now(),unresolved_q3_attempts=unresolved);self.save()
@@ -2772,6 +2843,7 @@ def main(argv=None, *, driver_factory=None):
     ap.add_argument('--problem', type=Path, required=True);ap.add_argument('--round', type=Path, required=True)
     ap.add_argument('--run-dir', type=Path, required=True);ap.add_argument('--batch', type=int, default=64)
     ap.add_argument('--max-cycles', type=int);ap.add_argument('--plan-only', action='store_true')
+    ap.add_argument('--import-check', action='store_true', help='Load the selected controller and fixed helpers without dispatching or writing run state')
     ap.add_argument('--prepare-readiness', action='store_true', help='plan-only: delta saved history, chosen requests, server2 dry-check and immutable remote delivery')
     ap.add_argument('--preparation-cache', type=Path, help='local disposable cache for --prepare-readiness')
     ap.add_argument('--host-readiness', type=Path, help='saved host READINESS descriptors to join during --prepare-readiness')
@@ -2780,6 +2852,13 @@ def main(argv=None, *, driver_factory=None):
         from trottertracks.rpe_plan_prepare import prepare
         return prepare(a, code_root=ROOT, cli=K.CLI)
     problem=O.load_json(a.problem);spec=O.load_json(a.round)
+    if a.import_check:
+        if trial := globals().get('FIXED_RUN_WORKER_TRIAL'):
+            apply_worker_trial(spec, trial, run_dir=a.run_dir)
+        from trottertracks import rpe_scope_map, rpe_scaled_shots, rpe_optimizer_concurrent, rpe_pbs
+        print(json.dumps(dict(status='IMPORT_CHECK_PASS', controller=str(Path(__file__).resolve()),
+                              run_directory=str(a.run_dir.resolve()), dispatch=False)))
+        return
     if a.max_cycles is None and not spec.get('search_to_rule_stop'):a.max_cycles=200
     declared=W.requested_widths(problem,spec)
     if driver_factory is None and declared is None and not spec.get('search_to_rule_stop') and any(m in('FULL_PF','TRUNCATED_PF')for m in spec.get('methods',[])):

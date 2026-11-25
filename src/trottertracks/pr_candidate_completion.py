@@ -189,13 +189,42 @@ def physical_evaluation_contract(config):
     for row in sorted(config['rounds'],key=lambda r:r['m']):
         physical=deepcopy(row.get('physical_candidate',{}));physical.pop('id',None)
         candidate=deepcopy(row.get('candidate',{}));candidate.pop('id',None)
+        if physical:
+            # The physical recipe itself is retained above, so its derived
+            # identifier is not an independent scientific condition.
+            candidate.pop('source_candidate_id',None)
+        law=deepcopy(row.get('law_binding'))
+        if isinstance(law,dict):
+            for field in ('configuration_id','candidate_id'):
+                law.pop(field,None)
+            if isinstance(law.get('kappa'),dict):
+                law['kappa'].pop('value',None)
+            declaration=(law.get('definition') or {}).get('A_declaration')
+            if physical and isinstance(declaration,dict):
+                declaration.pop('candidate_id',None)
         rows.append(dict(m=row['m'],T=row['T'],q=row['q_PF'],R=row['R_outer'],
             actual_delta_pf=row['actual_delta_pf'],structure=row['structure'],
-            law_binding=row.get('law_binding'),physical_candidate=physical,candidate=candidate))
+            law_binding=law,physical_candidate=physical,candidate=candidate))
     return dict(spec=spec,rounds=rows)
 
 
 class Held(Exception):pass
+
+
+def preparation_failure_class(reason, evidence=None):
+    """Classify diagnostics separately from the existing no-retry guard."""
+    evidence = evidence or {}
+    if 'NUMERICAL_GATE' in reason or evidence.get('failed_signal_rounds'):
+        return 'SCIENTIFIC_NUMERICAL_FAILURE'
+    if evidence.get('action') in ('RECOVER_ORIGINAL_ATTEMPT', 'CHECK_ORIGINAL_REQUEST', 'CHECK_ORIGINAL_OUTPUT'):
+        return 'EXECUTION_OWNERSHIP_UNRESOLVED'
+    if 'STAGE_FAILED:' in reason or 'NO_AUTOMATIC_RETRY' in reason:
+        return 'TECHNICAL_OR_EXECUTION_FAILURE_REQUIRES_RECONCILIATION'
+    if reason.startswith(('PRICE_', 'DF_PRICE_ACTION_UNAVAILABLE')):
+        return 'PRICE_EVIDENCE_REQUIRED'
+    if reason.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'):
+        return 'OPERATIONAL_WAIT'
+    return 'TECHNICAL_INPUT_OR_TOOL_FAILURE'
 
 class PreparationWait(Held):
     """A stage can be checked again through its original request and owner."""
@@ -1342,8 +1371,13 @@ class Completion:
             rec.update(status='WAITING_DISTRIBUTED_PREPARATION'if operational else
                        'PRICE_NOT_EVALUATED'if unavailable else'WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
                        recoverable_preparation=operational,
+                       failure_class=preparation_failure_class(text,rec.get('preparation_recovery')),
+                       retry_protected=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')),
+                       # Legacy readers on fixed releases interpret this bit
+                       # as a no-retry guard. Classification is failure_class.
                        scientific_failure=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')))
-        except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),scientific_failure=True)
+        except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),
+            failure_class='TECHNICAL_INPUT_OR_TOOL_FAILURE',retry_protected=True,scientific_failure=True)
         finally:
             if physical_guard is not None:physical_guard.release()
         if request.get('horizon_parent'):

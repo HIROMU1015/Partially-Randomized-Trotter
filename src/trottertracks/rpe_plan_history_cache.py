@@ -498,6 +498,9 @@ class HistoryCache:
         started = time.monotonic()
         ready = {c['configuration_id']: c for c in candidates
                  if c['ready'] and c['configuration_id']}
+        declared = {c['configuration_id'] for c in candidates if c.get('configuration_id')}
+        def unavailable_reason(cid):
+            return 'CONFIGURATION_PREPARATION_PENDING' if cid in declared else 'CONFIGURATION_NOT_IN_THIS_ROUND'
         held = {(Path(row['parent_directory'])/'jobs'/row['method']/row['job_id']).resolve()
                 for row in getattr(executor, 'prior_q3_holds', ())}
         record_reuse = None if details else getattr(executor, 'record_prior_result_reuse', None)
@@ -610,7 +613,7 @@ class HistoryCache:
                     if observed_request == previous[0]:
                         stats['scanned_jobs'] += 1
                         stats['unrelated_request_hits'] += 1
-                        refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
+                        refused.append(dict(job=str(job), reason=unavailable_reason(previous[1])))
                         continue
                 signature = _signature(job)
                 present = {name for name, value in signature if value is not None}
@@ -684,7 +687,7 @@ class HistoryCache:
                             save(key, signature, old_context, cached)
                     if details and cached['outcome_status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
                         stats['current_unresolved'].append(_current_unresolved(job, cached['outcome_status']))
-                    refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
+                    refused.append(dict(job=str(job), reason=unavailable_reason(cid)))
                     continue
                 try:
                     if cid not in contexts:

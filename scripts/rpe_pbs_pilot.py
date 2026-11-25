@@ -60,7 +60,7 @@ def physical(pool, token, finished=None, *, scheduler=None, force=False):
     return row
 
 
-def reserve_locked(pool, *, replace_job_id=None, alongside_search_job_id=None):
+def reserve_locked(pool, *, replace_job_id=None, alongside_search_job_id=None, alongside_search_job_ids=()):
     current = read(pool/'CURRENT.json')
     resources = RESOURCES
     if current:
@@ -80,13 +80,15 @@ def reserve_locked(pool, *, replace_job_id=None, alongside_search_job_id=None):
     elif replace_job_id is not None:
         raise ValueError('No recorded reservation to replace')
     jobs = owned_live_jobs()
+    alongside=set(alongside_search_job_ids)
+    if alongside_search_job_id:alongside.add(alongside_search_job_id)
     for job_id, job in jobs.items():
         name = job.get('Job_Name', '')
         if not name.startswith('RPE') or job.get('job_state') in TERMINAL:
             continue
         # An operator may identify one independently managed search. Managed
         # pilot generations and unclassified scheduler records still block.
-        if job_id == alongside_search_job_id and re.fullmatch(r'RPEsearch-[0-9a-f]{5}', name):
+        if job_id in alongside and re.fullmatch(r'RPEsearch-[0-9a-f]{5}', name):
             continue
         raise ValueError('Another RPE PBS allocation is still present; reconcile it first')
     token = prepare_generation(pool, resources)
@@ -233,7 +235,7 @@ def attach(root, pool, spec):
                     raise ValueError('Original PBS reservation is unavailable for attempt replay')
                 binding = dict(token=generation)
             else:
-                binding = dict(token=reserve_locked(pool))
+                binding = dict(token=reserve_locked(pool, alongside_search_job_ids=spec.get('reason',{}).get('alongside_search_job_ids',())))
             atomic(directory/'PILOT.json', binding)
         generation = pool/'allocations'/binding['token']
         profile = dict(spec['profile'])

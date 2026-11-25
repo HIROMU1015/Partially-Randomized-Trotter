@@ -93,7 +93,21 @@ def schedule(*,M,kappa_paper,design,tail_norm,policy,mapping=MAPPING):
     index(M,'M');kappa=positive(kappa_paper,'kappa_paper')
     if mapping!=MAPPING or policy.get('policy_id')!=POLICY:raise ValueError('Explicit paper-kappa/RMSE mapping required')
     if design['system']!=design['binding']['system']:raise ValueError('System/binding differs')
-    h=positive(design['base_time'],'h');delta=positive(design['delta'],'delta')
+    h=positive(design['base_time'],'h')
+    # Preserve the source-bound fixed-grid adapter unless the caller selects
+    # the distinct max-width definition. Exact requested widths need not be
+    # representable as a single binary64.
+    grid_policy=design.get('pf_grid_policy')
+    if grid_policy is None:
+        delta=positive(design['delta'],'delta')
+    else:
+        from .rpe_scope_map import MAX_WIDTH_MAPPER, exact, max_width_schedule
+        if grid_policy!=MAX_WIDTH_MAPPER or 'requested_delta_pf' not in design:
+            raise ValueError('Explicit requested-max-width mapper and exact requested width required')
+        delta=exact(design['requested_delta_pf'])
+        if Fraction(float(h)) != h:
+            raise ValueError('Existing numerical kernel requires an exact binary64 base time')
+        planned=max_width_schedule(h,delta,M)['rows']
     lam=positive(tail_norm['lambda_R'],'lambda_R')
     if (not common.same(tail_norm['binding'],design['binding']) or tail_norm['prefix']!=design['prefix']
             or not tail_norm.get('source')):raise ValueError('Tail norm SOURCE/prefix/binding mismatch')
@@ -120,11 +134,15 @@ def schedule(*,M,kappa_paper,design,tail_norm,policy,mapping=MAPPING):
             nominal=None
         else:
             if design['system']=='H6' and m<4:raise ValueError('H6 initial rounds require explicit saved exceptions')
-            q=Fraction(T)/delta
-            if q.denominator!=1 or q<1:raise ValueError('Nonintegral PF grid; no implicit delta change')
-            q=int(q);nominal=kappa*lam*lam*Fraction(T)**2
+            if grid_policy is None:
+                q=Fraction(T)/delta
+                if q.denominator!=1 or q<1:raise ValueError('Nonintegral PF grid; no implicit delta change')
+                q=int(q);actual=delta
+            else:
+                q=planned[m]['q_PF'];actual=Fraction(T)/q
+            nominal=kappa*lam*lam*Fraction(T)**2
             prototype=dict(system=design['system'],method='PR',formula=design['formula'],prefix=design['prefix'],
-                T=T,q=q,delta=float(delta),R_outer=11 if design['formula']=='4th(m5_best)' else 1,K=design['K'])
+                T=T,q=q,delta=float(actual),R_outer=11 if design['formula']=='4th(m5_best)' else 1,K=design['K'])
             J=len(common.structure(prototype)['signed_weights'])
             mapped=paper_event_mapper(kappa_paper=kappa,lambda_R=lam,T=T,q_PF=q,
                 signed_weights=common.structure(prototype)['signed_weights'])
@@ -145,6 +163,10 @@ def schedule(*,M,kappa_paper,design,tail_norm,policy,mapping=MAPPING):
                 involutory_tail_mapping_qualified=False,
                 negative_signed_pieces=any(w<0 for w in st['signed_weights']),
                 paper_e1_over_kappa_envelope_assumed=False)
+            if grid_policy is not None and not old:
+                mapping_info.update(pf_grid_policy=grid_policy,requested_delta_pf=str(delta),
+                                    actual_delta_pf_exact=str(Fraction(T)/c['q']),
+                                    actual_delta_binary64=c['delta'].hex())
             identity=common.identity(task,dict(row,structure=st))
             request=dict(identity=identity,policy_id=POLICY,mapping=mapping_info,
                 law_binding=dict(model=st['law_model'],candidate_id=c['id'],R_outer=c['R_outer'],K=c['K'],q_PF=c['q'],

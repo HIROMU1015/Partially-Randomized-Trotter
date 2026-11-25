@@ -17,6 +17,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from .rpe_preparation_artifacts import (
     ArtifactCache, artifact_path, artifact_hash, df_calibration_receipt, input_manifest, worker_cache,
@@ -130,8 +131,15 @@ packages = {name: importlib.metadata.version(name) for name in requirements['pac
 with contextlib.redirect_stdout(sys.stderr):
     for name in requirements['imports']:
         importlib.import_module(name)
+numpy_build = None
+if 'numpy' in sys.modules:
+    import io
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        sys.modules['numpy'].__config__.show()
+    numpy_build = output.getvalue()
 print(json.dumps(dict(executable=sys.executable, version=sys.version,
-    version_info=list(sys.version_info), platform=platform.platform(), packages=packages)))
+    version_info=list(sys.version_info), platform=platform.platform(), packages=packages,numpy_build=numpy_build)))
 """
     result=subprocess.run([python,'-B','-c',probe],input=json.dumps(dict(
         packages=list(requirements.get('packages', {})), imports=requirements.get('imports', []))),
@@ -660,6 +668,23 @@ def execute(assignment, base_profile, directory):
                    OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',
                    RAYON_NUM_THREADS='1', QISKIT_NUM_PROCS='1')
     start=time.monotonic();timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_START',stage=spec['stage'])
+    # Sample this attempt's aggregate process tree, including parallel wrapper
+    # children. A sampled peak is observation, not a certified memory limit.
+    sample_stop=threading.Event();measurement={'peak_sampled_rss_bytes':0,'samples':0}
+    def sample_resources():
+        from .rpe_q3_resources import owned_tree_sample
+        while not sample_stop.is_set():
+            try:
+                value=owned_tree_sample(os.getpid())
+                measurement['peak_sampled_rss_bytes']=max(measurement['peak_sampled_rss_bytes'],value['rss_bytes'])
+                measurement['samples']+=1
+            except (OSError,ValueError):
+                pass
+            sample_stop.wait(.25)
+    sampler=None
+    if not spec.get('artificial'):
+        sampler=threading.Thread(target=sample_resources,name='preparation-resource-sample',daemon=True)
+        sampler.start()
     with (directory/'PREPARATION_BODY.log').open('xb') as log:
         try:
             process = subprocess.run(command, cwd=source, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -673,8 +698,19 @@ def execute(assignment, base_profile, directory):
             put(directory/'ARTIFACT_MANIFEST.json', {})
             put(directory/'OUTCOME.json', outcome)
             return outcome
+        finally:
+            sample_stop.set()
+            if sampler is not None:sampler.join()
     timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_END',stage=spec['stage'],returncode=process.returncode)
     receipt=dict(command=command,source=spec['source'],runtime=fingerprint['runtime'],tools=fingerprint['tools'],returncode=process.returncode if process.returncode>=0 else None,signal=-process.returncode if process.returncode<0 else None,wall_seconds=time.monotonic()-start,automatic_retry=False)
+    receipt['numerical_environment']={key:env.get(key) for key in
+        ('OPENBLAS_CORETYPE','OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','RAYON_NUM_THREADS','QISKIT_NUM_PROCS')}
+    if measurement['samples']:
+        measurement.update(scope='OWNED_PROCESS_TREE_SAMPLED_NOT_UPPER_BOUND',sample_period_seconds=.25,
+                           task_cpu_count=profile.get('task_cpu_count'),provider=spec.get('provider'),
+                           source=spec['source']['commit'],host_id=profile['host_id'])
+        receipt['resource_measurement']=measurement
+        outcome['resource_measurement']=measurement
     if process.returncode == -signal.SIGTERM and spec.get('provider') == 'DF_CALIBRATION':
         receipt['provider_session_drained'] = calibration_session_drained(directory)
     put(directory/'PREPARATION_RECEIPT.json',receipt)
