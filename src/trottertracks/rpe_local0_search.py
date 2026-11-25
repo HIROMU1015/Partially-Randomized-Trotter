@@ -1482,7 +1482,7 @@ def reconcile_controller_detachment(run, launch, invocation):
 
 
 def reconcile_controller_kill(run, launch, ended, invocation):
-    """Resume a checkpoint after its killed controller and run-owned workers have ended."""
+    """Resume an ended controller; reattach exactly owned work on a fixed endpoint."""
     import sqlite3
 
     try:
@@ -1494,7 +1494,7 @@ def reconcile_controller_kill(run, launch, ended, invocation):
                 or launch != load(archived/'LAUNCH.json') or ended != load(archived/'EXIT.json')
                 or driver.get('invocation_id') != invocation):
             raise ValueError('the killed invocation differs')
-        for owner in (launch, driver, relay, load(run/'distributed/LOCAL_DAEMON.json')):
+        for owner in (launch, driver):
             pid = owner['pid']
             if type(pid) is not int or pid <= 0:
                 raise ValueError('invalid owner PID')
@@ -1507,6 +1507,53 @@ def reconcile_controller_kill(run, launch, ended, invocation):
         hold = driver_restart_hold(run, load(run/'ROUND.json'))
         if hold:
             raise ValueError(hold)
+        # Same fixed-endpoint reattachment as the in-invocation SIGKILL
+        # recovery: outstanding attempts remain owned by their original hosts.
+        # The controller and manager must be gone, not their valid workers.
+        spec=load(run/'ROUND.json');distributed=spec['executor']['distributed']
+        endpoint_path=run/'distributed/ENDPOINT.json'
+        if endpoint_path.is_file() and distributed.get('port',8763):
+            endpoint=load(endpoint_path);port=distributed.get('port',8763)
+            if endpoint['pid']!=driver['pid'] or endpoint['url']!='http://127.0.0.1:'+str(port):
+                raise ValueError('previous controller endpoint differs')
+            local_worker_for_reattachment(run)
+            relay_dir=(run/'distributed/relay').resolve();relay_config=relay_dir/'CONFIG.json'
+            try:args=Path('/proc',str(relay['pid']),'cmdline').read_bytes().rstrip(b'\0').split(b'\0')
+            except FileNotFoundError:args=[]
+            if args and args!=[b'']:
+                if (len(args)<5 or Path(os.fsdecode(args[2])).name!='run_rpe_q3_relay.py'
+                        or args[3:5]!=[b'--config',os.fsencode(relay_config)]
+                        or Path(relay['configuration']).resolve()!=relay_config
+                        or load(relay_config)['controller']['local_port']!=port
+                        or (relay_dir/'STOP').exists()):
+                    raise ValueError('surviving relay is not the fixed endpoint owner')
+                with (relay_dir/'RELAY.lock').open('rb') as lock:
+                    try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                    except BlockingIOError:pass
+                    else:raise ValueError('surviving relay has no ownership lock')
+            pbs=run/'distributed/pbs';state=pbs/'STATE.json'
+            with ExitStack() as locks:
+                for path in (run/'FAST_DRIVER.lock',pbs/'MANAGER.lock'):
+                    if path.exists():fcntl.flock(locks.enter_context(path.open('rb')),fcntl.LOCK_EX|fcntl.LOCK_NB)
+                if state.is_file():
+                    for record in load(state)['allocations'].values():
+                        if record['status'] not in ('F','X','FINISHED_SAVED_WORKER','SUBMIT_REJECTED','SUPERSEDED_UNSUBMITTED'):
+                            if Path(record['spec']['run_id']).resolve()!=run.resolve():
+                                raise ValueError('open PBS allocation belongs to another run')
+                queue=(run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+                with sqlite3.connect(queue,uri=True) as db:
+                    verify_reattachable_attempts(run,db)
+                    rows=db.execute("SELECT job_id,attempt_id,state FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED','QUEUED')").fetchall()
+            return dict(reason='CONTROLLER_KILLED_FIXED_ENDPOINT_REATTACHED',invocation_id=invocation,
+                        returncode=ended['returncode'],reattached_attempts=[dict(job_id=j,attempt_id=a,state=s)for j,a,s in rows if s!='UNKNOWN'],
+                        held_attempts=[dict(job_id=j,attempt_id=a)for j,a,s in rows if s=='UNKNOWN'])
+        for owner in (relay,load(run/'distributed/LOCAL_DAEMON.json')):
+            pid=owner['pid']
+            if type(pid) is not int or pid<=0:raise ValueError('invalid worker PID')
+            try:
+                if Path('/proc',str(pid),'cmdline').read_bytes().strip(b'\0'):
+                    raise ValueError('an owner still has a live process')
+            except FileNotFoundError:pass
         terminal_pbs = ('F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED')
         if any(a['status'] not in terminal_pbs or a.get('inflight')
                for a in load(run/'distributed/pbs/STATE.json')['allocations'].values()):
@@ -1529,6 +1576,8 @@ def reconcile_controller_kill(run, launch, ended, invocation):
                     held.append(dict(job_id=job, attempt_id=attempt))
         return dict(reason='CONTROLLER_KILLED_CHECKPOINT_RECONCILED', invocation_id=invocation,
                     returncode=ended['returncode'], held_attempts=held)
+    except BlockingIOError as error:
+        raise RequestError('runtime_ownership','controller kill reconciliation: '+str(error)) from error
     except (OSError, ValueError, KeyError, sqlite3.Error) as error:
         raise RequestError('run', 'controller kill reconciliation: '+str(error)) from error
 

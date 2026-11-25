@@ -199,6 +199,34 @@ class Tests(unittest.TestCase):
         saved = load(run/'stop-history'/('controller_kill-'+invocation+'.json'))
         self.assertEqual(saved['held_attempts'], [dict(job_id='artificial-job', attempt_id=before['attempt_id'])])
 
+    def test_killed_fixed_endpoint_reattaches_original_attempt(self):
+        import signal
+        from trottertracks.rpe_local0_search import reconcile_controller_kill
+        from trottertracks.rpe_q3_store import JobStore
+        invocation='c'*32;run=self.home/'fixed-reattach';pid=2147483647
+        launch=dict(invocation_id=invocation,pid=pid);ended=dict(invocation_id=invocation,returncode=-signal.SIGKILL)
+        for location in (run,run/'invocations'/invocation):
+            write(location/'LAUNCH.json',launch);write(location/'EXIT.json',ended)
+        write(run/'NORMAL_DRIVER.json',launch)
+        write(run/'ROUND.json',dict(round_id='fixed',executor=dict(distributed=dict(port=8763))))
+        write(run/'KAPPA_STATE.json',dict(schema='RPE_REQUESTED_WIDTH_SCHEDULE_STATE_V1',round_id='fixed'))
+        write(run/'distributed/ENDPOINT.json',dict(pid=pid,url='http://127.0.0.1:8763'))
+        write(run/'distributed/relay/STATUS.json',dict(pid=pid,stopped=False))
+        write(run/'distributed/LOCAL_DAEMON.json',dict(pid=pid))
+        write(run/'distributed/pbs/STATE.json',dict(allocations={'a':dict(status='R',spec=dict(run_id=str(run)))}))
+        (run/'FAST_DRIVER.lock').touch()
+        store=JobStore(run/'distributed/QUEUE.sqlite3');request=dict(route=dict(kind='artificial'))
+        store.reserve('PR_DF','original',request,2,True)
+        assignment,=store.claim('worker',1)
+        write(run/'jobs/PR_DF/original/REQUEST.json',request)
+        receipt=reconcile_controller_kill(run,launch,ended,invocation)
+        self.assertEqual(receipt['reattached_attempts'],[dict(job_id='original',attempt_id=assignment['attempt_id'],state='ASSIGNED')])
+        self.assertEqual(store.row('original')['attempt_id'],assignment['attempt_id'])
+        self.assertEqual(store.row('original')['state'],'ASSIGNED')
+        write(run/'jobs/PR_DF/original/REQUEST.json',dict(other=True))
+        with self.assertRaisesRegex(RequestError,'saved request differs'):
+            reconcile_controller_kill(run,launch,ended,invocation)
+
     def test_unattended_recovery_preserves_start_and_waits_for_a_receipt(self):
         import signal
         from trottertracks.rpe_q3_store import JobStore
