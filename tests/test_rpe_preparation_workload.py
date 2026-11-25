@@ -51,6 +51,7 @@ def test_storage_budget_reserves_other_owners_without_blocking_independent_work(
     assert not fits(report, dict(storage_bytes=40), reserved=21)
     assert fits(report, {}, reserved=60)
     assert not fits(dict(storage=dict(limit_bytes=100)), dict(storage_bytes=1))
+    assert not fits(dict(storage=dict(used_bytes=10, limit_bytes=100, filesystem_free_bytes=20, filesystem_min_free_bytes=5)), dict(storage_bytes=16))
 
 
 def test_streaming_event_digest_and_lossless_compact_document(tmp_path):
@@ -130,3 +131,24 @@ def test_reversible_pbs_drain_keeps_deadline_and_process_stop():
         worker.remaining = lambda:100
         sync(worker, {'stop':False}); assert worker.draining
         worker.stop.set();sync(worker, {'stop':False}); assert worker.draining
+
+
+def test_probe_priority_matches_admitted_class_and_keeps_other_work():
+    executor = DistributedExecutor.__new__(DistributedExecutor)
+    executor.hosts = {'direct':{'resource_report':{'admitted_task_classes':['selected']}}}
+    executor._fits_host_task_class = lambda host,row:row['kind']=='selected'
+    rows = [dict(kind='other', job_id='a'),dict(kind='other',job_id='b'),dict(kind='selected',job_id='c')]
+    assert [row['job_id'] for row in executor._prioritize_probe_classes('direct',rows,2,1)] == ['c','a']
+
+
+def test_direct_inflight_offer_not_reused_by_other_or_late_poll():
+    import time
+    executor = DistributedExecutor.__new__(DistributedExecutor)
+    current = time.monotonic()-5
+    executor.hosts = {'direct':{'poll_started':current}, 'remote':{'poll_started':current}}
+    executor.pbs_manager = None; executor.distributed = {'relay':{'workers':[{'host_id':'remote'}]}}
+    assert executor._inflight_direct_offer('direct',current)
+    assert not executor._inflight_direct_offer('direct',current-1)
+    assert not executor._inflight_direct_offer('remote',current)
+    executor.hosts['direct']['poll_started']=current-20
+    assert not executor._inflight_direct_offer('direct',current-20)

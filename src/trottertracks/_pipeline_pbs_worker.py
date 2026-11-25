@@ -823,7 +823,9 @@ class AllocationWorker(Worker):
             needed = resources.get('storage_bytes', 0)
             if needed and storage:
                 used, limit = storage.get('used_bytes'), storage.get('limit_bytes')
-                if type(used) is not int or type(limit) is not int or used + reserved_storage + needed > limit:
+                free, minimum = storage.get('filesystem_free_bytes'), storage.get('filesystem_min_free_bytes')
+                if (type(used) is not int or type(limit) is not int or used + reserved_storage + needed > limit
+                        or (type(free) is int and type(minimum) is int and free-reserved_storage-needed < minimum)):
                     continue
             request = self.records[attempt].get('request', {})
             q3 = getattr(self, 'memory_backfill', False) and 'preparation' not in request

@@ -1615,10 +1615,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 task.view.log(event='WORKER_CONTACT_LOST', job=row['job_id'], host_id=row['host_id'],
                               attempt_id=row['attempt_id'], owner_preserved=True, automatic_retry=False)
 
-    def _offer_free(self, host, policy, error=None, *, owned=None):
+    def _offer_free(self, host, policy, error=None, *, owned=None, current_poll=None):
         """Fresh unused capacity, never a lease on an assigned evaluation."""
         info = self.hosts.get(host)
-        if not self._offer_fresh(host):
+        if not self._offer_fresh(host) and not self._inflight_direct_offer(host, current_poll):
             return 0
         if info.get('accepting_new_jobs') is False: return 0
         admission = self._host_admission(host, policy, error)
@@ -1649,11 +1649,24 @@ class DistributedExecutor(ConcurrentExecutor):
             ttl = self.allocation_config['remote_offer_ttl_seconds']
         return time.monotonic() - info.get('observed_monotonic', float('-inf')) <= ttl
 
-    def _refresh_capacity(self, policy, error=None, *, queue=None, rows=None, owned=None):
+    def _inflight_direct_offer(self, host, poll_started):
+        """The replying direct poll owns its offer, not another host's stale offer."""
+        if poll_started is None:return False
+        info = self.hosts.get(host, {})
+        if info.get('poll_started') != poll_started:return False
+        if self.pbs_manager is not None and host in self.pbs_manager.configured:return False
+        if any(w['host_id'] == host for w in (self.distributed.get('relay') or {}).get('workers', ())):return False
+        # The direct worker waits at most ten seconds for the RPC response.
+        # A newer observation or a completed/lost RPC cannot extend the offer.
+        return time.monotonic() - poll_started <= 10
+
+    def _refresh_capacity(self, policy, error=None, *, queue=None, rows=None, owned=None, current_offer=None):
         if not self.state.allocation_auto: return
         owned = self._owned_attempts() if owned is None else owned
         queue = self._ready_queue() if queue is None else queue
-        available = {host:self._offer_free(host, policy, error, owned=owned) for host in self.hosts.copy()}
+        available = {host:self._offer_free(host, policy, error, owned=owned,
+                     current_poll=current_offer[1] if current_offer and host == current_offer[0] else None)
+                     for host in self.hosts.copy()}
         available = {host:min(free,len(queue)) for host,free in available.items() if free > 0}
         usable = len(self._match_ready_jobs(queue, available, owned=owned, rows=rows))
         capacity = max(1, len(owned)+usable)
@@ -2298,7 +2311,21 @@ class DistributedExecutor(ConcurrentExecutor):
         if not needed or not storage:
             return True
         used, limit = storage.get('used_bytes'), storage.get('limit_bytes')
-        return (type(used) is int and type(limit) is int and used + reserved + needed <= limit)
+        free, minimum = storage.get('filesystem_free_bytes'), storage.get('filesystem_min_free_bytes')
+        return (type(used) is int and type(limit) is int and used + reserved + needed <= limit
+                and (type(free) is not int or type(minimum) is not int or free-reserved-needed >= minimum))
+
+    def _prioritize_probe_classes(self, host, rows, limit, slots):
+        classes = (self.hosts.get(host, {}).get('resource_report') or {}).get('admitted_task_classes')
+        if not classes:return rows[:limit]
+        fitting, other = [], []
+        for row in rows:
+            (fitting if self._fits_host_task_class(host, row) else other).append(row)
+        preferred = min(limit, max(1, slots), len(fitting))
+        # A cold class needs its own current proof rather than a round trip
+        # through the entire heterogeneous queue. Other requests still get
+        # their share of the metadata window, including zero-fit classes.
+        return (fitting[:preferred] + other + fitting[preferred:])[:limit]
 
     def _capacity_feedback(self, host):
         epoch = self.state.allocation_epoch
@@ -3913,10 +3940,10 @@ class DistributedExecutor(ConcurrentExecutor):
             self.log(event='PREPARATION_RESOURCE_OBSERVATION_FAILED', host_id=host, reason=str(error))
         self._refresh_pending_preparation(host, preparation_reports, poll_started=poll_started)
         mark("publish_preparation_readiness")
-        new_slots = self._offer_free(host, admission_policy, admission_error, owned=owned)
+        new_slots = self._offer_free(host, admission_policy, admission_error, owned=owned, current_poll=poll_started)
         may_probe = (not stopping and not s.failure and not s.closed and admission['accepting']
                      and admission['max_slots'] != 0 and value.get('accepting_new_jobs', True)
-                     and self._offer_fresh(host)
+                     and (self._offer_fresh(host) or self._inflight_direct_offer(host, poll_started))
                      and ((value.get('resource_report') or {}).get('storage') or {}).get('accepting_new_jobs', True))
         probe_slots = max(new_slots, buffer_slots)
         pending_challenges = self._pending_preparation_challenges(host, probe_slots) if may_probe else []
@@ -3941,7 +3968,8 @@ class DistributedExecutor(ConcurrentExecutor):
         queue = rows = None
         if may_probe and (new_slots or buffer_slots):
             queue, rows = self._ready_queue_snapshot()
-            self._refresh_capacity(admission_policy, admission_error, queue=queue, rows=rows, owned=owned)
+            self._refresh_capacity(admission_policy, admission_error, queue=queue, rows=rows, owned=owned,
+                                   current_offer=(host, poll_started))
         mark("match_capacity")
         if may_probe and new_slots:
             pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
@@ -3955,7 +3983,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 # while the controller validates every waiting request.
                 start = self.poll_probe_offsets.get(host, 0) % len(probe_rows)
                 limit = min(len(probe_rows), max(new_slots, self._host_readiness_limit(host)))
-                for row in (probe_rows[start:]+probe_rows[:start])[:limit]:
+                ordered = self._prioritize_probe_classes(host, probe_rows[start:]+probe_rows[:start], limit, new_slots)
+                for row in ordered:
                     try:
                         challenge = self._assignment(row, host_id=host)
                     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
@@ -4156,7 +4185,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     standby_active += task is not None and task.status == 'RUNNING'
             unresolved = len(owned_now) - len(standby_owners)
             active = s.active - standby_active
-            new_slots = self._offer_free(host, admission_policy, admission_error, owned=owned_now)
+            new_slots = self._offer_free(host, admission_policy, admission_error, owned=owned_now, current_poll=poll_started)
             remaining = max(0, min(slots-len(assignments), new_slots,
                 self.capacity-max(active, unresolved)-len(reserved_for_preferred)))
             resource_pool = pool
