@@ -196,6 +196,31 @@ class ReleaseTests(unittest.TestCase):
             self.assertEqual(fixed, (run / 'ROUND.json').read_bytes())
             self.assertEqual(load(run / 'CONTROLLER_CONFIG.json')['computation_source'], 'FROZEN_SCIENCE_A')
 
+    def test_common_release_policy_is_pinned_across_multiple_normal_runs(self):
+        from trottertracks.rpe_release_registry import common_worker_policy
+        config = dict(self.a, entry='schedule', release_worker_policy=dict(
+            controller_queue_first=True, pbs_collection_workers=24,
+            preparation_provider_hosts={'DF_CALIBRATION': ['local']}))
+        service = self.root/'common-service.json';write(service,config)
+        register(self.registry,'common',service,activate=True)
+        gateway = self.gateway()
+        first = gateway.handle(request(4,6))
+        second = gateway.handle(request(3,5))
+        self.assertNotEqual(first['run_id'],second['run_id'])
+        for result in (first,second):
+            run = Path(result['run_directory'])
+            self.assertEqual(load(run/'ROUND.json')['release_worker_policy'],config['release_worker_policy'])
+        self.switch()
+        resumed = gateway.handle(dict(action='resume',run_id=first['run_id'],instruction='Artificial resume'))
+        self.assertEqual(resumed['release']['id'],'common')
+        self.assertEqual(load(Path(first['run_directory'])/'ROUND.json')['release_worker_policy'],config['release_worker_policy'])
+        with self.assertRaisesRegex(ValueError,'Run-specific'):
+            common_worker_policy({'failed_preparation_recalculations': []})
+        with self.assertRaisesRegex(ValueError,'Run-specific'):
+            common_worker_policy({'server1_worker': {}})
+        with self.assertRaisesRegex(ValueError,'release run root'):
+            common_worker_policy({'pf_controller_runtime': {'run_directory': '/old/run'}})
+
     def test_unknown_action_is_rejected_before_run_creation(self):
         q=request(4,6);q['action']='launch_everything'
         with self.assertRaisesRegex(RequestError,'preview, planonly'):

@@ -84,7 +84,8 @@ def retry_records(records, repairs, *, pf=False):
                     matches.append(task)
             if not matches:
                 raise ValueError('Preparation repair has no selected terminal task: '+key)
-            if not pf and (original.get('method') != 'PR_DF' or not original.get('scientific_failure')):
+            from .pr_candidate_completion import preparation_retry_protected
+            if not pf and (original.get('method') != 'PR_DF' or not preparation_retry_protected(original)):
                 raise ValueError('Preparation repair only lifts the selected PR candidate failure')
             used.update(matches)
             archived[key] = dict(original_record=original, state_file=str(state_file),

@@ -126,7 +126,10 @@ def main():
                      patch.object(C, 'publish', return_value='fixed'), patch.object(C, 'value', side_effect=read_previous):
                     result = completion.complete(request)
                 self.assertEqual(result['reason'], 'PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:physical_twin')
-                self.assertTrue(result['scientific_failure'])
+                # A legacy technical failure still protects the physical twin
+                # from retry, without claiming a scientific numerical failure.
+                self.assertTrue(result['retry_protected'])
+                self.assertFalse(result['scientific_failure'])
                 self.assertIn('late', records)
 
     def test_published_v2_missing_order_not_reimplemented(self):

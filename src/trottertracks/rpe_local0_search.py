@@ -130,6 +130,11 @@ def resolve(config, request):
     keys(scope, {'system', 'methods', 'per_method', 'shots', 'stop', 'preparation_budgets', 'scaled_shots',
                  'pbs_walltime_overrides', 'execution_hosts', 'exploration_order'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
+    if config.get('release_worker_policy'):
+        from .rpe_release_registry import common_worker_policy
+        if config.get('entry') != 'schedule':
+            raise RequestError('release_worker_policy','common worker policy requires schedule entry')
+        spec['release_worker_policy'] = common_worker_policy(config['release_worker_policy'])
     if 'system' in scope and scope['system'] != problem.get('problem', {}).get('system'):
         raise RequestError('scope.system', 'system is unavailable on the selected release')
     if config.get('release_manifest'):
@@ -473,6 +478,14 @@ def summarize(problem, spec, canonical):
             ('compact_q3_evidence', 'parallel_dp_residual', 'prefix_cache_max_bytes',
              'prefix_checkpoint_rounds', 'prefix_selective_checkpoint_rounds',
              'prefix_selective_window_seconds', 'profile_dp_residual') if key in execution}
+    if policy := spec.get('release_worker_policy'):
+        result['release_worker_policy'] = dict(fields=sorted(policy))
+        if policy.get('df_max_width'):
+            result['release_worker_policy']['pr_df_mapper_source'] = policy['df_max_width']['source']
+        if policy.get('pf_price_recheck_provider'):
+            provider=policy['pf_price_recheck_provider']
+            result['release_worker_policy']['pf_price_provider_source'] = provider['source']
+            result['release_worker_policy']['pf_price_provider_hosts'] = ['local', *sorted(provider.get('host_deployments', {}))]
     completion = spec.get('candidate_completion') or {}
     if 'PR_DF' in spec['methods'] and 'parallel_df_price_axes' in completion:
         result['parallel_df_price_axes'] = completion['parallel_df_price_axes']
@@ -507,11 +520,15 @@ def local0_progress(applied, spec, run=None):
     if run is None:
         return progress
     scope_path=run/'SCOPE_MAP.json'
-    if scope_path.is_file():
-        scope=load(scope_path)
-        progress['scope_map']=dict(path=str(scope_path), schema=scope['schema'],
-            mapper_version=scope.get('mapper_version'),methods={m:{k:v[k] for k in ('requested','counts','axes')}
-                                                               for m,v in scope['methods'].items()})
+    scope = load(scope_path) if scope_path.is_file() else None
+    preparation_records = []
+    def join_scope():
+        if scope is not None:
+            from .rpe_scope_progress import scope_progress
+            progress['scope_map'] = dict(path=str(scope_path), schema=scope['schema'],
+                mapper_version=scope.get('mapper_version'), snapshot_epoch=scope_path.stat().st_mtime,
+                methods=scope_progress(scope, preparation_records, observations))
+
     preflight = run/'DUPLICATE_PREFLIGHT.json'
     if preflight.is_file():
         progress['saved_evaluations'] = load(preflight).get('reused', {})
@@ -551,6 +568,7 @@ def local0_progress(applied, spec, run=None):
                    'PRICE_ACTION_UNAVAILABLE': 'TECHNICAL_FAILURE', 'PRICE_RECHECK_AVAILABLE': 'PREPARATION_WAITING',
                    'PRICE_OWNER_WAITING': 'PREPARATION_WAITING', 'PRICE_NOT_EVALUATED': 'NOT_EVALUATED'}
         for key, record in load(pf_status).get('records', {}).items():
+            preparation_records.append(dict(record, configuration_id=key))
             if record.get('method') in ('FULL_PF', 'TRUNCATED_PF') and record.get('status') in pending:
                 observations[key] = dict(candidate_id=key, method=record['method'], state=pending[record['status']],
                                          reason=record.get('reason'), differing_fields=record.get('differing_fields'))
@@ -558,8 +576,18 @@ def local0_progress(applied, spec, run=None):
                     observations[key]['price_actions'] = record['price_axis_actions']
                 if record.get('preparation_recovery'):
                     observations[key]['preparation_recovery'] = record['preparation_recovery']
+    if scope is not None:
+        waves = run/'pf_auto/WAVES.json'
+        if waves.is_file():
+            preparation_records.extend(dict(record, configuration_id=key) for key,record in load(waves).items())
+        completion = run/'completion/STATE.json'
+        if completion.is_file():
+            preparation_records.extend(load(completion).get('records', {}).values())
+    method_by_candidate = {row.get('configuration_id'): row.get('method') for row in preparation_records
+                           if row.get('configuration_id') and row.get('method')}
     database = run/'distributed/QUEUE.sqlite3'
     if not database.exists():
+        join_scope()
         progress['candidates'] = list(observations.values())
         return progress
     import sqlite3
@@ -571,6 +599,7 @@ def local0_progress(applied, spec, run=None):
             rows = db.execute('''SELECT job_id,method,request,state,adopted_epoch,detail,
                 host_id,attempt_id,request_sha256 FROM jobs ORDER BY rowid''').fetchall()
         stages = {}
+        q3_horizons = {}
         def body_events(directory):
             events = set()
             for name in ('JOB_STAGES.jsonl','Q3_BODY_TIMING.jsonl'):
@@ -586,12 +615,15 @@ def local0_progress(applied, spec, run=None):
             stage = prep.get('stage', 'q3')
             count = stages.setdefault(stage, dict(stage=stage, queue_accepted=0, execution_started=0,
                 execution_completed=0, execution_unit='evaluation' if stage == 'q3' else 'stage_task',
-                active_receipts_pending=0))
+                active_receipts_pending=0, unknown_attempts=0, accepted_results=0))
             count['queue_accepted'] += 1
+            count['unknown_attempts'] += int(state=='UNKNOWN')
+            count['accepted_results'] += int(adopted is not None)
             directory = run/'jobs'/method/job
             receipt = 'Q3_BODY' if stage == 'q3' else 'PREPARATION_BODY'
-            events = body_events(directory)
-            if (receipt+'_START' not in events and state in ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')
+            terminal = (directory/'PREPARATION_RECEIPT.json').is_file() if prep else adopted is not None
+            events = set() if terminal else body_events(directory)
+            if (not terminal and receipt+'_START' not in events and state in ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')
                     and attempt and host==local_worker.get('host_id') and local_worker.get('work_dir')):
                 live=Path(local_worker['work_dir'])/job/attempt
                 assignment=live/'ASSIGNMENT.json'
@@ -601,8 +633,6 @@ def local0_progress(applied, spec, run=None):
                         events.update(body_events(live))
             native_start = receipt+'_START' in events or receipt+'_END' in events
             native_end = receipt+'_END' in events
-            # Older routes may have final receipts without the timing markers.
-            terminal = (directory/'PREPARATION_RECEIPT.json').is_file() if prep else adopted is not None
             count['execution_started'] += int(native_start or terminal)
             count['execution_completed'] += int(native_end or terminal)
             active = state in ('STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER') or (state=='ASSIGNED' and native_start)
@@ -610,7 +640,10 @@ def local0_progress(applied, spec, run=None):
             if prep:
                 if str(prep.get('provider', '')).startswith('PF_'):
                     candidate = next(iter(prep.get('outputs', [])), '').rsplit('/', 1)[-1]
-                    method = 'TRUNCATED_PF' if 'TRUNCATED_PF' in applied.get('methods', []) else 'FULL_PF'
+                    method = method_by_candidate.get(candidate) or observations.get(candidate, {}).get('method')
+                    if method is None:
+                        pf_methods = set(applied.get('methods', [])) & {'FULL_PF','TRUNCATED_PF'}
+                        method = next(iter(pf_methods)) if len(pf_methods) == 1 else 'PF_PREPARATION'
                 else:
                     candidate = ''
                 code = 'PREPARATION_RUNNING' if active else 'PREPARATION_WAITING'
@@ -620,13 +653,20 @@ def local0_progress(applied, spec, run=None):
                         code = 'TECHNICAL_FAILURE'
                     elif prep.get('provider') == 'PF_FINISH':
                         code = 'EVALUATION_WAITING'
+                    else:
+                        code = 'PREPARATION_COMPLETED'
             else:
                 candidate = request.get('configuration_id')
                 code = 'EVALUATION_COMPLETED' if adopted is not None else 'EVALUATION_RUNNING' if active else 'EVALUATION_WAITING'
             if candidate and state != 'CANCELLED':
                 metadata = json.loads(detail)
                 if state in ('FAILED', 'UNKNOWN') or (state == 'ACCEPTED' and not prep and adopted is None):
-                    code = 'TECHNICAL_FAILURE' if state != 'ACCEPTED' else 'EVALUATION_WAITING'
+                    code = ('UNKNOWN_ATTEMPT' if state == 'UNKNOWN' else
+                            'TECHNICAL_FAILURE' if state == 'FAILED' else 'EVALUATION_WAITING')
+                if not prep and isinstance(request.get('N_X'), list):
+                    horizon = len(request['N_X'])-1
+                    counts = q3_horizons.setdefault(candidate, {}).setdefault(horizon, {})
+                    counts[code] = counts.get(code, 0) + 1
                 key = (candidate, stage)
                 priority = 3 if active else 2 if state in ('QUEUED', 'ASSIGNED') else 1
                 if key not in identified or priority >= identified[key][0]:
@@ -639,9 +679,12 @@ def local0_progress(applied, spec, run=None):
                     if field in previous:
                         row[field] = previous[field]
                 observations[candidate] = row
+        for candidate, horizons in q3_horizons.items():
+            observations[candidate]['q3_horizons'] = horizons
         progress['stages'] = list(stages.values())
     except (sqlite3.Error, OSError, ValueError) as error:
         progress['receipt_status'] = str(error)
+    join_scope()
     progress['candidates'] = list(observations.values())
     return progress
 

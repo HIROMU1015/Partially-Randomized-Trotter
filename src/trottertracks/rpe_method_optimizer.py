@@ -379,9 +379,9 @@ def enumerate_candidates(reader, problem, facts, catalog):
         if c['configuration_id'] is None:
             needs.append('CONFIGURATION_AND_SCHEDULE')
         if c['signal_source'] is None:
-            needs.append('SIGNAL_13ROUND_PACKET')
+            needs.append(f'SIGNAL_{rounds}ROUND_PACKET')
         if prices is None:
-            needs.append('PRICE_26AXIS')
+            needs.append(f'PRICE_{axis_count}AXIS')
         c['needs'] = needs
         c['ready'] = not needs
         c['name'] = c['method'] + ':' + ','.join('%s=%s' % kv for kv in c['key'].items()) + ':' + (c['configuration_id'] or 'NONE')[:8]
@@ -1196,10 +1196,10 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None, 
                     needs = ['CONFIGURATION_PUBLICATION']
                     if missing_signal:
                         needs.append('SIGNAL_ROUNDS:' + ','.join(map(str, missing_signal)))
-                    if len(missing_signal) < 13:
+                    if len(missing_signal) < len(keys):
                         needs.append('SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS')
                     if missing_price:
-                        needs.append('PRICE_AXES:%d_of_26' % len(missing_price))
+                        needs.append('PRICE_AXES:%d_of_%d' % (len(missing_price), len(keys)*len(AXES)))
                     needs.append('Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION')
                     prices = None if missing_price else [price_keys[(k, a)] for k in keys for a in AXES]
                     cand = dict(method=name, family='PR', key=dict(L_D=base['key']['L_D'], formula=item['variant']['formula'],
@@ -1209,8 +1209,8 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None, 
                                 price_status='REUSED_FOR_ALL_AXES' if prices else 'MISSING_FOR_%d_AXES' % len(missing_price),
                                 saved_points=[], needs=needs, ready=False, generated_configuration=gen['configuration'], schedule_keys=keys,
                                 kappa_value=str(dec_kappa(gen['configuration'])) if (gen['configuration'].get('spec') or {}).get('kappa') else None,
-                                reusable=dict(signal_rounds=[m for m in range(13) if m not in missing_signal],
-                                              price_axes=26 - len(missing_price)))
+                                reusable=dict(signal_rounds=[m for m in range(len(keys)) if m not in missing_signal],
+                                              price_axes=len(keys)*len(AXES) - len(missing_price)))
                     cand['name'] = name + ':' + ','.join('%s=%s' % kv for kv in cand['key'].items()) + ':' + gen['configuration_id'][:8]
                     if not any(c['configuration_id'] == cand['configuration_id'] for c in candidates):
                         candidates.append(cand)
@@ -1338,13 +1338,14 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
             if c['prices'] is None and q['complete']:
                 points=[p for p in saved_points.get(c['configuration_id'],[])if p.get('conditional_cost')is not None]
                 axes=[(r['m'],r['axis'])for r in rows]
-                valid=(c['price_status']=='NO_SAVED_26_AXIS_PRICE'and all(not p.get('price_axes')for p in points)
-                       and axes==[(m,a)for m in range(13)for a in AXES]and all(v>0 for v in quoted)and points
+                rounds=len(c['caps']);axis_count=rounds*len(AXES)
+                valid=(c['price_status']==f'NO_SAVED_{axis_count}_AXIS_PRICE'and all(not p.get('price_axes')for p in points)
+                       and axes==[(m,a)for m in range(rounds)for a in AXES]and all(v>0 for v in quoted)and points
                        and all(cost(point_vector(p),quoted)==frac(p['conditional_cost'])for p in points))
                 entry['reproduces_all_saved_totals']=bool(valid)
                 if valid:
                     c.update(prices=quoted,price_status='SOURCE_BOUND_MODEL_QUOTE_REPRODUCES_ALL_SAVED_TOTALS')
-                    c['needs']=[n for n in c['needs']if n!='PRICE_26AXIS'];c['ready']=not c['needs']
+                    c['needs']=[n for n in c['needs']if n!=f'PRICE_{axis_count}AXIS'];c['ready']=not c['needs']
                     entry['note']='Own MODEL quote, same canonical configuration, exact match to every saved total'
                 else:entry['note']='Own quote does not reproduce saved totals; retain price need'
         else:
@@ -1353,7 +1354,7 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
                 c['prices'] = quoted;c['price_status'] = 'PRICE_RULES_%s_COMPLETE' % policy
             else:
                 c['prices'] = None;c['price_status'] = 'PRICE_RULES_%s_INCOMPLETE' % policy
-                c['needs'].append('PRICE_AXES:%d_of_26' % len(missing))
+                c['needs'].append('PRICE_AXES:%d_of_%d' % (len(missing), len(rows)))
                 c['price_needs'] = missing
             c['ready'] = not c['needs']
             entry['missing_axes'] = len(missing)

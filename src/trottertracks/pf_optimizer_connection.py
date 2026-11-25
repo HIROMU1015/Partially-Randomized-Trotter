@@ -141,14 +141,18 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
                           problem['evidence']['pf_candidate_index']['path'])
     by_id={c['configuration_id']:c for c in candidates}
     for method,spec in scoped:
+        rank = problem['problem']['hamiltonian_data']['expected']['fragment_count']
+        base_spec = spec.get('pf_candidate_base')
+        base = P.base_configuration(root, base_spec or P.BASE_SPEC)
+        if base['binding']['rank']!=rank or base['binding']['system']!=problem['problem'].get('system',base['binding']['system']):
+            raise ValueError('PF metadata provider does not match the bound problem; select its fixed base')
         values=spec.get('p_values')
         if values is None:
-            rank = problem['problem']['hamiltonian_data']['expected']['fragment_count']
             values = ([rank] if method == 'FULL_PF' else sorted({indexed_prefix(reader, row, rank)
                       for row in index['candidates'] if row['method'] == spec['index_method']}))
-        if (len(set(values))!=len(values) or any(type(p)is not int or p not in range(11)for p in values)
-                or (method=='FULL_PF' and any(p!=10 for p in values))):
-            raise ValueError('PF p_values must be unique legal prefixes; Full PF is p10')
+        if (len(set(values))!=len(values) or any(type(p)is not int or p not in range(rank+1)for p in values)
+                or (method=='FULL_PF' and any(p!=rank for p in values))):
+            raise ValueError('PF p_values must be unique legal prefixes; Full PF retains the bound rank')
         explicit = width_values(spec)
         widths={f:list(explicit or ()) for f in spec['formulas']}
         if explicit is None:
@@ -158,7 +162,7 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
                         and width_inside(width, spec)):
                     if frac(width) not in widths[formula]:
                         widths[formula].append(frac(width))
-        for meta in P.candidates(root,formulas=spec['formulas'],widths=widths,p_values=values):
+        for meta in P.candidates(root,formulas=spec['formulas'],widths=widths,p_values=values,base_spec=base_spec):
             # P's p10 canonical alias is already enumerated under Full PF.
             if meta['method']!=method:
                 continue
@@ -167,9 +171,10 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
                 continue
             c=by_id.get(cid)
             if c is None:
+                rounds=len(spec['caps']);axis_count=2*rounds
                 c=dict(method=method,family='PF',configuration_id=cid,caps=spec['caps'],labels=[],saved_points=[],
-                       prices=None,signal_source=None,index_signal=None,price_status='NO_SAVED_26_AXIS_PRICE',
-                       needs=['SIGNAL_13ROUND_PACKET','PRICE_26AXIS','Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION'],
+                       prices=None,signal_source=None,index_signal=None,price_status=f'NO_SAVED_{axis_count}_AXIS_PRICE',
+                       needs=[f'SIGNAL_{rounds}ROUND_PACKET',f'PRICE_{axis_count}AXIS','Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION'],
                        ready=False,outside_index=True)
                 candidates.append(c);by_id[cid]=c
             elif c['method']!=method:
