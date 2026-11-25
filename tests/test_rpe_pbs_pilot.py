@@ -16,6 +16,17 @@ import run_rpe_pbs_storage_worker as collector
 G = pilot.gateway
 
 
+def test_pilot_control_pause_resume_does_not_erase_permanent_stop(tmp_path):
+    (tmp_path/'SESSION_START.json').write_text('{}')
+    pilot.update_session_control(tmp_path,dict(stop=False,pause=True,release_when_idle=False))
+    assert pilot.read(tmp_path/'CONTROL.json')['pause'] is True
+    pilot.update_session_control(tmp_path,dict(stop=False,pause=False,release_when_idle=False))
+    assert pilot.read(tmp_path/'CONTROL.json')['pause'] is False
+    pilot.update_session_control(tmp_path,dict(stop=True,release_when_idle=True))
+    pilot.update_session_control(tmp_path,dict(stop=False,pause=False,release_when_idle=False))
+    assert pilot.read(tmp_path/'CONTROL.json')['stop'] is True
+
+
 class PilotTest(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()

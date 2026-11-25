@@ -803,7 +803,9 @@ class AllocationWorker(Worker):
         self.buffer_cpu = sum(resources['cpu'] for _, resources in pending)
         if not pending:
             return
-        stopping = self.control().get('stop') or not self.accepting()
+        paused_only=(getattr(self,'paused',False) and not self.draining and not self.stop.is_set()
+                     and self.remaining() > self.drain_seconds+self.minimum_task_seconds)
+        stopping = self.control().get('stop') or not (self.accepting() or paused_only)
         storage = (self.resource_report or {}).get('storage') or {}
         if not stopping and (self.resource_report is None or storage.get('accepting_new_jobs') is False):
             return
@@ -873,10 +875,10 @@ class AllocationWorker(Worker):
         return max(0., self.deadline - time.monotonic())
 
     def accepting(self):
-        return not self.draining and not self.stop.is_set() and self.remaining() > self.drain_seconds + self.minimum_task_seconds
+        return not getattr(self,'paused',False) and not self.draining and not self.stop.is_set() and self.remaining() > self.drain_seconds + self.minimum_task_seconds
 
     def _sync_drain(self, control):
-        """Resume a reversible controller drain, never a local signal/deadline."""
+        """Admission pause is reversible; a real session STOP is not."""
         if self.stop.is_set():
             self.draining = True
             self.exit_reason = 'WORKER_STOP_DRAIN'
@@ -886,12 +888,8 @@ class AllocationWorker(Worker):
         elif control.get('stop') is True:
             self.draining = True
             self.exit_reason = self.exit_reason or 'CONTROLLER_STOP_DRAIN'
-        elif control.get('stop') is False and self.exit_reason == 'CONTROLLER_STOP_DRAIN':
-            # A normal Resume reopens the same allocation's control channel.
-            # Existing attempts remain in the same spool; only new admission
-            # changes. Maintenance/resize continues to publish stop=True.
-            self.draining = False
-            self.exit_reason = None
+        elif not self.draining and type(control.get('pause')) is bool:
+            self.paused=control['pause']
 
     def heartbeat(self, *, state=None, force=False):
         now = time.monotonic()
@@ -901,7 +899,7 @@ class AllocationWorker(Worker):
         control = self.control()
         if state != 'EXITED':self._sync_drain(control)
         value = dict(stamp(), schema='RPE_PBS_WORKER_STATE_V1',
-                     state=state or ('DRAINING' if self.draining else 'READY'),
+                     state=state or ('DRAINING' if self.draining else 'PAUSED' if getattr(self,'paused',False) else 'READY'),
                      ready=state != 'EXITED', accepting=self.accepting() and not getattr(self, 'offline_active', False),
                      host_id=self.host_id, job_id=self.pbs_resources['actual']['job_id'],
                      hostname=socket.gethostname(), pid=os.getpid(),
@@ -955,7 +953,7 @@ class AllocationWorker(Worker):
         # A slow transport reply can arrive after the last admission check. Keep
         # its original attempt and make the non-launch explicit; never roll its
         # reservation back or silently create another scientific attempt.
-        if self.control().get('stop') or not self.accepting():
+        if self.control().get('stop') or self.draining or self.stop.is_set() or self.remaining() <= self.drain_seconds+self.minimum_task_seconds:
             self._decline_before_launch(attempt)
             return
         super()._launch(attempt)

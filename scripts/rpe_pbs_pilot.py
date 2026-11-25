@@ -206,6 +206,17 @@ def stop_session(directory):
         end(directory, 'DETACHED_BEFORE_START')
 
 
+def update_session_control(directory, control):
+    """Never turn a permanent STOP into a resume. Pause is separate."""
+    prior=read(directory/'CONTROL.json',{})
+    if prior.get('stop'):return
+    if control.get('stop') or (control.get('release_when_idle') and not (directory/'SESSION_START.json').exists()):
+        stop_session(directory)
+    else:
+        # A pause keeps the session and its owned attempts intact, even if idle.
+        atomic(directory/'CONTROL.json',dict(control,release_when_idle=False) if control.get('pause') else control)
+
+
 def attach(root, pool, spec):
     token = safe_id(spec['token'])
     directory = root/'allocations'/token
@@ -280,7 +291,8 @@ def session_snapshot(root, finished=None, *, scheduler=None, force=False):
             row.update(status='F', exit_status=ended.get('returncode'), session_end=ended)
         elif row['status'] == 'R' and not (directory/'SESSION_START.json').exists():
             row['status'] = 'Q'  # Another run may still be draining on this node.
-        if (directory/'CONTROL.json').exists() and read(directory/'CONTROL.json').get('stop'):
+        control=read(directory/'CONTROL.json',{})
+        if control.get('stop') or control.get('pause'):
             row['worker'] = dict(row.get('worker') or {}, accepting=False)
         row['session_status'] = row['status']
         result.append(row)
@@ -303,11 +315,7 @@ def handle(root, value, finished, scheduler=None):
                 for token, control in list(controls.items()):
                     directory = root/'allocations'/safe_id(token)
                     if (directory/'PILOT.json').exists():
-                        if control.get('stop') or (control.get('release_when_idle') and not
-                                (directory/'SESSION_START.json').exists()):
-                            stop_session(directory)
-                        elif not read(directory/'CONTROL.json', {}).get('stop'):
-                            atomic(directory/'CONTROL.json', control)
+                        update_session_control(directory,control)
                         del controls[token]
         return gateway.exchange(root, dict(value, controls=controls), finished,
                                 lambda root, finished: session_snapshot(root, finished, scheduler=scheduler))
@@ -331,6 +339,8 @@ def claim(pool, generation, job_id):
                 raise ValueError('Previously started worker must be reconciled before reuse')
             if read(directory/'CONTROL.json', {}).get('stop'):
                 stop_session(directory)
+                continue
+            if read(directory/'CONTROL.json', {}).get('pause'):
                 continue
             atomic(directory/'SESSION_START.json', dict(job_id=job_id, epoch=time.time()))
             return directory

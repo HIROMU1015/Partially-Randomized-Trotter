@@ -2278,9 +2278,13 @@ class WidthDriver:
             manager.retain_between_batches = True
             self.run_pbs_manager = manager
         preparation_pool=None
+        close_accepted_recovery=None
         try:
             runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
-            if runtime is not None:comp.bind_stage_executor(runtime)
+            if runtime is not None:
+                comp.bind_stage_executor(runtime)
+                if hasattr(runtime,'start_accepted_recovery') and hasattr(getattr(executor,'store',None),'unadopted_preparation_successes'):
+                    close_accepted_recovery=runtime.start_accepted_recovery(comp)
             if runtime is not None and runtime.settings.get('interrupted_calibrations'):
                 runtime.reconcile_interrupted_calibrations()
             if runtime is not None:
@@ -2571,6 +2575,7 @@ class WidthDriver:
                 installed=ready_keys()
                 pf_price_submitted = set(active_spec.get('exploratory_price_candidates', ()))
                 df_price_submitted = set(shortlist.get('PR_DF', ())) if df_future is not None else set()
+                df_result_revision = executor.store.preparation_completion_revision() if runtime is not None and hasattr(getattr(executor,'store',None),'preparation_completion_revision') else 0
                 bootstrap = preparation_pool.submit(self.bootstrap_families) if parallel_families else None
                 pending=preparation_pool.submit(prepare)
                 can_search=any(c['ready']for c in context['candidates'])
@@ -2610,8 +2615,10 @@ class WidthDriver:
                             args = (ROOT, problem, snapshot_context(context), active_spec, self.run, deepcopy(routes), runtime)
                             pf_price_submitted = pf_ids
                             pf_future = preparation_pool.submit(prepare_pf)
-                        if df_enabled() and df_future is None and df_ids - df_price_submitted:
+                        current_revision=executor.store.preparation_completion_revision() if runtime is not None and hasattr(getattr(executor,'store',None),'preparation_completion_revision') else 0
+                        if df_enabled() and df_future is None and (df_ids - df_price_submitted or df_ids and current_revision!=df_result_revision):
                             df_price_submitted = df_ids
+                            df_result_revision=current_revision
                             def live_df():
                                 with df_price_lock:
                                     comp.prepare_shortlist_prices(set(live_price.snapshot().get('PR_DF', ())),
@@ -2713,6 +2720,8 @@ class WidthDriver:
                 self.waiting_optimize = optimize
                 self.waiting_revision = self.recovery_revision(executor)
             actions = [] if keep_connected else [('EXECUTOR_DRAIN', executor.finish)]
+            if close_accepted_recovery is not None:
+                actions.insert(0,('ACCEPTED_PREPARATION_RECOVERY_DRAIN',close_accepted_recovery))
             if preparation_pool is not None:
                 interrupted = stop_preparation.is_set() or executor._user_stop_requested()
                 if interrupted:

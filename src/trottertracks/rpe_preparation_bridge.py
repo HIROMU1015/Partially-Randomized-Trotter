@@ -484,6 +484,65 @@ class DistributedPreparationBridge:
         self.bundle_locks = {}
         self.shared_bundle_heads = {}
         self.compact_bindings = {}
+        self.stage_return_locks={}
+        self.accepted_revision=0
+
+    def recover_accepted_stages(self, completion, *, stop_requested=lambda:False, failures=None):
+        """Import exact accepted owners without waiting for candidate traversal.
+
+        Only a stage marker in this run can authorize importing its original
+        successful receipt. No request is submitted here.
+        """
+        import time
+        failures = {} if failures is None else failures
+        from .pr_candidate_completion import Held, PreparationWait
+        imported=[]
+        root=Path(self.executor.run_dir).resolve()
+        for job in self.executor.store.unadopted_preparation_successes():
+            if stop_requested():break
+            if time.monotonic()<failures.get(job,0):continue
+            row=self.executor.store.row(job);prep=(row or {}).get('request',{}).get('preparation',{})
+            stage=prep.get('provider');base=Path(prep.get('controller_root',self.root)).resolve()
+            if stage not in STAGES:continue
+            markers=[]
+            for output in prep.get('outputs',()):
+                if not output.startswith('workspace/'):continue
+                directory=(base/artifact_path(output.removeprefix('workspace/'))).resolve()
+                if not directory.is_relative_to(root):continue
+                marker=directory/(stage+'.DISTRIBUTED.json')
+                try:
+                    if marker.is_file() and read(marker).get('job_id')==job:markers.append(marker)
+                except (OSError,ValueError):continue
+            if len(set(markers))!=1:
+                failures[job]=time.monotonic()+60;continue
+            try:
+                if self.import_received_stage(completion,markers[0],stage):
+                    imported.append(job);failures.pop(job,None)
+                    self.accepted_revision+=1
+                    self.executor.log(event='ACCEPTED_PREPARATION_IMPORTED',job=job,provider=stage)
+                    with self.executor.state.cv:self.executor.state.cv.notify_all()
+                else:failures[job]=time.monotonic()+30
+            except (Held,PreparationWait,ValueError,KeyError,OSError,subprocess.CalledProcessError) as error:
+                failures[job]=time.monotonic()+60
+                self.executor.log(event='ACCEPTED_PREPARATION_IMPORT_PENDING',job=job,provider=stage,reason=str(error)[:1000])
+        return imported
+
+    def start_accepted_recovery(self,completion):
+        """One independent receiver, retained only for the active planning cycle."""
+        stop=threading.Event();failures={}
+        def run():
+            while not stop.is_set() and not self.executor.state.closed:
+                try:self.recover_accepted_stages(completion,stop_requested=stop.is_set,failures=failures)
+                except (sqlite3.Error,OSError,ValueError) as error:
+                    self.executor.log(event='ACCEPTED_PREPARATION_RECOVERY_PENDING',reason=str(error))
+                with self.executor.state.cv:
+                    if not stop.is_set():self.executor.state.cv.wait(2)
+        thread=threading.Thread(target=run,name='rpe-accepted-preparation',daemon=True);thread.start()
+        def close():
+            stop.set()
+            with self.executor.state.cv:self.executor.state.cv.notify_all()
+            thread.join()
+        return close
 
     @staticmethod
     def handles(stage):
@@ -2423,7 +2482,21 @@ class DistributedPreparationBridge:
         return True
 
     def _adopt_received_stage(self, completion, directory, stage, job_id, request, result, *, inherited_workspace=None):
+        with self.lock:
+            lock=self.stage_return_locks.setdefault((str(directory.resolve()),stage),threading.RLock())
+        with lock:
+            return self._adopt_received_stage_locked(completion,directory,stage,job_id,request,result,inherited_workspace=inherited_workspace)
+
+    def _adopt_received_stage_locked(self, completion, directory, stage, job_id, request, result, *, inherited_workspace=None):
         from .pr_candidate_completion import Held, PreparationWait, put
+        returned=directory/(stage+'.RETURN.json')
+        if returned.is_file():
+            receipt=read(returned)
+            if (receipt.get('job_id')!=job_id or receipt.get('returncode')!=0 or receipt.get('signal') is not None
+                    or receipt.get('source')!=request['preparation']['source']['commit']):
+                raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':RETURN_OWNER')
+            self.executor.adopt_preparation(job_id)
+            return receipt
         if problem := df_freeze_output_problem(request, result):
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':'+problem)
         try:
@@ -2436,13 +2509,13 @@ class DistributedPreparationBridge:
             raise PreparationWait('PREPARATION_RESULT_ARTIFACTS_MISSING:'+stage+':'+job_id+':'+str(error)) from error
         except ValueError as error:
             raise Held('PREPARATION_RESULT_MISMATCH:'+stage+':'+job_id+':'+str(error)) from error
-        self.executor.adopt_preparation(job_id)
         receipt = dict(returncode=0, signal=None, source=request['preparation']['source']['commit'], job_id=job_id,
                        transport='distributed', automatic_retry=False, preparation_calls=result.get('preparation_calls', 0))
         heads = [bundle['head'] for bundle in result.get('git_bundles', [])
                  if bundle.get('workspace', 'workspace') == 'workspace']
         if heads:
             receipt['git_heads'] = heads
-        put(directory / (stage + '.RETURN.json'), receipt)
+        put(returned,receipt)
+        self.executor.adopt_preparation(job_id)
         completion.log(event='DISTRIBUTED_STAGE_RETURN', stage=stage, job_id=job_id)
         return receipt

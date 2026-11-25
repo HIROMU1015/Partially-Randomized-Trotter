@@ -173,6 +173,26 @@ class JobStore:
                     f'SELECT * FROM jobs WHERE job_id IN ({what})', group))
             return result
 
+    def queue_rows_delta(self, job_ids, revision, known):
+        """Read only queue rows whose durable state changed since the last poll.
+
+        The event revision and returned rows are from the same SQLite read
+        transaction. Claim still verifies the latest state independently.
+        """
+        ids = set(job_ids)
+        with self._connection() as db:
+            db.execute('BEGIN')
+            current = db.execute('SELECT coalesce(max(sequence),0) FROM events').fetchone()[0]
+            changed = (set(known)|ids if revision is None or current < revision else
+                       {row[0] for row in db.execute('SELECT DISTINCT job_id FROM events WHERE sequence>?',(revision,))})
+            needed = sorted((changed & ids) | (ids-set(known)))
+            result = {}
+            for start in range(0,len(needed),500):
+                group=needed[start:start+500];what=','.join('?' for _ in group)
+                result.update((row['job_id'],self._decoded(row)) for row in db.execute(
+                    f'SELECT * FROM jobs WHERE job_id IN ({what})',group))
+            return current,changed,result
+
     def accepted_host(self, job_id, method):
         """Read the host for reuse telemetry without opening the saved request."""
         with self._connection() as db:
@@ -281,6 +301,20 @@ class JobStore:
             return [row['job_id'] for row in db.execute(
                 "SELECT job_id FROM jobs WHERE method=? AND state='ACCEPTED' AND adopted_epoch IS NULL "
                 "ORDER BY completed_epoch,job_id", (method,))]
+
+    def unadopted_preparation_successes(self):
+        """Compact, durable inbox of successful preparation receipts."""
+        with self._connection() as db:
+            return [row['job_id'] for row in db.execute("""
+                SELECT job_id FROM jobs WHERE method IN ('PREPARATION:signal','PREPARATION:compile','PREPARATION:audit')
+                AND state='ACCEPTED' AND adopted_epoch IS NULL
+                AND (json_extract(detail,'$.outcome_status')='PREPARATION_COMPLETE' OR json_extract(detail,'$.outcome_status') IS NULL)
+                ORDER BY completed_epoch,job_id""")]
+
+    def preparation_completion_revision(self):
+        with self._connection() as db:
+            row=db.execute("SELECT sequence FROM events WHERE event IN ('ACCEPT','ADOPT') AND job_id LIKE 'prep-%' ORDER BY sequence DESC LIMIT 1").fetchone()
+            return row[0] if row else 0
 
     def has_preparation_successor(self, job_id, provider):
         """Check for a durable audit owner even if a workspace marker was lost."""

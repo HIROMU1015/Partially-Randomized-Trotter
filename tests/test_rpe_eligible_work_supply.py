@@ -41,14 +41,14 @@ def test_ready_cpu_counts_only_work_that_can_be_sent_to_the_worker():
     def row(job, cpu, eligible, stage=None):
         request = {'preparation': {'stage': stage}} if stage else {}
         profile = {'task_cpu_count': cpu}
-        return dict(job_id=job, host_id='worker', request=request,
+        return dict(job_id=job, host_id='worker', request=request, request_sha256='fixed-'+job,
                     eligibility=dict(eligible=eligible, execution_profiles={'worker': profile}))
 
     rows = {value['job_id']: value for value in (
         row('running', 3, True), row('q3', 2, True), row('audit', 1, True, 'audit'),
         row('wrong-host', 20, False, 'compile'))}
     executor.store = SimpleNamespace(rows_for=lambda jobs: {job: rows[job] for job in jobs},
-                                     eligible=lambda request, eligibility, *_: eligibility['eligible'])
+                                     eligible=lambda request, eligibility, *_, **__: eligibility['eligible'])
     ready = [SimpleNamespace(job=Path(job)) for job in ('q3', 'audit', 'wrong-host')]
     supply = executor._ready_cpu_supply(ready, [rows['running']], {}, None)['worker']
     assert supply['available_cpu'] == 5
@@ -77,10 +77,10 @@ def test_pbs_keeps_replacement_work_that_fits_after_a_running_job_finishes():
         'next': dict(cpus=4, gib=6, preparation={'stage': 'compile'}),
         'too_large': dict(cpus=1, gib=13),
     }
-    rows = {name: dict(job_id=name, host_id='pbs-0', request=request, eligibility={})
+    rows = {name: dict(job_id=name, host_id='pbs-0', request=request, eligibility={}, request_sha256='fixed-'+name)
             for name, request in jobs.items()}
     executor.store = SimpleNamespace(rows_for=lambda jobs: {job: rows[job] for job in jobs},
-                                     eligible=lambda *_: True)
+                                     eligible=lambda *_, **__: True)
     with patch.object(rpe_pbs, 'resource_need',
                       side_effect=lambda request, *_: (request['cpus'], request['gib'] * rpe_pbs.GIB)), \
          patch.object(rpe_pbs, 'task_estimate', return_value=20):

@@ -1144,6 +1144,10 @@ class DistributedExecutor(ConcurrentExecutor):
         self.allocation_config = config
         kwargs['max_concurrent'] = 1 if requested_capacity == 'auto' else requested_capacity
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
+        self.queue_snapshot_lock = threading.Lock()
+        self.queue_snapshot_revision = None
+        self.queue_snapshot_rows = {}
+        self.queue_dependency_ready = {}
         self.preparation_observations_path = run/'distributed'/'PREPARATION_RESOURCE_OBSERVATIONS.json'
         self.preparation_observation_lock = threading.Lock()
         self.preparation_observations = {item['attempt_id']:item for item in
@@ -1700,7 +1704,7 @@ class DistributedExecutor(ConcurrentExecutor):
                          request_compatible_slots=usable,
                          reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
 
-    def _ready_queue(self, *, rows=None):
+    def _ready_queue(self, *, rows=None, readiness=None):
         manager = getattr(self, 'pbs_manager', None)
         offline_priority = manager.offline_priority() if hasattr(manager, 'offline_priority') else {}
 
@@ -1724,13 +1728,34 @@ class DistributedExecutor(ConcurrentExecutor):
             tasks = tuple(self.state.tasks.values())
         return sorted((task for task in tasks if task.status == 'QUEUED'
                        and (task.rule['kind'] != 'preparation' or (rows is None or task.job.name in rows)
-                            and self._task_ready(task, None if rows is None else rows[task.job.name]))), key=priority)
+                            and (readiness.get(task.job.name,False) if readiness is not None else
+                                 self._task_ready(task, None if rows is None else rows[task.job.name])))), key=priority)
 
     def _ready_queue_snapshot(self):
         with self.state.cv:
-            ids = [task.job.name for task in self.state.tasks.values() if task.status == 'QUEUED']
-        rows = self.store.rows_for(ids)
-        return self._ready_queue(rows=rows), rows
+            tasks = {task.job.name:task for task in self.state.tasks.values() if task.status == 'QUEUED'}
+        if not hasattr(self,'queue_snapshot_lock') or not hasattr(self.store,'queue_rows_delta'):
+            rows = self.store.rows_for(tasks)
+            return self._ready_queue(rows=rows), rows
+        with self.queue_snapshot_lock:
+            revision, changed, updates = self.store.queue_rows_delta(tasks,self.queue_snapshot_revision,self.queue_snapshot_rows)
+            self.queue_snapshot_revision=revision
+            rows={job:row for job,row in self.queue_snapshot_rows.items() if job in tasks and job not in changed}
+            rows.update(updates);self.queue_snapshot_rows=rows
+            now=time.monotonic();ready={};cache={}
+            for job,task in tasks.items():
+                row=rows.get(job)
+                if row is None or row['state']!='QUEUED' or task.rule['kind']!='preparation':continue
+                prep=row['request']['preparation'];dependencies=set(prep.get('dependencies',()))|set(prep.get('dependency_inputs',{}))
+                prior=self.queue_dependency_ready.get(job)
+                if (prior is not None and prior[0]==row['request_sha256'] and not dependencies.intersection(changed)
+                        and now-prior[1]<30):
+                    ready[job]=True;cache[job]=prior
+                else:
+                    ready[job]=self._task_ready(task,row)
+                    if ready[job]:cache[job]=(row['request_sha256'],now)
+            self.queue_dependency_ready=cache
+        return self._ready_queue(rows=rows,readiness=ready), dict(rows)
 
     def _budget_reserved(self):
         cap = self.state.budgets.get(self.method)
@@ -2176,28 +2201,6 @@ class DistributedExecutor(ConcurrentExecutor):
         queue = list(queue)
         if rows is None:
             rows = self.store.rows_for(task.job.name for task in queue)
-        for task in queue:
-            compatible[task.job.name] = []
-            row = rows.get(task.job.name)
-            if row is None or row['state'] != 'QUEUED':
-                continue
-            for h in available:
-                if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
-                    skipped[h] = True
-                    continue
-                if (not self._fits_host_task_class(h, row)
-                        or self._wait_for_preparation_preference(h, row, policy, error)
-                        or not self._local_calibration_pair_allows(h, row['request'], owned=owned)):
-                    skipped[h] = True
-                    continue
-                if not self.store.eligible(row['request'], row['eligibility'], h,
-                        self.hosts[h].get('host_fingerprints'), row['job_id'], request_sha256=row['request_sha256']):
-                    skipped[h] = True
-                    continue
-                conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
-                if not (conditional and skipped[h] and not task.demand):
-                    compatible[task.job.name].append(h)
-
         def assign(job, seen):
             for preferred in compatible[job]:
                 if preferred in seen: continue
@@ -2211,9 +2214,31 @@ class DistributedExecutor(ConcurrentExecutor):
                         return True
             return False
 
-        matched = set()
+        matched=set();capacity=sum(available.values())
         for task in queue:
+            compatible[task.job.name] = []
+            row = rows.get(task.job.name)
+            if row is None or row['state'] != 'QUEUED':
+                continue
+            for h in available:
+                if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
+                    skipped[h] = True
+                    continue
+                if not self.store.eligible(row['request'], row['eligibility'], h,
+                        self.hosts[h].get('host_fingerprints'), row['job_id'], request_sha256=row['request_sha256']):
+                    skipped[h] = True
+                    continue
+                if (not self._fits_host_task_class(h, row)
+                        or self._wait_for_preparation_preference(h, row, policy, error)
+                        or not self._local_calibration_pair_allows(h, row['request'], owned=owned)):
+                    skipped[h] = True
+                    continue
+                conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
+                if not (conditional and skipped[h] and not task.demand):
+                    compatible[task.job.name].append(h)
+
             if assign(task.job.name, set()): matched.add(task.job.name)
+            if len(matched)==capacity:break
         return matched
 
     def _host_supports_stage(self, host, request):
@@ -2495,6 +2520,12 @@ class DistributedExecutor(ConcurrentExecutor):
                                           ['HOST_ELIGIBILITY_CHANGED_REQUEST_SHA256'])):
             return self._live_eligibility(request, job_id, result, blocking=blocking, previous=previous,
                                           host=host, prefetch=prefetch)
+        if (self.distributed.get('live_q3_readiness') is True and queued and host is not None
+                and host not in result['eligible_host_ids'] and 'decision_sha256' in result):
+            # One host's PASS must not freeze another host's old HOLD after
+            # its provider/files have changed. Recheck only the missing host.
+            return self._live_eligibility(request,job_id,result,blocking=False,
+                                          previous=previous or result,host=host,prefetch=True)
         return result
 
     def _publish_queued_readiness(self, job_id, request, decision):
@@ -2598,10 +2629,19 @@ class DistributedExecutor(ConcurrentExecutor):
                 eligible = previous  # a claim still requires a fresh matching worker fingerprint
             eligible = self.live_readiness_partial.get(key, eligible)
             future = self.live_readiness_inflight.get(key)
+            facts=(self.hosts.get(host,{}).get('host_fingerprints') or {}).get(job_id) if host else None
+            if (isinstance(facts,dict) and host in eligible['eligible_host_ids']
+                    and digest(facts)!=eligible.get('host_fingerprints',{}).get(host)):
+                eligible=deepcopy(eligible)
+                eligible['eligible_host_ids'].remove(host)
+                eligible.get('host_fingerprints',{}).pop(host,None)
+                eligible.get('execution_profiles',{}).pop(host,None)
+                eligible.setdefault('host_decisions',{})[host]=dict(status='UNCHECKED',reasons=['CURRENT_HOST_FINGERPRINT_CHANGED'])
+                cache.pop(key,None);cached=None
             missing_host = host is not None and host in seen and host not in eligible['eligible_host_ids']
             if blocking or missing_host or prefetch:
                 deferred = set(eligible.get('deferred_hosts', ())) & seen
-                targets = {host} if self.controller_parallel and missing_host and cached and eligible['eligible_host_ids'] else None
+                targets = {host} if self.controller_parallel and missing_host and eligible['eligible_host_ids'] else None
                 if targets is None and deferred and not eligible['eligible_host_ids']:
                     targets = deferred
                 host_decisions = eligible.get('host_decisions') or {}
@@ -3993,15 +4033,17 @@ class DistributedExecutor(ConcurrentExecutor):
                 host_admission=dict(accepting=False, reason='USER_REQUESTED_STOP') if stopping else admission,
                 eligibility_challenges=pending_challenges,
                 capacity_feedback=getattr(s, 'queue_feedback', {}).get(host))
+        # Recover provably unstarted requests before taking the queue snapshot,
+        # so a fresh compatible offer can immediately claim the recovered job.
+        if may_probe and new_slots:
+            pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
+        mark("prelaunch_recovery")
         queue = rows = None
         if may_probe and (new_slots or buffer_slots):
             queue, rows = self._ready_queue_snapshot()
             self._refresh_capacity(admission_policy, admission_error, queue=queue, rows=rows, owned=owned,
                                    current_offer=(host, poll_started))
         mark("match_capacity")
-        if may_probe and new_slots:
-            pending_challenges.extend(self._prelaunch_recovery_challenges(host, new_slots, fingerprints))
-        mark("prelaunch_recovery")
         def reply(*, probe_rows=(), **fields):
             existing=fields.get('eligibility_challenges',[])
             challenges = {item['job_id']:item for item in existing+pending_challenges}
@@ -4081,6 +4123,7 @@ class DistributedExecutor(ConcurrentExecutor):
             # and claim requires this host's current exact fingerprint.
             # A host without a stored PASS still goes through live readiness.
             if (row['detail'].get('prelaunch_recovery') is True
+                    or self._preparation_request(row['request']) is not None and saved is not None
                     or (saved and 'input_hashes' in saved and host in saved['eligible_host_ids']
                         and (facts is None or Q.digest(facts) == saved['host_fingerprints'].get(host)))):
                 decision = saved
@@ -4257,6 +4300,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 if (remaining <= 0 and (not extra or not spare_delivery)) or self._user_stop_requested(): break
                 if task.status != 'QUEUED': continue
                 row = self.store.row(task.job.name)
+                if row is None or row['state']!='QUEUED':continue
+                if task.rule['kind']=='preparation' and not self._task_ready(task,row):continue
                 if not self._fits_host_walltime(host, row['request']) or not self._fits_host_task_class(host, row):
                     continue
                 if self._wait_for_preparation_preference(host, row, admission_policy, admission_error):

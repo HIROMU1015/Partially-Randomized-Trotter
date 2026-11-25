@@ -1054,24 +1054,14 @@ class Completion:
                 price_requested=True, price_reason=attempt.get('reason'))
             self.save()
 
-        # Keep the same split serial (early rounds and price groups commonly
-        # alias); independent splits can replenish the distributed queue now.
-        lanes = {}
-        for record in eligible:
-            split = (record.get('design') or record['request'].get('design') or {}).get('L_D')
-            lanes.setdefault(split, []).append(record)
-        def prepare_lane(records):
-            for record in records:
-                if stop_requested():
-                    break
-                prepare_record(record)
-        if len(lanes) > 1:
-            with ThreadPoolExecutor(max_workers=len(lanes)) as pool:
-                for _ in pool.map(prepare_lane, lanes.values()):
-                    pass
-        else:
-            for records in lanes.values():
-                prepare_lane(records)
+        # The exact group and physical-cell locks in df_price protect aliases.
+        # Do not serialize independent candidates by split or hold their lane
+        # while a distributed acquisition is in flight.
+        if len(eligible)>1:
+            from .rpe_q3_resources import controller_cpu_count
+            with ThreadPoolExecutor(max_workers=min(len(eligible),controller_cpu_count())) as pool:
+                for _ in pool.map(prepare_record,eligible):pass
+        elif eligible:prepare_record(eligible[0])
 
     def reconcile_committed_df_holdout(self, record):
         """Reopen a publication mismatch only after the original results pass intake."""
@@ -2385,6 +2375,7 @@ class Completion:
                                        if r['m'] in group['covered_rounds'] and r['unit_price_RZ'] is not None]
                             group=dict(group,required_saved_companions=protected)
                         options = {'recovered_axes': recovered_axes} if recovered_axes else {}
+                        if shortlist:options['nonblocking']=True
                         package=self.df_price_group(cref,refreshed,directory,registry,group,descriptor,**options)
                     except Held as error:
                         if isinstance(error, PreparationWait):
@@ -2433,7 +2424,7 @@ class Completion:
             raise waiting
         return packages
 
-    def df_price_group(self,cref,quote,d,registry,group,descriptor=None,*,recovered_axes=None):
+    def df_price_group(self,cref,quote,d,registry,group,descriptor=None,*,recovered_axes=None,nonblocking=False):
         """One existing DF calibration/holdout campaign per exact actual step."""
         owner=d
         direct=group.get('direct_resolution')
@@ -2550,9 +2541,13 @@ class Completion:
         inputs=publish([d],'Fix candidate DF calibration and independent holdout inputs')
         common=['--input',str(inp),'--inputs-commit',inputs,'--source',price_source]
         calibration_dispatch = compile_needed or (d/'DF_CALIBRATION.DISTRIBUTED.json').is_file()
-        self.call(args+['acquire',*common,'--stage','calibration'],d,'DF_CALIBRATION',science=calibration_dispatch)
+        distributed=getattr(getattr(self,'stage_executor',None),'handles',lambda _:False)
+        def price_call(command,stage,science):
+            options={'poll':True} if nonblocking and science and distributed(stage) else {}
+            return self.call(command,d,stage,science=science,**options)
+        price_call(args+['acquire',*common,'--stage','calibration'],'DF_CALIBRATION',calibration_dispatch)
         raw=publish([d],'Save DF calibration wrapper receipts')
-        self.call(args+['freeze',*common,'--raw-commit',raw],d,'DF_MODEL_FREEZE',science=True)
+        price_call(args+['freeze',*common,'--raw-commit',raw],'DF_MODEL_FREEZE',True)
         frozen=publish([d],'Freeze candidate DF full-wrapper model before holdout')
         holdout=None
         if frozen_inputs['model_design'].get('holdout_round') is not None and use_holdout:

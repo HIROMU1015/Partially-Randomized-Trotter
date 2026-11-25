@@ -54,6 +54,15 @@ def test_storage_budget_reserves_other_owners_without_blocking_independent_work(
     assert not fits(dict(storage=dict(used_bytes=10, limit_bytes=100, filesystem_free_bytes=20, filesystem_min_free_bytes=5)), dict(storage_bytes=16))
 
 
+def test_resource_forecast_does_not_extrapolate_interpreter_overhead_across_scales():
+    # Same event implementation, several orders of magnitude in workload.
+    gib=2**30
+    estimate=R._near_scale_envelope(231537,[(7,.96*gib),(9,.98*gib),(864678,223*gib)],margin=1.5)
+    assert 70*gib < estimate < 120*gib
+    assert R._near_scale_envelope(8,[(7,.96*gib),(9,.98*gib),(864678,223*gib)],margin=1.5)<3*gib
+    assert R._near_scale_envelope(20,[(10,100)])==200
+
+
 def test_streaming_event_digest_and_lossless_compact_document(tmp_path):
     document = dict(events=[[dict(phase={'real': -0.0, 'imag': 0.0}, ids=('X', 'λ'), order=2)] * 15],
                     seeds=[2, 3], laws=[{'a': 0.1}], conditional=False)
@@ -142,9 +151,11 @@ def test_reversible_pbs_drain_keeps_deadline_and_process_stop():
     for sync in (rpe_pbs_worker.AllocationWorker._sync_drain, namespace['_sync_drain']):
         worker = SimpleNamespace(stop=threading.Event(), remaining=lambda:100,
                                  draining=False, exit_reason=None, drain_seconds=20, minimum_task_seconds=10)
+        sync(worker, {'stop':False,'pause':True}); assert worker.paused and not worker.draining
+        sync(worker, {}); assert worker.paused
+        sync(worker, {'stop':False,'pause':False}); assert not worker.paused and not worker.draining
         sync(worker, {'stop':True}); assert worker.draining
-        sync(worker, {}); assert worker.draining
-        sync(worker, {'stop':False}); assert not worker.draining
+        sync(worker, {'stop':False,'pause':False}); assert worker.draining
         worker.remaining = lambda:10
         sync(worker, {'stop':False}); assert worker.draining
         assert worker.exit_reason == 'WALLTIME_ADMISSION_CUTOFF'

@@ -358,6 +358,30 @@ def owned_preparation_observation(attempt, assignment, profile, peak):
     except (OSError, ValueError, TypeError):pass
     return observation
 
+def _near_scale_envelope(target, samples, *, margin=1.0):
+    """Fixed overhead plus variable workload; never let a tiny sample dominate.
+
+    All values are normalized to comparable workers before fitting. Adjacent
+    logarithmic scales (including the closest observed scale when outside the
+    range) determine the variable term. A single scale cannot identify an
+    intercept, so retain conservative proportional growth in that case.
+    """
+    if not samples:return None
+    distinct = {size for size, _ in samples}
+    if len(distinct) == 1:
+        return margin * max(value * max(1, target/size) for size, value in samples)
+    overhead = min(value for _, value in samples)
+    distance = min(abs(math.log2(target/size)) for size, _ in samples)
+    neighbors = [(size,value) for size,value in samples
+                 if abs(math.log2(target/size)) <= distance + 1]
+    # Only measured variation supplies a slope. Do not extrapolate fixed
+    # interpreter memory or launch/collection time as if it grew per event.
+    estimates = [overhead + max(0, value-overhead)*target/size for size,value in neighbors]
+    if target >= max(distinct) and all(value <= overhead for _,value in neighbors):
+        estimates += [value*target/size for size,value in neighbors]
+    return margin * max(estimates)
+
+
 def preparation_forecast(request, observations, *, cpu_count=None, host=None):
     """Conservative envelope from comparable owned attempts, including partial peaks.
 
@@ -368,7 +392,7 @@ def preparation_forecast(request, observations, *, cpu_count=None, host=None):
     if not observations:return {}
     target = preparation_workload(request)
     if target is None:return {}
-    forecasts = {}; legacy_storage=[]; matching_storage=[]
+    forecasts = {}; legacy_storage=[]; matching_storage=[];memory_samples=[];layout_memory=[];time_samples=[]
     keys = ('family', 'shape', 'provider', 'stage', 'source', 'parallel_axes')
     def add(key, value):
         forecasts[key] = max(forecasts.get(key, 0), math.ceil(value))
@@ -380,8 +404,13 @@ def preparation_forecast(request, observations, *, cpu_count=None, host=None):
         workers = observation.get('cpu_count')
         peak = observation.get('peak_rss_bytes')
         if type(workers) is int and workers > 0 and type(peak) is int and peak > 0:
-            concurrent = min(target.get('path_workers',target['axis_jobs']), cpu_count or workers) / min(sample.get('path_workers',sample['axis_jobs']), workers)
-            add('memory_bytes', peak * target['peak_units']/sample['peak_units'] * concurrent * 1.5)
+            active = min(sample.get('path_workers',sample['axis_jobs']), workers)
+            target_active = min(target.get('path_workers',target['axis_jobs']), cpu_count or workers)
+            item = (sample['peak_units'], peak / active * target_active)
+            if target.get('df_event_layout') == sample.get('df_event_layout'):
+                layout_memory.append(item)
+            elif not sample.get('df_event_layout'):
+                memory_samples.append(item)
         stored = observation.get('unique_event_bytes'); units = observation.get('stored_path_units')
         if type(stored) is int and stored > 0 and type(units) is int and units > 0:
             estimate = stored * target['path_units']/units
@@ -397,7 +426,17 @@ def preparation_forecast(request, observations, *, cpu_count=None, host=None):
         if (observation.get('completed') is True and host == observation.get('host') and
                 type(elapsed) in (int,float) and math.isfinite(elapsed) and elapsed > 0 and
                 type(workers) is int and workers > 0):
-            add('seconds', elapsed * max(1, target['total_units']/sample['total_units']) * max(1, workers/(cpu_count or workers)))
+            # Legacy/new layout timings are not interchangeable once the
+            # target has measured its own completed work.
+            if target.get('df_event_layout') == sample.get('df_event_layout') or not sample.get('df_event_layout'):
+                time_samples.append((sample['total_units'], elapsed * max(1, workers/(cpu_count or workers)),
+                                     sample.get('df_event_layout') == target.get('df_event_layout')))
+    comparable_layout = any(.5 <= size/target['peak_units'] <= 2 for size,_ in layout_memory)
+    if estimate := _near_scale_envelope(target['peak_units'], layout_memory if comparable_layout else layout_memory+memory_samples, margin=1.5):
+        add('memory_bytes', estimate)
+    matching_times = [(size,value) for size,value,matching in time_samples if matching]
+    timed = matching_times if any(.5 <= size/target['total_units'] <= 2 for size,_ in matching_times) else [(size,value) for size,value,_ in time_samples]
+    if estimate := _near_scale_envelope(target['total_units'],timed):add('seconds', estimate)
     if matching_storage or legacy_storage:add('storage_bytes',max(matching_storage or legacy_storage))
     return forecasts
 

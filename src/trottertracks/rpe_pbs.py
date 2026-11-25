@@ -693,6 +693,7 @@ class PbsManager:
                        for old, new in self.transport_paths.items()):
                     raise ValueError('PBS replacement transport requires absolute paths')
                 self.settings['transport_root'] = transport['root']
+                self.settings['workers']=pbs_transport_paths(self.settings['workers'],self.transport_paths)
         self.bounded_results = bool(dispatch and dispatch.get('bounded_results'))
         self.compute_storage_sampling = bool(dispatch and dispatch.get('compute_storage_sampling'))
         self.defer_q3_evidence = bool(dispatch and dispatch.get('defer_q3_evidence'))
@@ -757,7 +758,7 @@ class PbsManager:
         self.controls = {}
         self.storage_checks = {}
         self.last_error = None
-        self.configured = {worker['host_id']:worker for worker in settings['workers']}
+        self.configured = {worker['host_id']:worker for worker in self.settings['workers']}
         if len(self.configured) != len(settings['workers']):
             raise ValueError('PBS host IDs must be distinct')
         self.hold_node = getattr(executor, 'distributed', {}).get('pbs_hold_node') is True
@@ -787,6 +788,16 @@ class PbsManager:
                    and (allocation.get('worker') or {}).get('accepting')
                    and not self.state['allocations'][allocation['token']].get('resize_requested')
                    for allocation in self.allocations)
+
+    def session_control(self, host, record, *, stopping, release_when_idle):
+        """Retain ownership on admission pause; only final drains send STOP."""
+        policy_reader=getattr(self.executor,'_host_admission_policy',None)
+        paused=False
+        if policy_reader is not None:
+            policy,error=policy_reader()
+            paused=not self.executor._host_admission(host,policy,error)['accepting']
+        stop=bool(stopping or record.get('resize_requested') or record.get('storage_maintenance_requested'))
+        return dict(stop=stop,pause=bool(paused and not stop),release_when_idle=bool(release_when_idle and (stop or not paused)))
 
     def startup_jobs(self, *, except_host=None):
         """Offer a sized allocation a brief first chance at its checked work."""
@@ -2154,8 +2165,8 @@ class PbsManager:
                     self.log('PBS_STORAGE_MAINTENANCE_DRAIN', token=token, host_id=held['host_id'],
                              job_id=held['job_id'], reason=record['worker_storage_hold'])
                 stopping = user_stop or self.executor.state.closed
-                self.controls[token] = dict(stop=bool(stopping or record.get('resize_requested')
-                    or record.get('storage_maintenance_requested')), release_when_idle=bool(stopping and idle))
+                self.controls[token] = self.session_control(held['host_id'],record,stopping=stopping,
+                                                           release_when_idle=stopping and idle)
                 self.last_error = None
                 self.state['heartbeat'] = stamp()
                 self.save()
@@ -2262,8 +2273,7 @@ class PbsManager:
                     self.save()
                     self.log('PBS_QUEUED_ALLOCATION_RESIZE', token=token, host_id=host,
                              previous_cpus=current_cpus, requested_cpus=requested_cpus, reason=resize_reason)
-                self.controls[token] = dict(stop=bool(stopping or record.get('resize_requested')
-                    or record.get('storage_maintenance_requested')),
+                self.controls[token] = self.session_control(host,record,stopping=stopping,
                     release_when_idle=(stopping or not self.hold_node) and not waiting
                     and not keep_for_preparation and host not in hosts_with_attempts)
                 if self.offline_plan:

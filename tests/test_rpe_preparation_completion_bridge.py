@@ -384,6 +384,8 @@ class CompletionBridgeTests(unittest.TestCase):
             root = Path(tmp)
             bridge = B.DistributedPreparationBridge.__new__(B.DistributedPreparationBridge)
             outcome = dict(status='PREPARATION_COMPLETE')
+            import threading
+            bridge.lock=threading.RLock();bridge.stage_return_locks={}
             request = dict(preparation={'source': {'commit': 'FIXED'}})
             marker = root/'DF_CALIBRATION.DISTRIBUTED.json'
             C.put(marker, dict(job_id='original'))
@@ -402,6 +404,10 @@ class CompletionBridgeTests(unittest.TestCase):
                 self.assertTrue(bridge.import_received_stage(completion, marker, 'DF_CALIBRATION'))
                 restore.assert_called_once_with(outcome, request)
             self.assertEqual(C.read(root/'DF_CALIBRATION.RETURN.json')['job_id'],'original')
+            with (patch.object(bridge,'received_stage',return_value=True),
+                  patch.object(bridge,'_import_result') as restore):
+                self.assertTrue(bridge.import_received_stage(completion,marker,'DF_CALIBRATION'))
+                restore.assert_not_called()
 
     def test_df_freeze_receipt_with_only_input_copies_is_not_adopted(self):
         with tempfile.TemporaryDirectory() as temp:

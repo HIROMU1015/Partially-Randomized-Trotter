@@ -441,7 +441,11 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
     dependencies = [row for row in q3_input_dependencies(executor, request)
                     if (row['commit'], row['path']) not in existing]
     participants = []
-    pbs = executor.distributed.get('pbs') or {}
+    # The manager selects the current operational transport separately from
+    # the run's immutable PBS contract. Probe the same profile and Git view
+    # that a newly attached worker will actually use.
+    manager=getattr(executor,'pbs_manager',None)
+    pbs = getattr(manager,'settings',None) or executor.distributed.get('pbs') or {}
     def accepting(host):
         return accepts_probe(executor, host, policy, error)
 

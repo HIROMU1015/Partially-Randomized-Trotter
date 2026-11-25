@@ -618,7 +618,7 @@ class ManagerTests(unittest.TestCase):
             self.assertFalse(manager.controls[token]['stop'])
             executor._owned_attempts = lambda: []
             manager.cycle()
-            self.assertEqual(manager.controls[token], dict(stop=True, release_when_idle=False))
+            self.assertEqual(manager.controls[token], dict(stop=True, pause=False, release_when_idle=False))
             self.assertTrue(P.read(manager.path)['allocations'][token]['storage_maintenance_requested'])
             self.assertTrue(all(call.args[0]['action']=='exchange' for call in gateway.call.call_args_list))
 
@@ -815,7 +815,7 @@ class ManagerTests(unittest.TestCase):
                 dict(allocations=[observed], requests={}) if message['action'] == 'exchange' else {})
             first._demand = lambda: ([], [], 0, 0)
             first.cycle()
-            self.assertEqual(first.controls[token], dict(stop=False, release_when_idle=False))
+            self.assertEqual(first.controls[token], dict(stop=False, pause=False, release_when_idle=False))
             self.assertNotIn('queued_resize_since', first.state['allocations'][token])
             observed.update(status='R', worker={'accepting': True})
             first.cycle()

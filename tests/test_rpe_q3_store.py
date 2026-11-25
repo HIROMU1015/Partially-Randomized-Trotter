@@ -34,6 +34,17 @@ class StoreTests(unittest.TestCase):
         self.assertFalse(self.reserve('j3', approved=False))
         self.assertEqual(len(self.store.rows()), 2)
 
+    def test_delta_snapshot_tracks_changed_jobs_not_whole_queue(self):
+        self.reserve('a');self.reserve('b')
+        rev,changed,rows=self.store.queue_rows_delta(['a','b'],None,{})
+        self.assertEqual(set(rows),{'a','b'})
+        next_rev,changed,updates=self.store.queue_rows_delta(['a','b'],rev,rows)
+        self.assertEqual((next_rev,changed,updates),(rev,set(),{}))
+        self.store.claim('worker',1,allowed_jobs=['a'])
+        next_rev,changed,updates=self.store.queue_rows_delta(['a','b'],rev,rows)
+        self.assertEqual(changed,{'a'});self.assertEqual(set(updates),{'a'})
+        self.assertEqual(updates['a']['state'],'ASSIGNED');self.assertGreater(next_rev,rev)
+
     def test_concurrent_budget_reservations_are_atomic(self):
         def claim(i):
             return JobStore(self.path).reserve('PR_PAULI', 'j' + str(i), {'request_id': str(i), 'artificial': True}, 3, True)

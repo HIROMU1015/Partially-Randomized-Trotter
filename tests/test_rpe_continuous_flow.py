@@ -21,6 +21,35 @@ from trottertracks.rpe_q3_coordinator import digest
 import run_rpe_schedule_search as S
 
 
+def test_background_receipts_follow_exact_owner_even_outside_selected_wave(tmp_path):
+    root=tmp_path/'run';root.mkdir();rows={}
+    for job,owner in [('accepted-a','accepted-a'),('accepted-b','accepted-b'),('old-alias','other-owner')]:
+        d=root/job;d.mkdir();(d/'DF_SIGNALS.DISTRIBUTED.json').write_text(json.dumps({'job_id':owner}))
+        rows[job]={'request':{'preparation':dict(provider='DF_SIGNALS',controller_root=str(tmp_path),outputs=['workspace/run/'+job])}}
+    bridge=B.DistributedPreparationBridge.__new__(B.DistributedPreparationBridge);bridge.root=tmp_path
+    bridge.accepted_revision=0;bridge.import_received_stage=Mock(return_value=True)
+    bridge.executor=SimpleNamespace(run_dir=root,store=SimpleNamespace(unadopted_preparation_successes=lambda:list(rows),row=rows.get),
+        state=SimpleNamespace(cv=threading.Condition()),log=Mock())
+    assert bridge.recover_accepted_stages(object())==['accepted-a','accepted-b']
+    assert bridge.accepted_revision==2 and bridge.import_received_stage.call_count==2
+
+
+def test_same_split_shortlist_lanes_do_not_wait_for_other_candidates(tmp_path,monkeypatch):
+    comp=P.Completion.__new__(P.Completion);comp.settings={'exploratory_cost':True};comp.directory=tmp_path
+    comp.stage_executor=SimpleNamespace(executor=SimpleNamespace(store=SimpleNamespace(row=lambda _:None)))
+    comp.state={'records':{}};barrier=threading.Barrier(2);calls=[]
+    for j in ('a','b'):
+        folder=tmp_path/j;folder.mkdir();comp.state['records'][j]=dict(method='PR_DF',status='READY_FOR_SEARCH',prices=None,
+            configuration_id=j,configuration={'fixture':j},design={'L_D':2},request={'design':{'L_D':2}},directory=str(folder))
+    comp.price_registry_digest=lambda:'same';comp.df_price_evidence_snapshot=lambda record:record['configuration_id']
+    comp.initial_quote=lambda *a:{'complete':False};comp.save=lambda:None
+    def price(cref,*a,**kw):
+        calls.append(cref['fixture']);barrier.wait(timeout=5);raise P.PreparationWait('queued',job_id=cref['fixture'])
+    comp.df_price=price;monkeypatch.setattr(P,'value',lambda x:x)
+    comp.prepare_shortlist_prices({'a','b'},stop_requested=lambda:False)
+    assert set(calls)=={'a','b'} and all(r['shortlist_price_attempt']['reason']=='queued' for r in comp.state['records'].values())
+
+
 def test_validator_ignores_only_unreferenced_stdlib_imports():
     filename = 'rpe_optimizer_concurrent.py'
     source = (ROOT/'src/trottertracks'/filename).read_bytes()
