@@ -492,3 +492,20 @@ def test_hchain_resume_selects_new_adapter_without_changing_fixed_package(tmp_pa
     atomic(path/'ROUND.json', changed)
     with pytest.raises(ValueError,match='part inputs changed'):
         search._start_part(path,unit,1)
+
+
+def test_selected_bundled_offline_module_is_not_shadowed_by_pinned_root(tmp_path, monkeypatch):
+    import zipfile
+    import trottertracks
+    from trottertracks import rpe_pbs_offline as fixed
+    import run_rpe_pbs_storage_worker as launcher
+    packed=tmp_path/'selected.pyz'
+    with zipfile.ZipFile(packed,'w') as archive:
+        archive.writestr('trottertracks/rpe_pbs_offline.py','RELEASE = "selected"\n')
+    name='trottertracks.rpe_pbs_offline'
+    monkeypatch.setitem(sys.modules,name,fixed)
+    monkeypatch.setattr(trottertracks,'rpe_pbs_offline',fixed)
+    result=launcher.load_bundled_offline(packed)
+    assert result.RELEASE=='selected'
+    assert result.__file__.startswith(str(packed))
+    assert sys.modules[name] is result and trottertracks.rpe_pbs_offline is result

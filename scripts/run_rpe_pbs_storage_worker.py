@@ -95,6 +95,21 @@ def configure_artifact_transport(launcher):
         setattr(pinned.ArtifactCache, name, getattr(transport.ArtifactCache, name))
 
 
+def load_bundled_offline(launcher):
+    """Select the explicitly packaged operational controller, not the pinned copy."""
+    import importlib.util
+    import zipimport
+    import trottertracks
+    name = 'trottertracks.rpe_pbs_offline'
+    loader = zipimport.zipimporter(str(launcher)+'/trottertracks')
+    spec = importlib.util.spec_from_loader(name, loader)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    trottertracks.rpe_pbs_offline = module
+    return module
+
+
 def configure_allocation_worker(profile, launcher):
     configure_artifact_transport(launcher)
     from trottertracks import rpe_pbs_worker as pbs
@@ -112,6 +127,9 @@ def configure_allocation_worker(profile, launcher):
         # SOURCE, adapter and result validation still use the fixed checkout.
         import trottertracks
         trottertracks.__path__.append(str(launcher)+'/trottertracks')
+        if (profile.get('pbs', {}).get('offline_controller_overlay')
+                and 'trottertracks/rpe_pbs_offline.py' in members):
+            load_bundled_offline(launcher)
         from trottertracks import _collection_pbs_worker as transport
         from trottertracks import _collection_q3_worker as cycle
         if 'trottertracks/_pipeline_q3_resources.py' in members:
@@ -235,7 +253,9 @@ def main():
                       RPE_PBS_TRANSPORT_ROOT=str(script.parents[1]))
     configure_allocation_worker(profile, launcher)
     if check_imports:
-        print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path))))
+        selected = sys.modules.get('trottertracks.rpe_pbs_offline')
+        print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path),
+                              offline_module=getattr(selected, '__file__', None))))
         return
     stop_sampling = threading.Event()
     if compute_sampling and profile.get('storage_limit'):
