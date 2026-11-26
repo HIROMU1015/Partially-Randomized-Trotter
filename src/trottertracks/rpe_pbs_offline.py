@@ -709,8 +709,9 @@ class OfflineSearch:
         if overlay['base_source'] != self.plan['settings']['source']:
             raise ValueError('PBS controller overlay belongs to another fixed optimizer')
         files = overlay['modules']
-        order = ('rpe_host_profiles', 'rpe_q3_resources', 'rpe_q3_store',
-                 'rpe_preparation_bridge', 'rpe_optimizer_concurrent')
+        order = ('rpe_q3_timing', 'rpe_host_profiles', 'rpe_q3_resources', 'rpe_q3_store',
+                 'rpe_preparation_artifacts', 'rpe_worker_storage', 'rpe_preparation_bridge',
+                 'rpe_optimizer_concurrent')
         if not {'rpe_q3_store','rpe_optimizer_concurrent'} <= set(files) <= set(order):
             raise ValueError('Unsupported PBS controller overlay modules')
         modules = []

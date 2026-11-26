@@ -14,6 +14,7 @@ import json
 import os
 import re
 import signal
+import shutil
 import subprocess
 import sys
 import time
@@ -1337,6 +1338,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                 or message != fault.get('message')):
             hold('the driver failure differs from its saved stop')
         damaged_progress = False
+        disk_report_failure = False
         if kind == 'dispatch':
             projected_request = (
                 stop['error_type'] == 'KeyError' and re.fullmatch("'[0-9a-f]{64}'", message)
@@ -1350,9 +1352,13 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                 stop['error_type'] == 'JSONDecodeError'
                 and 'in _metrics_snapshot' in trace and 'in metrics' in trace
                 and 'rpe_optimizer_concurrent.py' in trace and 'e=json.loads(line)' in trace)
-            if not (projected_request or pinned_history_binding or damaged_progress):
+            disk_report_failure = (stop['error_type'] == 'OSError'
+                and message.startswith('[Errno 28]') and 'in report' in trace
+                and 'pickle.dump(' in trace and 'run_rpe_schedule_search.py' in trace
+                and shutil.disk_usage(run).free > 0)
+            if not (projected_request or pinned_history_binding or damaged_progress or disk_report_failure):
                 hold('the failure is outside the recoverable dispatch or metrics paths')
-            if damaged_progress and (run/'STOP_REQUESTED.json').exists():
+            if (damaged_progress or disk_report_failure) and (run/'STOP_REQUESTED.json').exists():
                 hold('user STOP prevents metrics recovery')
         elif kind == 'pf_request':
             old_mismatch = (message == 'PF completion directory belongs to another selected request'
@@ -1476,7 +1482,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                 or not message.startswith('AST constructor recursion depth mismatch')
                 or 'pf_optimizer_connection.py' not in trace):
             hold('the failure is outside the fixed PF metadata AST path')
-        reattach = damaged_progress or (kind == 'pf_request'
+        reattach = damaged_progress or disk_report_failure or (kind == 'pf_request'
             and (incomplete_recovery_index or legacy_write_scope or restored_provider or vanished_pf_owner
                  or saved_price_git_input or pf_local_publication))
         owners = [launch, driver, relay]
@@ -1986,7 +1992,8 @@ def schedule_driver(config, run, selection):
     preparation = selection.get('preparation_sha256')
     if preparation is not None:
         required = set(SCHEDULE_PREPARATION_MODULES)
-        optional = {'saved_rpe_cost_catalog', 'pr_step_price_registry', 'pr_candidate_completion', 'pf_optimizer_connection'}
+        optional = {'saved_rpe_cost_catalog', 'pr_step_price_registry', 'pr_candidate_completion', 'pf_optimizer_connection',
+                    'rpe_q3_timing', 'rpe_worker_storage'}
         if not required <= set(preparation) <= required | optional:
             raise RequestError('schedule_resume', 'Preparation operations selection is incomplete')
         for name in preparation:
@@ -2163,6 +2170,10 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
             # Optimizer and provider imports bind Reader at module load time.
             operations.insert(0, ('saved_rpe_cost_catalog',
                                   str(driver.parents[1]/'src/trottertracks/saved_rpe_cost_catalog.py')))
+        if 'rpe_worker_storage' in (preparation or {}):
+            operations.append(('rpe_worker_storage', str(driver.parents[1]/'src/trottertracks/rpe_worker_storage.py')))
+        if 'rpe_q3_timing' in (preparation or {}):
+            operations.insert(0, ('rpe_q3_timing', str(driver.parents[1]/'src/trottertracks/rpe_q3_timing.py')))
         bootstrap = ('import importlib.util,json,runpy,sys\n'
                      'root,driver,manager,optimizer,preparation,trial,pr_price_service=sys.argv[1:8]\n'
                      'sys.argv=sys.argv[7:]\n'

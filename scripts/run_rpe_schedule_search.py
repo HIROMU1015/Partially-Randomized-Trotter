@@ -2949,8 +2949,9 @@ class WidthDriver:
             'run,spec,result,source,owner=history.read_local_exact_snapshot(sys.stdin.buffer)\n'
             'report["write_width_report"](Path(run),cli,spec,result,source,owner=owner)\n')
         with K.CLI.round_phase(self.run, 'WIDTH_QUEUE_REPORT'):
-            snapshot = tempfile.TemporaryFile()
+            snapshot = None
             try:
+                snapshot = tempfile.TemporaryFile()
                 pickle.dump((str(self.run), self.spec, result, source, os.getpid()),
                             snapshot, protocol=pickle.HIGHEST_PROTOCOL)
                 snapshot.seek(0)
@@ -2967,8 +2968,17 @@ class WidthDriver:
                     [sys.executable, '-B', '-c', script, str(ROOT), str(Path(__file__).resolve()),
                      self.report_cli().__file__],
                     stdin=snapshot, cwd=ROOT)
+            except OSError as error:
+                if snapshot is not None:
+                    snapshot.close()
+                import errno
+                if error.errno != errno.ENOSPC:
+                    raise
+                print('Deferred derived width report: insufficient snapshot space', file=sys.stderr, flush=True)
+                return
             except BaseException:
-                snapshot.close()
+                if snapshot is not None:
+                    snapshot.close()
                 raise
             self._report = process, snapshot
 
