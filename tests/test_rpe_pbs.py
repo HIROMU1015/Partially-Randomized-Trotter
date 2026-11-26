@@ -66,25 +66,28 @@ class StorageSampleTests(unittest.TestCase):
             P.atomic(sample, facts)
             observer = W.GatewayStorage(sample, max_age=10, local_clock=True)
             with patch.object(W.time, 'time', return_value=144.):
-                self.assertTrue(observer.report(policy)['accepting_new_jobs'])
+                self.assertFalse(observer.report(policy)['accepting_new_jobs'])
+                P.atomic(observer.in_progress, dict(policy=facts['policy'], started_epoch=105.))
+                with patch.object(W.shutil, 'disk_usage', return_value=SimpleNamespace(free=100*P.GIB)):
+                    self.assertTrue(observer.report(policy)['accepting_new_jobs'])
+                with patch.object(W.shutil, 'disk_usage', return_value=SimpleNamespace(free=P.GIB)):
+                    self.assertFalse(observer.report(policy)['accepting_new_jobs'])
                 facts['report']['used_bytes'] = 49*P.GIB
                 P.atomic(sample, facts)
                 self.assertFalse(observer.report(policy)['accepting_new_jobs'])
 
-    def test_slow_compute_scan_keeps_actual_hold_but_never_uses_stale_positive(self):
+    def test_storage_exclusion_remains_explicit_in_integrated_sampler(self):
+        from trottertracks import rpe_worker_storage as storage
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory)/'sample.json'
-            policy = dict(limit_bytes=50*P.GIB, roots=['/shared'])
-            report = dict(limit_bytes=policy['limit_bytes'], used_bytes=51*P.GIB,
-                          accepting_new_jobs=False, reason='STORAGE_LIMIT_REACHED', measurement_seconds=127)
-            P.atomic(path, dict(policy=policy, sampled_epoch=100., report=report))
-            observer = W.GatewayStorage(path, max_age=10, local_clock=True)
-            with patch.object(W.time, 'time', return_value=180.):
-                self.assertEqual(observer.report(policy)['reason'], 'STORAGE_LIMIT_REACHED')
-                self.assertFalse(observer.report(policy)['accepting_new_jobs'])
-                report.update(used_bytes=49*P.GIB, accepting_new_jobs=True, reason=None)
-                P.atomic(path, dict(policy=policy, sampled_epoch=100., report=report))
-                self.assertEqual(observer.report(policy)['reason'], 'STORAGE_USAGE_UNAVAILABLE')
+            root=Path(directory)
+            old=root/'old-attempt';old.mkdir()
+            policy=dict(limit_bytes=50*P.GIB, roots=[directory], sample_path=str(root/'sample.json'))
+            P.atomic(root/'STORAGE_EXCLUSIONS.json',dict(excluded_paths=[str(old)]))
+            with patch.object(storage,'_used_bytes',return_value=42*P.GIB) as measure:
+                report=storage.report(policy,du_timeout=W.COMPUTE_DU_TIMEOUT,refresh=True)
+            measure.assert_called_once_with([directory],timeout=W.COMPUTE_DU_TIMEOUT,excluded_paths=[str(old)])
+            self.assertEqual(report['excluded_paths'],[str(old)])
+            self.assertTrue(report['accepting_new_jobs'])
 
     def test_compute_worker_uses_first_fresh_sample_and_rejects_stale_sample(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -1052,6 +1055,49 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(gateway.calls[-1]['spec']['reason']['retained_replacement'],
                              dict(pilot_token='new-pilot', predecessor='old-pilot',
                                   old_owners=[['old', 'attempt', 'hash']]))
+
+    def test_replacement_reconnects_after_session_only_exit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            old = self.submit(manager)
+            manager.allocations = [dict(token=old,status='R',host_id='pbs-0',
+                                        pilot_token='old-pilot',retained_replacement='new-pilot')]
+            request = dict(request_id='queued')
+            with patch.object(manager,'_demand',return_value=([(['pbs-0'],request)],[],1,0)), \
+                    patch.object(executor.store,'_connection',create=True) as connection:
+                connection.return_value.__enter__.return_value.execute.return_value=[('old','attempt','hash')]
+                manager._connect_retained_replacement()
+                session = gateway.calls[-1]['spec']['token']
+                record=manager.state['allocations'][session]
+                record.update(status='F',launcher_rollover_requested=True,storage_maintenance_requested=True,observed=dict(session_end={'returncode':0},
+                                                      reservation_status='R',pilot_token='new-pilot'))
+                manager._connect_retained_replacement()
+                manager._connect_retained_replacement()
+            self.assertEqual(len(gateway.calls),3)
+            self.assertEqual(gateway.calls[-1]['spec']['reason']['retained_replacement'],
+                             dict(pilot_token='new-pilot',predecessor='old-pilot',
+                                  old_owners=[['old','attempt','hash']]))
+
+    def test_launcher_rollover_does_not_stop_current_owned_work_or_predecessor(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            token=self.submit(manager)
+            record=manager.state['allocations'][token]
+            manager.storage_launcher=dict(path='/new/launcher',sha256='a'*64)
+            manager.storage_launcher_verified=True
+            allocation=dict(token=token,status='R',host_id='pbs-0',job_id='SAVED.PBS',pilot_token='pilot')
+            executor._offer_owners=Mock(return_value=[{'attempt_id':'active'}])
+            executor._owned_attempts=lambda:[{}]
+            manager._rollover_storage_launcher(dict(allocation,retained_replacement='new'),record)
+            self.assertFalse(record.get('launcher_rollover_requested',False))
+            manager._rollover_storage_launcher(allocation,record)
+            self.assertTrue(record['launcher_rollover_requested'])
+            self.assertFalse(record.get('storage_maintenance_requested',False))
+            executor._offer_owners.return_value=[]
+            manager._rollover_storage_launcher(allocation,record)
+            self.assertTrue(record['storage_maintenance_requested'])
+            self.assertEqual(manager.session_control('pbs-0',record,stopping=False,release_when_idle=False),
+                             dict(stop=True,pause=False,release_when_idle=False))
 
     def test_saved_cas_harvest_reuses_original_attempt_once(self):
         with tempfile.TemporaryDirectory() as directory:

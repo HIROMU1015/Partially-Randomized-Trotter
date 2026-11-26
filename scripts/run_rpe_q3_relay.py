@@ -439,6 +439,12 @@ class Relay:
         scp,target=scp_prefix(worker,ssh)
         name='.rpe-mailbox-'+uuid.uuid4().hex+'.json'
         timeout=self.config.get('request_timeout_seconds',60)
+        # Completion/transfer retains its identity across retries. Allow the
+        # existing independent recovery pool time for WSL disk and SSH latency
+        # without increasing the timeout of the ordinary status poll.
+        if action in ('result','artifacts-get','artifacts-put'):
+            timeout=max(timeout, int(self.config.get('wsl_recovery_timeout_seconds',180)))
+
         payload_bytes = json.dumps(value).encode('utf-8')
         ssh += ['-n','-o','BatchMode=yes','-o','ConnectTimeout=10',alias]
         # Small poll and receipt messages fit in a single Windows SSH call.

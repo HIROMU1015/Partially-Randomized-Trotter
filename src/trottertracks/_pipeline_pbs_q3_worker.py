@@ -5,7 +5,7 @@ or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 """
 from copy import deepcopy
 from .rpe_dry_check_recovery import dry_check_rejection, failed_dry_check_released
-from .rpe_q3_timing import stamp, append as timing_append
+from .rpe_q3_timing import stamp, append as timing_append, read_lines as timing_read_lines
 from . import rpe_pbs_attempt_control as PBSAttempt
 from . import rpe_q3_resources as Resources
 from . import rpe_worker_storage as Storage
@@ -819,7 +819,11 @@ class Worker:
                     response = self._post('/v1/complete', dict(owner, pbs_evidence_status=True))
                     transferred = read(core_ack)['bytes']
                 else:
-                    timing_append(attempt/'TRANSPORT_TIMING.jsonl', 'WORKER_TRANSFER_START')
+                    timing = attempt/'TRANSPORT_TIMING.jsonl'
+                    # Appending on retry changes the completion payload and
+                    # creates another full request in the shared PBS spool.
+                    if not any(row.get('event') == 'WORKER_TRANSFER_START' for row in timing_read_lines(timing)):
+                        timing_append(timing, 'WORKER_TRANSFER_START')
                     self._upload_artifacts(attempt, assignment)
                     deferred = {} if sending_q3 and self.profile.get('pbs', {}).get('defer_q3_evidence') else None
                     files = result_bundle(attempt, deferred=deferred)

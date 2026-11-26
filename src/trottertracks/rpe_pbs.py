@@ -787,6 +787,7 @@ class PbsManager:
                    and allocation['job_id'] == job_id
                    and (allocation.get('worker') or {}).get('accepting')
                    and not self.state['allocations'][allocation['token']].get('resize_requested')
+                   and not self.state['allocations'][allocation['token']].get('launcher_rollover_requested')
                    for allocation in self.allocations)
 
     def session_control(self, host, record, *, stopping, release_when_idle):
@@ -965,6 +966,14 @@ class PbsManager:
                 if (allocation or {}).get('retained_replacement'):
                     return self._record_rpc_response(token, request_id, identity, dict(ok=True,
                         result=dict(assignments=[], stop=False, eligibility_challenges=[])))
+            if request['endpoint'] == '/v1/poll':
+                admission = (payload.get('resource_report') or {}).get('pbs')
+                if admission is not None:
+                    # Identity comes from the manager's saved allocation.
+                    admission['allocation_token'] = token
+                    admission['other_allocation_owners'] = (
+                        self.state['allocations'][token]['spec'].get('reason', {})
+                        .get('retained_replacement', {}).get('old_owners', []))
             if request['endpoint'] == '/v1/poll' and allocation is not None:
                 admission = (payload.get('resource_report') or {}).get('pbs')
                 current = allocation.get('worker') or {}
@@ -985,7 +994,8 @@ class PbsManager:
             if request['endpoint'] == '/v1/poll' and (allocation is None or allocation['status'] != 'R' or
                     not (allocation.get('worker') or {}).get('accepting', False) or
                     self.state['allocations'][token].get('resize_requested') or
-                    self.state['allocations'][token].get('storage_maintenance_requested')):
+                    self.state['allocations'][token].get('storage_maintenance_requested') or
+                    self.state['allocations'][token].get('launcher_rollover_requested')):
                 # A delayed file survives worker/PBS termination; it cannot
                 # constitute a current free-slot offer.
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
@@ -2086,25 +2096,68 @@ class PbsManager:
             self.offline_staged.add(sha)
         return self.gateway.call(dict(action='ensure', spec=spec))
 
+    def _rollover_storage_launcher(self, allocation, record):
+        """Drain an obsolete idle worker session, not its physical reservation."""
+        if (not self.storage_launcher or not allocation.get('pilot_token')
+                or allocation.get('retained_replacement') or allocation['status'] != 'R'
+                or record['spec']['python'] == self.storage_launcher['path']
+                or record.get('storage_maintenance_requested')):
+            return
+        if not self.storage_launcher_verified:
+            if time.monotonic() < getattr(self, '_launcher_rollover_retry_after', 0):
+                return
+            self._launcher_rollover_retry_after = time.monotonic() + 60
+            try:
+                self.gateway.verify_storage_launcher(self.storage_launcher)
+            except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                self.log('PBS_LAUNCHER_ROLLOVER_DEFERRED',token=allocation['token'],reason=str(error))
+                return
+            self.storage_launcher_verified=True
+        token, host = allocation['token'], allocation['host_id']
+        old = record['spec'].get('reason',{}).get('retained_replacement',{}).get('old_owners',[])
+        report = dict(pbs=dict(allocation_token=token,other_allocation_owners=old))
+        if not record.get('launcher_rollover_requested'):
+            record['launcher_rollover_requested']=True
+            self.log('PBS_LAUNCHER_ROLLOVER_DRAIN',token=token,host_id=host,
+                     job_id=allocation['job_id'],reservation_retained=True)
+        owned = self.executor._offer_owners(host,self.executor._owned_attempts(),report)
+        if not owned:
+            record['storage_maintenance_requested']=True
+            self.log('PBS_LAUNCHER_ROLLOVER_IDLE',token=token,host_id=host,
+                     job_id=allocation['job_id'],reservation_retained=True)
+
     def _connect_retained_replacement(self):
-        """Open one new worker session while the old session only drains."""
+        """Open a session on the new node while its predecessor only drains."""
         previous = next((row for row in self.allocations if row.get('retained_replacement')), None)
         if previous is None:
             return
         pilot = previous['retained_replacement']
-        if any((record['spec'].get('reason', {}).get('retained_replacement') or {}).get('pilot_token') == pilot
-               or record.get('observed', {}).get('pilot_token') == pilot
-               for record in self.state['allocations'].values()):
-            return
+        matching = [record for record in self.state['allocations'].values()
+                    if (record['spec'].get('reason', {}).get('retained_replacement') or {}).get('pilot_token') == pilot
+                    or record.get('observed', {}).get('pilot_token') == pilot]
+        if matching:
+            if any(record['status'] not in TERMINAL for record in matching):
+                return
+            # An ended session does not mean the reservation ended. Only a
+            # proved session exit on the still-running replacement may reattach.
+            ended = next((record for record in reversed(matching)
+                          if record.get('launcher_rollover_requested')
+                          and record.get('storage_maintenance_requested')
+                          and record.get('observed',{}).get('session_end')
+                          and record.get('observed',{}).get('reservation_status') == 'R'),None)
+            if ended is None:
+                return
+            owners = (ended['spec'].get('reason',{}).get('retained_replacement') or {}).get('old_owners',[])
+        else:
+            with self.executor.store._connection() as db:
+                owners = [list(row) for row in db.execute(
+                    "SELECT job_id,attempt_id,request_sha256 FROM jobs WHERE host_id=? AND state='ASSIGNED'", (previous['host_id'],))]
         host = previous['host_id']
         worker = self.configured[host]
         outstanding, pending, queued, free = self._demand()
         requests = [request for hosts, request in outstanding + pending if host in hosts]
         if not requests or not self._storage_accepting(worker):
             return
-        with self.executor.store._connection() as db:
-            owners = [list(row) for row in db.execute(
-                "SELECT job_id,attempt_id,request_sha256 FROM jobs WHERE host_id=? AND state='ASSIGNED'", (host,))]
         demand = dict(ready_tasks=queued, existing_host_free_slots=free,
             retained_replacement=dict(pilot_token=pilot, predecessor=previous['pilot_token'], old_owners=owners))
         try:
@@ -2434,6 +2487,8 @@ class PbsManager:
             if held and held.get('pilot_token'):
                 token = held['token']
                 record = self.state['allocations'][token]
+                if not user_stop and not self.executor.state.closed:
+                    self._rollover_storage_launcher(held,record)
                 idle = not any(row['host_id'] == held['host_id'] for row in self.executor._owned_attempts())
                 if (not user_stop and idle and not record.get('storage_maintenance_requested')
                         and record.get('worker_storage_hold') in ('STORAGE_LIMIT_REACHED', 'FILESYSTEM_SPACE_LOW')):

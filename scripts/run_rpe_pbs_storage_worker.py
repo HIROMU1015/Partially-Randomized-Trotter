@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import runpy
+import shutil
 import sys
 import threading
 import time
@@ -19,6 +20,7 @@ class GatewayStorage:
         self.sample = sample
         self.max_age = max_age
         self.local_clock = local_clock
+        self.in_progress = sample.with_name("STORAGE_SAMPLE_IN_PROGRESS.json")
         self.generation = None
         self.observed = None
 
@@ -40,14 +42,28 @@ class GatewayStorage:
                 age = self.max_age
                 used = report.get('used_bytes')
                 measured = report.get('measurement_seconds')
-                # A cold sweep can take longer than the poll interval. Keep a
-                # measured sweep usable during the next one only with headroom.
-                if (type(used) is int and 0 <= used <= policy['limit_bytes'] * 95 // 100
-                        and type(measured) in (int, float) and 0 <= measured <= COMPUTE_DU_TIMEOUT):
-                    age += measured
                 elapsed = time.time() - generation
                 if 0 <= elapsed <= age:
                     return report
+                # Retain a positive measurement only while a bounded new scan
+                # of the identical policy is actually in progress. A stalled
+                # sampler, low disk space or a quota near its limit fails closed.
+                if (type(used) is int and 0 <= used <= policy['limit_bytes'] * 95 // 100
+                        and report.get('accepting_new_jobs') is True
+                        and type(measured) in (int, float) and 0 <= measured <= COMPUTE_DU_TIMEOUT
+                        and 0 <= elapsed <= age + COMPUTE_DU_TIMEOUT):
+                    active = json.loads(self.in_progress.read_bytes())
+                    started = active['started_epoch']
+                    if (active['policy'] == data['policy']
+                            and generation <= started <= generation + age
+                            and 0 <= time.time()-started <= COMPUTE_DU_TIMEOUT):
+                        minimum = report.get('filesystem_min_free_bytes', policy['limit_bytes']//10)
+                        roots = policy['roots']
+                        if isinstance(roots, dict):
+                            roots = roots.values()
+                        existing = [root for root in roots if Path(root).exists()]
+                        if existing and all(shutil.disk_usage(root).free >= minimum for root in existing):
+                            return dict(report, measurement_in_progress=True, measurement_age_seconds=elapsed)
                 # During a slow new sweep an actual observed capacity hold
                 # remains actionable. Never promote a stale positive offer.
                 if (self.max_age < elapsed <= 2 * COMPUTE_DU_TIMEOUT + self.max_age
@@ -227,20 +243,56 @@ def main():
         if sampler:
             policy['exclusion_file'] = str(sampler.storage_exclusion_file(profile['storage_limit']))
 
+        # Admission uses one allocation-local measurement. The previous
+        # sampler mixed multiple full-directory rechecks into that measurement,
+        # leaving no current capacity offer for minutes.
+        maintenance_due = threading.Event()
+        maintenance_policy = dict(policy, sample_path=str(directory/'STORAGE_USAGE_MAINTENANCE.json'))
+
+        def maintain_storage():
+            try:
+                os.nice(10)
+            except OSError:
+                pass
+            while not stop_sampling.is_set():
+                if not maintenance_due.wait(5):
+                    continue
+                maintenance_due.clear()
+                if stop_sampling.is_set():
+                    break
+                if not (directory/'OFFLINE_ACTIVE').exists():
+                    sample_report(maintenance_policy, spools=[profile['work_dir']],
+                                  cache_directories=storage.prefix_caches(profile), refresh=True,
+                                  proactive=True, pbs_runs=str(directory.parents[2]),
+                                  du_timeout=COMPUTE_DU_TIMEOUT)
+                # The common central storage service also reclaims verified
+                # copies; avoid repeated expensive reconciliation at poll rate.
+                stop_sampling.wait(300)
+
         def sample_storage():
-            # On the PBS Linux nodes nice applies to this background thread.
             try:
                 os.nice(5)
             except OSError:
                 pass
             while not stop_sampling.is_set():
                 if not (directory/'OFFLINE_ACTIVE').exists():
-                    sample_report(policy, spools=[profile['work_dir']],
-                                  cache_directories=storage.prefix_caches(profile), refresh=True,
-                                  proactive=True, pbs_runs=str(directory.parents[2]),
-                                  du_timeout=COMPUTE_DU_TIMEOUT)
+                    marker = observer.in_progress
+                    temp = marker.with_suffix('.tmp')
+                    temp.write_text(json.dumps(dict(policy=observer.policy_fingerprint(policy),
+                                                    started_epoch=time.time())))
+                    os.replace(temp, marker)
+                    try:
+                        # No spool/caches on this measurement-only path.
+                        # The same byte policy and exclusions still apply.
+                        result = sample_report(policy, refresh=True, proactive=True,
+                                               du_timeout=COMPUTE_DU_TIMEOUT)
+                        if result and result.get('reclaim_pending'):
+                            maintenance_due.set()
+                    finally:
+                        marker.unlink(missing_ok=True)
                 stop_sampling.wait(storage.SAMPLE_SECONDS)
 
+        threading.Thread(target=maintain_storage, name='pbs-storage-maintenance', daemon=True).start()
         threading.Thread(target=sample_storage, name='pbs-storage-sample', daemon=True).start()
     sys.argv = [str(script), *args]
     try:

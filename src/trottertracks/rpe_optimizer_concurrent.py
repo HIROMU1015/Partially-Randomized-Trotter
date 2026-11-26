@@ -1559,6 +1559,32 @@ class DistributedExecutor(ConcurrentExecutor):
             # Expiry requests a review, not automatic scientific admission.
         return disposition
 
+    @staticmethod
+    def _belongs_to_resource_offer(row, host, report):
+        if row.get('host_id') != host:
+            return False
+        pbs = (report or {}).get('pbs') or {}
+        token = pbs.get('allocation_token')
+        if token is None:
+            return True
+        detail = row.get('detail') or {}
+        if isinstance(detail, str):
+            detail = json.loads(detail)
+        old_token = detail.get('pbs_allocation_token')
+        if old_token is not None:
+            return old_token == token
+        owner = (row.get('job_id'), row.get('attempt_id'), row.get('request_sha256'))
+        return owner not in {tuple(value) for value in pbs.get('other_allocation_owners', ())}
+
+    def _offer_owners(self, host, owned, report=None):
+        if report is None:
+            report = self.hosts.get(host, {}).get('resource_report')
+        return [row for row in owned if self._belongs_to_resource_offer(row, host, report)]
+
+    def _resource_owners(self, host, owned, report=None):
+        return [row for row in self._offer_owners(host, owned, report)
+                if self._uses_pbs_task_resources(row)]
+
     def _host_new_slots(self, host, slots, admission, *, owned=None):
         if not admission['accepting']: return 0
         maximum = admission['max_slots']
@@ -1566,7 +1592,7 @@ class DistributedExecutor(ConcurrentExecutor):
         # UNKNOWN and completed-but-untransferred attempts still belong to this
         # host. A communication outage must not open another execution slot.
         owned = self._owned_attempts() if owned is None else owned
-        count = sum(row['host_id'] == host for row in owned)
+        count = len(self._offer_owners(host, owned))
         return min(slots, max(0, maximum-count))
 
     def _local_calibration_pair_allows(self, host, request, *, owned=None):
@@ -1616,7 +1642,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def _owned_attempts(self):
         with self.store._connection() as database:
             rows = database.execute(
-                "SELECT job_id,host_id,attempt_id,state,method,detail,assigned_epoch FROM jobs INDEXED BY host_state_queue "
+                "SELECT job_id,host_id,attempt_id,request_sha256,state,method,detail,assigned_epoch FROM jobs INDEXED BY host_state_queue "
                 "WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
             # UNKNOWN still owns the request. Release only its capacity when
             # the worker proved it exited or a retired PBS allocation is verified.
@@ -1666,7 +1692,7 @@ class DistributedExecutor(ConcurrentExecutor):
         admission = self._host_admission(host, policy, error)
         owned = self._owned_attempts() if owned is None else owned
         free = self._host_new_slots(host, info['reported_slots'], admission, owned=owned)
-        current = {row['attempt_id'] for row in owned if row['host_id'] == host}
+        current = {row['attempt_id'] for row in self._offer_owners(host, owned, info.get('resource_report'))}
         # An offer cannot be reused by another poll after its free slot has
         # already been committed to an attempt by this controller.
         free = max(0, free-len(current-set(info.get('owned_at_offer', []))))
@@ -1809,8 +1835,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 return runtime_cpu_footprint(profile, runtime), 0
 
             try:
-                running = [footprint(row) for row in owned_rows if row['host_id'] == host
-                           and (pool is None or self._uses_pbs_task_resources(row))]
+                running = [footprint(row) for row in self._resource_owners(host, owned_rows, report)]
                 if None in running:
                     continue
                 # A job that fits after a running task completes is useful
@@ -2406,6 +2431,7 @@ class DistributedExecutor(ConcurrentExecutor):
         capacity_ready = 0
         ready_classes = set()
         class_order = []
+        pending_class_order = []
         observed = self.hosts.get(host, {})
         fingerprints = observed.get('host_fingerprints') or {}
         rejected = observed.get('readiness_errors') or {}
@@ -2445,7 +2471,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     # isolate this worker for a class that cannot currently
                     # start due to RAM or storage. Independent classes remain
                     # eligible for a cold trial or a measured free slot.
-                    class_order.append(kind)
+                    (class_order if fresh else pending_class_order).append(kind)
         ready_now = ready
         if self.distributed.get('work_conserving_search'):
             recent = getattr(self.state, 'host_ready_backlog', {})
@@ -2466,7 +2492,7 @@ class DistributedExecutor(ConcurrentExecutor):
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
             ready_jobs=ready, ready_jobs_now=ready_now, capacity_ready_jobs=capacity_ready,
             ready_task_classes=sorted(ready_classes), capacity=self.capacity,
-            **({'ready_task_class_order': class_order} if class_admission else {}))
+            **({'ready_task_class_order': class_order or pending_class_order} if class_admission else {}))
 
     def _restore_queued_eligibility(self,row,policy):
         """Reuse the fixed durable request's proof, not any stale worker offer."""
@@ -4093,7 +4119,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                    capacity=host_capacity, host_admission=admission,
                                    accepting_new_jobs=value.get('accepting_new_jobs', True),
                                    observed_monotonic=time.monotonic(),
-                                   owned_at_offer=[row['attempt_id'] for row in owned if row['host_id'] == host],
+                                   owned_at_offer=[row['attempt_id'] for row in self._offer_owners(host, owned, value.get('resource_report'))],
                                    resource_report=value.get('resource_report'),
                                    cached_prefixes=value.get('cached_prefixes', []),
                                    host_fingerprints=fingerprints, readiness_errors=value.get('readiness_errors'))
@@ -4188,9 +4214,10 @@ class DistributedExecutor(ConcurrentExecutor):
                        and all(isinstance(field, str) for field in receipt)}
         with self.store._connection() as database:
             replay_ids = [row['job_id'] for row in database.execute(
-                "SELECT job_id,attempt_id,request_sha256 FROM jobs WHERE host_id=? AND state='ASSIGNED' "
-                "ORDER BY enqueued_epoch,job_id LIMIT ?", (host, -1 if durable else delivery_slots))
-                if (row['job_id'], row['attempt_id'], row['request_sha256']) not in durable][:delivery_slots]
+                "SELECT job_id,host_id,attempt_id,request_sha256,state,detail FROM jobs WHERE host_id=? AND state='ASSIGNED' "
+                "ORDER BY enqueued_epoch,job_id LIMIT ?", (host, -1 if durable or pbs_offer.get('allocation_token') else delivery_slots))
+                if (row['job_id'], row['attempt_id'], row['request_sha256']) not in durable
+                and self._belongs_to_resource_offer(dict(row), host, value.get('resource_report'))][:delivery_slots]
         replay_rows = self.store.rows_for(replay_ids)
         assignments = [self._assignment(replay_rows[job]) for job in replay_ids
                        if replay_rows[job]['state'] == 'ASSIGNED' and replay_rows[job]['host_id'] == host]
@@ -4380,11 +4407,20 @@ class DistributedExecutor(ConcurrentExecutor):
             # Existing owners retain their identity. Reserve their remaining
             # predicted writes conservatively until a terminal receipt arrives.
             reserved_storage = reserved_memory = new_memory = 0
+            resource_owners = self._resource_owners(host, owned_now, value.get('resource_report'))
+            storage = (value.get('resource_report') or {}).get('storage') or {}
+            excluded = {tuple(Path(path).parts[-2:]) for path in storage.get('excluded_paths', ())}
+            current_owners = {row['attempt_id'] for row in resource_owners}
             for owned in owned_now:
-                if owned['host_id'] == host and self._uses_pbs_task_resources(owned):
-                    old = self.store.row(owned['job_id'])
-                    existing_forecast = self._preparation_forecast(host, old)
+                if owned['host_id'] != host or not self._uses_pbs_task_resources(owned):
+                    continue
+                old = self.store.row(owned['job_id'])
+                existing_forecast = self._preparation_forecast(host, old)
+                # PBS storage is shared between physical allocations. Release
+                # forecast bytes only for an explicitly excluded attempt path.
+                if (owned['job_id'], owned['attempt_id']) not in excluded:
                     reserved_storage += existing_forecast.get('storage_bytes', 0)
+                if owned['attempt_id'] in current_owners:
                     reserved_memory += existing_forecast.get('memory_bytes', 0)
             host_busy = False
             if resource_pool is not None and (remaining or extra):
@@ -4393,8 +4429,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 worker = next(w for w in settings['workers'] if w['host_id'] == host)
                 free_cpu = resource_pool['cpu_count']
                 free_memory = resource_pool['memory_bytes'] - GIB
-                for owned in owned_now:
-                    if owned['host_id'] == host and self._uses_pbs_task_resources(owned):
+                for owned in resource_owners:
+                    if self._uses_pbs_task_resources(owned):
                         old = self.store.row(owned['job_id'])
                         if (launch_fit := standby_owners.get(owned['job_id'])) is not None:
                             standby_cpu += launch_fit['cpu']
@@ -4451,6 +4487,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 elif not remaining:
                     break
                 detail = {'pbs_launch_resources': launch_fit} if launch_fit else {}
+                if pbs_offer.get('allocation_token'):
+                    detail['pbs_allocation_token'] = pbs_offer['allocation_token']
                 if report.get('preparation_class_version') == 3:
                     from .rpe_q3_resources import preparation_workload
                     workload = preparation_workload(row['request'])

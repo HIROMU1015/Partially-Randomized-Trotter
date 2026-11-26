@@ -528,12 +528,14 @@ class JobStore:
                         break
             # Preserve the exact operational envelope while replay is still
             # possible. A worker's status detail is not a new assignment.
+            previous = json.loads(old['detail'])
+            detail = dict(detail or {})
             if state == 'ASSIGNED':
-                previous = json.loads(old['detail'])
-                detail = dict(detail or {})
                 for field in ('preparation_workload', 'pbs_launch_resources'):
                     if field in previous:detail[field] = previous[field]
-            value = canonical(detail or {})
+            if 'pbs_allocation_token' in previous:
+                detail['pbs_allocation_token'] = previous['pbs_allocation_token']
+            value = canonical(detail)
             db.execute('UPDATE jobs SET state=?,detail=?,updated_epoch=?,started_epoch=? WHERE job_id=?',
                        (state, value, now, started, job_id))
             if state != old['state'] or value != old['detail']:
