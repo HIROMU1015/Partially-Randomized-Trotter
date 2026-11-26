@@ -1265,8 +1265,11 @@ def run_generator(root, g, items):
     import tempfile
     with tempfile.TemporaryDirectory() as d:
         req, out = Path(d) / 'REQUEST.json', Path(d) / 'OUT.json'
-        req.write_text(json.dumps(dict(kind=g['kind'], view=g['view'], view_commit=g['view_commit'],
-                                       items=[{k: v for k, v in i.items() if k in ('item_id', 'base', 'changes')} for i in items])))
+        request = dict(kind=g['kind'], view=g['view'], view_commit=g['view_commit'],
+                       items=[{k: v for k, v in i.items() if k in ('item_id', 'base', 'changes')} for i in items])
+        if g.get('signal_view'):
+            request['signal_view'] = g['signal_view']
+        req.write_text(json.dumps(request))
         subprocess.run([g['interpreter'], '-B', str(Path(root) / 'scripts/run_rpe_optimizer_config_generator.py'),
                         '--request', str(req), '--output', str(out)], cwd=str(root), check=True, stdout=subprocess.DEVNULL,
                        env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))

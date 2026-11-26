@@ -38,10 +38,13 @@ def dec(v):
     return Fraction(v['numerator'], v['denominator']) if isinstance(v, dict) else Fraction(v)
 
 
-def generator(kind, view):
+def generator(kind, view, *, signal_view=None):
     sys.path[:0] = [str(view / 'scripts'), str(view / 'src')]
     if kind == 'prdf_a_fixed_grid':
         import run_pr_df_ld7_v0 as S
+        if signal_view is not None:
+            # The frozen runner validates the signal view commit and source bytes.
+            S.VIEW = Path(signal_view).resolve()
         b = S.signal_modules()[3]
         def build(base, ch):
             inputs = deepcopy(base['spec']['A_input'])
@@ -88,7 +91,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--request', type=Path, required=True);p.add_argument('--output', type=Path, required=True)
     a = p.parse_args();req = json.loads(a.request.read_text());view = Path(req['view'])
-    b, build = generator(req['kind'], view);out = [];reproduced = {};bases = {}
+    b, build = generator(req['kind'], view, signal_view=req.get('signal_view'));out = [];reproduced = {};bases = {}
     for item in req['items']:
         ch = item.get('changes', {});bkey = json.dumps(item['base'], sort_keys=True)
         if bkey not in bases:

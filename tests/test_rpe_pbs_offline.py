@@ -306,3 +306,32 @@ def test_independent_manager_starts_node_without_central_queue_and_slows_exchang
     assert manager._poll_delay()==10
     manager.allocations[0]['worker']['independent_active']=False
     assert manager._poll_delay()==.25
+
+
+def test_fixed_generation_signal_view_from_controller_profile(tmp_path, monkeypatch):
+    """Relocation changes only the path used by the legacy fixed provider."""
+    sys.path.insert(0, str(ROOT/'scripts'))
+    import run_rpe_schedule_search as driver
+    import run_rpe_optimizer_config_generator as generator
+
+    view = tmp_path/'signal-view'
+    original = {'kind':'prdf_a_fixed_grid', 'view':str(tmp_path/'generator')}
+    instance = object.__new__(driver.WidthDriver)
+    instance.problem = {'methods':{'PR_DF':{'generation':original}}}
+    instance.spec = {'candidate_completion':{'controller_paths':{'SIGNAL_VIEW':str(view)}}}
+    requests = []
+    monkeypatch.setattr(driver.O, 'run_generator', lambda root, g, items:
+                        (requests.append(g) or {'items':items}))
+    assert instance.generate_families('PR_DF', ['example']) == ['example']
+    assert requests == [dict(original, signal_view=str(view))]
+    assert 'signal_view' not in original
+
+    legacy = SimpleNamespace(VIEW=tmp_path/'old-view')
+    marker = object()
+    def signal_modules():
+        assert legacy.VIEW == view.resolve()
+        return (None, None, None, marker)
+    legacy.signal_modules = signal_modules
+    monkeypatch.setitem(sys.modules, 'run_pr_df_ld7_v0', legacy)
+    monkeypatch.setattr(sys, 'path', list(sys.path))
+    assert generator.generator('prdf_a_fixed_grid', tmp_path, signal_view=view)[0] is marker

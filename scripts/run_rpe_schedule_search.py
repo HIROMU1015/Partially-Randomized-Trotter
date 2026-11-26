@@ -1298,7 +1298,11 @@ class WidthDriver:
         return self._saved_catalog[1]
 
     def generate_families(self, method, items):
-        return O.run_generator(ROOT,self.problem['methods'][method]['generation'],items)['items']
+        generation = dict(self.problem['methods'][method]['generation'])
+        signal_view = (self.spec.get('candidate_completion') or {}).get('controller_paths', {}).get('SIGNAL_VIEW')
+        if generation.get('kind') == 'prdf_a_fixed_grid' and signal_view:
+            generation.setdefault('signal_view', signal_view)
+        return O.run_generator(ROOT, generation, items)['items']
 
     @staticmethod
     def admit_generated_family(family,base,made):

@@ -395,7 +395,7 @@ class OfflineSearch:
             entry = root/'scripts/run_rpe_schedule_search.py'
             if revision != settings['source'] or not entry.is_file():
                 raise ValueError('PBS continuation optimizer deployment differs')
-            self.environment = input_environment(settings.get('input_repositories', ()))
+            self.environment = input_environment([root, *settings.get('input_repositories', ())])
             self.validated_entry = entry
         return self.validated_entry
 
