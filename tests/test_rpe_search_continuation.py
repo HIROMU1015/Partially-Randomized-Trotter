@@ -62,6 +62,27 @@ class ContinuationTests(unittest.TestCase):
     def save(self, name, body):
         (self.original/name).write_text(json.dumps(body))
 
+    def test_drain_handoff_only_accepts_existing_preparation_owners(self):
+        (self.original/'distributed/relay').mkdir()
+        self.save('NORMAL_DRIVER.json', dict(invocation_id='owned', pid=123))
+        self.save('distributed/relay/STATUS.json', {'stopped': False})
+        stop = {'reason':'USER_REQUESTED_STOP', 'requested_epoch':1}
+        self.save('STOP_REQUESTED.json', stop)
+        fixed = dict(job_id='a',method='PREPARATION:signal',host_id='local',attempt_id='first',request_sha256='digest-a')
+        self.round['reconciled_prior_runs']=[dict(parent_directory=str(self.original),invocation_id='owned',
+            mode='STOP_DRAIN_PREPARATION',stop_sha256=fingerprint(stop),owned_preparation=[fixed])]
+        with sqlite3.connect(self.original/'distributed/QUEUE.sqlite3') as db:
+            db.execute("UPDATE jobs SET state='RUNNING' WHERE job_id='a'")
+        self.assertEqual(reconciled_prior_runs(self.round)[self.original],[fixed])
+        with sqlite3.connect(self.original/'distributed/QUEUE.sqlite3') as db:
+            db.execute("UPDATE jobs SET state='RUNNING' WHERE job_id='b'")
+        with self.assertRaisesRegex(ValueError,'unfenced work'):
+            reconciled_prior_runs(self.round)
+        with sqlite3.connect(self.original/'distributed/QUEUE.sqlite3') as db:
+            db.execute("UPDATE jobs SET state='ACCEPTED' WHERE job_id='b'")
+            db.execute("UPDATE jobs SET state='ACCEPTED' WHERE job_id='a'")
+        self.assertEqual(reconciled_prior_runs(self.round)[self.original],[fixed])
+
     def test_reconcile_shutdown_without_rewriting_stop_or_unknown_attempt(self):
         (self.original/'EXIT.json').unlink()
         (self.original/'FAST_DRIVER.lock').touch()

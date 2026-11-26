@@ -115,7 +115,10 @@ def prepare_plan(run, settings, *, round_spec=None):
                     blocked.add('PR_DF')
                 elif provider.startswith('PAULI_'):
                     blocked.add('PR_PAULI')
-        pbs_ids = {p['id'] for p in [p for p in interleaved if p['method'] not in blocked][:number]}
+        central_ids = set(setup.get('central_block_ids', ()))
+        if central_ids - {p['id'] for p in parts}:
+            raise ValueError('Central-only block is outside the fixed search')
+        pbs_ids = {p['id'] for p in [p for p in interleaved if p['method'] not in blocked and p['id'] not in central_ids][:number]}
         if not pbs_ids:
             return None
         for block in parts:
@@ -129,6 +132,12 @@ def prepare_plan(run, settings, *, round_spec=None):
                 run_id=scope['run_id'], scope=scope, settings=setup, problem=problem,
                 round=round_spec, parts=parts)
     if independent:
+        holds = round_spec.get('executor', {}).get('prior_q3_holds', [])
+        preflight = run/'DUPLICATE_PREFLIGHT.json'
+        if holds:
+            if not preflight.is_file() or read(preflight).get('status') != 'PASS':
+                raise ValueError('Independent search requires verified prior Q3 holds')
+            plan['verified_prior_q3_holds'] = read(preflight)['prior_q3_holds']
         waiting = [p for p in interleaved if p['owner']=='pbs']
         nodes = max(1,len(pbs.get('workers',[])))
         waves = setup.get('packages_per_node',2)
@@ -177,6 +186,9 @@ def restrict_round(plan, parts, *, source=None):
         spec['max_new_q3_per_method'][method] = ('UNLIMITED' if 'UNLIMITED' in caps else sum(caps))
     spec['max_new_q3_per_method'] = {m: spec['max_new_q3_per_method'][m] for m in methods}
     search['requested_widths'] = widths or None
+    executor = spec.get('executor', {})
+    if 'prior_q3_holds' in executor:
+        executor['prior_q3_holds'] = [row for row in executor['prior_q3_holds'] if row['method'] in methods]
     for key in ('width_families', 'q3_budget_parents'):
         if key in spec:
             spec[key] = [row for row in spec[key] if row['method'] in methods]
@@ -300,6 +312,10 @@ def part_documents(plan, part, profile, path):
     spec['executor']['distributed'] = distributed
     spec['executor']['max_concurrent_jobs'] = selected['slots']
     if independent_plan(plan):
+        if 'verified_prior_q3_holds' in plan:
+            spec['executor'].pop('prior_q3_holds', None)
+            spec['executor']['partition_prior_q3_holds'] = [deepcopy(row) for row in plan['verified_prior_q3_holds']
+                                                               if row['method'] in spec['methods']]
         # Every block can read previously exported Q3 receipts on the same
         # durable filesystem without a controller round trip.
         spec['executor'].setdefault('prior_run_dirs', []).append(str(path.parent.parent))
