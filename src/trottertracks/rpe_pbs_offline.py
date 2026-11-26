@@ -607,6 +607,40 @@ class OfflineSearch:
         atomic(path/'TECHNICAL_RECOVERY.json',dict(reason='FIXED_INPUT_RESTORED_BEFORE_SCIENCE',
                                                    archived=str(archive),original_stop=stop))
 
+    def _controller_command(self, entry):
+        """Apply a selected operational overlay without changing the fixed plan."""
+        command = [self.plan['settings']['interpreter'], '-B']
+        overlay = self.profile.get('pbs', {}).get('offline_controller_overlay')
+        if not overlay:
+            return command+[str(entry)]
+        if overlay['base_source'] != self.plan['settings']['source']:
+            raise ValueError('PBS controller overlay belongs to another fixed optimizer')
+        files = overlay['modules']
+        order = ('rpe_q3_store', 'rpe_optimizer_concurrent')
+        if set(files) != set(order):
+            raise ValueError('Unsupported PBS controller overlay modules')
+        modules = []
+        for name in order:
+            item = files[name]
+            path = Path(item['path'])
+            if hashlib.sha256(path.read_bytes()).hexdigest() != item['sha256']:
+                raise ValueError('PBS controller overlay differs: '+name)
+            modules.append((name,str(path)))
+        bootstrap = (
+            'import importlib.util,json,runpy,sys\n'
+            'entry,root,modules=sys.argv[1:4]\n'
+            'sys.argv=[entry,*sys.argv[4:]]\n'
+            'sys.path.insert(0,root+"/src")\n'
+            'import trottertracks\n'
+            'for name,path in json.loads(modules):\n'
+            '    spec=importlib.util.spec_from_file_location("trottertracks."+name,path)\n'
+            '    module=importlib.util.module_from_spec(spec)\n'
+            '    sys.modules[spec.name]=module\n'
+            '    spec.loader.exec_module(module)\n'
+            '    setattr(trottertracks,name,module)\n'
+            'runpy.run_path(entry,run_name="__main__")')
+        return command+['-c',bootstrap,str(entry),str(entry.parents[1]),json.dumps(modules)]
+
     def _start_part(self, path, part, batch):
         entry = self._entry()
         self._recover_fixed_input_failure(path, entry)
@@ -625,7 +659,7 @@ class OfflineSearch:
                 self.recheck_at = time.monotonic()+30
                 return False
             marker.unlink()
-        command = [self.plan['settings']['interpreter'], '-B', str(entry),
+        command = self._controller_command(entry)+[
                    '--problem', str(path/'PROBLEM.json'), '--round', str(path/'ROUND.json'),
                    '--run-dir', str(path), '--batch', str(min(batch, self.slots))]
         if not self.independent:

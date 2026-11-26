@@ -538,6 +538,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                or not set(hosts) <= configured.keys() for provider, hosts in placements.items()):
             raise ValueError('Preparation provider placement requires existing providers and hosts')
         distributed.setdefault('preparation_provider_hosts', {}).update(deepcopy(placements))
+    if 'pbs_offline_controller_overlay' in trial:
+        distributed['pbs_offline_controller_overlay'] = deepcopy(trial['pbs_offline_controller_overlay'])
     if trial.get('pbs_storage_launcher'):
         distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
     if 'pbs_collection_workers' in trial:

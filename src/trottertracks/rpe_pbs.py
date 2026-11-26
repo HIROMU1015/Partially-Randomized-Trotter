@@ -2045,6 +2045,8 @@ class PbsManager:
             profile['pbs']['batch_q3_completions'] = True
         if getattr(self.executor, 'distributed', {}).get('pbs_q3_memory_backfill') is True:
             profile['pbs']['q3_memory_backfill'] = True
+        if overlay := getattr(self.executor, 'distributed', {}).get('pbs_offline_controller_overlay'):
+            profile['pbs']['offline_controller_overlay'] = deepcopy(overlay)
         if self.offline_plan:
             raw = json.dumps(self.offline_plan, sort_keys=True, separators=(',', ':')).encode()
             sha = hashlib.sha256(raw).hexdigest()

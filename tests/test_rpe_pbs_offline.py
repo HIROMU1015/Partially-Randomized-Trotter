@@ -408,3 +408,22 @@ def test_independent_storage_recovery_refreshes_blocked_offer(tmp_path):
          _resource_offer=lambda:{'storage':{'accepting_new_jobs':True}})
     assert advance_independent(worker,{}) is True
     assert (worker_dir/'INDEPENDENT_ACTIVE').exists()
+
+def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
+    import hashlib
+    import sys
+    import pytest
+    from trottertracks.rpe_pbs_offline import OfflineSearch
+    search=object.__new__(OfflineSearch)
+    search.plan={'settings':{'source':'fixed','interpreter':sys.executable}}
+    entry=tmp_path/'scripts'/'run_rpe_schedule_search.py'
+    entry.parent.mkdir();entry.write_text('pass')
+    modules={}
+    for name in ('rpe_q3_store','rpe_optimizer_concurrent'):
+        path=tmp_path/(name+'.py');path.write_text('pass')
+        modules[name]={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+    search.profile={'pbs':{'offline_controller_overlay':{'base_source':'fixed','modules':modules}}}
+    assert search._controller_command(entry)[-3]==str(entry)
+    modules['rpe_q3_store']['sha256']='invalid'
+    with pytest.raises(ValueError,match='overlay differs'):
+        search._controller_command(entry)
