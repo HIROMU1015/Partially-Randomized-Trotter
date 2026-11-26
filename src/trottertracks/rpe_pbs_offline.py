@@ -413,9 +413,49 @@ class OfflineSearch:
             entry = root/'scripts/run_rpe_schedule_search.py'
             if revision != settings['source'] or not entry.is_file():
                 raise ValueError('PBS continuation optimizer deployment differs')
-            self.environment = input_environment([root, *settings.get('input_repositories', ())])
+            # Preparation publishes relative Git locators. An independent
+            # run must therefore have its parts inside a checkout, not beside
+            # the fixed runtime. One sparse shared-object checkout per durable
+            # run retains all block checkpoints and keeps evidence in quota.
+            if self.independent and not self.directory.resolve().is_relative_to(root.resolve()):
+                entry = self._durable_entry(root, settings['source'])
+            self.environment = input_environment([root, entry.parents[1], *settings.get('input_repositories', ())])
             self.validated_entry = entry
         return self.validated_entry
+
+    def _durable_entry(self, source_root, revision):
+        root = self.directory.resolve()
+        root.mkdir(parents=True, exist_ok=True)
+        paths = ('scripts', 'src', 'tools', 'configs', 'schemas', 'pyproject.toml',
+                 'requirements.txt', 'requirements-gpu.txt', 'setup.py', 'setup.cfg')
+        def git(*args, **kwargs):
+            return subprocess.run(['git', '-C', str(root), *args], check=True,
+                                  capture_output=True, text=True, timeout=120, **kwargs).stdout.strip()
+        with (root/'RUNTIME.lock').open('a+b') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            if not (root/'.git').exists():
+                git('init', '--quiet')
+            source_objects = subprocess.check_output(['git', '-C', str(source_root), 'rev-parse',
+                '--path-format=absolute', '--git-path', 'objects'], text=True, timeout=10).strip()
+            alternate = root/'.git/objects/info/alternates'
+            alternate.parent.mkdir(parents=True, exist_ok=True)
+            if not alternate.exists():
+                alternate.write_text(source_objects+'\n')
+            head = subprocess.run(['git','-C',str(root),'rev-parse','--verify','HEAD'],
+                                  capture_output=True, text=True, timeout=10)
+            if head.returncode:
+                git('sparse-checkout','set','--no-cone','/scripts/','/src/','/tools/','/configs/',
+                    '/schemas/','/parts/','/pyproject.toml','/requirements.txt','/requirements-gpu.txt',
+                    '/setup.py','/setup.cfg')
+                git('checkout','--detach',revision)
+            elif git('diff','--name-only',revision,'--',*paths):
+                raise ValueError('Durable PBS optimizer code differs from fixed SOURCE')
+            if git('ls-files','--others','--exclude-standard','--',*paths):
+                raise ValueError('Unexpected durable PBS optimizer files')
+        entry = root/'scripts/run_rpe_schedule_search.py'
+        if not entry.is_file():
+            raise ValueError('Durable PBS optimizer entry missing')
+        return entry
 
     def request_stop(self):
         if self.part is not None and not (self.part/'STOP_REQUESTED.json').exists():
@@ -525,8 +565,48 @@ class OfflineSearch:
                 return
         self.request_stop()
 
+    def _recover_fixed_input_failure(self, path, entry):
+        """Archive a demonstrably pre-science block stop after its input is restored."""
+        state = path/'KAPPA_STATE.json'
+        if not self.independent or not state.is_file():
+            return
+        marker = path/'STOP_REQUESTED.json'
+        if marker.is_file() and read(marker).get('reason') != 'PBS_BLOCK_HANDOFF':
+            return
+        stop = (read(state).get('stop') or {})
+        message = str(stop.get('message',''))
+        if stop.get('reason') != 'RUNTIME_EXCEPTION':
+            return
+        # A missing immutable Git commit is a technical input failure, not a
+        # failed scientific evaluation. Only retry when the exact ref now resolves.
+        import re
+        match = re.search(r"'([0-9a-f]{40})\^\{commit\}'", message)
+        if match:
+            if subprocess.run(['git','-C',str(entry.parents[1]),'cat-file','-e',match.group(1)+'^{commit}'],
+                              stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode:
+                return
+        elif 'not in the subpath' not in message or not path.resolve().is_relative_to(entry.parents[1].resolve()):
+            return
+        if any((path/'jobs').glob('*/*')) or any(path.rglob('SCIENTIFIC_STARTING.json')):
+            return
+        db = path/'distributed/QUEUE.sqlite3'
+        if db.is_file():
+            with sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True) as connection:
+                if connection.execute('SELECT 1 FROM jobs LIMIT 1').fetchone():
+                    return
+        archive = path/'technical-stop-history'/digest(stop)[:20]
+        if archive.exists():
+            return
+        archive.mkdir(parents=True)
+        for child in list(path.iterdir()):
+            if child.name not in ('OWNER.lock','technical-stop-history'):
+                child.rename(archive/child.name)
+        atomic(path/'TECHNICAL_RECOVERY.json',dict(reason='FIXED_INPUT_RESTORED_BEFORE_SCIENCE',
+                                                   archived=str(archive),original_stop=stop))
+
     def _start_part(self, path, part, batch):
         entry = self._entry()
+        self._recover_fixed_input_failure(path, entry)
         problem, spec = part_documents(self.plan, part, self.profile, path)
         for name, data in (('PROBLEM.json', problem), ('ROUND.json', spec)):
             file = path/name

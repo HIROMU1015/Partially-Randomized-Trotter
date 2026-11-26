@@ -351,3 +351,43 @@ def test_partition_carries_parent_verified_holds(tmp_path):
     _, child = part_documents(plan, pbs_units(plan)[0], profile, tmp_path/'part')
     assert 'prior_q3_holds' not in child['executor']
     assert child['executor']['partition_prior_q3_holds'] == ([hold] if 'PR_PAULI' in child['methods'] else [])
+
+
+def test_independent_durable_checkout_keeps_parts_with_fixed_git_source(tmp_path):
+    import subprocess
+    from trottertracks.rpe_pbs_offline import OfflineSearch
+    source = tmp_path/'fixed'
+    source.mkdir()
+    subprocess.run(['git','init','-q',str(source)],check=True)
+    entry = source/'scripts'/'run_rpe_schedule_search.py'
+    entry.parent.mkdir();entry.write_text('# fixed artificial entry\n')
+    subprocess.run(['git','-C',str(source),'add','scripts'],check=True)
+    subprocess.run(['git','-C',str(source),'-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','fixed'],check=True)
+    revision = subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'durable'
+    part=search.directory/'parts'/'one';part.mkdir(parents=True);(part/'ROUND.json').write_text('{}')
+    actual=search._durable_entry(source,revision)
+    assert actual.read_bytes()==entry.read_bytes()
+    assert part.relative_to(actual.parents[1]).as_posix()=='parts/one'
+    assert (part/'ROUND.json').read_text()=='{}'
+    subprocess.run(['git','-C',str(search.directory),'add','parts/one/ROUND.json'],check=True)
+    subprocess.run(['git','-C',str(search.directory),'-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','evidence'],check=True)
+    assert search._durable_entry(source,revision)==actual
+
+
+def test_fixed_input_recovery_preserves_pre_science_stop_and_refuses_owned_job(tmp_path):
+    from trottertracks.rpe_pbs_offline import OfflineSearch
+    search=object.__new__(OfflineSearch);search.independent=True
+    root=tmp_path/'fixed';part=root/'parts'/'first';part.mkdir(parents=True)
+    entry=root/'scripts'/'run_rpe_schedule_search.py'
+    stop={'reason':'RUNTIME_EXCEPTION','message':'not in the subpath','error_type':'ValueError'}
+    atomic(part/'KAPPA_STATE.json',{'stop':stop}); atomic(part/'ROUND.json',{'fixed':True})
+    job=part/'jobs'/'PR_DF'/'owned';job.mkdir(parents=True)
+    search._recover_fixed_input_failure(part,entry)
+    assert (part/'KAPPA_STATE.json').exists()
+    job.rmdir()
+    search._recover_fixed_input_failure(part,entry)
+    assert not (part/'KAPPA_STATE.json').exists()
+    archive=next((part/'technical-stop-history').iterdir())
+    assert read(archive/'KAPPA_STATE.json')['stop']==stop
+    assert read(archive/'ROUND.json')['fixed'] is True
