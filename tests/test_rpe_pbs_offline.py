@@ -270,6 +270,7 @@ def test_packages_supply_multiple_widths_and_publish_global_minimum(tmp_path):
     profile={'host_id':'pbs0','slots':24,'dp_workers':4,'pbs':{'library_threads':1}}
     path=tmp_path/'independent'/'parts'/packages[0]['id'];path.mkdir(parents=True)
     _,child=part_documents(plan,packages[0],profile,path)
+    assert child['executor']['distributed']['host_eligibility'] == {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
     assert set(child['methods'])=={'PR_PAULI','FULL_PF'}
     def report(config,cost):
         best=dict(configuration_id=config,M=12,cost=cost)

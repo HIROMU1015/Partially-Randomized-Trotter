@@ -307,6 +307,11 @@ def part_documents(plan, part, profile, path):
         distributed.pop(key, None)
     worker_script = Path(settings['code_root'])/'scripts/run_rpe_q3_worker.py'
     distributed.update(placement)
+    if independent_plan(plan):
+        # Central saved decisions are tied to different host identities.
+        # Start with an empty local policy so the normal per-request live
+        # dry-check obtains fresh proof instead of treating the policy as absent.
+        distributed['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
     distributed.update(bind='127.0.0.1', port=0, local_worker=selected, preparation_profiles={'local': selected},
                        execution_hosts=['local'], live_q3_readiness=True, worker_script=str(worker_script))
     if 'computation_source' in distributed:
@@ -648,7 +653,24 @@ class OfflineSearch:
         for name, data in (('PROBLEM.json', problem), ('ROUND.json', spec)):
             file = path/name
             if file.exists() and read(file) != data:
-                raise ValueError('PBS continuation part inputs changed')
+                previous = read(file)
+                # Existing blocks may have been created before live local
+                # readiness was connected. This changes no physical inputs.
+                if self.independent and name == 'ROUND.json':
+                    migrated = deepcopy(previous)
+                    settings = migrated['executor']['distributed']
+                    if 'host_eligibility' not in settings:
+                        settings['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
+                    if migrated == data:
+                        archive = path/'technical-stop-history'/'ROUND.before-local-readiness.json'
+                        archive.parent.mkdir(exist_ok=True)
+                        if not archive.exists():
+                            atomic(archive, previous)
+                        atomic(file, data)
+                    else:
+                        raise ValueError('PBS continuation part inputs changed')
+                else:
+                    raise ValueError('PBS continuation part inputs changed')
             if not file.exists():
                 atomic(file, data)
         marker = path/'STOP_REQUESTED.json'
