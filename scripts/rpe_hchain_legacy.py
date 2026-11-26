@@ -49,10 +49,19 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def restore_receipts(run, legacy):
+def restore_receipts(run, legacy, *, plan=None):
     root, history = legacy
+    allowed = None
+    if plan is not None:
+        from run_rpe_hchain_preparation import planned_inputs
+        allowed = {f"signals/{cid}.json" for cid in planned_inputs(plan, "signal")}
+        for stage in ("compile", "audit"):
+            for cid, cell in planned_inputs(plan, stage).items():
+                for index in range(plan["scope"]["price_paths"] if cell["method"] == "PR" else 1):
+                    allowed.add(f"prices/{cid}-{index}.json")
+                    allowed.add(f"prices/{cid}-{index}.events.json.xz")
     for name, expected in history["files"].items():
-        if not name.startswith(("signals/", "prices/")):
+        if not name.startswith(("signals/", "prices/")) or (allowed is not None and name not in allowed):
             continue
         target = run / name
         target.parent.mkdir(exist_ok=True)

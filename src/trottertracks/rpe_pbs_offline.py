@@ -1,4 +1,5 @@
 """Partition a fixed search and reconcile the PBS allocation's local work."""
+from collections import Counter
 from copy import deepcopy
 import os
 import fcntl
@@ -15,6 +16,23 @@ from .rpe_q3_worker import atomic, digest, read
 
 
 def partition_round(round_spec, problem=None, *, independent=False):
+    if independent and round_spec.get('hchain'):
+        from .rpe_hchain_scope import fixed_plan
+
+        _, plan = fixed_plan(round_spec['hchain'])
+        groups = {}
+        for case in plan['cases']:
+            if case['method'] not in round_spec['methods']:
+                continue
+            width = case['width_over_h']
+            value = Fraction(width['numerator'], width['denominator']) if isinstance(width, dict) else Fraction(str(width))
+            groups.setdefault((case['method'], value), []).append(case['id'])
+        parts = []
+        for (method, width), ids in groups.items():
+            value = dict(numerator=width.numerator, denominator=width.denominator)
+            boundary = dict(method=method, axis='width_over_h', value=value, width=value)
+            parts.append(dict(boundary, id=digest(boundary)[:20], case_ids=ids))
+        return parts
     widths = round_spec.get('search_overrides', {}).get('requested_widths') or (
         (problem or {}).get('search', {}).get('requested_widths') or {})
     parts = []
@@ -84,10 +102,15 @@ def prepare_plan(run, settings, *, round_spec=None):
         return None
     parts = partition_round(round_spec, problem, independent=independent)
     if independent:
-        if len(parts) < 2:
-            return None  # No disjoint split; use the ordinary shared queue.
+        hchain = bool(round_spec.get('hchain'))
         distributed = round_spec['executor'].get('distributed') or {}
+        pbs_only = hchain and not distributed.get('local_worker') and not (
+            (distributed.get('relay') or {}).get('workers'))
+        if not parts or len(parts) < 2 and not pbs_only:
+            return None  # No disjoint split; use the ordinary shared queue.
         pbs = distributed.get('pbs') or {}
+        if hchain and not pbs.get('workers'):
+            raise ValueError('Independent H-chain search requires PBS worker profiles')
         pbs_cpu = (pbs.get('resources') or {}).get('ncpus',0)*len(pbs.get('workers',[]))
         local = distributed.get('local_worker') or {}
         other_cpu = (local.get('slot_policy') or {}).get('resource_limits',{}).get('cpu_count',0)
@@ -95,14 +118,14 @@ def prepare_plan(run, settings, *, round_spec=None):
         # equal-share starting point; block ownership is still disjoint.
         auto_share = Fraction(pbs_cpu,pbs_cpu+other_cpu) if pbs_cpu and other_cpu else Fraction(1,2)
         share = Fraction(str(setup.get('pbs_share', auto_share)))
-        if not 0 < share < 1:
+        if not (0 < share <= 1 if pbs_only else 0 < share < 1):
             raise ValueError('pbs_share must lie strictly between zero and one')
         # Interleave methods so an entire expensive method is not prioritized
         # merely because it is first in ROUND. All blocks remain whole.
         grouped = {m: [p for p in parts if p['method'] == m] for m in round_spec['methods']}
         interleaved = [group[i] for i in range(max(map(len, grouped.values())))
                        for group in grouped.values() if i < len(group)]
-        number = max(1, min(len(parts)-1, round(len(parts)*share)))
+        number = len(parts) if pbs_only else max(1, min(len(parts)-1, round(len(parts)*share)))
         pbs_hosts = {worker['host_id'] for worker in pbs.get('workers',[])}
         blocked = set()
         if pbs_hosts:
@@ -115,15 +138,31 @@ def prepare_plan(run, settings, *, round_spec=None):
                     blocked.add('PR_DF')
                 elif provider.startswith('PAULI_'):
                     blocked.add('PR_PAULI')
+                elif provider == 'HCHAIN_SCOPED':
+                    blocked.update(round_spec['methods'])
         central_ids = set(setup.get('central_block_ids', ()))
         if central_ids - {p['id'] for p in parts}:
             raise ValueError('Central-only block is outside the fixed search')
         pbs_ids = {p['id'] for p in [p for p in interleaved if p['method'] not in blocked and p['id'] not in central_ids][:number]}
+        if pbs_only and len(pbs_ids) != len(parts):
+            raise ValueError('H-chain PBS-only plan has a block without an eligible PBS host')
         if not pbs_ids:
             return None
+        charges = {}
+        if hchain and 'legacy' in round_spec['hchain']:
+            from .rpe_hchain_scope import fixed_plan
+            from rpe_hchain_legacy import checked
+            _, physical = fixed_plan(round_spec['hchain'])
+            _, history = checked(round_spec['hchain'], physical)
+            by_id = Counter(row['configuration_id'] for row in (*history['records'], *history['holds']))
+            charges = {p['id']:sum(by_id[cid] for cid in p['case_ids']) for p in parts}
+        remaining = {method: cap if cap == 'UNLIMITED' else max(
+            0, cap-sum(charges.get(p['id'],0) for p in grouped[method]))
+                     for method, cap in budgets.items()}
         for block in parts:
+            quota = divide_budget(remaining[block['method']], grouped[block['method']])[block['id']]
             block.update(owner='pbs' if block['id'] in pbs_ids else 'central',
-                         q3_budget=divide_budget(budgets[block['method']], grouped[block['method']])[block['id']],
+                         q3_budget=quota if quota == 'UNLIMITED' else quota+charges.get(block['id'],0),
                          preparation_budgets={stage: divide_budget(cap, parts)[block['id']]
                                               for stage, cap in prep.items()})
         # The local optimizer must never receive its parent's PBS plan back.
@@ -131,6 +170,12 @@ def prepare_plan(run, settings, *, round_spec=None):
     plan = dict(schema='RPE_PBS_OFFLINE_PLAN_V2' if independent else 'RPE_PBS_OFFLINE_PLAN_V1',
                 run_id=scope['run_id'], scope=scope, settings=setup, problem=problem,
                 round=round_spec, parts=parts)
+    if independent and round_spec.get('hchain'):
+        from .rpe_hchain_scope import fixed_plan
+        from run_rpe_hchain_preparation import planned_inputs
+        _, physical = fixed_plan(round_spec['hchain'])
+        plan['hchain_preparation'] = dict(owner=physical['owner'], binding=physical['binding'],
+            stages={stage: sorted(planned_inputs(physical, stage)) for stage in ('signal','compile','audit')})
     if independent:
         holds = round_spec.get('executor', {}).get('prior_q3_holds', [])
         preflight = run/'DUPLICATE_PREFLIGHT.json'
@@ -163,6 +208,8 @@ def restrict_round(plan, parts, *, source=None):
     spec = deepcopy(source if source is not None else plan['round'])
     methods = [m for m in spec['methods'] if any(p['method'] == m for p in parts)]
     spec['methods'] = methods
+    if spec.get('hchain'):
+        spec['hchain']['case_ids'] = [cid for part in parts for cid in part['case_ids']]
     overrides = spec.setdefault('method_overrides', {})
     for method in list(overrides):
         if method not in methods:
@@ -174,7 +221,9 @@ def restrict_round(plan, parts, *, source=None):
         group = [p for p in parts if p['method'] == method]
         axis = group[0]['axis']
         values = [p['value'] for p in group]
-        if axis == 'width':
+        if axis == 'width_over_h' and spec.get('hchain'):
+            pass  # The fixed H-chain plan selects exact case IDs, not H4 width overrides.
+        elif axis == 'width':
             if values != [None]:
                 widths[method] = values
         else:
@@ -216,7 +265,7 @@ def unit_members(plan, unit):
 
 
 def all_parts_finished(plan, coverage):
-    terminal = {'REQUESTED_WIDTH_RULE_EXHAUSTED', 'Q3_BUDGET_EXHAUSTED', 'EXPLICIT_STEP_LIMIT'}
+    terminal = {'REQUESTED_WIDTH_RULE_EXHAUSTED', 'Q3_BUDGET_EXHAUSTED', 'EXPLICIT_STEP_LIMIT', 'HCHAIN_SCOPE_COMPLETE'}
     return all((coverage.get(p['id'], {}).get('termination') or {}).get('reason') in terminal
                for p in pbs_units(plan))
 
@@ -303,10 +352,19 @@ def part_documents(plan, part, profile, path):
                 'required_hosts', 'required_release', 'host_admission',
                 'host_eligibility', 'host_stage_capabilities', 'preparation_host_preference',
                 'preparation_provider_hosts', 'local_pf_continuation', 'local_resource_worker',
-                'pbs_offline_plan', 'preparation_request_hosts', 'host_transport_paths'):
+                'pbs_offline_plan', 'pbs_offline_search', 'preparation_request_hosts', 'host_transport_paths'):
         distributed.pop(key, None)
     worker_script = Path(settings['code_root'])/'scripts/run_rpe_q3_worker.py'
     distributed.update(placement)
+    if spec.get('hchain'):
+        spec['hchain'].pop('pbs_offline_search', None)
+        distributed.pop('auto_allocation', None)
+        spec['hchain']['pbs_nodes'] = 0
+        if selected.get('storage_limit'):
+            # Host-specific sampler names cannot freeze a block to one node.
+            # Keep the same quota roots and limit; only the cache path follows
+            # the durable block as it changes allocation owner.
+            selected['storage_limit']['sample_path'] = str(path/'STORAGE_SAMPLE.json')
     distributed.update(bind='127.0.0.1', port=0, local_worker=selected, preparation_profiles={'local': selected},
                        execution_hosts=['local'], live_q3_readiness=True, worker_script=str(worker_script))
     if 'computation_source' in distributed:
@@ -317,7 +375,8 @@ def part_documents(plan, part, profile, path):
         if 'verified_prior_q3_holds' in plan:
             spec['executor'].pop('prior_q3_holds', None)
             spec['executor']['partition_prior_q3_holds'] = [deepcopy(row) for row in plan['verified_prior_q3_holds']
-                                                               if row['method'] in spec['methods']]
+                                                               if row['method'] in spec['methods'] and
+                                                               (not spec.get('hchain') or row['configuration_id'] in spec['hchain']['case_ids'])]
         # Every block can read previously exported Q3 receipts on the same
         # durable filesystem without a controller round trip.
         spec['executor'].setdefault('prior_run_dirs', []).append(str(path.parent.parent))
@@ -410,7 +469,8 @@ class OfflineSearch:
             root = Path(settings['code_root'])
             revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root,
                                                text=True, timeout=10).strip()
-            entry = root/'scripts/run_rpe_schedule_search.py'
+            filename = 'run_rpe_method_optimizer.py' if self.plan['round'].get('hchain') else 'run_rpe_schedule_search.py'
+            entry = root/'scripts'/filename
             if revision != settings['source'] or not entry.is_file():
                 raise ValueError('PBS continuation optimizer deployment differs')
             # Preparation publishes relative Git locators. An independent
@@ -606,6 +666,20 @@ class OfflineSearch:
 
     def _start_part(self, path, part, batch):
         entry = self._entry()
+        if self.plan['round'].get('hchain') and (path/'ROUND_RESULT.json').is_file():
+            reasons = {r.get('stop_reason') for r in read(path/'ROUND_RESULT.json').get('methods',{}).values()}
+            marker = path/'STOP_REQUESTED.json'
+            handoff = marker.is_file() and read(marker).get('reason') == 'PBS_BLOCK_HANDOFF'
+            blocked = {'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER'}
+            if not handoff:
+                blocked.add('USER_REQUESTED_STOP')
+            if reasons.intersection(blocked):
+                atomic(path/'BLOCK_STATUS.json',dict(status='REQUIRES_RESUME_REVIEW', reasons=sorted(reasons)))
+                self.record_coverage(path)
+                if self.claim is not None:
+                    self.claim.close()
+                    self.claim = None
+                return False
         self._recover_fixed_input_failure(path, entry)
         problem, spec = part_documents(self.plan, part, self.profile, path)
         for name, data in (('PROBLEM.json', problem), ('ROUND.json', spec)):
@@ -624,7 +698,9 @@ class OfflineSearch:
             marker.unlink()
         command = [self.plan['settings']['interpreter'], '-B', str(entry),
                    '--problem', str(path/'PROBLEM.json'), '--round', str(path/'ROUND.json'),
-                   '--run-dir', str(path), '--batch', str(min(batch, self.slots))]
+                   '--run-dir', str(path)]
+        if not spec.get('hchain'):
+            command += ['--batch', str(min(batch, self.slots))]
         if not self.independent:
             command += ['--max-cycles', '1']
         with (path/'OFFLINE.log').open('ab') as log:
@@ -835,7 +911,7 @@ def compact_block_report(report):
                 'unresolved_competitors','allocations','configuration_source','signal_source','price_source',
                 'comparison_delta_RZ','paper_comparison_pending','promising')
     method_fields=('method','best','stop_reason','new_calls','evaluated_count','budget','evaluation_summary')
-    result={key:report[key] for key in ('schema','optimizer_source') if key in report}
+    result={key:report[key] for key in ('schema','optimizer_source','scope_owner','ready','price_pruned','inherited') if key in report}
     result['methods']={}
     for method,entry in report.get('methods',{}).items():
         projected={key:entry[key] for key in method_fields if key in entry}
@@ -984,6 +1060,10 @@ def merge_partition_reports(plan, central, remote, coverage, scope_map=None):
             combined['scaled_shots']=merged
         methods[method]=combined
     result['methods']=methods
+    if plan['round'].get('hchain'):
+        reports = [central or {}, *remote.values()]
+        result['ready'] = sorted({cid for report in reports for cid in report.get('ready',[])})
+        result['price_pruned'] = sorted({cid for report in reports for cid in report.get('price_pruned',[])})
     return result
 
 

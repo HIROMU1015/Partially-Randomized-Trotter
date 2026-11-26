@@ -1536,9 +1536,26 @@ class PbsManager:
                         self._receive_independent_file(gateway,token,'offline',name,staging/name,
                             size=item['files'][name],method=method,job_id=job)
                     request, receipt, outcome = (read(staging/name) for name in names)
-                    if (request.get('request_id') != job or request.get('method') not in methods
+                    hchain = self.offline_plan.get('hchain_preparation')
+                    hchain_prep = preparation and hchain is not None and request.get('method') == 'HCHAIN'
+                    if (request.get('request_id') != job or (request.get('method') not in methods and not hchain_prep)
                             or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
                         raise ValueError('Independent result receipt differs')
+                    if hchain_prep:
+                        prep = request['preparation']
+                        contract = request['original_contract']
+                        settings = self.offline_plan['round']['hchain']
+                        command = prep['command']
+                        targets = json.loads(command[command.index('--targets')+1])
+                        allowed = set(hchain['stages'][prep['stage']])
+                        if (prep['provider'] != 'HCHAIN_SCOPED' or prep['source'] != settings['provider_source']
+                                or contract['scope_owner'] != hchain['owner'] or contract['binding'] != hchain['binding']
+                                or not targets or any(target[0] not in allowed for target in targets)):
+                            raise ValueError('Independent H-chain preparation outside fixed scope')
+                    elif hchain is not None and not preparation:
+                        allowed = {cid for block in unit_members(self.offline_plan,part) for cid in block['case_ids']}
+                        if request.get('configuration_id') not in allowed:
+                            raise ValueError('Independent H-chain Q3 outside assigned case IDs')
                     if preparation:
                         origin = item.get('origin') or {}
                         if (normalize_preparation_request(request) != request
@@ -1617,7 +1634,7 @@ class PbsManager:
             self.offline_pending = None
             try:
                 future.result()
-            except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
+            except (OSError, KeyError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
                 self.harvest_retry_after[token] = time.monotonic()+30
                 self.log('PBS_OFFLINE_IMPORT_PENDING', token=token, error=str(error))
             else:

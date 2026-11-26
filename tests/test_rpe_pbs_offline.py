@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 from types import SimpleNamespace
 from unittest.mock import patch
+import pytest
 
 from trottertracks import rpe_pbs
 from trottertracks.rpe_pbs_offline import OfflineSearch, prepare_plan
@@ -166,7 +167,8 @@ def test_independent_keeps_running_connected_claims_disjoint_and_resumes(tmp_pat
     assert all_parts_finished(plan,read(durable/'COVERAGE.json')['parts'])
 
 
-def test_independent_preparation_export_and_exact_reuse(tmp_path):
+@pytest.mark.parametrize("hchain", [False, True])
+def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain):
     import threading
     import hashlib
     from trottertracks.rpe_preparation_artifacts import ArtifactCache
@@ -175,6 +177,11 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path):
     from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
     from trottertracks.rpe_pbs_offline import pbs_parts
     run=tmp_path/'central';plan=independent_fixture(run)
+    if hchain:
+        plan['hchain_preparation'] = dict(owner='fixed-owner', binding={'system':'H8'},
+            stages={'signal':['physical']})
+        plan['round']['hchain'] = {'provider_source':{'commit':'a'*40,'files':{}}}
+        atomic(run/'PBS_PARTITION_PLAN.json',plan)
     remote=tmp_path/'remote';allocation=remote/'allocations'/'token';allocation.mkdir(parents=True)
     durable=remote/'independent-search'
     profile={'host_id':'pbs0','dp_workers':2,'pbs':{'library_threads':1,'independent_root':str(durable)}}
@@ -186,6 +193,12 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path):
     request=normalize_preparation_request(dict(method=block['method'],route={'kind':'preparation'},
         preparation={'stage':'signal','provider':'artificial','artificial':True,'source':{'commit':'a'*40,'files':{}},
                      'outputs':['result.json']}))
+    if hchain:
+        from run_rpe_hchain_preparation import preparation_request
+        request=normalize_preparation_request(preparation_request(
+            dict(owner='fixed-owner',binding={'system':'H8'},scope={'price_paths':1},
+                 cases=[{'rounds':[{'id':'physical','method':'FULL'}]}]),
+            'd'*64, 'signal', [['physical',0]], source={'commit':'a'*40,'files':{}}, assets={}))
     job=request['request_id'];method='PREPARATION:signal'
     raw=part/'input';raw.write_bytes(b'artificial result');sha=hashlib.sha256(raw.read_bytes()).hexdigest()
     cache=ArtifactCache(part/'distributed'/'artifacts');cache.put_file(raw,sha)

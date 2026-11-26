@@ -24,7 +24,14 @@ def selected_plan(settings, problem, methods):
     if (plan["binding"] != problem["problem"]["binding"] or plan["target"] != problem["target"]["energy_ha"]
             or plan["scope"]["M"] != problem["rpe"]["M"]):
         raise ValueError("H-chain plan differs from the applied problem")
-    return plan, [case for case in plan["cases"] if case["method"] in methods]
+    cases = [case for case in plan["cases"] if case["method"] in methods]
+    if "case_ids" in settings:
+        ids = settings["case_ids"]
+        wanted = set(ids)
+        cases = [case for case in cases if case["id"] in wanted]
+        if len(wanted) != len(ids) or wanted != {case["id"] for case in cases}:
+            raise ValueError("H-chain partition differs from the fixed candidate scope")
+    return plan, cases
 
 
 def candidate(plan, case):
@@ -195,13 +202,23 @@ def install_ready(provider, plan, run, rows, routes, expected, spec, *, final, e
     return changed
 
 
-def price_screen(provider, plan, run, settings):
+def price_screen(provider, plan, run, settings, *, full_plan=None):
     if not settings.get("saved_price_screen"):
         return None
     path = Path(provider.__file__).with_name(provider.pure_rte.FORECAST)
     forecast = provider.read(path) if path.is_file() else None
     if forecast is not None and forecast["comparison_id"] != provider.pure_rte.comparison_id(plan):
-        forecast = None
+        if full_plan is None or forecast["comparison_id"] != provider.pure_rte.comparison_id(full_plan):
+            forecast = None
+        else:
+            # Validate the original comparison before narrowing it. The
+            # estimates and scientific parameters are unchanged; no new model.
+            ids = {case["id"] for case in plan["cases"]}
+            reference = forecast["incumbent"]
+            forecast = dict(forecast, original_comparison_id=forecast["comparison_id"],
+                comparison_id=provider.pure_rte.comparison_id(plan),
+                estimates=[row for row in forecast["estimates"] if row["configuration_id"] in ids],
+                incumbent=reference if reference and reference["configuration_id"] in ids else None)
     return provider.build_price_pruning(plan, run, forecast=forecast)
 
 
@@ -232,7 +249,54 @@ def retire_pruned_batches(executor, pending, requests, skip_cells):
             executor.log(event="HCHAIN_PRICE_PRUNED", job=job)
 
 
-def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False):
+def partition_for_run(run, spec):
+    from trottertracks.rpe_pbs_offline import prepare_plan
+    settings = spec["hchain"].get("pbs_offline_search")
+    if "case_ids" in spec["hchain"] or not settings or settings.get("mode") != "independent":
+        return None
+    marker = run / "PBS_PARTITION_PLAN.json"
+    if marker.is_file():
+        partition = json.loads(marker.read_bytes())
+        if partition["settings"]["source"] != settings["source"]:
+            raise ValueError("Independent H-chain run retains its pinned optimizer")
+        return partition
+    if (run / "distributed" / "PREPARATION_GRAPH.json").exists():
+        return None
+    partition = prepare_plan(run, settings, round_spec=spec)
+    if partition is not None:
+        write(marker, partition)
+    return partition
+
+
+def wait_partition(run, executor):
+    from trottertracks.rpe_pbs_offline import publish_partition_view
+    manager = executor.pbs_manager
+    if manager is None:
+        raise ValueError("Independent H-chain partition requires a PBS manager")
+    while not executor._user_stop_requested():
+        publish_partition_view(run)
+        if manager.independent_finished():
+            return True
+        if manager.detached or manager.thread is None or not manager.thread.is_alive():
+            return False
+        with executor.state.cv:
+            if executor.state.failure:
+                raise RuntimeError(executor.state.failure)
+            executor.state.cv.wait(2)
+    return False
+
+
+HCHAIN_TERMINAL = {"SCALED_SHOT_GRID_COMPLETE", "EXPLORATORY_GRID_COMPLETE",
+                   "Q3_BUDGET_EXHAUSTED", "STEP_LIMIT"}
+
+
+def finish_block(run, results, methods):
+    if set(results) == set(methods) and all(r.get("stop_reason") in HCHAIN_TERMINAL for r in results.values()):
+        write(run / "SEARCH_TERMINATION.json", dict(reason="HCHAIN_SCOPE_COMPLETE",
+              methods={method: row["stop_reason"] for method, row in results.items()}))
+
+
+def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False, partition=None):
     settings = spec["hchain"]
     plan, cases = selected_plan(settings, problem, spec["methods"])
     rows = {case["id"]: candidate(plan, case) for case in cases}
@@ -243,15 +307,43 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
         return
     if spec.get("science_approved") is not True:
         raise ValueError("Use the ordinary Start or Resume for an executing H-chain round")
+    if partition is None:
+        partition = partition_for_run(run, spec)
+        if partition is not None:
+            from trottertracks.rpe_pbs_offline import restrict_round, publish_partition_view
+            local = [part for part in partition["parts"] if part["owner"] == "central"]
+            if local:
+                local_spec = restrict_round(partition, local)
+                return run_round(root, run, problem, local_spec, extra,
+                                 make_executor=make_executor, partition=partition)
+            runtime = dict(spec, executor=dict(spec["executor"], distributed=dict(
+                spec["executor"]["distributed"], pbs_offline_plan=partition)))
+            executor, _ = make_executor(root, run, {m: [] for m in spec["methods"]}, {}, problem, runtime)
+            try:
+                write(run / "ROUND_RESULT_CENTRAL.json", dict(methods={}, scope_owner=plan["owner"]))
+                complete = wait_partition(run, executor)
+            finally:
+                executor.finish()
+            publish_partition_view(run)
+            if complete and not (run / "STOP_REQUESTED.json").exists():
+                write(run / "SEARCH_TERMINATION.json", dict(reason="HCHAIN_SCOPE_COMPLETE"))
+            return
     provider, worker = load_provider(scope.provider_root(settings))
+    full_plan = plan
     plan = provider.select_cases(plan, cases)
     routes = {method: [] for method in spec["methods"]}
     expected, results, withheld = {}, {}, {}
     selected = set(rows)
     inherited = {}
-    legacy = legacy_io.checked(settings, plan, verify_files=True)
+    legacy = legacy_io.checked(settings, full_plan, verify_files=True)
     if legacy is not None:
-        legacy_io.restore_receipts(run, legacy)
+        if "case_ids" in settings:
+            directory, history = legacy
+            records = [r for r in history["records"] if r["configuration_id"] in selected]
+            holds = [r for r in history["holds"] if r["configuration_id"] in selected]
+            spent = dict(Counter(rows[r["configuration_id"]]["method"] for r in (*records, *holds)))
+            legacy = directory, dict(history, records=records, holds=holds, spent=spent)
+        legacy_io.restore_receipts(run, legacy, plan=plan if "case_ids" in settings else None)
         legacy_io.install(plan, legacy, rows, routes, expected)
         history = legacy[1]
         inherited = dict(source_job=history["source_job"], spent=history["spent"],
@@ -259,6 +351,9 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
         extra = [*extra, *(record for record in history["records"] if record["configuration_id"] in selected)]
         spec = dict(spec, max_new_q3_per_method=legacy_io.remaining(spec["max_new_q3_per_method"], history))
     distributed = spec["executor"]["distributed"]
+    if partition is not None:
+        distributed = dict(distributed, pbs_offline_plan=partition)
+        spec = dict(spec, executor=dict(spec["executor"], distributed=distributed))
     if distributed.get("live_q3_readiness") is True:
         distributed = dict(distributed)
         # Dynamically generated requests need their own real-input readiness check.
@@ -275,13 +370,18 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                 workers.append(dict(declaration, profile=profile))
             distributed["pbs"] = dict(pbs, workers=workers)
         spec = dict(spec, executor=dict(spec["executor"], distributed=distributed))
-    screen = price_screen(provider, plan, run, settings)
+    screen = price_screen(provider, plan, run, settings, full_plan=full_plan if "case_ids" in settings else None)
     excluded = screen.update() if screen is not None else set()
     executor, optimize = make_executor(root, run, routes, expected, problem, spec)
     if legacy is not None:
         executor.prior_q3_holds.extend(row for row in legacy[1]["holds"] if row["configuration_id"] in selected)
         write(run / "HCHAIN_INHERITED.json", inherited)
     sigint = signal.signal(signal.SIGINT, lambda *_: None) if (run / "CONTROLLER_CONFIG.json").exists() else None
+    result_path = run / ("ROUND_RESULT_CENTRAL.json" if partition is not None else "ROUND_RESULT.json")
+    def report():
+        write(result_path, optimizer.jsonable(dict(methods=results, scope_owner=plan["owner"],
+              ready=[cid for cid, row in rows.items() if row["ready"]], held_tasks=withheld, inherited=inherited,
+              price_pruned=sorted(excluded))))
     try:
         budgets = distributed["preparation"]["budgets"]
         graph_path = run / "distributed" / "PREPARATION_GRAPH.json"
@@ -324,6 +424,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                 if future is not None and future.done():
                     observed = future.result()
                     results.update(observed)
+                    report()
                     if optimizer.shared_stop(observed):
                         break
                     future = None
@@ -355,16 +456,26 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                     executor.state.cv.wait(.25)
             if future is not None:
                 results.update(future.result())
+        for method, result in results.items():
+            if result["stop_reason"] != "UNKNOWN_RESULT" and any(
+                    row["method"] == method and not row["ready"] and cid not in excluded for cid, row in rows.items()):
+                result.update(hchain_search_stop=result["stop_reason"], stop_reason="WAITING_FOR_INPUTS")
+        report()
+        if partition is not None and not optimizer.shared_stop(results):
+            complete = wait_partition(run, executor)
+        else:
+            complete = partition is None
     finally:
         try:
             executor.finish()
         finally:
             if sigint is not None:
                 signal.signal(signal.SIGINT, sigint)
-    for method, result in results.items():
-        if result["stop_reason"] != "UNKNOWN_RESULT" and any(
-                row["method"] == method and not row["ready"] and cid not in excluded for cid, row in rows.items()):
-            result.update(hchain_search_stop=result["stop_reason"], stop_reason="WAITING_FOR_INPUTS")
-    write(run / "ROUND_RESULT.json", optimizer.jsonable(dict(methods=results, scope_owner=plan["owner"],
-          ready=[cid for cid, row in rows.items() if row["ready"]], held_tasks=withheld, inherited=inherited,
-          price_pruned=sorted(excluded))))
+    if partition is not None:
+        from trottertracks.rpe_pbs_offline import publish_partition_view
+        publish_partition_view(run)
+    if complete and "case_ids" in settings and not (run / "STOP_REQUESTED.json").exists():
+        if partition is None:
+            finish_block(run, results, spec["methods"])
+        elif set(results) == set(spec["methods"]) and all(r.get("stop_reason") in HCHAIN_TERMINAL for r in results.values()):
+            write(run / "SEARCH_TERMINATION.json", dict(reason="HCHAIN_SCOPE_COMPLETE"))

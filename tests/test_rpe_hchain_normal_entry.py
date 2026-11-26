@@ -271,3 +271,67 @@ def test_two_allocations_sample_and_recover_their_own_artifacts(tmp_path, monkey
             executor.state.active = 0
             executor.state.cv.notify_all()
         executor.finish()
+
+
+import pytest
+
+
+@pytest.mark.parametrize("system", ["H6", "H8"])
+def test_hchain_independent_parent_and_child_use_exact_cases(tmp_path, monkeypatch, system):
+    from trottertracks import rpe_pbs_offline as offline
+
+    plan, options = fixed_scope(tmp_path)
+    plan["cases"][1]["width_over_h"] = 2
+    plan["scope"]["system"] = plan["binding"]["system"] = system
+    central.write(Path(options["plan"]["path"]), plan)
+    options["plan"]["sha256"] = hashlib.sha256(Path(options["plan"]["path"]).read_bytes()).hexdigest()
+    options["pbs_offline_search"] = dict(mode="independent", source="a"*40,
+        code_root=str(ROOT), interpreter=sys.executable, pbs_share=1,
+        memory_bytes_per_task=GIB)
+    run = tmp_path/"run"; run.mkdir()
+    cfg = run/"template.json"
+    distributed = transport(pool(tmp_path, task_seconds=dict(signal=60, q3=60)))
+    central.write(cfg, dict(round_id="fixed", executor=dict(scheduler="concurrent", distributed=distributed),
+                            max_new_q3_per_method={"FULL_PF": 3}))
+    policy = {"pbs_offline_search": options.pop("pbs_offline_search")}
+    problem, spec, canonical = scope.resolve(dict(hchain=options, round=str(cfg), release_worker_policy=policy),
+        dict(action="start", scope=dict(system=system, preparation_budgets=dict(signal=5, compile=0, audit=0))))
+    for name, data in (("ROUND.json", spec), ("PROBLEM.json", problem),
+                       ("APPLIED_SCOPE.json", dict(run_id="search-test", scope=canonical))):
+        central.write(run/name, data)
+    partition = hchain.partition_for_run(run, spec)
+    assert hchain.partition_for_run(run, spec) == partition
+    assert len(partition["parts"]) == len(offline.pbs_units(partition)) == 2
+    assert all(block["owner"] == "pbs" for block in partition["parts"])
+    assert sum(block["q3_budget"] for block in partition["parts"]) == 3
+    assert sum(block["preparation_budgets"]["signal"] for block in partition["parts"]) == 5
+    profile = distributed["pbs"]["workers"][0]["profile"]
+    children = []
+    for part in offline.pbs_units(partition):
+        child_problem, child = offline.part_documents(partition, part, profile, tmp_path/part["id"])
+        assert child["executor"]["distributed"]["execution_hosts"] == ["local"]
+        assert "pbs" not in child["executor"]["distributed"]
+        assert "pbs_offline_search" not in child["hchain"]
+        second_profile = dict(profile, host_id="pbs-b", storage_limit=dict(profile["storage_limit"],
+            sample_path=str(tmp_path/"replacement-sampler.json")))
+        assert offline.part_documents(partition, part, second_profile, tmp_path/part["id"]) == (child_problem, child)
+        _, cases = hchain.selected_plan(child["hchain"], child_problem, child["methods"])
+        children.extend(case["id"] for case in cases)
+    assert Counter(children) == Counter(HOSTS)
+    manager = SimpleNamespace(independent_finished=lambda: True, detached=False)
+    executor = SimpleNamespace(pbs_manager=manager, _user_stop_requested=lambda: False, finish=Mock())
+    factory = Mock(return_value=(executor, None))
+    hchain.run_round(ROOT, run, problem, spec, [], make_executor=factory)
+    assert factory.call_args.args[-1]["executor"]["distributed"]["pbs_offline_plan"] == partition
+    assert not (run/"distributed/PREPARATION_GRAPH.json").exists()
+    assert central.load(run/"SEARCH_TERMINATION.json")["reason"] == "HCHAIN_SCOPE_COMPLETE"
+    executor.finish.assert_called_once()
+
+
+def test_hchain_partition_completion_never_marks_unknown_or_missing_methods(tmp_path):
+    for results in ({}, {"FULL_PF": {"stop_reason": "UNKNOWN_RESULT"}},
+                    {"FULL_PF": {"stop_reason": "WAITING_FOR_INPUTS"}}):
+        hchain.finish_block(tmp_path, results, ["FULL_PF"])
+        assert not (tmp_path/"SEARCH_TERMINATION.json").exists()
+    hchain.finish_block(tmp_path, {"FULL_PF": {"stop_reason": "SCALED_SHOT_GRID_COMPLETE"}}, ["FULL_PF"])
+    assert central.load(tmp_path/"SEARCH_TERMINATION.json")["reason"] == "HCHAIN_SCOPE_COMPLETE"

@@ -65,6 +65,12 @@ def resolve(config, requested):
     keys(scope, {"system", "methods", "stop", "preparation_budgets"}, "scope")
     try:
         settings = deepcopy(config["hchain"])
+        from .rpe_release_registry import common_worker_policy
+        policy = common_worker_policy(config.get("release_worker_policy"))
+        if "pbs_offline_search" in policy:
+            if "pbs_offline_search" in settings and settings["pbs_offline_search"] != policy["pbs_offline_search"]:
+                raise ValueError("Conflicting independent PBS deployment settings")
+            settings["pbs_offline_search"] = policy["pbs_offline_search"]
         _, plan = fixed_plan(settings)
         frozen = plan["scope"]
         system = frozen["system"]
