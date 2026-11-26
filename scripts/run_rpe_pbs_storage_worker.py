@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Start the fixed PBS transport with allocation-local gateway storage samples."""
+import hashlib
 import json
 import os
 from pathlib import Path
 import runpy
 import shutil
+import subprocess
 import sys
 import threading
 import time
@@ -250,7 +252,7 @@ def main():
         trottertracks.__path__.append(str(launcher)+'/trottertracks')
         from trottertracks import _pbs_storage_report as sampler
         sample_report = sampler.report
-    observer = GatewayStorage(sample, max_age=2*storage.SAMPLE_SECONDS, local_clock=compute_sampling,
+    observer = GatewayStorage(sample, max_age=30 if compute_sampling else 2*storage.SAMPLE_SECONDS, local_clock=compute_sampling,
                               policy_fingerprint=sampler.policy_identity if sampler else None)
     storage.report = observer.report
     os.environ.update(RPE_PBS_OPERATIONAL_LAUNCHER=str(launcher),
@@ -266,6 +268,15 @@ def main():
         policy = dict(profile['storage_limit'], sample_path=str(sample))
         if sampler:
             policy['exclusion_file'] = str(sampler.storage_exclusion_file(profile['storage_limit']))
+
+        # A shared-filesystem policy can have several physical reservations.
+        # Reuse the existing report lock/cache for exactly that byte policy;
+        # each allocation still gets its own fresh receipt and observation.
+        policy_key = hashlib.sha256(json.dumps(observer.policy_fingerprint(policy),
+                                               sort_keys=True).encode()).hexdigest()[:16]
+        configured_sample = Path(profile['storage_limit']['sample_path'])
+        shared_sample = configured_sample.with_name('STORAGE_COMPUTE_'+policy_key+'.json')
+        shared_policy = dict(policy, sample_path=str(shared_sample))
 
         # Admission uses one allocation-local measurement. The previous
         # sampler mixed multiple full-directory rechecks into that measurement,
@@ -284,11 +295,17 @@ def main():
                 maintenance_due.clear()
                 if stop_sampling.is_set():
                     break
-                if not (directory/'OFFLINE_ACTIVE').exists():
-                    sample_report(maintenance_policy, spools=[profile['work_dir']],
-                                  cache_directories=storage.prefix_caches(profile), refresh=True,
-                                  proactive=True, pbs_runs=str(directory.parents[2]),
-                                  du_timeout=COMPUTE_DU_TIMEOUT)
+                try:
+                    data = json.loads(sample.read_bytes())
+                    if data['policy'] == observer.policy_fingerprint(policy):
+                        implementation = sampler if sampler is not None else storage
+                        result = implementation.reclaim_from_measurement(maintenance_policy, data['report'],
+                            spools=[profile['work_dir']], cache_directories=storage.prefix_caches(profile),
+                            pbs_runs=str(directory.parents[2]), du_timeout=COMPUTE_DU_TIMEOUT)
+                        storage.atomic_json(Path(maintenance_policy['sample_path']), dict(epoch=time.time(), **result))
+                except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+                    storage.atomic_json(Path(maintenance_policy['sample_path']),
+                                        dict(epoch=time.time(), status='CLEANUP_DEFERRED', reason=str(error)))
                 # The common central storage service also reclaims verified
                 # copies; avoid repeated expensive reconciliation at poll rate.
                 stop_sampling.wait(300)
@@ -299,21 +316,32 @@ def main():
             except OSError:
                 pass
             while not stop_sampling.is_set():
-                if not (directory/'OFFLINE_ACTIVE').exists():
-                    marker = observer.in_progress
-                    temp = marker.with_suffix('.tmp')
-                    temp.write_text(json.dumps(dict(policy=observer.policy_fingerprint(policy),
-                                                    started_epoch=time.time())))
-                    os.replace(temp, marker)
+                marker = observer.in_progress
+                temp = marker.with_suffix('.tmp')
+                temp.write_text(json.dumps(dict(policy=observer.policy_fingerprint(policy),
+                                                started_epoch=time.time())))
+                os.replace(temp, marker)
+                try:
+                    # No spool/caches on this measurement-only path.
+                    # The same byte policy and exclusions still apply.
+                    result = sample_report(shared_policy, refresh=False, proactive=True, measurement_only=True,
+                                           du_timeout=COMPUTE_DU_TIMEOUT)
+                    # Preserve the actual sample epoch, not the time a second
+                    # allocation reads it. An unavailable scan never renews a
+                    # previously positive measurement.
                     try:
-                        # No spool/caches on this measurement-only path.
-                        # The same byte policy and exclusions still apply.
-                        result = sample_report(policy, refresh=True, proactive=True,
-                                               du_timeout=COMPUTE_DU_TIMEOUT)
-                        if result and result.get('reclaim_pending'):
-                            maintenance_due.set()
-                    finally:
-                        marker.unlink(missing_ok=True)
+                        record = json.loads(shared_sample.read_bytes())
+                        if record['policy'] != observer.policy_fingerprint(policy) or record['report'] != result:
+                            raise ValueError('Shared measurement unavailable')
+                        storage.atomic_json(sample, record)
+                    except (OSError, ValueError, KeyError, TypeError):
+                        storage.atomic_json(sample, dict(policy=observer.policy_fingerprint(policy),
+                            sampled_epoch=time.time(), report=dict(limit_bytes=policy['limit_bytes'],
+                            used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')))
+                    if result and result.get('reclaim_pending'):
+                        maintenance_due.set()
+                finally:
+                    marker.unlink(missing_ok=True)
                 stop_sampling.wait(storage.SAMPLE_SECONDS)
 
         threading.Thread(target=maintain_storage, name='pbs-storage-maintenance', daemon=True).start()

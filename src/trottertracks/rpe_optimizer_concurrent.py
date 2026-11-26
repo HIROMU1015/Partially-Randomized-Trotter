@@ -2444,11 +2444,14 @@ class DistributedExecutor(ConcurrentExecutor):
     def _fits_preparation_storage(report, forecast, reserved=0):
         storage = report.get('storage') or {}
         needed = forecast.get('storage_bytes', 0)
-        if not needed or not storage:
+        if not storage:
             return True
+        if storage.get('accepting_new_jobs') is False:
+            return False
         used, limit = storage.get('used_bytes'), storage.get('limit_bytes')
         free, minimum = storage.get('filesystem_free_bytes'), storage.get('filesystem_min_free_bytes')
-        return (type(used) is int and type(limit) is int and used + reserved + needed <= limit
+        return (type(used) is int and type(limit) is int and used + reserved < limit
+                and used + reserved + needed <= limit
                 and (type(free) is not int or type(minimum) is not int or free-reserved-needed >= minimum))
 
     def _prioritize_probe_classes(self, host, rows, limit, slots):
@@ -4523,14 +4526,15 @@ class DistributedExecutor(ConcurrentExecutor):
             excluded = {tuple(Path(path).parts[-2:]) for path in storage.get('excluded_paths', ())}
             current_owners = {row['attempt_id'] for row in resource_owners}
             for owned in owned_now:
-                if owned['host_id'] != host or not self._uses_pbs_task_resources(owned):
+                if owned['host_id'] != host:
                     continue
                 old = self.store.row(owned['job_id'])
                 existing_forecast = self._preparation_forecast(host, old)
                 # PBS storage is shared between physical allocations. Release
                 # forecast bytes only for an explicitly excluded attempt path.
                 if (owned['job_id'], owned['attempt_id']) not in excluded:
-                    reserved_storage += existing_forecast.get('storage_bytes', 0)
+                    saved_reservation = json.loads(owned['detail']).get('storage_reservation_bytes', 0)
+                    reserved_storage += max(saved_reservation, existing_forecast.get('storage_bytes', 0))
                 if owned['attempt_id'] in current_owners:
                     reserved_memory += existing_forecast.get('memory_bytes', 0)
             host_busy = False
@@ -4610,6 +4614,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 elif not remaining:
                     break
                 detail = {'pbs_launch_resources': launch_fit} if launch_fit else {}
+                if forecast.get('storage_bytes'):
+                    detail['storage_reservation_bytes'] = forecast['storage_bytes']
                 if pbs_offer.get('allocation_token'):
                     detail['pbs_allocation_token'] = pbs_offer['allocation_token']
                 if report.get('preparation_class_version') == 3:

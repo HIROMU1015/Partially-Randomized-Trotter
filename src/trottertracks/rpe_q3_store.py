@@ -533,8 +533,9 @@ class JobStore:
             if state == 'ASSIGNED':
                 for field in ('preparation_workload', 'pbs_launch_resources'):
                     if field in previous:detail[field] = previous[field]
-            if 'pbs_allocation_token' in previous:
-                detail['pbs_allocation_token'] = previous['pbs_allocation_token']
+            for field in ('pbs_allocation_token', 'storage_reservation_bytes'):
+                if field in previous:
+                    detail[field] = previous[field]
             value = canonical(detail)
             db.execute('UPDATE jobs SET state=?,detail=?,updated_epoch=?,started_epoch=? WHERE job_id=?',
                        (state, value, now, started, job_id))

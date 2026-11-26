@@ -1,5 +1,5 @@
 """Host-wide intake limits and reclamation of acknowledged worker copies."""
-from contextlib import ExitStack
+from contextlib import ExitStack, closing
 import ctypes
 import fcntl
 import hashlib
@@ -8,10 +8,12 @@ import os
 from pathlib import Path
 import re
 import shutil
+import sqlite3
 import stat
 import subprocess
 import tempfile
 import time
+import uuid
 
 from .rpe_q3_coordinator import atomic_json
 from .rpe_preparation_artifacts import worker_cache
@@ -75,9 +77,11 @@ def compute_storage_observation(policy, samples, *, max_age=330):
     for value in samples:
         path = Path(value)
         try:
-            if path.is_symlink() or (path.parent/'OFFLINE_ACTIVE').exists():
+            if path.is_symlink():
                 continue
             data = json.loads(path.read_bytes())
+            if (path.parent/'OFFLINE_ACTIVE').exists() and not data['report'].get('admission_sample'):
+                continue
             age = time.time() - path.stat().st_mtime
             measured = data['report']
             if (data['policy'] != policy_identity(policy) or not 0 <= age <= max_age
@@ -642,10 +646,14 @@ def acknowledge_pbs_completions(profile, spool, receipts):
     return dict(acknowledged=acknowledged, mismatch=mismatch, deferred=deferred)
 
 
-def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=()):
+def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=(), remeasure=True):
+    if used <= target:
+        return used, 0
     copies = sorted(_acknowledged_copies(spools, roots))
     removed = 0
-    # Recheck the host total after each batch. Separate copies can share blocks.
+    # Batch sizes are only a cleanup work estimate. Re-measure once at the
+    # end, never use the estimate as an admission sample.
+    initial = used
     for offset in range(0, len(copies), 32):
         paths = [str(path) for _, _, path in copies[offset:offset+32]]
         output = subprocess.check_output(
@@ -659,7 +667,7 @@ def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=()):
                 remaining -= sizes.get(filename, 0)
                 if remaining <= target:
                     break
-        used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
+        used = max(0, remaining)
         if used <= target:
             break
     if used > target:
@@ -683,9 +691,9 @@ def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=()):
                         break
             if compacted >= 8:
                 break
-        if compacted:
-            used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
-    return used, removed
+    if removed and remeasure:
+        used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
+    return (used if removed else initial), removed
 
 
 def _share_transferred_git_packs(spools, roots, bytes_needed):
@@ -950,7 +958,7 @@ def parent_compute_storage_report(policy):
 
 
 def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(),
-           refresh=False, compact_metadata=False, proactive=False, du_timeout=10):
+           refresh=False, compact_metadata=False, proactive=False, du_timeout=10, measurement_only=False):
     """Report intake state and reclaim copies independently of the hard limit."""
     if policy is None:
         return None
@@ -978,7 +986,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             saved = json.loads(sample.read_bytes())
             if saved['policy'] == identity and 0 <= time.time() - saved['sampled_epoch'] < SAMPLE_SECONDS:
                 report = saved['report']
-                if 'filesystem_free_bytes' not in report:
+                if 'filesystem_free_bytes' not in report or bool(report.get('admission_sample')) != measurement_only:
                     return None
                 same_watermarks = (
                     report.get('reclaim_start_bytes'), report.get('reclaim_target_bytes')
@@ -998,7 +1006,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             return cached
         sample.parent.mkdir(parents=True, exist_ok=True)
         compacted = abandoned = 0
-        if compact_metadata:
+        if compact_metadata and not measurement_only:
             observation = report(policy, spools=spools, pbs_runs=pbs_runs,
                                  cache_directories=caches, refresh=refresh, proactive=proactive,
                                  du_timeout=du_timeout)
@@ -1015,28 +1023,31 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             started = time.monotonic()
             try:
                 used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
-                before, reclaimed = used, 0
+                before, reclaimed, pack_bytes = used, 0, 0
                 cleanup_due = used >= start
-                if cleanup_due and (spools or pbs_runs):
+                if cleanup_due and not measurement_only and (spools or pbs_runs):
                     candidates = list(spools)
                     if pbs_runs:
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
                         candidates.extend(Path(pbs_runs).glob('*/independent-search/parts/*/worker'))
                     # Leave room for new attempts before the next cleanup pass.
-                    used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout, excluded_paths=excluded_paths)
-                if cleanup_due and used > target and (spools or pbs_runs):
-                    if _share_transferred_git_packs(candidates, roots, used-target):
-                        used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
+                    used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout, excluded_paths=excluded_paths, remeasure=False)
+                if cleanup_due and not measurement_only and used > target and (spools or pbs_runs):
+                    pack_bytes = _share_transferred_git_packs(candidates, roots, used-target)
+                    used = max(0, used-pack_bytes)
                 evicted = 0
-                if cleanup_due and used > target:
+                if cleanup_due and not measurement_only and used > target:
                     for path in caches:
                         cache = Path(path).resolve()
                         if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
                             cache_size = _used_bytes([str(cache)], timeout=du_timeout)
-                            evicted += PrefixStore(cache).reclaim(cache_size - (used-target))
-                            used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
+                            store = PrefixStore(cache)
+                            evicted += store.reclaim(cache_size - (used-target))
+                            used = max(0, used-store.last_evicted_bytes)
                             if used <= target:
                                 break
+                if reclaimed or pack_bytes or evicted:
+                    used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
                 filesystem_free = {}
                 for name in roots:
                     root = Path(name)
@@ -1067,11 +1078,70 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     measured['reclaimed_metadata_temporary_bytes'] = abandoned
             if excluded_paths:
                 measured['excluded_paths'] = list(excluded_paths)
+            if measurement_only:
+                measured['admission_sample'] = True
             measured['measurement_seconds'] = time.monotonic()-started
             atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
             return measured
     except OSError:
         return dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
+
+
+def reclaim_from_measurement(policy, measured, *, spools=(), pbs_runs=None, cache_directories=(), du_timeout=150):
+    """Clean terminal copies while the independent admission sampler runs.
+
+    The returned counts/bytes are cleanup diagnostics only. The next actual
+    filesystem scan decides admission; never subtract hypothetical savings
+    from a live quota measurement.
+    """
+    target_bytes = duplicate_reclaim_target(measured)
+    if not target_bytes:
+        return dict(status='NO_PRESSURE', copied_files=0, shared_bytes=0)
+    roots = policy['roots']
+    candidates = list(spools)
+    independent = []
+    if pbs_runs:
+        candidates.extend(Path(pbs_runs).glob('*/workers/*'))
+        independent = list(Path(pbs_runs).glob('*/independent-search/parts/*/worker'))
+        candidates.extend(independent)
+    # Multiple reservations on the same host/storage policy must not perform
+    # duplicate cleanup; do not take the admission-sample lock during I/O.
+    lock = Path(policy.get('exclusion_file', policy['sample_path'])).with_name('STORAGE_COPY_RECLAIM.lock')
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    with lock.open('a+b') as owner:
+        try:
+            fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return dict(status='CLEANUP_ALREADY_RUNNING')
+        shared = share_independent_q3_copies(independent, roots, target_bytes)
+        used = measured['used_bytes']
+        goal = max(0, used-target_bytes)
+        estimated = max(0, used-shared['bytes'])
+        estimated, removed = _reclaim(candidates, roots, estimated, goal,
+            du_timeout=du_timeout, excluded_paths=policy_identity(policy).get('excluded_paths', ()), remeasure=False)
+        pack_bytes = 0
+        if estimated > goal:
+            pack_bytes = _share_transferred_git_packs(candidates, roots, estimated-goal)
+            estimated = max(0, estimated-pack_bytes)
+        evicted = 0
+        caches = list(cache_directories)
+        if pbs_runs:
+            caches.extend(Path(pbs_runs).glob('*/independent-search/parts/dp-cache'))
+        for path in dict.fromkeys(map(Path,caches)):
+            if estimated <= goal:
+                break
+            try:
+                path = path.resolve()
+                if not path.is_dir() or not any(path.is_relative_to(Path(root).resolve()) for root in roots):
+                    continue
+                cache_size = _used_bytes([str(path)], timeout=du_timeout)
+                cache = PrefixStore(path)
+                evicted += cache.reclaim(cache_size-(estimated-goal))
+                estimated = max(0, estimated-cache.last_evicted_bytes)
+            except (OSError, ValueError, subprocess.SubprocessError):
+                continue
+        return dict(status='CHECKED', copied_files=removed, shared_files=shared['files'],
+                    shared_bytes=shared['bytes']+pack_bytes, evicted_prefix_checkpoints=evicted)
 
 
 _Q3_RESULT_COPY_NAMES = ('RESULT.json', 'API_RETURN.json')
@@ -1098,6 +1168,86 @@ def _q3_copy_attempt(spool, job, attempt):
     if not (directory/'OUTCOME.json').is_file() or not (directory/'PROCESS_RETURN.json').is_file():
         return None
     return directory, assignment['request_sha256']
+
+
+def share_independent_q3_copies(spools, roots, target):
+    """Share immutable result bytes with the local independent controller.
+
+    A local ACCEPTED+adopted receipt is sufficient to prove a second copy is
+    redundant on the same filesystem. No central network transfer or login
+    node hashing is needed; both old locators remain readable.
+    """
+    files = reclaimed = 0
+    if target <= 0:
+        return dict(files=files, bytes=reclaimed)
+    monitored = [Path(root).resolve() for root in roots]
+    for spool in sorted(set(map(Path, spools))):
+        if spool.resolve() != spool or not any(spool.is_relative_to(root) for root in monitored):
+            continue
+        part = spool.parent
+        database = part/'distributed/QUEUE.sqlite3'
+        if not database.is_file():
+            continue
+        try:
+            with closing(sqlite3.connect(database.as_uri()+'?mode=ro', uri=True, timeout=1)) as db:
+                for marker in spool.glob('*/*/WORKER_STATE.json'):
+                    job, attempt = marker.parent.parent.name, marker.parent.name
+                    try:
+                        original = _q3_copy_attempt(spool, job, attempt)
+                        if original is None:
+                            continue
+                        directory, request_sha = original
+                        row = db.execute("""SELECT method FROM jobs WHERE job_id=? AND attempt_id=?
+                            AND request_sha256=? AND state='ACCEPTED' AND adopted_epoch IS NOT NULL
+                            AND completion_sha256 IS NOT NULL""", (job, attempt, request_sha)).fetchone()
+                        if not row or not re.fullmatch(r'[a-zA-Z0-9_:-]+', row[0]):
+                            continue
+                        lock = directory/'WORKER_PROCESS.lock'
+                        if not stat.S_ISREG(lock.lstat().st_mode):
+                            continue
+                        with lock.open('rb') as owner:
+                            fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                            if _q3_copy_attempt(spool, job, attempt) != original:
+                                continue
+                            # Both compact and older Q3 adapters publish durable
+                            # top-level evidence as well as their nested raw files.
+                            paths = [Path(name) for name in ('OUTCOME.json','COLLECTED_OUTCOME.json','CASE_INPUTS.json')]
+                            paths += [Path(job)/name for name in (*_Q3_RESULT_COPY_NAMES,'FINITE_SUPPORT.json')]
+                            for relative in paths:
+                                path = directory/relative
+                                source = part/'jobs'/row[0]/job/relative
+                                if path.resolve()!=path or source.resolve()!=source:
+                                    continue
+                                try:
+                                    left, right = source.lstat(), path.lstat()
+                                except FileNotFoundError:
+                                    continue
+                                if (not stat.S_ISREG(left.st_mode) or not stat.S_ISREG(right.st_mode)
+                                    or left.st_dev != right.st_dev or left.st_ino == right.st_ino
+                                    or left.st_size != right.st_size or right.st_nlink != 1):
+                                    continue
+                                with source.open('rb') as a, path.open('rb') as b:
+                                    if hashlib.file_digest(a,'sha256').digest()!=hashlib.file_digest(b,'sha256').digest():
+                                        continue
+                                # Reading may change atime, not the immutable content identity.
+                                def identity(info):
+                                    return (info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_nlink)
+                                if identity(source.stat())!=identity(left) or identity(path.stat())!=identity(right):
+                                    continue
+                                temporary=path.with_name('.share-'+uuid.uuid4().hex)
+                                try:
+                                    os.link(source,temporary)
+                                    os.replace(temporary,path)
+                                finally:
+                                    temporary.unlink(missing_ok=True)
+                                files+=1;reclaimed+=right.st_blocks*512
+                                if reclaimed>=target:
+                                    return dict(files=files,bytes=reclaimed)
+                    except (OSError,ValueError,KeyError,TypeError):
+                        continue
+        except sqlite3.Error:
+            continue
+    return dict(files=files,bytes=reclaimed)
 
 
 def q3_result_copy_inventory(profile, spools):

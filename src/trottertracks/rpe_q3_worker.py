@@ -535,7 +535,7 @@ class Worker:
 
     def _storage_offer(self, report):
         storage = Storage.report(self.profile.get('storage_limit'), spools=(str(self.work),),
-                                 cache_directories=Storage.prefix_caches(self.profile))
+                                 cache_directories=Storage.prefix_caches(self.profile), proactive=True)
         if storage is not None:
             report['storage'] = storage
             if not storage['accepting_new_jobs']:

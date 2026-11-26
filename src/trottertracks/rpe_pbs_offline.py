@@ -371,9 +371,10 @@ def part_documents(plan, part, profile, path):
             # The existing adapter profile validates its own fixed checkout and
             # bytes at readiness and launch; the request SOURCE stays pinned.
             selected.update(deepcopy(adapter))
-        if selected.get('storage_limit') and nested.get('independent_storage_sample') and overlay.get('worker_script'):
+        if selected.get('storage_limit') and nested.get('independent_storage_sample'):
             selected['storage_limit']['parent_compute_sample'] = nested['independent_storage_sample']
-            worker_script = Path(overlay['worker_script'])
+            if overlay.get('worker_script'):
+                worker_script = Path(overlay['worker_script'])
     distributed.update(placement)
     if spec.get('hchain'):
         spec['hchain'].pop('pbs_offline_search', None)
