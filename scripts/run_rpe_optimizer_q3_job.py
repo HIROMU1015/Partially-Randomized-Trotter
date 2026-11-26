@@ -944,7 +944,9 @@ def main():
                            else nullcontext())
                 risk = r.binding.Q.D
                 with install_risk_bound(extension), TABLES.reuse_round_tables(
-                        risk, extension[1] if extension else None), horizon_inputs(
+                        risk, extension[1] if extension else None), TABLES.parallel_good_transitions(
+                        risk, inputs.get('acceleration', {}).get('workers_per_configuration'),
+                        extension[1] if extension else None), horizon_inputs(
                         case.get('horizon_projection')), prefix_cache_context(request, case, inputs, out), TIMING.body_context(
                         sys.modules.get('trottertracks.rpe_total_dp_parallel'),out), r.installed(out), storage:
                     supervision = r.supervise([case], inputs, source, out)

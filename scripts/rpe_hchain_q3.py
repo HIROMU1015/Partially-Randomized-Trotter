@@ -4,6 +4,7 @@ import argparse
 from contextlib import contextmanager
 from fractions import Fraction
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -214,8 +215,15 @@ def compute(job):
         q3_limit=dict(MSE_upper=D.a.exact_value(threshold), scope="MODEL_MSE_FILTER_ONLY", source=source),
     )
     print(f"Q3_START {name}: {workers} children available", flush=True)
+    helper = Path(__file__).resolve().parents[1] / 'src/trottertracks/rpe_q3_round_tables.py'
+    spec = importlib.util.spec_from_file_location('_hchain_q3_round_tables', helper)
+    acceleration = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(acceleration)
     with reuse_round_tables(D) as tables:
-        partial = D._bound(entry, options)
+        with acceleration.parallel_good_transitions(D, workers) as enabled:
+            print(f"Q3_PARTIAL_START parallel_closure={enabled}", flush=True)
+            partial = D._bound(entry, options)
+        print(f"Q3_PARTIAL_END elapsed={time.monotonic()-start:.1f}s", flush=True)
         with installed(workers=workers) as engine:
             total = R._total(entry, partial, options)
             timing = engine.observations
