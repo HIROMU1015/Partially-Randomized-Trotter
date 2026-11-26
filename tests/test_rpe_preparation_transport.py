@@ -701,3 +701,14 @@ subprocess.run(['git','commit','--only','-qm','signal','--',str(p)],check=True)
 
 
 if __name__=='__main__':unittest.main()
+
+
+def test_nested_worker_path_is_not_rewritten_twice():
+    from trottertracks.rpe_preparation_worker import rewrite_bound_argument
+    root='/controller'
+    worker=root+'/parts/one/worker/attempt'
+    script=root+'/scripts/run_signal.py'
+    bindings={root:worker+'/workspace',script:worker+'/private/run_signal.py'}
+    assert rewrite_bound_argument(script,bindings)==worker+'/private/run_signal.py'
+    assert rewrite_bound_argument(root+'/data/INPUT.json',bindings)==worker+'/workspace/data/INPUT.json'
+    assert rewrite_bound_argument('--input='+script,bindings)=='--input='+worker+'/private/run_signal.py'
