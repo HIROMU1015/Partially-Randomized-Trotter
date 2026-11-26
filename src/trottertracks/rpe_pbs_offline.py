@@ -115,7 +115,10 @@ def prepare_plan(run, settings, *, round_spec=None):
                     blocked.add('PR_DF')
                 elif provider.startswith('PAULI_'):
                     blocked.add('PR_PAULI')
-        pbs_ids = {p['id'] for p in [p for p in interleaved if p['method'] not in blocked][:number]}
+        central_ids = set(setup.get('central_block_ids', ()))
+        if central_ids - {p['id'] for p in parts}:
+            raise ValueError('Central-only block is outside the fixed search')
+        pbs_ids = {p['id'] for p in [p for p in interleaved if p['method'] not in blocked and p['id'] not in central_ids][:number]}
         if not pbs_ids:
             return None
         for block in parts:

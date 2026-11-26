@@ -24,6 +24,28 @@ def reconciled_prior_runs(spec):
         driver = load(parent/'NORMAL_DRIVER.json')
         relay = load(parent/'distributed/relay/STATUS.json')
         stop = load(parent/'STOP_REQUESTED.json')
+        if evidence.get('mode') == 'STOP_DRAIN_PREPARATION':
+            # The parent has fenced all new dispatch. Existing preparation
+            # may drain on its original host while the successor continues.
+            # This is not a synthesized EXIT or permission to retry.
+            if (launch['invocation_id'] != evidence['invocation_id']
+                    or driver['invocation_id'] != launch['invocation_id']
+                    or stop.get('reason') != 'USER_REQUESTED_STOP'
+                    or fingerprint(stop) != evidence['stop_sha256']):
+                raise ValueError('Draining parent STOP or invocation differs')
+            expected = {r['job_id']:r for r in evidence['owned_preparation']}
+            with sqlite3.connect((parent/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
+                rows = db.execute("SELECT job_id,method,state,host_id,attempt_id,request_sha256 FROM jobs WHERE state IN ('QUEUED','ASSIGNED','RUNNING')").fetchall()
+                for job, method, state, host, attempt, digest in rows:
+                    if (state == 'QUEUED' or not method.startswith('PREPARATION:')
+                            or expected.get(job) != dict(job_id=job,method=method,host_id=host,attempt_id=attempt,request_sha256=digest)):
+                        raise ValueError('Draining parent still has unfenced work: '+job)
+                for job, fixed in expected.items():
+                    row = db.execute('SELECT method,host_id,attempt_id,request_sha256 FROM jobs WHERE job_id=?',(job,)).fetchone()
+                    if row != tuple(fixed[key] for key in ('method','host_id','attempt_id','request_sha256')):
+                        raise ValueError('Draining parent preparation ownership changed: '+job)
+            verified[parent] = list(expected.values())
+            continue
         failure = load(parent/'KAPPA_STATE.json').get('stop') or {}
         if (launch['invocation_id'] != evidence['invocation_id']
                 or driver['invocation_id'] != launch['invocation_id']
@@ -382,9 +404,12 @@ def verify_prior_q3_holds(root, run, problem, spec):
             continue
         old_problem = load(parent/'PROBLEM.json')
         launch, end = load(parent/'LAUNCH.json'), load(parent/'EXIT.json')
+        drained = (launch['invocation_id'] == end['invocation_id']
+                   and load(parent/'distributed/relay/STATUS.json').get('stopped') is True)
+        draining = (any(r.get('mode') == 'STOP_DRAIN_PREPARATION' and Path(r['parent_directory']).resolve() == parent
+                        for r in spec.get('reconciled_prior_runs', ())) and parent in reconciled_prior_runs(spec))
         if (any(problem[key] != old_problem[key] for key in ('problem', 'rpe', 'target', 'accuracy'))
-                or launch['invocation_id'] != end['invocation_id']
-                or load(parent/'distributed/relay/STATUS.json').get('stopped') is not True):
+                or not (drained or draining)):
             raise ValueError('Prior Q3 hold requires the same scientific problem and a stopped parent')
         job = parent/'jobs'/method/job_id
         request = load(job/'REQUEST.json')
