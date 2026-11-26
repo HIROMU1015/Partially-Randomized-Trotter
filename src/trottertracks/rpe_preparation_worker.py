@@ -87,6 +87,17 @@ def select_preparation_profile(base, assignment):
         if name in base:selected[name]=deepcopy(base[name])
     selected.pop('route_profiles',None);selected.pop('preparation_profiles',None)
     selected['preparation_stage']=spec.get('stage');selected['preparation_provider']=spec.get('provider')
+    if spec.get('provider') == 'HCHAIN_SCOPED' and (selected.get('task_cpu_count') or 1) > 1:
+        # Reserve the CPUs the fixed batch can really use. Price targets use
+        # the existing two independent axes; signals fork distinct leaves.
+        if spec['stage'] == 'signal':
+            command = spec['command']
+            target_count = len(json.loads(command[command.index('--targets')+1]))
+            if target_count < 1:
+                raise ValueError('H-chain signal batch has no fixed targets')
+            selected['task_cpu_count'] = min(selected['task_cpu_count'], target_count)
+        elif spec['stage'] in ('compile', 'audit'):
+            selected['task_cpu_count'] = min(selected['task_cpu_count'], 2)
     bound=assignment.get('host_execution_profile')
     if bound is not None:
         if digest(bound)!=assignment.get('host_execution_profile_sha256') or preparation_profile_core(selected)!=bound:
@@ -865,6 +876,11 @@ def execute(assignment, base_profile, directory):
             return outcome
         command.append('--publish-binding')
         command = pauli_calibration_command(command, fingerprint['pauli_calibration_runtime'], directory, source)
+    if spec.get('provider') == 'HCHAIN_SCOPED':
+        cpus = profile.get('task_cpu_count', 1)
+        if type(cpus) is not int or cpus < 1:
+            raise ValueError('H-chain preparation requires a positive CPU reservation')
+        env['RPE_HCHAIN_PREPARATION_CPUS'] = str(cpus)
     if spec.get('parallel_df_price_axes') is True:
         env.update(RPE_DF_PRICE_AXIS_WORKERS=str(profile['task_cpu_count']),
                    OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',

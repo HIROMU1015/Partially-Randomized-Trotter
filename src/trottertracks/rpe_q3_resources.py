@@ -5,6 +5,8 @@ idle memory is only a pressure observation. No scheduler or OS control is change
 The cold-start offer is empirical, and never presented as measured H4 capacity.
 """
 from copy import deepcopy
+from contextlib import contextmanager
+import threading
 from functools import lru_cache
 import hashlib
 import json
@@ -242,6 +244,90 @@ def owned_tree_sample(pid, *, proc_root='/proc'):
         except ValueError: pass
     return dict(rss_bytes=rss, cpu_seconds=cpu, sampled_pids=len(seen))
 
+
+
+def child_cpu_seconds():
+    try:
+        import resource
+        usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+        return usage.ru_utime + usage.ru_stime
+    except (ImportError, OSError, ValueError):
+        return None
+
+
+@contextmanager
+def sample_q3_execution(pid, enabled, *, interval=.25):
+    """Observe only the adapter owned by the current attempt; one final record."""
+    if not enabled:
+        yield None
+        return
+    stop = threading.Event()
+    sample = dict(peak_rss_bytes=0, samples=0)
+    def observe():
+        while not stop.is_set():
+            try:
+                rss = owned_tree_sample(pid)['rss_bytes']
+                if rss > 0:
+                    sample['peak_rss_bytes'] = max(sample['peak_rss_bytes'], rss)
+                    sample['samples'] += 1
+            except Exception:
+                # Operational sampling must never fail an otherwise valid task.
+                pass
+            stop.wait(interval)
+    thread = threading.Thread(target=observe, name='q3-owned-resource-sample', daemon=True)
+    try:
+        thread.start()
+    except RuntimeError:
+        yield None
+        return
+    try:
+        yield sample
+    finally:
+        stop.set()
+        thread.join()
+
+
+def q3_execution_observation(assignment, profile, receipt, sample, cpu_before):
+    """Return timing metadata only for a fully exited successful Q3 adapter."""
+    from .rpe_host_profiles import q3_cpu_measurement_key, q3_measurement_host
+    if not assignment or not sample or sample['samples'] < 2 or receipt.get('returncode') != 0 or receipt.get('signal') is not None:
+        return None
+    request = assignment['request']
+    key = q3_cpu_measurement_key(request, profile)
+    cpus = (assignment.get('pbs_launch_resources') or {}).get('cpu', profile.get('task_cpu_count') or profile.get('dp_workers'))
+    dp = profile.get('dp_workers')
+    if not key or type(cpus) is not int or type(dp) is not int or dp < 1 or cpus-dp not in (0,1):
+        return None
+    cpu_after = child_cpu_seconds()
+    cpu = max(0.,cpu_after-cpu_before) if cpu_after is not None and cpu_before is not None else None
+    return dict(schema='RPE_Q3_EXECUTION_RESOURCES_V1', key=key,
+        job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], request_sha256=assignment['request_sha256'],
+        host_id=profile['host_id'], policy_host_id=q3_measurement_host(profile),
+        method=request['method'], route_kind=request['route']['kind'],
+        task_cpu_count=cpus, dp_workers=dp, wall_seconds=receipt['wall_seconds'], cpu_seconds=cpu, **sample)
+
+
+def valid_q3_execution_receipt(sample, request, receipt, outcome, *, policy_host, attempt=None):
+    """Check optional operational metadata against the existing result receipt."""
+    from .rpe_q3_worker import digest
+    try:
+        return (sample['schema']=='RPE_Q3_EXECUTION_RESOURCES_V1'
+            and sample['policy_host_id']==policy_host
+            and sample['job_id']==request['request_id']==outcome['request_id']
+            and sample['request_sha256']==digest(request)
+            and isinstance(sample['attempt_id'],str) and bool(sample['attempt_id'])
+            and isinstance(sample['key'],str) and len(sample['key'])==64
+            and (attempt is None or sample['attempt_id']==attempt)
+            and sample['method']==request['method'] and sample['route_kind']==request['route']['kind']
+            and type(sample['dp_workers']) is int and sample['dp_workers']>=1
+            and type(sample['task_cpu_count']) is int and sample['task_cpu_count']-sample['dp_workers'] in (0,1)
+            and sample['wall_seconds']==receipt['wall_seconds'] and sample['wall_seconds']>0
+            and type(sample['samples']) is int and sample['samples']>=2
+            and type(sample['peak_rss_bytes']) is int and sample['peak_rss_bytes']>0
+            and receipt['returncode']==0 and receipt.get('signal') is None
+            and outcome['status'] in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD','INCONCLUSIVE'))
+    except (KeyError, TypeError, ValueError):
+        return False
 
 
 def _fixed_workload_document(root, name, sha):

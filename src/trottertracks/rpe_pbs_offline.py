@@ -777,13 +777,17 @@ class OfflineSearch:
                         for field in ('local_worker',):
                             settings[field]['storage_limit']['parent_compute_sample'] = current[field]['storage_limit']['parent_compute_sample']
                         settings['preparation_profiles']['local']['storage_limit']['parent_compute_sample'] = current['preparation_profiles']['local']['storage_limit']['parent_compute_sample']
-                    # The same fixed H-chain package may resume under an
+                    # The same fixed independent package may resume under an
                     # explicitly selected CPU execution profile. No science,
                     # preparation, budget or ownership fields may differ.
-                    if spec.get('hchain') and current.get('local_worker',{}).get('q3_cpu_policy'):
+                    if ('q3_cpu_policy' in settings.get('local_worker',{}) or
+                            'q3_cpu_policy' in current.get('local_worker',{})):
                         for old_profile,new_profile in ((settings['local_worker'],current['local_worker']),
                                 (settings['preparation_profiles']['local'],current['preparation_profiles']['local'])):
-                            old_profile['q3_cpu_policy'] = deepcopy(new_profile['q3_cpu_policy'])
+                            if 'q3_cpu_policy' in new_profile:
+                                old_profile['q3_cpu_policy'] = deepcopy(new_profile['q3_cpu_policy'])
+                            else:
+                                old_profile.pop('q3_cpu_policy',None)
                     if spec.get('hchain') and (adapter := (self.profile.get('pbs', {}).get('offline_controller_overlay') or {}).get('q3_adapter')):
                         for old_profile,new_profile in ((settings['local_worker'],current['local_worker']),
                                 (settings['preparation_profiles']['local'],current['preparation_profiles']['local'])):
@@ -819,8 +823,13 @@ class OfflineSearch:
             command += ['--max-cycles', '1']
         with (path/'OFFLINE.log').open('ab') as log:
             kwargs = {'pass_fds': (self.claim.fileno(),)} if self.claim is not None else {}
+            environment = dict(self.environment or os.environ)
+            if self.profile.get('host_id'):
+                # Preserve block portability: physical host identity is
+                # attempt-local runtime metadata, never a ROUND field.
+                environment['RPE_Q3_MEASUREMENT_HOST_ID'] = self.profile['host_id']
             self.process = self.popen(command, stdin=subprocess.DEVNULL,
-                                      stdout=log, stderr=subprocess.STDOUT, env=self.environment, **kwargs)
+                                      stdout=log, stderr=subprocess.STDOUT, env=environment, **kwargs)
         self.part = path
         if self.independent:
             atomic(path/'BLOCK_STATUS.json',dict(status='RUNNING',host_id=self.profile['host_id']))
@@ -890,6 +899,10 @@ class OfflineSearch:
                 temporary.replace(destination/name)
             records[key] = dict(part=part.name, files={name: (destination/name).stat().st_size
                                                        for name in names})
+            if self.independent and not method.startswith('PREPARATION-'):
+                measurement = self._q3_resource_receipt(part,job.name,request,receipt,read(outcome))
+                if measurement is not None:
+                    records[key]['q3_execution_resources'] = measurement
             if self.independent and method.startswith('PREPARATION-'):
                 outcome_value = read(outcome)
                 artifacts = outcome_value.get('artifacts', {})
@@ -906,6 +919,28 @@ class OfflineSearch:
             atomic(manifest, records)
             self.revision += new
         return new
+
+    def _q3_resource_receipt(self, part, job, request, receipt, outcome):
+        from contextlib import closing
+        from .rpe_host_profiles import q3_cpu_measurement_key
+        from .rpe_q3_resources import valid_q3_execution_receipt
+        transfer = part/'distributed'/'transfers'/job
+        if not any(transfer.glob('*/Q3_EXECUTION_RESOURCES.json')):
+            return None
+        try:
+            with closing(sqlite3.connect((part/'distributed'/'QUEUE.sqlite3').resolve().as_uri()+'?mode=ro',uri=True,timeout=1)) as db:
+                row = db.execute('SELECT attempt_id,host_id,request_sha256,state,eligibility FROM jobs WHERE job_id=?',(job,)).fetchone()
+            if not row or row[3]!='ACCEPTED' or row[2]!=digest(request):return None
+            sample = read(transfer/row[0]/'Q3_EXECUTION_RESOURCES.json')
+            host = self.profile['host_id']
+            runtime = json.loads(row[4])['execution_profiles'][row[1]]
+            runtime['q3_measurement_host_id'] = host
+            if (sample.get('host_id')==row[1] and sample.get('key')==q3_cpu_measurement_key(request,runtime)
+                    and valid_q3_execution_receipt(sample,request,receipt,outcome,policy_host=host,attempt=row[0])):
+                return sample
+        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error):
+            pass
+        return None
 
     def record_coverage(self, part):
         if self.independent:

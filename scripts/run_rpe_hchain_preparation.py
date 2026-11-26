@@ -1,5 +1,8 @@
 """Run a batch of planned H-chain preparation leaves via the common worker."""
 import argparse
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import contextmanager
+import multiprocessing as mp
 import json
 import os
 from pathlib import Path
@@ -95,7 +98,59 @@ def publish_preparation(executor, job_id, directory, *, wait=False):
     return result
 
 
-def run(plan, stage, targets, assets, output, provider, *, prepare_spectra=None):
+# The provider's fixed state (including H8 shared TailSpectrum buffers) is
+# initialized once before fork. Each child computes only its assigned leaf.
+_SIGNAL_PROVIDER = None
+
+
+def _signal_leaf(cell):
+    return _SIGNAL_PROVIDER.signal(cell)
+
+
+def signal_results(provider, cells, cpus):
+    global _SIGNAL_PROVIDER
+    workers = min(cpus, len(cells))
+    if workers <= 1:
+        yield from map(provider.signal, cells)
+        return
+    previous = _SIGNAL_PROVIDER
+    _SIGNAL_PROVIDER = provider
+    try:
+        with ProcessPoolExecutor(max_workers=workers, mp_context=mp.get_context("fork")) as pool:
+            # Ordered results keep the original target/output association.
+            yield from pool.map(_signal_leaf, cells)
+    finally:
+        _SIGNAL_PROVIDER = previous
+
+
+@contextmanager
+def price_axis_slot(provider, cpus):
+    """Use the fixed provider's existing two-axis fork path, not a new compiler."""
+    if cpus <= 1:
+        yield
+        return
+    pool = getattr(provider, "pool", None)
+    if (pool is None or not hasattr(pool, "_axis_slot") or not hasattr(pool, "AXIS_RESERVED")
+            or not callable(getattr(pool, "use_spare_axis", None))):
+        raise ValueError("Fixed H-chain provider does not support reserved parallel price axes")
+    prior = pool._axis_slot
+    pool._axis_slot = mp.get_context("fork").Value("i", pool.AXIS_RESERVED)
+    try:
+        yield
+    finally:
+        pool._axis_slot = prior
+
+
+def preparation_cpus():
+    """Only the worker's selected per-attempt CPU reservation may enable parallelism."""
+    value = int(os.environ.get("RPE_HCHAIN_PREPARATION_CPUS", "1"))
+    if value < 1:
+        raise ValueError("H-chain preparation CPU reservation must be positive")
+    affinity = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count() or 1
+    return min(value, affinity)
+
+
+def run(plan, stage, targets, assets, output, provider, *, prepare_spectra=None, cpus=1):
     selected = list(leaves(plan, stage, targets))
     state = provider.startup(assets, plan["scope"])
     if (state.binding, state.target, state.compiler) != (plan["binding"], plan["target"], plan["compiler"]):
@@ -115,13 +170,21 @@ def run(plan, stage, targets, assets, output, provider, *, prepare_spectra=None)
     provider.STATE = state
     owner = plan["owner"]
     cohort = plan.get("price_cohort", "H6_SCOPE_" + owner)
-    for cell, index, name in selected:
-        path = output / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        if stage == "signal":
-            provider.write(path, dict(provider.signal(cell), owner=owner))
-        else:
-            provider.write_price(path, dict(provider.price(cell, index, cohort), owner=owner))
+    if type(cpus) is not int or cpus < 1:
+        raise ValueError("H-chain preparation CPU reservation must be positive")
+    if stage == "signal":
+        values = signal_results(provider, [cell for cell, _, _ in selected], cpus)
+        for (_, _, name), value in zip(selected, values, strict=True):
+            path = output / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            provider.write(path, dict(value, owner=owner))
+    else:
+        for cell, index, name in selected:
+            path = output / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with price_axis_slot(provider, cpus):
+                value = provider.price(cell, index, cohort)
+            provider.write_price(path, dict(value, owner=owner))
 
 
 def main():
@@ -146,7 +209,7 @@ def main():
         from h8_scope_backend import prepare_tail_spectra
         prepare_spectra = prepare_tail_spectra
     run(json.loads(args.plan.read_bytes()), args.stage, args.targets, args.assets, args.output, h6_scope_worker,
-        prepare_spectra=prepare_spectra)
+        prepare_spectra=prepare_spectra, cpus=preparation_cpus())
 
 
 if __name__ == "__main__":

@@ -687,6 +687,9 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
     if trial.get('pbs_q3_horizon'):
         from trottertracks.rpe_pbs import apply_q3_horizon
         apply_q3_horizon(distributed, trial['pbs_q3_horizon'])
+    if trial.get('pbs_q3_cpu_policies'):
+        from trottertracks.rpe_host_profiles import apply_pbs_q3_cpu_policies
+        apply_pbs_q3_cpu_policies(distributed, trial['pbs_q3_cpu_policies'])
     if trial.get('pbs_q3_measured_memory'):
         from trottertracks.rpe_pbs import apply_q3_measured_memory
         apply_q3_measured_memory(distributed, trial['pbs_q3_measured_memory'])

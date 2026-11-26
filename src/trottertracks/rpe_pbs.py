@@ -476,6 +476,12 @@ def resource_need(request, profile, settings, host):
         profile = dict(profile, route_profiles=[row for row in profile['route_profiles']
                        if row.get('horizon_risk_commit') == horizon])
     runtime = select_host_profile(profile, {'request': request})
+    prep = request.get('preparation') or {}
+    table = settings.get('hchain_preparation_memory') or {}
+    if (prep.get('provider') == 'HCHAIN_SCOPED' and (prep.get('source') or {}).get('commit') == table.get('source')):
+        row = table.get('stages', {}).get(prep.get('stage'), {}).get((prep.get('inputs') or {}).get('PLAN.json'))
+        if row is not None and row.get('task_cpu_count', 1) != (runtime.get('task_cpu_count') or 1):
+            memory = (task_rule(request, settings, host) or {}).get('memory_bytes')
     if memory is None:
         # A stage-specific resource declaration is already a verified profile
         # input; do not override it with the entire node. Unmeasured stages
@@ -1605,7 +1611,15 @@ class PbsManager:
                         atomic(staging/'ORIGIN.json',origin)
                     elif request.get('optimizer_source') != self.executor.computation_source:
                         raise ValueError('Independent Q3 SOURCE differs')
-                    for name in ('REQUEST.json','PROCESS_RETURN.json','ORIGIN.json','OUTCOME.json'):
+                    if not preparation and (measurement := item.get('q3_execution_resources')):
+                        from .rpe_q3_resources import valid_q3_execution_receipt
+                        host = self.state['allocations'][token]['spec']['profile']['host_id']
+                        if valid_q3_execution_receipt(measurement, request, receipt, outcome, policy_host=host):
+                            try:
+                                atomic(staging/'Q3_EXECUTION_RESOURCES.json',measurement)
+                            except OSError:
+                                pass  # optional timing never blocks the original scientific receipt
+                    for name in ('REQUEST.json','PROCESS_RETURN.json','ORIGIN.json','OUTCOME.json','Q3_EXECUTION_RESOURCES.json'):
                         if (staging/name).is_file():
                             (staging/name).replace(target/name)
                     atomic(target/'IMPORTED.json',dict(part=item['part'],token=token))

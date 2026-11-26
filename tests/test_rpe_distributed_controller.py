@@ -853,7 +853,7 @@ class ControllerFailures(unittest.TestCase):
             executor.rpc('/v1/complete', dict(self.completion(first), host_id='pbs-0'))
             priority = self.enqueue(executor, 'late-priority')
             manager = SimpleNamespace(configured={'pbs-0': {}}, settings={}, startup_jobs=lambda **_: set(),
-                                      accepting_allocation=lambda *_: True)
+                                      accepting_allocation=lambda *_: True, replacement_fenced=lambda *_: False)
             with patch.object(executor, 'pbs_manager', manager), \
                  patch.object(executor, '_pending_preparation_challenges', return_value=[]) as check:
                 answer = executor.rpc('/v1/poll', dict(poll, slots=1, durable_assignments=[[

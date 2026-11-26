@@ -60,7 +60,7 @@ COMMON_WORKER_POLICY_FIELDS = frozenset((
     'preparation_host_preference', 'preparation_provider_hosts', 'pbs_collection_workers',
     'pbs_gateway_completion_workers', 'pbs_dispatch_gateway',
     'pbs_storage_launcher', 'pbs_hold_node', 'pbs_preparation_resources',
-    'pbs_q3_adapter', 'pbs_q3_horizon', 'pbs_q3_measured_memory',
+    'pbs_q3_adapter', 'pbs_q3_horizon', 'pbs_q3_measured_memory', 'pbs_q3_cpu_policies',
     'pbs_q3_memory_backfill', 'pbs_ready_buffer', 'pbs_standby_waves',
     'pbs_stage_artifacts_over_ssh', 'pbs_offline_search', 'df_max_width',
 ))

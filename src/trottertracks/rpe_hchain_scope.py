@@ -84,6 +84,12 @@ def resolve(config, requested):
         if spec["executor"].get("scheduler") != "concurrent":
             raise ValueError("A shared distributed executor is required")
         host_ids = pbs_profiles(distributed, settings["pbs_nodes"])
+        if policy.get("pbs_preparation_resources"):
+            from .rpe_pbs import apply_preparation_resources
+            apply_preparation_resources(distributed, policy["pbs_preparation_resources"])
+        if policy.get("pbs_q3_cpu_policies"):
+            from .rpe_host_profiles import apply_pbs_q3_cpu_policies
+            apply_pbs_q3_cpu_policies(distributed, policy["pbs_q3_cpu_policies"])
         prep = distributed.setdefault("preparation", {}).setdefault("budgets", {})
         changes = scope.get("preparation_budgets", {})
         keys(changes, set(STAGES), "scope.preparation_budgets")

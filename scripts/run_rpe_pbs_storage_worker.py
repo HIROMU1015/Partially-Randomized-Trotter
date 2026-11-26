@@ -220,6 +220,10 @@ def main():
         trottertracks.__path__.append(str(launcher)+'/trottertracks')
         configure_artifact_transport(launcher)
         from trottertracks import _collection_q3_worker
+        with zipfile.ZipFile(launcher) as package:
+            if 'trottertracks/_pipeline_q3_resources.py' in package.namelist():
+                from trottertracks import _pipeline_q3_resources
+                _collection_q3_worker.Resources = _pipeline_q3_resources
         raise SystemExit(_collection_q3_worker.supervise(Path(attempt)))
     check_imports = args[:1] == ['--check-imports']
     if check_imports:

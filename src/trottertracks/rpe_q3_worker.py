@@ -319,6 +319,16 @@ def _run_adapter(profile, attempt, mode, output):
     owner = PBSAttempt.local_supervisor(attempt) if mode in ('dry-check', 'execute') else None
     PBSAttempt.before_launch(attempt, owner, exclusive)
     timing_append(attempt/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_START',mode=mode)
+    measurement_assignment = None
+    cpu_before = None
+    if mode == 'execute':
+        try:
+            candidate = read(attempt/'ASSIGNMENT.json')
+            if not Preparation.is_preparation(candidate) and candidate['request']['route']['kind'] != 'artificial':
+                measurement_assignment = candidate
+                cpu_before = Resources.child_cpu_seconds()
+        except (OSError, ValueError, KeyError, TypeError):
+            pass
     with (Path(attempt) / ('WORKER_' + mode.upper() + '.log')).open('a') as log:
         process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile.get('adapter_root', profile['root']),
             env=PBSAttempt.adapter_environment(owner), stdout=log, stderr=subprocess.STDOUT,
@@ -332,11 +342,19 @@ def _run_adapter(profile, attempt, mode, output):
             except Exception as error:
                 # A launched adapter still needs its exit receipt on marker/log failure.
                 launch_error = error
-        code, stopped = PBSAttempt.wait_adapter(process, attempt, owner, exclusive)
+        with Resources.sample_q3_execution(process.pid, measurement_assignment is not None) as sample:
+            code, stopped = PBSAttempt.wait_adapter(process, attempt, owner, exclusive)
     receipt = dict(returncode=code if code >= 0 else None, signal=-code if code < 0 else None,
                    wall_seconds=time.monotonic() - started, automatic_retry=False)
     destination = 'PROCESS_RETURN.json' if mode == 'execute' else 'WORKER_' + mode.upper() + '_RETURN.json'
     atomic(Path(attempt) / destination, receipt, publish_once=True)
+    if measurement_assignment is not None and not stopped:
+        try:
+            observation = Resources.q3_execution_observation(measurement_assignment, profile, receipt, sample, cpu_before)
+            if observation is not None:
+                atomic(attempt/'Q3_EXECUTION_RESOURCES.json', observation)
+        except Exception:
+            pass  # never alter the completed process receipt for optional telemetry
     timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_END',mode=mode,returncode=code)
     if stopped:
         raise PBSAttempt.AttemptStopped

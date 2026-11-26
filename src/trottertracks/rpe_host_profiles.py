@@ -6,6 +6,9 @@ bound to the controller's assignment and preserved for its whole attempt.
 from copy import deepcopy
 import hashlib
 import json
+import math
+import os
+from statistics import median
 from pathlib import Path, PurePosixPath
 import subprocess
 
@@ -138,17 +141,102 @@ def q3_cpu_class(request, route_kinds=('hchain_scoped_q3',)):
     return f"{request['method']}:{max(shots).bit_length()}"
 
 
-def apply_q3_cpu_policy(selected, request, policy):
+def q3_measurement_host(profile):
+    host = profile['host_id']
+    return (profile.get('q3_measurement_host_id') or
+            (os.environ.get('RPE_Q3_MEASUREMENT_HOST_ID') if host=='local' else None) or host)
+
+
+def q3_cpu_measurement_key(request, profile):
+    """Bind timing to the same fixed execution route and exact shot workload."""
+    route = request.get('route') or {}
+    if q3_cpu_class(request, Q3_EXECUTION_ROUTE_KINDS) is None:
+        return None
+    if not all(profile.get(k) for k in ('host_id', 'root', 'interpreter')) or not route.get('view_commit'):
+        return None
+    execution = {k: v for k, v in (request.get('execution_profile') or {}).items() if k != 'dp_workers'}
+    return digest(dict(method=request['method'], route=route['kind'], view=route['view_commit'],
+        risk=route.get('horizon_risk_source'), scope=route.get('scope_owner'), binding=route.get('binding'),
+        optimizer_source=request.get('optimizer_source'), N_X=request['N_X'], N_Y=request['N_Y'], execution=execution,
+        host=q3_measurement_host(profile), root=profile['root'], interpreter=profile['interpreter'],
+        adapter_root=profile.get('adapter_root'), adapter=(profile.get('adapter_manifest') or {}).get('commit'),
+        route_view=(profile.get('route_views') or {}).get(route['view_commit']), runtime=profile.get('runtime'),
+        library_threads=(profile.get('pbs') or {}).get('library_threads', 1)))
+
+
+def measured_q3_cpu_choice(request, profile, measurements):
+    """Choose the observed footprint with the best median reserved CPU-time.
+
+    Compare only completed, independent observations of the same workload.
+    No unmeasured count is tried implicitly; the existing contract supplies
+    the baseline and any permitted alternatives.
+    """
+    dp = profile.get('dp_workers')
+    baseline = profile.get('task_cpu_count') or dp
+    if (type(dp) is not int or dp < 1 or type(baseline) is not int or baseline < dp
+            or baseline-dp not in (0,1) or (profile.get('pbs') or {}).get('library_threads', 1) != 1):
+        return None
+    overhead = baseline-dp
+    key = q3_cpu_measurement_key(request, profile)
+    if not key:
+        return None
+    grouped = {}
+    for row in measurements.get(key, ()):
+        cpus = row.get('task_cpu_count'); seconds = row.get('wall_seconds'); job = row.get('job_id')
+        if (row.get('key') != key or not job or row.get('completed') is not True
+                or type(cpus) is not int or not 1+overhead <= cpus <= baseline or row.get('dp_workers') != cpus-overhead
+                or type(seconds) not in (int,float) or not math.isfinite(seconds) or seconds <= 0):
+            continue
+        grouped.setdefault(cpus, {})[job] = seconds
+    scores = {cpus: (cpus * median(jobs.values()), median(jobs.values()), cpus)
+              for cpus,jobs in grouped.items() if len(jobs) >= 2}
+    if baseline not in scores:
+        return None
+    return min(scores, key=lambda cpus: scores[cpus])
+
+
+def apply_pbs_q3_cpu_policies(distributed, policies):
+    """Install the same fixed policy for central accounting and worker selection."""
+    pbs = distributed['pbs']
+    workers = {row['host_id']: row for row in pbs['workers']}
+    if not isinstance(policies, dict) or not set(policies) <= workers.keys():
+        raise ValueError('Q3 CPU policy refers to an unconfigured PBS host')
+    distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
+    for host, policy in policies.items():
+        if not isinstance(policy, dict) or set(policy) - {'classes','route_kinds','from_dp_workers','measurements'}:
+            raise ValueError('Invalid PBS Q3 CPU policy')
+        routes = policy.get('route_kinds', ('hchain_scoped_q3',))
+        if not isinstance(routes, (list,tuple)) or any(route not in Q3_EXECUTION_ROUTE_KINDS for route in routes):
+            raise ValueError('Q3 CPU policy refers to an unsupported route')
+        if not isinstance(policy.get('classes', {}), dict) or not isinstance(policy.get('measurements', {}), dict):
+            raise ValueError('Invalid Q3 CPU policy class or observations')
+        if any(not isinstance(key, str) or not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows)
+               for key, rows in policy.get('measurements', {}).items()):
+            raise ValueError('Invalid Q3 CPU observation')
+        profile = workers[host]['profile']
+        profile['q3_cpu_policy'] = dict(deepcopy(profile.get('q3_cpu_policy') or {}), **deepcopy(policy))
+
+
+def apply_q3_cpu_policy(selected, request, policy, *, allow_measurements=True):
     """Only execution parallelism changes. Assigned scientific requests do not."""
     if not policy:
         return selected
     # A profile may explicitly opt in its measured Q3 routes. Existing
     # H-chain class tables never silently alter other evaluator routes.
     key = q3_cpu_class(request, policy.get('route_kinds', ('hchain_scoped_q3',)))
-    if key is None or key not in policy.get('classes', {}):
+    if key is None:
         return selected
-    count = policy['classes'][key]
+    measured = measured_q3_cpu_choice(request, selected, policy.get('measurements', {})) if allow_measurements else None
     current = max(selected.get('task_cpu_count') or 1, selected.get('dp_workers') or 1)
+    if measured is not None:
+        # H-chain reserves a coordinator CPU; the existing H4 profile can
+        # reserve DP workers directly. Preserve that measured convention.
+        if measured < current:
+            selected.update(task_cpu_count=measured, dp_workers=measured-(current-selected['dp_workers']))
+        return selected
+    count = policy.get('classes', {}).get(key)
+    if count is None:
+        return selected
     if type(count) is not int or not 2 <= count <= current:
         raise ValueError('Q3 CPU policy must select a positive bounded execution footprint')
     selected.update(task_cpu_count=count, dp_workers=count-1)
@@ -159,15 +247,18 @@ def select_host_profile(base, assignment):
     matches = [rule for rule in base.get('route_profiles', []) if route_matches(rule, assignment)]
     if len(matches) > 1:
         raise ValueError('Ambiguous route-specific host profile')
-    selected = deepcopy(matches[0]['profile'] if matches else base)
+    source = matches[0]['profile'] if matches else base
+    policy = source.get('q3_cpu_policy', base.get('q3_cpu_policy'))
+    # The fixed observation index can be large. A durable attempt keeps only
+    # its selected profile, not a deep copy of the policy or timing history.
+    selected = deepcopy({k: v for k, v in source.items() if k not in ('q3_cpu_policy', 'route_profiles')})
     if selected.get('host_id') != base.get('host_id'):
         raise ValueError('Route-specific profile belongs to another host')
     selected.pop('route_profiles', None)
     request = assignment['request']
-    policy = selected.pop('q3_cpu_policy', base.get('q3_cpu_policy'))
     # A saved WORKER_PROFILE already has its chosen resource footprint; the
     # policy is removed so replay of an owned assignment does not reselect it.
-    apply_q3_cpu_policy(selected, request, policy)
+    apply_q3_cpu_policy(selected, request, policy, allow_measurements=(base.get('pbs') or {}).get('library_threads', 1) == 1)
     execution = request.get('execution_profile') or {}
     route = request.get('method'), request['route']['kind']
     if route[1] != 'artificial':

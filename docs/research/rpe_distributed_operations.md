@@ -808,3 +808,38 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 7,922,832から2,465,216 bytes（68.9%減）。これらはデータ保存の技術試験であって
 実探索の高速化や科学的結論の検証ではない。関連人工回帰136件＋8 subtests合格。
 旧版でも失敗するtiming fixture 1件とPF compatibility fixture 2件を別に確認した。
+
+### 2026-11-27: 共通CPU効率化（準備の軸・葉並列とQ3実測policy）
+
+- H4/H6/H8の運用改善・調査・提案では、着手時に公開共通ブランチ
+  `codex/rpe-common-hchain-fleet-20261126` の最新SHAと関連実装を必ず確認する。
+  手元の旧配置を最新版とみなさず、公開版と稼働中の固定版を区別する。
+- H4の既存PR DF軸並列・PFの軸別準備を維持する。H-chain method入口でも
+  `release_worker_policy.pbs_preparation_resources` を既存の共通資源設定処理に渡す。
+  固定provider・stage・hostの `task_cpu_count` と実測等に基づく `memory_bytes` を
+  一緒に選択する。H-chain Compile/Auditは2軸、Signalは固定タスク内の葉の個数を
+  上限とし、余分なCPUを予約しない。未選択の従来1 CPU profileは直列のまま。
+- H-chain Compile/Auditの並列枠が2 CPU以上なら、既存providerの予約済みaxis slotと
+  X/Y軸のfork処理を利用する。Signalは固定入力と共有状態（H8のTailSpectrum等）を
+  1度構築後にforkし、元の順序で各葉を保存する。乱数・compiler・指標・候補のID、
+  ターゲット、科学SOURCE、予算、所有、原結果は変更しない。外側のCPU予約と内側の
+  BLAS/Qiskit等の1スレッドを対応させる。直列時に計測したH-chainメモリ表は
+  異なるCPU数の並列profileに流用せず、選択済みstageの予約を使う。
+- 通常Q3（両worker経路）で、既存の所有process-tree RSS計測を再利用し、成功終了した
+  元attemptの `Q3_EXECUTION_RESOURCES.json` にCPU数・DP数、wall/CPU秒、ピークRSS、
+  固定routeとshot配分を照合するキーを保存する。科学結果の判定やSTOP処理を変更しない。
+  独立PBS子runでは元の論理hostを実行時環境で識別し、固定ROUNDの移動可能性を維持したまま
+  採用済みの計測のみを既存結果manifestで中央へ回収する。
+  既存の `Q3` 受付・メモリpolicyやH6の明示選択済みCPU classを維持する。
+- `scripts/build_rpe_q3_cpu_policy.py --run RUN --output POLICY.json`（複数 `--run` 可）は
+  採用済みQ3の計測・元request/attempt・終了receipt・route/profileを照合し、既存の
+  `q3_cpu_policy` で使用するhost別の実測索引を生成する。科学評価は実行しない。
+  新規releaseの `release_worker_policy.pbs_q3_cpu_policies` にこの索引を選択すると、
+  H4 scheduleとH6/H8 methodの双方で、同一host/runtime/route/固定SOURCE/shot vector
+  における独立完了2件以上の各CPU数の中央値を比較し、予約CPU×wall秒が最小の
+  既測CPU数を自動選択する（同点はwall秒）。基準値または代替値が未計測なら既存
+  profile/明示classのまま。別分子や未測定のCPU数へ外挿しない。既に所有された
+  attemptは選択済みprofileのまま、再選択しない。
+- これらは将来の共通releaseに含める機能であり、稼働中のrun・既存の固定版・PBS
+  ノード・global currentを自動更新しない。各分子の実測値、並列メモリ予約、速度と
+  科学結果一致は別途、許可された固定範囲で実機検収する。人工テストは機能検証のみ。
