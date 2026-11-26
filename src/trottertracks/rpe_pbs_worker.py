@@ -50,13 +50,14 @@ def fixed_worker(profile):
     expected = pbs['worker_source']
     if head(root) != expected:
         raise ValueError('PBS worker HEAD differs from fixed transport SOURCE')
-    for name in TRANSPORT_FILES:
+    files = TRANSPORT_FILES + (('src/trottertracks/rpe_pbs_offline.py',) if pbs.get('independent_root') else ())
+    for name in files:
         saved = subprocess.check_output(['git', 'show', expected + ':' + name], cwd=root)
         if (root / name).read_bytes() != saved:
             raise ValueError('PBS worker SOURCE bytes differ: ' + name)
     return dict(root=str(root), source=expected,
                 files={name: hashlib.sha256((root / name).read_bytes()).hexdigest()
-                       for name in TRANSPORT_FILES})
+                       for name in files})
 
 
 def runtime_profiles(profile):
@@ -250,6 +251,16 @@ class AllocationWorker(Worker):
         self.collection_workers = count
         self.collection_inflight = {}
         self.preparation_transfers = set()
+        self.offline_search = None
+        self.offline_active = False
+        if reference := profile['pbs'].get('offline_plan'):
+            from .rpe_pbs_offline import OfflineSearch, independent_plan
+            raw = Path(reference['path']).read_bytes()
+            if hashlib.sha256(raw).hexdigest() != reference['sha256']:
+                raise ValueError('PBS continuation plan digest differs')
+            plan = json.loads(raw)
+            if independent_plan(plan):
+                self.offline_search = OfflineSearch(plan, self.profile, self.directory, self.pbs_resources)
         self._open_readiness()
 
     def _open_readiness(self):
@@ -270,7 +281,7 @@ class AllocationWorker(Worker):
         while not self.readiness_stop.wait(.2):
             with self.readiness_lock:
                 slots, accepting = self.readiness_offer
-                if accepting and self.accepting() and not self.control().get('stop'):
+                if accepting and self.accepting() and not getattr(self, 'offline_active', False) and not self.control().get('stop'):
                     self._advance_readiness(slots, True)
 
     def tick(self, acquire=True):
@@ -579,6 +590,10 @@ class AllocationWorker(Worker):
                      remaining_seconds=self.remaining(),
                      start_clock=self.start_clock,
                      exit_reason=self.exit_reason)
+        if getattr(self, 'offline_search', None) is not None:
+            value['offline_revision'] = self.offline_search.shared_revision()
+            if self.offline_search.independent:
+                value['independent_active'] = bool(self.offline_search.process is not None)
         atomic(self.directory / 'STATE.json', value)
 
     def _post(self, endpoint, payload):
@@ -618,11 +633,16 @@ class AllocationWorker(Worker):
             while self.remaining() > 0:
                 control = self.control()
                 self._sync_drain(control)
-                self.tick(acquire=self.accepting())
+                busy = False
+                if getattr(self, 'offline_search', None) is not None:
+                    from .rpe_pbs_offline import advance_independent
+                    busy = advance_independent(self, control)
+                if not busy:
+                    self.tick(acquire=self.accepting())
                 self.heartbeat()
-                if self.draining and not self.pending():
+                if self.draining and not busy and not self.pending():
                     break
-                if control.get('release_when_idle') and not self.pending():
+                if control.get('release_when_idle') and not busy and not self.pending():
                     if self.idle_since is None:
                         self.idle_since = time.monotonic()
                     if time.monotonic() - self.idle_since >= self.idle_release_seconds:
@@ -635,6 +655,8 @@ class AllocationWorker(Worker):
                 self.exit_reason = 'ALLOCATION_WALLTIME_END'
         finally:
             self.draining = True
+            if getattr(self, 'offline_search', None) is not None:
+                self.offline_search.request_stop()
             self._close_collection()
             self.heartbeat(state='EXITED', force=True)
             # No signal is sent to a scientific child; PBS owns the remaining

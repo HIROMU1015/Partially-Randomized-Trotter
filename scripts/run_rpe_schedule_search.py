@@ -109,8 +109,12 @@ def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
     if not isinstance(cache, dict) or len(cache) > 16384:
         cache = {}
     with cli.round_phase(run, 'WIDTH_RESULT_BOUNDS'):
+        report_spec = spec
+        if (run/'PBS_PARTITION_PLAN.json').is_file():
+            report_spec=deepcopy(spec)
+            (report_spec['executor'].get('distributed') or {}).pop('pbs_offline_plan',None)
         summary = cli.slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',
-            round=spec, methods=result, optimizer_source=optimizer_source),
+            round=report_spec, methods=result, optimizer_source=optimizer_source),
             **({'bound_cache': cache} if 'bound_cache' in (cli.slim.__kwdefaults__ or {}) else {}))
     with cli.round_phase(run, 'WIDTH_RESULT_JSON'):
         # This report is a machine-readable checkpoint; keep every field and
@@ -121,18 +125,22 @@ def write_width_report(run, cli, spec, result, optimizer_source, *, owner=None):
         if owner is not None and O.load_json(run/'NORMAL_DRIVER.json').get('pid') != owner:
             return
         with cli.round_phase(run, 'WIDTH_RESULT_WRITE'):
-            path = run/'ROUND_RESULT.json'
+            partitioned = (run/'PBS_PARTITION_PLAN.json').is_file()
+            path = run/('ROUND_RESULT_CENTRAL.json' if partitioned else 'ROUND_RESULT.json')
             staging = path.with_suffix('.json.tmp')
             with staging.open('w') as stream:
                 stream.write(summary)
                 stream.write('\n')
             staging.replace(path)
+            if partitioned:
+                from trottertracks.rpe_pbs_offline import publish_partition_view
+                publish_partition_view(run, locked=True)
         del summary
         if cache:
             from trottertracks.rpe_q3_coordinator import atomic_json
             atomic_json(run/'ROUND_REPORT_BOUNDS_V1.json', dict(source=optimizer_source, bounds=cache))
         with cli.round_phase(run, 'WIDTH_METHOD_TABLE'):
-            path = run/'PER_METHOD.csv'
+            path = run/('PER_METHOD_CENTRAL.csv' if partitioned else 'PER_METHOD.csv')
             staging = path.with_suffix('.csv.tmp')
             cli.table(result, staging)
             staging.replace(path)
@@ -550,17 +558,6 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if waves is None or not distributed.get('pbs_ready_buffer'):
             raise ValueError('PBS standby waves require the PBS ready buffer')
         distributed['pbs_standby_waves'] = waves
-    if 'pbs_offline_search' in trial:
-        if run_dir is None:
-            raise ValueError('PBS offline search requires the fixed normal run directory')
-        path = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_pbs_offline.py'
-        source = importlib.util.spec_from_file_location('trottertracks.rpe_pbs_offline', path)
-        offline = importlib.util.module_from_spec(source)
-        source.loader.exec_module(offline)
-        if plan := offline.prepare_plan(Path(run_dir), trial['pbs_offline_search']):
-            distributed['pbs_offline_plan'] = plan
-            history = str(Path(run_dir)/'distributed'/'pbs'/'offline-history')
-            spec['executor'].setdefault('prior_run_dirs', []).append(history)
     if trial.get('pbs_dispatch_gateway'):
         distributed['pbs_dispatch_gateway'] = trial['pbs_dispatch_gateway']
     if trial.get('controller_queue_first'):
@@ -732,6 +729,39 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
                 if local.get('host_id')==host:
                     distributed['local_worker']=pbs_transport_paths(local,paths)
         distributed['host_transport_paths']=mappings
+
+    if 'pbs_offline_search' in trial:
+        if run_dir is None:
+            raise ValueError('PBS offline search requires the fixed normal run directory')
+        path = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_pbs_offline.py'
+        source = importlib.util.spec_from_file_location('trottertracks.rpe_pbs_offline', path)
+        offline = importlib.util.module_from_spec(source)
+        source.loader.exec_module(offline)
+        settings = deepcopy(trial['pbs_offline_search'])
+        independent = settings.get('mode') == 'independent'
+        marker = Path(run_dir)/'PBS_PARTITION_PLAN.json'
+        # Previously started ordinary runs keep their original scope. A
+        # new independent plan is fixed once for the parent run, not on
+        # each Resume or PBS allocation.
+        if independent and not marker.is_file() and (Path(run_dir)/'KAPPA_STATE.json').exists():
+            settings.pop('mode',None)
+            independent = False
+        if independent and not marker.is_file() and not (spec.get('search_to_rule_stop') and
+                                spec.get('search_overrides',{}).get('work_conserving_search')):
+            # Preserve explicit finite-step / legacy execution semantics.
+            settings.pop('mode',None)
+            independent=False
+        if independent and marker.is_file():
+            plan = O.load_json(marker)
+            if plan['settings']['source'] != settings['source']:
+                raise ValueError('Independent run retains its pinned block optimizer')
+        else:
+            plan = offline.prepare_plan(Path(run_dir), settings,
+                round_spec=spec if independent else None)
+        if plan:
+            distributed['pbs_offline_plan'] = plan
+            history = str(Path(run_dir)/'distributed'/'pbs'/'offline-history')
+            spec['executor'].setdefault('prior_run_dirs', []).append(history)
 
 
 @contextmanager
@@ -1122,12 +1152,32 @@ class WidthDriver:
         trial = selected_worker_policy(self.spec)
         if trial and not a.plan_only:
             apply_worker_trial(self.spec, trial, run_dir=self.run)
+        from trottertracks.rpe_pbs_offline import independent_plan, restrict_round
+        plan = (self.spec['executor'].get('distributed') or {}).get('pbs_offline_plan')
+        self.partition_plan = plan if independent_plan(plan) else None
+        if self.partition_plan:
+            from trottertracks.rpe_q3_coordinator import atomic_json
+            marker = self.run/'PBS_PARTITION_PLAN.json'
+            if marker.is_file():
+                if O.load_json(marker) != plan:
+                    raise ValueError('Independent PBS plan changed')
+            else:
+                atomic_json(marker,plan)
+            # FIXED_INPUTS and the public ROUND retain the full user scope;
+            # only this local planner generates jobs in the complementary slice.
+            self.partition_methods = deepcopy({m:self.problem['methods'][m] for m in self.methods})
+            self.spec = restrict_round(plan,[p for p in plan['parts'] if p['owner']=='central'],source=self.spec)
+            self.methods = self.spec['methods']
+            self.problem = K.CLI.price_overrides(K.CLI.scoped(O.load_json(a.problem),self.spec.get('method_overrides')),self.spec)
+            self.widths = W.requested_widths(self.problem,self.spec) or {}
+            for method,widths in self.widths.items():
+                self.problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         if not self.state['families']:
             started=time.monotonic();self.log(event='SEED_START')
             self.seed();self.log(event='SEED_END',wall_seconds=time.monotonic()-started,families=len(self.state['families']))
         self.recheck_unsupported_families()
         if self.scaled_shots and not (self.run/'SCOPE_MAP.json').is_file():
-            previous=self.run/'ROUND_RESULT.json'
+            previous=self.run/('ROUND_RESULT_CENTRAL.json' if self.partition_plan else 'ROUND_RESULT.json')
             self.write_scope_map(O.load_json(previous)['methods'] if previous.is_file() else None)
 
     def log(self, **row):
@@ -1168,10 +1218,13 @@ class WidthDriver:
                 coverage.update(requested=scope['requested'],represented=represented,
                     missing_count=scope['requested']-represented,logical_status_counts=scope['counts'],
                     scope_map='SCOPE_MAP.json')
-        path=self.run/'SCOPE_MAP.json'
+        path=self.run/('SCOPE_MAP_CENTRAL.json' if getattr(self,'partition_plan',None) else 'SCOPE_MAP.json')
         self.scope_summary={m:{k:v for k,v in row.items() if k!='rows'} for m,row in document['methods'].items()}
         if not path.is_file() or O.load_json(path)!=document:
             atomic_json(path,document)
+        if getattr(self,'partition_plan',None):
+            from trottertracks.rpe_pbs_offline import publish_partition_view
+            publish_partition_view(self.run)
 
     def check_fixed_inputs(self):
         """Keep cached families tied to the same physical/evaluation inputs."""
@@ -2272,7 +2325,7 @@ class WidthDriver:
         if exploratory:
             shortlist = self.state.get('shortlist_price_candidates')
             if shortlist is None:
-                previous_report = self.run/'ROUND_RESULT.json'
+                previous_report = self.run/('ROUND_RESULT_CENTRAL.json' if getattr(self,'partition_plan',None) else 'ROUND_RESULT.json')
                 shortlist = shortlist_price_ids(O.load_json(previous_report)['methods']) if previous_report.is_file() else {}
                 self.state['shortlist_price_candidates'] = shortlist
             live_price = LivePriceWork(self.run, shortlist)
@@ -3102,6 +3155,34 @@ class WidthDriver:
         self.state['stop']=dict(reason='SCOPE_HELD_Q3' if held_q3 else 'MAX_CYCLES',
             UTC=K.now(),unresolved_q3_attempts=unresolved);self.save()
 
+    def wait_for_independent_blocks(self):
+        """Local completion must not end a still-active PBS partition."""
+        manager = getattr(self,'run_pbs_manager',None)
+        if manager is None:
+            manager = getattr(getattr(self,'waiting_executor',None),'pbs_manager',None)
+        if self.a.plan_only or self.state.get('stop',{}).get('reason') in ('USER_REQUESTED_STOP','RUNTIME_EXCEPTION','V2_RESULT_REQUIRES_REVIEW'):
+            return
+        if manager is None or manager.detached:
+            self.state['stop'] = dict(reason='PBS_BLOCKS_REQUIRE_RESUME',UTC=K.now())
+            self.save()
+            return
+        local_stop = deepcopy(self.state.get('stop'))
+        while not manager.independent_finished():
+            if (self.run/'STOP_REQUESTED.json').exists():
+                self.state['stop'] = dict(reason='USER_REQUESTED_STOP',UTC=K.now())
+                self.save()
+                return
+            if manager.thread is None or not manager.thread.is_alive():
+                self.state['stop'] = dict(reason='PBS_BLOCKS_REQUIRE_RESUME',central=local_stop,UTC=K.now())
+                self.save()
+                return
+            if self.state.get('stop',{}).get('reason') != 'PBS_BLOCKS_ACTIVE':
+                self.state['stop'] = dict(reason='PBS_BLOCKS_ACTIVE',central=local_stop,UTC=K.now())
+                self.save()
+            time.sleep(2)
+        self.state['stop'] = local_stop
+        self.save()
+
     def finish_waiting_executor(self):
         executor = getattr(self, 'waiting_executor', None)
         if executor is not None:
@@ -3243,7 +3324,10 @@ def main(argv=None, *, driver_factory=None):
             methods={m:r['stop_reason']for m,r in result['methods'].items()})))
     factory=driver_factory or (WidthDriver if declared is not None or spec.get('search_to_rule_stop') else WideDriver)
     d = factory(a);d.log(event='DRIVER_START', plan_only=a.plan_only)
-    try:d.loop()
+    try:
+        d.loop()
+        if getattr(d,'partition_plan',None):
+            d.wait_for_independent_blocks()
     except KeyboardInterrupt:
         # Executor cleanup drains owned work. Scientific UNKNOWN/STOP evidence
         # remains in job artifacts; only this operational stop is resumable.

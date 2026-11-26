@@ -361,7 +361,7 @@ class JobStore:
         if observed_only:
             condition = " AND (started_epoch IS NOT NULL OR completion_sha256 IS NOT NULL)"
         with self._connection() as db:
-            return db.execute('SELECT count(*) FROM jobs WHERE method=?' + condition, (method,)).fetchone()[0]
+            return db.execute("SELECT count(*) FROM jobs WHERE method=? AND json_extract(detail,'$.prior_partition_reuse') IS NOT 1" + condition, (method,)).fetchone()[0]
 
     @staticmethod
     def artificial(request):
@@ -396,7 +396,7 @@ class JobStore:
     def preparation_reservations(self):
         with self._connection() as db:
             return dict(db.execute("""SELECT substr(method,13),count(*) FROM jobs
-                WHERE method LIKE 'PREPARATION:%' AND state!='CANCELLED' GROUP BY method"""))
+                WHERE method LIKE 'PREPARATION:%' AND state!='CANCELLED' AND json_extract(detail,'$.prior_partition_reuse') IS NOT 1 GROUP BY method"""))
 
     def reserve(self, method, job_id, request, budget, approved, contract=None, eligibility=None):
         if not isinstance(method, str) or not method or not isinstance(job_id, str) or not job_id:
@@ -419,7 +419,7 @@ class JobStore:
             # usable without a host registry.
             if not self.eligible(request, eligibility):
                 return False
-            used = db.execute("SELECT count(*) FROM jobs WHERE method=? AND state!='CANCELLED'", (method,)).fetchone()[0]
+            used = db.execute("SELECT count(*) FROM jobs WHERE method=? AND state!='CANCELLED' AND json_extract(detail,'$.prior_partition_reuse') IS NOT 1", (method,)).fetchone()[0]
             if not approved or (budget not in (None, 'UNLIMITED') and used >= budget):
                 return False
             now = time.time()
@@ -566,6 +566,25 @@ class JobStore:
                        (completion_sha, now, now, job_id))
             self._event(db, job_id, 'ACCEPT', dict(host_id=host_id, attempt_id=attempt_id))
             return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()), False
+
+    def import_partition_preparation(self, job_id, method, request, contract, origin):
+        """Register a previously accepted block result, without a new reservation."""
+        if (not method.startswith('PREPARATION:') or request.get('request_id') != job_id
+                or origin.get('request_sha256') != digest(request) or origin.get('contract') != contract
+                or not origin.get('attempt_id') or not origin.get('completion_sha256')):
+            return False
+        with self._connection(write=True) as db:
+            if db.execute('SELECT 1 FROM jobs WHERE job_id=?',(job_id,)).fetchone():
+                return False  # never replace an existing attempt or STOP
+            now = time.time()
+            db.execute("""INSERT INTO jobs(job_id,method,request,request_sha256,contract,state,host_id,
+                attempt_id,enqueued_epoch,completed_epoch,updated_epoch,detail,completion_sha256)
+                VALUES(?,?,?,?,?,'ACCEPTED',?,?,?,?,?,?,?)""",
+                (job_id,method,canonical(request),origin['request_sha256'],canonical(contract),
+                 origin['host_id'],origin['attempt_id'],now,now,now,
+                 canonical(dict(prior_partition_reuse=True,origin=origin)),origin['completion_sha256']))
+            self._event(db,job_id,'REUSE_PARTITION_PREPARATION',origin)
+            return True
 
     def adopt(self, job_id):
         with self._connection(write=True) as db:

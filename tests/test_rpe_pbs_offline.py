@@ -73,3 +73,236 @@ def test_offline_parts_advance_and_import_only_completed_results(tmp_path, monke
     assert (recovered/'OUTCOME.json').read_bytes() == (job/'OUTCOME.json').read_bytes()
     coverage = read(manager.directory/'offline-history'/'coverage'/'token.json')
     assert coverage['parts'][part.name]['termination'] == {'reason':'ARTIFICIAL_COMPLETE'}
+
+
+def independent_fixture(root):
+    from trottertracks.rpe_pbs_offline import prepare_plan
+    root.mkdir(parents=True, exist_ok=True)
+    problem = {'methods': {'PR_PAULI': {'L_D_values':[4,5],
+                                        'generation':{'formulas':['2nd']},
+                                        'absolute_kappa_values':[1,2]},
+                           'FULL_PF': {'p_values':[6,7], 'formulas':['2nd']}},
+               'search':{'scaled_shots':{'M':[12]}}}
+    spec = dict(science_approved=True, methods=list(problem['methods']), round_id='fixed',
+                search_to_rule_stop=True, max_new_q3_per_method={'PR_PAULI':7,'FULL_PF':5},
+                search_overrides={'requested_widths':{'PR_PAULI':[1,2,3]},
+                                  'work_conserving_search':True},
+                executor={'distributed':{'preparation':{'budgets':{'signal':9,'compile':5,'audit':0}}}})
+    for name,value in [('PROBLEM.json',problem),('ROUND.json',spec),
+                       ('APPLIED_SCOPE.json',{'run_id':'search-artificial','scope':{}})]:
+        atomic(root/name,value)
+    plan=prepare_plan(root,dict(mode='independent',pbs_share='1/2',code_root=str(ROOT),
+        interpreter=sys.executable,source='a'*40,memory_bytes_per_task=2*rpe_pbs.GIB))
+    atomic(root/'PBS_PARTITION_PLAN.json',plan)
+    return plan
+
+
+def test_independent_blocks_disjoint_and_finite_budget_preserved(tmp_path):
+    from trottertracks.rpe_pbs_offline import restrict_round, pbs_parts, merge_partition_maps
+    plan=independent_fixture(tmp_path/'run')
+    central=[p for p in plan['parts'] if p['owner']=='central']
+    remote=pbs_parts(plan)
+    assert len(central)+len(remote)==5
+    assert not {p['id'] for p in central}&{p['id'] for p in remote}
+    local=restrict_round(plan,central)
+    children=[restrict_round(plan,[p]) for p in remote]
+    for method,cap in plan['round']['max_new_q3_per_method'].items():
+        assert sum(s['max_new_q3_per_method'].get(method,0) for s in [local,*children])==cap
+    for stage,cap in plan['round']['executor']['distributed']['preparation']['budgets'].items():
+        assert sum(s['executor']['distributed']['preparation']['budgets'][stage] for s in [local,*children])==cap
+    full=merge_partition_maps(plan,None,{})
+    assert sum(row['status']=='PBS_BLOCK_PENDING' for method in full['methods'].values() for row in method['rows'])>0
+    assert all(row['owner'] in ('central','pbs') for method in full['methods'].values() for row in method['rows'])
+
+
+def test_independent_keeps_running_connected_claims_disjoint_and_resumes(tmp_path, monkeypatch):
+    from trottertracks.rpe_pbs_offline import pbs_parts, all_parts_finished
+    plan=independent_fixture(tmp_path/'run')
+    remote=tmp_path/'remote'
+    durable=remote/'independent-search'
+    resources={'cpu_count':8,'maximum_slots':8,'memory_bytes':12*rpe_pbs.GIB}
+    commands=[]
+    class Child:
+        value=None
+        def poll(self): return self.value
+    def launch(command,**kwargs):
+        child=Child()
+        commands.append((command,kwargs,child))
+        return child
+    def make(token):
+        allocation=remote/'allocations'/token; allocation.mkdir(parents=True)
+        profile={'host_id':token,'dp_workers':2,'pbs':{'library_threads':1,'independent_root':str(durable)}}
+        atomic(allocation/'PROFILE.json',profile)
+        obj=OfflineSearch(plan,profile,allocation,resources,popen=launch)
+        obj.validated_entry=ROOT/'scripts/run_rpe_schedule_search.py'
+        return obj
+    first,second=make('pbs1'),make('pbs2')
+    assert first.advance(disconnected=False,runnable=True,batch=8)
+    assert second.advance(disconnected=False,runnable=True,batch=8)
+    assert first.part != second.part
+    assert '--max-cycles' not in commands[0][0]
+    assert commands[0][1]['pass_fds']
+    assert first.advance(disconnected=True,runnable=True,batch=8)
+    assert first.advance(disconnected=False,runnable=True,batch=8)
+    assert not (first.part/'STOP_REQUESTED.json').exists()
+    # The third allocation cannot select a block that remains owned.
+    third=make('pbs3')
+    assert not third.advance(disconnected=False,runnable=True,batch=8)
+    old=first.part
+    assert first.advance(disconnected=False,runnable=False,batch=8,stop=True)
+    assert read(old/'STOP_REQUESTED.json')['reason']=='PBS_BLOCK_HANDOFF'
+    commands[0][2].value=0
+    assert not first.advance(disconnected=False,runnable=False,batch=8,stop=True)
+    # Reopen the same persistent directory on a new allocation with the
+    # same fixed scientific inputs; a temporary allocation name is irrelevant.
+    replacement=make('pbs4')
+    assert replacement.advance(disconnected=False,runnable=True,batch=8)
+    assert replacement.part==old
+    assert not (old/'STOP_REQUESTED.json').exists()
+    for obj in (second,replacement):
+        atomic(obj.part/'SEARCH_TERMINATION.json',{'reason':'REQUESTED_WIDTH_RULE_EXHAUSTED'})
+        obj.process.value=0
+        obj.advance(disconnected=False,runnable=True,batch=8)
+    assert all_parts_finished(plan,read(durable/'COVERAGE.json')['parts'])
+
+
+def test_independent_preparation_export_and_exact_reuse(tmp_path):
+    import threading
+    import hashlib
+    from trottertracks.rpe_preparation_artifacts import ArtifactCache
+    from trottertracks.rpe_preparation_queue import normalize_preparation_request
+    from trottertracks.rpe_q3_store import JobStore,digest
+    from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+    from trottertracks.rpe_pbs_offline import pbs_parts
+    run=tmp_path/'central';plan=independent_fixture(run)
+    remote=tmp_path/'remote';allocation=remote/'allocations'/'token';allocation.mkdir(parents=True)
+    durable=remote/'independent-search'
+    profile={'host_id':'pbs0','dp_workers':2,'pbs':{'library_threads':1,'independent_root':str(durable)}}
+    atomic(allocation/'PROFILE.json',profile)
+    search=OfflineSearch(plan,profile,allocation,{'cpu_count':8,'maximum_slots':8,'memory_bytes':12*rpe_pbs.GIB},
+                         popen=lambda *a,**k:SimpleNamespace(poll=lambda:None))
+    block=pbs_parts(plan)[0]
+    part=durable/'parts'/block['id'];part.mkdir(parents=True)
+    request=normalize_preparation_request(dict(method=block['method'],route={'kind':'preparation'},
+        preparation={'stage':'signal','provider':'artificial','artificial':True,'source':{'commit':'a'*40,'files':{}},
+                     'outputs':['result.json']}))
+    job=request['request_id'];method='PREPARATION:signal'
+    raw=part/'input';raw.write_bytes(b'artificial result');sha=hashlib.sha256(raw.read_bytes()).hexdigest()
+    cache=ArtifactCache(part/'distributed'/'artifacts');cache.put_file(raw,sha)
+    origin={'request_sha256':digest(request),'contract':{'evaluation':None,'dependencies':[]},
+            'attempt_id':'attempt1','host_id':'local','completion_sha256':'f'*64}
+    store=JobStore(part/'distributed'/'QUEUE.sqlite3')
+    assert store.import_partition_preparation(job,method,request,origin['contract'],origin)
+    jobdir=part/'jobs'/method/job;jobdir.mkdir(parents=True)
+    atomic(jobdir/'REQUEST.json',request);atomic(jobdir/'PROCESS_RETURN.json',{'returncode':0,'signal':None})
+    atomic(jobdir/'OUTCOME.json',{'status':'PREPARATION_COMPLETE','request_id':job,
+                                  'request_sha256':digest(request),'artifacts':{'result.json':sha}})
+    assert search.export(part)==1
+    assert search.export(part)==0
+    search.record_coverage(part)
+    spec=importlib.util.spec_from_file_location('independent_gateway_test',ROOT/'scripts/rpe_pbs_gateway.py')
+    gateway=importlib.util.module_from_spec(spec);spec.loader.exec_module(gateway)
+    connection=SimpleNamespace(call=lambda value:gateway.handle(remote,value),close=lambda:None)
+    manager=object.__new__(rpe_pbs.PbsManager)
+    manager.offline_plan,manager.settings,manager.directory=plan,{},run/'distributed'/'pbs'
+    manager.executor=SimpleNamespace(computation_source='a'*40,run_dir=run,
+        artifact_cache=ArtifactCache(run/'distributed'/'artifacts'),state=SimpleNamespace(cv=threading.Condition()))
+    manager.log=lambda *a,**k:None
+    with patch.object(rpe_pbs,'Gateway',return_value=connection):
+        manager._collect_offline_history('token')
+        manager._collect_offline_history('token')
+    assert manager.executor.artifact_cache.path(sha).read_bytes()==b'artificial result'
+    history=manager.directory/'offline-history'
+    destination=JobStore(run/'distributed'/'QUEUE.sqlite3')
+    ex=SimpleNamespace(prior_run_dirs=[history],run_dir=run,store=destination,
+                       artifact_cache=manager.executor.artifact_cache,log=lambda **k:None)
+    assert not DistributedExecutor._reuse_partition_preparation(ex,request,method,{'wrong':True})
+    assert DistributedExecutor._reuse_partition_preparation(ex,request,method,origin['contract'])
+    assert destination.row(job)['state']=='ACCEPTED'
+    assert destination.counts(method)==0
+    assert destination.preparation_reservations().get('signal',0)==0
+    assert not destination.import_partition_preparation(job,method,request,origin['contract'],origin)
+    assert destination.adopt(job)
+    assert not destination.adopt(job)
+
+
+def test_regular_width_driver_only_seeds_central_partition(tmp_path,monkeypatch):
+    import argparse
+    sys.path.insert(0,str(ROOT/'scripts'))
+    import run_rpe_schedule_search as driver
+    from trottertracks.rpe_pbs_offline import restrict_round
+    run=tmp_path/'run';plan=independent_fixture(run)
+    spec=read(run/'ROUND.json')
+    spec.update(live_ready_refill=True,overlap_ready_batch=True)
+    spec['executor']['scheduler']='concurrent'
+    spec['search_overrides']['rule']='RPE_SCALED_SHOTS_V1'
+    problem=read(run/'PROBLEM.json')
+    problem['search']['rule']='RPE_SCALED_SHOTS_V1'
+    atomic(run/'PROBLEM.json',problem)
+    atomic(run/'ROUND.json',spec)
+    plan=prepare_plan(run,plan['settings'])
+    atomic(run/'PBS_PARTITION_PLAN.json',plan)
+    spec['release_worker_policy']={'pbs_offline_search':plan['settings']}
+    atomic(run/'ROUND.json',spec)
+    monkeypatch.setattr(driver.WidthDriver,'check_fixed_inputs',lambda self:None)
+    monkeypatch.setattr(driver.WidthDriver,'recheck_unsupported_families',lambda self:None)
+    monkeypatch.setattr(driver.WidthDriver,'write_scope_map',lambda self,*a:None)
+    seen=[]
+    monkeypatch.setattr(driver.WidthDriver,'seed',lambda self:seen.append((self.methods,self.widths)))
+    controller=driver.WidthDriver(argparse.Namespace(run_dir=run,round=run/'ROUND.json',
+                                      problem=run/'PROBLEM.json',plan_only=False))
+    local=restrict_round(plan,[p for p in plan['parts'] if p['owner']=='central'])
+    assert controller.spec['methods']==local['methods']
+    assert [w['raw'] for w in controller.widths['PR_PAULI']]==local['search_overrides']['requested_widths']['PR_PAULI']
+    assert controller.problem['methods']['FULL_PF']['p_values']==local['method_overrides']['FULL_PF']['p_values']
+    assert seen
+    assert read(run/'ROUND.json')['methods']==plan['round']['methods']
+
+
+def test_packages_supply_multiple_widths_and_publish_global_minimum(tmp_path):
+    from trottertracks.rpe_pbs_offline import pbs_units,unit_members,part_documents,merge_partition_reports
+    run=tmp_path/'run';plan=independent_fixture(run)
+    # One 96-CPU reservation can receive several method/width blocks at once.
+    settings=dict(plan['settings'],packages_per_node=1)
+    plan=prepare_plan(run,settings)
+    packages=pbs_units(plan)
+    assert len(packages)==1 and len(unit_members(plan,packages[0]))==2
+    profile={'host_id':'pbs0','slots':24,'dp_workers':4,'pbs':{'library_threads':1}}
+    path=tmp_path/'independent'/'parts'/packages[0]['id'];path.mkdir(parents=True)
+    _,child=part_documents(plan,packages[0],profile,path)
+    assert set(child['methods'])=={'PR_PAULI','FULL_PF'}
+    def report(config,cost):
+        best=dict(configuration_id=config,M=12,cost=cost)
+        return dict(methods={'PR_PAULI':{'by_configuration':[{'configuration_id':config,'M':12,'best':best}],
+                    'new_calls':1,'stop_reason':'EXPLORATORY_GRID_COMPLETE',
+                    'scaled_shots':{'M12_best':best,'all_M_best':best,'comparison_only_best':None,
+                                    'M12_minimum_status':'PROVISIONAL_GRID_MINIMUM',
+                                    'all_M_minimum_status':'PROVISIONAL_GRID_MINIMUM'}}})
+    central=report('local',20);remote={packages[0]['id']:report('remote',10)}
+    merged=merge_partition_reports(plan,central,remote,{})
+    assert merged['methods']['PR_PAULI']['scaled_shots']['all_M_best']['configuration_id']=='remote'
+    assert len(merged['methods']['PR_PAULI']['by_configuration'])==2
+    assert merged['methods']['PR_PAULI']['stop_reason']=='PBS_BLOCKS_PENDING'
+    assert not merged['partitioned_search']['pbs_complete']
+    coverage={packages[0]['id']:{'termination':{'reason':'REQUESTED_WIDTH_RULE_EXHAUSTED'}}}
+    assert merge_partition_reports(plan,central,remote,coverage)['partitioned_search']['pbs_complete']
+
+
+def test_independent_manager_starts_node_without_central_queue_and_slows_exchange(tmp_path):
+    plan=independent_fixture(tmp_path/'run')
+    manager=object.__new__(rpe_pbs.PbsManager)
+    manager.offline_plan=plan;manager.directory=tmp_path/'manager'
+    manager.state={'allocations':{}};manager.allocations=[];manager.controls={}
+    manager.settings={'poll_seconds':.25};manager.configured={'pbs0':{}}
+    manager.compute_storage_sampling=True;manager.storage_launcher={'path':'artificial'}
+    manager.executor=SimpleNamespace(_host_admission_policy=lambda:({},None),
+        _host_admission=lambda *a:{'accepting':True})
+    calls=[]
+    manager._submit=lambda host,worker,demand:calls.append((host,demand))
+    manager.save=lambda:None;manager.log=lambda *a,**k:None
+    assert manager._independent_demand(False)
+    assert calls==[('pbs0',{'independent_blocks':True,'uncompleted_blocks':2})]
+    manager.allocations=[{'status':'R','worker':{'independent_active':True}}]
+    assert manager._poll_delay()==10
+    manager.allocations[0]['worker']['independent_active']=False
+    assert manager._poll_delay()==.25

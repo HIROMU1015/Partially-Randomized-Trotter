@@ -387,6 +387,17 @@ def harvest_path(relative, preparation):
     return path
 
 
+def offline_root(directory):
+    pointer = directory/'offline-search'/'INDEPENDENT.json'
+    if not pointer.is_file():
+        return directory/'offline-search'
+    root = Path(read(pointer)['root']).resolve()
+    declared = Path(read(directory/'PROFILE.json')['pbs']['independent_root']).resolve()
+    if root != declared or root != (directory.parent.parent/'independent-search').resolve():
+        raise ValueError('PBS independent result directory differs from allocation')
+    return root
+
+
 def read_bulk_chunk(directory, request):
     kind = request['kind']
     name = request['name']
@@ -398,8 +409,23 @@ def read_bulk_chunk(directory, request):
     elif kind == 'offline':
         if name not in ('REQUEST.json', 'PROCESS_RETURN.json', 'OUTCOME.json'):
             raise ValueError('Unknown PBS offline receipt')
-        work = directory/'offline-search'/'jobs'
+        work = offline_root(directory)/'jobs'
         path = work/safe_id(request['method'])/safe_id(request['job_id'])/name
+        path.resolve().relative_to(work.resolve())
+    elif kind in ('offline_report','offline_artifact'):
+        work = offline_root(directory)
+        part = safe_id(request['part'])
+        if kind == 'offline_report':
+            if name not in ('SCOPE_MAP.json','ROUND_RESULT.json'):
+                raise ValueError('Unknown independent report')
+            path = work/'reports'/part/name
+        else:
+            if not re.fullmatch(r'[0-9a-f]{64}',name):
+                raise ValueError('Invalid independent artifact hash')
+            item = read(work/'RESULTS.json', {}).get(safe_id(request['method'])+'/'+safe_id(request['job_id']))
+            if not item or item['part'] != part or name not in item.get('artifacts',{}):
+                raise ValueError('Independent artifact not in returned receipt')
+            path = work/'parts'/part/'distributed'/'artifacts'/name[:2]/name
         path.resolve().relative_to(work.resolve())
     else:
         profile = read(directory/'PROFILE.json')
@@ -585,7 +611,7 @@ def handle(root, value, finished=None, scheduler=None):
     if action == 'read_bulk_chunk':
         return read_bulk_chunk(root/'allocations'/safe_id(value['token']), value)
     if action == 'offline_results':
-        directory = root/'allocations'/safe_id(value['token'])/'offline-search'
+        directory = offline_root(root/'allocations'/safe_id(value['token']))
         return dict(jobs=read(directory/'RESULTS.json', {}), coverage=read(directory/'COVERAGE.json', {}))
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])

@@ -745,6 +745,7 @@ def _compact_metadata_packs(policy, spools, pbs_runs):
         return 0, 0
     spools = set(spools)
     if pbs_runs:
+        spools.update(str(spool) for spool in Path(pbs_runs).glob('*/independent-search/parts/*/worker'))
         spools.update(str(spool) for spool in Path(pbs_runs).glob('*/workers/*')
                       if (spool/'WORKER.lock').is_file())
     candidates = {}
@@ -861,6 +862,9 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
     excluded_paths = identity.get('excluded_paths', ())
     start, target = reclaim_watermarks(limit, proactive=proactive)
     caches = list(dict.fromkeys([*([prefix_cache] if prefix_cache else []), *cache_directories]))
+    if pbs_runs:
+        caches.extend(str(path) for path in Path(pbs_runs).glob('*/independent-search/parts/dp-cache')
+                      if str(path) not in caches)
     cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_caches=caches)
 
     def recent():
@@ -913,6 +917,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     candidates = list(spools)
                     if pbs_runs:
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
+                        candidates.extend(Path(pbs_runs).glob('*/independent-search/parts/*/worker'))
                     # Leave room for new attempts before the next cleanup pass.
                     used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout, excluded_paths=excluded_paths)
                 if cleanup_due and used > target and (spools or pbs_runs):

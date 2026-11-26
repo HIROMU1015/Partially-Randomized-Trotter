@@ -519,6 +519,9 @@ def local0_progress(applied, spec, run=None):
         progress['continuation'] = dict(parent_run_ids=[Path(row['path']).name for row in parents])
     if run is None:
         return progress
+    partition_status=run/'PBS_PARTITION_STATUS.json'
+    if partition_status.is_file():
+        progress['pbs_independent_search']=load(partition_status)
     scope_path=run/'SCOPE_MAP.json'
     scope = load(scope_path) if scope_path.is_file() else None
     preparation_records = []

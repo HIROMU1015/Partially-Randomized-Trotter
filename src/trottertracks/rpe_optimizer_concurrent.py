@@ -12,6 +12,7 @@ import fcntl
 import hashlib
 import json
 import os
+import shutil
 import re
 from pathlib import Path
 import threading
@@ -3208,6 +3209,54 @@ class DistributedExecutor(ConcurrentExecutor):
                 continue
         return challenges
 
+    def _reuse_partition_preparation(self, request, method, contract):
+        """Use the normal exact preparation identity; never adopt mismatched input."""
+        job_id = request['request_id']
+        for base in self.prior_run_dirs:
+            if base.name != 'offline-history' and not (base/'parts').is_dir():
+                continue
+            directory = base/'jobs'/method.replace(':','-')/job_id
+            if not (directory/'ORIGIN.json').is_file():
+                continue
+            try:
+                saved = json.loads((directory/'REQUEST.json').read_text())
+                origin = json.loads((directory/'ORIGIN.json').read_text())
+                outcome = json.loads((directory/'OUTCOME.json').read_text())
+                receipt = json.loads((directory/'PROCESS_RETURN.json').read_text())
+                if saved != request or origin.get('contract') != contract:
+                    continue
+                from .rpe_q3_store import digest as stored_digest
+                if (origin.get('request_sha256') != stored_digest(request)
+                        or outcome.get('request_sha256') != stored_digest(request)
+                        or outcome.get('request_id') != job_id or outcome.get('status') != 'PREPARATION_COMPLETE'
+                        or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+                    continue
+                missing = self.artifact_cache.missing(outcome.get('artifacts',{}).values())
+                if missing and origin.get('part'):
+                    raw = base/'parts'/origin['part']/'distributed'/'artifacts'
+                    for sha in missing:
+                        path = raw/sha[:2]/sha
+                        if path.is_file():
+                            self.artifact_cache.put_file(path,sha)
+                if self.artifact_cache.missing(outcome.get('artifacts',{}).values()):
+                    continue
+                target = self.run_dir/'jobs'/method/job_id
+                target.mkdir(parents=True,exist_ok=True)
+                names = ('REQUEST.json','PROCESS_RETURN.json','ORIGIN.json','OUTCOME.json')
+                if any(target.glob('STOP*.json')) or any((target/name).exists() and
+                        (target/name).read_bytes() != (directory/name).read_bytes() for name in names):
+                    continue
+                for name in names:
+                    temporary = target/(name+'.partition-tmp')
+                    shutil.copyfile(directory/name,temporary)
+                    temporary.replace(target/name)
+                if self.store.import_partition_preparation(job_id,method,request,contract,origin):
+                    self.log(event='PREPARATION_PARTITION_REUSE',job=job_id,origin=origin)
+                    return True
+            except (KeyError,OSError,ValueError,TypeError):
+                continue
+        return False
+
     def submit_preparation(self, request, *, budget='UNLIMITED', approved=False, contract=None,
                            eligibility=None, dependencies=(), expected_job_id=None):
         """Reserve one exact preparation, independent of candidate aliases/Q3 budget.
@@ -3237,6 +3286,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
                 return job_id
             row = self.store.row(job_id)
+            if row is None and self._reuse_partition_preparation(request,method,task_contract):
+                return job_id
             if (row is None or row.get('attempt_id') is None or
                     row['state'] == 'ACCEPTED' and row.get('adopted_epoch') is None):
                 owner = max_width_signal_owner(self.store, request)

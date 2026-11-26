@@ -17,6 +17,7 @@ MODULES = {
     'trottertracks/_collection_q3_worker.py': 'src/trottertracks/_pipeline_pbs_q3_worker.py',
     'trottertracks/_pipeline_preparation_artifacts.py': 'src/trottertracks/rpe_preparation_artifacts.py',
     'trottertracks/_pbs_storage_report.py': 'src/trottertracks/rpe_worker_storage.py',
+    'trottertracks/rpe_pbs_offline.py': 'src/trottertracks/rpe_pbs_offline.py',
 }
 
 
@@ -33,7 +34,7 @@ def refresh(base, output, root=ROOT):
         if prefix.startswith(b'#!'):
             temporary.write_bytes(prefix)
         with zipfile.ZipFile(base) as old, zipfile.ZipFile(temporary, 'a') as new:
-            missing = set(MODULES) - set(old.namelist())
+            missing = (set(MODULES) - {'trottertracks/rpe_pbs_offline.py'}) - set(old.namelist())
             if missing:
                 raise ValueError('Base launcher does not contain the required worker modules: '+str(sorted(missing)))
             for entry in old.infolist():
@@ -42,6 +43,8 @@ def refresh(base, output, root=ROOT):
                 if entry.filename.endswith('.py'):
                     compile(data,entry.filename,'exec')
                 new.writestr(entry, data)
+            if 'trottertracks/rpe_pbs_offline.py' not in old.namelist():
+                new.write(root/MODULES['trottertracks/rpe_pbs_offline.py'],'trottertracks/rpe_pbs_offline.py')
         temporary.chmod(base.stat().st_mode & 0o777)
         os.link(temporary, output)
     finally:

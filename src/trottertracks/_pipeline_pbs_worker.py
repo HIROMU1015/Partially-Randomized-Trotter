@@ -337,6 +337,9 @@ class AllocationWorker(Worker):
         offline = getattr(self, 'offline_search', None)
         if offline is None:
             return False
+        if offline.independent:
+            from .rpe_pbs_offline import advance_independent
+            return advance_independent(self, control)
         now = time.monotonic()
         contact = control.get('contact')
         if contact is not None and contact != self.central_contact:
@@ -909,7 +912,9 @@ class AllocationWorker(Worker):
                      start_clock=self.start_clock,
                      exit_reason=self.exit_reason)
         if getattr(self, 'offline_search', None) is not None:
-            value['offline_revision'] = self.offline_search.revision
+            value['offline_revision'] = self.offline_search.shared_revision()
+            if self.offline_search.independent:
+                value['independent_active'] = bool(self.offline_search.process is not None)
         atomic(self.directory / 'STATE.json', value)
 
     def _post(self, endpoint, payload):

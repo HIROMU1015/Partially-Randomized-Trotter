@@ -1178,6 +1178,9 @@ class PbsManager:
     def _collect_offline_history(self, token):
         from .rpe_q3_worker import safe_id
 
+        from .rpe_pbs_offline import independent_plan
+        if independent_plan(self.offline_plan):
+            return self._collect_independent_history(token)
         gateway = Gateway(self.settings)
         try:
             progress = gateway.call(dict(action='offline_results', token=token))
@@ -1219,6 +1222,134 @@ class PbsManager:
         finally:
             gateway.close()
 
+    @staticmethod
+    def _receive_independent_file(gateway, token, kind, name, target, *, size, sha=None, **owner):
+        """Stream a bounded file directly to disk, never a whole result in RAM."""
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(dir=target.parent, delete=False) as stream:
+            temporary = Path(stream.name)
+            received, identity = 0, {}
+            checksum = hashlib.sha256()
+            try:
+                while received < size:
+                    chunk = gateway.call(dict(action='read_bulk_chunk', token=token, kind=kind,
+                        name=name, offset=received, size=size, **owner, **identity))
+                    raw = base64.b64decode(chunk['data'], validate=True)
+                    if chunk['size'] != size or not raw or received+len(raw) > size:
+                        raise ValueError('Independent result transfer size changed')
+                    identity = {'file_identity':chunk['file_identity']}
+                    stream.write(raw)
+                    checksum.update(raw)
+                    received += len(raw)
+                if sha is not None and checksum.hexdigest() != sha:
+                    raise ValueError('Independent artifact SHA differs')
+                stream.flush()
+                os.fsync(stream.fileno())
+                temporary.replace(target)
+            finally:
+                temporary.unlink(missing_ok=True)
+
+    def _collect_independent_history(self, token):
+        from .rpe_pbs_offline import pbs_units, unit_members
+        from .rpe_q3_worker import safe_id
+        from .rpe_preparation_queue import normalize_preparation_request
+        gateway = Gateway(self.settings)
+        try:
+            progress = gateway.call(dict(action='offline_results', token=token))
+            history = self.directory/'offline-history'
+            parts = {p['id']:p for p in pbs_units(self.offline_plan)}
+            names = ('REQUEST.json','PROCESS_RETURN.json','OUTCOME.json')
+            copied = 0
+            held = {}
+            for key,item in progress['jobs'].items():
+                try:
+                    method, job = map(safe_id,key.split('/'))
+                    part = parts.get(item['part'])
+                    preparation = method.startswith('PREPARATION-')
+                    methods = {p['method'] for p in unit_members(self.offline_plan,part)} if part else set()
+                    if not part or (not preparation and method not in methods) or set(item['files']) != set(names):
+                        raise ValueError('Independent result outside assigned block')
+                    target = history/'jobs'/method/job
+                    if (target/'IMPORTED.json').is_file():
+                        continue
+                    staging = target/'incoming'
+                    staging.mkdir(parents=True,exist_ok=True)
+                    for name in names:
+                        self._receive_independent_file(gateway,token,'offline',name,staging/name,
+                            size=item['files'][name],method=method,job_id=job)
+                    request, receipt, outcome = (read(staging/name) for name in names)
+                    if (request.get('request_id') != job or request.get('method') not in methods
+                            or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+                        raise ValueError('Independent result receipt differs')
+                    if preparation:
+                        origin = item.get('origin') or {}
+                        if (normalize_preparation_request(request) != request
+                                or origin.get('request_sha256') != digest(request)
+                                or outcome.get('request_sha256') != digest(request)
+                                or outcome.get('request_id') != job or outcome.get('status') != 'PREPARATION_COMPLETE'
+                                or not origin.get('attempt_id') or not origin.get('completion_sha256')
+                                or set(item.get('artifacts',{})) != set(outcome.get('artifacts',{}).values())):
+                            raise ValueError('Independent preparation result differs from its accepted receipt')
+                        cache = self.executor.artifact_cache
+                        for sha, size in item['artifacts'].items():
+                            if not cache.missing([sha]):
+                                continue
+                            path = staging/sha
+                            self._receive_independent_file(gateway,token,'offline_artifact',sha,path,size=size,
+                                sha=sha,part=item['part'],method=method,job_id=job)
+                            cache.put_file(path,sha)
+                            path.unlink()
+                        atomic(staging/'ORIGIN.json',origin)
+                    elif request.get('optimizer_source') != self.executor.computation_source:
+                        raise ValueError('Independent Q3 SOURCE differs')
+                    for name in ('REQUEST.json','PROCESS_RETURN.json','ORIGIN.json','OUTCOME.json'):
+                        if (staging/name).is_file():
+                            (staging/name).replace(target/name)
+                    atomic(target/'IMPORTED.json',dict(part=item['part'],token=token))
+                    try:
+                        staging.rmdir()
+                    except OSError:
+                        pass
+                    copied += 1
+                except (OSError,ValueError,KeyError,TypeError,RuntimeError,subprocess.SubprocessError) as error:
+                    held[item.get('part','unknown')]=str(error)
+                    self.log('PBS_INDEPENDENT_RESULT_PENDING', token=token, job=key, reason=str(error))
+            coverage = deepcopy(progress.get('coverage') or {})
+            for part,reason in held.items():
+                row = coverage.get('parts',{}).get(part)
+                if row is not None:
+                    row['observed_termination'] = row.pop('termination',None)
+                    row['import_pending'] = reason
+            report_root = history/'reports'
+            for part, entry in coverage.get('parts',{}).items():
+                if part not in parts:
+                    raise ValueError('Independent coverage outside assigned blocks')
+                root = report_root/part
+                root.mkdir(parents=True,exist_ok=True)
+                revision = entry.get('report_revision',0)
+                mark = root/'REVISION.json'
+                if mark.is_file() and read(mark).get('revision') == revision:
+                    continue
+                for name,size in entry.get('reports',{}).items():
+                    if name not in ('SCOPE_MAP.json','ROUND_RESULT.json'):
+                        raise ValueError('Unknown independent report')
+                    self._receive_independent_file(gateway,token,'offline_report',name,root/name,
+                                                  size=size,part=part)
+                atomic(mark,dict(revision=revision))
+            reports = history/'coverage'
+            reports.mkdir(parents=True,exist_ok=True)
+            atomic(reports/(safe_id(token)+'.json'),coverage)
+            from .rpe_pbs_offline import publish_partition_view
+            publish_partition_view(self.executor.run_dir)
+            if copied:
+                self.log('PBS_INDEPENDENT_RESULTS_IMPORTED',count=copied,token=token)
+            with self.executor.state.cv:
+                self.executor.state.cv.notify_all()
+            if held:
+                raise RuntimeError('Independent receipts pending: '+str(len(held)))
+        finally:
+            gateway.close()
+
     def _advance_offline_history(self):
         if self.offline_pending is not None:
             token, revision, future = self.offline_pending
@@ -1236,15 +1367,87 @@ class PbsManager:
         for allocation in self.allocations:
             token = allocation['token']
             revision = (allocation.get('worker') or {}).get('offline_revision', 0)
-            if (revision > self.offline_imported.get(token, 0)
+            from .rpe_pbs_offline import independent_plan
+            terminal_unread = (independent_plan(self.offline_plan) and allocation['status'] in TERMINAL
+                               and token not in self.offline_imported)
+            if ((revision > self.offline_imported.get(token, 0) or terminal_unread)
                     and time.monotonic() >= self.harvest_retry_after.get(token, 0)):
                 if self.harvest_pool is None:
                     self.harvest_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-pbs-harvest')
                 self.offline_pending = (token, revision, self.harvest_pool.submit(self._collect_offline_history, token))
                 return
 
+    def _poll_delay(self):
+        from .rpe_pbs_offline import independent_plan
+        usual = self.settings.get('poll_seconds',.25)
+        if not independent_plan(getattr(self,'offline_plan',None)):
+            return usual
+        if self.independent_finished():
+            return usual
+        # While the node is computing its own backlog, fast per-job
+        # exchanges have no purpose. Restore the normal cadence when an
+        # allocation returns to the central queue for extra work.
+        live = [row.get('worker') or {} for row in self.allocations if row['status']=='R']
+        if any(row.get('independent_active') is False for row in live):
+            return usual
+        return max(usual, float(self.offline_plan['settings'].get('poll_seconds',10)))
+
+    def independent_coverage(self):
+        from .rpe_pbs_offline import independent_plan
+        if not independent_plan(self.offline_plan):
+            return None
+        parts = {}
+        for file in (self.directory/'offline-history'/'coverage').glob('*.json'):
+            try:
+                for key, row in read(file).get('parts', {}).items():
+                    old = parts.get(key, {})
+                    if (row.get('termination') or not old.get('termination') and
+                            row.get('report_revision', 0) >= old.get('report_revision', 0)):
+                        parts[key] = row
+            except (OSError, ValueError):
+                continue
+        return parts
+
+    def independent_finished(self):
+        from .rpe_pbs_offline import all_parts_finished
+        coverage = self.independent_coverage()
+        return coverage is not None and all_parts_finished(self.offline_plan, coverage)
+
+    def _independent_demand(self, stopping):
+        from .rpe_pbs_offline import independent_plan, pbs_units
+        if not independent_plan(getattr(self,'offline_plan',None)) or self.independent_finished():
+            return False
+        active = [a for a in self.allocations if a['status'] not in TERMINAL]
+        owned = {r['spec']['profile']['host_id'] for r in self.state['allocations'].values()
+                 if r['status'] not in TERMINAL}
+        for allocation in active:
+            token, host = allocation['token'], allocation['host_id']
+            self.controls[token] = self.session_control(host, self.state['allocations'][token],
+                stopping=stopping, release_when_idle=stopping)
+            self._offline_contact(token)
+        if not stopping:
+            policy,error = self.executor._host_admission_policy()
+            pending = len([b for b in pbs_units(self.offline_plan)
+                           if not (self.independent_coverage().get(b['id'], {}).get('termination'))])
+            for host, worker in self.configured.items():
+                if host in owned or len(owned) >= pending:
+                    continue
+                if not self.executor._host_admission(host,policy,error)['accepting']:
+                    continue
+                if not (self.compute_storage_sampling and self.storage_launcher) and not self._storage_accepting(worker):
+                    continue
+                try:
+                    self._submit(host,worker,dict(independent_blocks=True, uncompleted_blocks=pending))
+                    owned.add(host)
+                except (OSError,ValueError,RuntimeError,subprocess.SubprocessError) as error:
+                    self.log('PBS_INDEPENDENT_SUBMIT_HELD',host_id=host,reason=str(error))
+        self.state['heartbeat'] = stamp()
+        self.save()
+        return True
+
     def offline_priority(self):
-        if not self.offline_plan or self.last_error is None:
+        from .rpe_pbs_offline import independent_plan
+        if independent_plan(self.offline_plan) or not self.offline_plan or self.last_error is None:
             return {}
         methods = self.offline_plan['round']['methods']
         fallback = len(self.offline_plan['parts'])
@@ -1271,6 +1474,11 @@ class PbsManager:
                     "SELECT method,count(*) FROM jobs WHERE state='ACCEPTED' GROUP BY method"))
             self.offline_progress_next = time.monotonic()+30
         self.controls[token].update(contact=int(time.time()), accepted_by_method=self.offline_progress)
+        from .rpe_pbs_offline import independent_plan
+        if independent_plan(self.offline_plan):
+            status = self.executor.run_dir/'PBS_PARTITION_STATUS.json'
+            if status.is_file():
+                self.controls[token]['partition_best'] = read(status).get('best_by_method',{})
 
     def _deferred_evidence_owner(self, host, payload):
         job, attempt, sha = (payload[key] for key in ('job_id', 'attempt_id', 'request_sha256'))
@@ -1727,7 +1935,14 @@ class PbsManager:
         profile = deepcopy(worker['profile'])
         resources = deepcopy(self.settings['resources'])
         sizing = self.settings.get('allocation_sizing')
-        if sizing and sizing.get('per_task_resources'):
+        if demand.get('independent_blocks'):
+            policy = profile.setdefault('slot_policy', {})
+            capacity = min(resources['ncpus'], policy.get('max_slots') or resources['ncpus'])
+            policy['initial_slots'] = capacity
+            if sizing and sizing.get('per_task_resources'):
+                profile.setdefault('pbs',{})['per_task_resources'] = True
+            demand = dict(demand, requested_task_capacity=capacity)
+        elif sizing and sizing.get('per_task_resources'):
             packed = []
             cpus, gib, capacity = packed_resources(requests, profile, self.settings, host, selected=packed)
             if not capacity:
@@ -1828,6 +2043,9 @@ class PbsManager:
                 temporary.replace(path)
             profile['pbs']['offline_plan'] = dict(sha256=sha,
                 path=str(Path(self.settings['remote_root'])/'offline-plans'/path.name))
+            from .rpe_pbs_offline import independent_plan
+            if independent_plan(self.offline_plan):
+                profile['pbs']['independent_root'] = str(Path(self.settings['remote_root'])/'independent-search')
         if (waves := getattr(self.executor, 'distributed', {}).get('pbs_standby_waves')) is not None:
             standby_capacity(dict(cpu_count=resources['ncpus'], memory_bytes=GIB), waves)
             profile['pbs']['standby_waves'] = waves
@@ -2003,7 +2221,7 @@ class PbsManager:
                     self._exchange_completions()
                 except Exception as error:
                     self.log('PBS_COMPLETION_EXCHANGE_PENDING', error=str(error))
-                self.stop.wait(self.settings.get('poll_seconds', .25))
+                self.stop.wait(self._poll_delay())
         finally:
             self.completion_pool.shutdown(wait=True)
             self._collect_completed_requests(self.completion_responses)
@@ -2203,6 +2421,9 @@ class PbsManager:
         if (self.detached or self.executor.state.closed and self.retain_between_batches) and not user_stop:
             self.save()
             return
+        if self._independent_demand(user_stop or self.executor.state.closed):
+            self.last_error = None
+            return
         # A held running node already has its full resource pool. Routine
         # exchanges do not need to rebuild admission demand or repack jobs.
         if self.split_exchange and self.hold_node and len(self.configured) == 1:
@@ -2398,7 +2619,7 @@ class PbsManager:
                     except Exception as error:
                         self.last_error = type(error).__name__+': '+str(error)
                         self.log('PBS_TRANSPORT_PENDING', error=self.last_error, automatic_scientific_retry=False)
-                    self.stop.wait(self.settings.get('poll_seconds', .25))
+                    self.stop.wait(self._poll_delay())
             finally:
                 self.gateway.close()
         self.thread = threading.Thread(target=run, name='rpe-pbs-manager', daemon=True)
