@@ -183,7 +183,7 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path):
                          popen=lambda *a,**k:SimpleNamespace(poll=lambda:None))
     block=pbs_parts(plan)[0]
     part=durable/'parts'/block['id'];part.mkdir(parents=True)
-    request=normalize_preparation_request(dict(method=block['method'],route={'kind':'preparation'},
+    request=normalize_preparation_request(dict(route={'kind':'preparation'},
         preparation={'stage':'signal','provider':'artificial','artificial':True,'source':{'commit':'a'*40,'files':{}},
                      'outputs':['result.json']}))
     job=request['request_id'];method='PREPARATION:signal'

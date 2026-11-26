@@ -1288,7 +1288,9 @@ class PbsManager:
                         self._receive_independent_file(gateway,token,'offline',name,staging/name,
                             size=item['files'][name],method=method,job_id=job)
                     request, receipt, outcome = (read(staging/name) for name in names)
-                    if (request.get('request_id') != job or request.get('method') not in methods
+                    if (request.get('request_id') != job
+                            or (not preparation and request.get('method') not in methods)
+                            or (preparation and method != 'PREPARATION-'+str(request.get('preparation', {}).get('stage')))
                             or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
                         raise ValueError('Independent result receipt differs')
                     if preparation:
