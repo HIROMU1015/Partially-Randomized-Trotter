@@ -293,6 +293,8 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
             distributed['pbs_reconcile_dispatch_intents'] = gateway['path'] != dispatch['path']
             gateway.update(dispatch)
             if cpu := operations.get('hchain_cpu_policy'):
+                from copy import deepcopy
+                distributed.setdefault('pbs_pinned_settings',deepcopy(distributed['pbs']))
                 distributed['computation_root'] = cpu['base_root']
                 distributed['pbs_offline_controller_overlay'] = cpu['overlay']
                 distributed['pbs'] = dict(distributed['pbs'], workers=[

@@ -1306,6 +1306,9 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             if (load(history/'LAUNCH.json') != launch or load(history/'EXIT.json') != ended
                     or driver['invocation_id'] != invocation):
                 hold('the driver and exit records do not agree')
+            failure = reconcile_hchain_pinned_pbs_setup(run, history, driver)
+            if failure:
+                return failure
             failure = verify_pre_dispatch_failure(run, history, driver, has_relay=False)
             if failure:
                 return failure
@@ -1541,6 +1544,39 @@ def verify_pre_dispatch_failure(run, history, driver, *, has_relay=True):
                 return None
             verify_reattachable_attempts(run, db)
     return dict(reason='CONTROLLER_STARTUP_EXIT_BEFORE_DISPATCH', invocation_id=history.name)
+
+
+def reconcile_hchain_pinned_pbs_setup(run, history, driver):
+    """A PBS-only parent rejected its operational profile before manager intake."""
+    import sqlite3
+    spec = load(run/'ROUND.json')
+    d = spec.get('executor',{}).get('distributed',{})
+    if not (spec.get('hchain') and d.get('pbs') and not d.get('local_worker')
+            and not d.get('relay') and d.get('pbs_hold_node')
+            and (run/'PBS_PARTITION_PLAN.json').is_file()):
+        return None
+    with (run/'DRIVER.log').open('rb') as stream:
+        stream.seek(max(0,os.fstat(stream.fileno()).st_size-8192))
+        trace=stream.read().decode(errors='replace')
+    if not trace.rstrip().endswith("ValueError: Existing run retains its pinned PBS settings"):
+        return None
+    launched=(history/'LAUNCH.json').stat().st_mtime
+    for name in ('distributed/pbs/STATE.json','distributed/pbs/EVENTS.jsonl'):
+        if (run/name).stat().st_mtime >= launched:
+            return None
+    for owner in (load(history/'LAUNCH.json'),driver):
+        try:
+            if (Path('/proc')/str(owner['pid'])/'cmdline').read_bytes().strip(b'\0'):
+                raise BlockingIOError('The failed controller still has a live process')
+        except FileNotFoundError:
+            pass
+    with ExitStack() as locks:
+        for name in ('FAST_DRIVER.lock','distributed/pbs/MANAGER.lock'):
+            fcntl.flock(locks.enter_context((run/name).open('rb')),fcntl.LOCK_EX|fcntl.LOCK_NB)
+        with sqlite3.connect((run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro',uri=True) as db:
+            if db.execute('SELECT 1 FROM jobs LIMIT 1').fetchone() or db.execute('SELECT 1 FROM events LIMIT 1').fetchone():
+                return None
+    return dict(reason='HCHAIN_PBS_PROFILE_REJECTED_BEFORE_DISPATCH',invocation_id=history.name)
 
 
 def reconcile_hchain_preparation_setup(run, history, driver):
