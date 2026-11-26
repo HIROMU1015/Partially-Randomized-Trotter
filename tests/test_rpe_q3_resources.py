@@ -327,3 +327,32 @@ class DiscoveryTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+
+def test_hchain_q3_cpu_policy_is_class_specific_and_retains_larger_footprint():
+    from trottertracks.rpe_host_profiles import select_host_profile
+    from trottertracks.rpe_pbs_worker import request_cpu_footprint
+    base=dict(host_id='test',dp_workers=7,task_cpu_count=8,
+              q3_cpu_policy=dict(from_dp_workers=7,classes={'FULL_PF:4':4}))
+    req=dict(method='FULL_PF',route=dict(kind='hchain_scoped_q3',view_commit='fixed'),N_X=[8],N_Y=[8])
+    chosen=select_host_profile(base,dict(request=req))
+    assert (chosen['dp_workers'],chosen['task_cpu_count'])==(3,4)
+    assert request_cpu_footprint(base,req)==4
+    assert 'q3_cpu_policy' not in chosen
+    assert select_host_profile(chosen,dict(request=req))==chosen
+    large=dict(req,N_X=[16],N_Y=[16])
+    assert request_cpu_footprint(base,large)==8
+    assert request_cpu_footprint(base,dict(req,method='PR_DF'))==8
+
+
+def test_hchain_smaller_worker_inherits_conservative_memory_peak():
+    from trottertracks.rpe_q3_resources import seed_reduced_q3_cpu_classes
+    old='q3:count_dp:FULL_PF:fixed::7:26:4'
+    new='q3:count_dp:FULL_PF:fixed::3:26:4'
+    peaks={old:dict(peak_rss_bytes=100,dp_workers=8,observed_cpu_cores=3.5)}
+    seed_reduced_q3_cpu_classes(peaks,dict(from_dp_workers=7,classes={'FULL_PF:4':4}))
+    assert peaks[new]==dict(peak_rss_bytes=100,dp_workers=4,observed_cpu_cores=3.5)
+    assert peaks[old]['dp_workers']==8
+    peaks[new]['peak_rss_bytes']=200
+    seed_reduced_q3_cpu_classes(peaks,dict(from_dp_workers=7,classes={'FULL_PF:4':4}))
+    assert peaks[new]['peak_rss_bytes']==200

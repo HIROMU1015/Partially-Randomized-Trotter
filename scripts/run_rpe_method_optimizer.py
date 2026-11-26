@@ -292,6 +292,12 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
             dispatch = operations['pbs_dispatch_gateway']
             distributed['pbs_reconcile_dispatch_intents'] = gateway['path'] != dispatch['path']
             gateway.update(dispatch)
+            if cpu := operations.get('hchain_cpu_policy'):
+                distributed['computation_root'] = cpu['base_root']
+                distributed['pbs_offline_controller_overlay'] = cpu['overlay']
+                distributed['pbs'] = dict(distributed['pbs'], workers=[
+                    dict(row,profile=dict(row['profile'],q3_cpu_policy=cpu['policy']))
+                    for row in distributed['pbs']['workers']])
             if operations.get('pbs_future_storage_launcher'):
                 distributed['pbs_future_storage_launcher'] = operations['pbs_future_storage_launcher']
             if operations.get('pbs_replacement'):

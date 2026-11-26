@@ -689,8 +689,9 @@ class OfflineSearch:
         if overlay['base_source'] != self.plan['settings']['source']:
             raise ValueError('PBS controller overlay belongs to another fixed optimizer')
         files = overlay['modules']
-        order = ('rpe_q3_store', 'rpe_optimizer_concurrent')
-        if set(files) != set(order):
+        names = ('rpe_host_profiles', 'rpe_q3_resources', 'rpe_q3_store', 'rpe_optimizer_concurrent')
+        order = tuple(name for name in names if name in files)
+        if set(files) - set(names) or not {'rpe_q3_store','rpe_optimizer_concurrent'} <= set(files):
             raise ValueError('Unsupported PBS controller overlay modules')
         modules = []
         for name in order:
@@ -751,6 +752,13 @@ class OfflineSearch:
                         for field in ('local_worker',):
                             settings[field]['storage_limit']['parent_compute_sample'] = current[field]['storage_limit']['parent_compute_sample']
                         settings['preparation_profiles']['local']['storage_limit']['parent_compute_sample'] = current['preparation_profiles']['local']['storage_limit']['parent_compute_sample']
+                    # The same fixed H-chain package may resume under an
+                    # explicitly selected CPU execution profile. No science,
+                    # preparation, budget or ownership fields may differ.
+                    if spec.get('hchain') and current.get('local_worker',{}).get('q3_cpu_policy'):
+                        for old_profile,new_profile in ((settings['local_worker'],current['local_worker']),
+                                (settings['preparation_profiles']['local'],current['preparation_profiles']['local'])):
+                            old_profile['q3_cpu_policy'] = deepcopy(new_profile['q3_cpu_policy'])
                     if migrated == data:
                         archive = path/'technical-stop-history'/('ROUND.before-transport-'+digest(previous)[:12]+'.json')
                         archive.parent.mkdir(exist_ok=True)

@@ -494,6 +494,28 @@ def measured_resource_class(request, evaluator=None, runtime=None, *, preparatio
                               runtime.get('dp_workers', ''), len(shots), max(shots).bit_length())))
 
 
+def seed_reduced_q3_cpu_classes(peaks, policy):
+    """Use the same class's larger-worker RSS as conservative startup evidence."""
+    if not policy:
+        return
+    for category, sample in list(peaks.items()):
+        fields = category.split(':')
+        if len(fields) != 8 or fields[:2] != ['q3', 'count_dp']:
+            continue
+        method, old_workers, bits = fields[2], fields[5], fields[7]
+        target = policy.get('classes', {}).get(method+':'+bits)
+        if (type(target) is not int or target < 2 or not old_workers.isdigit()
+                or int(old_workers) != policy.get('from_dp_workers')
+                or target-1 >= int(old_workers) or not sample.get('peak_rss_bytes')):
+            continue
+        fields[5] = str(target-1)
+        entry = peaks.setdefault(':'.join(fields), {})
+        entry['peak_rss_bytes'] = max(entry.get('peak_rss_bytes',0), sample['peak_rss_bytes'])
+        entry['dp_workers'] = max(entry.get('dp_workers',0), target)
+        entry['observed_cpu_cores'] = max(entry.get('observed_cpu_cores',0),
+                                         min(target, sample.get('observed_cpu_cores',0)))
+
+
 def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory, explicit):
     """One class per offer, with existing attempts charged at their own size."""
     def footprint(kind):
@@ -551,6 +573,7 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
     pack_classes = policy.get('pack_measured_task_classes') is True
     if policy.get('separate_task_resources'):
         peaks = state.setdefault('task_resource_peaks', {})
+        seed_reduced_q3_cpu_classes(peaks, profile.get('q3_cpu_policy'))
         active = set(feedback.get('ready_task_classes', ()))
         occupied_classes = {job.get('resource_class') for job in jobs if job['state'] in OCCUPIED}
         for job in jobs:

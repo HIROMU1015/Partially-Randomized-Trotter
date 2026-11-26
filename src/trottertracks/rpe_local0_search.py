@@ -1182,8 +1182,11 @@ class Gateway:
 
     def normal_launch(self, run, problem, spec, *, schedule_resume=None):
         invocation=uuid.uuid4().hex
+        cpu_resume = schedule_resume and schedule_resume.get('worker_trial',{}).get('hchain_cpu_policy')
+        config_path = self.config['config_path'] if cpu_resume else (
+            str(run/'CONTROLLER_CONFIG.json') if (run/'CONTROLLER_CONFIG.json').exists() else self.config['config_path'])
         command=[self.config['python'],'-B',str(Path(self.config['code_root'])/'scripts/run_rpe_local0_search.py'),
-                 '--config',str(run/'CONTROLLER_CONFIG.json') if (run/'CONTROLLER_CONFIG.json').exists() else self.config['config_path'],'--execute-run',str(run),'--invocation',invocation]
+                 '--config',config_path,'--execute-run',str(run),'--invocation',invocation]
         if schedule_resume is not None:
             schedule_driver(self.config, run, schedule_resume)
             command[2] = str(Path(schedule_resume['root'])/'scripts/run_rpe_local0_search.py')
@@ -1828,8 +1831,9 @@ def schedule_driver(config, run, selection):
         fields = {'run_id', 'base_source', 'root', 'source', 'driver_sha256',
                   'worker_trial', 'pbs_manager_sha256'}
         trial = selection['worker_trial']
+        hchain_cpu = set(trial) == {'pbs_dispatch_gateway','pbs_future_storage_launcher','hchain_cpu_policy'}
         if (not fields <= selection.keys() <= fields | {'resume_dispatch_failure', 'resume_controller_kill', 'q3_store_sha256'}
-                or set(trial) not in ({'pbs_dispatch_gateway'},
+                or not hchain_cpu and set(trial) not in ({'pbs_dispatch_gateway'},
                                      {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256'},
                                      {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256', 'hchain_round_sha256'},
                                      {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256',
@@ -1839,8 +1843,16 @@ def schedule_driver(config, run, selection):
                 or not isinstance(dispatch, dict) or set(dispatch) != {'path', 'sha256'}
                 or not Path(dispatch['path']).is_absolute() or not re.fullmatch('[0-9a-f]{64}', dispatch['sha256'])
                 or not spec.get('hchain') or not distributed.get('pbs_dispatch_gateway')
-                or distributed.get('pbs_hold_node')):
+                or distributed.get('pbs_hold_node') and not hchain_cpu):
             raise RequestError('schedule_resume', 'Invalid operational selection for this fixed H-chain PBS run')
+        if hchain_cpu:
+            cpu = trial['hchain_cpu_policy']
+            if (set(cpu) != {'base_root','overlay','policy'} or cpu['base_root'] != config['code_root']
+                    or spec['hchain'].get('pbs_offline_search',{}).get('mode') != 'independent'
+                    or not distributed.get('pbs_hold_node')
+                    or cpu['overlay'].get('base_source') != config['code_source']
+                    or not cpu['policy'].get('classes')):
+                raise RequestError('schedule_resume','Invalid independent H-chain CPU policy')
         if (reference := trial.get('hchain_preparation_memory')):
             path = Path(reference['path'])
             optimizer = Path(selection['root'])/'src/trottertracks/rpe_optimizer_concurrent.py'

@@ -124,6 +124,29 @@ print(json.dumps(dict(status='PASS' if all(r['status']=='PASS' for r in rows) el
     return report
 
 
+def q3_cpu_class(request):
+    shots = tuple(request.get('N_X', ())) + tuple(request.get('N_Y', ()))
+    if (request.get('route', {}).get('kind') != 'hchain_scoped_q3' or not shots
+            or any(type(n) is not int or n < 1 for n in shots)):
+        return None
+    return f"{request['method']}:{max(shots).bit_length()}"
+
+
+def apply_q3_cpu_policy(selected, request, policy):
+    """Only execution parallelism changes. Assigned scientific requests do not."""
+    if not policy:
+        return selected
+    key = q3_cpu_class(request)
+    if key is None or key not in policy.get('classes', {}):
+        return selected
+    count = policy['classes'][key]
+    current = max(selected.get('task_cpu_count') or 1, selected.get('dp_workers') or 1)
+    if type(count) is not int or not 2 <= count <= current:
+        raise ValueError('Q3 CPU policy must select a positive bounded execution footprint')
+    selected.update(task_cpu_count=count, dp_workers=count-1)
+    return selected
+
+
 def select_host_profile(base, assignment):
     matches = [rule for rule in base.get('route_profiles', []) if route_matches(rule, assignment)]
     if len(matches) > 1:
@@ -133,6 +156,10 @@ def select_host_profile(base, assignment):
         raise ValueError('Route-specific profile belongs to another host')
     selected.pop('route_profiles', None)
     request = assignment['request']
+    policy = selected.pop('q3_cpu_policy', base.get('q3_cpu_policy'))
+    # A saved WORKER_PROFILE already has its chosen resource footprint; the
+    # policy is removed so replay of an owned assignment does not reselect it.
+    apply_q3_cpu_policy(selected, request, policy)
     execution = request.get('execution_profile') or {}
     route = request.get('method'), request['route']['kind']
     if route[1] != 'artificial':
