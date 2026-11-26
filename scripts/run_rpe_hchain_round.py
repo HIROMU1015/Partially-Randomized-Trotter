@@ -205,6 +205,23 @@ def install_ready(provider, plan, run, rows, routes, expected, spec, *, final, e
 def price_screen(provider, plan, run, settings, *, full_plan=None):
     if not settings.get("saved_price_screen"):
         return None
+    if plan.get("scope", {}).get("system") == "H6" and settings.get("legacy") and full_plan is not None:
+        # Preserve the already accepted H6 screening, rather than fitting a new
+        # model or introducing additional exclusions on a partition boundary.
+        path = Path(settings["legacy"]["directory"]) / "PURE_RTE_COST_SCREEN.json"
+        if path.is_file():
+            from types import SimpleNamespace
+            record = json.loads(path.read_bytes())
+            if record["scope_owner"] != full_plan["owner"] or record["input_sha256"] != full_plan["pure_rte_screen_sha256"]:
+                raise ValueError("H6 saved price screening belongs to another plan")
+            ids = {case["id"] for case in plan["cases"]}
+            excluded = ids.intersection(record["excluded"])
+            retained = provider.select_cases(plan,[case for case in plan["cases"] if case["id"] not in excluded])
+            required = {cell["id"] for stage in ("compile","audit") for cell in planned_inputs(retained,stage).values()}
+            skipped = set(record["skip_price_cells"]) - required
+            state = dict(skip_price_cells=sorted(skipped))
+            write(run / "PURE_RTE_COST_SCREEN_INHERITED.json",dict(source=str(path),excluded=sorted(excluded),skip_price_cells=sorted(skipped)))
+            return SimpleNamespace(state=state, update=lambda *_: excluded)
     path = Path(provider.__file__).with_name(provider.pure_rte.FORECAST)
     forecast = provider.read(path) if path.is_file() else None
     if forecast is not None and forecast["comparison_id"] != provider.pure_rte.comparison_id(plan):

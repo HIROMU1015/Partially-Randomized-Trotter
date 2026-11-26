@@ -77,6 +77,11 @@ def restore_receipts(run, legacy, *, plan=None):
 
 def install(plan, legacy, rows, routes, expected):
     root, history = legacy
+    # Index once: large H6 continuations contain thousands of launches.
+    by_case = {}
+    for folder in history["jobs"]:
+        original = json.loads((root / folder / "REQUEST.json").read_bytes())
+        by_case.setdefault(original["configuration_id"], []).append(original)
     for cid, files in history["cases"].items():
         if cid not in rows:
             continue
@@ -85,17 +90,15 @@ def install(plan, legacy, rows, routes, expected):
                      configuration_sha256=history["files"][files["configuration"]],
                      signal_packet=str(paths["signal_packet"]),
                      signal_packet_sha256=history["files"][files["signal_packet"]])
-        route = prepared_route(entry, paths["registered_prices"], owner=plan["owner"], target=plan["target"],
+        route = prepared_route(entry, paths["registered_prices"], owner=history.get("case_owners", {}).get(cid, plan["owner"]), target=plan["target"],
                                binding=plan["binding"], interpreter=sys.executable)
         row = rows[cid]
         method = row["method"]
         axes = json.loads(paths["registered_prices"].read_bytes())["methods"][METHOD_LABELS[method]]["axes"]
         # Verify at the current adapter boundary for every original allocation,
         # including the charged attempt with a held result.
-        for folder in history["jobs"]:
-            original = json.loads((root / folder / "REQUEST.json").read_bytes())
-            if original["configuration_id"] == cid:
-                request_inputs(dict(original, route=route))
+        for original in by_case.get(cid, []):
+            request_inputs(dict(original, route=route))
         row.update(ready=True, needs=[], prices=[optimizer.frac(axis["unit_price_RZ"]) for axis in axes],
                    signal_source=entry["signal_packet"], price_axes=axes, price_status="SOURCE_BOUND_HCHAIN_PRICES")
         expected[cid] = dict(M=row["M"], signal_source=entry["signal_packet"])
