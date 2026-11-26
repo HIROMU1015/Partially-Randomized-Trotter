@@ -428,3 +428,17 @@ def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
     modules['rpe_q3_store']['sha256']='invalid'
     with pytest.raises(ValueError,match='overlay differs'):
         search._controller_command(entry)
+
+def test_parent_storage_sample_reused_without_directory_scan(tmp_path, monkeypatch):
+    from trottertracks import rpe_worker_storage as storage
+    import time
+    sample=tmp_path/'STORAGE_USAGE_GATEWAY.json'
+    policy={'limit_bytes':50*1024**3,'roots':[str(tmp_path)],'sample_path':str(tmp_path/'global.json'),
+            'parent_compute_sample':str(sample)}
+    report={'limit_bytes':policy['limit_bytes'],'used_bytes':10,'accepting_new_jobs':True,
+            'measurement_seconds':15,'filesystem_min_free_bytes':0}
+    monkeypatch.setattr(storage,'_used_bytes',lambda *a,**k: (_ for _ in ()).throw(AssertionError('duplicate scan')))
+    atomic(sample,{'policy':storage.policy_identity(policy),'sampled_epoch':time.time(),'report':report})
+    assert storage.report(policy)['accepting_new_jobs']
+    atomic(sample,{'policy':storage.policy_identity(policy),'sampled_epoch':time.time()-200,'report':report})
+    assert not storage.report(policy)['accepting_new_jobs']

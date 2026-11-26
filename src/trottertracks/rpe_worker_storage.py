@@ -847,11 +847,43 @@ def _exchange_pack_directories(left, right):
     return True
 
 
+def parent_compute_storage_report(policy):
+    """Observe the allocation's single capacity sampler; never run another du."""
+    unavailable = dict(limit_bytes=policy['limit_bytes'], used_bytes=None,
+                       accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
+    try:
+        sample = Path(policy['parent_compute_sample'])
+        data = json.loads(sample.read_bytes())
+        if data['policy'] != policy_identity(policy):
+            return unavailable
+        report = data['report']
+        epoch = data['sampled_epoch']
+        age = time.time() - epoch
+        if 0 <= age <= 30:
+            return report
+        used = report.get('used_bytes')
+        if (0 <= age <= 180 and type(used) is int and used <= policy['limit_bytes']*95//100
+                and report.get('accepting_new_jobs') and isinstance(report.get('measurement_seconds'), (int,float))):
+            active = json.loads(sample.with_name('STORAGE_SAMPLE_IN_PROGRESS.json').read_bytes())
+            started = active['started_epoch']
+            if (active['policy'] == data['policy'] and epoch <= started <= epoch+30
+                    and 0 <= time.time()-started <= 150):
+                existing = [Path(root) for root in policy['roots'] if Path(root).exists()]
+                if existing and all(shutil.disk_usage(root).free >= report.get('filesystem_min_free_bytes',0)
+                                    for root in existing):
+                    return dict(report, measurement_in_progress=True, measurement_age_seconds=age)
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    return unavailable
+
+
 def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(),
            refresh=False, compact_metadata=False, proactive=False, du_timeout=10):
     """Report intake state and reclaim copies independently of the hard limit."""
     if policy is None:
         return None
+    if policy.get('parent_compute_sample'):
+        return parent_compute_storage_report(policy)
     limit, roots = policy['limit_bytes'], policy['roots']
     sample = Path(policy['sample_path'])
     if (type(limit) is not int or limit <= 0 or not roots

@@ -306,6 +306,12 @@ def part_documents(plan, part, profile, path):
                 'pbs_offline_plan', 'preparation_request_hosts', 'host_transport_paths'):
         distributed.pop(key, None)
     worker_script = Path(settings['code_root'])/'scripts/run_rpe_q3_worker.py'
+    if independent_plan(plan):
+        nested = profile.get('pbs', {})
+        overlay = nested.get('offline_controller_overlay') or {}
+        if selected.get('storage_limit') and nested.get('independent_storage_sample') and overlay.get('worker_script'):
+            selected['storage_limit']['parent_compute_sample'] = nested['independent_storage_sample']
+            worker_script = Path(overlay['worker_script'])
     distributed.update(placement)
     if independent_plan(plan):
         # Central saved decisions are tied to different host identities.
@@ -342,6 +348,8 @@ class OfflineSearch:
 
         self.plan, self.profile = plan, deepcopy(profile)
         self.independent = independent_plan(plan)
+        if self.independent and profile['pbs'].get('compute_storage_sampling'):
+            self.profile['pbs']['independent_storage_sample'] = str(Path(directory)/'STORAGE_USAGE_GATEWAY.json')
         self.parts = pbs_units(plan)
         self.claim = None
         cpu_slots = resources['cpu_count'] // task_cpu_footprint(profile)
@@ -661,8 +669,16 @@ class OfflineSearch:
                     settings = migrated['executor']['distributed']
                     if 'host_eligibility' not in settings:
                         settings['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
+                    current = data['executor']['distributed']
+                    # The new allocation owns a fresh sampler path and
+                    # transport. Neither is part of the scientific contract.
+                    if current.get('local_worker', {}).get('storage_limit', {}).get('parent_compute_sample'):
+                        settings['worker_script'] = current['worker_script']
+                        for field in ('local_worker',):
+                            settings[field]['storage_limit']['parent_compute_sample'] = current[field]['storage_limit']['parent_compute_sample']
+                        settings['preparation_profiles']['local']['storage_limit']['parent_compute_sample'] = current['preparation_profiles']['local']['storage_limit']['parent_compute_sample']
                     if migrated == data:
-                        archive = path/'technical-stop-history'/'ROUND.before-local-readiness.json'
+                        archive = path/'technical-stop-history'/('ROUND.before-transport-'+digest(previous)[:12]+'.json')
                         archive.parent.mkdir(exist_ok=True)
                         if not archive.exists():
                             atomic(archive, previous)
