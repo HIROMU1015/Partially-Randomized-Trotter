@@ -1168,6 +1168,12 @@ class DistributedExecutor(ConcurrentExecutor):
         self.allocation_config = config
         kwargs['max_concurrent'] = 1 if requested_capacity == 'auto' else requested_capacity
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
+        self.q3_memory_learner = None
+        if distributed.get('pbs') and self.distributed['pbs'].get('q3_memory_learning'):
+            from .rpe_q3_memory import MemoryLearner
+            self.distributed.setdefault('pbs_pinned_settings',deepcopy(self.distributed['pbs']))
+            self.q3_memory_learner=MemoryLearner(run/'distributed/Q3_MEMORY_LEARNING.json',self.distributed['pbs'])
+            distributed=dict(distributed,pbs=self.distributed['pbs'])
         self.queue_snapshot_lock = threading.Lock()
         self.queue_snapshot_revision = None
         self.queue_snapshot_rows = {}
@@ -1290,6 +1296,16 @@ class DistributedExecutor(ConcurrentExecutor):
             # Completed results are immutable and need no scheduler lock. Only
             # inspect actual staged paths, never allocate their huge REQUESTs.
             for row in accepted_rows:self._publish_transfer(row,startup=True)
+            if self.q3_memory_learner is not None:
+                with self.state.cv:
+                    for row in accepted_rows:
+                        leaf=run/'distributed/transfers'/row['job_id']/row['attempt_id']
+                        if (row['method'].startswith('PREPARATION:') or row['attempt_id'] in self.q3_memory_learner.observations
+                                or not any((leaf/name).is_file() for name in ('Q3_EXECUTION_RESOURCES.json','OWNED_RESOURCES.json'))):
+                            continue
+                        try:self._learn_q3_memory(self.store.row(row['job_id']),leaf)
+                        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                            self.log(event='Q3_MEMORY_OBSERVATION_FAILED',job_id=row['job_id'],reason=str(error))
             self.rpc_server, self.rpc_thread = Q.serve(self, distributed.get('bind', '127.0.0.1'), distributed.get('port', 8763))
             address = self.rpc_server.server_address
             self.controller_url = 'http://127.0.0.1:'+str(address[1])
@@ -2330,6 +2346,22 @@ class DistributedExecutor(ConcurrentExecutor):
         if any(row['host_id'] == host and not row['method'].startswith('PREPARATION:')
                and self._uses_pbs_task_resources(row) for row in owners):
             return None
+        preference=settings.get('q3_measurement_preference',{}).get(host,[])
+        if preference:
+            from .rpe_pbs import measured_q3_memory
+            from .rpe_q3_worker import select_host_profile
+            ranks={method:i for i,method in enumerate(preference)}
+            def measurement_rank(task):
+                row=rows.get(task.job.name) or {}
+                rank=ranks.get(row.get('method'),len(ranks))
+                if rank<len(ranks) and row.get('request'):
+                    try:
+                        runtime=select_host_profile(profile,{'request':row['request']})
+                        if measured_q3_memory(row['request'],runtime,host,settings.get('q3_learned_memory')) is not None:
+                            return len(ranks)
+                    except (KeyError,ValueError):pass
+                return rank
+            queue=sorted(queue,key=measurement_rank)
         for task in queue:
             if not task.demand or task.status != 'QUEUED' or task.rule['kind'] not in Q3_EXECUTION_ROUTE_KINDS:
                 continue
@@ -4701,6 +4733,10 @@ class DistributedExecutor(ConcurrentExecutor):
                 self._publish_transfer(row)
                 receipt = json.loads((job/'PROCESS_RETURN.json').read_text())
                 with self.state.cv:
+                    if not preparation and self.q3_memory_learner is not None:
+                        try:self._learn_q3_memory(row,transfer)
+                        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                            self.log(event='Q3_MEMORY_OBSERVATION_FAILED',host_id=host,reason=str(error))
                     self._finish_received_task(job, row, receipt)
                 return dict(ok=True, duplicate=True)
 
@@ -4778,6 +4814,10 @@ class DistributedExecutor(ConcurrentExecutor):
                            if not duplicate and validation is not None and self.distributed.get('work_conserving_search')
                            else None)
             with self.state.cv:
+                if not preparation and self.q3_memory_learner is not None:
+                    try:self._learn_q3_memory(accepted,transfer)
+                    except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                        self.log(event='Q3_MEMORY_OBSERVATION_FAILED',host_id=host,reason=str(error))
                 if marker is not None and task is not None and task is self.state.tasks.get(job):
                     task.validated_transfer = (marker, validation_key, validation)
                 if observation is not None:
@@ -4790,6 +4830,18 @@ class DistributedExecutor(ConcurrentExecutor):
                     lock_wait_seconds=lock_wait, transfer_bytes=transfer_bytes,
                     worker_transfer_seconds=value.get('transfer_seconds'))
             return dict(ok=True, duplicate=duplicate)
+
+    def _learn_q3_memory(self,row,transfer):
+        from .rpe_q3_memory import observation
+        self._update_q3_memory(observation(row,transfer))
+
+    def _update_q3_memory(self,sample):
+        if sample is None:return
+        pbs=self.distributed['pbs']
+        owned=self.store.rows_for(r['job_id'] for r in self._owned_attempts())
+        if self.q3_memory_learner.update(sample,owned.values(),pbs) and self.pbs_manager is not None:
+            for key in ('q3_owned_reservations','q3_learned_memory'):
+                self.pbs_manager.settings[key]=pbs[key]
 
     def _finish_received_task(self, job, row, receipt):
         task = self.state.tasks.get(job)

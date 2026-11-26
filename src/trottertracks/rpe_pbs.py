@@ -451,16 +451,40 @@ def measured_q3_memory(request, runtime, host, estimates):
     if not x or len(x) != len(y):
         return None
     route = request['route']
+    # New common measurements carry the exact resource fingerprint. Legacy
+    # adapter/shot-range envelopes continue to work unchanged.
+    from .rpe_host_profiles import q3_cpu_measurement_key
+    if isinstance(estimates, dict):
+        key = q3_cpu_measurement_key(request, runtime)
+        return max((row['memory_bytes'] for row in estimates.get(key, ())
+                    if row['host']==host and row['method']==request['method'] and row['route_kind']==route['kind']
+                    and row['dp_workers']==runtime.get('dp_workers')
+                    and row['task_cpu_count']==(runtime.get('task_cpu_count') or runtime.get('dp_workers'))), default=None)
+    exact = [row for row in estimates if 'measurement_key' in row]
+    estimates = [row for row in estimates if 'measurement_key' not in row]
+    key = q3_cpu_measurement_key(request,runtime) if exact else None
+    exact_memory = max((row['memory_bytes'] for row in exact if row['host']==host and row['measurement_key']==key
+                        and row['method']==request['method'] and row['route_kind']==route['kind']
+                        and row['dp_workers']==runtime.get('dp_workers')
+                        and row['task_cpu_count']==(runtime.get('task_cpu_count') or runtime.get('dp_workers'))), default=None)
     risk = (route.get('horizon_risk_source') or {}).get('commit')
     adapter = (runtime.get('adapter_manifest') or {}).get('commit')
     peak_shots = max(max(x), max(y))
-    return max((row['memory_bytes'] for row in estimates
+    legacy = max((row['memory_bytes'] for row in estimates
                 if (row['host'], row['method'], row['route_kind'], row['view_commit'],
                     row['horizon_risk_commit'], row['adapter_source'], row['dp_workers'], row['rounds'])
                 == (host, request['method'], route['kind'], route.get('view_commit'),
                     risk, adapter, runtime.get('dp_workers'), len(x))
                 and row.get('interpreter', runtime.get('interpreter')) == runtime.get('interpreter')
+                and (adapter is not None or (row.get('runtime_root') == runtime.get('root')
+                    and row.get('runtime_root') is not None
+                    and row.get('route_view') == (runtime.get('route_views') or {}).get(route.get('view_commit'))
+                    and row.get('route_view') is not None
+                    and row.get('task_cpu_count') == runtime.get('task_cpu_count')))
+                and ('N_X' not in row or (tuple(row['N_X']) == tuple(x) and tuple(row['N_Y']) == tuple(y)))
                 and row['min_peak_shots'] <= peak_shots <= row['max_peak_shots']), default=None)
+
+    return max((value for value in (legacy,exact_memory) if value is not None),default=None)
 
 
 def resource_need(request, profile, settings, host):
@@ -490,8 +514,10 @@ def resource_need(request, profile, settings, host):
         memory = declared if type(declared) is int and declared > 0 else (
             usable_memory(profile, settings) if request.get('preparation') else settings['allocation_sizing']['q3_startup_memory_bytes_per_task'])
     measured = measured_q3_memory(request, runtime, host, settings.get('q3_measured_memory'))
-    if measured is not None:
-        memory = measured
+    learned = measured_q3_memory(request, runtime, host, settings.get('q3_learned_memory'))
+    measurements = [v for v in (measured,learned) if v is not None]
+    if measurements:
+        memory = max(measurements)
     from .rpe_q3_resources import preparation_forecast
     cpu = runtime_cpu_footprint(profile, runtime)
     forecast = preparation_forecast(request, settings.get('preparation_resource_observations'), cpu_count=cpu, host=host)
@@ -499,7 +525,21 @@ def resource_need(request, profile, settings, host):
 
 
 def owned_resource_need(row, profile, settings, host):
-    """Retain assigned preparation reservations across an operational update."""
+    """An existing attempt's launch reservation is immutable until its exit."""
+    if row.get('state') in ('ASSIGNED','STARTING','RUNNING','UNKNOWN','COMPLETED_PENDING_TRANSFER'):
+        reservation = (row.get('detail') or {}).get('pbs_launch_resources')
+        if reservation:
+            return reservation['cpu'], reservation['memory_bytes']
+        if not row['request'].get('preparation'):
+            saved = (settings.get('q3_owned_reservations') or {}).get(row.get('attempt_id'))
+            if saved and (saved['host'],saved['job_id'],saved['request_sha256']) == (host,row.get('job_id'),row.get('request_sha256')):
+                return saved['cpu'],saved['memory_bytes']
+            cutoff = settings.get('q3_preserve_assignments_before_by_method',{}).get(
+                row['request']['method'],settings.get('q3_preserve_assignments_before'))
+            if cutoff is not None and (row.get('assigned_epoch') is None or row['assigned_epoch'] < cutoff):
+                return resource_need(row['request'],profile,
+                    {k:v for k,v in settings.items() if k not in ('q3_measured_memory','q3_learned_memory')},host)
+
     if (settings.get('hchain_preparation_memory') and row['request'].get('preparation')
             and row.get('state') in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN')):
         reservation = (row.get('detail') or {}).get('pbs_launch_resources')
@@ -643,10 +683,34 @@ def apply_q3_measured_memory(distributed, estimates):
     pbs = distributed['pbs']
     profiles = {row['host_id']: row['profile'] for row in pbs['workers']}
     integers = ('dp_workers', 'rounds', 'min_peak_shots', 'max_peak_shots', 'memory_bytes')
-    sources = ('view_commit', 'adapter_source')
+    sources = ('view_commit',)
     for row in estimates:
+        if 'measurement_key' in row:
+            if (row.get('host') not in profiles or not row.get('method') or not row.get('route_kind')
+                    or not re.fullmatch('[0-9a-f]{64}',row.get('measurement_key',''))
+                    or any(type(row.get(k)) is not int or row[k]<=0 for k in ('dp_workers','task_cpu_count','memory_bytes'))
+                    or row['task_cpu_count']-row['dp_workers'] not in (0,1)
+                    or row['task_cpu_count']>pbs['resources']['ncpus']):
+                raise ValueError('Invalid exact measured Q3 memory envelope')
+            continue
         if (row['host'] not in profiles or not row['method'] or not row['route_kind']
                 or any(not re.fullmatch('[0-9a-f]{40}', row[key]) for key in sources)
+                or (row.get('adapter_source') is not None and not re.fullmatch('[0-9a-f]{40}', row['adapter_source']))
+                or (row.get('adapter_source') is None and (row['route_kind'] != 'hchain_scoped_q3'
+                    or row.get('runtime_root') != profiles[row['host']].get('root')
+                    or not Path(row.get('runtime_root') or '').is_absolute()
+                    or row.get('route_view') != (profiles[row['host']].get('route_views') or {}).get(row['view_commit'])
+                    or not Path(row.get('route_view') or '').is_absolute()
+                    or row.get('interpreter') != profiles[row['host']].get('interpreter')
+                    or row.get('dp_workers') != profiles[row['host']].get('dp_workers')
+                    or row.get('task_cpu_count') != profiles[row['host']].get('task_cpu_count')
+                    or type(row.get('task_cpu_count')) is not int or row['task_cpu_count'] <= 0
+                    or 'N_X' not in row or 'N_Y' not in row))
+                or (('N_X' in row or 'N_Y' in row) and (
+                    not isinstance(row.get('N_X'), list) or not isinstance(row.get('N_Y'), list)
+                    or len(row['N_X']) != row['rounds'] or len(row['N_Y']) != row['rounds']
+                    or any(type(n) is not int or n <= 0 for n in row['N_X'] + row['N_Y'])
+                    or not row['min_peak_shots'] <= max(row['N_X'] + row['N_Y']) <= row['max_peak_shots']))
                 or ('horizon_risk_commit' not in row or row['horizon_risk_commit'] is not None
                     and not re.fullmatch('[0-9a-f]{40}', row['horizon_risk_commit']))
                 or ('interpreter' in row and not Path(row['interpreter']).is_absolute())
@@ -656,6 +720,37 @@ def apply_q3_measured_memory(distributed, estimates):
             raise ValueError('Invalid measured Q3 memory envelope')
     distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
     pbs['q3_measured_memory'] = deepcopy(estimates)
+
+
+def apply_q3_memory_reference(distributed, run, reference):
+    """Load the measured resource table for the existing fixed run."""
+    file = Path(reference['path'])
+    raw = file.read_bytes()
+    if not file.is_absolute() or hashlib.sha256(raw).hexdigest() != reference['sha256']:
+        raise ValueError('Q3 memory observations differ from selected deployment')
+    table = json.loads(raw)
+    if (table.get('schema') != 'RPE_PBS_Q3_MEASURED_MEMORY_V1' or table.get('run_id') != run.name
+            or not isinstance(table.get('preserve_assignments_before'), (int, float))):
+        raise ValueError('Q3 memory observations belong to a different run')
+    apply_q3_measured_memory(distributed, table['estimates'])
+    distributed['pbs']['q3_preserve_assignments_before'] = table['preserve_assignments_before']
+    cutoffs = table.get('preserve_assignments_before_by_method', {})
+    if not isinstance(cutoffs, dict) or any(not isinstance(v, (int, float)) for v in cutoffs.values()):
+        raise ValueError('Invalid Q3 per-method preservation cutoff')
+    distributed['pbs']['q3_preserve_assignments_before_by_method'] = cutoffs
+    preference=table.get('measurement_preference', {})
+    if not isinstance(preference, dict) or any(host not in {w['host_id'] for w in distributed['pbs']['workers']}
+            or not isinstance(methods, list) or any(not isinstance(m,str) or not m or m.startswith('PREPARATION:') for m in methods)
+            for host, methods in preference.items()):
+        raise ValueError('Invalid Q3 measurement preference')
+    distributed['pbs']['q3_measurement_preference'] = preference
+    owners=table.get('owned_reservations',{})
+    if not isinstance(owners,dict) or any(not isinstance(attempt,str) or not isinstance(row,dict)
+            or not all(isinstance(row.get(k),str) and row[k] for k in ('host','job_id','request_sha256'))
+            or any(type(row.get(k)) is not int or row[k]<=0 for k in ('cpu','memory_bytes'))
+            for attempt,row in owners.items()):
+        raise ValueError('Invalid Q3 owned reservation snapshot')
+    distributed['pbs']['q3_owned_reservations'] = owners
 
 
 def fits_request(request, report, settings, host_id=None):
@@ -1623,6 +1718,14 @@ class PbsManager:
                         if (staging/name).is_file():
                             (staging/name).replace(target/name)
                     atomic(target/'IMPORTED.json',dict(part=item['part'],token=token))
+                    learner=getattr(self.executor,'q3_memory_learner',None)
+                    if learner is not None and not preparation:
+                        from .rpe_q3_memory import imported_observation
+                        try:
+                            with self.executor.state.cv:
+                                self.executor._update_q3_memory(imported_observation(target,self.state['allocations'][token]['spec']['profile']['host_id']))
+                        except (OSError,ValueError,KeyError,TypeError) as error:
+                            self.log('PBS_Q3_MEMORY_OBSERVATION_FAILED',job_id=job,error=str(error))
                     try:
                         staging.rmdir()
                     except OSError:

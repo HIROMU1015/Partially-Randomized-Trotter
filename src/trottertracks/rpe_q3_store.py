@@ -493,7 +493,9 @@ class JobStore:
                 if not self.eligible(row['request'], row['eligibility'], host_id, host_fingerprints, job_id):
                     continue
                 now, attempt = time.time(), uuid.uuid4().hex
-                detail = row['detail'] if assignment_detail is None else dict(row['detail'], **assignment_detail)
+                detail = dict(row['detail'])
+                detail.pop('pbs_launch_resources',None)  # a new attempt never inherits an old launch envelope
+                if assignment_detail is not None: detail.update(assignment_detail)
                 db.execute("UPDATE jobs SET state='ASSIGNED',host_id=?,attempt_id=?,assigned_epoch=?,updated_epoch=?,detail=? WHERE job_id=?",
                            (host_id, attempt, now, now, canonical(detail), job_id))
                 self._event(db, job_id, 'ASSIGN', dict(host_id=host_id, attempt_id=attempt))
@@ -530,10 +532,9 @@ class JobStore:
             # possible. A worker's status detail is not a new assignment.
             previous = json.loads(old['detail'])
             detail = dict(detail or {})
-            if state == 'ASSIGNED':
-                for field in ('preparation_workload', 'pbs_launch_resources'):
-                    if field in previous:detail[field] = previous[field]
-            for field in ('pbs_allocation_token', 'storage_reservation_bytes'):
+            if state == 'ASSIGNED' and 'preparation_workload' in previous:
+                detail['preparation_workload'] = previous['preparation_workload']
+            for field in ('pbs_launch_resources', 'pbs_allocation_token', 'storage_reservation_bytes'):
                 if field in previous:
                     detail[field] = previous[field]
             value = canonical(detail)

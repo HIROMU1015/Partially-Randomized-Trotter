@@ -308,6 +308,12 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
                         and not operations['pbs_replacement'].get('restore_predecessor')):
                     distributed['host_admission'] = dict(schema='RPE_Q3_HOST_ADMISSION_V1', hosts={
                         operations['pbs_replacement']['host_id']: dict(accepting=False, optional=True, max_slots=0)})
+            if operations.get('pbs_q3_measured_memory'):
+                from trottertracks.rpe_pbs import apply_q3_memory_reference
+                apply_q3_memory_reference(distributed,run,operations['pbs_q3_measured_memory'])
+            if 'pbs_q3_memory_learning' in operations:
+                from trottertracks.rpe_q3_memory import apply_policy
+                apply_policy(distributed,operations['pbs_q3_memory_learning'])
             if operations.get('hchain_preparation_memory'):
                 from trottertracks.rpe_pbs import apply_hchain_preparation_memory
                 apply_hchain_preparation_memory(distributed, run, operations['hchain_preparation_memory'])

@@ -23,6 +23,7 @@ MODULES = {
 # A frozen provider checkout is separate from this transport.
 OPTIONAL_MODULES = {
     'trottertracks/_pipeline_q3_resources.py': 'src/trottertracks/rpe_q3_resources.py',
+    'trottertracks/_pipeline_host_profiles.py': 'src/trottertracks/rpe_host_profiles.py',
     'trottertracks/_pipeline_release_deployment.py': 'src/trottertracks/_pipeline_release_deployment.py',
     'trottertracks/rpe_dry_check_recovery.py': 'src/trottertracks/rpe_dry_check_recovery.py',
     'trottertracks/rpe_pbs_attempt_control.py': 'src/trottertracks/rpe_pbs_attempt_control.py',
@@ -59,8 +60,11 @@ def refresh(base, output, root=ROOT):
                 if entry.filename.endswith('.py'):
                     compile(data,entry.filename,'exec')
                 new.writestr(entry, data)
-            if 'trottertracks/rpe_pbs_offline.py' not in old.namelist():
-                new.write(root/MODULES['trottertracks/rpe_pbs_offline.py'],'trottertracks/rpe_pbs_offline.py')
+            for name in ('trottertracks/rpe_pbs_offline.py','trottertracks/_pipeline_host_profiles.py'):
+                if name not in old.namelist():
+                    path=root/replacements[name]
+                    compile(path.read_bytes(),name,'exec')
+                    new.write(path,name)
         temporary.chmod(base.stat().st_mode & 0o777)
         os.link(temporary, output)
     finally:

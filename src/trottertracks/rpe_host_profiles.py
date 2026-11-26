@@ -147,7 +147,7 @@ def q3_measurement_host(profile):
             (os.environ.get('RPE_Q3_MEASUREMENT_HOST_ID') if host=='local' else None) or host)
 
 
-def q3_cpu_measurement_key(request, profile):
+def q3_cpu_measurement_key(request, profile, *, memory_class=False):
     """Bind timing to the same fixed execution route and exact shot workload."""
     route = request.get('route') or {}
     if q3_cpu_class(request, Q3_EXECUTION_ROUTE_KINDS) is None:
@@ -155,9 +155,11 @@ def q3_cpu_measurement_key(request, profile):
     if not all(profile.get(k) for k in ('host_id', 'root', 'interpreter')) or not route.get('view_commit'):
         return None
     execution = {k: v for k, v in (request.get('execution_profile') or {}).items() if k != 'dp_workers'}
+    shots = (dict(rounds=len(request['N_X']), peak_bits=max((*request['N_X'],*request['N_Y'])).bit_length())
+             if memory_class else dict(N_X=request['N_X'], N_Y=request['N_Y']))
     return digest(dict(method=request['method'], route=route['kind'], view=route['view_commit'],
         risk=route.get('horizon_risk_source'), scope=route.get('scope_owner'), binding=route.get('binding'),
-        optimizer_source=request.get('optimizer_source'), N_X=request['N_X'], N_Y=request['N_Y'], execution=execution,
+        optimizer_source=request.get('optimizer_source'), **shots, execution=execution,
         host=q3_measurement_host(profile), root=profile['root'], interpreter=profile['interpreter'],
         adapter_root=profile.get('adapter_root'), adapter=(profile.get('adapter_manifest') or {}).get('commit'),
         route_view=(profile.get('route_views') or {}).get(route['view_commit']), runtime=profile.get('runtime'),

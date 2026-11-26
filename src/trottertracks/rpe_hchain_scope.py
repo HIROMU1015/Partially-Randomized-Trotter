@@ -90,6 +90,12 @@ def resolve(config, requested):
         if policy.get("pbs_q3_cpu_policies"):
             from .rpe_host_profiles import apply_pbs_q3_cpu_policies
             apply_pbs_q3_cpu_policies(distributed, policy["pbs_q3_cpu_policies"])
+        if policy.get("pbs_q3_measured_memory"):
+            from .rpe_pbs import apply_q3_measured_memory
+            apply_q3_measured_memory(distributed,policy["pbs_q3_measured_memory"])
+        if "pbs_q3_memory_learning" in policy:
+            from .rpe_q3_memory import apply_policy
+            apply_policy(distributed,policy["pbs_q3_memory_learning"])
         prep = distributed.setdefault("preparation", {}).setdefault("budgets", {})
         changes = scope.get("preparation_budgets", {})
         keys(changes, set(STAGES), "scope.preparation_budgets")

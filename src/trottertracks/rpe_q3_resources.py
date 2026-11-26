@@ -289,7 +289,12 @@ def sample_q3_execution(pid, enabled, *, interval=.25):
 
 def q3_execution_observation(assignment, profile, receipt, sample, cpu_before):
     """Return timing metadata only for a fully exited successful Q3 adapter."""
-    from .rpe_host_profiles import q3_cpu_measurement_key, q3_measurement_host
+    # The launcher can carry the operational identity helper alongside an older
+    # fixed scientific checkout. Do not require changing that checkout.
+    try:
+        from ._pipeline_host_profiles import q3_cpu_measurement_key, q3_measurement_host
+    except ImportError:
+        from .rpe_host_profiles import q3_cpu_measurement_key, q3_measurement_host
     if not assignment or not sample or sample['samples'] < 2 or receipt.get('returncode') != 0 or receipt.get('signal') is not None:
         return None
     request = assignment['request']
@@ -301,6 +306,7 @@ def q3_execution_observation(assignment, profile, receipt, sample, cpu_before):
     cpu_after = child_cpu_seconds()
     cpu = max(0.,cpu_after-cpu_before) if cpu_after is not None and cpu_before is not None else None
     return dict(schema='RPE_Q3_EXECUTION_RESOURCES_V1', key=key,
+        memory_class_key=q3_cpu_measurement_key(request, profile, memory_class=True),
         job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], request_sha256=assignment['request_sha256'],
         host_id=profile['host_id'], policy_host_id=q3_measurement_host(profile),
         method=request['method'], route_kind=request['route']['kind'],

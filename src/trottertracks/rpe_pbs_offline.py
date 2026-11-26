@@ -923,7 +923,10 @@ class OfflineSearch:
 
     def _q3_resource_receipt(self, part, job, request, receipt, outcome):
         from contextlib import closing
-        from .rpe_host_profiles import q3_cpu_measurement_key
+        try:
+            from ._pipeline_host_profiles import q3_cpu_measurement_key
+        except ImportError:
+            from .rpe_host_profiles import q3_cpu_measurement_key
         from .rpe_q3_resources import valid_q3_execution_receipt
         transfer = part/'distributed'/'transfers'/job
         if not any(transfer.glob('*/Q3_EXECUTION_RESOURCES.json')):
@@ -937,6 +940,10 @@ class OfflineSearch:
             runtime = json.loads(row[4])['execution_profiles'][row[1]]
             runtime['q3_measurement_host_id'] = host
             if (sample.get('host_id')==row[1] and sample.get('key')==q3_cpu_measurement_key(request,runtime)
+                    and sample.get('memory_class_key',q3_cpu_measurement_key(request,runtime,memory_class=True))
+                        ==q3_cpu_measurement_key(request,runtime,memory_class=True)
+                    and sample['dp_workers']==runtime['dp_workers']
+                    and sample['task_cpu_count']==(runtime.get('task_cpu_count') or runtime.get('dp_workers'))
                     and valid_q3_execution_receipt(sample,request,receipt,outcome,policy_host=host,attempt=row[0])):
                 return sample
         except (OSError, ValueError, KeyError, TypeError, sqlite3.Error):

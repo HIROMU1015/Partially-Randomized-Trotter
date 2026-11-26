@@ -75,6 +75,8 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(current['attempt_id'], first['attempt_id'])
         self.assertEqual(current['detail']['preparation_workload'], envelope['preparation_workload'])
         self.assertEqual(current['detail']['pbs_launch_resources'], envelope['pbs_launch_resources'])
+        self.store.update('server1','j1',first['attempt_id'],'RUNNING',{'pid':123})
+        self.assertEqual(self.store.row('j1')['detail']['pbs_launch_resources'],envelope['pbs_launch_resources'])
         self.assertEqual(self.store.claim('server1', 1), [])
 
     def test_assignment_never_expires_after_disconnect(self):

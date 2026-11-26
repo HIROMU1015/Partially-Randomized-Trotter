@@ -868,3 +868,32 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
   workerに別inodeで残っていたことを確認した（少数サンプルのファイル情報照合のみ）。
   人工試験で同一bytesの共有と不一致・未採用・所有中の保護、測定と掃除の分離、
   予約値維持、複数整理batchで最後の1回だけ全量計測を確認した。
+
+### Q3・準備の実測メモリ予約の共通化（2026-11-27）
+
+- H4/H6/H8の共通コードでは、固定実行route・SOURCE・runtime・host・DP/CPU数・
+  正確な N_X/N_Y の指紋を使用する。旧H-chainのadapter manifestがないprofileも、
+  旧RSS証跡のruntime root、interpreter、view、CPU数、完全なshot vectorを照合して
+  `RPE_PBS_Q3_MEASURED_MEMORY_V1` をResumeに選択できる。別runの表はそのまま使わない。
+- 新releaseの `release_worker_policy.pbs_q3_memory_learning` を `true` または設定辞書にすると、
+  採用済みQ3の `Q3_EXECUTION_RESOURCES.json`（旧RSS専用形式も可）を使って実測を蓄積する。
+  `min_samples`、`floor_bytes`、`margin_numerator`、`margin_denominator`、`headroom_bytes`、
+  `preferred_methods_by_host` は計算環境・探索の外部設定とする。既定の安全余裕は従来worker
+  と同じ2独立完了、1 GiB下限、1.5倍。未計測のshot vector、異なるhostや固定実行条件に
+  外挿しない。観測がない要求は元の予約のまま。
+- 自動更新は既存controller内で採用後に行い、`distributed/Q3_MEMORY_LEARNING.json` から通常
+  Resumeで復元する。既に所有されたattemptは台帳のlaunch envelope、旧形式では更新前の
+  attempt別予約を保持する。新規割当の資源会計だけを更新し、PBSのqsub/qdel、keeperや
+  workerの停止・切替、科学条件、実行予算の変更を伴わない。独立PBSの採用・輸送済みの
+  計測も同じ形式で回収する。独立子の実行中は既存のノード内資源管理を維持する。
+- 明示されたhost別の計測優先方式は空き枠を作る際の順序にのみ効く。既存の適格性、
+  walltime、容量、科学STOPは変えず、計測済みの要求は通常順序へ戻す。
+- `scripts/build_rpe_q3_memory_policy.py --run RUN --round ROUND --output TABLE` は、
+  すでに採用済みの成果から新release用の `pbs_q3_measured_memory` の行を作成する。
+  `scripts/build_rpe_hchain_preparation_memory.py --run RUN --previous TABLE --output NEW_TABLE`
+  は固定H-chainのcompile/audit graphに限定し、採用済みの準備RSSを同一class/CPU数で
+  まとめて表の候補を作る。旧予約を参照する所有が残るなら次の表更新を行わない。
+  両者の `--policy` は外部JSON。新規の科学評価は実行しない。これらは配置・切替を行わない。
+- H8に固有のrun ID、計算ノード、RSS値、予約表、個別優先方式、job ID、CPU数は共通SOURCEに
+  入れない。既存runへの配置は通常の固定release選択・管理型keeperの手続きと別に行い、
+  使用中の予約や既存の停止条件は維持する。

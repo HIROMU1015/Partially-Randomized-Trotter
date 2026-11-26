@@ -691,8 +691,15 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         from trottertracks.rpe_host_profiles import apply_pbs_q3_cpu_policies
         apply_pbs_q3_cpu_policies(distributed, trial['pbs_q3_cpu_policies'])
     if trial.get('pbs_q3_measured_memory'):
-        from trottertracks.rpe_pbs import apply_q3_measured_memory
-        apply_q3_measured_memory(distributed, trial['pbs_q3_measured_memory'])
+        from trottertracks.rpe_pbs import apply_q3_measured_memory, apply_q3_memory_reference
+        measured=trial['pbs_q3_measured_memory']
+        if isinstance(measured,dict):
+            if run_dir is None: raise ValueError('Run-bound Q3 memory reference requires run directory')
+            apply_q3_memory_reference(distributed, Path(run_dir), measured)
+        else: apply_q3_measured_memory(distributed, measured)
+    if 'pbs_q3_memory_learning' in trial:
+        from trottertracks.rpe_q3_memory import apply_policy
+        apply_policy(distributed,trial['pbs_q3_memory_learning'])
     if 'pf_price_recheck_provider' in trial:
         bind_pf_continuation_release(distributed, provider, root)
     if selection := trial.get('df_max_width'):

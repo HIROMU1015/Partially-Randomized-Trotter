@@ -60,7 +60,7 @@ COMMON_WORKER_POLICY_FIELDS = frozenset((
     'preparation_host_preference', 'preparation_provider_hosts', 'pbs_collection_workers',
     'pbs_gateway_completion_workers', 'pbs_dispatch_gateway',
     'pbs_storage_launcher', 'pbs_hold_node', 'pbs_preparation_resources',
-    'pbs_q3_adapter', 'pbs_q3_horizon', 'pbs_q3_measured_memory', 'pbs_q3_cpu_policies',
+    'pbs_q3_adapter', 'pbs_q3_horizon', 'pbs_q3_measured_memory', 'pbs_q3_cpu_policies', 'pbs_q3_memory_learning',
     'pbs_q3_memory_backfill', 'pbs_ready_buffer', 'pbs_standby_waves',
     'pbs_stage_artifacts_over_ssh', 'pbs_offline_search', 'df_max_width',
 ))
@@ -71,6 +71,8 @@ def common_worker_policy(value):
     unsupported = set(policy) - COMMON_WORKER_POLICY_FIELDS
     if unsupported:
         raise ValueError('Run-specific or unsupported release worker policy: '+', '.join(sorted(unsupported)))
+    if isinstance(policy.get('pbs_q3_measured_memory'),dict):
+        raise ValueError('Run-bound Q3 memory table is not a common release policy')
     runtime = policy.get('pf_controller_runtime')
     if runtime and ('run_directory' in runtime or not runtime.get('run_root')):
         raise ValueError('Common PF runtime must use a release run root, not an existing run')

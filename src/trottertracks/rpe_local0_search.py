@@ -1889,9 +1889,10 @@ def schedule_driver(config, run, selection):
         fields = {'run_id', 'base_source', 'root', 'source', 'driver_sha256',
                   'worker_trial', 'pbs_manager_sha256'}
         trial = selection['worker_trial']
-        hchain_cpu = set(trial) == {'pbs_dispatch_gateway','pbs_future_storage_launcher','hchain_cpu_policy'}
+        transport_fields = set(trial)-{'pbs_q3_measured_memory','pbs_q3_memory_learning'}
+        hchain_cpu = transport_fields == {'pbs_dispatch_gateway','pbs_future_storage_launcher','hchain_cpu_policy'}
         if (not fields <= selection.keys() <= fields | {'resume_dispatch_failure', 'resume_controller_kill', 'q3_store_sha256'}
-                or not hchain_cpu and set(trial) not in ({'pbs_dispatch_gateway'},
+                or not hchain_cpu and transport_fields not in ({'pbs_dispatch_gateway'},
                                      {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256'},
                                      {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256', 'hchain_round_sha256'},
                                      {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256',
@@ -1911,6 +1912,13 @@ def schedule_driver(config, run, selection):
                     or cpu['overlay'].get('base_source') != config['code_source']
                     or not cpu['policy'].get('classes')):
                 raise RequestError('schedule_resume','Invalid independent H-chain CPU policy')
+        if reference := trial.get('pbs_q3_measured_memory'):
+            if (set(reference)!={'path','sha256'} or not Path(reference['path']).is_absolute()
+                    or hashlib.sha256(Path(reference['path']).read_bytes()).hexdigest()!=reference['sha256']):
+                raise RequestError('schedule_resume','Q3 measured memory operations differ')
+        if 'pbs_q3_memory_learning' in trial:
+            from .rpe_q3_memory import learning_policy
+            learning_policy(trial['pbs_q3_memory_learning'])
         if (reference := trial.get('hchain_preparation_memory')):
             path = Path(reference['path'])
             optimizer = Path(selection['root'])/'src/trottertracks/rpe_optimizer_concurrent.py'
