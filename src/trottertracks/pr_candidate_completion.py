@@ -396,6 +396,10 @@ class Completion:
                     if not self.metadata_path_failure(record,directory):
                         raise ValueError('Metadata repair would retry a scientific or ambiguous failure: '+identifier)
                     carried=self.state['records'].get(identifier)
+                    if carried is not None and carried.get('status') == 'READY_FOR_SEARCH':
+                        # A verified newer snapshot has already completed this
+                        # old metadata repair. Never discard its usable result.
+                        continue
                     if carried is not None and {k:v for k,v in carried.items() if k!='reused_from'}!={k:v for k,v in record.items() if k!='reused_from'}:
                         raise ValueError('Metadata repair does not match the preserved failure: '+identifier)
                     self.state.setdefault('metadata_repairs',{})[identifier]=dict(
