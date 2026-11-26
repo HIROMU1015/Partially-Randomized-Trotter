@@ -356,3 +356,15 @@ def test_hchain_smaller_worker_inherits_conservative_memory_peak():
     peaks[new]['peak_rss_bytes']=200
     seed_reduced_q3_cpu_classes(peaks,dict(from_dp_workers=7,classes={'FULL_PF:4':4}))
     assert peaks[new]['peak_rss_bytes']==200
+
+
+def test_policy_packs_24_small_jobs_into_96_cpus_with_old_larger_worker_sample():
+    old='q3:count_dp:PR_DF:fixed::7:26:4'
+    new='q3:count_dp:PR_DF:fixed::3:26:4'
+    p=dict(profile(separate_task_resources=True,pack_measured_task_classes=True,max_slots=96),
+           dp_workers=7,task_cpu_count=8,q3_cpu_policy=dict(from_dp_workers=7,classes={'PR_DF:4':4}))
+    state=dict(task_resource_peaks={old:dict(peak_rss_bytes=1024**3,dp_workers=8,observed_cpu_cores=3.5)})
+    f=feedback(1,10,capacity_ready_jobs=32,ready_task_classes=[new],ready_task_class_order=[new]*32)
+    _,offer=R.decide_slots(p,state,resources(cpu=96,memory=350*1024**3,free=350*1024**3),[],f)
+    assert offer['capacity']==24 and offer['slots']==24
+    assert offer['stage']=='MEASURED_TASK_HEADROOM'

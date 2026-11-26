@@ -702,3 +702,14 @@ PBS側には共通の固定runtime・対応worker/transportとともに、profil
 メモリ余裕を使う資源判定は維持する。異なる実行構成の記録は使用しない。
 コンパイル、監査は既定の価格省略判定を変えず、実行対象内で推定ゲート数・
 イベント数の小さい回路を優先する。信号の準備優先度は従来どおり。
+
+#### H-chain Q3の規模別CPU実行枠
+
+H-chainのQ3には `q3_cpu_policy.classes` を設定できる。方式と最大ショット数の
+bit lengthに対して実測から選んだCPU数を指定し、DP worker数はCPU数−1とする。
+指定のないクラスは固定profileの従来のCPU数を使用する。実際の割当とworkerが
+選ぶprofileを同じ選択関数で決定し、所有済みattemptのprofile・科学REQUESTは
+変えない。減らしたCPUクラスでは同じ評価器とショット階級の旧大きいworkerでの
+RSS上限を初期参考値とし、現行の実測と1.5倍の余裕を常に保持する。
+管理型PBSの独立packageでは、元のPBS資源・科学SOURCE・探索範囲を固定したまま、
+排出後の通常Resumeで運用profileだけを変更できる。
