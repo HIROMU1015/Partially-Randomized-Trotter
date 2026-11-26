@@ -172,6 +172,16 @@ class ControllerPaths(unittest.TestCase):
             self.assertEqual(c.state['metadata_repairs'][identifier]['original_record'],record)
             self.assertEqual(c.state['records']['scientific']['reason'],'NUMERICAL_GATE')
             self.assertEqual(state.read_bytes(),original)
+            ready=dict(method='PR_DF',status='READY_FOR_SEARCH',configuration_id='saved')
+            newer={**settings,'resume_preparation_from':dict(commit='NEWER',path='STATE.json')}
+            def saved_value(locator):
+                if locator['commit']=='OLD':return prior
+                if locator['path']=='PRICE_RULES_REGISTRY.json':return dict(entries=[])
+                return dict(records={identifier:ready})
+            with patch.object(C,'value',side_effect=saved_value):c=C.Completion(p/'newer',newer)
+            self.assertEqual(c.state['records'][identifier]['configuration_id'],'saved')
+            self.assertNotIn(identifier,c.state.get('metadata_repairs',{}))
+            self.assertEqual(state.read_bytes(),original)
 
 
 if __name__=='__main__':unittest.main()
