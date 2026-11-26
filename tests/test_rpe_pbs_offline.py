@@ -456,3 +456,39 @@ def test_parent_storage_sample_reused_without_directory_scan(tmp_path, monkeypat
     assert storage.report(policy)['accepting_new_jobs']
     atomic(sample,{'policy':storage.policy_identity(policy),'sampled_epoch':time.time()-200,'report':report})
     assert not storage.report(policy)['accepting_new_jobs']
+
+
+def test_hchain_resume_selects_new_adapter_without_changing_fixed_package(tmp_path, monkeypatch):
+    from copy import deepcopy
+    from trottertracks import rpe_pbs_offline as offline
+    plan = independent_fixture(tmp_path/'run')
+    unit = offline.pbs_units(plan)[0]
+    fixed = offline.restrict_round(plan, offline.unit_members(plan, unit))
+    fixed['hchain'] = {'case_ids':['fixed-case']}
+    monkeypatch.setattr(offline, 'restrict_round', lambda *_: deepcopy(fixed))
+    plan['round']['hchain'] = {'case_ids':['fixed-case']}
+    path = tmp_path/'part';path.mkdir()
+    profile = dict(host_id='pbs0', slots=12, dp_workers=7, root='/fixed', pbs={})
+    problem, old = offline.part_documents(plan, unit, profile, path)
+    atomic(path/'PROBLEM.json', problem);atomic(path/'ROUND.json', old)
+    adapter = dict(adapter_root='/updated-adapter',adapter_manifest=dict(commit='new',files={'scripts/run_rpe_optimizer_q3_job.py':'hash'}))
+    profile['pbs']['offline_controller_overlay'] = dict(base_source=plan['settings']['source'], q3_adapter=adapter)
+    _, new = offline.part_documents(plan, unit, profile, path)
+    for name in ('local_worker','preparation_profiles'):
+        target = new['executor']['distributed'][name]
+        if name == 'preparation_profiles': target = target['local']
+        assert all(target[k]==v for k,v in adapter.items())
+        assert target['root']=='/fixed'
+    search=object.__new__(offline.OfflineSearch)
+    search.plan=plan;search.profile=profile;search.independent=True;search.claim=None
+    search._entry=lambda:tmp_path/'entry.py';search._recover_fixed_input_failure=lambda *_:None
+    search._controller_command=lambda _:['artificial'];search.environment={}
+    search.popen=lambda *a,**k:SimpleNamespace()
+    assert search._start_part(path,unit,1)
+    assert read(path/'ROUND.json')==new
+    assert read(next((path/'technical-stop-history').glob('ROUND.before-transport-*.json')))==old
+    # Only the selected adapter may differ in the resumed fixed package.
+    changed=deepcopy(new);changed['max_new_q3_per_method']['FULL_PF']=99
+    atomic(path/'ROUND.json', changed)
+    with pytest.raises(ValueError,match='part inputs changed'):
+        search._start_part(path,unit,1)

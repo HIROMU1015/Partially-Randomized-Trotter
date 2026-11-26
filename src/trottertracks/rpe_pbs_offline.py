@@ -358,6 +358,13 @@ def part_documents(plan, part, profile, path):
     if independent_plan(plan):
         nested = profile.get('pbs', {})
         overlay = nested.get('offline_controller_overlay') or {}
+        if adapter := overlay.get('q3_adapter'):
+            if (not spec.get('hchain') or overlay.get('base_source') != settings['source']
+                    or set(adapter) != {'adapter_root', 'adapter_manifest'}):
+                raise ValueError('Q3 adapter selection does not match the fixed H-chain plan')
+            # The existing adapter profile validates its own fixed checkout and
+            # bytes at readiness and launch; the request SOURCE stays pinned.
+            selected.update(deepcopy(adapter))
         if selected.get('storage_limit') and nested.get('independent_storage_sample') and overlay.get('worker_script'):
             selected['storage_limit']['parent_compute_sample'] = nested['independent_storage_sample']
             worker_script = Path(overlay['worker_script'])
@@ -759,6 +766,12 @@ class OfflineSearch:
                         for old_profile,new_profile in ((settings['local_worker'],current['local_worker']),
                                 (settings['preparation_profiles']['local'],current['preparation_profiles']['local'])):
                             old_profile['q3_cpu_policy'] = deepcopy(new_profile['q3_cpu_policy'])
+                    if spec.get('hchain') and (adapter := (self.profile.get('pbs', {}).get('offline_controller_overlay') or {}).get('q3_adapter')):
+                        for old_profile,new_profile in ((settings['local_worker'],current['local_worker']),
+                                (settings['preparation_profiles']['local'],current['preparation_profiles']['local'])):
+                            if any(new_profile.get(key) != value for key,value in adapter.items()):
+                                raise ValueError('Selected Q3 adapter differs from the resumed profile')
+                            old_profile.update(deepcopy(adapter))
                     if migrated == data:
                         archive = path/'technical-stop-history'/('ROUND.before-transport-'+digest(previous)[:12]+'.json')
                         archive.parent.mkdir(exist_ok=True)
