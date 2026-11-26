@@ -97,7 +97,8 @@ def reserve_locked(pool, *, replace_job_id=None, alongside_search_job_id=None, a
     return token
 
 
-def prepare_generation(pool, resources, predecessor=None, *, after_exit=False, when_available=False):
+def prepare_generation(pool, resources, predecessor=None, *, after_exit=False, when_available=False,
+                       managed_host=None):
     token = uuid.uuid4().hex
     directory = pool/'allocations'/token
     directory.mkdir(parents=True)
@@ -111,11 +112,15 @@ def prepare_generation(pool, resources, predecessor=None, *, after_exit=False, w
         if not re.fullmatch(r'[0-9]+\.[A-Za-z0-9.-]+', job_id):
             raise ValueError('A qualified PBS dependency job ID is required')
         script.append('#PBS -W depend=afterany:' + job_id)
+    if resources.get('initial_hold'):
+        script.append('#PBS -h')
     script += [
               '#PBS -o ' + str(directory/'PBS.stdout'), '#PBS -e ' + str(directory/'PBS.stderr'),
               'set -eu', 'umask 077', 'exec ' + shlex.join(command)]
     (directory/'worker.pbs').write_text('\n'.join(script) + '\n')
-    spec = dict(token=token, resources=resources, profile=dict(host_id='pbs-0'))
+    spec = dict(token=token, resources=resources, profile=dict(host_id=managed_host or 'pbs-0'))
+    if managed_host is not None:
+        spec['run_managed'] = True
     if predecessor:
         spec['predecessor'] = predecessor
     if after_exit:
@@ -356,6 +361,148 @@ def attach(root, pool, spec):
     return dict(token=token, existing=prior is not None, pilot=binding['token'])
 
 
+def managed_pool(root, host):
+    """An ordinary run owns one physical reservation pool per logical host."""
+    return root/'managed-nodes'/safe_id(host)
+
+
+def session_pool(root, binding):
+    host = binding.get('managed_host')
+    return managed_pool(root, host) if host is not None else root.parent/POOL_NAME
+
+
+def compatible_resources(have, need):
+    # A reservation is never resized during replacement. The worker obtains
+    # its actual CPU/RAM/remaining-walltime from PBS at each session start.
+    return (have['queue'] == need['queue'] and have['ncpus'] >= need['ncpus']
+            and gateway.memory_bytes(have['mem']) >= gateway.memory_bytes(need['mem']))
+
+
+def attach_managed(root, spec):
+    """Ordinary multi-host PBS: submit a keeper, then attach a run session.
+
+    The controller's session token, REQUEST/attempt ownership and spool are
+    distinct from the physical PBS token. A later normal Resume may attach a
+    new fixed worker to the same live node only after its predecessor ended.
+    Legacy directly submitted tokens are never converted here.
+    """
+    root = Path(root).resolve()
+    token = safe_id(spec['token'])
+    host = safe_id(spec['profile']['host_id'])
+    resources = spec['resources']
+    if type(resources['ncpus']) is not int or resources['ncpus'] < 1:
+        raise ValueError('Explicit positive PBS ncpus required')
+    gateway.memory_bytes(resources['mem']); gateway.seconds(resources['walltime'])
+    if resources['queue'] not in ('workq', 'large'):
+        raise ValueError('Unconfigured queue')
+    pool = managed_pool(root, host)
+    directory = root/'allocations'/token
+    with locked(pool):
+        prior = read(directory/'SPEC.json')
+        binding = read(directory/'PILOT.json')
+        if prior is not None and prior != spec:
+            raise ValueError('Existing allocation specification differs')
+        if prior is not None and binding is None:
+            raise ValueError('Existing direct allocation must not be converted')
+        if binding is not None and binding.get('managed_host') != host:
+            raise ValueError('Existing allocation belongs to a different managed pool')
+        if binding is None:
+            current = read(pool/'CURRENT.json', {}).get('token')
+            reason = spec.get('reason') or {}
+            replay = reason.get('replay_pilot')
+            if reason.get('retained_pilot') or reason.get('retained_replacement'):
+                raise ValueError('Shared-pilot continuation requires its original gateway')
+            if current:
+                generation = pool/'allocations'/safe_id(current)
+                observed = physical(pool, current)
+                if replay and (current != replay['token'] or observed.get('job_id') != replay['job_id']
+                               or observed['status'] != 'R'):
+                    raise ValueError('Original managed PBS reservation is unavailable for replay')
+                if observed['status'] in TERMINAL:
+                    current = None
+                elif (generation/'RELEASE.json').exists():
+                    raise ValueError('Managed PBS reservation release is pending')
+                elif any(not (session/'SESSION_END.json').exists() for session in sessions(generation)):
+                    raise ValueError('Previous managed worker session is still owned')
+                elif not compatible_resources(read(generation/'SPEC.json')['resources'], resources):
+                    raise ValueError('Existing managed PBS reservation cannot satisfy requested resources')
+            elif replay:
+                raise ValueError('Original managed PBS reservation is unavailable for replay')
+            if current is None:
+                current = prepare_generation(pool, resources, managed_host=host)
+                atomic(pool/'CURRENT.json', dict(token=current))
+            binding = dict(token=current, managed_host=host)
+            atomic(directory/'PILOT.json', binding)
+        generation = pool/'allocations'/safe_id(binding['token'])
+        # A repeated ensure does not overwrite a running session's fixed files
+        # or restart a completed session. Complete only an interrupted intent.
+        if prior is None:
+            profile = dict(spec['profile'])
+            profile['pbs'] = dict(profile.get('pbs') or {}, allocation_dir=str(directory))
+            atomic(directory/'PROFILE.json', profile)
+            atomic(directory/'SPEC.json', spec)
+        entry = generation/'sessions'/(token+'.json')
+        locator = dict(directory=str(directory))
+        previous = read(entry)
+        if previous is not None and previous != locator:
+            raise ValueError('Worker session token belongs to a different run')
+        if previous is None:
+            atomic(entry, locator)
+        # Reconcile the same durable reservation on any lost response.
+        gateway.submit_once(generation)
+    return dict(token=token, existing=prior is not None, pilot=binding['token'])
+
+
+def managed_exchange(root, value, finished=None, scheduler=None):
+    controls = dict(value.get('controls', {}))
+    for token, control in list(controls.items()):
+        directory = root/'allocations'/safe_id(token)
+        binding = read(directory/'PILOT.json')
+        if binding is not None:
+            with locked(session_pool(root, binding)):
+                update_session_control(directory, control)
+            del controls[token]
+    return gateway.exchange(root, dict(value, controls=controls), finished,
+                            lambda root, finished: session_snapshot(root, finished, scheduler=scheduler))
+
+
+def release_managed_node(root, host):
+    """Explicit physical release, not the worker's normal stop/detach."""
+    pool = managed_pool(root, host)
+    with locked(pool):
+        current = read(pool/'CURRENT.json', {}).get('token')
+        if not current:
+            return dict(status='UNRESERVED')
+        generation = pool/'allocations'/safe_id(current)
+        if any(not (directory/'SESSION_END.json').exists() for directory in sessions(generation)):
+            raise ValueError('Drain and reconcile managed worker sessions before releasing the PBS reservation')
+        row = physical(pool, current)
+        if row['status'] not in TERMINAL:
+            atomic(generation/'RELEASE.json', dict(epoch=time.time()))
+            if row['job_id'] and row['status'] in ('Q', 'H', 'W'):
+                result = gateway.handle(pool, dict(action='delete', token=current))
+                if result['returncode']:
+                    raise RuntimeError('PBS physical release is pending')
+        return dict(status=row['status'], job_id=row['job_id'], release_requested=True)
+
+
+def detach_managed_session(root, directory):
+    binding = read(directory/'PILOT.json')
+    pool = session_pool(root, binding)
+    with locked(pool):
+        stop_session(directory)
+        # Existing controller cancellation of an unstarted queued submission
+        # may still withdraw its unused reservation. Never qdel a running node
+        # merely to replace a worker.
+        if binding.get('managed_host') is not None and not (directory/'SESSION_START.json').exists():
+            generation = pool/'allocations'/safe_id(binding['token'])
+            if not any(not (s/'SESSION_END.json').exists() for s in sessions(generation)):
+                row = physical(pool, binding['token'])
+                if row['job_id'] and row['status'] in ('Q', 'H', 'W'):
+                    atomic(generation/'RELEASE.json', dict(epoch=time.time()))
+                    return gateway.handle(pool, dict(action='delete', token=binding['token']))
+        return dict(returncode=0, detached=True)
+
 def session_snapshot(root, finished=None, *, scheduler=None, force=False):
     pool = root.parent/POOL_NAME
     current = read(pool/'CURRENT.json', {}).get('token')
@@ -375,13 +522,16 @@ def session_snapshot(root, finished=None, *, scheduler=None, force=False):
                 token = read(directory/'PILOT.json')['token']
                 terminal_sessions.setdefault(token, []).append(directory)
     for directory in shared:
-        token = read(directory/'PILOT.json')['token']
-        if token not in observations:
-            observations[token] = physical(pool, token, finished, scheduler=scheduler,
-                                           force=force or token in terminal_sessions)
+        binding = read(directory/'PILOT.json')
+        token = binding['token']
+        physical_pool = session_pool(root, binding)
+        key = (physical_pool, token)
+        if key not in observations:
+            observations[key] = physical(physical_pool, token, finished, scheduler=scheduler,
+                                         force=force or token in terminal_sessions)
             if token in terminal_sessions:
                 scheduler.terminal_sessions.update(terminal_sessions[token])
-        row = dict(observations[token])
+        row = dict(observations[key])
         row.update(token=directory.name, directory=str(directory), pilot_token=token, reservation_status=row['status'],
                    allocation=read(directory/'ALLOCATION.json'), worker=read(directory/'STATE.json'))
         ended = ended_sessions[directory]
@@ -392,7 +542,7 @@ def session_snapshot(root, finished=None, *, scheduler=None, force=False):
         control=read(directory/'CONTROL.json',{})
         if control.get('stop') or control.get('pause'):
             row['worker'] = dict(row.get('worker') or {}, accepting=False)
-        if retained == token and control.get('stop'):
+        if binding.get('managed_host') is None and retained == token and control.get('stop'):
             row['retained_replacement'] = current
         row['session_status'] = row['status']
         result.append(row)
@@ -402,29 +552,18 @@ def session_snapshot(root, finished=None, *, scheduler=None, force=False):
 def handle(root, value, finished, scheduler=None):
     pool = root.parent/POOL_NAME
     action = value['action']
+    if action == 'managed_capabilities':
+        return dict(managed_keeper=True, mode='shared-pool', worker_session_replacement=True)
     if action == 'ensure':
         return attach(root, pool, value['spec'])
     if action == 'snapshot':
         return dict(allocations=session_snapshot(root, finished, scheduler=scheduler, force=True))
     if action == 'exchange':
-        # Under the pool lock a queued Stop wins against a simultaneous worker
-        # claim. Never erase that fence with a delayed non-stop heartbeat.
-        controls = dict(value.get('controls', {}))
-        if controls:
-            with locked(pool):
-                for token, control in list(controls.items()):
-                    directory = root/'allocations'/safe_id(token)
-                    if (directory/'PILOT.json').exists():
-                        update_session_control(directory,control)
-                        del controls[token]
-        return gateway.exchange(root, dict(value, controls=controls), finished,
-                                lambda root, finished: session_snapshot(root, finished, scheduler=scheduler))
+        return managed_exchange(root, value, finished, scheduler)
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
         if (directory/'PILOT.json').exists():
-            with locked(pool):
-                stop_session(directory)
-            return dict(returncode=0, detached=True)
+            return detach_managed_session(root, directory)
     return gateway.handle(root, value, finished, scheduler)
 
 
@@ -473,7 +612,8 @@ def serve(generation):
                 return
             time.sleep(5)
     job_id = actual['job_id']
-    if (actual['ncpus'] != RESOURCES['ncpus'] or actual['memory_bytes'] != gateway.memory_bytes(RESOURCES['mem'])):
+    requested = generation_spec['resources'] if generation_spec.get('run_managed') else RESOURCES
+    if (actual['ncpus'] != requested['ncpus'] or actual['memory_bytes'] != gateway.memory_bytes(requested['mem'])):
         raise ValueError('Scheduler allocation differs from requested pool')
     # PBS is Linux. Reap detached supervisors from a finished worker before
     # lending its resource pool to a different run, including UNKNOWN exits.

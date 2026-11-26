@@ -730,3 +730,11 @@ RSS上限を初期参考値とし、現行の実測と1.5倍の余裕を常に�
 ### 2026-11-27: 分子間の運用改善の共有
 
 H4・H6・H8等の中央制御、最適化器、ワーカーを修正するときは、他分子の実際の稼働版・関連する最新版も確認し、互換性があり有用な改善を相互に取り込む。共通版への毎回の統合は必須ではない。分子固有の科学条件・固定SOURCE、稼働RUNの所有、予算、STOP、PBS予約を維持し、別チャットの変更を上書きしない。通常報告で確認した版と採用・保留した改善を示す。詳細は [AGENTS.md](../../AGENTS.md) の「H-chain最適化の分子間の改善共有」を参照する。
+
+## 今後のPBS予約は管理型keeperを標準とする（2026-11-27）
+
+- 新規探索の通常PBS gatewayは、分子・方式を問わず、run別・論理host別の物理予約を管理型keeperで起動する。既存の `rpe_pbs_pilot.py` の物理予約とsessionの分離を再利用する。複数hostは各自の物理予約・所有・spoolを保持し、別runと暗黙に共有しない。既存の明示的な共有pilotはその入口を維持する。
+- `worker.pbs` はworkerを直接起動せず、keeperの `--serve` を起動する。中央の要求tokenはsession、物理予約tokenとPBS job IDは別に記録する。同一要求の再送は元のsessionへ戻し、新規qsubしない。更新時は通常Stop/drain・元試行の回収と所有照合を行い、通常Resumeで新版sessionを接続する。親keeperは旧workerとその子processの終了まで待つ。既存sessionの終了前は新版を接続しない。物理予約が稼働中で資源条件を満たす限り、同じPBS job IDを使用する。科学SOURCE・入力・予算・STOP・未確定attempt・独立packageのcheckpointは引き継ぐ。
+- workerのdetachは物理予約の解放とは別。実行中の物理予約はworker更新だけではqdelしない。実行していない待機予約の取消しは従来の操作を維持する。不要になったrun専用予約は全sessionの終了・回収を照合して明示的に解放する（gatewayの `release_managed_node`）。自然walltime満了や物理資源不適合は別に扱い、同じ計算ノードに存在しない資源や期限を仮定しない。
+- 共通releaseでは `scripts/build_rpe_pbs_independent_gateway.py` の既定（run-per-host管理型）を使用する。明示的な共有pool用途では `--shared-pilot` を選ぶ。中央は新しいgateway接続から最初の予約要求を渡す前に `managed_capabilities` を確認する。旧gatewayへの暗黙の直接起動フォールバックは行わない。
+- 現存する固定run・旧直接worker・PBS予約・受付設定・既存成果をこの方針で遡及変更しない。旧直接runの終了後またはユーザーが指定する次回scopeから適用する。新共通releaseの配置・切替と実機検収は、既存runから分離して行う。

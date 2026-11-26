@@ -108,6 +108,15 @@ def submit_once(directory):
 
 
 def ensure(root, spec):
+    directory = root/'allocations'/safe_id(spec['token'])
+    if (directory/'PILOT.json').exists() or not (directory/'SPEC.json').exists():
+        from rpe_pbs_pilot import attach_managed
+        return attach_managed(root, spec)
+    # Historical direct submissions retain their original, frozen intent.
+    return ensure_legacy(root, spec)
+
+
+def ensure_legacy(root, spec):
     token = safe_id(spec['token']); directory = root/'allocations'/token
     directory.mkdir(parents=True, exist_ok=True)
     with (directory/'INTENT.lock').open('a') as lock:
@@ -618,6 +627,8 @@ def attempt_control(root, value):
 
 def handle(root, value, finished=None, scheduler=None):
     action = value['action']
+    if action == 'managed_capabilities':
+        return dict(managed_keeper=True, mode='run-per-host', worker_session_replacement=True)
     if action in ('attempt_stop', 'attempt_status'):
         return attempt_control(root, value)
     if action == 'intent_present':
@@ -630,10 +641,14 @@ def handle(root, value, finished=None, scheduler=None):
     if action == 'ensure':
         return ensure(root, value['spec'])
     if action == 'exchange':
-        return exchange(root, value, finished, lambda root, finished: snapshot(
-            root, finished, scheduler=scheduler))
+        from rpe_pbs_pilot import managed_exchange
+        return managed_exchange(root, value, finished, scheduler)
     if action == 'snapshot':
-        return dict(allocations=snapshot(root, finished, scheduler=scheduler, force=True))
+        from rpe_pbs_pilot import session_snapshot
+        return dict(allocations=session_snapshot(root, finished, scheduler=scheduler, force=True))
+    if action == 'release_managed_node':
+        from rpe_pbs_pilot import release_managed_node
+        return release_managed_node(root, safe_id(value['host_id']))
     if action == 'harvest':
         return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'), value.get('owners'),
                        completed_only=value.get('completed_only') is True,
@@ -645,6 +660,9 @@ def handle(root, value, finished=None, scheduler=None):
         return dict(jobs=read(directory/'RESULTS.json', {}), coverage=read(directory/'COVERAGE.json', {}))
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
+        if (directory/'PILOT.json').exists():
+            from rpe_pbs_pilot import detach_managed_session
+            return detach_managed_session(root, directory)
         receipt = read(directory/'JOB_ID.json')
         if not receipt:
             raise ValueError('Cannot delete an unidentified PBS job')
@@ -660,7 +678,11 @@ def main():
     parser.add_argument('--root', type=Path)
     parser.add_argument('--submit', type=Path)
     parser.add_argument('--record-allocation', type=Path)
+    parser.add_argument('--serve', type=Path, help='Serve a retained physical PBS reservation')
     args = parser.parse_args()
+    if args.serve:
+        from rpe_pbs_pilot import serve
+        serve(args.serve.resolve()); return
     if args.submit:
         submit_once(args.submit); return
     if args.record_allocation:

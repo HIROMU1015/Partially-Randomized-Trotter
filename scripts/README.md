@@ -381,3 +381,15 @@ Local0 absolute-kappa interval through the normal physical schedule entry (metad
 PBS照会と共有spoolの配送だけを担当する。`prepare_rpe_pbs_readiness.py`は固定SOURCEの不足Git object配置、
 `prepare_rpe_pbs_release.py`は新しい固定releaseの設定作成、`check_rpe_pbs.py`は人工検収用。
 実施範囲、開始・停止・再開、SOURCEとruntimeは[HANDOFF](../docs/research/rpe_pbs_worker_20261118/HANDOFF.md)。
+
+
+### PBS管理型keeperの共通入口（2026-11-27）
+
+通常の `rpe_pbs_gateway.py` は新規PBS予約を論理host別の常駐keeperから開始する。
+`rpe_pbs_pilot.py` は物理予約とrun-scoped worker sessionの管理を共通で担当する。
+`build_rpe_pbs_independent_gateway.py OUTPUT.pyz` は通常のrun-per-host管理型gatewayを
+生成する。既存の意図的な共有物理pool用途だけ `--shared-pilot` を選ぶ。
+新規予約前に `managed_capabilities` を照会し、旧gatewayでの直接worker起動を防止する。
+worker版の更新は通常Stop/drainと所有・回収の照合後、通常Resumeで新sessionを接続する。
+明示的な物理解放は通常のworker detachと別操作である。旧固定runへ遡及適用しない。
+詳細は [分散探索の共通運用ルール](../docs/research/rpe_distributed_operations.md)。

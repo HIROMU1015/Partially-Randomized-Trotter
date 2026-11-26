@@ -155,6 +155,7 @@ class Gateway:
         self.settings = settings
         self.ssh = ssh or (SharedSSH(settings['ssh_alias']) if 'ssh_alias' in settings else None)
         self.process = None
+        self.managed_gateway_verified = False
         self.call_lock = threading.Lock()
         self.responses = queue.Queue()
         self.storage_monitors = {}
@@ -162,6 +163,7 @@ class Gateway:
         self.storage_monitor_sample_paths = {}
 
     def _start(self):
+        self.managed_gateway_verified = False
         config = self.settings
         if config.get('gateway_sha256'):
             self.verify_gateway_file(config['gateway_script'], config['gateway_sha256'])
@@ -188,6 +190,15 @@ class Gateway:
     def _call(self, payload):
         if self.process is None or self.process.poll() is not None:
             self._start()
+        # An old gateway can silently ignore new intent fields and directly
+        # submit a worker. Check the selected gateway once per connection
+        # before ensure; status/recovery of pinned legacy runs is unchanged.
+        if payload.get('action') == 'ensure' and not self.managed_gateway_verified:
+            capabilities = self._call(dict(action='managed_capabilities'))
+            if (capabilities.get('managed_keeper') is not True
+                    or capabilities.get('worker_session_replacement') is not True):
+                raise ValueError('Selected PBS gateway does not support retained managed worker sessions')
+            self.managed_gateway_verified = True
         try:
             self.process.stdin.write(json.dumps(payload, separators=(',', ':'))+'\n')
             self.process.stdin.flush()
