@@ -798,9 +798,17 @@ def advance_independent(worker, control):
     stopping = bool(control.get('stop') or not worker.accepting()
                     or worker.remaining() < worker.drain_seconds + 2*worker.minimum_task_seconds)
     report = getattr(worker, 'resource_report', None)
-    if report is None and not active:
-        report = worker._resource_offer()
     storage = (report or {}).get('storage') or {}
+    # Independent mode intentionally suppresses the ordinary poll loop.
+    # Renew a blocked storage offer here, otherwise successful asynchronous
+    # cleanup/sampling can never become visible to a waiting package.
+    now = time.monotonic()
+    if (search.process is None and not active and
+            (report is None or not storage.get('accepting_new_jobs', True)) and
+            now >= getattr(search, 'next_resource_refresh', 0.)):
+        search.next_resource_refresh = now + 3.
+        report = worker._resource_offer()
+        storage = (report or {}).get('storage') or {}
     try:
         busy = search.advance(disconnected=False, runnable=not active and
                               storage.get('accepting_new_jobs', True),

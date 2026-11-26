@@ -391,3 +391,17 @@ def test_fixed_input_recovery_preserves_pre_science_stop_and_refuses_owned_job(t
     archive=next((part/'technical-stop-history').iterdir())
     assert read(archive/'KAPPA_STATE.json')['stop']==stop
     assert read(archive/'ROUND.json')['fixed'] is True
+
+
+def test_independent_storage_recovery_refreshes_blocked_offer(tmp_path):
+    from types import SimpleNamespace
+    from trottertracks.rpe_pbs_offline import advance_independent
+    search=SimpleNamespace(directory=tmp_path/'run',process=None,pending=lambda:True,
+                           advance=lambda **kw: kw['runnable'])
+    search.directory.mkdir(); worker_dir=tmp_path/'allocation';worker_dir.mkdir()
+    worker=SimpleNamespace(offline_search=search,directory=worker_dir,records={},
+         resource_report={'storage':{'accepting_new_jobs':False}},accepting=lambda:True,
+         remaining=lambda:1000,drain_seconds=1,minimum_task_seconds=10,slots=4,
+         _resource_offer=lambda:{'storage':{'accepting_new_jobs':True}})
+    assert advance_independent(worker,{}) is True
+    assert (worker_dir/'INDEPENDENT_ACTIVE').exists()
