@@ -185,3 +185,16 @@ def test_incompatible_replacement_does_not_reserve_a_second_node(tmp_path,schedu
     with pytest.raises(ValueError,match='cannot satisfy'):
         ensure(root,more)
     assert len(scheduler.submissions)==1 and not scheduler.deletions
+
+
+def test_interrupted_binding_cannot_join_a_subsequent_live_session(tmp_path,scheduler):
+    root=tmp_path/'run'; host='pbs-h8-0'; old=spec(root,'interrupted',host)
+    first=ensure(root,old); gen=scheduler.submissions[0]
+    scheduler.jobs['1.prism']['job_state']='R'
+    # Model the durable intent written before a lost session-registration reply.
+    (gen/'sessions'/'interrupted.json').unlink()
+    ensure(root,spec(root,'later',host))
+    with pytest.raises(ValueError,match='still owned'):
+        ensure(root,old)
+    assert not (gen/'sessions'/'interrupted.json').exists()
+    assert len(scheduler.submissions)==1 and not scheduler.deletions

@@ -447,6 +447,12 @@ def attach_managed(root, spec):
         if previous is not None and previous != locator:
             raise ValueError('Worker session token belongs to a different run')
         if previous is None:
+            # The initial binding may have survived a lost response before
+            # the session locator was written. Do not add that interrupted
+            # intent behind a subsequently acquired owner of this node.
+            if any(session != directory and not (session/'SESSION_END.json').exists()
+                   for session in sessions(generation)):
+                raise ValueError('Previous managed worker session is still owned')
             atomic(entry, locator)
         # Reconcile the same durable reservation on any lost response.
         gateway.submit_once(generation)
