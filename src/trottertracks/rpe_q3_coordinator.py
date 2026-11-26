@@ -47,7 +47,8 @@ def source_manifest(root, commit):
         paths += ('src/trottertracks/rpe_q3_resources.py',)
     if (Path(root)/'src/trottertracks/rpe_worker_storage.py').exists():
         paths += ('src/trottertracks/rpe_worker_storage.py',)
-    for path in ('scripts/run_rpe_preparation_job.py', 'src/trottertracks/rpe_preparation_worker.py',
+    for path in ('scripts/rpe_hchain_q3.py', 'scripts/run_rpe_hchain_preparation.py',
+                 'scripts/run_rpe_preparation_job.py', 'src/trottertracks/rpe_preparation_worker.py',
                  'src/trottertracks/rpe_preparation_artifacts.py',
                  'src/trottertracks/rpe_metadata_bundle.py'):
         if (Path(root)/path).exists():paths += (path,)

@@ -21,6 +21,7 @@ import time
 
 
 BULK_CHUNK_BYTES = 1024 * 1024
+_completion_last_token = None
 
 
 def read(path, default=None):
@@ -267,6 +268,28 @@ def completion_priority(path):
     return 1
 
 
+def fair_completion_requests(pending, *, inline):
+    """Rotate allocations within each completion priority."""
+    from collections import deque
+
+    groups = {}
+    for token, path, bulk in pending:
+        priority = completion_priority(path) if inline else 0
+        groups.setdefault(priority, {}).setdefault(token, deque()).append((token, path, bulk))
+    for priority in sorted(groups):
+        lanes = groups[priority]
+        tokens = sorted(lanes)
+        if _completion_last_token in tokens:
+            start = tokens.index(_completion_last_token) + 1
+            tokens = tokens[start:] + tokens[:start]
+        ready = deque(tokens)
+        while ready:
+            token = ready.popleft()
+            yield lanes[token].popleft()
+            if lanes[token]:
+                ready.append(token)
+
+
 def exchange(root, incoming, finished=None, snapshotter=snapshot):
     for token, responses in incoming.get('responses', {}).items():
         directory = root/'allocations'/safe_id(token)
@@ -303,13 +326,15 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
             if path.stem in excluded.get(directory.name, ()) or (directory/'responses'/path.name).exists():
                 continue
             pending.append((directory.name, path, bulk))
+    global _completion_last_token
     inline_budget = BULK_CHUNK_BYTES
     inline_bytes = 0
     inline_cores = 0
-    if incoming.get('inline_q3_completions') is True and mode == 'completion':
-        pending.sort(key=lambda entry: completion_priority(entry[1]))
-    else:
+    inline = incoming.get('inline_q3_completions') is True and mode == 'completion'
+    if not inline:
         inline_budget = 0
+    if mode == 'completion':
+        pending = fair_completion_requests(pending, inline=inline)
     for token, path, bulk in pending:
         if remaining == 0:
             break
@@ -339,6 +364,7 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
         requests.setdefault(token, []).append(value)
         if remaining is not None:
             remaining -= 1
+            _completion_last_token = token
     if incoming.get('inline_q3_completions') is True and mode == 'completion':
         return dict(requests=requests, allocations=[], inline_bytes=inline_bytes, inline_cores=inline_cores)
     return dict(requests=requests, allocations=[] if mode == 'completion' else snapshotter(root, finished))
@@ -473,6 +499,10 @@ def harvest(directory, wanted=None, owners=None, completed_only=False, manifest_
     attempts = []; hashes = set(); incomplete = []
     work = Path(profile['work_dir'])
     helper = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dry_check_recovery.py'
+    if spec.get('transport_root'):
+        fixed_helper = Path(spec['transport_root'])/'src/trottertracks/rpe_dry_check_recovery.py'
+        if fixed_helper.is_file():
+            helper = fixed_helper
     observe_rejection = None
     if helper.is_file():
         module_spec = importlib.util.spec_from_file_location('_pbs_dry_check_recovery', str(helper))

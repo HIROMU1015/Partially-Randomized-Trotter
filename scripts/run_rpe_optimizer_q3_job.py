@@ -11,7 +11,7 @@ Modes:
   collect    validate existing worker artifacts only (resume after a crash), no science
   dry-check  build the case and run route metadata/count/runtime checks only, no science
 
-Route kinds: pf_b_pf6, pauli_b_ld3, pauli_b_ld5, pauli_b_common_entry, prdf_d2_split, artificial.
+Route kinds include hchain_scoped_q3 for prepared H-chain inputs.
 
 pauli_b_common_entry: any PR-Pauli configuration whose 13-round MEAN_HANDOFF was assembled by A's common
 signal entry (93a5ef3b9) and is accepted by B's normal intake (``accept_saved(handoff_source=...)``, B
@@ -840,6 +840,12 @@ def main():
         return 0
     out.mkdir(parents=True, exist_ok=True)
     kind = request['route']['kind'];stage(out, 'JOB_START', mode=a.mode, kind=kind, pid=os.getpid())
+    if kind == 'hchain_scoped_q3':
+        # Load the scoped evaluator in a fresh interpreter with only its
+        # selected risk checkout on the scientific import path.
+        scoped = Path(__file__).with_name('rpe_hchain_q3.py')
+        os.execv(sys.executable, [sys.executable, '-B', str(scoped), '--request', str(a.request),
+                                  '--mode', a.mode, '--output', str(out)])
     name = 'OUTCOME.json' if a.mode != 'dry-check' else 'DRY_CHECK.json'
     M = horizon_of(request)
     if kind == 'artificial':

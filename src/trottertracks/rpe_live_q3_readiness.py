@@ -368,7 +368,7 @@ else:
 
 def controller_scope_hold(request, profile):
     """Use the fixed route's own count guard without evaluating the case."""
-    if not profile or request['route']['kind'] == 'artificial':
+    if not profile or request['route']['kind'] in ('artificial', 'hchain_scoped_q3'):
         return None
     from .rpe_host_profiles import select_host_profile, validate_adapter_profile
 

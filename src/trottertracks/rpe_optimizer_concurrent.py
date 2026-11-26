@@ -98,6 +98,17 @@ def queue_wait_signature(payload):
     return json.dumps(stable, sort_keys=True)
 
 
+def hchain_q3_probe_window(rows, start, limit):
+    """Share a PBS metadata check with an already queued H-chain Q3."""
+    rotated = rows[start:] + rows[:start]
+    if limit:
+        index = next((index for index, row in enumerate(rotated)
+                      if row['request']['route']['kind'] == 'hchain_scoped_q3'), None)
+        if index is not None:
+            rotated.insert(0, rotated.pop(index))
+    return rotated[:limit]
+
+
 def _write(path, value):
     with Path(path).open('x') as f:json.dump(value,f,default=str);f.write('\n')
 
@@ -1764,6 +1775,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     rank = 1
             return (getattr(task, 'optional_price_validation', False), rank,
                     offline_priority.get(task.owner, offline_priority.get(task.view.method, len(offline_priority))),
+                    getattr(self, 'hchain_preparation_priority', {}).get(task.job.name, (0,)),
                     self.state.owner_clock.get(task.owner, -1), task.enqueue)
 
         if tasks is None:
@@ -1804,7 +1816,7 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _ready_cpu_supply(self, ready, owned, policy, error):
         """Measure compatible waiting work against each fresh worker's CPU offer."""
-        from .rpe_pbs import GIB, resource_need, task_estimate
+        from .rpe_pbs import GIB, owned_resource_need, task_estimate
         from .rpe_pbs_worker import runtime_cpu_footprint
 
         manager = self.pbs_manager
@@ -1828,7 +1840,7 @@ class DistributedExecutor(ConcurrentExecutor):
 
             def footprint(row):
                 if pool is not None:
-                    return resource_need(row['request'], profile, manager.settings, host)
+                    return owned_resource_need(row, profile, manager.settings, host)
                 runtime = ((row['eligibility'] or {}).get('execution_profiles') or {}).get(host)
                 if runtime is None:
                     return None
@@ -2301,6 +2313,32 @@ class DistributedExecutor(ConcurrentExecutor):
                 and (providers is None or host in providers)
                 and (placements is None or host in placements))
 
+    def _hchain_q3_headroom(self, host, queue, rows, owners, pool, profile, settings):
+        """Let one ready Q3 accumulate its existing reservation on a PBS node."""
+        from .rpe_pbs import GIB, resource_need
+
+        if any(row['host_id'] == host and not row['method'].startswith('PREPARATION:')
+               and self._uses_pbs_task_resources(row) for row in owners):
+            return None
+        for task in queue:
+            if not task.demand or task.status != 'QUEUED' or task.rule['kind'] != 'hchain_scoped_q3':
+                continue
+            row = rows.get(task.job.name)
+            if row is None or row['state'] != 'QUEUED':
+                continue
+            decision = row['eligibility'] or {}
+            if (host not in decision.get('eligible_host_ids', ()) or
+                    not self._fits_host_walltime(host, row['request']) or
+                    not self._fits_host_task_class(host, row)):
+                continue
+            try:
+                cpu, memory = resource_need(row['request'], profile, settings, host)
+            except (KeyError, ValueError):
+                continue
+            if cpu <= pool['cpu_count'] and memory <= pool['memory_bytes'] - GIB:
+                return task, cpu, memory
+        return None
+
     def _fits_host_walltime(self, host, request):
         from .rpe_pbs import fits_request
         return fits_request(request, self.hosts.get(host, {}).get('resource_report'),
@@ -2499,6 +2537,7 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_coordinator import digest
         saved=row['eligibility']; request=row['request']; job=row['job_id']
         if row['detail'].get('prelaunch_recovery') is True:return saved
+        saved = self._resume_eligibility(row)
         if self._preparation_request(request) is None and isinstance(saved,dict):
             if isinstance(policy,dict) and policy.get('schema')=='RPE_Q3_HOST_ELIGIBILITY_V1':
                 record=(policy.get('jobs') or {}).get(job)
@@ -2516,6 +2555,23 @@ class DistributedExecutor(ConcurrentExecutor):
         if not paths or profile is None:return False
         from .rpe_pbs import pbs_transport_paths
         return pbs_transport_paths(profile,paths)!=profile
+
+    def _resume_eligibility(self, row):
+        """Recheck unassigned H-chain Q3 requests when their PBS profile changes."""
+        previous = row['eligibility']
+        request = row['request']
+        if (not previous or request['route']['kind'] != 'hchain_scoped_q3'
+                or self.distributed.get('live_q3_readiness') is not True):
+            return previous
+        from .rpe_host_profiles import profile_core, select_host_profile
+        profiles = previous.get('execution_profiles') or {}
+        for worker in (self.distributed.get('pbs') or {}).get('workers', []):
+            host = worker['host_id']
+            if host in profiles:
+                live = select_host_profile(worker['profile'], {'request': request})
+                if profile_core(live) != profiles[host]:
+                    return None
+        return previous
 
     def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None,
                          prefetch=False, queued=False):
@@ -3391,6 +3447,16 @@ class DistributedExecutor(ConcurrentExecutor):
             return []
         while not (self.state.closed or self.state.failure or stop_requested()):
             states = self.store.preparation_states(job_ids)
+            # In a large independent H-chain graph, a result already in the
+            # central store does not have to wait for readiness/hold checks on
+            # thousands of other as-yet unreserved leaves. Preserve the same
+            # full hold scan whenever there is no immediately publishable result.
+            if not wait and getattr(self, 'independent_hchain_preparations', ()):
+                completed = [job for job, (method, state) in states.items()
+                             if state == 'ACCEPTED' and
+                             (self.run_dir/'jobs'/method/job/'OUTCOME.json').is_file()]
+                if completed:
+                    return completed
             ready = []
             can_progress = False
             for job in job_ids:
@@ -3400,6 +3466,11 @@ class DistributedExecutor(ConcurrentExecutor):
                         (self.run_dir/'jobs'/method/job/'OUTCOME.json').is_file()) or (task and task.error):
                     ready.append(job)
                 if state == 'QUEUED':
+                    # The H-chain graph proves these leaves lack predecessors.
+                    # A nonblocking result watcher needs only their state, not
+                    # thousands of repeated full request/eligibility decodes.
+                    if not wait and job in getattr(self, 'independent_hchain_preparations', ()):
+                        continue
                     row = self.store.row(job)
                     if self._preparation_dependency_hold(row):
                         ready.append(job)
@@ -3525,7 +3596,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def await_preparation(self, job_id, *, adopt=True):
         return self.preparation_result(job_id,wait=True,adopt=adopt)
 
-    def configure_preparation_graph(self, settings):
+    def configure_preparation_graph(self, settings, *, skip=None):
         """Submit an explicitly supplied graph; candidate selection stays outside."""
         from . import rpe_q3_coordinator as Q
         frozen = self.run_dir/'distributed'/'PREPARATION_GRAPH.json'
@@ -3533,6 +3604,7 @@ class DistributedExecutor(ConcurrentExecutor):
             raise ValueError('Preparation graph changed on resume; use a new run')
         if not frozen.exists(): Q.atomic_json(frozen, settings)
         jobs, pending = {}, list(settings.get('tasks', []))
+        self.independent_hchain_preparations = set()
         while pending:
             ready = [item for item in pending if all(name in jobs for name in item.get('dependencies', []))]
             if not ready: raise ValueError('Preparation graph has missing or cyclic dependencies')
@@ -3541,9 +3613,22 @@ class DistributedExecutor(ConcurrentExecutor):
                 prep = request['preparation']
                 if prep.get('dependency_inputs'):
                     prep['dependency_inputs'] = {jobs.get(name,name):paths for name,paths in prep['dependency_inputs'].items()}
-                jobs[item['name']] = self.submit_preparation(request,budget=item.get('budget',0),approved=item.get('approved') is True,
-                    contract=item.get('contract'),eligibility=item.get('eligibility'),dependencies=[jobs[name] for name in item.get('dependencies', [])])
-                pending.remove(item)
+                predecessors = [jobs[name] for name in item.get('dependencies', [])]
+                if skip is not None and skip(request):
+                    from .rpe_preparation_queue import preparation_job_id
+                    jobs[item['name']] = preparation_job_id(request, source_manifest=self.source_manifest,
+                                                           dependencies=predecessors)
+                else:
+                    jobs[item['name']] = self.submit_preparation(request,budget=item.get('budget',0),approved=item.get('approved') is True,
+                        contract=item.get('contract'),eligibility=item.get('eligibility'),dependencies=predecessors)
+                if (prep.get('provider') == 'HCHAIN_SCOPED' and not predecessors
+                        and not prep.get('dependencies') and not prep.get('dependency_inputs')):
+                    self.independent_hchain_preparations.add(jobs[item['name']])
+            # Remove the completed topological layer together, retaining the
+            # original node order. The fixed H-chain graph has thousands of
+            # independent leaves in one layer.
+            ready_ids = {id(item) for item in ready}
+            pending = [item for item in pending if id(item) not in ready_ids]
         self.preparation_dependencies.update({configuration:[jobs[name] for name in names]
             for configuration,names in settings.get('candidate_dependencies', {}).items()})
         Q.atomic_json(self.run_dir/'distributed'/'PREPARATION_BINDINGS.json',dict(tasks=jobs,candidate_dependencies=self.preparation_dependencies))
@@ -4170,14 +4255,16 @@ class DistributedExecutor(ConcurrentExecutor):
         def reply(*, probe_rows=(), **fields):
             existing=fields.get('eligibility_challenges',[])
             challenges = {item['job_id']:item for item in existing+pending_challenges}
+            is_pbs = self.pbs_manager is not None and host in self.pbs_manager.configured
             if probe_rows:
                 # Workers verify the exact release during their metadata
                 # check. Keep a slow host from holding the shared lock
                 # while the controller validates every waiting request.
                 start = self.poll_probe_offsets.get(host, 0) % len(probe_rows)
                 limit = min(len(probe_rows), max(new_slots, self._host_readiness_limit(host)))
-                ordered = self._prioritize_probe_classes(host, probe_rows[start:]+probe_rows[:start], limit, new_slots)
-                for row in ordered:
+                ordered = self._prioritize_probe_classes(host, probe_rows[start:]+probe_rows[:start], len(probe_rows), new_slots)
+                window = hchain_q3_probe_window(ordered, 0, limit) if is_pbs else ordered[:limit]
+                for row in window:
                     try:
                         if self._preparation_request(row['request']) is not None:
                             task=s.tasks.get(self.run_dir/'jobs'/row['method']/row['job_id'])
@@ -4190,10 +4277,13 @@ class DistributedExecutor(ConcurrentExecutor):
                     challenge.pop('attempt_id', None)
                     challenges[challenge['job_id']] = challenge
                 self.poll_probe_offsets[host] = (start+limit) % len(probe_rows)
-            if may_probe and probe_slots and self.pbs_manager is not None and host in self.pbs_manager.configured:
+            if may_probe and probe_slots and is_pbs:
                 for challenge in self._pbs_q3_challenges(host, fingerprints, challenges, probe_slots):
                     challenges[challenge['job_id']] = challenge
             fields['eligibility_challenges'] = list(challenges.values())
+            if is_pbs:
+                fields['eligibility_challenges'].sort(
+                    key=lambda item: item['request']['route']['kind'] != 'hchain_scoped_q3')
             with s.cv:
                 if self.hosts[host]['poll_started'] == poll_started:
                     hints = getattr(s, 'queue_probe_hints', None)
@@ -4224,6 +4314,10 @@ class DistributedExecutor(ConcurrentExecutor):
         if stopping:
             return reply(assignments=assignments, stop=False,
                          host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
+        if (self.pbs_manager and pool is not None
+                and self.pbs_manager.replacement_fenced(host,pbs_offer.get('job_id'))):
+            return reply(assignments=assignments,stop=False,host_admission=admission,
+                         eligibility_challenges=[])
         if not new_slots and not (buffer_slots and may_probe):
             self._timing_queue()
             return reply(assignments=assignments, stop=False, host_admission=admission,
@@ -4377,6 +4471,8 @@ class DistributedExecutor(ConcurrentExecutor):
         latest_policy, latest_error = self._host_admission_policy()
         with self._rpc_queue_lock('/v1/poll', host):
             stopping = self._user_stop_requested() or s.failure or s.closed
+            stopping = stopping or (self.pbs_manager and pool is not None
+                and self.pbs_manager.replacement_fenced(host,pbs_offer.get('job_id')))
             stale = self.hosts[host]['poll_started'] != poll_started
             admission_policy, admission_error = latest_policy, latest_error
             owned_now = self._owned_attempts()
@@ -4423,8 +4519,9 @@ class DistributedExecutor(ConcurrentExecutor):
                 if owned['attempt_id'] in current_owners:
                     reserved_memory += existing_forecast.get('memory_bytes', 0)
             host_busy = False
+            q3_headroom = None
             if resource_pool is not None and (remaining or extra):
-                from .rpe_pbs import GIB, resource_need, task_estimate
+                from .rpe_pbs import GIB, resource_need, owned_resource_need, task_estimate
                 settings = self.distributed['pbs']
                 worker = next(w for w in settings['workers'] if w['host_id'] == host)
                 free_cpu = resource_pool['cpu_count']
@@ -4436,10 +4533,14 @@ class DistributedExecutor(ConcurrentExecutor):
                             standby_cpu += launch_fit['cpu']
                             standby_memory += launch_fit['memory_bytes']
                             continue
-                        cpu, memory = resource_need(old['request'], worker['profile'], settings, host)
+                        cpu, memory = owned_resource_need(old, worker['profile'], settings, host)
                         host_busy = True
                         free_cpu -= cpu
                         free_memory -= memory
+                q3_headroom = self._hchain_q3_headroom(
+                    host, queue, rows, owned_now, resource_pool, worker['profile'], settings)
+                if q3_headroom is not None:
+                    eligible.sort(key=lambda task: task is not q3_headroom[0])
             standby_claimed = 0
             for task in (() if stale or stopping else eligible):
                 if (remaining <= 0 and (not extra or not spare_delivery)) or self._user_stop_requested(): break
@@ -4472,10 +4573,17 @@ class DistributedExecutor(ConcurrentExecutor):
                         cpu, memory = resource_need(row['request'], worker['profile'], settings, host)
                     except (KeyError, ValueError):
                         continue
+                    if (q3_headroom is not None and task.rule['kind'] == 'preparation'
+                            and (cpu + q3_headroom[1] > free_cpu or memory + q3_headroom[2] > free_memory)):
+                        continue
                     fits = cpu <= free_cpu and memory <= free_memory
                     standby = not (remaining and fits)
-                    if standby and (not extra or not host_busy or task.demand
-                            or task.rule['kind'] == 'preparation' or (fits and standby_waves is None)
+                    prep_buffer = (task.rule['kind'] == 'preparation'
+                        and pbs_offer.get('preparation_ready_buffer') is True
+                        and task.job.name in getattr(self, 'independent_hchain_preparations', ()))
+                    if standby and (not extra or not host_busy or (task.demand and not prep_buffer)
+                            or (task.rule['kind'] == 'preparation' and not prep_buffer)
+                            or (fits and standby_waves is None and not prep_buffer)
                             or task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
                             or cpu > resource_pool['cpu_count'] or memory > resource_pool['memory_bytes']-GIB
                             or standby_cpu+cpu > extra or standby_memory+memory > buffer_memory):
@@ -4505,6 +4613,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not standby:
                         free_cpu -= cpu
                         free_memory -= memory
+                        if task.rule['kind'] == 'hchain_scoped_q3':
+                            q3_headroom = None
                 # Assignment and reservation are committed before a worker
                 # receives anything. A lost HTTP response retains ownership.
                 Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],

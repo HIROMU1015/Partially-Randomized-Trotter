@@ -12,6 +12,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -103,6 +104,12 @@ def request_service(config, request):
     scope = request.get('scope') or {}
     if not isinstance(scope, dict):
         return config
+    system = scope.get('system')
+    if isinstance(system, str) and (hchain := config.get('hchain_profiles', {}).get(system)):
+        selected = deepcopy(config)
+        selected.pop('hchain_profiles')
+        selected.update(hchain)
+        return selected
     per_method = scope.get('per_method') or {}
     if not isinstance(per_method, dict):
         return config
@@ -125,6 +132,9 @@ def request_service(config, request):
 
 def resolve(config, request):
     """Translate only settings that the selected normal entry actually consumes."""
+    if config.get('hchain'):
+        from .rpe_hchain_scope import resolve as resolve_hchain
+        return resolve_hchain(config, request)
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
     keys(scope, {'system', 'methods', 'per_method', 'shots', 'stop', 'preparation_budgets', 'scaled_shots',
@@ -763,7 +773,8 @@ class Gateway:
         if request.get('action') not in ('preview', 'planonly', 'prepare', 'start', 'resume', 'stop', 'status'):
             raise RequestError('action', 'preview, planonly, prepare, start, resume, stop, or status required')
         scope = request.get('scope')
-        if isinstance(scope, dict) and scope.get('system') in ('H6', 'H8') and self.config.get('readiness_metadata'):
+        if (isinstance(scope, dict) and scope.get('system') in ('H6', 'H8')
+                and self.config.get('readiness_metadata') and not self.config.get('hchain')):
             keys(scope, {'system', 'methods'}, 'scope')
             system = scope['system']
             if request['action'] != 'preview':
@@ -1090,7 +1101,14 @@ class Gateway:
             for method,widths in (requested_widths(scoped,spec) or {}).items():
                 scoped['methods'][method]['requested_delta_pf_values']=[
                     O.enc(Fraction(entry['exact'])) for entry in widths]
-        context = O.prepare(Path(self.config['code_root']),scoped,methods=spec['methods'],generate_configurations=False,preparation_dir=run/'preflight-inputs')
+        if spec.get('hchain'):
+            from run_rpe_hchain_round import preflight_context
+            try:
+                context = preflight_context(problem, spec)
+            except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
+                raise RequestError('hchain', str(error)) from error
+        else:
+            context = O.prepare(Path(self.config['code_root']),scoped,methods=spec['methods'],generate_configurations=False,preparation_dir=run/'preflight-inputs')
         routes = CLI.merged_routes(scoped,spec)
         if spec.get('search_to_rule_stop'):
             from .pf_optimizer_connection import registry_routes
@@ -1141,12 +1159,16 @@ class Gateway:
         # match. Missing/corrupt records for a same-key candidate need review.
         holds=[r for r in refused if r['reason'] not in ('CONFIGURATION_NOT_IN_THIS_ROUND',
             'DIFFERENT_JOB_KEY_OR_ROUTE','PRIOR_Q3_PERSISTENCE_HOLD')]
-        return dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
+        report = dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
             prior_q3_holds=list(prior_holds.values()),retired_preparation_holds=sorted(str(path) for path in retired_preparation),
             prior_preparation_rejected_before_science=sorted(rejected_before_delivery),
             reconciled_prior_runs={str(path): held for path, held in reconciled.items()},
             checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
             normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
+        if (legacy := context.get('legacy')) is not None:
+            report['hchain_legacy'] = dict(job=legacy['source_job'], completed=len(legacy['records']),
+                                           held=len(legacy['holds']), spent=legacy['spent'])
+        return report
 
     def normal_launch(self, run, problem, spec, *, schedule_resume=None):
         invocation=uuid.uuid4().hex
@@ -1264,6 +1286,20 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
         hold('the selected failed invocation or search state differs')
     history = run/'invocations'/invocation
     try:
+        scope_path = run/'APPLIED_SCOPE.json'
+        if (kind == 'dispatch' and scope_path.is_file() and load(scope_path)['entry'] == 'method'
+                and (run/'ROUND.json').is_file() and load(run/'ROUND.json').get('hchain')):
+            driver = load(run/'NORMAL_DRIVER.json')
+            if (load(history/'LAUNCH.json') != launch or load(history/'EXIT.json') != ended
+                    or driver['invocation_id'] != invocation):
+                hold('the driver and exit records do not agree')
+            failure = verify_pre_dispatch_failure(run, history, driver, has_relay=False)
+            if failure:
+                return failure
+            failure = reconcile_hchain_preparation_setup(run, history, driver)
+            if failure:
+                return failure
+            hold('the H-chain invocation reached a dispatcher or has an unresolved owner')
         stop = load(run/'KAPPA_STATE.json')['stop']
         driver = load(run/'NORMAL_DRIVER.json')
         relay = load(run/'distributed/relay/STATUS.json')
@@ -1458,7 +1494,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
     return stop
 
 
-def verify_pre_dispatch_failure(run, history, driver):
+def verify_pre_dispatch_failure(run, history, driver, *, has_relay=True):
     """Return a replayable startup failure only if no new executor took ownership."""
     import sqlite3
 
@@ -1469,12 +1505,21 @@ def verify_pre_dispatch_failure(run, history, driver):
             or load(endpoint)['pid'] == driver['pid'] or progress.stat().st_mtime >= launched
             or (run/'STOP_REQUESTED.json').exists()):
         return None
-    for owner in (load(history/'LAUNCH.json'), driver, load(run/'distributed/relay/STATUS.json')):
-        if Path('/proc', str(owner['pid']), 'cmdline').exists():
+    owners = [load(history/'LAUNCH.json'), driver]
+    lock_names = ['FAST_DRIVER.lock', 'distributed/pbs/MANAGER.lock']
+    if has_relay:
+        owners.append(load(run/'distributed/relay/STATUS.json'))
+        lock_names.insert(1, 'distributed/relay/RELAY.lock')
+    for owner in owners:
+        try:
+            live = (Path('/proc')/str(owner['pid'])/'cmdline').read_bytes().strip(b'\0')
+        except FileNotFoundError:
+            live = False
+        if live:
             raise BlockingIOError('a startup or previous relay owner remains active')
     local_worker_for_reattachment(run)
     with ExitStack() as locks:
-        for name in ('FAST_DRIVER.lock', 'distributed/relay/RELAY.lock', 'distributed/pbs/MANAGER.lock'):
+        for name in lock_names:
             lock = locks.enter_context((run/name).open('rb'))
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         database = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
@@ -1483,6 +1528,41 @@ def verify_pre_dispatch_failure(run, history, driver):
                 return None
             verify_reattachable_attempts(run, db)
     return dict(reason='CONTROLLER_STARTUP_EXIT_BEFORE_DISPATCH', invocation_id=history.name)
+
+
+def reconcile_hchain_preparation_setup(run, history, driver):
+    """Recover the preparation setup exception before any new attempt was assigned."""
+    import sqlite3
+
+    if ((run/'STOP_REQUESTED.json').exists() or (run/'SEARCH_TERMINATION.json').exists()
+            or load(run/'distributed/ENDPOINT.json')['pid'] != driver['pid']):
+        return None
+    with (run/'DRIVER.log').open('rb') as stream:
+        stream.seek(max(0, os.fstat(stream.fileno()).st_size - 8192))
+        trace = stream.read().decode(errors='replace')
+    if ('in preparation_priorities' not in trace
+            or "worker.h8_preparation_priority(plan, run, circuit_size)" not in trace
+            or not trace.rstrip().endswith("AttributeError: 'dict' object has no attribute 'h8_preparation_priority'")):
+        return None
+    for owner in (load(history/'LAUNCH.json'), driver):
+        try:
+            if (Path('/proc')/str(owner['pid'])/'cmdline').read_bytes().strip(b'\0'):
+                raise BlockingIOError('the failed H-chain controller still has a live process')
+        except FileNotFoundError:
+            pass
+    local_worker_for_reattachment(run)
+    with ExitStack() as locks:
+        for name in ('FAST_DRIVER.lock', 'distributed/pbs/MANAGER.lock'):
+            lock = locks.enter_context((run/name).open('rb'))
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        database = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+        with sqlite3.connect(database, uri=True) as db:
+            allowed = ('CANCEL_QUEUED', 'HOST_ELIGIBILITY_HOLD', 'COMPLETED_PENDING_TRANSFER')
+            if db.execute('SELECT 1 FROM events WHERE epoch>=? AND event NOT IN (?,?,?) LIMIT 1',
+                          ((history/'LAUNCH.json').stat().st_mtime, *allowed)).fetchone():
+                return None
+            verify_reattachable_attempts(run, db)
+    return dict(reason='HCHAIN_PREPARATION_SETUP_EXIT_WITH_NO_NEW_ASSIGNMENT', invocation_id=history.name)
 
 
 def verify_reattachable_attempts(run, db):
@@ -1520,10 +1600,17 @@ def reconcile_controller_detachment(run, launch, invocation):
             raise ValueError('the detached invocation differs')
         driver = load(run/'NORMAL_DRIVER.json')
         endpoint = load(run/'distributed/ENDPOINT.json')
-        relay = load(run/'distributed/relay/STATUS.json')
+        spec = load(run/'ROUND.json')
+        distributed = spec.get('executor', {}).get('distributed', {})
+        hchain_pbs = (bool(spec.get('hchain')) and bool(distributed.get('pbs'))
+                      and load(run/'APPLIED_SCOPE.json')['entry'] == 'method'
+                      and not distributed.get('relay') and not distributed.get('local_worker'))
+        owners = [('launcher', launch), ('driver', driver)]
+        if not hchain_pbs:
+            owners.append(('relay', load(run/'distributed/relay/STATUS.json')))
         if driver['invocation_id'] != invocation:
-            raise ValueError('the detached driver differs')
-        for name, owner in (('launcher', launch), ('driver', driver), ('relay', relay)):
+            raise ValueError('the detached driver and endpoint differ')
+        for name, owner in owners:
             pid = owner['pid']
             if type(pid) is not int or pid <= 0:
                 raise ValueError('invalid '+name+' PID')
@@ -1532,16 +1619,17 @@ def reconcile_controller_detachment(run, launch, invocation):
                     raise BlockingIOError(name+' still has a live process')
             except FileNotFoundError:
                 pass
-        spec = load(run/'ROUND.json')
-        hold = driver_restart_hold(run, spec)
-        if hold:
-            raise ValueError(hold)
+        if hchain_pbs:
+            if (run/'STOP_REQUESTED.json').exists() or (run/'SEARCH_TERMINATION.json').exists():
+                raise ValueError('STOP_OR_SEARCH_TERMINATION')
+        else:
+            hold = driver_restart_hold(run, spec)
+            if hold:
+                raise ValueError(hold)
         if endpoint['pid'] != driver['pid']:
-            # A startup interrupted before the fixed endpoint was published
-            # has exactly the previous queue owners. Do not invent a receipt
-            # or require the scientific workers to end in this case.
-            proof=verify_pre_dispatch_failure(run,history,driver)
-            if proof is None:raise ValueError('the detached driver and endpoint differ')
+            proof = verify_pre_dispatch_failure(run, history, driver, has_relay=not hchain_pbs)
+            if proof is None:
+                raise ValueError('the detached driver and endpoint differ')
             return proof
         local_worker_for_reattachment(run)
         with ExitStack() as locks:
@@ -1551,6 +1639,20 @@ def reconcile_controller_detachment(run, launch, invocation):
                     fcntl.flock(locks.enter_context(path.open('rb')), fcntl.LOCK_EX | fcntl.LOCK_NB)
             path = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
             with sqlite3.connect(path, uri=True) as db:
+                if hchain_pbs:
+                    # The H-chain method entry has no width-schedule checkpoint.
+                    # Reattach only a PBS reservation before any new task acquired ownership.
+                    if (db.execute('PRAGMA quick_check').fetchall() != [('ok',)]
+                            or db.execute('SELECT 1 FROM jobs LIMIT 1').fetchone()
+                            or db.execute('SELECT 1 FROM events LIMIT 1').fetchone()):
+                        raise ValueError('H-chain dispatch ownership requires reconciliation')
+                    pbs = load(run/'distributed/pbs/STATE.json')
+                    allocations = [a for a in pbs['allocations'].values()
+                                   if a['status'] != 'SUPERSEDED_UNSUBMITTED']
+                    if (pbs['requests'] or not allocations
+                            or any(a['status'] not in ('Q', 'R') or a.get('inflight')
+                                   or not (a.get('observed') or {}).get('job_id') for a in allocations)):
+                        raise ValueError('H-chain PBS reservation ownership is incomplete')
                 verify_reattachable_attempts(run, db)
         return dict(reason='CONTROLLER_DETACHED_WITHOUT_EXIT_RECEIPT', invocation_id=invocation)
     except BlockingIOError as error:
@@ -1566,6 +1668,47 @@ def reconcile_controller_kill(run, launch, ended, invocation):
     try:
         archived = run/'invocations'/invocation
         driver = load(run/'NORMAL_DRIVER.json')
+        spec = load(run/'ROUND.json')
+        distributed = spec.get('executor', {}).get('distributed', {})
+        if (spec.get('hchain') and distributed.get('pbs')
+                and not distributed.get('relay') and not distributed.get('local_worker')
+                and load(run/'APPLIED_SCOPE.json')['entry'] == 'method'):
+            # A deliberate controller-only interruption preserves the PBS
+            # workers, their spools, and every durable attempt. This is not
+            # the schedule restart path that requires closed allocations.
+            if (launch.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
+                    or ended.get('returncode') != -signal.SIGTERM
+                    or launch != load(archived/'LAUNCH.json') or ended != load(archived/'EXIT.json')
+                    or driver.get('invocation_id') != invocation
+                    or load(run/'distributed/ENDPOINT.json')['pid'] != driver['pid']):
+                raise ValueError('the interrupted H-chain invocation differs')
+            if (run/'STOP_REQUESTED.json').exists() or (run/'SEARCH_TERMINATION.json').exists():
+                raise ValueError('STOP_OR_SEARCH_TERMINATION')
+            for owner in (launch, driver):
+                pid = owner['pid']
+                if type(pid) is not int or pid <= 0:
+                    raise ValueError('invalid controller PID')
+                try:
+                    if Path('/proc', str(pid), 'cmdline').read_bytes().strip(b'\0'):
+                        raise ValueError('an old controller still has a live process')
+                except FileNotFoundError:
+                    pass
+            local_worker_for_reattachment(run)
+            with ExitStack() as locks:
+                for name in ('FAST_DRIVER.lock', 'distributed/pbs/MANAGER.lock'):
+                    fcntl.flock(locks.enter_context((run/name).open('rb')), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                pbs = load(run/'distributed/pbs/STATE.json')
+                allocations = [a for a in pbs['allocations'].values() if a['status'] in ('Q', 'R')]
+                if (not allocations or any(not (a.get('observed') or {}).get('job_id') for a in allocations)):
+                    raise ValueError('existing H-chain PBS allocation ownership is missing')
+                queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
+                with sqlite3.connect(queue, uri=True) as db:
+                    if db.execute('PRAGMA quick_check').fetchall() != [('ok',)]:
+                        raise ValueError('H-chain queue integrity check failed')
+                    verify_reattachable_attempts(run, db)
+            return dict(reason='HCHAIN_CONTROLLER_INTERRUPTED_PBS_REATTACHED',
+                        invocation_id=invocation, returncode=ended['returncode'],
+                        allocations=[a['observed']['job_id'] for a in allocations])
         relay = load(run/'distributed/relay/STATUS.json')
         if (launch.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
                 or ended.get('returncode') != -signal.SIGKILL
@@ -1663,10 +1806,59 @@ def reconcile_controller_kill(run, launch, ended, invocation):
 def schedule_driver(config, run, selection):
     """Resolve the operator-selected scheduler for this exact pinned run."""
     scope = load(run/'APPLIED_SCOPE.json')
+    entry = scope['entry']
+    dispatch = selection.get('worker_trial', {}).get('pbs_dispatch_gateway')
+    method_transport = entry == 'method' and dispatch is not None
     if (selection['run_id'] != scope['run_id'] or selection['base_source'] != config['code_source']
-            or scope['entry'] != 'schedule' or config.get('artificial_controller_directory')):
+            or (entry != 'schedule' and not method_transport) or config.get('artificial_controller_directory')):
         raise RequestError('schedule_resume', 'Scheduler selection does not match the fixed run')
-    driver = Path(selection['root']).resolve()/'scripts/run_rpe_schedule_search.py'
+    if method_transport:
+        spec = load(run/'ROUND.requested.json')
+        distributed = spec.get('executor', {}).get('distributed', {})
+        fields = {'run_id', 'base_source', 'root', 'source', 'driver_sha256',
+                  'worker_trial', 'pbs_manager_sha256'}
+        trial = selection['worker_trial']
+        if (not fields <= selection.keys() <= fields | {'resume_dispatch_failure', 'resume_controller_kill', 'q3_store_sha256'}
+                or set(trial) not in ({'pbs_dispatch_gateway'},
+                                     {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256'},
+                                     {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256', 'hchain_round_sha256'},
+                                     {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256',
+                                      'hchain_round_sha256', 'pbs_future_storage_launcher'},
+                                     {'pbs_dispatch_gateway', 'hchain_preparation_memory', 'optimizer_sha256',
+                                      'hchain_round_sha256', 'pbs_future_storage_launcher', 'pbs_replacement'})
+                or not isinstance(dispatch, dict) or set(dispatch) != {'path', 'sha256'}
+                or not Path(dispatch['path']).is_absolute() or not re.fullmatch('[0-9a-f]{64}', dispatch['sha256'])
+                or not spec.get('hchain') or not distributed.get('pbs_dispatch_gateway')
+                or distributed.get('pbs_hold_node')):
+            raise RequestError('schedule_resume', 'Invalid operational selection for this fixed H-chain PBS run')
+        if (reference := trial.get('hchain_preparation_memory')):
+            path = Path(reference['path'])
+            optimizer = Path(selection['root'])/'src/trottertracks/rpe_optimizer_concurrent.py'
+            if (not path.is_absolute() or not path.is_file() or not optimizer.is_file() or
+                    hashlib.sha256(path.read_bytes()).hexdigest() != reference['sha256']
+                    or hashlib.sha256(optimizer.read_bytes()).hexdigest() != trial['optimizer_sha256']):
+                raise RequestError('schedule_resume', 'H-chain preparation memory operations differ')
+        if replacement := trial.get('pbs_replacement'):
+            fields = set(replacement)
+            if (fields not in ({'job_id','host_id'}, {'job_id','host_id','retain_predecessor','successor_token'},
+                               {'job_id','host_id','retain_predecessor','successor_token','transfer_successor'},
+                               {'job_id','host_id','retain_predecessor','successor_token','transfer_successor','restore_predecessor'})
+                    or ('restore_predecessor' in replacement and replacement['restore_predecessor'] is not True)
+                    or ('transfer_successor' in replacement and replacement['transfer_successor'] is not True)
+                    or ('retain_predecessor' in replacement and (replacement['retain_predecessor'] is not True
+                        or not re.fullmatch(r'[0-9a-f]{32}',replacement['successor_token'])))
+                    or not re.fullmatch(r'[0-9]+\.[A-Za-z0-9_-]+',replacement['job_id']) or
+                    replacement['host_id'] not in {w['host_id'] for w in distributed['pbs']['workers']}):
+                raise RequestError('schedule_resume','Invalid PBS successor scope')
+        if reference := trial.get('pbs_future_storage_launcher'):
+            if (set(reference) != {'path', 'sha256'} or not Path(reference['path']).is_absolute()
+                    or not re.fullmatch('[0-9a-f]{64}', reference['sha256'])):
+                raise RequestError('schedule_resume', 'Invalid future PBS launcher reference')
+        if 'hchain_round_sha256' in trial:
+            round_script = Path(selection['root'])/'scripts/run_rpe_hchain_round.py'
+            if hashlib.sha256(round_script.read_bytes()).hexdigest() != trial['hchain_round_sha256']:
+                raise RequestError('schedule_resume', 'H-chain preparation priority operations differ')
+    driver = Path(selection['root']).resolve()/'scripts'/ENTRIES[entry]
     if (not driver.is_file()
             or hashlib.sha256(driver.read_bytes()).hexdigest() != selection['driver_sha256']):
         raise RequestError('schedule_resume', 'Scheduler differs from its selected deployment')
@@ -1680,7 +1872,7 @@ def schedule_driver(config, run, selection):
         if (not manager.is_file()
                 or hashlib.sha256(manager.read_bytes()).hexdigest() != selection['pbs_manager_sha256']):
             raise RequestError('schedule_resume', 'PBS manager differs from its selected deployment')
-    if 'worker_trial' in selection:
+    if 'worker_trial' in selection and not method_transport:
         trial = selection['worker_trial']
         for name, field in (('rpe_optimizer_concurrent', 'optimizer_sha256'),
                             ('rpe_method_optimizer', 'method_optimizer_sha256')):
@@ -1873,7 +2065,8 @@ def execute_run(config, run, invocation, *, schedule_resume=None):
         # optimizer. Scientific providers and all other imports stay pinned.
         manager = str(driver.parents[1]/'src/trottertracks/rpe_pbs.py') if 'pbs_manager_sha256' in schedule_resume else ''
         trial = schedule_resume.get('worker_trial')
-        optimizer = str(driver.parents[1]/'src/trottertracks/rpe_optimizer_concurrent.py') if trial else ''
+        optimizer = (str(driver.parents[1]/'src/trottertracks/rpe_optimizer_concurrent.py')
+                     if trial and 'optimizer_sha256' in trial else '')
         preparation = schedule_resume.get('preparation_sha256')
         runtime_trial = trial
         for kind in ('ast', 'dispatch', 'pf_request'):

@@ -28,8 +28,8 @@ import subprocess
 import sys
 import time
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT/'src'))
+ROOT = Path(globals().get('FIXED_RUN_CODE_ROOT') or Path(__file__).resolve().parents[1])
+sys.path[:0] = [str(ROOT/'src'), str(ROOT/'scripts')]
 from trottertracks import rpe_method_optimizer as O  # noqa: E402
 
 
@@ -277,6 +277,39 @@ def preparation_budgets(spec):
 def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None, result_callback=None):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
+    if spec.get('hchain'):
+        operations = globals().get('FIXED_RUN_WORKER_TRIAL')
+        if operations:
+            distributed = spec['executor']['distributed']
+            gateway = distributed['pbs_dispatch_gateway']
+            dispatch = operations['pbs_dispatch_gateway']
+            distributed['pbs_reconcile_dispatch_intents'] = gateway['path'] != dispatch['path']
+            gateway.update(dispatch)
+            if operations.get('pbs_future_storage_launcher'):
+                distributed['pbs_future_storage_launcher'] = operations['pbs_future_storage_launcher']
+            if operations.get('pbs_replacement'):
+                distributed['pbs_replacement'] = operations['pbs_replacement']
+                if (operations['pbs_replacement'].get('transfer_successor') is True
+                        and not operations['pbs_replacement'].get('restore_predecessor')):
+                    distributed['host_admission'] = dict(schema='RPE_Q3_HOST_ADMISSION_V1', hosts={
+                        operations['pbs_replacement']['host_id']: dict(accepting=False, optional=True, max_slots=0)})
+            if operations.get('hchain_preparation_memory'):
+                from trottertracks.rpe_pbs import apply_hchain_preparation_memory
+                apply_hchain_preparation_memory(distributed, run, operations['hchain_preparation_memory'])
+        if operations and operations.get('hchain_round_sha256'):
+            import hashlib
+            import importlib.util
+            path = Path(__file__).with_name('run_rpe_hchain_round.py')
+            if hashlib.sha256(path.read_bytes()).hexdigest() != operations['hchain_round_sha256']:
+                raise ValueError('Selected H-chain priority code differs')
+            module_spec = importlib.util.spec_from_file_location('hchain_operational_round', path)
+            module = importlib.util.module_from_spec(module_spec)
+            module_spec.loader.exec_module(module)
+            run_round = module.run_round
+        else:
+            from run_rpe_hchain_round import run_round
+        return run_round(ROOT, run, problem, spec, extra, make_executor=make_executor,
+                         plan_only=getattr(a,'plan_only',False))
     if getattr(a,'plan_only',False):
         spec=dict(spec,science_approved=False,max_new_q3_per_method={m:0 for m in spec['methods']})
         if spec.get('pf_completion'):spec['pf_completion']=dict(spec['pf_completion'],mode='plan')
@@ -720,6 +753,7 @@ def main():
     p.add_argument('--round', type=Path, help='approved search round JSON (methods, new-Q3 budget, optional routes override)')
     p.add_argument('--run-dir', type=Path, help='round directory (jobs, results); re-run the same command to resume')
     p.add_argument('--dry-check-routes', action='store_true')
+    p.add_argument('--plan-only', action='store_true', help='Report the applied round without starting tasks')
     p.add_argument('--ingest', type=Path, help='JSON list of Q3 results {configuration_id,N_X,N_Y,status,MSE_lower,MSE_upper,source}')
     p.add_argument('--resume-from', type=Path, action='append', help='previous ROUND_RESULT.json/RESULT.json (resume_records) to reuse')
     p.add_argument('--interrupted', type=Path, help='with --round/--run-dir: STOP record JSON of a round stopped by a search-policy '

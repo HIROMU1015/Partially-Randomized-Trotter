@@ -60,7 +60,8 @@ def main():
             profile['adapter_root'] = str(adapter_root)
             if not profile.get('adapter_manifest'):
                 paths = ('scripts/run_rpe_optimizer_q3_job.py', 'src/trottertracks/rpe_dp_prefix_reuse.py')
-                for helper in ('src/trottertracks/rpe_q3_evidence.py', 'src/trottertracks/rpe_q3_round_tables.py'):
+                for helper in ('src/trottertracks/rpe_q3_evidence.py', 'src/trottertracks/rpe_q3_round_tables.py',
+                               'scripts/rpe_hchain_q3.py'):
                     if (adapter_root / helper).exists():
                         paths += (helper,)
                 profile['adapter_manifest'] = dict(commit=subprocess.check_output(
