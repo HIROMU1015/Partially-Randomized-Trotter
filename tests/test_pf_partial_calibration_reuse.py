@@ -70,3 +70,31 @@ class PartialCalibrationReuse(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+
+def test_publish_pf_locators_without_unrelated_history(tmp_path):
+    import json
+    import subprocess
+    from trottertracks.pf_distributed_preparation import publish_pf_locators
+
+    source, destination = tmp_path/'source', tmp_path/'destination'
+    for root in (source, destination):
+        subprocess.run(['git','init','-q',str(root)],check=True)
+        subprocess.run(['git','config','user.email','test@example.invalid'],cwd=root,check=True)
+        subprocess.run(['git','config','user.name','Test'],cwd=root,check=True)
+    def git(*args):
+        return subprocess.check_output(['git',*args],cwd=source,text=True).strip()
+    (source/'irrelevant').write_text('not a scientific input')
+    (source/'signal.json').write_text('{"signal": 1}')
+    git('add','.');git('commit','-qm','fixed signal')
+    first=git('rev-parse','HEAD')
+    missing=git('rev-parse','HEAD:irrelevant')
+    (source/'index.json').write_text(json.dumps({'signal':{'commit':first,'path':'signal.json'}}))
+    git('add','index.json');git('commit','-qm','publish index')
+    last=git('rev-parse','HEAD')
+    (source/'.git/objects'/missing[:2]/missing[2:]).unlink()
+    publish_pf_locators(source,destination,{'commit':last,'path':'index.json'})
+    for ref,path in [(first,'signal.json'),(last,'index.json')]:
+        before=git('show',ref+':'+path)
+        after=subprocess.check_output(['git','show',ref+':'+path],cwd=destination,text=True).strip()
+        assert before==after
