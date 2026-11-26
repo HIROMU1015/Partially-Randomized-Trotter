@@ -1447,7 +1447,10 @@ class PbsManager:
                 if not (self.compute_storage_sampling and self.storage_launcher) and not self._storage_accepting(worker):
                     continue
                 try:
-                    self._submit(host,worker,dict(independent_blocks=True, uncompleted_blocks=pending))
+                    demand = dict(independent_blocks=True, uncompleted_blocks=pending)
+                    if retained := self.offline_plan['settings'].get('retained_pilot'):
+                        demand['retained_pilot'] = retained
+                    self._submit(host,worker,demand)
                     owned.add(host)
                 except (OSError,ValueError,RuntimeError,subprocess.SubprocessError) as error:
                     self.log('PBS_INDEPENDENT_SUBMIT_HELD',host_id=host,reason=str(error))

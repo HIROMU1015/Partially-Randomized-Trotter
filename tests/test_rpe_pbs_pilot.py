@@ -70,6 +70,18 @@ class PilotTest(unittest.TestCase):
         pilot.handle(root, dict(action='exchange', controls={token:dict(stop=True)}), {})
         pilot.handle(root, dict(action='delete', token=token), {})
 
+    def test_retained_pilot_attaches_without_reserving_or_releasing(self):
+        current = pilot.admin(self.pool, 'reserve')
+        self.jobs[current['job_id']]['job_state'] = 'R'
+        reason = dict(retained_pilot=dict(token=current['token'], job_id=current['job_id']))
+        # An explicitly retained live reservation is valid even when a different
+        # generation is selected for future ordinary allocations.
+        with patch.object(pilot, 'reserve_locked', side_effect=AssertionError('unexpected reserve')):
+            directory = self.attach(self.b, 'retained', reason)
+        self.assertEqual(G.read(directory/'PILOT.json')['token'], current['token'])
+        self.assertEqual(len(self.submissions), 1)
+        self.assertFalse((self.pool/'allocations'/current['token']/'RELEASE.json').exists())
+
     def test_attempt_replay_binds_only_to_the_original_live_pilot(self):
         current = pilot.admin(self.pool, 'reserve')
         job_id = current['job_id']

@@ -335,3 +335,19 @@ def test_fixed_generation_signal_view_from_controller_profile(tmp_path, monkeypa
     monkeypatch.setitem(sys.modules, 'run_pr_df_ld7_v0', legacy)
     monkeypatch.setattr(sys, 'path', list(sys.path))
     assert generator.generator('prdf_a_fixed_grid', tmp_path, signal_view=view)[0] is marker
+
+
+def test_partition_carries_parent_verified_holds(tmp_path):
+    from trottertracks.rpe_pbs_offline import pbs_units, part_documents
+    run = tmp_path/'run'
+    initial = independent_fixture(run)
+    spec = read(run/'ROUND.json')
+    hold = dict(method='PR_PAULI', job_id='a'*20, reason='UNRESOLVED')
+    spec['executor']['prior_q3_holds'] = [hold]
+    atomic(run/'ROUND.json', spec)
+    atomic(run/'DUPLICATE_PREFLIGHT.json', dict(status='PASS', prior_q3_holds=[hold]))
+    plan = prepare_plan(run, dict(initial['settings'], packages_per_node=1))
+    profile = dict(host_id='pbs0', slots=8, dp_workers=1, pbs={})
+    _, child = part_documents(plan, pbs_units(plan)[0], profile, tmp_path/'part')
+    assert 'prior_q3_holds' not in child['executor']
+    assert child['executor']['partition_prior_q3_holds'] == ([hold] if 'PR_PAULI' in child['methods'] else [])

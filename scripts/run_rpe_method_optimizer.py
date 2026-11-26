@@ -169,7 +169,14 @@ def make_executor(root, run, routes, expected, problem, spec):
     """
     run=Path(run);root=Path(root);options=spec.get('executor',{})
     from trottertracks.rpe_search_continuation import verify_prior_q3_holds
-    prior_q3_holds = list(verify_prior_q3_holds(root,run,problem,spec).values())
+    # For an independent PBS block these exact records were verified by the
+    # parent controller before the fixed partition plan was delivered.
+    prior_q3_holds = options.get('partition_prior_q3_holds')
+    if prior_q3_holds is None:
+        prior_q3_holds = list(verify_prior_q3_holds(root,run,problem,spec).values())
+    elif options.get('prior_q3_holds') or any(row['method'] not in spec['methods'] or row.get('replay_exact')
+                                             for row in prior_q3_holds):
+        raise ValueError('Partition contains an invalid or replayable prior Q3 hold')
     scheduler=options.get('scheduler','legacy')
     if scheduler not in('legacy','concurrent'):raise ValueError('Unknown executor.scheduler')
     budgets=spec['max_new_q3_per_method']

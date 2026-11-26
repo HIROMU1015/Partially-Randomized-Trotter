@@ -310,7 +310,16 @@ def attach(root, pool, spec):
         if binding is None:
             replay = spec.get('reason', {}).get('replay_pilot')
             replacement = spec.get('reason', {}).get('retained_replacement')
-            if replacement:
+            if retained := spec.get('reason', {}).get('retained_pilot'):
+                generation = safe_id(retained['token'])
+                target = pool/'allocations'/generation
+                observed = physical(pool, generation)
+                if (observed.get('job_id') != retained['job_id'] or observed['status'] != 'R'
+                        or (target/'RELEASE.json').exists()
+                        or read(target/'SPEC.json')['resources'] not in (RESOURCES, SUCCESSOR_RESOURCES)):
+                    raise ValueError('Selected existing PBS node is unavailable')
+                binding = dict(token=generation)
+            elif replacement:
                 generation = safe_id(replacement['pilot_token'])
                 target = pool/'allocations'/generation
                 current = read(pool/'CURRENT.json', {}).get('token')
