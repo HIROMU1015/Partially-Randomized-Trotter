@@ -253,7 +253,8 @@ class AutoAllocationTests(unittest.TestCase):
             WSL:dict(accepting=False, optional=True, max_slots=1)}))
         self.poll(ex, 'server1', facts, observe=True)
         self.feedback(ex, 'server1', {'ready_jobs': 1})
-        events = [json.loads(line) for line in (self.run/'PROGRESS.jsonl').read_text().splitlines()]
+        from trottertracks.rpe_q3_timing import read_lines
+        events = read_lines(self.run/'PROGRESS.jsonl')
         reasons = [event['reasons'] for event in events if event['event'] == 'QUEUE_WAIT_STATE'][-1]
         self.assertNotIn('REQUIRED_HOST_PARTICIPATION_WAIT', reasons.values())
         self.assertNotIn('ALL_ELIGIBLE_SLOTS_BUSY', reasons.values())

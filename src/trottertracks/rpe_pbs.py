@@ -1156,6 +1156,12 @@ class PbsManager:
         saved = self.directory/'responses'/token/(request_id+'.json')
         saved.parent.mkdir(parents=True, exist_ok=True)
         identity = digest(request)
+        replay = self.directory/'responses-replay'/token/(request_id+'.json')
+        if replay.is_file():
+            record = read(replay)
+            if request['endpoint'] != '/v1/artifacts/get' or record['request_sha256'] != identity:
+                raise ValueError('Reused PBS RPC ID has changed content')
+            return dict(ok=True, result=dict(blobs=self.executor.artifact_cache.get(record['hashes'])))
         if saved.exists():
             record = read(saved)
             if record['request_sha256'] != identity:
@@ -1279,6 +1285,12 @@ class PbsManager:
             response = dict(ok=True, result=result)
         except (OSError, ValueError, KeyError) as error:
             response = dict(ok=False, error=type(error).__name__+': '+str(error))
+        # GET is read-only and all returned bytes already exist in the CAS.
+        # Persist the request identity and hashes, not a base64 copy of them.
+        if request['endpoint'] == '/v1/artifacts/get' and response.get('ok') and set(result) == {'blobs'} and result['blobs']:
+            replay.parent.mkdir(parents=True, exist_ok=True)
+            atomic(replay, dict(request_sha256=identity, hashes=list(result['blobs']), clock=stamp()))
+            return response
         return self._record_rpc_response(token, request_id, identity, response)
 
     def _shared_artifact(self, profile, sha):
@@ -1418,7 +1430,7 @@ class PbsManager:
             return self._dispatch(token, request)
         ident = (token, request['request_id'])
         saved = self.directory / 'responses' / token / (ident[1] + '.json')
-        if saved.exists():
+        if saved.exists() or (self.directory/'responses-replay'/token/(ident[1]+'.json')).is_file():
             return self._dispatch(token, request)
         fingerprint = digest(request)
         transfer = self.artifact_transfers.get(ident)

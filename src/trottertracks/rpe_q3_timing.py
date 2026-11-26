@@ -59,18 +59,52 @@ def body_context(module, output):
         yield
 
 
-def read_lines(path):
-    rows = []
+def compact_queue_reasons(reasons, previous=None):
+    """Losslessly record changes instead of writing the entire ready queue again."""
+    full = dict(reasons=reasons)
+    if previous is None or not reasons:
+        return full
+    delta = dict(reason_updates={key: value for key, value in reasons.items()
+                                 if previous.get(key) != value},
+                 reason_removed=sorted(previous.keys()-reasons.keys()),
+                 reason_counts=dict(Counter(reasons.values())))
+    # Small or rapidly changing queues can be cheaper as a full snapshot.
+    # Compare only compact metadata; avoid serializing the unchanged map twice.
+    estimated_full = 15 + sum(len(key)+len(value)+8 for key, value in reasons.items())
+    return delta if len(json.dumps(delta)) < estimated_full else full
+
+
+def expand_queue_reasons(event, snapshots):
+    if event.get('event') != 'QUEUE_WAIT_STATE':
+        return event
+    key = event.get('invocation')
+    if 'reasons' in event:
+        snapshots[key] = dict(event['reasons'])
+    elif 'reason_updates' in event and key in snapshots:
+        previous = snapshots[key].copy()
+        for job in event.get('reason_removed', ()):
+            previous.pop(job, None)
+        previous.update(event['reason_updates'])
+        snapshots[key] = previous
+    else:
+        return event
+    return dict(event, reasons=snapshots[key])
+
+
+def read_lines(path, *, expand_queue=True):
+    rows, snapshots = [], {}
     if not Path(path).exists():
         return rows
-    lines=Path(path).read_text().splitlines()
-    for number, line in enumerate(lines, 1):
-        try:
-            rows.append(json.loads(line))
-        except json.JSONDecodeError:
-            # A live final append can be incomplete; never guess its timestamp.
-            if number != len(lines):
-                raise
+    with Path(path).open() as stream:
+        for line in stream:
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                # Only a partial final append may be ignored.
+                if stream.readline():
+                    raise
+                break
+            rows.append(expand_queue_reasons(row, snapshots) if expand_queue else row)
     return rows
 
 
@@ -197,7 +231,7 @@ def summarize(run, *, timeline=None, public_summary=None):
     method/configuration and explicitly labelled as a legacy inference.
     """
     run = Path(run)
-    all_events = read_lines(timeline or run/'PROGRESS.jsonl')
+    all_events = read_lines(timeline or run/'PROGRESS.jsonl', expand_queue=False)
     preparation_jobs={event.get('job')or event.get('job_id')for event in all_events
                       if str(event.get('method','')).startswith('PREPARATION:')}
     preparation_jobs.discard(None)
@@ -207,8 +241,6 @@ def summarize(run, *, timeline=None, public_summary=None):
     events=[]
     for event in all_events:
         if (event.get('job')or event.get('job_id'))in preparation_jobs or str(event.get('method','')).startswith('PREPARATION:'):continue
-        if event.get('event')=='QUEUE_WAIT_STATE':
-            event=dict(event,reasons={job:reason for job,reason in event.get('reasons',{}).items()if job not in preparation_jobs})
         events.append(event)
     launches = defaultdict(list)
     candidate_ready = {}
@@ -341,10 +373,14 @@ def summarize(run, *, timeline=None, public_summary=None):
     # They classify recorded queue intervals; unobserved time stays unknown.
     slots=[e for e in events if e.get('event')=='QUEUE_WAIT_STATE']
     slot_intervals=defaultdict(list);slot_job_intervals=defaultdict(list)
-    for i,e in enumerate(slots):
+    snapshots = {}
+    for i,raw in enumerate(slots):
+        e = expand_queue_reasons(raw, snapshots)
         stop=next((x for x in slots[i+1:] if x.get('invocation')==e.get('invocation')),None)
         if stop and delta(e,stop,True) is not None:
             for job,reason in e.get('reasons',{}).items():
+                if job in preparation_jobs:
+                    continue
                 terminal=next((x for x in launches.get(job,[]) if x.get('invocation')==e.get('invocation') and e['monotonic']<=x['monotonic']<=stop['monotonic']),None)
                 z=terminal['monotonic'] if terminal else stop['monotonic']
                 span=(e.get('clock_id') or e['invocation'],e['monotonic'],z)

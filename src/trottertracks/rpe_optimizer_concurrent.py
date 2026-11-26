@@ -24,7 +24,7 @@ import signal
 import sqlite3
 
 from . import rpe_method_optimizer as O
-from .rpe_q3_timing import stamp
+from .rpe_q3_timing import stamp, compact_queue_reasons
 # This operational module may be selected ahead of an older frozen profile
 # module. Keep its route vocabulary available in that supported resume path.
 try:
@@ -1191,7 +1191,8 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_search_continuation import verify_retired_preparation_attempts
         self.retired_preparation_attempts = set(verify_retired_preparation_attempts(run).values())
         from .rpe_preparation_artifacts import ArtifactCache
-        self.artifact_cache = ArtifactCache(run/'distributed'/'artifacts')
+        self.artifact_cache = ArtifactCache(run/'distributed'/'artifacts',
+            prior_roots=[Path(base)/'distributed'/'artifacts' for base in kwargs.get('prior_run_dirs', ())])
         self.preparation_pending_path = run/'distributed'/'PREPARATION_PENDING.json'
         from .rpe_preparation_artifacts import read_preparation_readiness
         self.preparation_pending = read_preparation_readiness(self.preparation_pending_path.parent)
@@ -3944,6 +3945,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     state.queue_feedback = feedback
                     state.last_timing_queue = getattr(snapshot.state, 'last_timing_queue', None)
                     state.last_timing_queue_at = getattr(snapshot.state, 'last_timing_queue_at', 0)
+                    state.last_queue_reasons = getattr(snapshot.state, 'last_queue_reasons', None)
                     state.ready_cpu_supply = getattr(snapshot.state, 'ready_cpu_supply', {})
                     state.host_ready_backlog = snapshot.state.host_ready_backlog
         except (OSError, KeyError, TypeError, ValueError, RuntimeError, sqlite3.Error) as error:
@@ -4055,7 +4057,11 @@ class DistributedExecutor(ConcurrentExecutor):
         now=time.monotonic()
         if marker!=getattr(s,'last_timing_queue',None) or now-getattr(s,'last_timing_queue_at',0)>=30:
             s.last_timing_queue=marker;s.last_timing_queue_at=now
-            self.log(event='QUEUE_WAIT_STATE', report_seconds=now-started,**payload)
+            previous = getattr(s, 'last_queue_reasons', None)
+            payload.pop('reasons')
+            self.log(event='QUEUE_WAIT_STATE', report_seconds=now-started,
+                     **payload, **compact_queue_reasons(reasons, previous))
+            s.last_queue_reasons = reasons
 
     @contextmanager
     def _rpc_queue_lock(self, path, host):

@@ -1321,7 +1321,7 @@ class DistributedPreparationBridge:
         if missing:
             prior_cache = ArtifactCache(Path(prior_run)/'distributed'/'artifacts')
             for sha in missing:
-                cache.put(prior_cache.get([sha]))
+                cache.put_file(prior_cache.path(sha), sha)
 
     def reconcile_failed_preparations(self):
         """Reserve exact retries through the existing stage budgets and persist their outcome."""

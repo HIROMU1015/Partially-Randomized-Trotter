@@ -542,10 +542,12 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         if workspace.exists():raise ValueError('Unidentified PF producer workspace; preserve it')
         subprocess.run(['git','clone','--shared','--no-checkout',str(original),str(workspace)],check=True,
             stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
-        subprocess.run(['git','sparse-checkout','set','scripts','src','configs','references'],cwd=workspace,check=True)
+        subprocess.run(['git','sparse-checkout','set','--cone','scripts','src','configs','references'],cwd=workspace,check=True)
         subprocess.run(['git','checkout','-b','selected-preparation',source],cwd=workspace,check=True,
             stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         put(marker,dict(root=str(original),source=source))
+    from .rpe_worker_storage import compact_provider_source, restore_provider_source
+    restore_provider_source(workspace)
     fixed=read(marker)
     if fixed['root']!=str(original):raise ValueError('PF provider changed on resume')
     selected=selected_workspace_request(request, workspace)
@@ -803,6 +805,11 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     publish_pf_locators(workspace, root, registry, items)
     put(registry_output,registry)
     put(output,dict(response,items=items,registry_file=registry_output))
+    # Only completed provider work is compacted; all evidence stays in place.
+    try:
+        compact_provider_source(workspace, fixed['source'])
+    except (OSError, ValueError, subprocess.SubprocessError):
+        pass  # optional disk maintenance must not invalidate the result
 
 
 def terminal_model_prices(parent, config, method, table, model, physical_id):
@@ -898,6 +905,8 @@ def complete_terminal_prices(root, runtime, parent_entries, *, stop_requested, o
         workspace = Path(leaf['workspace']).resolve()
         if not workspace.is_relative_to(runtime.executor.run_dir.resolve()):
             raise ValueError('Terminal PF workspace leaves the current run')
+        from .rpe_worker_storage import restore_provider_source
+        restore_provider_source(workspace)
         folder = workspace/leaf['relative_output']
         cfg = fixed(workspace, leaf['configuration'])
         parent_entry = parent_entries[parent_id]

@@ -63,7 +63,7 @@ def wait_summary(run, recovery):
                                       or row.get('status', 'UNCONFIRMED'))
     return dict(queue_wait_observed_at=wait.get('UTC'),
                 live_controller=live_driver(run),
-                queue_wait_reasons=dict(Counter(wait.get('reasons', {}).values())),
+                queue_wait_reasons=wait.get('reason_counts', dict(Counter(wait.get('reasons', {}).values()))),
                 hosts=wait.get('hosts', {}), preparation_budget=wait.get('preparation_budget_blocked', {}),
                 relay={host:{key:value[key] for key in ('phase','error','last_error_epoch') if key in value}
                        for host,value in relay.get('workers', {}).items()},

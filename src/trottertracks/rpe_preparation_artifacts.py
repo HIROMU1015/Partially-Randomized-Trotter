@@ -60,8 +60,10 @@ def copy_file(source, target):
 
 
 class ArtifactCache:
-    def __init__(self, root):
+    def __init__(self, root, *, prior_roots=()):
         self.root = Path(root).resolve()
+        self.prior_roots = tuple(dict.fromkeys(Path(path).resolve() for path in prior_roots
+                                               if Path(path).resolve() != self.root))
         self._verified = {}
         self._verification_locks = {}
         self._verification_lock = threading.Lock()
@@ -90,7 +92,10 @@ class ArtifactCache:
                 try:
                     identity=self._identity(path)
                 except FileNotFoundError:
-                    self._verified.pop(sha,None);result.append(sha);continue
+                    self._verified.pop(sha,None)
+                    if not self._link_prior(sha, path):
+                        result.append(sha);continue
+                    identity=self._identity(path)
                 # Another consumer may materialize a hard link while we read
                 # the cache: this changes ctime, not the verified bytes. Use
                 # the new identity on a second read rather than fail adoption.
@@ -113,6 +118,25 @@ class ArtifactCache:
                         break
                     identity=current
         return result
+
+    def _link_prior(self, sha, path):
+        # The CAS is immutable; sharing a verified inode avoids both upload and
+        # a second physical copy. Cross-device archives use the normal upload.
+        for root in self.prior_roots:
+            source = root/sha[:2]/sha
+            try:
+                identity = self._identity(source)
+                if file_digest(source) != sha or self._identity(source)[:4] != identity[:4]:
+                    continue
+                path.parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    os.link(source, path)
+                except FileExistsError:
+                    pass
+                return True
+            except (OSError, ValueError):
+                continue
+        return False
 
     def hashes(self):
         if not self.root.exists():return []

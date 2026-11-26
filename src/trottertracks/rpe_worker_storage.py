@@ -355,6 +355,78 @@ def _remove_copy(path):
         return False
 
 
+def compact_provider_source(workspace, source):
+    """Retain candidate evidence and Git objects, not repeated clean source files.
+
+    Call only after the owned provider has finished its current stage. Resume
+    restores precisely the removed files before any provider command runs.
+    """
+    workspace = Path(workspace).resolve()
+    layout = workspace.parent/'RETAINED_PROVIDER_SOURCE.json'
+    def git(*args, input=None):
+        return subprocess.check_output(['git', *args], cwd=workspace,
+                                       input=input, stderr=subprocess.PIPE)
+    head = git('rev-parse', 'HEAD').decode().strip()
+    def blobs(revision):
+        raw = git('ls-tree', '-r', '-z', revision, '--', 'src', 'scripts', 'configs',
+                  'schemas', 'references', 'docs/archive')
+        return {os.fsdecode(name): header.split()[2] for row in raw.split(b'\0') if row
+                for header, name in [row.split(b'\t', 1)]
+                if header.split()[0] in (b'100644', b'100755')}
+    base, current = blobs(source), blobs(head)
+    names = [name for name, oid in base.items() if current.get(name) == oid
+             and '\n' not in name and '\r' not in name
+             and (workspace/name).is_file() and (workspace/name).resolve() == workspace/name]
+    if not names:
+        return 0
+    oids = sorted({base[name] for name in names})
+    rows = git('cat-file', '--batch-check', input=b'\n'.join(oids)+b'\n').splitlines()
+    if len(rows) != len(oids):
+        return 0
+    available = {oid for oid, row in zip(oids, rows) if row.split()[1:2] == [b'blob']}
+    names = [name for name in names if base[name] in available]
+    if not names:
+        return 0
+    actual = git('hash-object', '--no-filters', '--stdin-paths',
+                 input=os.fsencode('\n'.join(names)+'\n')).splitlines()
+    if len(actual) != len(names):
+        return 0
+    removable = [name for name, oid in zip(names, actual) if oid == base[name]]
+    if not removable:
+        return 0
+    previous = json.loads(layout.read_bytes()) if layout.is_file() else {}
+    if previous and previous.get('source') != source:
+        raise ValueError('Compacted provider source changed')
+    atomic_json(layout, dict(source=source, files=sorted(set(previous.get('files', ())) | set(removable))))
+    reclaimed = 0
+    for name in removable:
+        path = workspace/name
+        stat_result = path.stat()
+        path.unlink()
+        if stat_result.st_nlink == 1:
+            reclaimed += stat_result.st_blocks*512
+    return reclaimed
+
+
+def restore_provider_source(workspace):
+    workspace = Path(workspace).resolve()
+    layout = workspace.parent/'RETAINED_PROVIDER_SOURCE.json'
+    if not layout.is_file():
+        return
+    record = json.loads(layout.read_bytes())
+    missing = [name for name in record['files'] if not (workspace/name).exists()
+               and not (workspace/name).is_symlink()]
+    if missing:
+        if any(Path(name).is_absolute() or '..' in Path(name).parts for name in missing):
+            raise ValueError('Invalid retained source path')
+        subprocess.run(['git', '--literal-pathspecs', 'restore', '--source='+record['source'],
+                        '--worktree', '--ignore-skip-worktree-bits', '--pathspec-from-file=-',
+                        '--pathspec-file-nul'], cwd=workspace,
+                       input=b'\0'.join(map(os.fsencode, missing))+b'\0', check=True,
+                       stderr=subprocess.PIPE)
+    layout.unlink()
+
+
 def compact_failed_preparation_workspaces(attempt):
     """Drop only clean, reproducible source files after a failed result is ACKed.
 
