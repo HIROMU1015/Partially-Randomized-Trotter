@@ -75,7 +75,7 @@
       }
     ]
   },
-  "cycle": 6,
+  "cycle": 7,
   "points": [
     {
       "family": "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -2663,7 +2663,7 @@
         "denominator": 36028797018963968
       },
       "kappa": "4",
-      "status": "HELD",
+      "status": "WAITING_INPUTS",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -2688,22 +2688,23 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "input_dispatches": 1,
-      "input_dispatch_cycle": 2,
+      "input_dispatches": 2,
+      "input_dispatch_cycle": 7,
+      "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/60a8e614f10271faccdd']' returned non-zero exit status 1.",
       "completion": {
-        "status": "HELD_TECHNICAL_FAILURE",
+        "status": "WAITING_DISTRIBUTED_PREPARATION",
         "key": "60a8e614f10271faccdd",
-        "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/60a8e614f10271faccdd']' returned non-zero exit status 1.",
-        "configuration_id": null,
+        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', '05bf1debde947efa8f6cd2b85b2c839107d7a14b', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128.",
+        "configuration_id": "2b9bce5a33785eef92beb9b06db1af63c926df0d1bce56e87d1d666192b3cfe1",
         "signal_plan": null,
         "price_plan": null,
         "calibration_requests": null,
         "readiness": null,
         "rounds": null,
-        "failure_class": "TECHNICAL_INPUT_OR_TOOL_FAILURE",
-        "retry_protected": true
+        "failure_class": "OPERATIONAL_WAIT",
+        "retry_protected": false
       },
-      "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/60a8e614f10271faccdd']' returned non-zero exit status 1."
+      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', '05bf1debde947efa8f6cd2b85b2c839107d7a14b', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128."
     },
     {
       "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -2714,7 +2715,7 @@
         "denominator": 18014398509481984
       },
       "kappa": "4",
-      "status": "HELD",
+      "status": "WAITING_INPUTS",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -2739,22 +2740,23 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "input_dispatches": 1,
-      "input_dispatch_cycle": 2,
+      "input_dispatches": 2,
+      "input_dispatch_cycle": 7,
+      "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/b8a07b854a478269b807']' returned non-zero exit status 1.",
       "completion": {
-        "status": "HELD_TECHNICAL_FAILURE",
+        "status": "WAITING_DISTRIBUTED_PREPARATION",
         "key": "b8a07b854a478269b807",
-        "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/b8a07b854a478269b807']' returned non-zero exit status 1.",
-        "configuration_id": null,
+        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', '05bf1debde947efa8f6cd2b85b2c839107d7a14b', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128.",
+        "configuration_id": "9003125a3327825523dcd2d23717b50903743ef85549ff1abd051d911205add6",
         "signal_plan": null,
         "price_plan": null,
         "calibration_requests": null,
         "readiness": null,
         "rounds": null,
-        "failure_class": "TECHNICAL_INPUT_OR_TOOL_FAILURE",
-        "retry_protected": true
+        "failure_class": "OPERATIONAL_WAIT",
+        "retry_protected": false
       },
-      "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/b8a07b854a478269b807']' returned non-zero exit status 1."
+      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', '05bf1debde947efa8f6cd2b85b2c839107d7a14b', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128."
     },
     {
       "family": "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2",
@@ -2765,7 +2767,7 @@
         "denominator": 36028797018963968
       },
       "kappa": "4",
-      "status": "HELD",
+      "status": "COMPLETION",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -2790,22 +2792,9 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/d6f04f689a79b76d15ca']' returned non-zero exit status 1.",
       "input_dispatch_cycle": 2,
       "input_dispatches": 2,
-      "completion": {
-        "status": "HELD_TECHNICAL_FAILURE",
-        "key": "d6f04f689a79b76d15ca",
-        "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/d6f04f689a79b76d15ca']' returned non-zero exit status 1.",
-        "configuration_id": null,
-        "signal_plan": null,
-        "price_plan": null,
-        "calibration_requests": null,
-        "readiness": null,
-        "rounds": null,
-        "failure_class": "TECHNICAL_INPUT_OR_TOOL_FAILURE",
-        "retry_protected": true
-      }
+      "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/d6f04f689a79b76d15ca']' returned non-zero exit status 1."
     },
     {
       "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -6856,7 +6845,7 @@
         "denominator": 36028797018963968
       },
       "kappa": "32",
-      "status": "HELD",
+      "status": "COMPLETION",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -6883,20 +6872,7 @@
       "request_reason": "EXPLICIT_KAPPA_GRID",
       "input_dispatches": 1,
       "input_dispatch_cycle": 2,
-      "completion": {
-        "status": "HELD_TECHNICAL_FAILURE",
-        "key": "7bd9e6633d9e4e596d24",
-        "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/7bd9e6633d9e4e596d24']' returned non-zero exit status 1.",
-        "configuration_id": null,
-        "signal_plan": null,
-        "price_plan": null,
-        "calibration_requests": null,
-        "readiness": null,
-        "rounds": null,
-        "failure_class": "TECHNICAL_INPUT_OR_TOOL_FAILURE",
-        "retry_protected": true
-      },
-      "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/7bd9e6633d9e4e596d24']' returned non-zero exit status 1."
+      "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/7bd9e6633d9e4e596d24']' returned non-zero exit status 1."
     },
     {
       "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -6966,7 +6942,7 @@
         "denominator": 36028797018963968
       },
       "kappa": "32",
-      "status": "HELD",
+      "status": "COMPLETION",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -6993,20 +6969,7 @@
       "request_reason": "EXPLICIT_KAPPA_GRID",
       "input_dispatches": 1,
       "input_dispatch_cycle": 2,
-      "completion": {
-        "status": "HELD_TECHNICAL_FAILURE",
-        "key": "4d382fe8f6ca732a8be7",
-        "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/4d382fe8f6ca732a8be7']' returned non-zero exit status 1.",
-        "configuration_id": null,
-        "signal_plan": null,
-        "price_plan": null,
-        "calibration_requests": null,
-        "readiness": null,
-        "rounds": null,
-        "failure_class": "TECHNICAL_INPUT_OR_TOOL_FAILURE",
-        "retry_protected": true
-      },
-      "reason": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/4d382fe8f6ca732a8be7']' returned non-zero exit status 1."
+      "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/4d382fe8f6ca732a8be7']' returned non-zero exit status 1."
     },
     {
       "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -274902,6 +274865,1826 @@
         "stop": "RULE_EXHAUSTED"
       },
       "proposals": []
+    },
+    {
+      "cycle": 7,
+      "decisions": [],
+      "report": {
+        "per_method": {
+          "PR_DF": {
+            "stop": "WAIT_FOR_PENDING",
+            "global_best": null,
+            "families": {
+              "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              }
+            },
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ]
+          }
+        },
+        "global_best_by_method": {
+          "PR_DF": null
+        },
+        "global_best": null,
+        "families": {
+          "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          }
+        },
+        "scope": "INDEPENDENT_METHOD_MINIMA",
+        "stop": "WAIT_FOR_PENDING"
+      },
+      "proposals": []
     }
   ],
   "seeded": {
@@ -274909,7 +276692,7 @@
     "mapper": "METHOD_SPECIFIC_EXISTING_GENERATOR",
     "old_single_width_state_untouched": true
   },
-  "point_checkpoint_seq": 45,
+  "point_checkpoint_seq": 47,
   "mapper_revisions": {
     "PR_DF": "dca605984ef66824c3273b2d55cd924c0de8d4bb5151550969d8d619047e3365"
   },
@@ -274954,8 +276737,10 @@
     ]
   },
   "preparation_wave": {
-    "cycle": 6,
-    "dispatched": {}
+    "cycle": 7,
+    "dispatched": {
+      "PR_DF": 2
+    }
   },
   "method_minima": {
     "FULL_PF": {
@@ -276046,6 +277831,6 @@
   },
   "stop": {
     "reason": "USER_REQUESTED_STOP",
-    "UTC": "2026-11-26T15:05:13Z"
+    "UTC": "2026-11-26T15:16:02Z"
   }
 }
