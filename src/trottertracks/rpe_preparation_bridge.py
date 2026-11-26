@@ -1651,7 +1651,32 @@ class DistributedPreparationBridge:
         return subprocess.check_output(args+['-m','Make declared preparation input commits reachable'],cwd=root,text=True,
             env=dict(os.environ,GIT_AUTHOR_DATE=date,GIT_COMMITTER_DATE=date)).strip()
 
+    def _shared_local_git_inputs(self, source, input_hashes):
+        """A node-local worker inherits the same immutable object stores.
+
+        Confirm the exact locators from an otherwise empty object database;
+        the normal worker still verifies each content hash and fixed SOURCE.
+        Do not replace a requested workspace checkout with locator-only data.
+        """
+        if not self.settings.get('local_shared_git_inputs') or not input_hashes:
+            return False
+        if not os.environ.get('GIT_ALTERNATE_OBJECT_DIRECTORIES'):
+            return False
+        expressions = [source+'^{commit}', *sorted({row['commit']+':'+row['path']
+                                                   for row in input_hashes})]
+        with tempfile.TemporaryDirectory(prefix='rpe-shared-git-check-') as temporary:
+            subprocess.run(['git','init','--bare','--quiet',temporary],check=True,
+                           capture_output=True)
+            result = subprocess.run(['git','--git-dir='+temporary,'cat-file','--batch-check'],
+                input='\n'.join(expressions)+'\n',text=True,capture_output=True,check=True)
+            rows = result.stdout.splitlines()
+            return (len(rows)==len(expressions) and
+                    all(len(row.split())==3 and row.split()[1] in ('commit','blob','tree')
+                        for row in rows))
+
     def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False, shared_base=False):
+        if not tracked_workspace and self._shared_local_git_inputs(source, input_hashes):
+            return []
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         resolved=[]
         if input_hashes:

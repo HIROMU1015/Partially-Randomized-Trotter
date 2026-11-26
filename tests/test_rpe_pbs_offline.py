@@ -442,3 +442,24 @@ def test_parent_storage_sample_reused_without_directory_scan(tmp_path, monkeypat
     assert storage.report(policy)['accepting_new_jobs']
     atomic(sample,{'policy':storage.policy_identity(policy),'sampled_epoch':time.time()-200,'report':report})
     assert not storage.report(policy)['accepting_new_jobs']
+
+def test_shared_local_git_inputs_omit_bundle_only_with_visible_locators(tmp_path, monkeypatch):
+    import subprocess
+    from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
+    root=tmp_path/'source';root.mkdir()
+    def git(*args):
+        return subprocess.check_output(['git','-C',str(root),*args],text=True).strip()
+    git('init','-q')
+    (root/'fixed.json').write_text('{}')
+    git('add','fixed.json')
+    git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','fixed')
+    source=git('rev-parse','HEAD')
+    bridge=object.__new__(DistributedPreparationBridge)
+    bridge.settings={'local_shared_git_inputs':True}
+    monkeypatch.setenv('GIT_ALTERNATE_OBJECT_DIRECTORIES',str(root/'.git/objects'))
+    inputs=[{'commit':source,'path':'fixed.json'}]
+    assert bridge._shared_local_git_inputs(source,inputs)
+    assert bridge._bundle(root,source,inputs,shared_base=True)==[]
+    assert not bridge._shared_local_git_inputs(source,[{'commit':source,'path':'missing'}])
+    bridge.settings={}
+    assert not bridge._shared_local_git_inputs(source,inputs)

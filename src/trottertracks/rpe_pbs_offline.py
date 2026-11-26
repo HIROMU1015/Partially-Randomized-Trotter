@@ -318,6 +318,8 @@ def part_documents(plan, part, profile, path):
         # Start with an empty local policy so the normal per-request live
         # dry-check obtains fresh proof instead of treating the policy as absent.
         distributed['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
+        if distributed.get('preparation'):
+            distributed['preparation']['local_shared_git_inputs'] = True
     distributed.update(bind='127.0.0.1', port=0, local_worker=selected, preparation_profiles={'local': selected},
                        execution_hosts=['local'], live_q3_readiness=True, worker_script=str(worker_script))
     if 'computation_source' in distributed:
@@ -629,11 +631,13 @@ class OfflineSearch:
         if overlay['base_source'] != self.plan['settings']['source']:
             raise ValueError('PBS controller overlay belongs to another fixed optimizer')
         files = overlay['modules']
-        order = ('rpe_q3_store', 'rpe_optimizer_concurrent')
-        if set(files) != set(order):
+        order = ('rpe_q3_store', 'rpe_preparation_bridge', 'rpe_optimizer_concurrent')
+        if not {'rpe_q3_store','rpe_optimizer_concurrent'} <= set(files) <= set(order):
             raise ValueError('Unsupported PBS controller overlay modules')
         modules = []
         for name in order:
+            if name not in files:
+                continue
             item = files[name]
             path = Path(item['path'])
             if hashlib.sha256(path.read_bytes()).hexdigest() != item['sha256']:
@@ -670,6 +674,8 @@ class OfflineSearch:
                     if 'host_eligibility' not in settings:
                         settings['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
                     current = data['executor']['distributed']
+                    if current.get('preparation', {}).get('local_shared_git_inputs') is True:
+                        settings['preparation']['local_shared_git_inputs'] = True
                     # The new allocation owns a fresh sampler path and
                     # transport. Neither is part of the scientific contract.
                     if current.get('local_worker', {}).get('storage_limit', {}).get('parent_compute_sample'):
