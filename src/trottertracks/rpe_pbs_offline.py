@@ -261,6 +261,8 @@ def part_documents(plan, part, profile, path):
     problem = mapped_paths(plan['problem'], substitutions)
     original = restrict_round(plan, unit_members(plan,part)) if independent_plan(plan) else plan['round']
     spec = mapped_paths(original, substitutions)
+    if (spec.get('candidate_completion') or {}).get('df_max_width_source'):
+        spec['candidate_completion']['df_max_width_code_root'] = settings['code_root']
     spec['round_id'] = str(spec['round_id']) + '-pbs-' + part['id']
     if not independent_plan(plan):
         method=part['method']

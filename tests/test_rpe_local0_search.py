@@ -21,6 +21,19 @@ def request(lo,hi,budget=0):
     return dict(action='start',instruction='Artificial acceptance: specified range and start',scope=dict(methods=['PR_PAULI'],per_method=dict(PR_PAULI=dict(L_D=dict(min=lo,max=hi))),shots='auto',stop=dict(max_new_q3_per_method=budget)))
 
 class Tests(unittest.TestCase):
+    def test_selected_mapper_is_bound_before_preflight(self):
+        with tempfile.TemporaryDirectory() as directory:
+            config=fixture_config(pathlib.Path(directory))
+            config['entry']='schedule'
+            spec=load(pathlib.Path(config['round']));spec['candidate_completion']={}
+            write(pathlib.Path(config['round']),spec)
+            mapper=dict(source='fixed-mapper',endpoint_descriptor={'commit':'c','path':'d'},price_helper_source='fixed-price')
+            config['release_worker_policy']={'df_max_width':mapper}
+            _,resolved,_=resolve(config,request(1,2))
+            self.assertEqual(resolved['candidate_completion']['df_max_width_source'],'fixed-mapper')
+            self.assertEqual(resolved['candidate_completion']['df_max_width_code_root'],config['code_root'])
+            self.assertEqual(resolved['candidate_completion']['df_max_width_price_helper'],'fixed-price')
+
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
 
