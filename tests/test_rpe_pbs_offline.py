@@ -470,3 +470,19 @@ def test_shared_local_git_inputs_omit_bundle_only_with_visible_locators(tmp_path
     assert not bridge._shared_local_git_inputs(source,[{'commit':source,'path':'missing'}])
     bridge.settings={}
     assert not bridge._shared_local_git_inputs(source,inputs)
+
+def test_coverage_read_contention_keeps_last_snapshot(tmp_path, monkeypatch):
+    import sqlite3
+    from trottertracks.rpe_pbs_offline import OfflineSearch
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'run'
+    search.independent=True;search.revision=0;search.directory.mkdir()
+    part=search.directory/'parts'/'one';(part/'distributed').mkdir(parents=True)
+    (part/'distributed/QUEUE.sqlite3').touch()
+    snapshot={'changes':0,'parts':{}}
+    atomic(search.directory/'COVERAGE.json',snapshot)
+    def busy(*args,**kwargs):
+        raise sqlite3.OperationalError('database is locked')
+    monkeypatch.setattr(sqlite3,'connect',busy)
+    search.record_coverage(part)
+    assert read(search.directory/'COVERAGE.json')==snapshot
+    assert search.revision==0
