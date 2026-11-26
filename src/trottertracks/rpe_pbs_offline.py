@@ -528,7 +528,7 @@ class OfflineSearch:
                 raise ValueError('Durable PBS optimizer code differs from fixed SOURCE')
             if git('ls-files','--others','--exclude-standard','--',*paths):
                 raise ValueError('Unexpected durable PBS optimizer files')
-        entry = root/'scripts/run_rpe_schedule_search.py'
+        entry = root/'scripts'/('run_rpe_method_optimizer.py' if self.plan['round'].get('hchain') else 'run_rpe_schedule_search.py')
         if not entry.is_file():
             raise ValueError('Durable PBS optimizer entry missing')
         return entry
