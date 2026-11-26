@@ -1642,7 +1642,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def _owned_attempts(self):
         with self.store._connection() as database:
             rows = database.execute(
-                "SELECT job_id,host_id,attempt_id,request_sha256,state,method,detail,assigned_epoch FROM jobs INDEXED BY host_state_queue "
+                "SELECT job_id,host_id,attempt_id,request_sha256,state,method,detail,assigned_epoch FROM jobs "
                 "WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
             # UNKNOWN still owns the request. Release only its capacity when
             # the worker proved it exited or a retired PBS allocation is verified.
@@ -3872,7 +3872,7 @@ class DistributedExecutor(ConcurrentExecutor):
         # Compact operational columns only: do not deserialize every saved REQUEST.
         with self.store._connection() as db:
             snapshot={r['job_id']:dict(r)for r in db.execute(
-                "SELECT job_id,host_id,state,eligibility FROM jobs INDEXED BY host_state_queue WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
+                "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
         owned_attempts = self._owned_attempts()
         queued_preparation = [task.job.name for task in s.tasks.values()
                               if task.status == 'QUEUED' and task.rule['kind'] == 'preparation']

@@ -444,10 +444,13 @@ class OfflineSearch:
             head = subprocess.run(['git','-C',str(root),'rev-parse','--verify','HEAD'],
                                   capture_output=True, text=True, timeout=10)
             if head.returncode:
-                git('sparse-checkout','set','--no-cone','/scripts/','/src/','/tools/','/configs/',
-                    '/schemas/','/parts/','/pyproject.toml','/requirements.txt','/requirements-gpu.txt',
-                    '/setup.py','/setup.cfg')
-                git('checkout','--detach',revision)
+                # A portable runtime may lack unrelated historical blobs.
+                # Keep SOURCE as parent but index only its exact code trees.
+                tree = git('mktree', input=git('ls-tree', revision, '--', *paths)+'\n')
+                base = git('-c','user.name=RPE worker','-c','user.email=rpe-worker@localhost',
+                           'commit-tree',tree,'-p',revision,'-m','Portable evidence checkout')
+                git('checkout','--detach',base)
+                atomic(root/'PORTABLE_SOURCE.json', {'source':revision,'evidence_base':base})
             elif git('diff','--name-only',revision,'--',*paths):
                 raise ValueError('Durable PBS optimizer code differs from fixed SOURCE')
             if git('ls-files','--others','--exclude-standard','--',*paths):

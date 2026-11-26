@@ -361,9 +361,12 @@ def test_independent_durable_checkout_keeps_parts_with_fixed_git_source(tmp_path
     subprocess.run(['git','init','-q',str(source)],check=True)
     entry = source/'scripts'/'run_rpe_schedule_search.py'
     entry.parent.mkdir();entry.write_text('# fixed artificial entry\n')
-    subprocess.run(['git','-C',str(source),'add','scripts'],check=True)
+    old=source/'unrelated-history';old.mkdir();(old/'missing.json').write_text('historical data')
+    subprocess.run(['git','-C',str(source),'add','scripts','unrelated-history'],check=True)
     subprocess.run(['git','-C',str(source),'-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','fixed'],check=True)
     revision = subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()
+    blob=subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD:unrelated-history/missing.json'],text=True).strip()
+    (source/'.git/objects'/blob[:2]/blob[2:]).unlink()
     search=object.__new__(OfflineSearch);search.directory=tmp_path/'durable'
     part=search.directory/'parts'/'one';part.mkdir(parents=True);(part/'ROUND.json').write_text('{}')
     actual=search._durable_entry(source,revision)
@@ -371,7 +374,7 @@ def test_independent_durable_checkout_keeps_parts_with_fixed_git_source(tmp_path
     assert part.relative_to(actual.parents[1]).as_posix()=='parts/one'
     assert (part/'ROUND.json').read_text()=='{}'
     subprocess.run(['git','-C',str(search.directory),'add','parts/one/ROUND.json'],check=True)
-    subprocess.run(['git','-C',str(search.directory),'-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','evidence'],check=True)
+    subprocess.run(['git','-C',str(search.directory),'-c','user.name=Test','-c','user.email=test@example.invalid','commit','--only','-qm','evidence','--','parts/one/ROUND.json'],check=True)
     assert search._durable_entry(source,revision)==actual
 
 

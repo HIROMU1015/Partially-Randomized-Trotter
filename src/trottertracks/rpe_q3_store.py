@@ -241,7 +241,7 @@ class JobStore:
     def prelaunch_rejections(self):
         with self._connection() as db:
             return [self._decoded(row) for row in db.execute("""
-                SELECT * FROM jobs INDEXED BY host_state_queue WHERE state='UNKNOWN' AND completion_sha256 IS NULL
+                SELECT * FROM jobs WHERE state='UNKNOWN' AND completion_sha256 IS NULL
                     AND json_type(detail, '$.prelaunch_rejection') = 'object'
                     AND NOT EXISTS (SELECT 1 FROM events WHERE events.job_id=jobs.job_id
                         AND event='REDISPATCH_AFTER_DRY_CHECK')
