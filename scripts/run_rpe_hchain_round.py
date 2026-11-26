@@ -370,7 +370,8 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                 workers.append(dict(declaration, profile=profile))
             distributed["pbs"] = dict(pbs, workers=workers)
         spec = dict(spec, executor=dict(spec["executor"], distributed=distributed))
-    screen = price_screen(provider, plan, run, settings, full_plan=full_plan if "case_ids" in settings else None)
+    screen = (price_screen(provider, plan, run, settings, full_plan=full_plan)
+              if "case_ids" in settings else price_screen(provider, plan, run, settings))
     excluded = screen.update() if screen is not None else set()
     executor, optimize = make_executor(root, run, routes, expected, problem, spec)
     if legacy is not None:

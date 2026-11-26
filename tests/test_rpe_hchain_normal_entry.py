@@ -335,3 +335,43 @@ def test_hchain_partition_completion_never_marks_unknown_or_missing_methods(tmp_
         assert not (tmp_path/"SEARCH_TERMINATION.json").exists()
     hchain.finish_block(tmp_path, {"FULL_PF": {"stop_reason": "SCALED_SHOT_GRID_COMPLETE"}}, ["FULL_PF"])
     assert central.load(tmp_path/"SEARCH_TERMINATION.json")["reason"] == "HCHAIN_SCOPE_COMPLETE"
+
+
+def test_hchain_partition_charges_legacy_attempts_only_once(tmp_path):
+    from trottertracks.rpe_pbs_offline import prepare_plan, restrict_round
+
+    plan, opts = fixed_scope(tmp_path)
+    plan["cases"][1]["width_over_h"] = 2
+    central.write(Path(opts["plan"]["path"]), plan)
+    opts["plan"]["sha256"] = hashlib.sha256(Path(opts["plan"]["path"]).read_bytes()).hexdigest()
+    legacy = tmp_path/"legacy"; legacy.mkdir()
+    central.write(legacy/"LEGACY.json", dict(schema="RPE_HCHAIN_LEGACY_V1", owner=plan["owner"],
+        plan_sha256=opts["plan"]["sha256"], records=[{"configuration_id":HOSTS[0]}],
+        holds=[{"configuration_id":HOSTS[1]}], spent={"FULL_PF":2}))
+    opts["legacy"] = dict(directory=str(legacy), sha256=hashlib.sha256((legacy/"LEGACY.json").read_bytes()).hexdigest())
+    run = tmp_path/"run"; run.mkdir()
+    spec = dict(methods=["FULL_PF"], hchain=opts, science_approved=True, round_id="fixed",
+                max_new_q3_per_method={"FULL_PF":5},
+                executor=dict(distributed=transport(pool(tmp_path))))
+    for name,value in (("ROUND.json",spec),("PROBLEM.json",{}),("APPLIED_SCOPE.json",dict(run_id="test"))):
+        central.write(run/name,value)
+    partition=prepare_plan(run,dict(mode="independent",source="a"*40,code_root=str(ROOT),interpreter=sys.executable))
+    assert sum(p["q3_budget"]-1 for p in partition["parts"]) == 3
+    assert sum(restrict_round(partition,[p])["max_new_q3_per_method"]["FULL_PF"] for p in partition["parts"]) == 5
+
+
+def test_hchain_partition_keeps_only_source_bound_rte_estimates(tmp_path):
+    original = {"cases":[{"id":"a"},{"id":"b"}]}
+    part = {"cases":[{"id":"b"}]}
+    path = tmp_path/"provider.py"; path.touch()
+    forecast_path = tmp_path/"forecast.json"; forecast_path.touch()
+    forecast = {"comparison_id":"a,b","estimates":[{"configuration_id":"b","estimated_total_RZ":123}],
+                "incumbent":{"configuration_id":"a","total_RZ":456}}
+    provider=SimpleNamespace(__file__=str(path),read=lambda path:forecast,
+        pure_rte=SimpleNamespace(FORECAST=forecast_path.name,
+            comparison_id=lambda plan:','.join(case["id"] for case in plan["cases"])),
+        build_price_pruning=lambda plan,run,forecast:forecast)
+    observed=hchain.price_screen(provider,part,tmp_path,{"saved_price_screen":True},full_plan=original)
+    assert observed["comparison_id"]=="b" and observed["original_comparison_id"]=="a,b"
+    assert observed["estimates"]==forecast["estimates"] and observed["incumbent"] is None
+    assert hchain.price_screen(provider,part,tmp_path,{"saved_price_screen":True},full_plan=part) is None
