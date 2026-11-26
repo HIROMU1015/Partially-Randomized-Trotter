@@ -504,10 +504,13 @@ class OfflineSearch:
             head = subprocess.run(['git','-C',str(root),'rev-parse','--verify','HEAD'],
                                   capture_output=True, text=True, timeout=10)
             if head.returncode:
-                git('sparse-checkout','set','--no-cone','/scripts/','/src/','/tools/','/configs/',
-                    '/schemas/','/parts/','/pyproject.toml','/requirements.txt','/requirements-gpu.txt',
-                    '/setup.py','/setup.cfg')
-                git('checkout','--detach',revision)
+                # A portable runtime may lack unrelated historical blobs.
+                # Keep SOURCE as parent but index only its exact code trees.
+                tree = git('mktree', input=git('ls-tree', revision, '--', *paths)+'\n')
+                base = git('-c','user.name=RPE worker','-c','user.email=rpe-worker@localhost',
+                           'commit-tree',tree,'-p',revision,'-m','Portable evidence checkout')
+                git('checkout','--detach',base)
+                atomic(root/'PORTABLE_SOURCE.json', {'source':revision,'evidence_base':base})
             elif git('diff','--name-only',revision,'--',*paths):
                 raise ValueError('Durable PBS optimizer code differs from fixed SOURCE')
             if git('ls-files','--others','--exclude-standard','--',*paths):
@@ -874,9 +877,17 @@ def advance_independent(worker, control):
     stopping = bool(control.get('stop') or not worker.accepting()
                     or worker.remaining() < worker.drain_seconds + 2*worker.minimum_task_seconds)
     report = getattr(worker, 'resource_report', None)
-    if report is None and not active:
-        report = worker._resource_offer()
     storage = (report or {}).get('storage') or {}
+    # Independent mode intentionally suppresses the ordinary poll loop.
+    # Renew a blocked storage offer here, otherwise successful asynchronous
+    # cleanup/sampling can never become visible to a waiting package.
+    now = time.monotonic()
+    if (search.process is None and not active and
+            (report is None or not storage.get('accepting_new_jobs', True)) and
+            now >= getattr(search, 'next_resource_refresh', 0.)):
+        search.next_resource_refresh = now + 3.
+        report = worker._resource_offer()
+        storage = (report or {}).get('storage') or {}
     try:
         busy = search.advance(disconnected=False, runnable=not active and
                               storage.get('accepting_new_jobs', True),
