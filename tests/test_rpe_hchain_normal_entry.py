@@ -375,3 +375,20 @@ def test_hchain_partition_keeps_only_source_bound_rte_estimates(tmp_path):
     assert observed["comparison_id"]=="b" and observed["original_comparison_id"]=="a,b"
     assert observed["estimates"]==forecast["estimates"] and observed["incumbent"] is None
     assert hchain.price_screen(provider,part,tmp_path,{"saved_price_screen":True},full_plan=part) is None
+
+
+def test_pbs_only_metadata_preflight_keeps_raw_inputs_on_compute_site(tmp_path):
+    import rpe_hchain_legacy as legacy
+    plan, options = fixed_scope(tmp_path)
+    root=tmp_path/"legacy-local";root.mkdir()
+    raw=b'fixed plan metadata'
+    (root/"PLAN.json").write_bytes(raw)
+    checksum=hashlib.sha256(raw).hexdigest()
+    record=dict(schema="RPE_HCHAIN_LEGACY_V1",owner=plan["owner"],plan_sha256=options["plan"]["sha256"],
+                records=[],holds=[],spent={},cases={},jobs=[],
+                files={"PLAN.json":checksum,"prices/not-local.json":"d"*64})
+    central.write(root/"LEGACY.json",record)
+    options["legacy"]=dict(directory=str(root),sha256=hashlib.sha256((root/"LEGACY.json").read_bytes()).hexdigest())
+    assert legacy.checked(options,plan,verify_files=True,metadata_only=True)[1]==record
+    with pytest.raises((ValueError,OSError)):
+        legacy.checked(options,plan,verify_files=True)
