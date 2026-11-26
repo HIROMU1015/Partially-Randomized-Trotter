@@ -451,13 +451,20 @@ def test_shared_local_git_inputs_omit_bundle_only_with_visible_locators(tmp_path
         return subprocess.check_output(['git','-C',str(root),*args],text=True).strip()
     git('init','-q')
     (root/'fixed.json').write_text('{}')
-    git('add','fixed.json')
+    (root/'unrelated-history.bin').write_bytes(b'not required by any locator')
+    git('add','fixed.json','unrelated-history.bin')
     git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','fixed')
     source=git('rev-parse','HEAD')
+    missing=git('rev-parse','HEAD:unrelated-history.bin')
+    (root/'.git/objects'/missing[:2]/missing[2:]).unlink()
     bridge=object.__new__(DistributedPreparationBridge)
     bridge.settings={'local_shared_git_inputs':True}
     monkeypatch.setenv('GIT_ALTERNATE_OBJECT_DIRECTORIES',str(root/'.git/objects'))
-    inputs=[{'commit':source,'path':'fixed.json'}]
+    import hashlib
+    from trottertracks.rpe_preparation_worker import _verify_fixed_git_inputs
+    inputs=[{'commit':source,'path':'fixed.json','sha256':hashlib.sha256(b'{}').hexdigest()}]
+    worker=tmp_path/'worker';subprocess.run(['git','init','-q',str(worker)],check=True)
+    _verify_fixed_git_inputs(worker,inputs)
     assert bridge._shared_local_git_inputs(source,inputs)
     assert bridge._bundle(root,source,inputs,shared_base=True)==[]
     assert not bridge._shared_local_git_inputs(source,[{'commit':source,'path':'missing'}])
