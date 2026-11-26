@@ -57,7 +57,13 @@ def preflight_context(problem, spec):
     plan, cases = selected_plan(spec["hchain"], problem, spec["methods"])
     rows = {case["id"]: candidate(plan, case) for case in cases}
     expected, routes = {}, {method: [] for method in spec["methods"]}
-    legacy = legacy_io.checked(spec["hchain"], plan, verify_files=True)
+    distributed = spec["executor"]["distributed"]
+    metadata_only = bool(spec["hchain"].get("legacy", {}).get("controller_metadata_only"))
+    if metadata_only and (not distributed.get("pbs") or distributed.get("local_worker")
+                         or (distributed.get("relay") or {}).get("workers")
+                         or spec["hchain"].get("pbs_offline_search", {}).get("mode") != "independent"):
+        raise ValueError("Metadata-only preflight requires a PBS-only independent scope")
+    legacy = legacy_io.checked(spec["hchain"], plan, verify_files=True, metadata_only=metadata_only)
     if legacy is not None:
         legacy_io.install(plan, legacy, rows, routes, expected)
     return dict(candidates=list(rows.values()), expected=expected, legacy=legacy[1] if legacy else None)

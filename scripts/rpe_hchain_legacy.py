@@ -10,7 +10,7 @@ from rpe_hchain_q3 import METHOD_LABELS, prepared_route, request_inputs
 from trottertracks import rpe_method_optimizer as optimizer
 
 
-def checked(settings, plan, *, verify_files=False):
+def checked(settings, plan, *, verify_files=False, metadata_only=False):
     if "legacy" not in settings:
         return None
     fixed = settings["legacy"]
@@ -23,14 +23,22 @@ def checked(settings, plan, *, verify_files=False):
             or history["plan_sha256"] != settings["plan"]["sha256"]):
         raise ValueError("Legacy H-chain handoff belongs to another fixed scope")
     if verify_files:
+        # The PBS-only controller needs the fixed Q3 request and its bundled
+        # candidate inputs. Large preparation/raw result files stay at the
+        # compute site, where the normal child performs the full verification.
+        needed = ({name for files in history["cases"].values() for name in files.values()} |
+                  {folder + "/REQUEST.json" for folder in history["jobs"]} |
+                  {"PLAN.json", "PURE_RTE_COST_SCREEN.json"}) if metadata_only else None
         for name, expected in history["files"].items():
+            if needed is not None and name not in needed:
+                continue
             relative = PurePosixPath(name)
             path = root / relative
             if (relative.is_absolute() or ".." in relative.parts or path.is_symlink()
                     or not path.resolve().is_relative_to(root) or digest(path) != expected):
                 raise ValueError(f"Legacy H-chain evidence changed: {name}")
         for name in history["files"]:
-            if name.startswith("prices/") and name.endswith(".json"):
+            if not metadata_only and name.startswith("prices/") and name.endswith(".json"):
                 receipt = json.loads((root / name).read_bytes())["events"]
                 if isinstance(receipt, dict):
                     sidecar = str(Path(name).with_suffix(".events.json.xz"))
