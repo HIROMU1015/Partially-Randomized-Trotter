@@ -392,3 +392,36 @@ def test_pbs_only_metadata_preflight_keeps_raw_inputs_on_compute_site(tmp_path):
     assert legacy.checked(options,plan,verify_files=True,metadata_only=True)[1]==record
     with pytest.raises((ValueError,OSError)):
         legacy.checked(options,plan,verify_files=True)
+
+
+def test_legacy_q3_rss_seed_matches_runtime_and_preserves_larger_live_peak(tmp_path):
+    import rpe_hchain_legacy as legacy
+    from rpe_hchain_q3 import RISK_COMMIT
+    from trottertracks import rpe_q3_resources as resources
+
+    runtime={"interpreter":"/fixed/python","dp_workers":7,"task_cpu_count":8}
+    request=dict(method="FULL_PF",configuration_id="a",N_X=[8,4],N_Y=[8,4],
+                 route=dict(kind="h6_df19_scoped_q3",view_commit=RISK_COMMIT,
+                            interpreter=runtime["interpreter"],allocated_cpus=8))
+    folder="jobs/FULL_PF/a";path=tmp_path/folder;path.mkdir(parents=True)
+    sample=dict(method="FULL_PF",shots=[8,8,4,4],status="FINISHED",usable=True,
+                returncode=0,outcome_status="PASS",sampled_peak_rss_bytes=1024**3)
+    central.write(path/"REQUEST.json",request);central.write(path/"Q3_MEMORY.json",sample)
+    history=dict(source_job="test",records=[dict(configuration_id="a",N_X=[8,4],N_Y=[8,4],status="PASS")],
+                 jobs=[folder],files={f"{folder}/{name}":legacy.digest(path/name) for name in ("REQUEST.json","Q3_MEMORY.json")})
+    seed=legacy.resource_peaks((tmp_path,history),runtime)
+    kind=resources.measured_resource_class(request,runtime=runtime,preparation_detail=True)
+    assert seed["counts"]=={kind:1}
+    assert seed["task_resource_peaks"][kind]["dp_workers"]==8
+    old=dict(task_resource_peaks={kind:dict(peak_rss_bytes=2*1024**3)},isolated_resource_class=kind)
+    merged=legacy.seed_resource_state(old,seed)
+    assert merged["task_resource_peaks"][kind]["peak_rss_bytes"]==2*1024**3
+    assert "isolated_resource_class" not in merged and old["isolated_resource_class"]==kind
+    assert not legacy.resource_peaks((tmp_path,history),dict(runtime,dp_workers=3))["counts"]
+
+
+def test_compile_pair_priority_prefers_small_circuit_even_if_other_candidate_nearer():
+    small=dict(q=1,prefix=5,R_outer=3)
+    large=dict(q=25,prefix=10,R_outer=100)
+    assert hchain.preparation_order("price",small,(1,99)) < hchain.preparation_order("price",large,(0,1))
+    assert hchain.preparation_order("signal",large,(0,1)) < hchain.preparation_order("signal",small,(1,99))

@@ -116,3 +116,87 @@ def install(plan, legacy, rows, routes, expected):
 def remaining(budgets, history):
     return {method: cap if cap == "UNLIMITED" else max(0, cap - history["spent"].get(method, 0))
             for method, cap in budgets.items()}
+
+
+def resource_peaks(legacy, runtime, *, memory_root=None):
+    """Translate verified old H-chain RSS into the matching current Q3 classes.
+
+    Resource estimates are not scientific outcomes. Only the same evaluator,
+    interpreter, CPU allocation and exact recorded allocation are eligible.
+    """
+    from trottertracks.rpe_q3_resources import measured_resource_class
+    from rpe_hchain_q3 import RISK_COMMIT
+    root, history = legacy
+    memory_root = Path(memory_root) if memory_root is not None else root
+    def key(row):
+        return row["configuration_id"], tuple(row["N_X"]), tuple(row["N_Y"])
+    completed = {key(row):row["status"] for row in history["records"]}
+    peaks, counts = {}, {}
+    rejected = 0
+    for folder in history["jobs"]:
+        name = folder + "/Q3_MEMORY.json"
+        if name not in history["files"]:
+            continue
+        path = memory_root / name
+        request_path = root / folder / "REQUEST.json"
+        if not path.is_file():
+            continue
+        if digest(path) != history["files"][name] or digest(request_path) != history["files"][folder+"/REQUEST.json"]:
+            raise ValueError("Legacy resource receipt changed: " + folder)
+        request = json.loads(request_path.read_bytes(),parse_int=optimizer._outcome_int)
+        sample = json.loads(path.read_bytes())
+        route = request["route"]
+        cpu = route.get("allocated_cpus")
+        runtime_cpu = max(runtime.get("task_cpu_count") or 1, runtime.get("dp_workers") or 1)
+        shots = optimizer.interleave(request["N_X"], request["N_Y"])
+        peak = sample.get("sampled_peak_rss_bytes")
+        if (route.get("kind") not in ("h6_df19_scoped_q3","h8_df28_scoped_q3")
+                or route.get("view_commit") != RISK_COMMIT
+                or route.get("interpreter") != runtime.get("interpreter")
+                or type(cpu) is not int or cpu != runtime_cpu
+                or runtime.get("dp_workers") != max(1,cpu-1)
+                or sample.get("method") != request["method"] or sample.get("shots") != list(shots)
+                or sample.get("status") != "FINISHED" or sample.get("usable") is not True
+                or sample.get("returncode") != 0 or key(request) not in completed
+                or sample.get("outcome_status") != completed[key(request)]
+                or type(peak) is not int or peak <= 0):
+            rejected += 1
+            continue
+        category = measured_resource_class(request, runtime=runtime, preparation_detail=True)
+        entry = peaks.setdefault(category,dict(peak_rss_bytes=0,observed_cpu_cores=0,dp_workers=runtime_cpu))
+        entry["peak_rss_bytes"] = max(entry["peak_rss_bytes"],peak)
+        counts[category] = counts.get(category,0)+1
+    return dict(schema="RPE_HCHAIN_LEGACY_RESOURCE_PEAKS_V1",source_job=history["source_job"],
+                task_resource_peaks=peaks,counts=counts,rejected=rejected)
+
+
+def seed_resource_state(previous, seed):
+    """Merge without shrinking a live class peak or altering owned jobs."""
+    from copy import deepcopy
+    state = deepcopy(previous)
+    peaks = state.setdefault("task_resource_peaks",{})
+    for category,sample in seed["task_resource_peaks"].items():
+        entry = peaks.setdefault(category,{})
+        for metric in ("peak_rss_bytes","observed_cpu_cores","dp_workers"):
+            entry[metric] = max(entry.get(metric,0),sample.get(metric,0))
+    isolated = state.get("isolated_resource_class")
+    if isolated in seed["task_resource_peaks"]:
+        state.pop("isolated_resource_class",None)
+    state["legacy_resource_source"] = dict(source_job=seed["source_job"],counts=seed["counts"])
+    return state
+
+
+def seed_local_worker(legacy, distributed):
+    profile = distributed.get("local_worker") or {}
+    if not (profile.get("slot_policy") or {}).get("separate_task_resources"):
+        return
+    work = Path(profile["work_dir"])
+    work.mkdir(parents=True,exist_ok=True)
+    path = work / "SLOT_STATE.json"
+    state = json.loads(path.read_bytes()) if path.is_file() else {}
+    if state.get("legacy_resource_source",{}).get("source_job") == legacy[1]["source_job"]:
+        return
+    seed = resource_peaks(legacy,profile)
+    if seed["task_resource_peaks"]:
+        from trottertracks.rpe_q3_worker import atomic
+        atomic(path,seed_resource_state(state,seed))

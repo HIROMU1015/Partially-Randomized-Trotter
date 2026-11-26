@@ -88,6 +88,12 @@ def circuit_size(cell):
     return cell["q"] * (cell["prefix"] + 1) + events, events
 
 
+def preparation_order(kind, cell, base_priority):
+    """Among actual compiles prefer smaller estimated gate/event counts."""
+    size = circuit_size(cell)
+    return (size, base_priority) if kind == "price" else (base_priority, size)
+
+
 def batches(plan, run, worker, sizes, budgets):
     priority = worker.h8_preparation_priority(plan, run, circuit_size)
     work = []
@@ -101,8 +107,8 @@ def batches(plan, run, worker, sizes, budgets):
                 name = f"signals/{cell['id']}.json" if kind == "signal" else f"prices/{cell['id']}-{index}.json"
                 if (run / name).is_file():
                     continue
-                rank = priority((kind, cell, index, name, plan["owner"]))
-                work.append((rank, circuit_size(cell), stage, cell, index))
+                rank = preparation_order(kind, cell, priority((kind, cell, index, name, plan["owner"])))
+                work.append((*rank, stage, cell, index))
     work.sort(key=lambda entry: (entry[0], entry[1], entry[2], entry[3]["id"], entry[4]))
     pending = []
     phase_keys = 0
@@ -165,8 +171,8 @@ def preparation_priorities(graph, executor, plan, run, worker):
         command = prep["command"]
         targets = json.loads(command[command.index("--targets") + 1])
         kind = "signal" if stage == "signal" else "price"
-        rank = min((priority((kind, inputs[stage][cid], index, None, plan["owner"])),
-                    circuit_size(inputs[stage][cid])) for cid, index in targets)
+        rank = min(preparation_order(kind, inputs[stage][cid],
+                    priority((kind, inputs[stage][cid], index, None, plan["owner"]))) for cid, index in targets)
         job = preparation_job_id(request, source_manifest=executor.source_manifest, dependencies=[])
         ranks[job] = (*rank[0], *rank[1])
     return ranks
@@ -396,6 +402,8 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
     screen = (price_screen(provider, plan, run, settings, full_plan=full_plan)
               if "case_ids" in settings else price_screen(provider, plan, run, settings))
     excluded = screen.update() if screen is not None else set()
+    if legacy is not None:
+        legacy_io.seed_local_worker(legacy, distributed)
     executor, optimize = make_executor(root, run, routes, expected, problem, spec)
     if legacy is not None:
         executor.prior_q3_holds.extend(row for row in legacy[1]["holds"] if row["configuration_id"] in selected)
