@@ -145,6 +145,15 @@ def resolve(config, request):
         if config.get('entry') != 'schedule':
             raise RequestError('release_worker_policy','common worker policy requires schedule entry')
         spec['release_worker_policy'] = common_worker_policy(config['release_worker_policy'])
+        # Input/route preflight consumes the same fixed mapper selection as
+        # the driver, before any worker or independent package is started.
+        if mapper := spec['release_worker_policy'].get('df_max_width'):
+            completion = spec['candidate_completion']
+            completion['df_max_width_source'] = mapper['source']
+            completion['df_max_width_code_root'] = config['code_root']
+            completion.setdefault('saved_df_descriptors', {})['0'] = mapper['endpoint_descriptor']
+            if mapper.get('price_helper_source'):
+                completion['df_max_width_price_helper'] = mapper['price_helper_source']
     if 'system' in scope and scope['system'] != problem.get('problem', {}).get('system'):
         raise RequestError('scope.system', 'system is unavailable on the selected release')
     if config.get('release_manifest'):
