@@ -258,8 +258,14 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
         # The fixed selector and stage markers retain the owner and request.
         # A candidate lacking an eligible host/receipt must not cancel PR or
         # already READY PF work using the same distributed executor.
-        return context,routes,dict(status='PREPARATION_WAITING' if isinstance(error, PreparationWait)
-                                   else 'PREPARATION_INCOMPLETE',selection=selection,reason=str(error))
+        status = dict(status='PREPARATION_WAITING' if isinstance(error, PreparationWait)
+                      else 'PREPARATION_INCOMPLETE',selection=selection,reason=str(error))
+        # The metadata preflight wraps CalledProcessError in Held. Retain
+        # its typed pre-dispatch evidence, so a changed runtime can recover it.
+        failure = metadata_tool_failure(error.__cause__, folder, settings)
+        if failure is not None:
+            status['metadata_tool_failure'] = failure
+        return context,routes,status
     except PF.CompletionRequestMismatch as error:
         return context,routes,dict(status='PREPARATION_INCOMPLETE',selection=selection,
                                    reason='PF_COMPLETION_REQUEST_MISMATCH',request_path=str(error.path),
@@ -700,7 +706,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
                 if revision!=failure['revision']:
                     row.update(status='PRICE_RECEIPT_RECHECK_AVAILABLE',price_receipt_recheck=True,
                         price_recheck_directory='pf_auto/tool-recovery/'+revision[:20],
-                        price_prior_owner_directories=[],previously_audited_price_axes=[])
+                        price_prior_owner_directories=row.get('price_prior_owner_directories',[]),
+                        previously_audited_price_axes=row.get('previously_audited_price_axes',[]))
             if (row.get('reason') == 'PF_COMPLETION_REQUEST_MISMATCH'
                     and not row.get('configurations')
                     and set(row.get('differing_fields', ())) <=

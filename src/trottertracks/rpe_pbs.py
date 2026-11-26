@@ -1538,7 +1538,12 @@ class PbsManager:
                     request, receipt, outcome = (read(staging/name) for name in names)
                     hchain = self.offline_plan.get('hchain_preparation')
                     hchain_prep = preparation and hchain is not None and request.get('method') == 'HCHAIN'
-                    if (request.get('request_id') != job or (request.get('method') not in methods and not hchain_prep)
+                    if (request.get('request_id') != job
+                            or (not preparation and request.get('method') not in methods)
+                            or (preparation and method != 'PREPARATION-'+str(request.get('preparation', {}).get('stage')))
+                            or (preparation and hchain is not None and not hchain_prep)
+                            or (preparation and hchain is None and request.get('method') is not None
+                                and request['method'] not in methods)
                             or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
                         raise ValueError('Independent result receipt differs')
                     if hchain_prep:

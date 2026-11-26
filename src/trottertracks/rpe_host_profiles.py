@@ -16,6 +16,11 @@ REVIEWED_PR_Q3_ROUTES = {
 }
 PREFIX_PR_Q3_ROUTES = REVIEWED_PR_Q3_ROUTES | {('PR_DF', 'prdf_d2_split')}
 
+Q3_EXECUTION_ROUTE_KINDS = frozenset((
+    'pf_b_pf6', 'pauli_b_ld3', 'pauli_b_ld5', 'pauli_b_common_entry',
+    'prdf_d2_split', 'prdf_d2_common_entry', 'hchain_scoped_q3',
+))
+
 COMPACT_Q3_RUNTIME_PROBE = '''\
 import sqlite3
 with sqlite3.connect(':memory:') as db:
@@ -124,9 +129,10 @@ print(json.dumps(dict(status='PASS' if all(r['status']=='PASS' for r in rows) el
     return report
 
 
-def q3_cpu_class(request):
+def q3_cpu_class(request, route_kinds=('hchain_scoped_q3',)):
     shots = tuple(request.get('N_X', ())) + tuple(request.get('N_Y', ()))
-    if (request.get('route', {}).get('kind') != 'hchain_scoped_q3' or not shots
+    kind = request.get('route', {}).get('kind')
+    if (kind not in route_kinds or kind not in Q3_EXECUTION_ROUTE_KINDS or not shots
             or any(type(n) is not int or n < 1 for n in shots)):
         return None
     return f"{request['method']}:{max(shots).bit_length()}"
@@ -136,7 +142,9 @@ def apply_q3_cpu_policy(selected, request, policy):
     """Only execution parallelism changes. Assigned scientific requests do not."""
     if not policy:
         return selected
-    key = q3_cpu_class(request)
+    # A profile may explicitly opt in its measured Q3 routes. Existing
+    # H-chain class tables never silently alter other evaluator routes.
+    key = q3_cpu_class(request, policy.get('route_kinds', ('hchain_scoped_q3',)))
     if key is None or key not in policy.get('classes', {}):
         return selected
     count = policy['classes'][key]

@@ -1369,6 +1369,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             restored_provider = False
             vanished_pf_owner = False
             saved_price_git_input = False
+            pf_local_publication = False
             git_suffix = "' returned non-zero exit status 128."
             if (stop['error_type'] == 'CalledProcessError'
                     and 'pf_distributed_preparation.py' in trace
@@ -1381,6 +1382,21 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                     and len(command) == 6 and re.fullmatch(r'[0-9a-f]{40}', command[5])
                     and subprocess.run(['git', 'cat-file', '-e', command[5]+'^{commit}'],
                                        cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0)
+            if (stop['error_type'] == 'CalledProcessError' and 'pf_distributed_preparation.py' in trace
+                    and message.startswith("Command '") and message.endswith(git_suffix)):
+                command = ast.literal_eval(message[len("Command '"):-len(git_suffix)])
+                if (len(command) == 6 and command[:4] == ['git','fetch','--no-tags','--no-write-fetch-head']
+                        and command[5] == 'HEAD'):
+                    workspace = Path(command[4]).resolve()
+                    if (workspace.name == 'provider_workspace' and workspace.is_relative_to(run.resolve()/'pf_auto')
+                            and (workspace.parent/'PROVIDER_SOURCE.json').is_file()):
+                        registry = 'docs/research/distributed_selected_pf/REGISTRY.json'
+                        fixed = load(workspace.parent/'PROVIDER_SOURCE.json')
+                        head_registry = subprocess.check_output(['git','show','HEAD:'+registry], cwd=workspace)
+                        pf_local_publication = (
+                            head_registry == (workspace/registry).read_bytes()
+                            and subprocess.run(['git','cat-file','-e',fixed['source']+'^{commit}'],
+                                               cwd=workspace, capture_output=True).returncode == 0)
             suffix = "' returned non-zero exit status 1."
             if (stop['error_type'] == 'CalledProcessError' and 'pf_distributed_preparation.py' in trace
                     and "source=local('preflight'" in trace and message.startswith("Command '")
@@ -1449,11 +1465,11 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
                                                cwd=owner_root).returncode == 0)
             if (not ((stop['error_type'] == 'ValueError' and (old_mismatch or inherited_paths))
                      or saved_axis_encoding or incomplete_recovery_index or legacy_write_scope or restored_provider
-                     or vanished_pf_owner or saved_price_git_input)
+                     or vanished_pf_owner or saved_price_git_input or pf_local_publication)
                     or 'in complete_selected' not in trace
                     or 'pf_candidate_selection.py' not in trace):
                 hold('the failure is outside the PF candidate request binding')
-            if ((incomplete_recovery_index or legacy_write_scope or vanished_pf_owner or saved_price_git_input)
+            if ((incomplete_recovery_index or legacy_write_scope or vanished_pf_owner or saved_price_git_input or pf_local_publication)
                     and (run/'STOP_REQUESTED.json').exists()):
                 hold('user STOP prevents recovery')
         elif (kind != 'ast' or stop['error_type'] != 'SystemError'
@@ -1462,7 +1478,7 @@ def reconcile_runtime_failure(run, launch, ended, invocation, kind):
             hold('the failure is outside the fixed PF metadata AST path')
         reattach = damaged_progress or (kind == 'pf_request'
             and (incomplete_recovery_index or legacy_write_scope or restored_provider or vanished_pf_owner
-                 or saved_price_git_input))
+                 or saved_price_git_input or pf_local_publication))
         owners = [launch, driver, relay]
         local = run/'distributed/LOCAL_DAEMON.json'
         if reattach:

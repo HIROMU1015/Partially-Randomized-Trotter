@@ -764,6 +764,18 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
             distributed['pbs_offline_plan'] = plan
             history = str(Path(run_dir)/'distributed'/'pbs'/'offline-history')
             spec['executor'].setdefault('prior_run_dirs', []).append(history)
+        if independent and plan and trial.get('central_local_shared_git_inputs') is True:
+            # The complementary central partition uses only the local
+            # preparation worker. Its fixed object store can be shared
+            # directly, just as on the independent compute node.
+            from trottertracks.rpe_preparation_bridge import STAGES
+            if distributed.get('local_worker', {}).get('host_id') != 'local':
+                raise ValueError('Local shared preparation requires a local worker')
+            distributed.setdefault('preparation_provider_hosts', {}).update(
+                {provider:['local'] for provider in STAGES})
+            distributed['preparation']['local_shared_git_inputs'] = True
+            env = offline.input_environment([ROOT])
+            os.environ['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = env['GIT_ALTERNATE_OBJECT_DIRECTORIES']
 
 
 @contextmanager

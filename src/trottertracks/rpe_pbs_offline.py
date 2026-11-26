@@ -15,6 +15,12 @@ import time
 from .rpe_q3_worker import atomic, digest, read
 
 
+def sqlite_busy(error):
+    # The PBS shared filesystem can briefly reject even a read-only snapshot.
+    # Only retry contention; leave corruption and real SQL errors visible.
+    return ('locked' in str(error).lower() or 'busy' in str(error).lower())
+
+
 def partition_round(round_spec, problem=None, *, independent=False):
     if independent and round_spec.get('hchain'):
         from .rpe_hchain_scope import fixed_plan
@@ -383,6 +389,8 @@ def part_documents(plan, part, profile, path):
         # Start with an empty local policy so the normal per-request live
         # dry-check obtains fresh proof instead of treating the policy as absent.
         distributed['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
+        if distributed.get('preparation'):
+            distributed['preparation']['local_shared_git_inputs'] = True
     distributed.update(bind='127.0.0.1', port=0, local_worker=selected, preparation_profiles={'local': selected},
                        execution_hosts=['local'], live_q3_readiness=True, worker_script=str(worker_script))
     if 'computation_source' in distributed:
@@ -642,8 +650,13 @@ class OfflineSearch:
         database = self.part/'distributed'/'QUEUE.sqlite3'
         if database.is_file():
             from contextlib import closing
-            with closing(sqlite3.connect(database.resolve().as_uri()+'?mode=ro',uri=True)) as connection:
-                live, = connection.execute("SELECT count(*) FROM jobs WHERE state IN ('ASSIGNED','STARTING','RUNNING')").fetchone()
+            try:
+                with closing(sqlite3.connect(database.resolve().as_uri()+'?mode=ro',uri=True,timeout=1)) as connection:
+                    live, = connection.execute("SELECT count(*) FROM jobs WHERE state IN ('ASSIGNED','STARTING','RUNNING')").fetchone()
+            except sqlite3.OperationalError as error:
+                if not sqlite_busy(error):
+                    raise
+                return  # Ownership was not established; leave this block running.
             if live:
                 return
         self.request_stop()
@@ -696,12 +709,14 @@ class OfflineSearch:
         if overlay['base_source'] != self.plan['settings']['source']:
             raise ValueError('PBS controller overlay belongs to another fixed optimizer')
         files = overlay['modules']
-        names = ('rpe_host_profiles', 'rpe_q3_resources', 'rpe_q3_store', 'rpe_optimizer_concurrent')
-        order = tuple(name for name in names if name in files)
-        if set(files) - set(names) or not {'rpe_q3_store','rpe_optimizer_concurrent'} <= set(files):
+        order = ('rpe_host_profiles', 'rpe_q3_resources', 'rpe_q3_store',
+                 'rpe_preparation_bridge', 'rpe_optimizer_concurrent')
+        if not {'rpe_q3_store','rpe_optimizer_concurrent'} <= set(files) <= set(order):
             raise ValueError('Unsupported PBS controller overlay modules')
         modules = []
         for name in order:
+            if name not in files:
+                continue
             item = files[name]
             path = Path(item['path'])
             if hashlib.sha256(path.read_bytes()).hexdigest() != item['sha256']:
@@ -752,6 +767,8 @@ class OfflineSearch:
                     if 'host_eligibility' not in settings:
                         settings['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
                     current = data['executor']['distributed']
+                    if current.get('preparation', {}).get('local_shared_git_inputs') is True:
+                        settings['preparation']['local_shared_git_inputs'] = True
                     # The new allocation owns a fresh sampler path and
                     # transport. Neither is part of the scientific contract.
                     if current.get('local_worker', {}).get('storage_limit', {}).get('parent_compute_sample'):
@@ -849,9 +866,14 @@ class OfflineSearch:
                 db = part/'distributed'/'QUEUE.sqlite3'
                 if not db.is_file():
                     continue
-                with closing(sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True)) as connection:
-                    row = connection.execute('SELECT request_sha256,contract,attempt_id,completion_sha256,state '
-                        'FROM jobs WHERE job_id=?',(job.name,)).fetchone()
+                try:
+                    with closing(sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True,timeout=1)) as connection:
+                        row = connection.execute('SELECT request_sha256,contract,attempt_id,completion_sha256,state '
+                            'FROM jobs WHERE job_id=?',(job.name,)).fetchone()
+                except sqlite3.OperationalError as error:
+                    if not sqlite_busy(error):
+                        raise
+                    continue  # The next export will recover the intact receipt.
                 if not row or row[4] != 'ACCEPTED' or not row[2] or row[0] != digest(request):
                     continue
                 origin = dict(request_sha256=row[0], contract=json.loads(row[1]), attempt_id=row[2],
@@ -900,9 +922,14 @@ class OfflineSearch:
         if db.is_file():
             from contextlib import closing
 
-            with closing(sqlite3.connect(db.resolve().as_uri()+'?mode=ro', uri=True)) as connection:
-                for method, state, total in connection.execute("SELECT method,state,count(*) FROM jobs GROUP BY 1,2"):
-                    counts.setdefault(method, {})[state] = total
+            try:
+                with closing(sqlite3.connect(db.resolve().as_uri()+'?mode=ro', uri=True,timeout=1)) as connection:
+                    for method, state, total in connection.execute("SELECT method,state,count(*) FROM jobs GROUP BY 1,2"):
+                        counts.setdefault(method, {})[state] = total
+            except sqlite3.OperationalError as error:
+                if not sqlite_busy(error):
+                    raise
+                return  # Keep the last valid coverage; do not end the worker.
         observed = dict(counts=counts, termination=read(marker) if marker.exists() else None)
         if self.independent:
             status_path=part/'BLOCK_STATUS.json'

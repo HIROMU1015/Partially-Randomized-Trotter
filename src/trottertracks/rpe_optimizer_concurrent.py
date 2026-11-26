@@ -25,6 +25,15 @@ import sqlite3
 
 from . import rpe_method_optimizer as O
 from .rpe_q3_timing import stamp
+# This operational module may be selected ahead of an older frozen profile
+# module. Keep its route vocabulary available in that supported resume path.
+try:
+    from .rpe_host_profiles import Q3_EXECUTION_ROUTE_KINDS
+except ImportError:
+    Q3_EXECUTION_ROUTE_KINDS = frozenset((
+        'pf_b_pf6', 'pauli_b_ld3', 'pauli_b_ld5', 'pauli_b_common_entry',
+        'prdf_d2_split', 'prdf_d2_common_entry', 'hchain_scoped_q3',
+    ))
 
 LIVE_READINESS_RETRY_SECONDS = 10
 
@@ -99,11 +108,11 @@ def queue_wait_signature(payload):
 
 
 def hchain_q3_probe_window(rows, start, limit):
-    """Share a PBS metadata check with an already queued H-chain Q3."""
+    """Share a PBS metadata check with an already queued scientific Q3."""
     rotated = rows[start:] + rows[:start]
     if limit:
         index = next((index for index, row in enumerate(rotated)
-                      if row['request']['route']['kind'] == 'hchain_scoped_q3'), None)
+                      if row['request']['route']['kind'] in Q3_EXECUTION_ROUTE_KINDS), None)
         if index is not None:
             rotated.insert(0, rotated.pop(index))
     return rotated[:limit]
@@ -2321,7 +2330,7 @@ class DistributedExecutor(ConcurrentExecutor):
                and self._uses_pbs_task_resources(row) for row in owners):
             return None
         for task in queue:
-            if not task.demand or task.status != 'QUEUED' or task.rule['kind'] != 'hchain_scoped_q3':
+            if not task.demand or task.status != 'QUEUED' or task.rule['kind'] not in Q3_EXECUTION_ROUTE_KINDS:
                 continue
             row = rows.get(task.job.name)
             if row is None or row['state'] != 'QUEUED':
@@ -4283,7 +4292,7 @@ class DistributedExecutor(ConcurrentExecutor):
             fields['eligibility_challenges'] = list(challenges.values())
             if is_pbs:
                 fields['eligibility_challenges'].sort(
-                    key=lambda item: item['request']['route']['kind'] != 'hchain_scoped_q3')
+                    key=lambda item: item['request']['route']['kind'] not in Q3_EXECUTION_ROUTE_KINDS)
             with s.cv:
                 if self.hosts[host]['poll_started'] == poll_started:
                     hints = getattr(s, 'queue_probe_hints', None)
@@ -4613,7 +4622,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not standby:
                         free_cpu -= cpu
                         free_memory -= memory
-                        if task.rule['kind'] == 'hchain_scoped_q3':
+                        if task.rule['kind'] in Q3_EXECUTION_ROUTE_KINDS:
                             q3_headroom = None
                 # Assignment and reservation are committed before a worker
                 # receives anything. A lost HTTP response retains ownership.

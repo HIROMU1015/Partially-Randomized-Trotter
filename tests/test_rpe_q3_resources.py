@@ -343,6 +343,13 @@ def test_hchain_q3_cpu_policy_is_class_specific_and_retains_larger_footprint():
     large=dict(req,N_X=[16],N_Y=[16])
     assert request_cpu_footprint(base,large)==8
     assert request_cpu_footprint(base,dict(req,method='PR_DF'))==8
+    pf = dict(req, route=dict(kind='pf_b_pf6', view_commit='fixed-h4'))
+    assert request_cpu_footprint(base,pf)==8  # H6 policy never affects H4 implicitly.
+    h4 = dict(base, q3_cpu_policy=dict(from_dp_workers=7, classes={'FULL_PF:4':4},
+                                     route_kinds=['pf_b_pf6']))
+    assert request_cpu_footprint(h4,pf)==4
+    assert request_cpu_footprint(h4,req)==8
+    assert select_host_profile(h4,dict(request=pf))['dp_workers']==3
 
 
 def test_hchain_smaller_worker_inherits_conservative_memory_peak():

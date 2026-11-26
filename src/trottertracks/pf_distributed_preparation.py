@@ -39,6 +39,39 @@ def run_preflight(command, **options):
             raise failure('PF_METADATA_PREFLIGHT_HOLD:'+detail) from error
 
 
+def publish_pf_locators(workspace, root, *documents):
+    """Publish exact PF evidence from an owned checkout, not its entire Git history."""
+    import re
+    from .rpe_live_q3_readiness import copy_git_locators
+    from .pr_candidate_completion import PreparationWait
+
+    def locators(value):
+        if isinstance(value, dict):
+            if (isinstance(value.get('commit'), str) and re.fullmatch('[0-9a-f]{40}', value['commit'])
+                    and isinstance(value.get('path'), str)):
+                yield value['commit'], value['path']
+            for child in value.values():
+                yield from locators(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from locators(child)
+
+    pending = set(locators(list(documents)))
+    seen = set()
+    try:
+        while pending:
+            copy_git_locators(workspace, root, pending)
+            seen.update(pending)
+            follow = set()
+            for commit, path in sorted(pending):
+                if path.endswith('.json'):
+                    content = json.loads(git(root, 'show', commit+':'+path))
+                    follow.update(locators(content))
+            pending = follow - seen
+    except (OSError, subprocess.SubprocessError, ValueError) as error:
+        raise PreparationWait('PF_PUBLICATION_LOCATOR_UNAVAILABLE: '+str(error)) from error
+
+
 def selected_workspace_request(request, workspace):
     destination = workspace/'docs/research/distributed_selected_pf'
     return dict(request, output_root=str(destination), registry_file=str(destination/'REGISTRY.json'))
@@ -500,8 +533,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     if len(reused)==len(owner['rows']):
         registry=read(request['registry_file'])if Path(request['registry_file']).exists()else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
         for row in reused:registry['configurations'][row['configuration_id']]=row['entry']
-        subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(original),'HEAD'],cwd=root,check=True,
-            stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        publish_pf_locators(original, root, registry, reused)
         put(registry_output,registry);put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=reused,registry_file=registry_output))
         return
     workspace=run/'provider_workspace';marker=run/'PROVIDER_SOURCE.json'
@@ -764,12 +796,11 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         if scoped:
             registered['original_owner_directories'] = sorted({str(folder), *owner_row['original_owner_directories']})
         items.append(registered)
-    # The usual registry loader consumes the original producer locators. Fetch
-    # the owned clone's objects, without changing the controller's HEAD.
-    subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),'HEAD'],cwd=root,check=True,
-                   stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+    # The registry refers to exact output objects. It does not need the
+    # unrelated history of a local sparse/partial provider checkout.
     registry_path = Path(selected['registry_file'])
     registry = read(registry_path) if registry_path.exists() else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
+    publish_pf_locators(workspace, root, registry, items)
     put(registry_output,registry)
     put(output,dict(response,items=items,registry_file=registry_output))
 

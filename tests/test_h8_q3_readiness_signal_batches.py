@@ -105,6 +105,8 @@ def test_hchain_q3_has_one_check_even_with_a_full_preparation_window():
     assert hchain_q3_probe_window(rows, 8, 4) == [q3, *preparation[8:11]]
     assert hchain_q3_probe_window(preparation, 8, 4) == preparation[8:12]
     assert hchain_q3_probe_window(rows, 8, 0) == []
+    h4 = row('h4-q3', 'prdf_d2_common_entry')
+    assert hchain_q3_probe_window(preparation+[h4],8,4)==[h4,*preparation[8:11]]
 
 
 def test_hchain_q3_headroom_uses_same_reservation_and_only_when_runnable(monkeypatch):
@@ -126,3 +128,6 @@ def test_hchain_q3_headroom_uses_same_reservation_and_only_when_runnable(monkeyp
     assert reserve(executor, host, [q3], rows, active, pool, {}, {}) is None
     assert reserve(executor, "other-host", [q3], rows, [], pool, {}, {}) is None
     assert reserve(executor, host, [q3], rows, [], dict(pool, memory_bytes=160 * rpe_pbs.GIB), {}, {}) is None
+    q3.rule = {'kind':'pf_b_pf6'}
+    rows['q3']['request'] = {'route':q3.rule}
+    assert reserve(executor,host,[q3],rows,[],pool,{},{})==(q3,8,160*rpe_pbs.GIB)

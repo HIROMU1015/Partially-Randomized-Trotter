@@ -19,6 +19,15 @@ MODULES = {
     'trottertracks/_pbs_storage_report.py': 'src/trottertracks/rpe_worker_storage.py',
     'trottertracks/rpe_pbs_offline.py': 'src/trottertracks/rpe_pbs_offline.py',
 }
+# Update every operational member already supported by the base package.
+# A frozen provider checkout is separate from this transport.
+OPTIONAL_MODULES = {
+    'trottertracks/_pipeline_q3_resources.py': 'src/trottertracks/rpe_q3_resources.py',
+    'trottertracks/_pipeline_release_deployment.py': 'src/trottertracks/_pipeline_release_deployment.py',
+    'trottertracks/rpe_dry_check_recovery.py': 'src/trottertracks/rpe_dry_check_recovery.py',
+    'trottertracks/rpe_pbs_attempt_control.py': 'src/trottertracks/rpe_pbs_attempt_control.py',
+    'trottertracks/_pipeline_pbs_preparation_batch.py': 'src/trottertracks/rpe_pbs_preparation_batch.py',
+}
 
 
 def refresh(base, output, root=ROOT):
@@ -37,9 +46,16 @@ def refresh(base, output, root=ROOT):
             missing = (set(MODULES) - {'trottertracks/rpe_pbs_offline.py'}) - set(old.namelist())
             if missing:
                 raise ValueError('Base launcher does not contain the required worker modules: '+str(sorted(missing)))
+            replacements = {**MODULES, **OPTIONAL_MODULES}
             for entry in old.infolist():
-                data = ((root/MODULES[entry.filename]).read_bytes()
-                        if entry.filename in MODULES else old.read(entry))
+                original = old.read(entry)
+                if entry.filename == '__main__.py' and b'Start the fixed PBS transport with allocation-local gateway storage samples.' in original:
+                    # In particular, do not retain an old import dispatcher
+                    # which shadows the newly packaged offline module.
+                    data = (root/'scripts/run_rpe_pbs_storage_worker.py').read_bytes()
+                else:
+                    data = ((root/replacements[entry.filename]).read_bytes()
+                            if entry.filename in replacements else original)
                 if entry.filename.endswith('.py'):
                     compile(data,entry.filename,'exec')
                 new.writestr(entry, data)

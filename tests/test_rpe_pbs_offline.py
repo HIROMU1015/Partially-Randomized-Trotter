@@ -167,8 +167,8 @@ def test_independent_keeps_running_connected_claims_disjoint_and_resumes(tmp_pat
     assert all_parts_finished(plan,read(durable/'COVERAGE.json')['parts'])
 
 
-@pytest.mark.parametrize("hchain", [False, True])
-def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain):
+@pytest.mark.parametrize("hchain, invalid", [(False, None), (True, None), (False, "stage"), (True, "stage"), (True, "scope")])
+def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain, invalid):
     import threading
     import hashlib
     from trottertracks.rpe_preparation_artifacts import ArtifactCache
@@ -190,7 +190,7 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain):
                          popen=lambda *a,**k:SimpleNamespace(poll=lambda:None))
     block=pbs_parts(plan)[0]
     part=durable/'parts'/block['id'];part.mkdir(parents=True)
-    request=normalize_preparation_request(dict(method=block['method'],route={'kind':'preparation'},
+    request=normalize_preparation_request(dict(route={'kind':'preparation'},
         preparation={'stage':'signal','provider':'artificial','artificial':True,'source':{'commit':'a'*40,'files':{}},
                      'outputs':['result.json']}))
     if hchain:
@@ -199,7 +199,7 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain):
             dict(owner='fixed-owner',binding={'system':'H8'},scope={'price_paths':1},
                  cases=[{'rounds':[{'id':'physical','method':'FULL'}]}]),
             'd'*64, 'signal', [['physical',0]], source={'commit':'a'*40,'files':{}}, assets={}))
-    job=request['request_id'];method='PREPARATION:signal'
+    job=request['request_id'];method='PREPARATION:audit' if invalid == 'stage' else 'PREPARATION:signal'
     raw=part/'input';raw.write_bytes(b'artificial result');sha=hashlib.sha256(raw.read_bytes()).hexdigest()
     cache=ArtifactCache(part/'distributed'/'artifacts');cache.put_file(raw,sha)
     origin={'request_sha256':digest(request),'contract':{'evaluation':None,'dependencies':[]},
@@ -222,6 +222,14 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain):
         artifact_cache=ArtifactCache(run/'distributed'/'artifacts'),state=SimpleNamespace(cv=threading.Condition()))
     manager.log=lambda *a,**k:None
     with patch.object(rpe_pbs,'Gateway',return_value=connection):
+        if invalid:
+            if invalid == 'scope':
+                plan['hchain_preparation']['stages']['signal'] = ['different-physical-id']
+            with pytest.raises(RuntimeError,match='Independent receipts pending'):
+                manager._collect_offline_history('token')
+            assert manager.executor.artifact_cache.missing([sha])
+            assert not list((manager.directory/'offline-history/jobs').glob('*/*/IMPORTED.json'))
+            return
         manager._collect_offline_history('token')
         manager._collect_offline_history('token')
     assert manager.executor.artifact_cache.path(sha).read_bytes()==b'artificial result'
@@ -426,6 +434,7 @@ def test_independent_storage_recovery_refreshes_blocked_offer(tmp_path):
 
 def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
     import hashlib
+    import json
     import sys
     import pytest
     from trottertracks.rpe_pbs_offline import OfflineSearch
@@ -434,11 +443,12 @@ def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
     entry=tmp_path/'scripts'/'run_rpe_schedule_search.py'
     entry.parent.mkdir();entry.write_text('pass')
     modules={}
-    for name in ('rpe_q3_store','rpe_optimizer_concurrent'):
+    for name in ('rpe_host_profiles','rpe_q3_resources','rpe_q3_store','rpe_preparation_bridge','rpe_optimizer_concurrent'):
         path=tmp_path/(name+'.py');path.write_text('pass')
         modules[name]={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
     search.profile={'pbs':{'offline_controller_overlay':{'base_source':'fixed','modules':modules}}}
     assert search._controller_command(entry)[-3]==str(entry)
+    assert [x[0] for x in json.loads(search._controller_command(entry)[-1])]==list(modules)
     modules['rpe_q3_store']['sha256']='invalid'
     with pytest.raises(ValueError,match='overlay differs'):
         search._controller_command(entry)
@@ -509,3 +519,68 @@ def test_selected_bundled_offline_module_is_not_shadowed_by_pinned_root(tmp_path
     assert result.RELEASE=='selected'
     assert result.__file__.startswith(str(packed))
     assert sys.modules[name] is result and trottertracks.rpe_pbs_offline is result
+
+def test_shared_local_git_inputs_omit_bundle_only_with_visible_locators(tmp_path, monkeypatch):
+    import subprocess
+    from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
+    root=tmp_path/'source';root.mkdir()
+    def git(*args):
+        return subprocess.check_output(['git','-C',str(root),*args],text=True).strip()
+    git('init','-q')
+    (root/'fixed.json').write_text('{}')
+    (root/'unrelated-history.bin').write_bytes(b'not required by any locator')
+    git('add','fixed.json','unrelated-history.bin')
+    git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','fixed')
+    source=git('rev-parse','HEAD')
+    missing=git('rev-parse','HEAD:unrelated-history.bin')
+    (root/'.git/objects'/missing[:2]/missing[2:]).unlink()
+    bridge=object.__new__(DistributedPreparationBridge)
+    bridge.settings={'local_shared_git_inputs':True}
+    monkeypatch.setenv('GIT_ALTERNATE_OBJECT_DIRECTORIES',str(root/'.git/objects'))
+    import hashlib
+    from trottertracks.rpe_preparation_worker import _verify_fixed_git_inputs
+    inputs=[{'commit':source,'path':'fixed.json','sha256':hashlib.sha256(b'{}').hexdigest()}]
+    worker=tmp_path/'worker';subprocess.run(['git','init','-q',str(worker)],check=True)
+    _verify_fixed_git_inputs(worker,inputs)
+    assert bridge._shared_local_git_inputs(source,inputs)
+    assert bridge._bundle(root,source,inputs,shared_base=True)==[]
+    assert not bridge._shared_local_git_inputs(source,[{'commit':source,'path':'missing'}])
+    bridge.settings={}
+    assert not bridge._shared_local_git_inputs(source,inputs)
+
+def test_coverage_read_contention_keeps_last_snapshot(tmp_path, monkeypatch):
+    import sqlite3
+    from trottertracks.rpe_pbs_offline import OfflineSearch
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'run'
+    search.independent=True;search.revision=0;search.directory.mkdir()
+    part=search.directory/'parts'/'one';(part/'distributed').mkdir(parents=True)
+    (part/'distributed/QUEUE.sqlite3').touch()
+    snapshot={'changes':0,'parts':{}}
+    atomic(search.directory/'COVERAGE.json',snapshot)
+    def busy(*args,**kwargs):
+        raise sqlite3.OperationalError('database is locked')
+    monkeypatch.setattr(sqlite3,'connect',busy)
+    search.record_coverage(part)
+    assert read(search.directory/'COVERAGE.json')==snapshot
+    assert search.revision==0
+
+
+
+def test_common_worker_refresh_replaces_operational_entry_and_existing_members(tmp_path):
+    import zipfile
+    from refresh_rpe_pbs_worker_launcher import refresh, MODULES, OPTIONAL_MODULES
+    base, output = tmp_path/'base.pyz', tmp_path/'updated.pyz'
+    members = {**MODULES, **OPTIONAL_MODULES}
+    with zipfile.ZipFile(base,'w') as archive:
+        for name in members:
+            archive.writestr(name, 'OLD = True\n')
+        archive.writestr('__main__.py', '# Start the fixed PBS transport with allocation-local gateway storage samples.\n')
+        archive.writestr('pilot-specific.py', 'keep = True\n')
+    original = base.read_bytes()
+    refresh(base,output,ROOT)
+    assert base.read_bytes()==original
+    with zipfile.ZipFile(output) as archive:
+        for name, source in members.items():
+            assert archive.read(name)==(ROOT/source).read_bytes()
+        assert archive.read('__main__.py')==(ROOT/'scripts/run_rpe_pbs_storage_worker.py').read_bytes()
+        assert archive.read('pilot-specific.py')==b'keep = True\n'

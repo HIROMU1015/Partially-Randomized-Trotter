@@ -11,6 +11,7 @@ import fcntl
 import importlib.metadata
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import signal
@@ -25,6 +26,14 @@ from .rpe_preparation_artifacts import (
 from .rpe_q3_timing import append as timing_append
 
 STAGES = ('signal', 'compile', 'audit')
+
+
+def rewrite_bound_argument(argument, bindings):
+    """Apply one longest-match rewrite, never rewrite a newly bound path."""
+    if not bindings:
+        return argument
+    pattern = re.compile('|'.join(re.escape(old) for old in sorted(bindings,key=len,reverse=True)))
+    return pattern.sub(lambda match: bindings[match.group(0)], argument)
 PAULI_BINDING_ORIGIN = 'git@github.com:HIROMU1015/Partially-Randomized-Trotter.git'
 
 
@@ -805,10 +814,7 @@ def execute(assignment, base_profile, directory):
         if required.get('controller_path'):bindings[required['controller_path']]=replacements['@VIEW:'+alias+'@']
     for alias,required in spec.get('required_paths',{}).items():
         bindings[required['controller_path']]=replacements['@PATH:'+alias+'@']
-    command=[]
-    for argument in spec['command']:
-        for old,new in sorted(bindings.items(),key=lambda pair:-len(pair[0])):argument=argument.replace(old,new)
-        command.append(resolve(argument))
+    command=[resolve(rewrite_bound_argument(argument, bindings)) for argument in spec['command']]
     if spec.get('provider') == 'DF_SIGNALS' and profile.get('task_cpu_count') is not None:
         command = bind_df_signal_workers(command, profile['task_cpu_count'])
     if command[0]!=profile['interpreter'] and command[0]not in {t['path']for t in fingerprint['tools'].values()}:raise ValueError('Command does not use verified Python/compiler')
