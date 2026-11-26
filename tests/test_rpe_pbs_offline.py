@@ -367,13 +367,14 @@ def test_partition_carries_parent_verified_holds(tmp_path):
     assert child['executor']['partition_prior_q3_holds'] == ([hold] if 'PR_PAULI' in child['methods'] else [])
 
 
-def test_independent_durable_checkout_keeps_parts_with_fixed_git_source(tmp_path):
+@pytest.mark.parametrize("hchain", [False, True])
+def test_independent_durable_checkout_keeps_parts_with_fixed_git_source(tmp_path, hchain):
     import subprocess
     from trottertracks.rpe_pbs_offline import OfflineSearch
     source = tmp_path/'fixed'
     source.mkdir()
     subprocess.run(['git','init','-q',str(source)],check=True)
-    entry = source/'scripts'/'run_rpe_schedule_search.py'
+    entry = source/'scripts'/('run_rpe_method_optimizer.py' if hchain else 'run_rpe_schedule_search.py')
     entry.parent.mkdir();entry.write_text('# fixed artificial entry\n')
     old=source/'unrelated-history';old.mkdir();(old/'missing.json').write_text('historical data')
     subprocess.run(['git','-C',str(source),'add','scripts','unrelated-history'],check=True)
@@ -381,7 +382,7 @@ def test_independent_durable_checkout_keeps_parts_with_fixed_git_source(tmp_path
     revision = subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()
     blob=subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD:unrelated-history/missing.json'],text=True).strip()
     (source/'.git/objects'/blob[:2]/blob[2:]).unlink()
-    search=object.__new__(OfflineSearch);search.directory=tmp_path/'durable'
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'durable';search.plan={'round':{'hchain':hchain}}
     part=search.directory/'parts'/'one';part.mkdir(parents=True);(part/'ROUND.json').write_text('{}')
     actual=search._durable_entry(source,revision)
     assert actual.read_bytes()==entry.read_bytes()
