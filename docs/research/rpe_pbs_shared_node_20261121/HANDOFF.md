@@ -63,3 +63,11 @@ RomuTailの配置記録は `.rpe-central/deployment/shared-pbs-pilot-20261121/`�
 | 科学計算 | この配置検査の新規実信号・compile・Q3・本番探索は各0件。 |
 
 実機での今回の検査範囲はPBS待機列とrunの接続・停止まで。次の通常探索で、確保後の実PBSノード上の開始・回収を元runのattemptと照合する。
+
+## H₄・H₈共通のPBSワーカー（2026-11-26）
+
+H₄のQ3回収対応ワーカー `da46ffe2291c` を基に、H-chainの準備取得を同じ起動パッケージへ統合した。新規の `HCHAIN_SCOPED` 要求で固定入力が `PLAN.json` だけのときは、優先タスクを通常経路で先に扱い、残りは不足するPLANのSHAをまとめて取得する。固定入力とreleaseの読み取り照合を並行させ、各attemptの所有記録とCPU・メモリに基づく起動判定は元のワーカースレッドで行う。大きなGit bundle、別の準備形式、既存attemptの再送には従来の受領処理を使う。
+
+- 共通版は `pilot-worker-8a960396e9f3.pyz`、SHA-256は `8a960396e9f354549f5fc790f9a48f46f738bfe93e4ee734873f6b0ff836fcd1`。RomuTailの `.rpe-central/deployment/shared-pbs-worker-20261126/PACKAGE.json` に元パッケージと配置先を記録した。`scripts/build_rpe_pbs_combined_worker.py` は固定の元パッケージとPBS Pythonを指定して再生成できる。基のQ3通信・回収モジュールを同じバイト列で保持する。
+- Q3一括回収は対応する中央・gatewayと組にして `batch_q3_completions` を選ぶ。今回のH₄設定にはその組がある。H₈の現行運用ではQ3一括回収の設定が未選択。H₈が後継予約で使うkeeperによるワーカー交換はこのパッケージの検収範囲外。
+- PRISMの利用者用launchersへ別名で配置した。SHAとH₄・H₈双方の固定PBS経路での起動前importを確認した。同じバイナリを各固定checkoutに読み込み、人工の混在応答で、重複する準備入力を1回の取得（2 SHA）、残り3件の並列照合、2件分のQ3証跡確認を1回の問い合わせで行えることを確認した。同一割当の再送による追加起動は0件。稼働中runの選択は既存のままで、新規科学計算は0件。
