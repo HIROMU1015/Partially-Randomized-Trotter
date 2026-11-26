@@ -75,7 +75,7 @@
       }
     ]
   },
-  "cycle": 8,
+  "cycle": 9,
   "points": [
     {
       "family": "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -2663,7 +2663,7 @@
         "denominator": 36028797018963968
       },
       "kappa": "4",
-      "status": "WAITING_INPUTS",
+      "status": "REGISTERED",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -2688,13 +2688,13 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "input_dispatches": 3,
-      "input_dispatch_cycle": 8,
+      "input_dispatches": 4,
+      "input_dispatch_cycle": 9,
       "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/60a8e614f10271faccdd']' returned non-zero exit status 1.",
       "completion": {
-        "status": "WAITING_DISTRIBUTED_PREPARATION",
+        "status": "READY_FOR_SEARCH",
         "key": "60a8e614f10271faccdd",
-        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', 'bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128.",
+        "reason": null,
         "configuration_id": "2b9bce5a33785eef92beb9b06db1af63c926df0d1bce56e87d1d666192b3cfe1",
         "signal_plan": null,
         "price_plan": null,
@@ -2704,7 +2704,9 @@
         "failure_class": "OPERATIONAL_WAIT",
         "retry_protected": false
       },
-      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', 'bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128."
+      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', 'bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128.",
+      "configuration_id": "2b9bce5a33785eef92beb9b06db1af63c926df0d1bce56e87d1d666192b3cfe1",
+      "evaluation_configuration_id": "2b9bce5a33785eef92beb9b06db1af63c926df0d1bce56e87d1d666192b3cfe1"
     },
     {
       "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -2715,7 +2717,7 @@
         "denominator": 18014398509481984
       },
       "kappa": "4",
-      "status": "WAITING_INPUTS",
+      "status": "REGISTERED",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -2740,13 +2742,13 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "input_dispatches": 3,
-      "input_dispatch_cycle": 8,
+      "input_dispatches": 4,
+      "input_dispatch_cycle": 9,
       "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/b8a07b854a478269b807']' returned non-zero exit status 1.",
       "completion": {
-        "status": "WAITING_DISTRIBUTED_PREPARATION",
+        "status": "READY_FOR_SEARCH",
         "key": "b8a07b854a478269b807",
-        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', 'bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128.",
+        "reason": null,
         "configuration_id": "9003125a3327825523dcd2d23717b50903743ef85549ff1abd051d911205add6",
         "signal_plan": null,
         "price_plan": null,
@@ -2756,7 +2758,9 @@
         "failure_class": "OPERATIONAL_WAIT",
         "retry_protected": false
       },
-      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', 'bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128."
+      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', 'rev-list', '-1', 'bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 128.",
+      "configuration_id": "9003125a3327825523dcd2d23717b50903743ef85549ff1abd051d911205add6",
+      "evaluation_configuration_id": "9003125a3327825523dcd2d23717b50903743ef85549ff1abd051d911205add6"
     },
     {
       "family": "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2",
@@ -2792,23 +2796,30 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "input_dispatch_cycle": 8,
-      "input_dispatches": 3,
+      "input_dispatch_cycle": 9,
+      "input_dispatches": 4,
       "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/d6f04f689a79b76d15ca']' returned non-zero exit status 1.",
       "completion": {
         "status": "WAITING_DISTRIBUTED_PREPARATION",
         "key": "d6f04f689a79b76d15ca",
-        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-ho5rmv_o/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1.",
+        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:{'status': 'PREPARATION_WAIT_INTERRUPTED', 'job_id': 'prep-da0b67f856b511dd715e9334', 'calls': 0, 'preparation_calls': 0}",
         "configuration_id": "97a25d808bc21d05db2713ebf6878322670467acc21bd67362df1eca8224c051",
         "signal_plan": null,
         "price_plan": null,
         "calibration_requests": null,
         "readiness": null,
         "rounds": null,
+        "preparation_recovery": {
+          "job_id": "prep-da0b67f856b511dd715e9334",
+          "attempt_id": null,
+          "state": "CANCELLED",
+          "outcome_status": null,
+          "action": "RECHECK_RESERVATION"
+        },
         "failure_class": "OPERATIONAL_WAIT",
         "retry_protected": false
       },
-      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-ho5rmv_o/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1."
+      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:{'status': 'PREPARATION_WAIT_INTERRUPTED', 'job_id': 'prep-da0b67f856b511dd715e9334', 'calls': 0, 'preparation_calls': 0}"
     },
     {
       "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -6859,7 +6870,7 @@
         "denominator": 36028797018963968
       },
       "kappa": "32",
-      "status": "WAITING_INPUTS",
+      "status": "REGISTERED",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -6884,13 +6895,13 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "input_dispatches": 2,
-      "input_dispatch_cycle": 8,
+      "input_dispatches": 3,
+      "input_dispatch_cycle": 9,
       "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/7bd9e6633d9e4e596d24']' returned non-zero exit status 1.",
       "completion": {
-        "status": "WAITING_DISTRIBUTED_PREPARATION",
+        "status": "READY_FOR_SEARCH",
         "key": "7bd9e6633d9e4e596d24",
-        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-w4ldxnqc/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1.",
+        "reason": null,
         "configuration_id": "d08a492eef39b3fcc209fd51cf170ea5f1e98c7a4fef8d0af0bf7ded8daf40dd",
         "signal_plan": null,
         "price_plan": null,
@@ -6900,7 +6911,9 @@
         "failure_class": "OPERATIONAL_WAIT",
         "retry_protected": false
       },
-      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-w4ldxnqc/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1."
+      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-w4ldxnqc/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1.",
+      "configuration_id": "d08a492eef39b3fcc209fd51cf170ea5f1e98c7a4fef8d0af0bf7ded8daf40dd",
+      "evaluation_configuration_id": "d08a492eef39b3fcc209fd51cf170ea5f1e98c7a4fef8d0af0bf7ded8daf40dd"
     },
     {
       "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -6970,7 +6983,7 @@
         "denominator": 36028797018963968
       },
       "kappa": "32",
-      "status": "WAITING_INPUTS",
+      "status": "REGISTERED",
       "completion_request": {
         "method": "PR_DF",
         "selection": {
@@ -6995,13 +7008,13 @@
         }
       },
       "request_reason": "EXPLICIT_KAPPA_GRID",
-      "input_dispatches": 2,
-      "input_dispatch_cycle": 8,
+      "input_dispatches": 3,
+      "input_dispatch_cycle": 9,
       "previous_hold": "CalledProcessError: Command '['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', 'commit', '--only', '-q', '-m', 'Fix selected PR candidate configuration [skip ci]', '--', 'search-evidence/search-538c35a68be6425b1b4c/completion/candidates/4d382fe8f6ca732a8be7']' returned non-zero exit status 1.",
       "completion": {
-        "status": "WAITING_DISTRIBUTED_PREPARATION",
+        "status": "READY_FOR_SEARCH",
         "key": "4d382fe8f6ca732a8be7",
-        "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-2avh83l1/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1.",
+        "reason": null,
         "configuration_id": "b6ed26ab644f370ba87c8eb807ac30b846af4fcccf416bc69aa1aa77ae84fc36",
         "signal_plan": null,
         "price_plan": null,
@@ -7011,7 +7024,9 @@
         "failure_class": "OPERATIONAL_WAIT",
         "retry_protected": false
       },
-      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-2avh83l1/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1."
+      "reason": "DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_SIGNALS:INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Command '['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false', '-c', 'pack.reuseObjects=false', 'bundle', 'create', '/tmp/rpe-preparation-git-2avh83l1/input.bundle', 'refs/rpe-preparation/input-bundles/base-bc535d3184df27807d779dacf57d11aecab74389', '^1355ad65faffbfb9a03cff17df4091e7c8f1c93e']' returned non-zero exit status 1.",
+      "configuration_id": "b6ed26ab644f370ba87c8eb807ac30b846af4fcccf416bc69aa1aa77ae84fc36",
+      "evaluation_configuration_id": "b6ed26ab644f370ba87c8eb807ac30b846af4fcccf416bc69aa1aa77ae84fc36"
     },
     {
       "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
@@ -278547,6 +278562,1826 @@
         "stop": "WAIT_FOR_PENDING"
       },
       "proposals": []
+    },
+    {
+      "cycle": 9,
+      "decisions": [],
+      "report": {
+        "per_method": {
+          "PR_DF": {
+            "stop": "WAIT_FOR_PENDING",
+            "global_best": null,
+            "families": {
+              "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2": {
+                "family": "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              },
+              "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2": {
+                "family": "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2",
+                "requested_kappa_values": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 2,
+                    "denominator": 1,
+                    "display": "2.00"
+                  },
+                  {
+                    "numerator": 4,
+                    "denominator": 1,
+                    "display": "4.00"
+                  },
+                  {
+                    "numerator": 8,
+                    "denominator": 1,
+                    "display": "8.00"
+                  },
+                  {
+                    "numerator": 16,
+                    "denominator": 1,
+                    "display": "16.00"
+                  },
+                  {
+                    "numerator": 32,
+                    "denominator": 1,
+                    "display": "32.00"
+                  },
+                  {
+                    "numerator": 64,
+                    "denominator": 1,
+                    "display": "64.00"
+                  }
+                ],
+                "sampled": 7,
+                "unsampled_kappa_values": [],
+                "upper_basis": "EXPLICIT_DISCRETE_GRID",
+                "refinement": "RESOLVED"
+              }
+            },
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ]
+          }
+        },
+        "global_best_by_method": {
+          "PR_DF": null
+        },
+        "global_best": null,
+        "families": {
+          "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD0|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD0|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD1|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD1|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD2|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD2|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD3|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD3|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD4|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD4|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD5|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD5|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD6|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD6|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD7|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD7|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD8|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD8|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2": {
+            "family": "PR_DF|LD9|2nd|delta=10808639105689191/18014398509481984|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          },
+          "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2": {
+            "family": "PR_DF|LD9|2nd|delta=10808639105689191/36028797018963968|K2",
+            "requested_kappa_values": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 2,
+                "denominator": 1,
+                "display": "2.00"
+              },
+              {
+                "numerator": 4,
+                "denominator": 1,
+                "display": "4.00"
+              },
+              {
+                "numerator": 8,
+                "denominator": 1,
+                "display": "8.00"
+              },
+              {
+                "numerator": 16,
+                "denominator": 1,
+                "display": "16.00"
+              },
+              {
+                "numerator": 32,
+                "denominator": 1,
+                "display": "32.00"
+              },
+              {
+                "numerator": 64,
+                "denominator": 1,
+                "display": "64.00"
+              }
+            ],
+            "sampled": 7,
+            "unsampled_kappa_values": [],
+            "upper_basis": "EXPLICIT_DISCRETE_GRID",
+            "refinement": "RESOLVED"
+          }
+        },
+        "scope": "INDEPENDENT_METHOD_MINIMA",
+        "stop": "WAIT_FOR_PENDING"
+      },
+      "proposals": []
     }
   ],
   "seeded": {
@@ -278554,7 +280389,7 @@
     "mapper": "METHOD_SPECIFIC_EXISTING_GENERATOR",
     "old_single_width_state_untouched": true
   },
-  "point_checkpoint_seq": 52,
+  "point_checkpoint_seq": 61,
   "mapper_revisions": {
     "PR_DF": "dca605984ef66824c3273b2d55cd924c0de8d4bb5151550969d8d619047e3365"
   },
@@ -278599,7 +280434,7 @@
     ]
   },
   "preparation_wave": {
-    "cycle": 8,
+    "cycle": 9,
     "dispatched": {
       "PR_DF": 5
     }
@@ -279693,6 +281528,6 @@
   },
   "stop": {
     "reason": "USER_REQUESTED_STOP",
-    "UTC": "2026-11-26T15:37:35Z"
+    "UTC": "2026-11-26T16:21:40Z"
   }
 }
