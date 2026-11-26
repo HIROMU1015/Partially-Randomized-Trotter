@@ -84,3 +84,11 @@ validation document, and artifact directory discoverable through the indexes in
 `PROJECT_MAP.md`, `scripts/README.md`, `src/trotterlib/README.md`, and
 `docs/README.md`. Do not move evidence or rename public paths merely for tidiness
 without updating all references and provenance records.
+
+
+## PBS新規予約の標準（2026-11-27 JST）
+
+- 今後の新規探索では、分子・方式に依存せず、PBS物理予約は管理型keeperから起動する。通常gatewayはrun別・論理host別のkeeper、明示的な共有pilot用途は従来の管理型共有gatewayを使う。旧worker直起動を新しい探索に選ばない。
+- 共通releaseのgatewayは固定版として配置し、予約投入前の `managed_capabilities` 照合を通常入口で行う。worker更新は元sessionを通常Stop/drainし、結果回収・所有の照合後に通常Resumeで同じ物理予約へ新版sessionを接続する。物理予約の解放とは分離する。
+- 既存の稼働中の探索・固定SOURCE・PBS予約・worker・受付設定をこの更新で変更しない。新規科学計算を許可するものではない。
+- 詳細は [分散探索の共通運用ルール](docs/research/rpe_distributed_operations.md) を参照する。

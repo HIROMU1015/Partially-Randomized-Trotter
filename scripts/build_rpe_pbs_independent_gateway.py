@@ -9,11 +9,12 @@ import zipfile
 ROOT=Path(__file__).resolve().parents[1]
 
 
-def build(output):
+def build(output, *, shared_pilot=False):
     output=Path(output)
     if output.exists():
         raise ValueError('Use a new gateway filename')
-    modules={'__main__.py':ROOT/'scripts/rpe_pbs_pilot.py',
+    modules={'__main__.py':ROOT/'scripts'/('rpe_pbs_pilot.py' if shared_pilot else 'rpe_pbs_gateway.py'),
+             'rpe_pbs_pilot.py':ROOT/'scripts/rpe_pbs_pilot.py',
              'rpe_pbs_gateway.py':ROOT/'scripts/rpe_pbs_gateway.py',
              'rpe_dry_check_recovery.py':ROOT/'src/trottertracks/rpe_dry_check_recovery.py'}
     output.parent.mkdir(parents=True,exist_ok=True)
@@ -35,4 +36,6 @@ def build(output):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output',type=Path)
-    print(build(parser.parse_args().output))
+    parser.add_argument('--shared-pilot', action='store_true', help='Retain the explicitly selected single shared-pool gateway')
+    args=parser.parse_args()
+    print(build(args.output, shared_pilot=args.shared_pilot))
