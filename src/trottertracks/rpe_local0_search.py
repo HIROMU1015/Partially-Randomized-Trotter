@@ -1149,7 +1149,8 @@ class Gateway:
         # A different configuration/route is excluded, never accepted as a
         # match. Missing/corrupt records for a same-key candidate need review.
         holds=[r for r in refused if r['reason'] not in ('CONFIGURATION_NOT_IN_THIS_ROUND',
-            'DIFFERENT_JOB_KEY_OR_ROUTE','PRIOR_Q3_PERSISTENCE_HOLD')]
+            'DIFFERENT_JOB_KEY_OR_ROUTE','PRIOR_Q3_PERSISTENCE_HOLD',
+            'CONFIGURATION_PREPARATION_PENDING')]
         return dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
             prior_q3_holds=list(prior_holds.values()),retired_preparation_holds=sorted(str(path) for path in retired_preparation),
             prior_preparation_rejected_before_science=sorted(rejected_before_delivery),

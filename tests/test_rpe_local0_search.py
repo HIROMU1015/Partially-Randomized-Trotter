@@ -957,6 +957,22 @@ class Tests(unittest.TestCase):
     def test_missing_prior_directory_is_not_treated_as_unseen(self):
         r=load(self.config['round']);r['executor']['prior_run_dirs']=[str(self.home/'missing-source')];write(self.config['round'],r)
         with self.assertRaisesRegex(RequestError,'10.5'):build(self.config).handle(request(5,7))
+    def test_preparation_pending_prior_result_does_not_block_other_work(self):
+        from unittest.mock import patch
+        from rpe_local0_acceptance_fixture import context, O
+        gateway=Gateway(self.config)
+        problem=load(self.config['problem']);spec=load(self.config['round'])
+        candidate_context=context(problem);candidate=candidate_context['candidates'][0]
+        candidate['ready']=False
+        prior=self.home/'prior';job=prior/'jobs'/candidate['method']/'pending'
+        write(job/'REQUEST.json',{'configuration_id':candidate['configuration_id']})
+        write(job/'OUTCOME.json',{})
+        spec['executor']['prior_run_dirs']=[str(prior)]
+        with patch.object(O,'prepare',return_value=candidate_context):
+            report=gateway.normal_preflight(self.home/'next',problem,spec)
+        self.assertEqual(report['status'],'PASS')
+        self.assertIn('CONFIGURATION_PREPARATION_PENDING',[r['reason'] for r in report['refused']])
+
     def test_unidentified_rows_do_not_create_a_false_ownership_match(self):
         from unittest.mock import patch
         from rpe_local0_acceptance_fixture import context, O
