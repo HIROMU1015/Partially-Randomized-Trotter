@@ -283,6 +283,7 @@ def test_packages_supply_multiple_widths_and_publish_global_minimum(tmp_path):
     profile={'host_id':'pbs0','slots':24,'dp_workers':4,'pbs':{'library_threads':1}}
     path=tmp_path/'independent'/'parts'/packages[0]['id'];path.mkdir(parents=True)
     _,child=part_documents(plan,packages[0],profile,path)
+    assert child['executor']['distributed']['host_eligibility'] == {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
     assert set(child['methods'])=={'PR_PAULI','FULL_PF'}
     def report(config,cost):
         best=dict(configuration_id=config,M=12,cost=cost)
@@ -421,3 +422,36 @@ def test_independent_storage_recovery_refreshes_blocked_offer(tmp_path):
          _resource_offer=lambda:{'storage':{'accepting_new_jobs':True}})
     assert advance_independent(worker,{}) is True
     assert (worker_dir/'INDEPENDENT_ACTIVE').exists()
+
+def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
+    import hashlib
+    import sys
+    import pytest
+    from trottertracks.rpe_pbs_offline import OfflineSearch
+    search=object.__new__(OfflineSearch)
+    search.plan={'settings':{'source':'fixed','interpreter':sys.executable}}
+    entry=tmp_path/'scripts'/'run_rpe_schedule_search.py'
+    entry.parent.mkdir();entry.write_text('pass')
+    modules={}
+    for name in ('rpe_q3_store','rpe_optimizer_concurrent'):
+        path=tmp_path/(name+'.py');path.write_text('pass')
+        modules[name]={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+    search.profile={'pbs':{'offline_controller_overlay':{'base_source':'fixed','modules':modules}}}
+    assert search._controller_command(entry)[-3]==str(entry)
+    modules['rpe_q3_store']['sha256']='invalid'
+    with pytest.raises(ValueError,match='overlay differs'):
+        search._controller_command(entry)
+
+def test_parent_storage_sample_reused_without_directory_scan(tmp_path, monkeypatch):
+    from trottertracks import rpe_worker_storage as storage
+    import time
+    sample=tmp_path/'STORAGE_USAGE_GATEWAY.json'
+    policy={'limit_bytes':50*1024**3,'roots':[str(tmp_path)],'sample_path':str(tmp_path/'global.json'),
+            'parent_compute_sample':str(sample)}
+    report={'limit_bytes':policy['limit_bytes'],'used_bytes':10,'accepting_new_jobs':True,
+            'measurement_seconds':15,'filesystem_min_free_bytes':0}
+    monkeypatch.setattr(storage,'_used_bytes',lambda *a,**k: (_ for _ in ()).throw(AssertionError('duplicate scan')))
+    atomic(sample,{'policy':storage.policy_identity(policy),'sampled_epoch':time.time(),'report':report})
+    assert storage.report(policy)['accepting_new_jobs']
+    atomic(sample,{'policy':storage.policy_identity(policy),'sampled_epoch':time.time()-200,'report':report})
+    assert not storage.report(policy)['accepting_new_jobs']

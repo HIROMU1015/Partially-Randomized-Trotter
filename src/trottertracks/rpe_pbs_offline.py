@@ -355,6 +355,12 @@ def part_documents(plan, part, profile, path):
                 'pbs_offline_plan', 'pbs_offline_search', 'preparation_request_hosts', 'host_transport_paths'):
         distributed.pop(key, None)
     worker_script = Path(settings['code_root'])/'scripts/run_rpe_q3_worker.py'
+    if independent_plan(plan):
+        nested = profile.get('pbs', {})
+        overlay = nested.get('offline_controller_overlay') or {}
+        if selected.get('storage_limit') and nested.get('independent_storage_sample') and overlay.get('worker_script'):
+            selected['storage_limit']['parent_compute_sample'] = nested['independent_storage_sample']
+            worker_script = Path(overlay['worker_script'])
     distributed.update(placement)
     if spec.get('hchain'):
         spec['hchain'].pop('pbs_offline_search', None)
@@ -365,6 +371,11 @@ def part_documents(plan, part, profile, path):
             # Keep the same quota roots and limit; only the cache path follows
             # the durable block as it changes allocation owner.
             selected['storage_limit']['sample_path'] = str(path/'STORAGE_SAMPLE.json')
+    if independent_plan(plan):
+        # Central saved decisions are tied to different host identities.
+        # Start with an empty local policy so the normal per-request live
+        # dry-check obtains fresh proof instead of treating the policy as absent.
+        distributed['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
     distributed.update(bind='127.0.0.1', port=0, local_worker=selected, preparation_profiles={'local': selected},
                        execution_hosts=['local'], live_q3_readiness=True, worker_script=str(worker_script))
     if 'computation_source' in distributed:
@@ -396,6 +407,8 @@ class OfflineSearch:
 
         self.plan, self.profile = plan, deepcopy(profile)
         self.independent = independent_plan(plan)
+        if self.independent and profile['pbs'].get('compute_storage_sampling'):
+            self.profile['pbs']['independent_storage_sample'] = str(Path(directory)/'STORAGE_USAGE_GATEWAY.json')
         self.parts = pbs_units(plan)
         self.claim = None
         cpu_slots = resources['cpu_count'] // task_cpu_footprint(profile)
@@ -667,6 +680,40 @@ class OfflineSearch:
         atomic(path/'TECHNICAL_RECOVERY.json',dict(reason='FIXED_INPUT_RESTORED_BEFORE_SCIENCE',
                                                    archived=str(archive),original_stop=stop))
 
+    def _controller_command(self, entry):
+        """Apply a selected operational overlay without changing the fixed plan."""
+        command = [self.plan['settings']['interpreter'], '-B']
+        overlay = self.profile.get('pbs', {}).get('offline_controller_overlay')
+        if not overlay:
+            return command+[str(entry)]
+        if overlay['base_source'] != self.plan['settings']['source']:
+            raise ValueError('PBS controller overlay belongs to another fixed optimizer')
+        files = overlay['modules']
+        order = ('rpe_q3_store', 'rpe_optimizer_concurrent')
+        if set(files) != set(order):
+            raise ValueError('Unsupported PBS controller overlay modules')
+        modules = []
+        for name in order:
+            item = files[name]
+            path = Path(item['path'])
+            if hashlib.sha256(path.read_bytes()).hexdigest() != item['sha256']:
+                raise ValueError('PBS controller overlay differs: '+name)
+            modules.append((name,str(path)))
+        bootstrap = (
+            'import importlib.util,json,runpy,sys\n'
+            'entry,root,modules=sys.argv[1:4]\n'
+            'sys.argv=[entry,*sys.argv[4:]]\n'
+            'sys.path.insert(0,root+"/src")\n'
+            'import trottertracks\n'
+            'for name,path in json.loads(modules):\n'
+            '    spec=importlib.util.spec_from_file_location("trottertracks."+name,path)\n'
+            '    module=importlib.util.module_from_spec(spec)\n'
+            '    sys.modules[spec.name]=module\n'
+            '    spec.loader.exec_module(module)\n'
+            '    setattr(trottertracks,name,module)\n'
+            'runpy.run_path(entry,run_name="__main__")')
+        return command+['-c',bootstrap,str(entry),str(entry.parents[1]),json.dumps(modules)]
+
     def _start_part(self, path, part, batch):
         entry = self._entry()
         if self.plan['round'].get('hchain') and (path/'ROUND_RESULT.json').is_file():
@@ -688,7 +735,32 @@ class OfflineSearch:
         for name, data in (('PROBLEM.json', problem), ('ROUND.json', spec)):
             file = path/name
             if file.exists() and read(file) != data:
-                raise ValueError('PBS continuation part inputs changed')
+                previous = read(file)
+                # Existing blocks may have been created before live local
+                # readiness was connected. This changes no physical inputs.
+                if self.independent and name == 'ROUND.json':
+                    migrated = deepcopy(previous)
+                    settings = migrated['executor']['distributed']
+                    if 'host_eligibility' not in settings:
+                        settings['host_eligibility'] = {'schema':'RPE_Q3_HOST_ELIGIBILITY_V1','jobs':{}}
+                    current = data['executor']['distributed']
+                    # The new allocation owns a fresh sampler path and
+                    # transport. Neither is part of the scientific contract.
+                    if current.get('local_worker', {}).get('storage_limit', {}).get('parent_compute_sample'):
+                        settings['worker_script'] = current['worker_script']
+                        for field in ('local_worker',):
+                            settings[field]['storage_limit']['parent_compute_sample'] = current[field]['storage_limit']['parent_compute_sample']
+                        settings['preparation_profiles']['local']['storage_limit']['parent_compute_sample'] = current['preparation_profiles']['local']['storage_limit']['parent_compute_sample']
+                    if migrated == data:
+                        archive = path/'technical-stop-history'/('ROUND.before-transport-'+digest(previous)[:12]+'.json')
+                        archive.parent.mkdir(exist_ok=True)
+                        if not archive.exists():
+                            atomic(archive, previous)
+                        atomic(file, data)
+                    else:
+                        raise ValueError('PBS continuation part inputs changed')
+                else:
+                    raise ValueError('PBS continuation part inputs changed')
             if not file.exists():
                 atomic(file, data)
         marker = path/'STOP_REQUESTED.json'
@@ -699,7 +771,7 @@ class OfflineSearch:
                 self.recheck_at = time.monotonic()+30
                 return False
             marker.unlink()
-        command = [self.plan['settings']['interpreter'], '-B', str(entry),
+        command = self._controller_command(entry)+[
                    '--problem', str(path/'PROBLEM.json'), '--round', str(path/'ROUND.json'),
                    '--run-dir', str(path)]
         if not spec.get('hchain'):
