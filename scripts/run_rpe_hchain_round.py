@@ -155,12 +155,70 @@ def task_graph(executor, plan, run, worker, settings, budgets):
     return dict(tasks=definitions)
 
 
-def preparation_priorities(graph, executor, plan, run, worker):
+def approximate_price_priorities(plan, worker, screen):
+    """Best already-available approximate RZ of each price dependency.
+
+    No new estimate, evaluation or pruning is introduced. A missing estimate
+    does not exclude the cell. The existing fixed provider defines dependency
+    identity (direct anchors versus shared fitted anchors/holdout).
+    """
+    estimates = getattr(getattr(screen, "approximation", None), "estimates", {})
+    if not estimates:
+        return {}
+    from fractions import Fraction
+    excluded = getattr(screen, "state", {}).get("excluded", {})
+    designs = {worker.design_key(d): d for d in plan["designs"]}
+    result = {}
+    for case in plan["cases"]:
+        if case["id"] in excluded or case["id"] not in estimates:
+            continue
+        value = estimates[case["id"]].get("estimated_total_RZ")
+        try:
+            cost = Fraction(value["numerator"], value["denominator"]) if isinstance(value, dict) else Fraction(value)
+        except (TypeError, ValueError, KeyError, ZeroDivisionError):
+            continue
+        if cost <= 0: continue
+        for cell in case["rounds"]:
+            design = designs.get(worker.group_key(cell))
+            if not design: continue
+            dependencies = (x for x in design["anchors"] if x["id"] == cell["id"]) if design["mode"] == "DIRECT" else (*design["anchors"], design.get("holdout"))
+            for dep in dependencies:
+                if dep is not None:
+                    key=dep["id"]
+                    result[key]=min(result.get(key,cost),cost)
+    return result
+
+
+def dispatch_preparation_order(kind, cell, base_priority, cost=None, *, small_price_size=64):
+    """Short prices first; compare saved approximate total RZ for larger prices.
+
+    The threshold changes ordering only, never eligibility or the fixed budget.
+    Unknown costs fall back to the existing size and nearest-ready ordering.
+    """
+    size = circuit_size(cell)
+    if kind == "signal":
+        return (0, *base_priority, *size)
+    if size[0] <= small_price_size:
+        return (1, *size, *base_priority)
+    if cost is not None:
+        return (2, 0, cost, *size, *base_priority)
+    return (2, 1, *size, *base_priority)
+
+
+def install_preparation_priorities(executor, ranks):
+    if hasattr(executor, 'set_hchain_preparation_priority'):
+        executor.set_hchain_preparation_priority(ranks)
+    else:
+        executor.hchain_preparation_priority = ranks
+
+
+def preparation_priorities(graph, executor, plan, run, worker, screen=None, *, small_price_size=64):
     """Re-rank the frozen tasks using saved completion filenames, never resize them."""
     from trottertracks.rpe_preparation_queue import preparation_job_id
 
     priority = worker.h8_preparation_priority(plan, run, circuit_size)
     inputs = {stage: planned_inputs(plan, stage) for stage in scope.STAGES}
+    costs = approximate_price_priorities(plan, worker, screen)
     ranks = {}
     for task in graph["tasks"]:
         if task.get("dependencies"):
@@ -171,10 +229,11 @@ def preparation_priorities(graph, executor, plan, run, worker):
         command = prep["command"]
         targets = json.loads(command[command.index("--targets") + 1])
         kind = "signal" if stage == "signal" else "price"
-        rank = min(preparation_order(kind, inputs[stage][cid],
-                    priority((kind, inputs[stage][cid], index, None, plan["owner"]))) for cid, index in targets)
+        rank = min(dispatch_preparation_order(kind, inputs[stage][cid],
+                    priority((kind, inputs[stage][cid], index, None, plan["owner"])), costs.get(cid),
+                    small_price_size=small_price_size) for cid, index in targets)
         job = preparation_job_id(request, source_manifest=executor.source_manifest, dependencies=[])
-        ranks[job] = (*rank[0], *rank[1])
+        ranks[job] = rank
     return ranks
 
 
@@ -404,6 +463,9 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
     excluded = screen.update() if screen is not None else set()
     if legacy is not None:
         legacy_io.seed_local_worker(legacy, distributed)
+    # Runtime-only start fence: the durable graph and scientific scope never change.
+    distributed = dict(distributed, hchain_initialize_priority=True)
+    spec = dict(spec, executor=dict(spec["executor"], distributed=distributed))
     executor, optimize = make_executor(root, run, routes, expected, problem, spec)
     if legacy is not None:
         executor.prior_q3_holds.extend(row for row in legacy[1]["holds"] if row["configuration_id"] in selected)
@@ -421,7 +483,10 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                  else task_graph(executor, plan, run, worker, settings, budgets))
         # Preserve the frozen graph and its budget. The old H8 worker's
         # nearest-ready-candidate priority is an execution order only.
-        executor.hchain_preparation_priority = preparation_priorities(graph, executor, plan, run, worker)
+        small_price_size = settings.get("small_price_priority_size", 64)
+        if type(small_price_size) is not int or small_price_size < 1:
+            raise ValueError("small_price_priority_size must be positive")
+        ranks = preparation_priorities(graph, executor, plan, run, worker, screen, small_price_size=small_price_size)
         last_priority_refresh = time.monotonic()
         priority_dirty = False
         if screen is not None:
@@ -434,6 +499,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
             retire_pruned_batches(executor, pending, requests, screen.state["skip_price_cells"])
         else:
             pending = set(executor.configure_preparation_graph(graph).values())
+        install_preparation_priorities(executor, ranks)
         with ThreadPoolExecutor(max_workers=1, thread_name_prefix="hchain-search") as pool:
             future = None
             refresh = True
@@ -450,7 +516,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                     if receipt["status"] != "PREPARATION_COMPLETE":
                         withheld[job] = receipt
                 if priority_dirty and time.monotonic() - last_priority_refresh >= 30:
-                    executor.hchain_preparation_priority = preparation_priorities(graph, executor, plan, run, worker)
+                    install_preparation_priorities(executor, preparation_priorities(graph, executor, plan, run, worker, screen, small_price_size=small_price_size))
                     last_priority_refresh = time.monotonic()
                     priority_dirty = False
                 if future is not None and future.done():
@@ -464,6 +530,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                     if screen is not None:
                         excluded = screen.update(results)
                         retire_pruned_batches(executor, pending, requests, screen.state["skip_price_cells"])
+                        priority_dirty = True
                     refresh = False
                     changed = initial_ready | install_ready(provider, plan, run, rows, routes, expected, spec,
                                                             final=not pending, excluded=excluded)

@@ -425,3 +425,25 @@ def test_compile_pair_priority_prefers_small_circuit_even_if_other_candidate_nea
     large=dict(q=25,prefix=10,R_outer=100)
     assert hchain.preparation_order("price",small,(1,99)) < hchain.preparation_order("price",large,(0,1))
     assert hchain.preparation_order("signal",large,(0,1)) < hchain.preparation_order("signal",small,(1,99))
+
+
+def test_dispatch_priorities_use_saved_cost_only_after_small_compile():
+    from fractions import Fraction
+    small = dict(q=1, prefix=5, R_outer=3)
+    large = dict(q=25, prefix=10, R_outer=100)
+    huge = dict(q=50, prefix=10, R_outer=100)
+    order = hchain.dispatch_preparation_order
+    assert order("price", small, (1,99)) < order("price", huge, (0,1), Fraction(1))
+    assert order("price", huge, (0,1), Fraction(1)) < order("price", large, (0,1), Fraction(2))
+    assert order("price", large, (0,1)) < order("price", huge, (0,1))
+
+
+def test_saved_approximate_cost_ranks_direct_and_shared_price_dependencies():
+    from fractions import Fraction
+    worker = SimpleNamespace(group_key=lambda c:c['group'], design_key=lambda d:d['group'])
+    a=dict(id='a',group='direct');b=dict(id='b',group='direct');shared=dict(id='probe',group='fit');hold=dict(id='audit',group='fit')
+    plan=dict(cases=[dict(id='chosen',rounds=[a,dict(id='round',group='fit')]),dict(id='excluded',rounds=[b])],
+              designs=[dict(group='direct',mode='DIRECT',anchors=[a,b]),dict(group='fit',mode='FIT',anchors=[shared],holdout=hold)])
+    screen=SimpleNamespace(approximation=SimpleNamespace(estimates={'chosen':{'estimated_total_RZ':{'numerator':7,'denominator':2}},'excluded':{'estimated_total_RZ':1}}),state={'excluded':{'excluded':{}}})
+    assert hchain.approximate_price_priorities(plan,worker,screen)=={k:Fraction(7,2) for k in ('a','probe','audit')}
+    assert hchain.approximate_price_priorities(plan,worker,None)=={}
