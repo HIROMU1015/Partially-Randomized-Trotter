@@ -235,6 +235,25 @@ class ControllerFailures(unittest.TestCase):
             request_sha256=assignment['request_sha256'],
             files={name: base64.b64encode(json.dumps(value).encode()).decode() for name, value in files.items()})
 
+    def test_hchain_start_fence_allows_replay_but_not_new_claims_until_ranked(self):
+        executor = self.executor(hchain_initialize_priority=True)
+        first = self.enqueue(executor, 'before-ranking')
+        second = self.enqueue(executor, 'second-before-ranking')
+        self.assertEqual(self.poll(executor, slots=2)['assignments'], [])
+        self.assertEqual(executor.store.row(first.job.name)['state'], 'QUEUED')
+        executor.set_hchain_preparation_priority({})
+        owned, = self.poll(executor, slots=1)['assignments']
+        executor.hchain_priority_pending = True  # restored owner's replay during next Resume
+        replay = self.poll(executor, slots=2)['assignments']
+        self.assertEqual(len(replay), 1)
+        self.assertEqual(replay[0]['attempt_id'], owned['attempt_id'])
+        self.assertEqual(executor.store.row(second.job.name)['state'], 'QUEUED')
+        self.assertFalse(executor.rpc('/v1/complete', self.completion(owned))['duplicate'])
+        executor.set_hchain_preparation_priority({})
+        next_assignment, = self.poll(executor, slots=1)['assignments']
+        self.assertEqual(next_assignment['job_id'], second.job.name)
+        executor.rpc('/v1/complete', self.completion(next_assignment))
+
     def test_q3_resend_allows_only_appended_upload_timings(self):
         executor = self.executor()
         task = self.enqueue(executor, 'q3-resend')

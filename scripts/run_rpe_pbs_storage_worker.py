@@ -108,8 +108,13 @@ def configure_artifact_transport(launcher):
     path = str(launcher)+'/trottertracks'
     if path not in trottertracks.__path__:trottertracks.__path__.append(path)
     from trottertracks import rpe_preparation_artifacts as pinned, _pipeline_preparation_artifacts as transport
-    for name in ('missing', 'materialize', 'capture', 'put_file'):
-        setattr(pinned.ArtifactCache, name, getattr(transport.ArtifactCache, name))
+    # The streaming cache methods form one implementation. Copying only
+    # methods into an older class left its initialization and helpers missing.
+    # Preserve the class identity for fixed modules that already imported it,
+    # including staticmethod descriptors, while installing the coherent API.
+    for name, implementation in vars(transport.ArtifactCache).items():
+        if name not in ('__module__', '__dict__', '__weakref__', '__doc__'):
+            setattr(pinned.ArtifactCache, name, implementation)
 
 
 def load_bundled_offline(launcher):

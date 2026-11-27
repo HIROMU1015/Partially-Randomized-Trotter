@@ -113,3 +113,25 @@ def test_cleanup_batches_measure_whole_policy_only_once(tmp_path):
          patch.object(storage,'_used_bytes',return_value=0) as measure:
         used,removed=storage._reclaim([], [str(tmp_path)], 65*4096, 0)
     assert removed==65 and used==0 and du.call_count==3 and measure.call_count==1
+
+
+def test_bundled_streaming_cache_installs_initialization_and_helpers(tmp_path, monkeypatch):
+    import base64, hashlib, zipfile
+    import trottertracks
+    from trottertracks import rpe_preparation_artifacts as pinned
+    from types import SimpleNamespace
+    import run_rpe_pbs_storage_worker as launcher
+    implementation = pinned.ArtifactCache
+    class LegacyCache:
+        def __init__(self, root): self.root = root
+    monkeypatch.setattr(pinned, 'ArtifactCache', LegacyCache)
+    monkeypatch.setattr(trottertracks, '_pipeline_preparation_artifacts', SimpleNamespace(ArtifactCache=implementation), raising=False)
+    monkeypatch.setattr(trottertracks, '__path__', list(trottertracks.__path__))
+    package=tmp_path/'worker.pyz'
+    with zipfile.ZipFile(package,'w') as z:z.writestr('trottertracks/_pipeline_preparation_artifacts.py','')
+    launcher.configure_artifact_transport(package)
+    cache=LegacyCache(tmp_path/'cache')
+    data=b'operational fixture';sha=hashlib.sha256(data).hexdigest()
+    assert cache.missing([sha])==[sha]
+    cache.put({sha:base64.b64encode(data).decode()})
+    assert cache.missing([sha])==[] and cache.get([sha])[sha]==base64.b64encode(data).decode()

@@ -1098,6 +1098,8 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_store import JobStore
         from . import rpe_q3_coordinator as Q
         self.distributed = deepcopy(distributed)
+        # H-chain Resume restores queue ownership before the runner has ranked its frozen graph.
+        self.hchain_priority_pending = distributed.get('hchain_initialize_priority') is True
         self.ready_queue_waves = distributed.get('ready_queue_waves', 2 if distributed.get('work_conserving_search') else 1)
         if type(self.ready_queue_waves) is not int or self.ready_queue_waves < 1:
             raise ValueError('ready_queue_waves must be a positive integer')
@@ -1783,6 +1785,13 @@ class DistributedExecutor(ConcurrentExecutor):
                          request_compatible_slots=usable,
                          reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
 
+    def set_hchain_preparation_priority(self, ranks):
+        """Publish the complete rank table before enabling any new claims."""
+        with self.state.cv:
+            self.hchain_preparation_priority = dict(ranks)
+            self.hchain_priority_pending = False
+            self.state.cv.notify_all()
+
     def _ready_queue(self, *, rows=None, readiness=None, tasks=None):
         manager = getattr(self, 'pbs_manager', None)
         offline_priority = manager.offline_priority() if hasattr(manager, 'offline_priority') else {}
@@ -1799,9 +1808,14 @@ class DistributedExecutor(ConcurrentExecutor):
                 rank = 2 if not task.demand else int(self.distributed.get('live_ready_refill', False) and preparation)
                 if self.distributed.get('work_conserving_search') and not preparation and not task.demand and not conditional:
                     rank = 1
+            hchain = getattr(self, 'hchain_preparation_priority', None)
+            if hchain is not None and not preparation and task.demand:
+                # A ready Q3 advances the actual candidate and ranking directly.
+                rank = -1
+            priority_key = (hchain or {}).get(task.job.name, (3,) if preparation and hchain is not None else (0,))
             return (getattr(task, 'optional_price_validation', False), rank,
                     offline_priority.get(task.owner, offline_priority.get(task.view.method, len(offline_priority))),
-                    getattr(self, 'hchain_preparation_priority', {}).get(task.job.name, (0,)),
+                    priority_key,
                     self.state.owner_clock.get(task.owner, -1), task.enqueue)
 
         if tasks is None:
@@ -4388,6 +4402,10 @@ class DistributedExecutor(ConcurrentExecutor):
         if stopping:
             return reply(assignments=assignments, stop=False,
                          host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
+        if getattr(self,'hchain_priority_pending',False):
+            # Existing attempts may be replayed and all completions remain accepted.
+            # No new scientific owner is created before the rank table is ready.
+            return reply(assignments=assignments,stop=False,host_admission=admission,eligibility_challenges=[])
         if (self.pbs_manager and pool is not None
                 and self.pbs_manager.replacement_fenced(host,pbs_offer.get('job_id'))):
             return reply(assignments=assignments,stop=False,host_admission=admission,
@@ -4544,7 +4562,7 @@ class DistributedExecutor(ConcurrentExecutor):
         claimed = []
         latest_policy, latest_error = self._host_admission_policy()
         with self._rpc_queue_lock('/v1/poll', host):
-            stopping = self._user_stop_requested() or s.failure or s.closed
+            stopping = self._user_stop_requested() or s.failure or s.closed or getattr(self,'hchain_priority_pending',False)
             stopping = stopping or (self.pbs_manager and pool is not None
                 and self.pbs_manager.replacement_fenced(host,pbs_offer.get('job_id')))
             stale = self.hosts[host]['poll_started'] != poll_started
