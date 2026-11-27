@@ -585,3 +585,138 @@ def test_common_worker_refresh_replaces_operational_entry_and_existing_members(t
             assert archive.read(name)==(ROOT/source).read_bytes()
         assert archive.read('__main__.py')==(ROOT/'scripts/run_rpe_pbs_storage_worker.py').read_bytes()
         assert archive.read('pilot-specific.py')==b'keep = True\n'
+
+
+def test_resource_receipt_is_optional_even_with_frozen_missing_validator(tmp_path, monkeypatch):
+    import trottertracks.rpe_q3_resources as resources
+    from trottertracks import rpe_pbs_offline as offline
+    # A real completed result must still export when the old frozen transport
+    # cannot validate the optional resource measurement.
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'export'
+    search.directory.mkdir();search.independent=True;search.revision=0
+    part=tmp_path/'part';job=part/'jobs'/'PR_DF'/'completed'
+    job.mkdir(parents=True)
+    atomic(job/'REQUEST.json', {'request_id':'completed'})
+    atomic(job/'PROCESS_RETURN.json', {'returncode':0, 'signal':None})
+    atomic(job/'OUTCOME.json', {'status':'ARTIFICIAL'})
+    transfer=part/'distributed/transfers/completed/attempt';transfer.mkdir(parents=True)
+    atomic(transfer/'Q3_EXECUTION_RESOURCES.json', {'bad':'optional'})
+    monkeypatch.setitem(sys.modules,'trottertracks._pipeline_q3_resources',None)
+    monkeypatch.delattr(resources,'valid_q3_execution_receipt')
+    assert search.export(part)==1
+    assert search.export(part)==0
+    assert read(search.directory/'jobs/PR_DF/completed/OUTCOME.json')=={'status':'ARTIFICIAL'}
+    assert 'q3_execution_resources' not in read(search.directory/'RESULTS.json')['PR_DF/completed']
+    assert (transfer/'Q3_EXECUTION_RESOURCES.json').is_file()
+
+
+def test_refresh_includes_resource_validator_even_if_absent_in_legacy_package(tmp_path):
+    import zipfile
+    from refresh_rpe_pbs_worker_launcher import refresh, MODULES
+    base, output=tmp_path/'base.pyz',tmp_path/'new.pyz'
+    with zipfile.ZipFile(base,'w') as archive:
+        for name in MODULES:archive.writestr(name,'OLD=True\n')
+    refresh(base,output,ROOT)
+    with zipfile.ZipFile(output) as archive:
+        assert b'def valid_q3_execution_receipt' in archive.read('trottertracks/_pipeline_q3_resources.py')
+
+
+def test_sampling_survives_worker_child_drain(monkeypatch):
+    import threading
+    import run_rpe_pbs_storage_worker as launcher
+    stop=threading.Event();calls=[]
+    def assert_sampling_active(flag):
+        assert not flag.is_set()
+    def run(command):
+        assert '--worker-only' in command
+        assert not stop.is_set()
+        calls.append('worker exited, children draining')
+        # The parent sampler remains live until the subprocess has finished
+        # reaping every detached child, even on a nonzero worker return.
+        assert not stop.is_set()
+        return SimpleNamespace(returncode=1)
+    monkeypatch.setattr(launcher.subprocess,'run',run)
+    monkeypatch.setattr(launcher,'become_worker_subreaper',lambda:None)
+    monkeypatch.setattr(launcher,'drain_adopted_worker_children',lambda:assert_sampling_active(stop))
+    assert launcher.run_sampled_worker(Path('worker.pyz'),Path('run_rpe_pbs_worker.py'),[],stop)==1
+    assert calls and stop.is_set()
+    waited=[]
+    def waitpid(pid,flags):
+        assert (pid,flags)==(-1,0)
+        if waited:raise ChildProcessError
+        waited.append(123);return (123,0)
+    monkeypatch.setattr(launcher.os,'waitpid',waitpid)
+    launcher.drain_worker_children()
+    assert waited==[123]
+
+
+def test_session_restart_seeds_only_identical_fresh_measurement(tmp_path):
+    import time
+    import run_rpe_pbs_storage_worker as launcher
+    from trottertracks import rpe_worker_storage as storage
+    shared,sample=tmp_path/'shared.json',tmp_path/'session.json'
+    policy={'limit_bytes':100,'roots':[str(tmp_path)]}
+    record=dict(policy=policy,sampled_epoch=time.time()-3,report={'used_bytes':80,'accepting_new_jobs':True})
+    atomic(shared,record)
+    assert launcher.seed_fresh_storage_sample(shared,sample,policy,30,storage)
+    assert read(sample)==record
+    sample.unlink()
+    assert not launcher.seed_fresh_storage_sample(shared,sample,dict(policy,limit_bytes=90),30,storage)
+    record['sampled_epoch']-=60;atomic(shared,record)
+    assert not launcher.seed_fresh_storage_sample(shared,sample,policy,30,storage)
+    assert not sample.exists()
+
+
+def test_sampler_parent_waits_for_detached_child_after_abrupt_worker_exit(tmp_path):
+    import subprocess
+    import os
+    if sys.platform!='linux':pytest.skip('PBS subreaper is Linux-specific')
+    marker=tmp_path/'child-finished'
+    fake=tmp_path/'fake_worker.py'
+    fake.write_text('import os,time\nfrom pathlib import Path\n'
+                    'if os.fork(): os._exit(7)\n'
+                    'time.sleep(.2)\nPath('+repr(str(marker))+').write_text("done")\nos._exit(0)\n')
+    # Isolate subreaper state from pytest and all other workers.
+    code=('from pathlib import Path\nimport threading\n'
+          'import run_rpe_pbs_storage_worker as launcher\n'
+          'stop=threading.Event()\n'
+          'assert launcher.run_sampled_worker(Path('+repr(str(fake))+'),Path("unused"),[],stop)==7\n'
+          'assert stop.is_set() and Path('+repr(str(marker))+').read_text()=="done"\n')
+    env=dict(os.environ,PYTHONPATH=str(ROOT/'scripts'))
+    subprocess.run([sys.executable,'-B','-c',code],env=env,check=True,timeout=10)
+
+
+def test_bundled_resource_receipt_export_uses_matching_validator(tmp_path, monkeypatch):
+    import sqlite3
+    from trottertracks import rpe_host_profiles as profiles, rpe_q3_resources as resources
+    from trottertracks.rpe_q3_worker import digest
+    from types import ModuleType
+    # Package aliases are resolved before the fixed transport's missing symbol.
+    packed_profiles=ModuleType('trottertracks._pipeline_host_profiles')
+    packed_profiles.q3_cpu_measurement_key=profiles.q3_cpu_measurement_key
+    packed_resources=ModuleType('trottertracks._pipeline_q3_resources')
+    packed_resources.valid_q3_execution_receipt=resources.valid_q3_execution_receipt
+    monkeypatch.setitem(sys.modules,packed_profiles.__name__,packed_profiles)
+    monkeypatch.setitem(sys.modules,packed_resources.__name__,packed_resources)
+    monkeypatch.delattr(resources,'valid_q3_execution_receipt')
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'export';search.directory.mkdir()
+    search.independent=True;search.revision=0;search.profile={'host_id':'pbs-test'}
+    part=tmp_path/'part';job=part/'jobs'/'PR_DF'/'j';job.mkdir(parents=True)
+    req=dict(method='PR_DF',request_id='j',route=dict(kind='hchain_scoped_q3',view_commit='b'*40),N_X=[4,8],N_Y=[5,8])
+    runtime=dict(host_id='local',root='/fixed/runtime',interpreter='/fixed/python',dp_workers=2,task_cpu_count=2)
+    measured=dict(runtime,q3_measurement_host_id='pbs-test')
+    receipt=dict(returncode=0,signal=None,wall_seconds=2.)
+    outcome=dict(request_id='j',status='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD')
+    sample=dict(schema='RPE_Q3_EXECUTION_RESOURCES_V1',key=profiles.q3_cpu_measurement_key(req,measured),
+        memory_class_key=profiles.q3_cpu_measurement_key(req,measured,memory_class=True),job_id='j',attempt_id='a',
+        host_id='local',policy_host_id='pbs-test',request_sha256=digest(req),method='PR_DF',route_kind='hchain_scoped_q3',
+        dp_workers=2,task_cpu_count=2,samples=3,peak_rss_bytes=1024,wall_seconds=2.)
+    for name,value in [('REQUEST.json',req),('PROCESS_RETURN.json',receipt),('OUTCOME.json',outcome)]:atomic(job/name,value)
+    transfer=part/'distributed/transfers/j/a';transfer.mkdir(parents=True)
+    atomic(transfer/'Q3_EXECUTION_RESOURCES.json',sample)
+    with sqlite3.connect(part/'distributed/QUEUE.sqlite3') as db:
+        db.execute('CREATE TABLE jobs(job_id,attempt_id,host_id,request_sha256,state,eligibility)')
+        db.execute('INSERT INTO jobs VALUES(?,?,?,?,?,?)',('j','a','local',digest(req),'ACCEPTED',
+            __import__('json').dumps({'execution_profiles':{'local':runtime}})))
+    assert search.export(part)==1
+    assert read(search.directory/'RESULTS.json')['PR_DF/j']['q3_execution_resources']==sample

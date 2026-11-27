@@ -84,6 +84,21 @@ class GatewayStorage:
         return unavailable
 
 
+def seed_fresh_storage_sample(shared_sample, sample, expected_policy, max_age, storage):
+    """Reuse the previous session's actual fresh scan, never renew its epoch."""
+    try:
+        record = json.loads(shared_sample.read_bytes())
+        if (record['policy'] == expected_policy
+                and 0 <= time.time()-record['sampled_epoch'] <= max_age):
+            # Caller verifies the shared filename's policy, but compare the
+            # complete expected policy as well before accepting its sample.
+            storage.atomic_json(sample, record)
+            return True
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    return False
+
+
 def configure_artifact_transport(launcher):
     """Use streaming CAS I/O without replacing a fixed provider or its receipts."""
     if launcher.suffix != '.pyz':return
@@ -212,6 +227,56 @@ def configure_allocation_worker(profile, launcher):
             pbs.AllocationWorker = CombinedAllocationWorker
 
 
+def drain_worker_children():
+    """The worker owns the same detached children that the keeper would reap.
+
+    Keep capacity observation alive in the parent until they have exited;
+    never signal or relaunch a scientific child during technical shutdown.
+    """
+    while True:
+        try:
+            os.waitpid(-1, 0)
+        except InterruptedError:
+            continue
+        except ChildProcessError:
+            return
+
+
+def become_worker_subreaper():
+    import ctypes
+    if ctypes.CDLL(None, use_errno=True).prctl(36, 1, 0, 0, 0) != 0:
+        raise OSError(ctypes.get_errno(), 'Cannot track allocation worker children')
+
+
+def drain_adopted_worker_children():
+    # After an abrupt worker death (including SIGKILL), Linux reparents its
+    # descendants to this subreaper's main thread. Do not waitpid(-1) here:
+    # the independent sampling threads have their own du subprocesses.
+    children = Path(f'/proc/self/task/{os.getpid()}/children')
+    while True:
+        pids = children.read_text().split()
+        if not pids:
+            return
+        for pid in pids:
+            try:
+                os.waitpid(int(pid), 0)
+            except (ChildProcessError, InterruptedError):
+                pass
+
+
+def run_sampled_worker(launcher, script, args, stop_sampling):
+    # Sampling/maintenance stay in the launcher process. Exceptions in the
+    # allocation worker cannot stop these threads while its owned children drain.
+    try:
+        become_worker_subreaper()
+        returncode = subprocess.run([sys.executable, '-B', str(launcher), '--worker-only',
+                                    str(script), *args]).returncode
+        drain_adopted_worker_children()
+        return returncode
+    finally:
+        stop_sampling.set()
+
+
 def main():
     args = sys.argv[1:]
     launcher = Path(sys.argv[0]).resolve()
@@ -227,6 +292,9 @@ def main():
                 from trottertracks import _pipeline_q3_resources
                 _collection_q3_worker.Resources = _pipeline_q3_resources
         raise SystemExit(_collection_q3_worker.supervise(Path(attempt)))
+    worker_only = args[:1] == ['--worker-only']
+    if worker_only:
+        args.pop(0)
     check_imports = args[:1] == ['--check-imports']
     if check_imports:
         args.pop(0)
@@ -264,7 +332,7 @@ def main():
                               offline_module=getattr(selected, '__file__', None))))
         return
     stop_sampling = threading.Event()
-    if compute_sampling and profile.get('storage_limit'):
+    if compute_sampling and profile.get('storage_limit') and not worker_only:
         policy = dict(profile['storage_limit'], sample_path=str(sample))
         if sampler:
             policy['exclusion_file'] = str(sampler.storage_exclusion_file(profile['storage_limit']))
@@ -277,6 +345,8 @@ def main():
         configured_sample = Path(profile['storage_limit']['sample_path'])
         shared_sample = configured_sample.with_name('STORAGE_COMPUTE_'+policy_key+'.json')
         shared_policy = dict(policy, sample_path=str(shared_sample))
+        seed_fresh_storage_sample(shared_sample, sample, observer.policy_fingerprint(policy),
+                                  observer.max_age, storage)
 
         # Admission uses one allocation-local measurement. The previous
         # sampler mixed multiple full-directory rechecks into that measurement,
@@ -304,8 +374,11 @@ def main():
                             pbs_runs=str(directory.parents[2]), du_timeout=COMPUTE_DU_TIMEOUT)
                         storage.atomic_json(Path(maintenance_policy['sample_path']), dict(epoch=time.time(), **result))
                 except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
-                    storage.atomic_json(Path(maintenance_policy['sample_path']),
-                                        dict(epoch=time.time(), status='CLEANUP_DEFERRED', reason=str(error)))
+                    try:
+                        storage.atomic_json(Path(maintenance_policy['sample_path']),
+                                            dict(epoch=time.time(), status='CLEANUP_DEFERRED', reason=str(error)))
+                    except OSError:
+                        pass  # a temporary filesystem error must not end maintenance
                 # The common central storage service also reclaims verified
                 # copies; avoid repeated expensive reconciliation at poll rate.
                 stop_sampling.wait(300)
@@ -318,10 +391,10 @@ def main():
             while not stop_sampling.is_set():
                 marker = observer.in_progress
                 temp = marker.with_suffix('.tmp')
-                temp.write_text(json.dumps(dict(policy=observer.policy_fingerprint(policy),
-                                                started_epoch=time.time())))
-                os.replace(temp, marker)
                 try:
+                    temp.write_text(json.dumps(dict(policy=observer.policy_fingerprint(policy),
+                                                    started_epoch=time.time())))
+                    os.replace(temp, marker)
                     # No spool/caches on this measurement-only path.
                     # The same byte policy and exclusions still apply.
                     result = sample_report(shared_policy, refresh=False, proactive=True, measurement_only=True,
@@ -340,16 +413,34 @@ def main():
                             used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')))
                     if result and result.get('reclaim_pending'):
                         maintenance_due.set()
+                except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
+                    try:
+                        storage.atomic_json(sample, dict(policy=observer.policy_fingerprint(policy),
+                            sampled_epoch=time.time(), report=dict(limit_bytes=policy['limit_bytes'],
+                            used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')))
+                    except OSError:
+                        pass  # last sample ages out; next scan retries
                 finally:
-                    marker.unlink(missing_ok=True)
+                    try:
+                        marker.unlink(missing_ok=True)
+                    except OSError:
+                        pass
                 stop_sampling.wait(storage.SAMPLE_SECONDS)
 
         threading.Thread(target=maintain_storage, name='pbs-storage-maintenance', daemon=True).start()
         threading.Thread(target=sample_storage, name='pbs-storage-sample', daemon=True).start()
+        raise SystemExit(run_sampled_worker(launcher, script, args, stop_sampling))
+    if worker_only:
+        # PBS's Linux keeper already uses this same subreaper mechanism. Put
+        # it inside the worker subprocess so that the sampling parent remains
+        # live throughout a normal or exceptional worker drain.
+        become_worker_subreaper()
     sys.argv = [str(script), *args]
     try:
         runpy.run_path(str(script), run_name='__main__')
     finally:
+        if worker_only:
+            drain_worker_children()
         stop_sampling.set()
 
 

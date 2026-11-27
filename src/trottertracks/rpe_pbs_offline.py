@@ -923,15 +923,18 @@ class OfflineSearch:
 
     def _q3_resource_receipt(self, part, job, request, receipt, outcome):
         from contextlib import closing
-        try:
-            from ._pipeline_host_profiles import q3_cpu_measurement_key
-        except ImportError:
-            from .rpe_host_profiles import q3_cpu_measurement_key
-        from .rpe_q3_resources import valid_q3_execution_receipt
         transfer = part/'distributed'/'transfers'/job
-        if not any(transfer.glob('*/Q3_EXECUTION_RESOURCES.json')):
-            return None
         try:
+            if not any(transfer.glob('*/Q3_EXECUTION_RESOURCES.json')):
+                return None
+            # The allocation launcher has its own operational modules. A
+            # frozen science checkout may predate resource receipt support.
+            try:
+                from ._pipeline_host_profiles import q3_cpu_measurement_key
+                from ._pipeline_q3_resources import valid_q3_execution_receipt
+            except ImportError:
+                from .rpe_host_profiles import q3_cpu_measurement_key
+                from .rpe_q3_resources import valid_q3_execution_receipt
             with closing(sqlite3.connect((part/'distributed'/'QUEUE.sqlite3').resolve().as_uri()+'?mode=ro',uri=True,timeout=1)) as db:
                 row = db.execute('SELECT attempt_id,host_id,request_sha256,state,eligibility FROM jobs WHERE job_id=?',(job,)).fetchone()
             if not row or row[3]!='ACCEPTED' or row[2]!=digest(request):return None
@@ -946,7 +949,9 @@ class OfflineSearch:
                     and sample['task_cpu_count']==(runtime.get('task_cpu_count') or runtime.get('dp_workers'))
                     and valid_q3_execution_receipt(sample,request,receipt,outcome,policy_host=host,attempt=row[0])):
                 return sample
-        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error):
+        except (ImportError, OSError, ValueError, KeyError, TypeError, AttributeError, sqlite3.Error):
+            # Optional measurements must not interrupt lossless Q3 export.
+            # Keep the original receipt in the block for later inspection.
             pass
         return None
 

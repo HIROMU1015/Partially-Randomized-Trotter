@@ -60,7 +60,8 @@ def refresh(base, output, root=ROOT):
                 if entry.filename.endswith('.py'):
                     compile(data,entry.filename,'exec')
                 new.writestr(entry, data)
-            for name in ('trottertracks/rpe_pbs_offline.py','trottertracks/_pipeline_host_profiles.py'):
+            for name in ('trottertracks/rpe_pbs_offline.py','trottertracks/_pipeline_host_profiles.py',
+                         'trottertracks/_pipeline_q3_resources.py'):
                 if name not in old.namelist():
                     path=root/replacements[name]
                     compile(path.read_bytes(),name,'exec')

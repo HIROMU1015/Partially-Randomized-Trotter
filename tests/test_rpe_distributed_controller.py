@@ -39,6 +39,30 @@ class ControllerFailures(unittest.TestCase):
             artificial=dict(weights=[1, 1], scale='1/1000', tau='1'))]}
         self.problem = dict(accuracy=dict(e=1), target=dict(energy_ha=0), rpe=dict(M=1))
 
+    def test_pbs_handoff_preserves_unclaimed_job_for_resume_without_reselection(self):
+        first = self.executor()
+        queued = self.enqueue(first, 'queued-before-handoff')
+        job = queued.job.name
+        (self.run/'STOP_REQUESTED.json').write_text(json.dumps({'reason':'PBS_BLOCK_HANDOFF'}))
+        self.assertTrue(first._user_stop_requested())
+        self.assertEqual(queued.status,'CANCELLED')  # only invocation-local
+        self.assertEqual(first.store.row(job)['state'],'QUEUED')
+        self.assertIsNone(first.store.row(job)['attempt_id'])
+        self.close_one(first)
+        (self.run/'STOP_REQUESTED.json').unlink()
+        resumed = self.executor()
+        self.assertEqual(resumed.store.row(job)['state'],'QUEUED')
+        assignment, = self.poll(resumed,1)['assignments']
+        self.assertEqual(assignment['job_id'],job)
+        self.assertEqual(resumed.store.counts('PR_PAULI'),1)
+
+    def test_actual_user_stop_still_cancels_unclaimed_job(self):
+        executor=self.executor()
+        queued=self.enqueue(executor,'queued-before-stop')
+        (self.run/'STOP_REQUESTED.json').write_text(json.dumps({'reason':'USER_REQUESTED_STOP'}))
+        self.assertTrue(executor._user_stop_requested())
+        self.assertEqual(executor.store.row(queued.job.name)['state'],'CANCELLED')
+
     def test_historical_reuse_count_follows_append_and_log_replacement(self):
         self.run.mkdir()
         log = self.run / 'PROGRESS.jsonl'

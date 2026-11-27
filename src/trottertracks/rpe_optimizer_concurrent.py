@@ -3880,6 +3880,30 @@ class DistributedExecutor(ConcurrentExecutor):
             s.cv.notify_all()
             return task
 
+    def _user_stop_requested(self):
+        # A PBS package handoff stops this invocation, not the search. Keep
+        # unclaimed reservations for the ordinary Resume instead of making
+        # the optimizer rediscover every eligible candidate from scratch.
+        marker = self.run_dir/'STOP_REQUESTED.json'
+        try:
+            handoff = json.loads(marker.read_bytes()).get('reason') == 'PBS_BLOCK_HANDOFF'
+        except (OSError, ValueError, AttributeError):
+            handoff = False
+        if not handoff:
+            return super()._user_stop_requested()
+        with self.state.cv:
+            for task in self.state.tasks.values():
+                if task.status != 'QUEUED':
+                    continue
+                row = self.store.row(task.job.name)
+                if row and row['state'] == 'QUEUED' and row.get('attempt_id') is None:
+                    ConcurrentExecutor._cancel(self, task)  # invocation only; retain durable row
+                    task.view.log(event='PBS_HANDOFF_QUEUE_RETAINED', job=task.job.name)
+                else:
+                    self._cancel(task)
+            self.state.cv.notify_all()
+        return True
+
     def _cancel(self, task):
         row = self.store.row(task.job.name)
         if row and row['state'] == 'QUEUED' and row['detail'].get('prelaunch_recovery') is True:
