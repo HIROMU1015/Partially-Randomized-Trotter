@@ -58,7 +58,16 @@ def observation(row, leaf):
         receipt=read(leaf/'PROCESS_RETURN.json'); outcome=read(leaf/'OUTCOME.json')
         key=q3_cpu_measurement_key(request,runtime)
         cls=q3_cpu_measurement_key(request,runtime,memory_class=True)
-        cpu=runtime.get('task_cpu_count') or runtime.get('dp_workers')
+        dp=runtime.get('dp_workers')
+        cpu=runtime.get('task_cpu_count')
+        # Legacy eligibility omits the enclosing worker's reserved CPU count.
+        # Use the exact claim envelope retained by JobStore, not a guess.
+        assigned=(row.get('detail') or {}).get('pbs_launch_resources',{}).get('cpu')
+        if cpu is None:
+            cpu=assigned if assigned is not None else dp
+        if (type(dp) is not int or type(cpu) is not int or cpu-dp not in (0,1)
+                or (assigned is not None and assigned!=cpu)):
+            return None
         if not (leaf/'Q3_EXECUTION_RESOURCES.json').is_file():
             return legacy_observation(row,leaf,runtime,receipt,outcome,key,cls,cpu)
         sample=read(leaf/'Q3_EXECUTION_RESOURCES.json')

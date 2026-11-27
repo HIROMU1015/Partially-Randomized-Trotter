@@ -104,3 +104,17 @@ def test_preparation_table_refresh_preserves_previous_and_parallel_classes():
     assert new['stages']['compile']['a']['previous_memory_bytes']==8*P.GIB
     assert new['stages']['compile']['b']['memory_bytes']==8*P.GIB
     assert table['stages']['compile']['a']['memory_bytes']==8*P.GIB
+
+
+@pytest.mark.parametrize('legacy',[False,True])
+def test_receipt_uses_reserved_claim_cpu_for_legacy_profile(tmp_path,legacy):
+    host,runtime,settings,req=setup()
+    row,leaf=accepted(tmp_path,11,runtime,req,P.GIB,legacy=legacy)
+    old_runtime=dict(runtime);old_runtime.pop('task_cpu_count')
+    row['eligibility']={'execution_profiles':{host:old_runtime}}
+    row['detail']={'pbs_launch_resources':{'cpu':4}}
+    assert M.observation(row,leaf)['task_cpu_count']==4
+    assert M.observation(dict(row,detail={'pbs_launch_resources':{'cpu':5}}),leaf) is None
+    assert M.observation(dict(row,detail={}),leaf) is None
+    row['eligibility']={'execution_profiles':{host:runtime}}
+    assert M.observation(dict(row,detail={'pbs_launch_resources':{'cpu':3}}),leaf) is None
