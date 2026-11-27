@@ -211,6 +211,28 @@ class ControllerFailures(unittest.TestCase):
             request_sha256=assignment['request_sha256'],
             files={name: base64.b64encode(json.dumps(value).encode()).decode() for name, value in files.items()})
 
+    def test_q3_resend_allows_only_appended_upload_timings(self):
+        executor = self.executor()
+        task = self.enqueue(executor, 'q3-resend')
+        assignment, = self.poll(executor)['assignments']
+        payload = self.completion(assignment)
+        name = 'TRANSPORT_TIMING.jsonl'
+        original = b'{"event":"RESULT_BUNDLE_READY"}\n'
+        encode = lambda raw: base64.b64encode(raw).decode('ascii')
+        payload['files'][name] = encode(original)
+        self.assertFalse(executor.rpc('/v1/complete', payload)['duplicate'])
+        accepted = executor.store.row(task.job.name)
+        retry = dict(payload, files=dict(payload['files'], **{name: encode(original + b'{"event":"WORKER_TRANSFER_START"}\n')}))
+        self.assertTrue(executor.rpc('/v1/complete', retry)['duplicate'])
+        for change in ({'OUTCOME.json': encode(b'{}')}, {name: encode(b'{"event":"WORKER_TRANSFER_START"}\n')},
+                       {name: encode(original + b'{"event":"ADAPTER_PROCESS_END"}\n')}):
+            with self.assertRaisesRegex(ValueError, 'Duplicate completion changed artifacts'):
+                executor.rpc('/v1/complete', dict(retry, files={**retry['files'], **change}))
+        self.assertEqual(executor.store.row(task.job.name), accepted)
+        self.assertEqual([row['event'] for row in executor.store.events()].count('ACCEPT'), 1)
+        saved = self.run/'distributed'/'transfers'/task.job.name/assignment['attempt_id']/name
+        self.assertEqual(saved.read_bytes(), original)
+
     def test_lost_worker_contact_yields_only_owned_attempt_and_recovers_after_restart(self):
         executor = self.executor()
         first = self.enqueue(executor, 'first')

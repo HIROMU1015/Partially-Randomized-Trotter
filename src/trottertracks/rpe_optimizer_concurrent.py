@@ -4727,7 +4727,7 @@ class DistributedExecutor(ConcurrentExecutor):
             preparation = self._preparation_request(row['request'])
             if row['state'] == 'ACCEPTED':
                 if row['completion_sha256'] != completion_sha and not (
-                        preparation and preparation_transfer_retry_matches(
+                        preparation_transfer_retry_matches(
                             files, transfer/'TRANSPORT_TIMING.jsonl', row['completion_sha256'])):
                     raise ValueError('Duplicate completion changed artifacts')
                 self._publish_transfer(row)
