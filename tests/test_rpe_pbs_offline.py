@@ -444,7 +444,7 @@ def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
     entry.parent.mkdir();entry.write_text('pass')
     modules={}
     for name in ('rpe_host_profiles','rpe_q3_resources','rpe_q3_store','rpe_preparation_bridge',
-                 'rpe_q3_memory','rpe_pbs','rpe_optimizer_concurrent'):
+                 'rpe_q3_memory','rpe_pbs','rpe_live_q3_readiness','rpe_optimizer_concurrent'):
         path=tmp_path/(name+'.py');path.write_text('pass')
         modules[name]={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
     search.profile={'pbs':{'offline_controller_overlay':{'base_source':'fixed','modules':modules}}}
@@ -453,6 +453,50 @@ def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
     modules['rpe_q3_store']['sha256']='invalid'
     with pytest.raises(ValueError,match='overlay differs'):
         search._controller_command(entry)
+
+
+def test_readiness_uses_the_native_workers_fixed_base(tmp_path):
+    import hashlib
+    import json
+    import subprocess
+    from shutil import copyfile
+    from trottertracks.rpe_live_q3_readiness import _HOST_PROBE
+
+    base = tmp_path/'fixed'
+    package = base/'src/trottertracks'
+    package.mkdir(parents=True)
+    (package/'__init__.py').touch()
+    (package/'rpe_host_eligibility.py').write_text(
+        'def current_host_fingerprint(*args): return {"fixed": True}\n')
+    check = base/'scripts/check_rpe_q3_host_readiness.py'
+    check.parent.mkdir()
+    check.write_text(
+        'import json, sys\nfrom pathlib import Path\n'
+        'assignment = json.loads(Path(sys.argv[2]).read_text())\n'
+        'output = Path(sys.argv[6]); output.mkdir()\n'
+        '(output/"READINESS.json").write_text(json.dumps(dict('
+        'status="REAL_HOST_DRY_CHECK_PASS", scientific_evaluation_calls=0, '
+        'request_sha256=assignment["request_sha256"])))\n')
+    overlay = tmp_path/'overlay'
+    script = overlay/'scripts/run_rpe_q3_worker.py'
+    script.parent.mkdir(parents=True)
+    copyfile(ROOT/'scripts/run_rpe_native_worker_overlay.py', script)
+    modules = overlay/'src/trottertracks'
+    modules.mkdir(parents=True)
+    paths = {}
+    for name in ('rpe_q3_timing', 'rpe_host_profiles', 'rpe_q3_resources', 'rpe_worker_storage', 'rpe_q3_worker'):
+        path = modules/(name+'.py')
+        path.write_text('def profile_core(profile): return profile\n'
+                        'def select_host_profile(profile, assignment): return profile\n'
+                        if name == 'rpe_host_profiles' else '')
+        paths[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    atomic(overlay/'NATIVE_WORKER_OVERLAY.json', dict(base_root=str(base), modules=paths))
+    assignment = dict(request={'route':{'kind':'test'}}, request_sha256='fixed-request', input_hashes=[])
+    report = subprocess.run([sys.executable, '-IB', '-c', _HOST_PROBE], check=True, text=True,
+                            capture_output=True, input=json.dumps(dict(assignment=assignment,
+                            worker_root=str(overlay), native_worker_script=str(script), profile={'root':str(base)})))
+    result = json.loads(report.stdout)
+    assert result['status'] == 'PASS' and result['fingerprint'] == {'fixed': True}
 
 def test_parent_storage_sample_reused_without_directory_scan(tmp_path, monkeypatch):
     from trottertracks import rpe_worker_storage as storage

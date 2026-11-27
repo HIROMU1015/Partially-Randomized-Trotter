@@ -13,7 +13,7 @@ import runpy
 import sys
 
 
-def main():
+def load_overlay():
     root = Path(__file__).resolve().parents[1]
     selection = json.loads((root/'NATIVE_WORKER_OVERLAY.json').read_bytes())
     base = Path(selection['base_root']).resolve()
@@ -32,6 +32,11 @@ def main():
         sys.modules[qualified] = module
         spec.loader.exec_module(module)
         setattr(trottertracks, name, module)
+    return base
+
+
+def main():
+    base = load_overlay()
     if sys.argv[1:] == ['--check-imports']:
         print('NATIVE_WORKER_IMPORTS_PASS')
         return

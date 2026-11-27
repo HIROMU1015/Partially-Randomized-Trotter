@@ -82,13 +82,17 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import runpy
 import subprocess
 import sys
 import tempfile
 
 payload = json.load(sys.stdin)
 root = Path(payload['worker_root'])
-sys.path.insert(0, str(root/'src'))
+if payload.get('native_worker_script'):
+    root = runpy.run_path(payload['native_worker_script'])['load_overlay']()
+else:
+    sys.path.insert(0, str(root/'src'))
 from trottertracks import rpe_host_eligibility
 from trottertracks.rpe_host_profiles import profile_core, select_host_profile
 
@@ -496,14 +500,20 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
                                              capture_output=True, check=True, timeout=120)
                     return json.loads(checked.stdout)
             elif worker is None:
-                payload.update(profile=local, worker_root=str(executor.worker_script.parent.parent))
+                root = executor.worker_script.parent.parent
+                payload.update(profile=local, worker_root=str(root))
+                if (root/'NATIVE_WORKER_OVERLAY.json').is_file():
+                    payload['native_worker_script'] = str(executor.worker_script)
                 distributed=executor.distributed
                 if distributed.get('local_deployment_layout') and distributed.get('release_manifest'):
                     payload['deployment']=dict(deployment=dict(manifest=distributed['release_manifest'],
                                                               layout=distributed['local_deployment_layout']))
                 def invoke(data):
-                    return json.loads(subprocess.check_output([sys.executable, '-B', '-c', _HOST_PROBE],
-                                                              input=json.dumps(data), text=True, timeout=120))
+                    checked = subprocess.run([sys.executable, '-B', '-c', _HOST_PROBE],
+                                             input=json.dumps(data), text=True, capture_output=True, timeout=120)
+                    if checked.returncode:
+                        return dict(status='HOLD', reason='LOCAL_Q3_PROBE_FAILED: '+checked.stderr.strip()[-1200:])
+                    return json.loads(checked.stdout)
             else:
                 # Keep Windows argv short even as the metadata checker grows.
                 payload.update(worker_root=worker['root'], profile_path=worker['profile'],
