@@ -21,6 +21,26 @@ def sqlite_busy(error):
     return ('locked' in str(error).lower() or 'busy' in str(error).lower())
 
 
+def publish_result_file(source, target):
+    """Publish an immutable result, recovering an interrupted previous copy.
+
+    Called under the existing export lock for independent blocks. The source
+    remains intact; a temporary name is only a derived copy, never ownership.
+    """
+    temporary = target.with_name(target.name+'.tmp')
+    temporary.unlink(missing_ok=True)
+    if target.exists() and source.samefile(target):
+        return
+    try:
+        try:
+            os.link(source, temporary)
+        except OSError:
+            shutil.copyfile(source, temporary)
+        temporary.replace(target)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def partition_round(round_spec, problem=None, *, independent=False):
     if independent and round_spec.get('hchain'):
         from .rpe_hchain_scope import fixed_plan
@@ -891,15 +911,22 @@ class OfflineSearch:
                               completion_sha256=row[3], host_id=self.profile['host_id'], part=part.name)
             destination = self.directory/'jobs'/key
             destination.mkdir(parents=True, exist_ok=True)
-            for name in names:
-                temporary = destination/(name+'.tmp')
-                try:
-                    os.link(job/name, temporary)
-                except OSError:
-                    shutil.copyfile(job/name, temporary)
-                temporary.replace(destination/name)
-            records[key] = dict(part=part.name, files={name: (destination/name).stat().st_size
-                                                       for name in names})
+            try:
+                for name in names:
+                    publish_result_file(job/name, destination/name)
+                records[key] = dict(part=part.name, files={name: (destination/name).stat().st_size
+                                                           for name in names})
+            except OSError as error:
+                # A single interrupted/temporarily unavailable file must not
+                # prevent other confirmed results from reaching the manifest.
+                pending = getattr(self, 'export_pending', {})
+                self.export_pending = pending
+                if pending.get(key) != str(error) and getattr(self,'profile',{}).get('work_dir'):
+                    from .rpe_q3_worker import event
+                    event(self.profile, 'PBS_INDEPENDENT_EXPORT_PENDING', job=job.name, reason=str(error))
+                pending[key] = str(error)
+                continue
+            getattr(self, 'export_pending', {}).pop(key, None)
             if self.independent and not method.startswith('PREPARATION-'):
                 measurement = self._q3_resource_receipt(part,job.name,request,receipt,read(outcome))
                 if measurement is not None:

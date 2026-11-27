@@ -720,3 +720,29 @@ def test_bundled_resource_receipt_export_uses_matching_validator(tmp_path, monke
             __import__('json').dumps({'execution_profiles':{'local':runtime}})))
     assert search.export(part)==1
     assert read(search.directory/'RESULTS.json')['PR_DF/j']['q3_execution_resources']==sample
+
+
+def test_interrupted_export_hardlink_does_not_block_other_results(tmp_path, monkeypatch):
+    import os
+    from trottertracks import rpe_pbs_offline as offline
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'export'
+    search.directory.mkdir();search.independent=True;search.revision=0
+    part=tmp_path/'part'
+    for name in ('old','new','busy'):
+        job=part/'jobs'/'PR_DF'/name;job.mkdir(parents=True)
+        atomic(job/'REQUEST.json',{'request_id':name})
+        atomic(job/'PROCESS_RETURN.json',{'returncode':0,'signal':None})
+        atomic(job/'OUTCOME.json',{'status':'ARTIFICIAL'})
+    src=part/'jobs/PR_DF/old/REQUEST.json';dst=search.directory/'jobs/PR_DF/old';dst.mkdir(parents=True)
+    os.link(src,dst/'REQUEST.json.tmp')
+    # A separate IO error must not prevent either other job from being published.
+    publish=offline.publish_result_file
+    def sometimes_busy(source,target):
+        if source.parent.name=='busy':raise OSError('temporary IO unavailable')
+        publish(source,target)
+    monkeypatch.setattr(offline,'publish_result_file',sometimes_busy)
+    assert search.export(part)==2
+    assert src.samefile(dst/'REQUEST.json') and not (dst/'REQUEST.json.tmp').exists()
+    assert set(read(search.directory/'RESULTS.json'))=={'PR_DF/old','PR_DF/new'}
+    monkeypatch.setattr(offline,'publish_result_file',publish)
+    assert search.export(part)==1 and search.export(part)==0
