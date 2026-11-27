@@ -712,7 +712,7 @@ class OfflineSearch:
         files = overlay['modules']
         order = ('rpe_q3_timing', 'rpe_host_profiles', 'rpe_q3_resources', 'rpe_q3_store',
                  'rpe_preparation_artifacts', 'rpe_worker_storage', 'rpe_preparation_bridge',
-                 'rpe_optimizer_concurrent')
+                 'rpe_q3_memory', 'rpe_pbs', 'rpe_optimizer_concurrent')
         if not {'rpe_q3_store','rpe_optimizer_concurrent'} <= set(files) <= set(order):
             raise ValueError('Unsupported PBS controller overlay modules')
         modules = []

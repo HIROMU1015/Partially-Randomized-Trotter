@@ -443,7 +443,8 @@ def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
     entry=tmp_path/'scripts'/'run_rpe_schedule_search.py'
     entry.parent.mkdir();entry.write_text('pass')
     modules={}
-    for name in ('rpe_host_profiles','rpe_q3_resources','rpe_q3_store','rpe_preparation_bridge','rpe_optimizer_concurrent'):
+    for name in ('rpe_host_profiles','rpe_q3_resources','rpe_q3_store','rpe_preparation_bridge',
+                 'rpe_q3_memory','rpe_pbs','rpe_optimizer_concurrent'):
         path=tmp_path/(name+'.py');path.write_text('pass')
         modules[name]={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
     search.profile={'pbs':{'offline_controller_overlay':{'base_source':'fixed','modules':modules}}}
