@@ -487,7 +487,8 @@ def measured_q3_memory(request, runtime, host, estimates):
     return max((value for value in (legacy,exact_memory) if value is not None),default=None)
 
 
-def resource_need(request, profile, settings, host):
+def resource_need_with_q3_memory(request, profile, settings, host):
+    """Return CPU, reservation bytes and whether a matching Q3 measurement was used."""
     from .rpe_q3_worker import select_host_profile
 
     memory = task_memory_estimate(request, settings, host)
@@ -521,7 +522,14 @@ def resource_need(request, profile, settings, host):
     from .rpe_q3_resources import preparation_forecast
     cpu = runtime_cpu_footprint(profile, runtime)
     forecast = preparation_forecast(request, settings.get('preparation_resource_observations'), cpu_count=cpu, host=host)
-    return (cpu, max(1, memory, forecast.get('memory_bytes', 0), (profile.get('pbs') or {}).get('task_memory_bytes') or 0))
+    reserved = max(1, memory, forecast.get('memory_bytes', 0),
+                   (profile.get('pbs') or {}).get('task_memory_bytes') or 0)
+    return cpu, reserved, bool(measurements)
+
+
+def resource_need(request, profile, settings, host):
+    cpu, memory, _ = resource_need_with_q3_memory(request, profile, settings, host)
+    return cpu, memory
 
 
 def owned_resource_need(row, profile, settings, host):

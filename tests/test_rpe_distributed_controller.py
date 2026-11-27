@@ -857,24 +857,25 @@ class ControllerFailures(unittest.TestCase):
         poll = dict(host_id='pbs-0', source_sha=self.source, slots=4, capacity=8,
             resource_report=dict(pbs=dict(remaining_seconds=120, accepting=True, launch_fit=True,ready_buffer=True,
                 resource_pool=dict(cpu_count=8, memory_bytes=12*GIB))))
-        with patch('trottertracks.rpe_pbs.resource_need', return_value=(4,GIB)):
+        with patch('trottertracks.rpe_pbs.resource_need_with_q3_memory', return_value=(4, GIB, False)):
             first, second = executor.rpc('/v1/poll', poll)['assignments']
         self.assertFalse(first['pbs_launch_resources']['standby'])
         self.assertFalse(second['pbs_launch_resources']['standby'])
+        self.assertNotIn('q3_memory_measured', first['pbs_launch_resources'])
         for owner in (first, second):
             executor.rpc('/v1/state', dict(host_id='pbs-0', job_id=owner['job_id'], attempt_id=owner['attempt_id'], state='RUNNING'))
-        with patch('trottertracks.rpe_pbs.resource_need',
-                   side_effect=lambda request,*args: (2 if request['request_id'] in {t.job.name for t in tasks[2:]} else 4,GIB)):
+        with patch('trottertracks.rpe_pbs.resource_need_with_q3_memory', return_value=(2, GIB, True)):
             buffered = executor.rpc('/v1/poll', dict(poll,slots=0))['assignments']
         standby, = buffered
         self.assertTrue(standby['pbs_launch_resources']['standby'])
+        self.assertIs(standby['pbs_launch_resources']['q3_memory_measured'], True)
         row = executor.store.row(standby['job_id'])
         self.assertEqual(row['attempt_id'], standby['attempt_id'])
         self.assertEqual(row['detail']['pbs_launch_resources'], standby['pbs_launch_resources'])
         self.assertEqual(executor.store.row(tasks[3].job.name)['state'], 'QUEUED')
         self.assertIsNone(row['started_epoch'])
         self.assertFalse(executor.store.requeue_pbs_buffer(row['job_id'], row['attempt_id']))
-        with patch('trottertracks.rpe_pbs.resource_need', return_value=(4,GIB)):
+        with patch('trottertracks.rpe_pbs.resource_need_with_q3_memory', return_value=(4, GIB, False)):
             replay, = executor.rpc('/v1/poll', dict(poll,slots=0))['assignments']
         self.assertEqual(standby, replay)
         identity = {key: row[key] for key in ('job_id', 'attempt_id', 'request_sha256')}
@@ -898,8 +899,8 @@ class ControllerFailures(unittest.TestCase):
         poll = dict(host_id='pbs-0', source_sha=self.source, slots=2, capacity=8,
             resource_report=dict(pbs=dict(remaining_seconds=120, accepting=True, launch_fit=True, ready_buffer=True,
                 resource_pool=dict(cpu_count=8, memory_bytes=12*GIB))))
-        with patch('trottertracks.rpe_pbs.resource_need',
-                   side_effect=lambda request, *_: (4 if request['request_id'] in large else 2, GIB)):
+        with patch('trottertracks.rpe_pbs.resource_need_with_q3_memory',
+                   side_effect=lambda request, *_: (4 if request['request_id'] in large else 2, GIB, False)):
             assignments = executor.rpc('/v1/poll', poll)['assignments']
         standby = [item for item in assignments if item['pbs_launch_resources']['standby']]
         self.assertEqual(len(assignments), 8)
@@ -918,8 +919,8 @@ class ControllerFailures(unittest.TestCase):
         poll = dict(host_id='pbs-0', source_sha=self.source, slots=2, capacity=8,
             resource_report=dict(pbs=dict(remaining_seconds=120, accepting=True, launch_fit=True, ready_buffer=True,
                 resource_pool=dict(cpu_count=8, memory_bytes=12*GIB))))
-        with patch('trottertracks.rpe_pbs.resource_need',
-                   side_effect=lambda request, *_: (2 if request['request_id'] == standby.job.name else 4, GIB)):
+        with patch('trottertracks.rpe_pbs.resource_need_with_q3_memory',
+                   side_effect=lambda request, *_: (2 if request['request_id'] == standby.job.name else 4, GIB, False)):
             first, second, prepositioned = executor.rpc('/v1/poll', poll)['assignments']
             self.assertTrue(prepositioned['pbs_launch_resources']['standby'])
             for owner in (first, second):

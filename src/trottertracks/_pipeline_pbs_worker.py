@@ -767,13 +767,18 @@ class AllocationWorker(Worker):
             return  # Missing telemetry leaves the original reservation in force.
 
     def _q3_memory_reservation(self, attempt, resources):
-        if getattr(self, 'memory_backfill', False) and self.memory_history:
+        reserved = resources['memory_bytes']
+        if not getattr(self, 'memory_backfill', False):
+            return reserved, False
+        controller_measured = resources.get('q3_memory_measured') is True
+        if self.memory_history:
             key = self._q3_memory_key(self.records[attempt], read(attempt/'WORKER_PROFILE.json'))
             row = self.memory_history.get(key, {})
             if len(row.get('jobs', ())) == 2:
-                return max(1024**3, (3*row['peak_rss_bytes']+1)//2,
-                           self.profile['pbs'].get('task_memory_bytes') or 0), True
-        return resources['memory_bytes'], False
+                local_reserved = max(1024**3, (3*row['peak_rss_bytes']+1)//2,
+                                     self.profile['pbs'].get('task_memory_bytes') or 0)
+                return (max(reserved, local_reserved) if controller_measured else local_reserved), True
+        return reserved, controller_measured
 
     def _launch_buffered(self):
         pending = []

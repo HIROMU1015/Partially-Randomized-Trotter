@@ -64,8 +64,11 @@ def test_owner_stays_reserved_through_updates_and_resume(tmp_path):
     b,leaf2=accepted(tmp_path,4,runtime,req,2*P.GIB)
     with patch('trottertracks.rpe_q3_worker.select_host_profile',return_value=runtime):
         learner.update(M.observation(a,leaf),[owner],pbs)
+        assert P.resource_need_with_q3_memory(req, runtime, pbs, host) == (4, 8*P.GIB, False)
         learner.update(M.observation(b,leaf2),[owner],pbs)
         assert P.resource_need(req,runtime,pbs,host)==(4,3*P.GIB)
+        assert P.resource_need_with_q3_memory(req, runtime, pbs, host) == (4, 3*P.GIB, True)
+        assert P.resource_need_with_q3_memory(dict(req, N_X=[5, 8]), runtime, pbs, host) == (4, 8*P.GIB, False)
         assert P.owned_resource_need(owner,runtime,pbs,host)==(4,8*P.GIB)
         c,leaf3=accepted(tmp_path,5,runtime,req,3*P.GIB)
         learner.update(M.observation(c,leaf3),[owner],pbs)

@@ -4615,7 +4615,7 @@ class DistributedExecutor(ConcurrentExecutor):
             host_busy = False
             q3_headroom = None
             if resource_pool is not None and (remaining or extra):
-                from .rpe_pbs import GIB, resource_need, owned_resource_need, task_estimate
+                from .rpe_pbs import GIB, owned_resource_need, resource_need_with_q3_memory, task_estimate
                 settings = self.distributed['pbs']
                 worker = next(w for w in settings['workers'] if w['host_id'] == host)
                 free_cpu = resource_pool['cpu_count']
@@ -4664,7 +4664,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 standby = False
                 if resource_pool is not None:
                     try:
-                        cpu, memory = resource_need(row['request'], worker['profile'], settings, host)
+                        cpu, memory, measured_q3 = resource_need_with_q3_memory(
+                            row['request'], worker['profile'], settings, host)
                     except (KeyError, ValueError):
                         continue
                     if (q3_headroom is not None and task.rule['kind'] == 'preparation'
@@ -4685,6 +4686,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     if self.distributed.get('pbs_ready_buffer') is True and pbs_offer.get('launch_fit') is True:
                         seconds = task_estimate(row['request'],settings,host) or pbs_offer.get('minimum_task_seconds',1)
                         launch_fit = dict(cpu=cpu, memory_bytes=memory, seconds=seconds, standby=standby, order=time.time_ns())
+                        if measured_q3:
+                            launch_fit['q3_memory_measured'] = True
                         if forecast.get('storage_bytes'):launch_fit['storage_bytes'] = forecast['storage_bytes']
                 elif not remaining:
                     break

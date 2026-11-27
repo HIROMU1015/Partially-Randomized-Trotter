@@ -67,6 +67,62 @@ class AllocationTests(unittest.TestCase):
 
 
 class SpoolTests(unittest.TestCase):
+    def test_backfill_accepts_controller_measurement_without_local_samples(self):
+        from trottertracks import _pipeline_pbs_q3_worker as transport
+        with patch.dict(sys.modules, {'trottertracks._collection_q3_worker': transport}):
+            from trottertracks import _pipeline_pbs_worker as pipeline
+
+        gib = 1024**3
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            worker = object.__new__(pipeline.AllocationWorker)
+            worker.profile = dict(pbs={})
+            worker.memory_backfill = True
+            worker.memory_history = {}
+            worker.records, worker.launch_tracking = {}, set()
+            worker.slots = 2
+            worker.pbs_resources = dict(cpu_count=96, memory_bytes=350*gib)
+            worker.drain_seconds = 0
+            worker.resource_report = {}
+            worker.control = lambda: {}
+            worker.accepting = lambda: True
+            worker.remaining = lambda: 600
+            launched = []
+
+            def launch(attempt):
+                launched.append(attempt.name)
+                pipeline.atomic(attempt/'WORKER_STATE.json', dict(state='TRANSFERRED'))
+
+            worker._launch = launch
+
+            def add_attempt(name, order, memory, *, state='ASSIGNED', measured=False, candidate=None):
+                attempt = root/name
+                attempt.mkdir()
+                resources = dict(cpu=8, memory_bytes=memory*gib, standby=False, order=order, seconds=1)
+                if measured:
+                    resources['q3_memory_measured'] = True
+                worker.records[attempt] = dict(request=dict(configuration_id=candidate or name),
+                                               pbs_launch_resources=resources)
+                worker.launch_tracking.add(attempt)
+                pipeline.atomic(attempt/'WORKER_STATE.json', dict(state=state))
+                return attempt
+
+            active = add_attempt('active', 0, 215, state='RUNNING')
+            add_attempt('head', 1, 160)
+            add_attempt('default-small', 2, 4)
+            add_attempt('measured-too-large', 3, 135, measured=True)
+            add_attempt('same-candidate', 4, 4, measured=True, candidate='head')
+            add_attempt('measured-small', 5, 4, measured=True)
+            add_attempt('another-measured-small', 6, 4, measured=True)
+
+            with patch.object(pipeline, 'event'):
+                worker._launch_buffered()
+                worker._launch_buffered()
+                self.assertEqual(launched, ['measured-small'])
+                pipeline.atomic(active/'WORKER_STATE.json', dict(state='TRANSFERRED'))
+                worker._launch_buffered()
+                self.assertEqual(launched[:2], ['measured-small', 'head'])
+
     def test_q3_backfill_reuses_distinct_completed_samples_and_leaves_head_room(self):
         from trottertracks import _pipeline_pbs_q3_worker as transport
         with patch.dict(sys.modules, {'trottertracks._collection_q3_worker': transport}):
