@@ -303,6 +303,16 @@ class ControllerFailures(unittest.TestCase):
         self.assertTrue(resumed.rpc('/v1/complete', self.completion(replay))['duplicate'])
         self.assertEqual(sum(e['event'] == 'ADOPT' for e in resumed.store.events()), 2)
 
+    def test_native_durable_owner_does_not_consume_next_delivery_window(self):
+        executor=self.executor(capacity=2)
+        first=self.enqueue(executor,'first')
+        owned,=self.poll(executor,slots=1)['assignments']
+        second=self.enqueue(executor,'second')
+        result=executor.rpc('/v1/poll',dict(host_id='server1',slots=1,capacity=2,
+            cached_prefixes=[],source_sha=self.source,durable_assignments=[[owned['job_id'],owned['attempt_id'],owned['request_sha256']]]))
+        self.assertEqual([a['job_id'] for a in result['assignments']],[second.job.name])
+        self.assertEqual(executor.store.row(first.job.name)['attempt_id'],owned['attempt_id'])
+
     def test_lost_poll_response_replays_same_attempt_without_overfilling(self):
         executor = self.executor(capacity=2)
         first_task = self.enqueue(executor, 'first')

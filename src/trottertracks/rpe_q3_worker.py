@@ -509,6 +509,9 @@ class Worker:
         self.eligibility_challenges = []
         self.stop = threading.Event(); self.processes = {}; self.reported = {}; self.records = {}
         self.resource_report = None
+        self._terminal_resources = {}
+        self._terminal_prefixes = set()
+        self._terminal_preparation_observations = {}
         self.lock = (self.work / 'WORKER.lock').open('a')
         try:
             fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -543,12 +546,51 @@ class Worker:
         self.resource_report = report
         return report
 
+    def _remember_terminal(self, attempt, assignment):
+        """A TRANSFERRED attempt cannot consume resources again in this spool."""
+        if attempt in self._terminal_resources:
+            return
+        job = dict(state='TRANSFERRED')
+        if (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
+            saved = read(attempt/'WORKER_PROFILE.json')
+            path = attempt/'OWNED_RESOURCES.json'
+            previous = read(path) if path.is_file() else {}
+            job.update(resource_class=Resources.measured_resource_class(assignment['request'],
+                assignment.get('q3_evaluator'), saved, preparation_detail=True,
+                workload=assignment.get('preparation_workload')),
+                dp_workers=max(saved.get('dp_workers') or 1, saved.get('task_cpu_count') or 1),
+                peak_rss_bytes=previous.get('peak_rss_bytes',0),
+                observed_cpu_cores=previous.get('observed_cpu_cores',0))
+            observation = Resources.owned_preparation_observation(attempt, assignment, saved, job['peak_rss_bytes'])
+            if observation is not None:
+                self._terminal_preparation_observations[attempt] = observation
+        self._terminal_resources[attempt] = job
+        if assignment.get('prefix_key'):
+            self._terminal_prefixes.add(assignment['prefix_key'])
+
+    def _cached_prefixes(self):
+        prefixes = set(self._terminal_prefixes)
+        for attempt, assignment in self.records.items():
+            if attempt in self._terminal_resources or not assignment.get('prefix_key'):
+                continue
+            state = read(attempt/'WORKER_STATE.json')['state']
+            if state == 'TRANSFERRED':
+                self._remember_terminal(attempt, assignment)
+            if state in ('COMPLETED_PENDING_TRANSFER','TRANSFERRED'):
+                prefixes.add(assignment['prefix_key'])
+        return sorted(prefixes)
+
     def _resource_offer(self):
         if (self.profile.get('slot_policy') or {}).get('mode') != 'auto':
             jobs = []
             for path in self.records:
+                if path in self._terminal_resources:
+                    continue
                 saved = read(path/'WORKER_STATE.json')
                 state = saved['state']
+                if state == 'TRANSFERRED':
+                    self._remember_terminal(path, self.records[path])
+                    continue
                 if state == 'UNKNOWN' and saved.get('detail', {}).get('resource_released') is True:
                     state = 'EXITED'
                 jobs.append(dict(state=state))
@@ -558,8 +600,13 @@ class Worker:
         jobs = []
         preparation_observations = []
         for attempt, assignment in self.records.items():
+            if attempt in self._terminal_resources:
+                continue
             persisted = read(attempt / 'WORKER_STATE.json')
             state = persisted['state']
+            if state == 'TRANSFERRED':
+                self._remember_terminal(attempt, assignment)
+                continue
             saved = read(attempt / 'WORKER_PROFILE.json')
             sample = dict(rss_bytes=0, cpu_seconds=0)
             for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json'):
@@ -590,6 +637,8 @@ class Worker:
             jobs.append(job)
             observation = Resources.owned_preparation_observation(attempt, assignment, saved, peak)
             if observation is not None:preparation_observations.append(observation)
+        jobs.extend(self._terminal_resources.values())
+        preparation_observations.extend(self._terminal_preparation_observations.values())
         feedback_path = self.capacity_state_dir / 'CAPACITY_FEEDBACK.json'
         state_path = self.capacity_state_dir / 'SLOT_STATE.json'
         feedback = read(feedback_path) if feedback_path.exists() else {}
@@ -750,7 +799,8 @@ class Worker:
             self._post('/v1/artifacts/put', dict(blobs=cache.get([sha])))
 
     def _check_challenges(self, challenges, report):
-        return host_fingerprints(self.profile, challenges)
+        parallel = max(1, min(len(challenges), int(report.get('slots') or 1)))
+        return host_fingerprints(self.profile, challenges, q3_parallel=parallel)
 
     def _check_readiness_batch(self, challenges, report):
         ready, failed = [], {}
@@ -767,31 +817,60 @@ class Worker:
 
     inline_readiness_retry = True
 
+    def _timed_readiness(self, item, report):
+        result = self._check_readiness_batch([item], report)
+        return result, time.monotonic()
+
     def _poll_readiness(self, report, accepting):
         challenges = self.eligibility_challenges if accepting else []
         if getattr(self, '_native_readiness', None) is not None:
-            result = {}
-            pending = self._native_probe
-            if pending is not None and pending[0].done():
-                future, checked = pending
-                self._native_probe = None
+            now = time.monotonic()
+            cache, pending = self._native_proofs, self._native_probes
+            current = {item['job_id']: item for item in challenges}
+            for job, (item, fact, expires) in list(cache.items()):
+                if expires <= now or (job in current and current[job] != item):
+                    del cache[job]
+            result = {'host_fingerprints': {}, 'readiness_errors': {}}
+            for job, (item, future) in list(pending.items()):
+                if not future.done():
+                    continue
+                del pending[job]
                 try:
-                    current = {item['job_id']: item for item in challenges}
-                    valid = {item['job_id'] for item in checked
-                             if accepting and current.get(item['job_id'], item) == item}
-                    result = {key: {job: fact for job, fact in rows.items() if job in valid}
-                              for key, rows in future.result().items()}
-                    challenges = [item for item in challenges if item['job_id'] not in valid]
+                    observations, checked_at = future.result()
+                    if not accepting or current.get(job, item) != item or checked_at+30. <= now:
+                        continue
+                    fact = observations.get('host_fingerprints', {}).get(job)
+                    if fact is not None:
+                        cache[job] = (item, fact, checked_at+30.)
+                    if job in observations.get('readiness_errors', {}):
+                        result['readiness_errors'][job] = observations['readiness_errors'][job]
                 except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
                     event(self.profile, 'READINESS_OFFLINE', reason=str(error))
-            if self._native_probe is None and challenges:
-                future = self._native_readiness.submit(self._check_readiness_batch, challenges, report)
-                self._native_probe = (future, challenges)
+            if not accepting:
+                cache.clear()
+                return result
+            result['host_fingerprints'] = {job: fact for job, (_,fact,_) in cache.items()}
+            # One metadata check per free slot; keep a replacement check in
+            # flight when all slots are occupied. Do not wait for a slow peer.
+            limit = max(1, int(report.get('slots') or 0))
+            preparation_pending = any(Preparation.is_preparation(item) for item,_ in pending.values())
+            for item in challenges:
+                job = item['job_id']
+                if len(pending) >= limit:
+                    break
+                if job in cache or job in pending or job in result['readiness_errors']:
+                    continue
+                preparation = Preparation.is_preparation(item)
+                if preparation and preparation_pending:
+                    continue
+                pending[job] = (item, self._native_readiness.submit(self._timed_readiness,item,report))
+                preparation_pending |= preparation
             return result
         return self._check_readiness_batch(challenges, report)
 
     def _receive_assignment(self, assignment):
         self._acquire(assignment)
+        getattr(self, '_native_proofs', {}).pop(assignment['job_id'], None)
 
     def _service_attempt(self, attempt, assignment, *, transfer=True):
         state = self._reconcile(attempt, assignment)
@@ -828,19 +907,24 @@ class Worker:
                 event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
 
     def _poll_assignments(self, acquire):
+        started = time.monotonic()
         report = self._resource_offer()
+        offered_at = time.monotonic()
         active = report['occupied']
         if acquire and not self.stop.is_set():
-            cached = sorted({a.get('prefix_key') for p, a in self.records.items()
-                if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
-                })
+            cached = self._cached_prefixes()
             try:
                 storage_accepting = report.get('storage', {}).get('accepting_new_jobs', True)
                 payload = dict(slots=report['slots'], capacity=self.slots, resource_report=report, cached_prefixes=cached,
                                cached_artifact_sha256=worker_cache(self.profile).hashes(),
                                cached_metadata_bundle_sha256=Preparation.cached_metadata_bundle_hashes(self.profile), source_sha=self.source_sha,
-                               accepting_new_jobs=storage_accepting, **self._poll_readiness(report, storage_accepting))
+                               accepting_new_jobs=storage_accepting,
+                               durable_assignments=[[a['job_id'],a['attempt_id'],a['request_sha256']]
+                                   for path,a in self.records.items() if path not in self._terminal_resources],
+                               **self._poll_readiness(report, storage_accepting))
+                checked_at = time.monotonic()
                 response = self._post('/v1/poll', payload)
+                replied_at = time.monotonic()
                 self._capacity_feedback(response)
                 self.eligibility_challenges = response.get('eligibility_challenges', [])
                 if not self.inline_readiness_retry:
@@ -859,6 +943,12 @@ class Worker:
                     self._receive_assignment(assignment)
                 if response.get('stop'):
                     self.stop.set()
+                elapsed = time.monotonic()-started
+                if elapsed >= 2:
+                    event(self.profile, 'NATIVE_POLL_TIMING', seconds=elapsed,
+                        offer_seconds=offered_at-started, metadata_seconds=checked_at-offered_at,
+                        rpc_seconds=replied_at-checked_at, acquisition_seconds=time.monotonic()-replied_at,
+                        assignments=len(new_assignments), terminal_attempts=len(self._terminal_resources))
             except (OSError, ValueError, urllib.error.URLError) as error:
                 event(self.profile, 'POLL_OFFLINE', reason=str(error))
         return active
@@ -866,20 +956,33 @@ class Worker:
     def tick(self, acquire=True):
         pool = getattr(self, '_native_collection', None)
         if pool is not None:
-            for attempt, future in list(self._native_receipts.items()):
-                if future.done():
-                    del self._native_receipts[attempt]
-                    future.result()
+            launches = self._native_launches
+            for pending in (launches, self._native_receipts):
+                for attempt, future in list(pending.items()):
+                    if future.done():
+                        del pending[attempt]
+                        future.result()
+            # A cold-start slot count must not freeze the service pool at two
+            # threads after the measured capacity has grown. Launches are
+            # separate from result IO, so a completed transfer cannot delay an
+            # already owned scientific task.
+            width = max(2, self.slots + 1)
             for attempt, assignment in list(self.records.items()):
-                if len(self._native_receipts) >= self._native_collection_width:
-                    break
-                if attempt in self._native_receipts or attempt in self._native_retired:
+                if (attempt in launches or attempt in self._native_receipts
+                        or attempt in self._native_retired or attempt in self._terminal_resources):
                     continue
                 state = read(attempt/'WORKER_STATE.json')
                 if state['state'] == 'TRANSFERRED':
                     self._native_retired.add(attempt)
+                    self._remember_terminal(attempt, assignment)
                     continue
                 if attempt in getattr(self, 'unowned_attempts', ()):
+                    continue
+                if state['state'] == 'ASSIGNED':
+                    if len(launches) < max(1,self.slots):
+                        launches[attempt] = self._native_launch.submit(self._service_attempt, attempt, assignment)
+                    continue
+                if len(self._native_receipts) >= width:
                     continue
                 if (state['state'] == 'UNKNOWN' and self.reported.get(attempt) == state
                         and not (attempt/'OUTCOME.json').exists()):
@@ -892,11 +995,14 @@ class Worker:
                 self._native_receipts[attempt] = pool.submit(self._service_attempt, attempt, assignment)
             return self._poll_assignments(acquire)
         for attempt, assignment in list(self.records.items()):
-            self._service_attempt(attempt, assignment)
+            if attempt not in self._terminal_resources:
+                self._service_attempt(attempt, assignment)
         return self._poll_assignments(acquire)
 
     def pending(self):
         for attempt in self.records:
+            if attempt in self._terminal_resources:
+                continue
             state = read(attempt/'WORKER_STATE.json')
             if (state['state'] not in ('TRANSFERRED', 'UNKNOWN')
                     or PBSAttempt.unreleased_unknown(attempt, state)):
@@ -905,11 +1011,14 @@ class Worker:
 
     def _open_native_lanes(self):
         # Keep at least one other receipt/launch moving during a bulk transfer.
-        self._native_collection_width = max(2, self.slots + 1)
-        self._native_collection = ThreadPoolExecutor(max_workers=self._native_collection_width,
+        bound = (self.profile.get('slot_policy') or {}).get('max_slots', self.profile.get('slots', self.slots))
+        bound = max(self.slots, bound)
+        self._native_collection = ThreadPoolExecutor(max_workers=max(2,bound+1),
                                                      thread_name_prefix='rpe-local-receipt')
-        self._native_readiness = ThreadPoolExecutor(max_workers=1, thread_name_prefix='rpe-local-readiness')
-        self._native_receipts, self._native_retired, self._native_probe = {}, set(), None
+        self._native_launch = ThreadPoolExecutor(max_workers=bound, thread_name_prefix='rpe-local-launch')
+        self._native_readiness = ThreadPoolExecutor(max_workers=bound, thread_name_prefix='rpe-local-readiness')
+        self._native_receipts, self._native_launches, self._native_retired = {}, {}, set()
+        self._native_proofs, self._native_probes = {}, {}
         self.inline_readiness_retry = False
 
     def _readiness_delivered(self, response):
@@ -934,7 +1043,7 @@ class Worker:
             self.close()
 
     def close(self):
-        for name in ('_native_readiness', '_native_collection'):
+        for name in ('_native_readiness', '_native_launch', '_native_collection'):
             pool = getattr(self, name, None)
             if pool is not None:
                 pool.shutdown(wait=True, cancel_futures=True)

@@ -68,6 +68,69 @@ def finish(worker, timeout=8):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_native_service_width_grows_and_launch_does_not_wait_for_transfer(self):
+        from concurrent.futures import Future
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as directory:
+            profile,assignment=fixture(directory)
+            profile.update(slot_policy=dict(mode='auto',initial_slots=1,max_slots=8))
+            worker=W.Worker(profile,'http://127.0.0.1:1')
+            worker._open_native_lanes()
+            self.addCleanup(worker.close)
+            self.assertEqual(worker.slots,1)
+            worker.slots=8
+            launches=[];receipts=[]
+            def submit(items):
+                def call(fn,attempt,assignment):
+                    items.append(attempt);return Future()
+                return call
+            for i in range(7):
+                attempt=worker.work/f'job{i}'/'attempt';attempt.mkdir(parents=True)
+                W.save_state(attempt,'ASSIGNED' if i else 'COMPLETED_PENDING_TRANSFER')
+                worker.records[attempt]=assignment
+            with patch.object(worker._native_launch,'submit',side_effect=submit(launches)), \
+                 patch.object(worker._native_collection,'submit',side_effect=submit(receipts)), \
+                 patch.object(worker,'_poll_assignments',return_value=0):
+                worker.tick()
+                worker.tick()
+            self.assertEqual(len(launches),6)
+            self.assertEqual(len(receipts),1)
+            self.assertEqual(worker._native_launch._max_workers,8)
+
+    def test_native_readiness_publishes_fast_result_without_waiting_and_reuses_exact_proof(self):
+        from concurrent.futures import Future
+        from types import SimpleNamespace
+        worker=object.__new__(W.Worker);worker._native_proofs={};worker._native_probes={}
+        worker.eligibility_challenges=[dict(job_id=j,request={'route':{'kind':'artificial'}}) for j in ('fast','slow')]
+        submitted={}
+        def submit(fn,item,report):
+            future=Future();submitted[item['job_id']]=future;return future
+        worker._native_readiness=SimpleNamespace(submit=submit)
+        assert not worker._poll_readiness({'slots':2},True)['host_fingerprints']
+        submitted['fast'].set_result(({'host_fingerprints':{'fast':{'verified':True}}},time.monotonic()))
+        assert worker._poll_readiness({'slots':2},True)['host_fingerprints']=={'fast':{'verified':True}}
+        assert worker._poll_readiness({'slots':2},True)['host_fingerprints']=={'fast':{'verified':True}}
+        assert not submitted['slow'].done()
+        worker.eligibility_challenges[0]=dict(worker.eligibility_challenges[0],changed=True)
+        assert not worker._poll_readiness({'slots':2},True)['host_fingerprints']
+
+    def test_native_resource_offer_does_not_reread_transferred_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            profile,assignment=fixture(directory)
+            worker=W.Worker(profile,'http://127.0.0.1:1')
+            self.addCleanup(worker.close)
+            attempt=worker.work/'job'/'attempt';attempt.mkdir(parents=True)
+            W.save_state(attempt,'TRANSFERRED');worker.records[attempt]=assignment
+            assert worker._resource_offer()['occupied']==0
+            real_read=W.read
+            def no_terminal(path):
+                assert attempt not in Path(path).parents
+                return real_read(path)
+            with patch.object(W,'read',side_effect=no_terminal):
+                assert worker._resource_offer()['occupied']==0
+                assert worker._cached_prefixes()==['artificial-prefix']
+                assert not worker.pending()
+
     def test_missing_preparation_bundle_keeps_independent_q3_readiness(self):
         worker = object.__new__(W.Worker)
         failed = {'job_id': 'prep-missing'}

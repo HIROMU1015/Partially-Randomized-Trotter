@@ -4385,11 +4385,12 @@ class DistributedExecutor(ConcurrentExecutor):
         # A lost response is reconciled with its original owner even
         # if current readiness changed or another host is offline.
         is_pbs = self.pbs_manager is not None and host in self.pbs_manager.configured
-        durable = set()
-        if is_pbs:
-            durable = {tuple(receipt) for receipt in value.get('durable_assignments', ())
-                       if isinstance(receipt, list) and len(receipt) == 3
-                       and all(isinstance(field, str) for field in receipt)}
+        # Native direct workers also persist assignments before launch. Do
+        # not consume their next delivery window replaying already durable
+        # attempts; an exact absent receipt still uses the original owner.
+        durable = {tuple(receipt) for receipt in value.get('durable_assignments', ())
+                   if isinstance(receipt, list) and len(receipt) == 3
+                   and all(isinstance(field, str) for field in receipt)}
         with self.store._connection() as database:
             replay_ids = [row['job_id'] for row in database.execute(
                 "SELECT job_id,host_id,attempt_id,request_sha256,state,detail FROM jobs WHERE host_id=? AND state='ASSIGNED' "
