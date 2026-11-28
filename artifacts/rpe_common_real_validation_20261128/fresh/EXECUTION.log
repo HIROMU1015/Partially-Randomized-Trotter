@@ -1,0 +1,27 @@
+ssh: Could not resolve hostname github.com: Temporary failure in name resolution
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+ssh: Could not resolve hostname github.com: Temporary failure in name resolution
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+fatal: bad object 06c50ce3628d7ce8b98c0cd04a54eb0c749557c8:scripts/run_rpe_optimizer_q3_job.py
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_optimizer_q3_job.py", line 976, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_optimizer_q3_job.py", line 872, in main
+    r = route(view, kind, route_views, extended_horizon=df_extension, max_width_source=maximum_source)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_optimizer_q3_job.py", line 600, in route
+    if subprocess.check_output(['git','show',max_width_source+':'+name],cwd=root)!=(root/name).read_bytes():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 465, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 569, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'show', '06c50ce3628d7ce8b98c0cd04a54eb0c749557c8:scripts/run_rpe_optimizer_q3_job.py']' returned non-zero exit status 128.

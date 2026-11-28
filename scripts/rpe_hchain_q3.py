@@ -62,7 +62,28 @@ def exact_price(value):
     return Fraction(value)
 
 
-def prepared_route(entry, price_path, *, owner, target, binding, interpreter, view=None):
+def declared_provider_contract(binding, contract):
+    """Optional fixed PLAN metadata; the historical H6/H8 route stays unchanged."""
+    if contract is None:return None
+    if not isinstance(contract,dict) or set(contract)!={'system','rank','packages'}:
+        raise ValueError('H-chain provider contract must declare system, rank and runtime packages')
+    if (not isinstance(contract['system'],str) or not contract['system']
+            or type(contract['rank']) is not int or contract['rank']<1
+            or (contract['system'],contract['rank'])!=(binding.get('system'),binding.get('rank'))):
+        raise ValueError('H-chain provider contract differs from the fixed binding')
+    packages=contract['packages']
+    if (not isinstance(packages,dict) or not {'qiskit','numpy'}<=packages.keys()
+            or any(not isinstance(k,str) or not k or not isinstance(v,str) or not v for k,v in packages.items())):
+        raise ValueError('H-chain provider runtime package versions must be fixed')
+    return dict(system=contract['system'],rank=contract['rank'],packages=dict(packages))
+
+
+def supported_binding(binding,contract=None):
+    if contract is not None:return declared_provider_contract(binding,contract) is not None
+    return (binding.get('system'),binding.get('rank')) in (('H6',19),('H8',28))
+
+
+def prepared_route(entry, price_path, *, owner, target, binding, interpreter, view=None, provider_contract=None):
     """Pack one candidate's existing, checksummed configuration and round inputs."""
     price_path = Path(price_path)
     documents = {
@@ -81,6 +102,8 @@ def prepared_route(entry, price_path, *, owner, target, binding, interpreter, vi
     route = dict(kind=KIND, interpreter=interpreter, view_commit=RISK_COMMIT,
                  scope_owner=owner, target_energy=target, binding=binding,
                  configuration_ids=[cid], configurations={cid: bundle})
+    if provider_contract is not None:
+        route['provider_contract']=declared_provider_contract(binding,provider_contract)
     if view is not None:
         route["view"] = str(view)
     return route
@@ -90,7 +113,8 @@ def prepared_case(provider, directory, plan, case, models, *, interpreter, view=
     """Build a shared Q3 route from the scoped provider's accepted prices/signals."""
     axes, entry, price_path = provider.candidate_inputs(directory, plan, case, models)
     route = prepared_route(entry, price_path, owner=plan["owner"], target=plan["target"],
-                           binding=plan["binding"], interpreter=interpreter, view=view)
+                           binding=plan["binding"], interpreter=interpreter, view=view,
+                           provider_contract=plan.get("provider_contract"))
     return axes, entry, route
 
 
@@ -112,7 +136,7 @@ def request_inputs(request):
     owner = route["scope_owner"]
     if (type(M) is not int or M < 0 or not 0 < h < math.inf or not math.isfinite(target)
             or target != route["target_energy"] or binding != route["binding"]
-            or (binding["system"], binding["rank"]) not in (("H6", 19), ("H8", 28))
+            or not supported_binding(binding,route.get("provider_contract"))
             or signals["status"] != "SIGNAL_PACKETS_READY" or signals["scope_owner"] != owner
             or signals["run_id"] != owner or config["id"] != cid or config["spec"]["M"] != M
             or request["expected"]["configuration_id"] != cid

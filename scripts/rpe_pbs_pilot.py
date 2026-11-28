@@ -22,7 +22,8 @@ import rpe_pbs_gateway as gateway
 from rpe_pbs_gateway import atomic, read, safe_id
 
 
-TERMINAL = {'F', 'X', 'SUBMIT_REJECTED'}
+TERMINAL = {'F', 'X', 'SUBMIT_REJECTED', 'SUBMIT_LOST'}
+SUBMIT_RECHECK_SECONDS = 30
 POOL_NAME = 'shared-node'
 RESOURCES = dict(queue='workq', ncpus=96, mem='350gb', walltime='24:00:00')
 SUCCESSOR_RESOURCES = dict(RESOURCES, walltime='72:00:00')
@@ -43,12 +44,43 @@ def owned_live_jobs():
     return gateway.qstat(*ids) if ids else {}
 
 
-def physical(pool, token, finished=None, *, scheduler=None, force=False):
+def owned_jobs_by_name(token):
+    """Search only this user's exact physical submission name, including history."""
+    name = 'RPE'+token[:12]
+    selected = subprocess.run(['/opt/pbs/bin/qselect', '-x', '-u', getpass.getuser(), '-N', name],
+                              capture_output=True, text=True, check=True)
+    ids = selected.stdout.split()
+    jobs = gateway.qstat(*ids) if ids else {}
+    if set(ids) != set(jobs):
+        raise RuntimeError('PBS named submission history changed during reconciliation')
+    return jobs
+
+
+def physical(pool, token, finished=None, *, scheduler=None, force=False, commit_loss=False):
     directory = pool/'allocations'/safe_id(token)
     row = gateway.snapshot(pool, finished, [directory], scheduler=scheduler, force=force)[0]
     if row['status'] == 'SUBMIT_REJECTED':
         # Even a nonzero qsub exit can be a lost connection after submission.
-        jobs = owned_live_jobs() if scheduler is None else scheduler.discover(owned_live_jobs, force=force)
+        managed = read(directory/'SPEC.json', {}).get('run_managed') is True
+        if managed:
+            receipt = row.get('receipt') or {}
+            loss = read(directory/'SUBMIT_LOST.json')
+            if loss is not None:
+                if (loss.get('token') != token or loss.get('receipt') != receipt
+                        or not (directory/'RELEASE.json').is_file()
+                        or any((session/'SESSION_START.json').exists() for session in sessions(directory))):
+                    raise ValueError('Managed submission loss evidence differs')
+                row['status'] = 'SUBMIT_LOST'
+                return row
+            if time.time()-receipt.get('epoch', time.time()) < SUBMIT_RECHECK_SECONDS:
+                row['status'] = 'SUBMIT_ERROR_RECONCILE'
+                return row
+            # A returned nonzero qsub with no matching scheduler record is
+            # distinct from an absent response; only the former can end an
+            # unstarted managed generation after this checked history lookup.
+            jobs = owned_jobs_by_name(token)
+        else:
+            jobs = owned_live_jobs() if scheduler is None else scheduler.discover(owned_live_jobs, force=force)
         matches = [job for job, detail in jobs.items()
                    if detail.get('Job_Name') == 'RPE'+token[:12]]
         if len(matches) > 1:
@@ -56,7 +88,22 @@ def physical(pool, token, finished=None, *, scheduler=None, force=False):
         if matches:
             atomic(directory/'JOB_ID.json', dict(job_id=matches[0], recovered=True))
             return gateway.snapshot(pool, finished, [directory], scheduler=scheduler, force=True)[0]
-        row['status'] = 'SUBMIT_ERROR_RECONCILE'
+        if managed and not jobs and not any((session/'SESSION_START.json').exists() for session in sessions(directory)):
+            # Do not resubmit this token. A fresh generation may be attached
+            # by the existing controller after closing the unstarted session.
+            if commit_loss:
+                # Caller owns the pool lock. Fence the old keeper before
+                # ending any session; even a late scheduler delivery must
+                # not claim a scientific attempt under this generation.
+                if not (directory/'RELEASE.json').exists():
+                    atomic(directory/'RELEASE.json', dict(epoch=time.time(), reason='SUBMIT_LOST'))
+                for session in sessions(directory):
+                    end(session, 'SUBMIT_REJECTED_BEFORE_SESSION_START')
+                atomic(directory/'SUBMIT_LOST.json', dict(token=token, receipt=receipt,
+                    job_name='RPE'+token[:12], history_checked_epoch=time.time()))
+            row['status'] = 'SUBMIT_LOST'
+        else:
+            row['status'] = 'SUBMIT_ERROR_RECONCILE'
     return row
 
 
@@ -288,7 +335,9 @@ def update_session_control(directory, control):
         stop_session(directory)
     else:
         # A pause keeps the session and its owned attempts intact, even if idle.
-        atomic(directory/'CONTROL.json',dict(control,release_when_idle=False) if control.get('pause') else control)
+        selected = dict(control,release_when_idle=False) if control.get('pause') else control
+        if selected != prior:
+            atomic(directory/'CONTROL.json', selected)
 
 
 def successor_work_dir(root, generation):
@@ -371,11 +420,166 @@ def session_pool(root, binding):
     return managed_pool(root, host) if host is not None else root.parent/POOL_NAME
 
 
+def fence_unstarted(root, value):
+    """Retire a durably assigned, never-launched attempt after keeper drain.
+
+    No scheduler absence or missing spool is sufficient. The old worker's
+    exact assignment and session-end receipt must both exist, and the pool
+    lock prevents a successor from opening the spool while the fence is set.
+    """
+    directory = root/'allocations'/safe_id(value['token'])
+    binding = read(directory/'PILOT.json', {})
+    host = binding.get('managed_host')
+    if host is None:
+        return None
+    pool = managed_pool(root, host)
+    with locked(pool):
+        session = read(directory/'SESSION_START.json', {})
+        ended = read(directory/'SESSION_END.json', {})
+        allocation = read(directory/'ALLOCATION.json', {})
+        if (ended.get('reason') not in ('WORKER_EXIT', 'WORKER_ERROR')
+                or type(ended.get('returncode')) is not int
+                or not session.get('job_id') or session.get('job_id') != allocation.get('job_id')
+                or type(session.get('epoch')) not in (int,float)
+                or type(ended.get('epoch')) not in (int,float)
+                or ended['epoch'] < session['epoch']):
+            return None
+        # An active successor may have read an ASSIGNED record already.
+        for generation in (pool/'allocations').glob('*'):
+            for other in sessions(generation):
+                if (other/'SESSION_START.json').is_file() and not (other/'SESSION_END.json').is_file():
+                    return None
+        profile = read(directory/'PROFILE.json', {})
+        if profile.get('host_id') != host or not profile.get('work_dir'):
+            return None
+        work = Path(profile['work_dir']).resolve()
+        generation = pool/'allocations'/safe_id(binding['token'])
+        if directory not in set(sessions(generation)):
+            return None
+        return _fence_worker_unstarted(directory,work,session['job_id'],value,
+                                       'KEEPER_SESSION_ENDED_BEFORE_LAUNCH')
+
+
+def fence_legacy_unstarted(root, value):
+    """Use positive exact scheduler F/X evidence for a historical direct worker."""
+    directory=root/'allocations'/safe_id(value['token'])
+    if (directory/'PILOT.json').exists():return None
+    spec=read(directory/'SPEC.json',{})
+    profile=read(directory/'PROFILE.json',{})
+    allocation=read(directory/'ALLOCATION.json',{})
+    ended=read(directory/'ALLOCATION_END.json',{})
+    job=allocation.get('job_id')
+    if (not job or spec.get('token')!=directory.name or not profile.get('work_dir')
+            or profile.get('host_id')!=(spec.get('profile') or {}).get('host_id')
+            or read(directory/'JOB_ID.json',{}).get('job_id')!=job
+            or ended.get('job_id')!=job or ended.get('token')!=directory.name
+            or ended.get('physical_token')!=directory.name or ended.get('job_state') not in ('F','X')
+            or ended.get('job_name')!='RPE'+directory.name[:12]):
+        return None
+    return _fence_worker_unstarted(directory,Path(profile['work_dir']).resolve(),job,value,
+                                   'DIRECT_ALLOCATION_ENDED_BEFORE_LAUNCH')
+
+
+def _fence_worker_unstarted(directory, work, job_id, value, kind):
+    # The spool lock also rules out a legacy/direct worker, not just a
+    # successor known to the keeper. An absent lock is not positive proof.
+    try:
+        worker_lock = (work/'WORKER.lock').open('rb')
+    except FileNotFoundError:
+        return None
+    with worker_lock:
+        try:
+            fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return None
+        attempt = work/safe_id(value['job_id'])/safe_id(value['attempt_id'])
+        if not attempt.is_dir() or attempt.resolve() != attempt:
+            return None
+        assignment = read(attempt/'ASSIGNMENT.json', {})
+        state = read(attempt/'WORKER_STATE.json', {})
+        saved = read(attempt/'WORKER_PROFILE.json', {})
+        identity = {k:value[k] for k in ('job_id','attempt_id','request_sha256')}
+        if (any(assignment.get(k) != v for k,v in identity.items())
+                or read(attempt/'ORIGINAL_REQUEST.json') != assignment.get('request')
+                or (saved.get('pbs') or {}).get('allocation_dir') != str(directory.resolve())):
+            return None
+        proof = {'kind':kind,'token':directory.name,
+                 'pbs_job_id':job_id, **identity}
+        detail = dict(reason='PBS_SESSION_ENDED_BEFORE_LAUNCH', resource_released=True,
+                      scientific_execution_started=False, automatic_retry=False, pbs_admission_exit=proof)
+        if state.get('state') == 'UNKNOWN' and state.get('detail') == detail:
+            return state  # response loss: replay the same durable fence
+        allowed = {'ASSIGNMENT.json','ORIGINAL_REQUEST.json','WORKER_PROFILE.json','WORKER_STATE.json',
+                   'TRANSPORT_TIMING.jsonl','OWNED_RESOURCES.json'}
+        if state.get('state') != 'ASSIGNED' or {p.name for p in attempt.iterdir()} - allowed:
+            return None
+        # The existing worker tests ASSIGNED before every launch. UNKNOWN is
+        # a permanent non-launch fence, not a fabricated completion.
+        fenced = dict(state, state='UNKNOWN', detail=detail)
+        atomic(attempt/'WORKER_STATE.json', fenced)
+        fd = os.open(str(attempt), os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        return fenced
+
+
 def compatible_resources(have, need):
     # A reservation is never resized during replacement. The worker obtains
     # its actual CPU/RAM/remaining-walltime from PBS at each session start.
     return (have['queue'] == need['queue'] and have['ncpus'] >= need['ncpus']
             and gateway.memory_bytes(have['mem']) >= gateway.memory_bytes(need['mem']))
+
+
+def stage_managed_successor(root, value):
+    """Stage one same-resource afterany keeper for an exact managed session.
+
+    This is an opt-in capability for new scopes. The successor has no worker
+    session until the ordinary attach path reconciles the previous owner.
+    """
+    token = safe_id(value['token'])
+    directory = root/'allocations'/token
+    binding = read(directory/'PILOT.json', {})
+    host = binding.get('managed_host')
+    if host is None:
+        raise ValueError('Expected a run-managed session')
+    pool = managed_pool(root, host)
+    with locked(pool):
+        current = read(pool/'CURRENT.json', {}).get('token')
+        if current != binding['token']:
+            raise ValueError('Managed predecessor is no longer current')
+        old = pool/'allocations'/safe_id(current)
+        spec = read(old/'SPEC.json')
+        control = read(directory/'CONTROL.json', {})
+        if (not spec.get('run_managed') or directory not in set(sessions(old))
+                or (directory/'SESSION_END.json').exists()
+                or control.get('stop') or control.get('pause')
+                or (old/'RELEASE.json').exists()):
+            raise ValueError('Managed predecessor is not accepting a successor')
+        row = physical(pool, current)
+        job_id = value['job_id']
+        if (row['status'] != 'R' or row['job_id'] != job_id
+                or read(old/'ALLOCATION.json', {}).get('job_id') != job_id):
+            raise ValueError('Expected exact running managed reservation')
+        predecessor = dict(token=current, job_id=job_id)
+        successor = read(old/'SUCCESSOR.json')
+        if successor is None:
+            next_token = prepare_generation(pool, spec['resources'], predecessor,
+                                            after_exit=True, managed_host=host)
+            successor = dict(token=next_token)
+            atomic(old/'SUCCESSOR.json', successor)
+        target = pool/'allocations'/safe_id(successor['token'])
+        expected = read(target/'SPEC.json')
+        if (expected.get('predecessor') != predecessor
+                or expected.get('resources') != spec['resources']
+                or expected.get('run_managed') is not True
+                or expected.get('profile', {}).get('host_id') != host
+                or successor_mode(expected) != 'after-exit'
+                or (target/'RELEASE.json').exists()):
+            raise ValueError('Existing successor differs or is released')
+        gateway.submit_async(target)
+        return dict(token=target.name, predecessor=predecessor)
 
 
 def attach_managed(root, spec):
@@ -414,12 +618,22 @@ def attach_managed(root, spec):
                 raise ValueError('Shared-pilot continuation requires its original gateway')
             if current:
                 generation = pool/'allocations'/safe_id(current)
-                observed = physical(pool, current)
+                observed = physical(pool, current, commit_loss=True)
                 if replay and (current != replay['token'] or observed.get('job_id') != replay['job_id']
                                or observed['status'] != 'R'):
                     raise ValueError('Original managed PBS reservation is unavailable for replay')
                 if observed['status'] in TERMINAL:
+                    successor = read(generation/'SUCCESSOR.json')
+                    if successor is not None:
+                        target = pool/'allocations'/safe_id(successor['token'])
+                        if not (target/'RELEASE.json').exists():
+                            raise ValueError('Managed successor is staged; await its exact handover')
+                        next_row = physical(pool, target.name, commit_loss=True)
+                        if next_row['status'] not in TERMINAL and (target/'QSUB_STARTED.json').exists():
+                            raise ValueError('Managed successor release is not reconciled')
                     current = None
+                elif observed['status'] in ('SUBMIT_ERROR_RECONCILE', 'SUBMIT_AMBIGUOUS_HOLD'):
+                    raise ValueError('Previous managed submission requires scheduler reconciliation')
                 elif (generation/'RELEASE.json').exists():
                     raise ValueError('Managed PBS reservation release is pending')
                 elif any(not (session/'SESSION_END.json').exists() for session in sessions(generation)):
@@ -455,7 +669,7 @@ def attach_managed(root, spec):
                 raise ValueError('Previous managed worker session is still owned')
             atomic(entry, locator)
         # Reconcile the same durable reservation on any lost response.
-        gateway.submit_once(generation)
+        gateway.submit_async(generation)
     return dict(token=token, existing=prior is not None, pilot=binding['token'])
 
 
@@ -480,9 +694,30 @@ def release_managed_node(root, host):
         if not current:
             return dict(status='UNRESERVED')
         generation = pool/'allocations'/safe_id(current)
+        row = physical(pool, current, commit_loss=True)
         if any(not (directory/'SESSION_END.json').exists() for directory in sessions(generation)):
             raise ValueError('Drain and reconcile managed worker sessions before releasing the PBS reservation')
-        row = physical(pool, current)
+        successor = read(generation/'SUCCESSOR.json')
+        if successor is not None:
+            target = pool/'allocations'/safe_id(successor['token'])
+            if any(not (d/'SESSION_END.json').exists() for d in sessions(target)):
+                raise ValueError('Drain the staged successor before physical release')
+            atomic(target/'RELEASE.json', dict(epoch=time.time(), reason='MANAGED_PREDECESSOR_RELEASE'))
+            # Serialize the fence with the existing one-shot submit marker;
+            # if qsub is already in progress, keep the release pending.
+            with (target/'SUBMIT.lock').open('a') as submit_lock:
+                try:
+                    fcntl.flock(submit_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    raise RuntimeError('Managed successor submission requires reconciliation')
+            next_row = physical(pool, target.name)
+            if next_row['status'] not in TERMINAL:
+                if next_row.get('job_id') and next_row['status'] in ('Q','H','W'):
+                    result = gateway.handle(pool, dict(action='delete', token=target.name))
+                    if result['returncode']:
+                        raise RuntimeError('Managed successor release is pending')
+                elif next_row['status'] != 'R' and (target/'QSUB_STARTED.json').exists():
+                    raise RuntimeError('Managed successor submission requires reconciliation')
         if row['status'] not in TERMINAL:
             atomic(generation/'RELEASE.json', dict(epoch=time.time()))
             if row['job_id'] and row['status'] in ('Q', 'H', 'W'):
@@ -535,12 +770,20 @@ def session_snapshot(root, finished=None, *, scheduler=None, force=False):
         if key not in observations:
             observations[key] = physical(physical_pool, token, finished, scheduler=scheduler,
                                          force=force or token in terminal_sessions)
+            if (observations[key]['status'] == 'SUBMIT_LOST'
+                    and not (physical_pool/'allocations'/token/'SUBMIT_LOST.json').exists()):
+                with locked(physical_pool):
+                    observations[key] = physical(physical_pool, token, finished, scheduler=scheduler,
+                                                 force=True, commit_loss=True)
             if token in terminal_sessions:
                 scheduler.terminal_sessions.update(terminal_sessions[token])
         row = dict(observations[key])
         row.update(token=directory.name, directory=str(directory), pilot_token=token, reservation_status=row['status'],
                    allocation=read(directory/'ALLOCATION.json'), worker=read(directory/'STATE.json'))
+        gateway.record_scheduler_end(directory, row.get('job_id'), row.get('scheduler') or {}, physical_token=token)
         ended = ended_sessions[directory]
+        if row['status'] == 'SUBMIT_LOST':
+            ended = read(directory/'SESSION_END.json')
         if ended:
             row.update(status='F', exit_status=ended.get('returncode'), session_end=ended)
         elif row['status'] == 'R' and not (directory/'SESSION_START.json').exists():
@@ -608,7 +851,7 @@ def serve(generation):
                 observed = physical(pool, generation.name)
                 if (observed['status'] != 'R' or observed['job_id'] != actual['job_id'] or
                         observed['scheduler'].get('Job_Name') != 'RPE'+generation.name[:12] or
-                        actual['walltime_seconds'] != gateway.seconds(SUCCESSOR_RESOURCES['walltime'])):
+                        actual['walltime_seconds'] != gateway.seconds((generation_spec['resources'] if generation_spec.get('run_managed') else SUCCESSOR_RESOURCES)['walltime'])):
                     raise ValueError('Successor scheduler receipt differs')
             break
         except (KeyError, OSError, RuntimeError, subprocess.SubprocessError):
@@ -646,8 +889,17 @@ def serve(generation):
                             old_scheduler_state=state, new_job_id=job_id, epoch=time.time()))
                     break
                 time.sleep(5)
+            if read(generation/'HANDOVER.json', {}).get('state') != 'ACTIVE':
+                return
         while time.monotonic() < deadline and not (generation/'RELEASE.json').exists():
-            directory = claim(pool, generation, job_id)
+            try:
+                directory = claim(pool, generation, job_id)
+            except OSError as error:
+                # A transient shared-filesystem error is not an ownership
+                # decision. Keep the reservation and retry its claim check.
+                print('PBS keeper claim temporarily unavailable: '+str(error), file=sys.stderr, flush=True)
+                time.sleep(5)
+                continue
             if directory is None:
                 time.sleep(1)
                 continue

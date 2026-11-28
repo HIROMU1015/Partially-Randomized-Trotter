@@ -175,10 +175,18 @@ class MemoryLearner:
             settings['q3_learned_memory']=envelopes(self.observations.values(),self.policy,settings)
 
     def update(self, item, owners, settings):
-        if not self.policy or not item or item['attempt_id'] in self.observations:
+        return self.update_many((item,), owners, settings)
+
+    def update_many(self, items, owners, settings):
+        if not self.policy:
+            return False
+        observations = dict(self.observations)
+        for item in items:
+            if item:
+                observations.setdefault(item['attempt_id'], item)
+        if len(observations) == len(self.observations):
             return False
         from .rpe_q3_coordinator import atomic_json
-        observations=dict(self.observations,**{item['attempt_id']:item})
         learned=envelopes(observations.values(),self.policy,settings)
         snapshots=(preserve_owners(owners,settings) if learned!=settings.get('q3_learned_memory',{})
                    else settings.get('q3_owned_reservations',{}))

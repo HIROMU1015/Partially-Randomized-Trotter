@@ -244,3 +244,15 @@ def test_independent_export_only_accepts_bound_completed_resource_sample(tmp_pat
     owner=SimpleNamespace(profile={'host_id':'pbs-0'})
     assert OfflineSearch._q3_resource_receipt(owner,tmp_path,'j',req,receipt,outcome)==sample
     assert OfflineSearch._q3_resource_receipt(SimpleNamespace(profile={'host_id':'other'}),tmp_path,'j',req,receipt,outcome) is None
+
+
+def test_native_library_threads_are_explicit_bound_and_keep_legacy_environment(monkeypatch):
+    from trottertracks.rpe_pbs_attempt_control import adapter_environment
+    from trottertracks.rpe_host_profiles import profile_core
+    monkeypatch.setenv('OPENBLAS_NUM_THREADS','7')
+    assert adapter_environment(None,{})['OPENBLAS_NUM_THREADS']=='7'
+    profile={'library_threads':2,'dp_workers':3,'task_cpu_count':6}
+    assert profile_core(profile)['library_threads']==2
+    assert adapter_environment(None,profile)['OPENBLAS_NUM_THREADS']=='2'
+    with pytest.raises(ValueError,match='CPU footprint'):
+        adapter_environment(None,dict(profile,task_cpu_count=5))

@@ -10,6 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 import sqlite3
+import threading
 import time
 import uuid
 from .rpe_q3_timing import stamp
@@ -43,6 +44,8 @@ class JobStore:
 
     def __init__(self, path):
         self.path = Path(path)
+        self._owned_lock=threading.Lock()
+        self._owned_snapshot=None
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self._connection() as db:
             db.execute('PRAGMA journal_mode=WAL')
@@ -146,6 +149,33 @@ class JobStore:
             waits = [totals[job_id] for job_id, in selected]
         return usable, adopted, sum(waits) if waits else None
 
+    def capacity_history_batch(self,hosts,epoch,totals):
+        """One durable snapshot for the whole observer rather than a per-host scan."""
+        hosts=list(dict.fromkeys(hosts));result={host:[0,0,None] for host in hosts}
+        if not hosts:return {}
+        with self._connection() as db:
+            db.execute('BEGIN')
+            host_json=json.dumps(hosts)
+            # Preserve the two selective existing indexes; an OR across
+            # completed/adopted epochs scans the wide job rows on real queues.
+            # Use the host/state covering index for the wait aggregation, not
+            # one primary-key lookup into each potentially large job record.
+            for host,usable,adopted in db.execute("""
+                SELECT h.value,
+                    (SELECT count(*) FROM jobs WHERE host_id=h.value AND completed_epoch>=? AND state='ACCEPTED'),
+                    (SELECT count(*) FROM jobs WHERE host_id=h.value AND adopted_epoch>=?)
+                FROM json_each(?) AS h
+            """,(epoch,epoch,host_json)):
+                result[host][:2]=[usable,adopted]
+            if totals:
+                for host,job in db.execute("""
+                    SELECT host_id,job_id FROM jobs INDEXED BY host_state_queue
+                    WHERE host_id IN (SELECT value FROM json_each(?))
+                      AND job_id IN (SELECT value FROM json_each(?))
+                """,(host_json,json.dumps(list(totals)))):
+                    result[host][2]=(result[host][2] or 0)+totals[job]
+        return {host:tuple(values) for host,values in result.items()}
+
     def attempt_owners(self, job_ids):
         ids = list(dict.fromkeys(job_ids))
         owners = {}
@@ -174,6 +204,24 @@ class JobStore:
                     f'SELECT * FROM jobs WHERE job_id IN ({what})', group))
             return result
 
+    def owned_rows(self):
+        """Reuse the owner snapshot until the durable queue event revision changes.
+
+        All changes to these selected fields emit an event in the same write
+        transaction; unchanged heartbeat timestamps are not part of the
+        snapshot. Consumers receive copies, never mutable cache entries.
+        """
+        with self._owned_lock, self._connection() as db:
+            db.execute('BEGIN')
+            revision=db.execute('SELECT coalesce(max(sequence),0) FROM events').fetchone()[0]
+            if self._owned_snapshot is None or self._owned_snapshot[0]!=revision:
+                rows=db.execute(
+                    "SELECT job_id,host_id,attempt_id,request_sha256,state,method,detail,assigned_epoch FROM jobs "
+                    "WHERE host_id IS NOT NULL AND state IN "
+                    "('ASSIGNED','STARTING','RUNNING','UNKNOWN','COMPLETED_PENDING_TRANSFER') ORDER BY rowid")
+                self._owned_snapshot=(revision,tuple(dict(row) for row in rows))
+            return [dict(row) for row in self._owned_snapshot[1]]
+
     def queue_rows_delta(self, job_ids, revision, known):
         """Read only queue rows whose durable state changed since the last poll.
 
@@ -200,6 +248,15 @@ class JobStore:
             row = db.execute("SELECT host_id FROM jobs WHERE job_id=? AND method=? AND state='ACCEPTED'",
                              (job_id, method)).fetchone()
             return row[0] if row is not None else None
+
+    def idle_revision(self):
+        """Positive idle snapshot for a block handoff, not scientific completion."""
+        with self._connection() as db:
+            db.execute('BEGIN')
+            if db.execute("SELECT 1 FROM jobs WHERE state IN ('QUEUED','ASSIGNED','STARTING','RUNNING',"
+                          "'COMPLETED_PENDING_TRANSFER','UNKNOWN') LIMIT 1").fetchone():
+                return None
+            return db.execute('SELECT COALESCE(max(sequence),0) FROM events').fetchone()[0]
 
     def preparation_states(self, job_ids):
         """Read scheduling states without deserializing preparation payloads."""
@@ -258,7 +315,12 @@ class JobStore:
                 return False
             detail = row['detail']
             proof = detail.get('pbs_admission_exit') or {}
-            if (detail.get('reason') != 'PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH'
+            deadline = detail.get('reason') == 'PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH'
+            fenced = (detail.get('reason') == 'PBS_SESSION_ENDED_BEFORE_LAUNCH'
+                      and proof.get('kind') in ('KEEPER_SESSION_ENDED_BEFORE_LAUNCH','DIRECT_ALLOCATION_ENDED_BEFORE_LAUNCH')
+                      and proof.get('token') == detail.get('pbs_allocation_token')
+                      and bool(proof.get('pbs_job_id')))
+            if (not (deadline or fenced)
                     or detail.get('resource_released') is not True
                     or detail.get('scientific_execution_started') is not False
                     or detail.get('automatic_retry') is not False or not proof.get('token')
@@ -419,9 +481,12 @@ class JobStore:
             # usable without a host registry.
             if not self.eligible(request, eligibility):
                 return False
-            used = db.execute("SELECT count(*) FROM jobs WHERE method=? AND state!='CANCELLED' AND json_extract(detail,'$.prior_partition_reuse') IS NOT 1", (method,)).fetchone()[0]
-            if not approved or (budget not in (None, 'UNLIMITED') and used >= budget):
+            if not approved:
                 return False
+            if budget not in (None, 'UNLIMITED'):
+                used = db.execute("SELECT count(*) FROM jobs WHERE method=? AND state!='CANCELLED' AND json_extract(detail,'$.prior_partition_reuse') IS NOT 1", (method,)).fetchone()[0]
+                if used >= budget:
+                    return False
             now = time.time()
             if old is None:
                 db.execute('''INSERT INTO jobs(job_id,method,request,request_sha256,contract,state,enqueued_epoch,updated_epoch,eligibility)
@@ -462,7 +527,7 @@ class JobStore:
             self._event(db, job_id, 'CANCEL_QUEUED')
             return True
 
-    def claim(self, host_id, slots, cached_prefixes=(), allowed_jobs=None, host_fingerprints=None, *, assignment_detail=None):
+    def claim(self, host_id, slots, cached_prefixes=(), allowed_jobs=None, host_fingerprints=None, *, assignment_detail=None, assignment_details=None, expected=None):
         if not isinstance(host_id, str) or not host_id:
             raise ValueError('Nonempty host_id required')
         if type(slots) is not int or slots < 0:
@@ -484,6 +549,8 @@ class JobStore:
                 if job_id not in queued:
                     continue
                 row = self._decoded(queued[job_id])
+                if expected is not None and expected.get(job_id) != (row['request_sha256'],row['eligibility'],row['detail']):
+                    continue  # the resource plan belongs to the earlier exact snapshot
                 contract = row.get('contract')
                 dependencies = contract.get('dependencies', []) if isinstance(contract, dict) else []
                 if any((lambda value: value is None or value['state'] != 'ACCEPTED')(
@@ -495,7 +562,9 @@ class JobStore:
                 now, attempt = time.time(), uuid.uuid4().hex
                 detail = dict(row['detail'])
                 detail.pop('pbs_launch_resources',None)  # a new attempt never inherits an old launch envelope
+                detail.pop('pbs_rollover_guard',None)
                 if assignment_detail is not None: detail.update(assignment_detail)
+                if assignment_details is not None: detail.update(assignment_details.get(job_id, {}))
                 db.execute("UPDATE jobs SET state='ASSIGNED',host_id=?,attempt_id=?,assigned_epoch=?,updated_epoch=?,detail=? WHERE job_id=?",
                            (host_id, attempt, now, now, canonical(detail), job_id))
                 self._event(db, job_id, 'ASSIGN', dict(host_id=host_id, attempt_id=attempt))

@@ -117,41 +117,47 @@ def configure_artifact_transport(launcher):
             setattr(pinned.ArtifactCache, name, implementation)
 
 
-def load_bundled_offline(launcher):
-    """Select the explicitly packaged operational controller, not the pinned copy."""
+def load_bundled_module(launcher, module_name):
+    """Select the explicitly packaged operational module, not the pinned copy."""
     import importlib.util
     import zipimport
     import trottertracks
-    name = 'trottertracks.rpe_pbs_offline'
+    name = 'trottertracks.'+module_name
     loader = zipimport.zipimporter(str(launcher)+'/trottertracks')
     spec = importlib.util.spec_from_loader(name, loader)
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
-    trottertracks.rpe_pbs_offline = module
+    setattr(trottertracks, module_name, module)
     return module
+
+
+def load_bundled_offline(launcher):
+    return load_bundled_module(launcher, 'rpe_pbs_offline')
 
 
 def configure_allocation_worker(profile, launcher):
     configure_artifact_transport(launcher)
+    members = set()
+    if launcher.suffix == '.pyz':
+        with zipfile.ZipFile(launcher) as package:
+            members = set(package.namelist())
+        # Same-name modules in the fixed checkout must not shadow an
+        # explicitly packaged operational update.
+        for name in ('rpe_pbs_offline','rpe_dry_check_recovery','rpe_pbs_attempt_control'):
+            if 'trottertracks/'+name+'.py' in members:
+                load_bundled_module(launcher, name)
     from trottertracks import rpe_pbs_worker as pbs
     from trottertracks import rpe_q3_worker as worker
 
     transport = pbs
     cycle = worker
-    members = set()
-    if launcher.suffix == '.pyz':
-        with zipfile.ZipFile(launcher) as package:
-            members = set(package.namelist())
     bundled = 'trottertracks/_collection_pbs_worker.py' in members
     if bundled:
         # The deployment bundles only the operational implementation.
         # SOURCE, adapter and result validation still use the fixed checkout.
         import trottertracks
         trottertracks.__path__.append(str(launcher)+'/trottertracks')
-        if (profile.get('pbs', {}).get('offline_controller_overlay')
-                and 'trottertracks/rpe_pbs_offline.py' in members):
-            load_bundled_offline(launcher)
         from trottertracks import _collection_pbs_worker as transport
         from trottertracks import _collection_q3_worker as cycle
         if 'trottertracks/_pipeline_q3_resources.py' in members:
@@ -269,7 +275,7 @@ def drain_adopted_worker_children():
                 pass
 
 
-def run_sampled_worker(launcher, script, args, stop_sampling):
+def run_sampled_worker(launcher, script, args, stop_sampling, sampler_threads=()):
     # Sampling/maintenance stay in the launcher process. Exceptions in the
     # allocation worker cannot stop these threads while its owned children drain.
     try:
@@ -280,6 +286,8 @@ def run_sampled_worker(launcher, script, args, stop_sampling):
         return returncode
     finally:
         stop_sampling.set()
+        for thread in sampler_threads:
+            thread.join()
 
 
 def main():
@@ -333,8 +341,12 @@ def main():
     configure_allocation_worker(profile, launcher)
     if check_imports:
         selected = sys.modules.get('trottertracks.rpe_pbs_offline')
+        modules = {name:getattr(sys.modules.get('trottertracks.'+name),'__file__',None)
+                   for name in ('rpe_pbs_offline','rpe_dry_check_recovery','rpe_pbs_attempt_control',
+                                'rpe_pbs_worker','rpe_q3_worker','_collection_pbs_worker','_collection_q3_worker',
+                                '_pipeline_q3_resources')}
         print(json.dumps(dict(status='PBS_WORKER_IMPORTS_PASS', profile=str(profile_path),
-                              offline_module=getattr(selected, '__file__', None))))
+                              offline_module=getattr(selected, '__file__', None), modules=modules)))
         return
     stop_sampling = threading.Event()
     if compute_sampling and profile.get('storage_limit') and not worker_only:
@@ -359,7 +371,14 @@ def main():
         maintenance_due = threading.Event()
         maintenance_policy = dict(policy, sample_path=str(directory/'STORAGE_USAGE_MAINTENANCE.json'))
 
+        def bind_storage_stop():
+            for module in (storage, sampler):
+                bind = getattr(module, 'set_storage_stop_event', None)
+                if bind is not None:
+                    bind(stop_sampling)
+
         def maintain_storage():
+            bind_storage_stop()
             try:
                 os.nice(10)
             except OSError:
@@ -389,6 +408,7 @@ def main():
                 stop_sampling.wait(300)
 
         def sample_storage():
+            bind_storage_stop()
             try:
                 os.nice(5)
             except OSError:
@@ -432,9 +452,11 @@ def main():
                         pass
                 stop_sampling.wait(storage.SAMPLE_SECONDS)
 
-        threading.Thread(target=maintain_storage, name='pbs-storage-maintenance', daemon=True).start()
-        threading.Thread(target=sample_storage, name='pbs-storage-sample', daemon=True).start()
-        raise SystemExit(run_sampled_worker(launcher, script, args, stop_sampling))
+        threads = [threading.Thread(target=maintain_storage, name='pbs-storage-maintenance', daemon=True),
+                   threading.Thread(target=sample_storage, name='pbs-storage-sample', daemon=True)]
+        for thread in threads:
+            thread.start()
+        raise SystemExit(run_sampled_worker(launcher, script, args, stop_sampling, threads))
     if worker_only:
         # PBS's Linux keeper already uses this same subreaper mechanism. Put
         # it inside the worker subprocess so that the sampling parent remains

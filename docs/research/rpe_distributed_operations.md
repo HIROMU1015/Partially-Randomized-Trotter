@@ -943,3 +943,12 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
   再送だけで次の配送枠が埋まらないようにする。応答喪失時はまだ受領していない元attemptを再送。
 - 独立PBSの既存固定科学checkoutに対しては `run_rpe_native_worker_overlay.py` により
   選択された運用moduleだけ更新できる。新規科学SOURCE、予算、50 GiB上限、PBS物理予約は変更しない。
+
+### 共通実装レビュー43項目の統合（2026-11-28）
+
+[所見別対応・検証記録](rpe_common_review_fixes_20261128.md) を参照。H4/H6/H8の中央・workerに共通する43所見の技術修正を共通ソースに統合する。41件は記載した検証範囲で検収済み、R8/R18はPBSの実機検収待ち。共通ソースの公開は稼働releaseへの反映・探索開始・再開の許可ではない。
+
+- R8の区分移管は新規の固定planで `partition_handoff` と `partition_start_requires_contact` を明示する経路のみ。PBS接続回復と実機検収までは採択しない。完全切断中の強制移管、旧固定planの書換え、所有不明区分の移管は禁止する。
+- R18は `launcher_rollover_backfill_mode=no_extension` を既定として新規補充なしでdrainする。既存の明示的な旧見積り補充設定との互換性は維持するが、実機検収前に新たなestimated modeを有効化しない。見積りは実行時間の保証ではない。
+- R10の `incremental_usage` とR43の `persistent_dp_residual_pool` は選択可能な実装として保持し、既定有効化しない。R10のRomuTail実ファイル比較は既存duが速かった。R43は固定kernel一条件の数値・cache完全一致とpool再利用を確認したが、探索全体の高速化を保証しない。
+- 稼働固定版・既存RUN・PBS予約・科学SOURCE・入力・予算・STOPを維持する。次の新規releaseの配置や既存runへの適用は通常の固定release手順・実行許可に従う。

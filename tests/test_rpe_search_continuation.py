@@ -340,3 +340,74 @@ class ContinuationTests(unittest.TestCase):
         (job/'OUTCOME.json').write_text(json.dumps(outcome))
         with self.assertRaisesRegex(ValueError, 'zero-call receipt'):
             verify_prior_q3_holds(self.root, self.successor, problem, spec)
+
+
+def test_nonblocking_replay_keeps_pending_exact_owner_and_late_parent_hold(tmp_path):
+    job = tmp_path/'parent'/'jobs'/'PR_PAULI'/'artificial-job'
+    job.mkdir(parents=True)
+    req = dict(configuration_id='candidate', request_id=job.name, optimizer_source='fixed',
+               N_X=[2], N_Y=[2], origin={}, cost=None)
+    (job/'REQUEST.json').write_text(json.dumps(req))
+    ex = DistributedExecutor.__new__(DistributedExecutor)
+    ex.computation_source = 'fixed'
+    ex.prior_q3_holds = [dict(replay_exact=True, parent_directory=str(tmp_path/'parent'),
+                              method='PR_PAULI', job_id=job.name, request_sha256=digest(req))]
+    view = Mock(method='PR_PAULI')
+    view.job_dir.return_value = tmp_path/'successor'/'jobs'/'PR_PAULI'/job.name
+    view.same_route.return_value = True
+    view.prior_job.return_value = None
+    ex.for_method = Mock(return_value=view)
+    ex.store = Mock()
+    ex.store.row.return_value = {'request':req, 'state':'QUEUED'}
+    import threading
+    from types import SimpleNamespace
+    ex.state=SimpleNamespace(cv=threading.Condition(),tasks={})
+    ex._user_stop_requested = lambda: False
+    assert not ex.replay_prior_q3(wait=False)
+    view._enqueue.assert_called_once()
+    view.answer.assert_not_called()
+    assert len(ex.prior_q3_holds) == 1
+    (job/'OUTCOME.json').write_text('{}')
+    assert not ex.replay_prior_q3(wait=False)
+    view._enqueue.assert_called_once()
+    assert len(ex.prior_q3_holds) == 1
+
+
+def test_late_parent_accepted_receipt_cancels_only_unowned_replay_and_reuses(tmp_path):
+    from trottertracks.rpe_q3_store import JobStore
+    from types import SimpleNamespace
+    import threading
+    parent=tmp_path/'parent'
+    job=parent/'jobs'/'PR_PAULI'/'fixture'
+    job.mkdir(parents=True)
+    req=dict(configuration_id='candidate',request_id=job.name,optimizer_source='fixed',
+             N_X=[2],N_Y=[2],origin={},cost=None,artificial=True)
+    (job/'REQUEST.json').write_text(json.dumps(req))
+    old=JobStore(parent/'distributed/QUEUE.sqlite3')
+    old.reserve('PR_PAULI',job.name,req,1,True,contract='FIXED')
+    row,=old.claim('old-host',1,allowed_jobs=[job.name])
+    old.update('old-host',job.name,row['attempt_id'],'RUNNING')
+    old.update('old-host',job.name,row['attempt_id'],'COMPLETED_PENDING_TRANSFER')
+    old.complete('old-host',job.name,row['attempt_id'],row['request_sha256'],{'OUTCOME.json':'fixture'})
+    (job/'OUTCOME.json').write_text('{}')
+    (job/'LAUNCH.json').write_text(json.dumps({'host_id':'old-host','attempt_id':row['attempt_id']}))
+    successor=tmp_path/'successor'
+    ex=DistributedExecutor.__new__(DistributedExecutor)
+    ex.store=JobStore(successor/'distributed/QUEUE.sqlite3')
+    ex.store.reserve('PR_PAULI',job.name,req,1,True,contract='FIXED')
+    ex.state=SimpleNamespace(cv=threading.Condition(),tasks={})
+    ex.computation_source='fixed'
+    ex._user_stop_requested=lambda:False
+    ex.prior_q3_holds=[dict(replay_exact=True,parent_directory=str(parent),method='PR_PAULI',
+                            job_id=job.name,request_sha256=digest(req))]
+    view=Mock(method='PR_PAULI')
+    view.job_dir.return_value=successor/'jobs'/'PR_PAULI'/job.name
+    view.same_route.return_value=True
+    view.ingest_prior.return_value={'status':FAIL}
+    ex.for_method=Mock(return_value=view)
+    assert ex.replay_prior_q3(wait=False)
+    assert ex.store.row(job.name)['state']=='CANCELLED'
+    assert ex.store.row(job.name)['attempt_id'] is None
+    assert ex.prior_q3_holds==[]
+    view._enqueue.assert_not_called()
+    view.ingest_prior.assert_called_once()

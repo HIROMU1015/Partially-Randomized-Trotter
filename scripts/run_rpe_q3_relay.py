@@ -246,6 +246,12 @@ class Relay:
         self.discovery_pool = None
         self.pending_discovery = {}
         self.pending_ticks = {}
+        self.claim_turns = {}
+        self.storage_supported = set()
+        self.storage_futures = {}
+        self.storage_next = {}
+        self.storage_pool = None
+        self.storage_lock = threading.Lock()
         self.recovery_pool = None
         self.pending_recoveries = {worker['host_id']: {} for worker in self.config['workers']}
         self.recovery_width = 2
@@ -450,7 +456,7 @@ class Relay:
         # Small poll and receipt messages fit in a single Windows SSH call.
         # Keep larger requests below the Windows command-line length limit
         # by using the existing file transfer.
-        if action in ('status', 'result', 'ack', 'resources') and len(payload_bytes) <= 600:
+        if action in ('status', 'result', 'ack', 'resources', 'storage-sample') and len(payload_bytes) <= 600:
             remote = ssh_wsl_command(worker, command, action, input_file=name, inline_input=payload_bytes,
                                      timeout_seconds=timeout)
             if len(remote) < 7000:
@@ -592,11 +598,33 @@ class Relay:
             self.pending_bundles[host] = self.bundle_pool.submit(self._deliver_challenge_artifacts, worker, batch)
         return self._readiness_batch(worker, ready, cached, slots=slots)
 
+    def _mailbox_status(self, worker):
+        host = worker['host_id']
+        # Older fixed mailbox deployments do not advertise this capability.
+        supported = host in getattr(self,'storage_supported',())
+        if supported:
+            with self.storage_lock:
+                future=self.storage_futures.get(host)
+                if (future is None or future.done()) and time.monotonic()>=self.storage_next.get(host,0):
+                    if future is not None:
+                        try:future.result()
+                        except Exception as error:self.log('STORAGE_SAMPLE_PENDING',host_id=host,error=str(error))
+                    if self.storage_pool is None:
+                        self.storage_pool=ThreadPoolExecutor(max_workers=max(1,len(self.config['workers'])),thread_name_prefix='rpe-mailbox-storage')
+                    self.storage_next[host]=time.monotonic()+5
+                    self.storage_futures[host]=self.storage_pool.submit(self.remote,worker,'storage-sample',{})
+        status, seconds = self.remote(worker,'status',dict(metadata_only=True,**({'cached_storage':True} if supported else {})))
+        if status.get('storage_async_supported') is True and hasattr(self,'storage_supported'):
+            self.storage_supported.add(host)
+        elif supported:
+            self.storage_supported.discard(host)
+        return status,seconds
+
     def _discover(self, worker):
         # Status and current-request checks may run concurrently for independent
         # hosts; no thread claims a job or delivers an assignment here.
         started = stamp()
-        status, seconds = self.remote(worker, 'status', dict(metadata_only=True))
+        status, seconds = self._mailbox_status(worker)
         if status.get('host_id') != worker['host_id']:
             raise ValueError('Mailbox host differs from relay profile')
         poll = self._poll_value(status)
@@ -792,7 +820,7 @@ class Relay:
         info['phase'] = 'MAILBOX_STATUS'
         if observed is None:
             status_start=stamp()
-            status, download_seconds = self.remote(worker, 'status', dict(metadata_only=True))
+            status, download_seconds = self._mailbox_status(worker)
             poll = self._poll_value(status)
             if status.get('metadata_only') is True:
                 self.post('/v1/poll', dict(poll, observe_only=True))
@@ -835,7 +863,7 @@ class Relay:
         if recovered and status.get('metadata_only') is True:
             # A completed attempt held a slot in the original offer. Sample
             # the released capacity now, applying the same participation flag.
-            status, _ = self.remote(worker, 'status', dict(metadata_only=True))
+            status, _ = self._mailbox_status(worker)
             if status['host_id'] != host:
                 raise ValueError('Refreshed mailbox host differs from relay profile')
             fresh = self._poll_value(status)
@@ -845,7 +873,18 @@ class Relay:
             self.post('/v1/poll', dict(poll, observe_only=True))
         info['phase'] = 'CONTROLLER_POLL'
         # The worker's fresh offer still governs every claim, including Pause.
-        response = self.post('/v1/poll', poll)
+        # Give the already-discovered preferred hosts a short first claim
+        # opportunity, not a lock around their recovery or delivery. A slow
+        # RPC cannot hold another host past this cycle's priority window.
+        turn=getattr(self,'claim_turns',{}).pop(host,None)
+        if turn is not None:
+            earlier,done,deadline=turn
+            for event in earlier:
+                event.wait(max(0.,deadline-time.monotonic()))
+        try:
+            response = self.post('/v1/poll', poll)
+        finally:
+            if turn is not None:done.set()
         if (not response['assignments'] and response.get('eligibility_challenges')
                 and not (observed is not None and observed[-1].get('readiness_deferred'))):
             challenges = response['eligibility_challenges']
@@ -919,7 +958,7 @@ class Relay:
                 raise ValueError('; '.join(refused))
         if feedback is not None and (status.get('resource_report') or {}).get('mode') == 'AUTO':
             try:
-                self.remote(worker, 'resources', dict(capacity_feedback=feedback))
+                self.remote(worker, 'resources', dict(capacity_feedback=feedback, **({'cached_storage':True} if host in getattr(self,'storage_supported',()) else {})))
             except Exception as error:
                 self.log('RESOURCE_FEEDBACK_PENDING', host_id=host, error=str(error))
 
@@ -982,9 +1021,14 @@ class Relay:
             # All ready hosts have published metadata-only offers already. The
             # central matcher enforces per-REQUEST priority and available slots.
             ready.sort(key=lambda row:row[0].get('priority_group',1 if row[0].get('transport')=='wsl' else 0))
+            earlier=[]
+            priority_deadline=time.monotonic()+min(self.poll_seconds,.1)
             for worker,observed in ready:
                 if (self.directory/'STOP').exists():break
                 host=worker['host_id']
+                done=threading.Event()
+                self.claim_turns[host]=(tuple(earlier),done,priority_deadline)
+                earlier.append(done)
                 self.pending_ticks[host]=(worker,self.discovery_pool.submit(self.tick,worker,observed))
             if self.pending_ticks:
                 wait([future for _,future in self.pending_ticks.values()],timeout=max(0,deadline-time.monotonic()))
@@ -1018,6 +1062,8 @@ class Relay:
                 self.recovery_pool.shutdown(wait=False, cancel_futures=True)
             if self.bundle_pool is not None:
                 self.bundle_pool.shutdown(wait=False, cancel_futures=True)
+            if self.storage_pool is not None:
+                self.storage_pool.shutdown(wait=False,cancel_futures=True)
             if self.ssh_socket_directory is not None:
                 self.ssh_socket_directory.cleanup()
             lock.close()

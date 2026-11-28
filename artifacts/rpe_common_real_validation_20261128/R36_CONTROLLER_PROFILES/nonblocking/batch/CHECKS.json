@@ -1,0 +1,697 @@
+{
+  "artificial_only": true,
+  "by_host": {
+    "simulated-local": {
+      "adopted": 7,
+      "assigned": 7,
+      "completed": 7,
+      "launched": 7,
+      "prefix_reuse_HITs": 0
+    },
+    "simulated-server1": {
+      "adopted": 7,
+      "assigned": 7,
+      "completed": 7,
+      "launched": 7,
+      "prefix_reuse_HITs": 0
+    },
+    "simulated-server2": {
+      "adopted": 4,
+      "assigned": 4,
+      "completed": 4,
+      "launched": 4,
+      "prefix_reuse_HITs": 0
+    }
+  },
+  "common_queue_wait_seconds": {
+    "count": 18,
+    "maximum": 0.9476056098937988,
+    "mean": 0.14412392510308158,
+    "total": 2.5942306518554688
+  },
+  "controller_transfer_bytes": 124322,
+  "controller_transfer_seconds": {
+    "count": 18,
+    "scope": "CONTROLLER_RECEIVE_VALIDATION_AND_PERSISTENCE; excludes network round trip",
+    "total": 0.5772918874863535
+  },
+  "controller_wall": {
+    "artificial_only": true,
+    "stop": {
+      "UTC": "2026-11-28T07:27:17Z",
+      "methods": {
+        "PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE",
+        "PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE"
+      },
+      "reason": "WAITING_FOR_INPUTS",
+      "scope_summary": null,
+      "unresolved_q3_attempts": []
+    },
+    "wall_seconds": 4.163072505034506
+  },
+  "event_counts": {
+    "ADOPT": 18,
+    "DEPENDENCY_WAIT_END": 14,
+    "DEPENDENCY_WAIT_START": 14,
+    "DISTRIBUTED_START": 2,
+    "ENQUEUE": 18,
+    "EXECUTOR_START": 2,
+    "EXECUTOR_STOP": 2,
+    "EXIT": 18,
+    "HOST_FIRST_POLL": 6,
+    "LAUNCH": 18,
+    "PRIOR_HISTORY_CACHE": 8,
+    "PRIOR_INGEST_END": 4,
+    "PRIOR_INGEST_START": 4,
+    "QUEUE_WAIT_STATE": 2,
+    "RESULT_RECEIVED": 18,
+    "RESULT_REUSE": 18,
+    "SEARCH_ADOPT": 18,
+    "TRANSFER_COMPLETE": 18,
+    "TRANSFER_TIMING": 18
+  },
+  "launch_markers": 18,
+  "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+  "outcomes": 18,
+  "per_method": {
+    "PR_DF": {
+      "best": {
+        "MSE_lower": {
+          "denominator": 1000,
+          "display": "0.01",
+          "numerator": 13
+        },
+        "MSE_upper": {
+          "denominator": 1000,
+          "display": "0.01",
+          "numerator": 13
+        },
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "candidate": "PR_DF:d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+        "configuration": {
+          "L_D": 1,
+          "delta_over_h": "1/2",
+          "formula": "2nd",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "denominator": 72057594037927936,
+            "display": "0.05",
+            "numerator": 3602879701896397
+          }
+        },
+        "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+        "cost": {
+          "denominator": 1,
+          "display": "26.00",
+          "numerator": 26
+        },
+        "cost_display": "26.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "labels": [],
+        "point_id": null,
+        "result_sources": null,
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+      },
+      "executor_metrics": {
+        "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+        "adopted": 10,
+        "allocation_settings": {
+          "auto_allocation": {
+            "discovery_grace_seconds": 1.0,
+            "offer_ttl_seconds": 2.0,
+            "priority_groups": [
+              [
+                "server2",
+                "server1",
+                "local"
+              ],
+              [
+                "local0-wsl"
+              ]
+            ]
+          },
+          "max_concurrent_jobs": 3,
+          "mode": "fixed",
+          "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1"
+        },
+        "automatic_capacity": false,
+        "busy_job_seconds": 4.791076292749494,
+        "by_host": {
+          "simulated-local": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "reused": 3
+          },
+          "simulated-server1": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "reused": 3
+          },
+          "simulated-server2": {
+            "adopted": 4,
+            "assigned": 4,
+            "completed": 4,
+            "launched": 4,
+            "reused": 2
+          }
+        },
+        "by_method": {
+          "PR_DF": {
+            "adopted": 6,
+            "launched": 6
+          },
+          "PR_PAULI": {
+            "adopted": 4,
+            "launched": 4
+          }
+        },
+        "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
+        "completed_not_adopted": 0,
+        "distributed": true,
+        "dp_workers": 1,
+        "elapsed_seconds": 1.958755660103634,
+        "executor_failure": null,
+        "finished": 10,
+        "host_admission": {
+          "simulated-local": {
+            "accepting": true,
+            "error": null,
+            "max_slots": null,
+            "optional": false
+          },
+          "simulated-server1": {
+            "accepting": true,
+            "error": null,
+            "max_slots": null,
+            "optional": false
+          },
+          "simulated-server2": {
+            "accepting": true,
+            "error": null,
+            "max_slots": null,
+            "optional": false
+          }
+        },
+        "host_admission_error": null,
+        "host_eligibility_holds": {},
+        "host_offers": {
+          "simulated-local": {
+            "capacity": 1,
+            "capacity_feedback": {
+              "adopted_results": 4,
+              "capacity": 3,
+              "capacity_ready_jobs": 0,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "controller_invocation": "1107058-1795850835153870325",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.4167356428224593,
+              "measurement_seconds": 1.9605917788576335,
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "ready_task_classes": [],
+              "usable_results": 4
+            },
+            "fresh_free_slots": 1,
+            "observed_age_seconds": 0.01541019999422133,
+            "priority_group": 0,
+            "reported_free_slots": 1,
+            "resource_report": {
+              "capacity": 1,
+              "mode": "FIXED",
+              "occupied": 0,
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "slots": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE"
+            }
+          },
+          "simulated-server1": {
+            "capacity": 1,
+            "capacity_feedback": {
+              "adopted_results": 4,
+              "capacity": 3,
+              "capacity_ready_jobs": 0,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "controller_invocation": "1107058-1795850835153870325",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.9721739597152919,
+              "measurement_seconds": 1.9610141080338508,
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "ready_task_classes": [],
+              "usable_results": 4
+            },
+            "fresh_free_slots": 1,
+            "observed_age_seconds": 0.011451692087575793,
+            "priority_group": 0,
+            "reported_free_slots": 1,
+            "resource_report": {
+              "capacity": 1,
+              "mode": "FIXED",
+              "occupied": 0,
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "slots": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE"
+            }
+          },
+          "simulated-server2": {
+            "capacity": 1,
+            "capacity_feedback": {
+              "adopted_results": 2,
+              "capacity": 3,
+              "capacity_ready_jobs": 0,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "controller_invocation": "1107058-1795850835153870325",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.8616745178587735,
+              "measurement_seconds": 1.9614147269167006,
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "ready_task_classes": [],
+              "usable_results": 2
+            },
+            "fresh_free_slots": 1,
+            "observed_age_seconds": 0.09405074501410127,
+            "priority_group": 0,
+            "reported_free_slots": 1,
+            "resource_report": {
+              "capacity": 1,
+              "mode": "FIXED",
+              "occupied": 0,
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "slots": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE"
+            }
+          }
+        },
+        "idle_slot_seconds_no_queued_candidate": 0.6444302729796618,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.18096152902580798,
+        "idle_slot_seconds_waiting_selected_result": 0.46346874395385385,
+        "idle_slot_seconds_with_queued_candidate": 0.44076041458174586,
+        "integrated_available_slot_seconds": 5.876266980310902,
+        "launched": 10,
+        "max_concurrent_jobs": 3,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "method_adopted": 6,
+        "method_launched": 6,
+        "new_real_route_launches": 0,
+        "pbs": null,
+        "peak_active": 3,
+        "persistent_reserved": {
+          "PR_DF": 10,
+          "PR_PAULI": 8
+        },
+        "preparation": {
+          "audit": {
+            "assigned": 0,
+            "launched": 0,
+            "reserved": 0
+          },
+          "compile": {
+            "assigned": 0,
+            "launched": 0,
+            "reserved": 0
+          },
+          "signal": {
+            "assigned": 0,
+            "launched": 0,
+            "reserved": 0
+          }
+        },
+        "preparation_readiness_pending": {},
+        "queue_observer_profile": {
+          "report_cpu_seconds": 0.000578531,
+          "samples": 1,
+          "thread_cpu_seconds": 0.00081574,
+          "wall_seconds": 0.0008312361314892769
+        },
+        "queued_cancelled": 0,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "slot_utilization": 0.8153265174646656,
+        "speculative_adopted": 4,
+        "speculative_adoption_fraction": 1.0,
+        "speculative_launched": 4,
+        "submitted": 10,
+        "unreadable_progress_lines": 0,
+        "unresolved_owned_attempts": 0,
+        "unresolved_q3_attempts": []
+      },
+      "new_calls": 6,
+      "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+    },
+    "PR_PAULI": {
+      "best": {
+        "MSE_lower": {
+          "denominator": 1000,
+          "display": "0.01",
+          "numerator": 13
+        },
+        "MSE_upper": {
+          "denominator": 1000,
+          "display": "0.01",
+          "numerator": 13
+        },
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "candidate": "PR_PAULI:92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+        "configuration": {
+          "L_D": 1,
+          "delta_over_h": "2",
+          "formula": "2nd",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "denominator": 18014398509481984,
+            "display": "0.20",
+            "numerator": 3602879701896397
+          }
+        },
+        "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+        "cost": {
+          "denominator": 1,
+          "display": "26.00",
+          "numerator": 26
+        },
+        "cost_display": "26.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "labels": [],
+        "point_id": null,
+        "result_sources": null,
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+      },
+      "executor_metrics": {
+        "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+        "adopted": 10,
+        "allocation_settings": {
+          "auto_allocation": {
+            "discovery_grace_seconds": 1.0,
+            "offer_ttl_seconds": 2.0,
+            "priority_groups": [
+              [
+                "server2",
+                "server1",
+                "local"
+              ],
+              [
+                "local0-wsl"
+              ]
+            ]
+          },
+          "max_concurrent_jobs": 3,
+          "mode": "fixed",
+          "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1"
+        },
+        "automatic_capacity": false,
+        "busy_job_seconds": 4.791076292749494,
+        "by_host": {
+          "simulated-local": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "reused": 3
+          },
+          "simulated-server1": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "reused": 3
+          },
+          "simulated-server2": {
+            "adopted": 4,
+            "assigned": 4,
+            "completed": 4,
+            "launched": 4,
+            "reused": 2
+          }
+        },
+        "by_method": {
+          "PR_DF": {
+            "adopted": 6,
+            "launched": 6
+          },
+          "PR_PAULI": {
+            "adopted": 4,
+            "launched": 4
+          }
+        },
+        "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
+        "completed_not_adopted": 0,
+        "distributed": true,
+        "dp_workers": 1,
+        "elapsed_seconds": 1.958755660103634,
+        "executor_failure": null,
+        "finished": 10,
+        "host_admission": {
+          "simulated-local": {
+            "accepting": true,
+            "error": null,
+            "max_slots": null,
+            "optional": false
+          },
+          "simulated-server1": {
+            "accepting": true,
+            "error": null,
+            "max_slots": null,
+            "optional": false
+          },
+          "simulated-server2": {
+            "accepting": true,
+            "error": null,
+            "max_slots": null,
+            "optional": false
+          }
+        },
+        "host_admission_error": null,
+        "host_eligibility_holds": {},
+        "host_offers": {
+          "simulated-local": {
+            "capacity": 1,
+            "capacity_feedback": {
+              "adopted_results": 4,
+              "capacity": 3,
+              "capacity_ready_jobs": 0,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "controller_invocation": "1107058-1795850835153870325",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.4167356428224593,
+              "measurement_seconds": 1.9605917788576335,
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "ready_task_classes": [],
+              "usable_results": 4
+            },
+            "fresh_free_slots": 1,
+            "observed_age_seconds": 0.01541019999422133,
+            "priority_group": 0,
+            "reported_free_slots": 1,
+            "resource_report": {
+              "capacity": 1,
+              "mode": "FIXED",
+              "occupied": 0,
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "slots": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE"
+            }
+          },
+          "simulated-server1": {
+            "capacity": 1,
+            "capacity_feedback": {
+              "adopted_results": 4,
+              "capacity": 3,
+              "capacity_ready_jobs": 0,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "controller_invocation": "1107058-1795850835153870325",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.9721739597152919,
+              "measurement_seconds": 1.9610141080338508,
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "ready_task_classes": [],
+              "usable_results": 4
+            },
+            "fresh_free_slots": 1,
+            "observed_age_seconds": 0.011451692087575793,
+            "priority_group": 0,
+            "reported_free_slots": 1,
+            "resource_report": {
+              "capacity": 1,
+              "mode": "FIXED",
+              "occupied": 0,
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "slots": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE"
+            }
+          },
+          "simulated-server2": {
+            "capacity": 1,
+            "capacity_feedback": {
+              "adopted_results": 2,
+              "capacity": 3,
+              "capacity_ready_jobs": 0,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "controller_invocation": "1107058-1795850835153870325",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.8616745178587735,
+              "measurement_seconds": 1.9614147269167006,
+              "ready_jobs": 0,
+              "ready_jobs_now": 0,
+              "ready_task_classes": [],
+              "usable_results": 2
+            },
+            "fresh_free_slots": 1,
+            "observed_age_seconds": 0.09405074501410127,
+            "priority_group": 0,
+            "reported_free_slots": 1,
+            "resource_report": {
+              "capacity": 1,
+              "mode": "FIXED",
+              "occupied": 0,
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ],
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "slots": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE"
+            }
+          }
+        },
+        "idle_slot_seconds_no_queued_candidate": 0.6444302729796618,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.18096152902580798,
+        "idle_slot_seconds_waiting_selected_result": 0.46346874395385385,
+        "idle_slot_seconds_with_queued_candidate": 0.44076041458174586,
+        "integrated_available_slot_seconds": 5.876266980310902,
+        "launched": 10,
+        "max_concurrent_jobs": 3,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "method_adopted": 4,
+        "method_launched": 4,
+        "new_real_route_launches": 0,
+        "pbs": null,
+        "peak_active": 3,
+        "persistent_reserved": {
+          "PR_DF": 10,
+          "PR_PAULI": 8
+        },
+        "preparation": {
+          "audit": {
+            "assigned": 0,
+            "launched": 0,
+            "reserved": 0
+          },
+          "compile": {
+            "assigned": 0,
+            "launched": 0,
+            "reserved": 0
+          },
+          "signal": {
+            "assigned": 0,
+            "launched": 0,
+            "reserved": 0
+          }
+        },
+        "preparation_readiness_pending": {},
+        "queue_observer_profile": {
+          "report_cpu_seconds": 0.000578531,
+          "samples": 1,
+          "thread_cpu_seconds": 0.00081574,
+          "wall_seconds": 0.0008312361314892769
+        },
+        "queued_cancelled": 0,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "slot_utilization": 0.8153265174646656,
+        "speculative_adopted": 4,
+        "speculative_adoption_fraction": 1.0,
+        "speculative_launched": 4,
+        "submitted": 10,
+        "unreadable_progress_lines": 0,
+        "unresolved_owned_attempts": 0,
+        "unresolved_q3_attempts": []
+      },
+      "new_calls": 4,
+      "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+    }
+  },
+  "persistent_scientific_jobs": 18,
+  "scientific_H4_calls": 0,
+  "worker_transfer_roundtrip_seconds": {
+    "count": 18,
+    "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+    "total": 0.6442465910222381
+  }
+}

@@ -435,7 +435,8 @@ def verified_completion_rpcs(run, host, items):
     if not items:
         return [], {}
     pbs = run/'distributed/pbs'
-    allocations = read(pbs/'STATE.json')['allocations']
+    from trottertracks.rpe_pbs_state import read_pbs_state
+    allocations = read_pbs_state(pbs/'STATE.json')['allocations']
     receipts = []
     size = 0
     for token, rid, count in items:
@@ -447,6 +448,7 @@ def verified_completion_rpcs(run, host, items):
         if not path.is_file():
             continue
         record = read(path)
+        if record.get('consumed') is True:continue
         response = record['response']
         result = response.get('result') or {}
         if response.get('ok') is not True or result.get('ok') is not True or type(result.get('duplicate')) is not bool:
@@ -471,7 +473,8 @@ def compute_storage_samples(pbs, namespace, host):
     state = pbs/'STATE.json'
     if not state.is_file():
         return []
-    records = read(state).get('allocations', {})
+    from trottertracks.rpe_pbs_state import read_pbs_state
+    records = read_pbs_state(state).get('allocations', {})
     return [str(namespace/'allocations'/token/'STORAGE_USAGE_GATEWAY.json')
             for token, row in records.items()
             if re.fullmatch('[a-f0-9]{32}', token) and row.get('status') == 'R'

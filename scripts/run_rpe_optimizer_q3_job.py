@@ -816,7 +816,8 @@ def prefix_cache_context(request,case,inputs,out):
                      event_sink=event,max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES),
                      parallel_residual=parallel_residual,profile_residual=profile.get('profile_dp_residual') is True,
                      selective_rounds=selective,
-                     selective_window_seconds=profile.get('prefix_selective_window_seconds',C.DEFAULT_SELECTIVE_WINDOW_SECONDS)):
+                     selective_window_seconds=profile.get('prefix_selective_window_seconds',C.DEFAULT_SELECTIVE_WINDOW_SECONDS),
+                     **({'persistent_residual_pool':True} if profile.get('persistent_dp_residual_pool') is True else {})):
         yield
 
 

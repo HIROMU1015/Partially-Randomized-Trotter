@@ -35,6 +35,15 @@ def provider_root(settings):
 
 
 def pbs_profiles(distributed, node_count):
+    # Explicit local-only deployments need no PBS gateway. Existing PBS
+    # ownership is not migrated by this new-scope configuration.
+    if type(node_count) is int and node_count == 0:
+        if (distributed.get("pbs") or {}).get("workers"):
+            raise ValueError("Zero PBS nodes conflicts with configured PBS workers")
+        local = distributed.get("local_worker") or {}
+        if not local.get("host_id") or local.get("slots", 0) < 1:
+            raise ValueError("A local-only H-chain scope requires a local worker")
+        return [local["host_id"]]
     pbs = distributed["pbs"]
     workers = pbs["workers"]
     hosts = [worker["host_id"] for worker in workers]
@@ -67,7 +76,7 @@ def resolve(config, requested):
         settings = deepcopy(config["hchain"])
         from .rpe_release_registry import common_worker_policy
         policy = common_worker_policy(config.get("release_worker_policy"))
-        if "pbs_offline_search" in policy:
+        if settings.get("pbs_nodes", 0) > 0 and "pbs_offline_search" in policy:
             if "pbs_offline_search" in settings and settings["pbs_offline_search"] != policy["pbs_offline_search"]:
                 raise ValueError("Conflicting independent PBS deployment settings")
             settings["pbs_offline_search"] = policy["pbs_offline_search"]
@@ -83,19 +92,53 @@ def resolve(config, requested):
         distributed = spec["executor"]["distributed"]
         if spec["executor"].get("scheduler") != "concurrent":
             raise ValueError("A shared distributed executor is required")
-        host_ids = pbs_profiles(distributed, settings["pbs_nodes"])
-        if policy.get("pbs_preparation_resources"):
+        host_ids = pbs_profiles(distributed, settings.get("pbs_nodes", 0))
+        uses_pbs = bool((distributed.get("pbs") or {}).get("workers"))
+        if not uses_pbs:
+            settings.pop("pbs_offline_search", None)
+            distributed["execution_hosts"] = host_ids
+        if uses_pbs and policy.get("pbs_preparation_resources"):
             from .rpe_pbs import apply_preparation_resources
             apply_preparation_resources(distributed, policy["pbs_preparation_resources"])
-        if policy.get("pbs_q3_cpu_policies"):
+        if uses_pbs and policy.get("pbs_q3_cpu_policies"):
             from .rpe_host_profiles import apply_pbs_q3_cpu_policies
             apply_pbs_q3_cpu_policies(distributed, policy["pbs_q3_cpu_policies"])
-        if policy.get("pbs_q3_measured_memory"):
+        if uses_pbs and policy.get("pbs_q3_measured_memory"):
             from .rpe_pbs import apply_q3_measured_memory
             apply_q3_measured_memory(distributed,policy["pbs_q3_measured_memory"])
-        if "pbs_q3_memory_learning" in policy:
+        if uses_pbs and "pbs_q3_memory_learning" in policy:
             from .rpe_q3_memory import apply_policy
             apply_policy(distributed,policy["pbs_q3_memory_learning"])
+        # Apply the same policy knobs that the H-chain shared executor consumes.
+        # H4-specific provider/route choices are deliberately not substituted.
+        applied = {k for k in ('pbs_offline_search', 'pbs_preparation_resources',
+                               'pbs_q3_cpu_policies', 'pbs_q3_measured_memory',
+                               'pbs_q3_memory_learning') if uses_pbs and k in policy}
+        for field in ('ready_queue_waves', 'live_readiness_max_workers', 'live_readiness_refill_seconds',
+                      'controller_queue_first', 'preparation_host_preference'):
+            if field in policy:
+                distributed[field] = deepcopy(policy[field]); applied.add(field)
+        if policy.get('controller_parallel') is True:
+            spec.setdefault('search_overrides', {})['controller_parallel'] = True
+            if 'live_readiness_max_workers' not in policy:
+                distributed.pop('live_readiness_max_workers', None)
+            applied.add('controller_parallel')
+        if uses_pbs:
+            from .rpe_pbs import apply_common_worker_knobs, apply_common_artifact_staging
+            applied.update(apply_common_worker_knobs(distributed,policy))
+            if apply_common_artifact_staging(distributed,policy):
+                applied.add('pbs_stage_artifacts_over_ssh')
+        placements = policy.get('preparation_provider_hosts') or {}
+        if 'HCHAIN_SCOPED' in placements:
+            hosts = placements['HCHAIN_SCOPED']
+            configured = distributed.get('preparation_profiles') or {}
+            if not isinstance(hosts, list) or not hosts or not set(hosts) <= configured.keys():
+                raise ValueError('H-chain preparation placement requires configured hosts')
+            distributed.setdefault('preparation_provider_hosts', {})['HCHAIN_SCOPED'] = list(hosts)
+            applied.add('preparation_provider_hosts')
+        if policy:
+            settings['worker_policy_disposition'] = dict(applied=sorted(applied),
+                not_applied=sorted(set(policy)-applied))
         prep = distributed.setdefault("preparation", {}).setdefault("budgets", {})
         changes = scope.get("preparation_budgets", {})
         keys(changes, set(STAGES), "scope.preparation_budgets")

@@ -1,5 +1,6 @@
 """Run a batch of planned H-chain preparation leaves via the common worker."""
 import argparse
+from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from contextlib import contextmanager
 import multiprocessing as mp
@@ -38,7 +39,7 @@ def leaves(plan, stage, targets):
         yield cell, index, name
 
 
-def preparation_request(plan, plan_sha, stage, targets, *, source, assets, spectral_signals=False):
+def preparation_request(plan, plan_sha, stage, targets, *, source, assets, spectral_signals=False, openblas_coretype=None):
     """Build a request for configure_preparation_graph or submit_preparation.
 
     The plan must already be deposited in the existing artifact cache.
@@ -51,6 +52,13 @@ def preparation_request(plan, plan_sha, stage, targets, *, source, assets, spect
         if stage != "signal" and cell["R_outer"] is not None and cell["R_outer"] > 0:
             outputs.append(str(Path(name).with_suffix(".events.json.xz")))
     runtime = {"packages": {"qiskit": "1.3.0", "numpy": "1.26.4"}}
+    if plan.get('provider_contract') is not None:
+        from rpe_hchain_q3 import declared_provider_contract
+        runtime['packages']=declared_provider_contract(plan['binding'],plan['provider_contract'])['packages']
+    if openblas_coretype is not None:
+        if openblas_coretype not in ("HASWELL","NEHALEM"):
+            raise ValueError("Unsupported fixed H-chain OpenBLAS core")
+        runtime.update(openblas_coretype=openblas_coretype,imports=["numpy"])
     request = dict(method="HCHAIN", route=dict(kind="preparation"),
                 original_contract=dict(scope_owner=plan["owner"], binding=plan["binding"], plan_sha256=plan_sha),
                 preparation=dict(stage=stage, provider="HCHAIN_SCOPED", source=source,
@@ -60,6 +68,11 @@ def preparation_request(plan, plan_sha, stage, targets, *, source, assets, spect
                              "--provider", "@SOURCE@/scripts/h6_fixed_run", "--assets", "@PATH:hchain_assets@",
                              "--plan", "@INPUTS@/PLAN.json", "--output", "@WORK@",
                              "--stage", stage, "--targets", json.dumps(targets, separators=(",", ":"))]))
+    # H8 startup also compares a reconstructed numerical identity. Its
+    # archived side can be checked in readiness without invoking startup.
+    saved = plan.get('verified_saved_preparations') or {}
+    if plan['scope'].get('system') == 'H8' and saved and all(isinstance(v,dict) and 'saved' in v for v in saved.values()):
+        request['preparation']['h8_saved_preparation_hashes'] = {str(k):v['saved'] for k,v in saved.items()}
     if stage == "signal" and spectral_signals:
         request["preparation"]["command"].append("--spectral-signals")
     return request
@@ -150,21 +163,70 @@ def preparation_cpus():
     return min(value, affinity)
 
 
-def run(plan, stage, targets, assets, output, provider, *, prepare_spectra=None, cpus=1):
-    selected = list(leaves(plan, stage, targets))
+class StartupMismatch(ValueError):
+    """The numerical startup did execute; no preparation leaf may follow."""
+
+    def __init__(self, field, expected, observed):
+        self.field = field
+        self.expected = expected
+        self.observed = observed
+        super().__init__('HCHAIN_STARTUP_MISMATCH: '+field)
+
+
+def run(plan, stage, targets, assets, output, provider, *, prepare_spectra=None, cpus=1, check_startup=False, check_full_startup=False):
+    if check_full_startup and (stage is not None or targets is not None or not check_startup):
+        raise ValueError('Full startup check is identity-only and has no individual targets')
+    selected = [] if check_full_startup else list(leaves(plan, stage, targets))
     state = provider.startup(assets, plan["scope"])
-    if (state.binding, state.target, state.compiler) != (plan["binding"], plan["target"], plan["compiler"]):
-        raise ValueError("H-chain preparation binding, target or compiler changed")
-    if ("verified_saved_preparations" in plan
-            and {str(key): value for key, value in state.preparation_sources.items()}
-            != plan["verified_saved_preparations"]):
-        raise ValueError("H-chain saved preparations changed")
+    def mismatch(field, expected, observed):
+        if observed != expected:
+            # Keep exact evidence in the body log; no tolerance or retry.
+            print(json.dumps(dict(event='HCHAIN_STARTUP_MISMATCH', field=field,
+                                  expected=expected, observed=observed), default=str), flush=True)
+            raise StartupMismatch(field, expected, observed)
+    for field in ('binding', 'target', 'compiler'):
+        mismatch(field, plan[field], getattr(state, field))
+    if 'verified_saved_preparations' in plan:
+        mismatch('verified_saved_preparations', plan['verified_saved_preparations'],
+                 {str(key): value for key, value in state.preparation_sources.items()})
     restored_plan = {"cases": state.cases}
+    if check_full_startup:
+        # The adopted plan may be a retained subset of the full scope. Check
+        # every case and every complete calibration design, not just one
+        # batch, against the same single numerical startup.
+        restored_plan["designs"] = list(provider.calibration_design(state.cases,plan["scope"]).values())
+        expected_cases=plan["cases"]
+        actual_cases={case["id"]:case for case in state.cases}
+        if len(actual_cases)!=len(state.cases) or len({case["id"] for case in expected_cases})!=len(expected_cases):
+            raise ValueError('Duplicate case ID in full startup check')
+        for case in expected_cases:
+            mismatch('case:'+case['id'],case,actual_cases.get(case['id']))
+        def canonical(value):
+            return json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False)
+        restored_designs=Counter(map(canonical,restored_plan["designs"]))
+        for design in plan["designs"]:
+            encoded=canonical(design)
+            if restored_designs[encoded]<=0:
+                mismatch('calibration_design',design,None)
+            restored_designs[encoded]-=1
+        counts={}
+        for kind in ('signal','compile','audit'):
+            expected_inputs=planned_inputs(plan,kind)
+            actual_inputs=planned_inputs(restored_plan,kind)
+            for cid,cell in expected_inputs.items():
+                mismatch(kind+':'+cid,cell,actual_inputs.get(cid))
+            counts[kind]=len(expected_inputs)
+        return dict(status='HCHAIN_STARTUP_IDENTITY_PASS',leaf_calls=0,numerical_startup=True,
+                    full_plan=True,cases=len(expected_cases),designs=len(plan["designs"]),
+                    restored_cases=len(state.cases),restored_designs=len(restored_plan["designs"]),
+                    schedules=counts)
     if stage != "signal":
         restored_plan["designs"] = provider.calibration_design(state.cases, plan["scope"]).values()
     restored = planned_inputs(restored_plan, stage)
-    if any(restored.get(cell["id"]) != cell for cell, _, _ in selected):
-        raise ValueError("H-chain preparation schedule differs from the fixed plan")
+    for cell, _, _ in selected:
+        mismatch('schedule:'+cell['id'], cell, restored.get(cell['id']))
+    if check_startup:
+        return dict(status='HCHAIN_STARTUP_IDENTITY_PASS',leaf_calls=0, numerical_startup=True)
     if prepare_spectra is not None:
         prepare_spectra(state, (cell for cell, _, _ in selected))
     provider.STATE = state
@@ -195,10 +257,19 @@ def main():
     parser.add_argument("--assets", type=Path, required=True)
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--stage", choices=("signal", "compile", "audit"), required=True)
-    parser.add_argument("--targets", type=json.loads, required=True)
+    parser.add_argument("--stage", choices=("signal", "compile", "audit"))
+    parser.add_argument("--targets", type=json.loads)
     parser.add_argument("--spectral-signals", action="store_true")
+    parser.add_argument("--check-startup", action="store_true",
+                        help="Run numerical provider startup and compare identity only; requires scientific execution permission")
+    parser.add_argument("--check-full-startup",action="store_true",
+                        help="One numerical startup, check every planned case/design and no leaves")
     args = parser.parse_args()
+    if args.check_full_startup:
+        if not args.check_startup or args.stage is not None or args.targets is not None or args.spectral_signals:
+            parser.error("Full startup requires --check-startup and no stage/targets/spectral signals")
+    elif args.stage is None or args.targets is None:
+        parser.error("--stage and --targets are required for a batch")
     sys.path.insert(0, str(args.provider))
     import h6_scope_worker
 
@@ -208,8 +279,10 @@ def main():
     if args.spectral_signals:
         from h8_scope_backend import prepare_tail_spectra
         prepare_spectra = prepare_tail_spectra
-    run(json.loads(args.plan.read_bytes()), args.stage, args.targets, args.assets, args.output, h6_scope_worker,
-        prepare_spectra=prepare_spectra, cpus=preparation_cpus())
+    result = run(json.loads(args.plan.read_bytes()), args.stage, args.targets, args.assets, args.output, h6_scope_worker,
+        prepare_spectra=prepare_spectra, cpus=preparation_cpus(), check_startup=args.check_startup,check_full_startup=args.check_full_startup)
+    if args.check_startup:
+        print(json.dumps(result),flush=True)
 
 
 if __name__ == "__main__":

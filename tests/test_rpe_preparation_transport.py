@@ -86,7 +86,16 @@ class PreparationTransportTests(unittest.TestCase):
         for path in (old, in_use):
             os.utime(path, (1, 1))
         policy = dict(roots=[str(cache)], sample_path=str(root/'USAGE.json'), limit_bytes=10_000)
-        with in_use.open('rb'):
+        # This fixture owns one artificial spool. Other tasks on the shared
+        # host may have an unreadable Git process; production intentionally
+        # refuses cleanup in that case. Scope this unit's process inventory to
+        # the test process, which actually holds the in_use file descriptor.
+        original_iterdir = Path.iterdir
+        def fixture_iterdir(path):
+            if path == Path('/proc'):
+                return iter([Path('/proc')/str(os.getpid())])
+            return original_iterdir(path)
+        with patch.object(Path, 'iterdir', fixture_iterdir), in_use.open('rb'):
             result = Storage.report(policy, spools=(str(spool),), compact_metadata=True, proactive=True)
         self.assertFalse(old.exists())
         self.assertTrue(in_use.exists() and recent.exists() and indexed.exists())
@@ -712,3 +721,74 @@ def test_nested_worker_path_is_not_rewritten_twice():
     assert rewrite_bound_argument(script,bindings)==worker+'/private/run_signal.py'
     assert rewrite_bound_argument(root+'/data/INPUT.json',bindings)==worker+'/workspace/data/INPUT.json'
     assert rewrite_bound_argument('--input='+script,bindings)=='--input='+worker+'/private/run_signal.py'
+
+
+def test_in_progress_stage_hold_revisits_only_its_received_owner(tmp_path):
+    from unittest.mock import Mock
+    bridge=DistributedPreparationBridge.__new__(DistributedPreparationBridge)
+    bridge.executor=SimpleNamespace(_user_stop_requested=lambda:False)
+    bridge.recovery_evidence=Mock(return_value={'job_id':'prep-artificial','state':'RUNNING'})
+    reason='DISTRIBUTED_PREPARATION_IN_PROGRESS:DF_SIGNALS:prep-artificial'
+    assert bridge.hold_evidence(tmp_path,reason)['state']=='RUNNING'
+    assert not bridge.recoverable_transport(tmp_path,reason)
+    bridge.recovery_evidence.return_value={'job_id':'prep-artificial','state':'ACCEPTED'}
+    assert bridge.recoverable_transport(tmp_path,reason)
+
+
+def test_fixed_runtime_hash_cache_rechecks_changed_file(tmp_path,monkeypatch):
+    from trottertracks import rpe_preparation_worker as worker
+    path=tmp_path/'fixture';path.write_bytes(b'first')
+    expected=hashlib.sha256(b'first').hexdigest()
+    with monkeypatch.context() as patcher:
+        patcher.setattr(worker.time,'time_ns',lambda:path.stat().st_ctime_ns+2_000_000_000)
+        assert worker.fixed_file_sha(path)==expected
+        patcher.setattr(worker,'file_digest',lambda *_:pytest.fail('unchanged file rehashed'))
+        assert worker.fixed_file_sha(path)==expected
+    path.write_bytes(b'other')
+    assert worker.fixed_file_sha(path)==hashlib.sha256(b'other').hexdigest()
+
+
+def test_fixed_openblas_runtime_requires_profile_and_actual_dispatch(monkeypatch):
+    import sys,json
+    from types import SimpleNamespace
+    profile={'interpreter':sys.executable,'openblas_coretype':'HASWELL'}
+    need={'openblas_coretype':'HASWELL'}
+    probe={'executable':sys.executable,'version_info':[3,11],'packages':{}}
+    observed=[]
+    def run(*args,**kwargs):
+        observed.append(kwargs)
+        return SimpleNamespace(returncode=0,stdout=json.dumps(probe),stderr='Core: Haswell\n')
+    monkeypatch.setattr(P.subprocess,'run',run)
+    runtime,_=P._runtime(profile,need)
+    assert runtime['openblas_coretype']=='HASWELL'
+    assert observed[0]['env']['OPENBLAS_CORETYPE']=='HASWELL'
+    assert observed[0]['env']['OPENBLAS_VERBOSE']=='2'
+    assert 'numpy' in json.loads(observed[0]['input'])['imports']
+    import pytest
+    with pytest.raises(ValueError,match='profile differs'):
+        P._runtime(dict(profile,openblas_coretype='NEHALEM'),need)
+    monkeypatch.setattr(P.subprocess,'run',lambda *_a,**_k:
+        SimpleNamespace(returncode=0,stdout=json.dumps(probe),stderr='Core: Nehalem\n'))
+    with pytest.raises(ValueError,match='actual OpenBLAS'):
+        P._runtime(profile,need)
+
+
+def test_verified_own_hardlink_reuses_stable_identity_but_changed_bytes_rehash(tmp_path,monkeypatch):
+    from trottertracks import rpe_preparation_artifacts as A
+    import time,hashlib,base64,pytest
+    cache=A.ArtifactCache(tmp_path/'cache')
+    raw=b'fixture-immutable'
+    sha=hashlib.sha256(raw).hexdigest()
+    cache.put({sha:base64.b64encode(raw).decode()})
+    real=time.time_ns
+    monkeypatch.setattr(A.time,'time_ns',lambda:real()+2_000_000_000)
+    calls=[]
+    digest=A.file_digest
+    monkeypatch.setattr(A,'file_digest',lambda p:(calls.append(p),digest(p))[1])
+    assert cache.missing([sha])==[]
+    cache.materialize({'input.json':sha},tmp_path/'final',immutable=True)
+    assert cache.missing([sha])==[]
+    assert len(calls)==1
+    cache.path(sha).write_bytes(b'changed-content')
+    with pytest.raises(ValueError,match='Corrupt cached artifact'):
+        cache.missing([sha])

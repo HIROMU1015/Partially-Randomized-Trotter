@@ -296,22 +296,88 @@ def _drop_batch(bounds, context=None):
         drop(flag, phase, mass_type(count, denominator), completed, partial)
     if started is not None:
         partial['worker_seconds'] = time.perf_counter()-started
+        partial['worker_pid'] = os.getpid()
     return partial
 
 
-def _drop_many(P, worker_count, ordered, denominator, completed, drop, event_sink=None):
+_persistent_drop=None
+_persistent_mass=None
+
+
+def _init_persistent_drop(drop,mass_type):
+    global _persistent_drop,_persistent_mass
+    _persistent_drop,_persistent_mass=drop,mass_type
+
+
+def _persistent_drop_batch(payload):
+    ordered,denominator,completed,profile=payload
+    return _drop_batch((0,len(ordered)),(ordered,denominator,completed,_persistent_drop,_persistent_mass,profile))
+
+
+def _immutable_closure_value(value):
+    if type(value) in (type(None),bool,int,float,str,bytes,Fraction):return True
+    if type(value) in (tuple,frozenset):return all(_immutable_closure_value(item) for item in value)
+    return False
+
+
+class ResidualPool:
+    """Opt-in per-evaluation worker pool for stable drop closures only.
+
+    Changed callable identity, worker footprint, or mutable captured state
+    falls back to the original per-call fork path. Only the explicit newly
+    instrumented sink fallback may capture the parent residual dictionary;
+    every worker receives its independent sink as in the existing path.
+    """
+    def __init__(self):self.pool=None;self.key=None;self.owner_pid=os.getpid()
+
+    def close(self):
+        if os.getpid()!=self.owner_pid:return
+        if self.pool is not None:self.pool.shutdown(wait=True);self.pool=None
+        self.key=None
+
+    def prepare(self,drop,mass_type,workers):
+        if os.getpid()!=self.owner_pid:return False,False
+        if not hasattr(drop,'__code__') or not hasattr(drop,'__globals__'):
+            self.close();return False,False
+        closure=[]
+        for name,cell in zip(drop.__code__.co_freevars,drop.__closure__ or ()):
+            if name=='res' and getattr(drop,'_residual_pool_sink',False):continue
+            try:value=cell.cell_contents
+            except ValueError:self.close();return False,False
+            if not _immutable_closure_value(value):self.close();return False,False
+            closure.append((name,value))
+        # The same fixed callback and the same bindings must survive across
+        # rounds. Mutable globals are rejected rather than copied implicitly.
+        import types
+        globals_key=[]
+        for name in drop.__code__.co_names:
+            if name not in drop.__globals__:continue
+            value=drop.__globals__[name]
+            if not (_immutable_closure_value(value) or isinstance(value,(types.FunctionType,types.ModuleType,type))):
+                self.close();return False,False
+            globals_key.append((name,id(value)))
+        key=(drop,mass_type,workers,tuple(closure),tuple(globals_key))
+        if self.key==key and self.pool is not None:return True,True
+        self.close()
+        self.pool=ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork'),
+                                      initializer=_init_persistent_drop,initargs=(drop,mass_type))
+        self.key=key
+        return True,False
+
+
+def _drop_many(P, worker_count, ordered, denominator, completed, drop, event_sink=None,residual_pool=None):
     if not ordered:
         return
     started = time.perf_counter() if event_sink is not None else None
     context = ordered, denominator, completed, drop, P.Mass, event_sink is not None
     available = len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else os.cpu_count() or 1
-    workers = min(worker_count or available, max(1, len(ordered)//MIN_DROPS_PER_WORKER))
+    workers = min(worker_count or available, available, max(1, len(ordered)//MIN_DROPS_PER_WORKER))
     if 'fork' not in mp.get_all_start_methods():
         workers = 1
 
     residual = drop.residual()
     merge_seconds=0.
-    worker_seconds=[]
+    worker_seconds={}
     def merge(partial):
         nonlocal merge_seconds
         start=time.perf_counter() if started is not None else None
@@ -321,25 +387,35 @@ def _drop_many(P, worker_count, ordered, denominator, completed, drop, event_sin
                 P._accumulate(residual, key, P.Mass(num, den), 1)
         if start is not None:
             merge_seconds+=time.perf_counter()-start
-            worker_seconds.append(partial['worker_seconds'])
+            pid=partial['worker_pid']
+            worker_seconds[pid]=worker_seconds.get(pid,0.)+partial['worker_seconds']
 
+    reused=False;persistent=False
     if workers == 1:
         merge(_drop_batch((0,len(ordered)),context))
     else:
+        if residual_pool is not None:persistent,reused=residual_pool.prepare(drop,P.Mass,workers)
         global _drop_context
         _drop_context = context
-        chunk = (len(ordered) + workers - 1)//workers
+        # Keep a useful minimum batch, but allow the existing fork pool
+        # to distribute uneven state work dynamically. pool.map retains
+        # deterministic merge order; grouped terms are exact integers.
+        chunk = max(MIN_DROPS_PER_WORKER,(len(ordered)+4*workers-1)//(4*workers))
         batches = [(i,min(i+chunk,len(ordered))) for i in range(0,len(ordered),chunk)]
         try:
-            with ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork')) as pool:
-                for partial in pool.map(_drop_batch,batches):
-                    merge(partial)
+            if persistent:
+                payloads=((ordered[start:end],denominator,completed,event_sink is not None) for start,end in batches)
+                for partial in residual_pool.pool.map(_persistent_drop_batch,payloads):merge(partial)
+            else:
+                with ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork')) as pool:
+                    for partial in pool.map(_drop_batch,batches):merge(partial)
         finally:
             _drop_context = None
     if started is not None:
         event_sink(dict(event='RESIDUAL_TIMING',completed=completed,states=len(ordered),workers=workers,
             wall_seconds=time.perf_counter()-started,parent_merge_seconds=merge_seconds,
-            worker_max_seconds=max(worker_seconds),worker_sum_seconds=sum(worker_seconds)))
+            worker_max_seconds=max(worker_seconds.values()),worker_sum_seconds=sum(worker_seconds.values()),
+            persistent_pool=persistent,pool_reused=reused,worker_pids=sorted(worker_seconds)))
 
 
 def _drop_loop(body, expression):
@@ -362,7 +438,7 @@ def _instrument_residual(tree):
     drop.args.args.append(ast.arg(arg='sink'))
     drop.args.defaults.append(ast.Constant(None))
     drop.body[:0] = ast.parse('if sink is None: sink = res').body
-    fn.body[drop_index+1:drop_index+1] = ast.parse('drop.residual = lambda: res').body
+    fn.body[drop_index+1:drop_index+1] = ast.parse('drop.residual = lambda: res\ndrop._residual_pool_sink = True').body
     loop = next(n for n in fn.body if isinstance(n,ast.For) and getattr(n.iter,'func',None)
                 and getattr(n.iter.func,'id',None)=='enumerate')
     prune = next(n for n in loop.body if isinstance(n,ast.If) and
@@ -399,9 +475,14 @@ scope.update(_prefix_restore=self._restore, _prefix_save=self._save)
     if parallel_residual:
         fn.body[indices[0]:indices[0]]=ast.parse('''
 tree = _instrument_residual(tree)
-scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
+scope.update(_drop_many=self._drop_many, _accumulate=_grouped_accumulator)
 ''').body
-    namespace=dict(P.__dict__,_prefix_instrument=_instrument,_instrument_residual=_instrument_residual)
+    # The grouped accumulator is stateless. Keep the fixed function binding
+    # rather than capturing a mutable Accelerator instance in the fork closure.
+    def grouped_accumulator(*args, original=P._accumulate):
+        return _grouped_sum(original, *args)
+    namespace=dict(P.__dict__,_prefix_instrument=_instrument,_instrument_residual=_instrument_residual,
+                   _grouped_accumulator=grouped_accumulator)
     exec(compile(ast.fix_missing_locations(tree),'fixed_accelerator_with_prefix_hooks','exec'),namespace)
     build_kernel=namespace['_kernel']
     import numpy as np
@@ -500,7 +581,7 @@ scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
     if parallel_residual:
         PrefixAccelerator.propagate=_fixed_propagate(P)
         PrefixAccelerator._drop_many=lambda self,*args:_drop_many(P,self.workers,*args,
-            event_sink=self._event if self.profile_residual else None)
+            event_sink=self._event if self.profile_residual else None,residual_pool=getattr(self,'_residual_pool',None))
         PrefixAccelerator._grouped_sum=lambda self,*args:_grouped_sum(P._accumulate,*args)
     return PrefixAccelerator
 
@@ -508,17 +589,19 @@ scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
 @contextmanager
 def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=None,max_bytes=DEFAULT_CACHE_MAX_BYTES,
               parallel_residual=False,selective_rounds=(),selective_window_seconds=DEFAULT_SELECTIVE_WINDOW_SECONDS,
-              profile_residual=False):
+              profile_residual=False,persistent_residual_pool=False):
     """Patch only this worker's accelerator constructor for its existing entry."""
     cls=accelerator_class(P,parallel_residual=parallel_residual);store=PrefixStore(directory,max_bytes=max_bytes)
     # Existing Observed subclasses resolve super() to the old base. Replace its
     # _kernel and add hook methods for the context rather than changing its MRO.
+    if persistent_residual_pool and not parallel_residual:raise ValueError('Persistent residual pool requires parallel residuals')
+    pool=ResidualPool() if persistent_residual_pool else None
     original=P.Accelerator.__init__
     def init(self,**kwargs):
         self.store=store;self.cache_namespace=deepcopy(cache_namespace)
         self.checkpoint_rounds=checkpoint_rounds;self.cache_events=[];self.cache_sink=event_sink
         self.selective_rounds=set(selective_rounds);self.selective_window_seconds=selective_window_seconds
-        self.profile_residual=profile_residual
+        self.profile_residual=profile_residual;self._residual_pool=pool
         original(self,**kwargs)
     hooks={'__init__':init,'_kernel':cls._kernel,'_event':cls._event,'_restore':cls._restore,'_save':cls._save,
            '_observe_selective':cls._observe_selective}
@@ -527,4 +610,6 @@ def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=No
     with ExitStack() as stack:
         for name,fn in hooks.items():
             stack.enter_context(patch.object(P.Accelerator,name,fn,create=True))
-        yield
+        try:yield
+        finally:
+            if pool is not None:pool.close()

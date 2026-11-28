@@ -5,6 +5,7 @@ compiler resolve from a stage profile; output workspaces and Git publications
 are owned by one attempt. Dry-check probes identities, never scientific leaves.
 """
 from copy import deepcopy
+from functools import lru_cache
 import errno
 import hashlib
 import fcntl
@@ -108,6 +109,29 @@ def select_preparation_profile(base, assignment):
 def _head(root):return subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
 
 
+def _file_identity(path):
+    info=Path(path).stat()
+    return (info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_ctime_ns)
+
+
+def _read_fixed_file_sha(path, identity):
+    sha=file_digest(path)
+    if _file_identity(path)!=identity:
+        raise ValueError('Fixed runtime file changed during hash verification: '+str(path))
+    return sha
+
+
+_cached_fixed_file_sha=lru_cache(maxsize=8192)(_read_fixed_file_sha)
+
+
+def fixed_file_sha(path):
+    path=Path(path).resolve()
+    identity=_file_identity(path)
+    if time.time_ns()-max(identity[-2:])<1_000_000_000:
+        return _read_fixed_file_sha(path,identity)
+    return _cached_fixed_file_sha(path,identity)
+
+
 def _source(profile, source):
     root=(profile.get('preparation_sources')or{}).get(source['commit'])
     if isinstance(root,dict):root=root.get('root')
@@ -119,7 +143,7 @@ def _source(profile, source):
         raise ValueError('Preparation requires fixed scientific SOURCE files')
     for name,sha in source['files'].items():
         path=root.joinpath(*artifact_path(name).parts)
-        if not path.is_file() or path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest()!=sha:
+        if not path.is_file() or path.is_symlink() or fixed_file_sha(path)!=sha:
             raise ValueError('Preparation SOURCE hash differs: '+name)
     return root
 
@@ -161,11 +185,27 @@ if 'numpy' in sys.modules:
 print(json.dumps(dict(executable=sys.executable, version=sys.version,
     version_info=list(sys.version_info), platform=platform.platform(), packages=packages,numpy_build=numpy_build)))
 """
+    core=requirements.get('openblas_coretype')
+    env=preparation_environment(profile)
+    imports=list(requirements.get('imports', []))
+    if core is not None:
+        if core not in ('HASWELL','NEHALEM') or profile.get('openblas_coretype')!=core:
+            raise ValueError('Preparation fixed OpenBLAS profile differs')
+        if 'numpy' not in imports:imports.append('numpy')
+        env['OPENBLAS_VERBOSE']='2'
     result=subprocess.run([python,'-B','-c',probe],input=json.dumps(dict(
-        packages=list(requirements.get('packages', {})), imports=requirements.get('imports', []))),
-        text=True,capture_output=True,env=preparation_environment(profile))
+        packages=list(requirements.get('packages', {})), imports=imports)),
+        text=True,capture_output=True,env=env)
     if result.returncode:raise ValueError('Preparation runtime/package probe failed: '+result.stderr.strip()[-1500:])
     runtime=json.loads(result.stdout)
+    if core is not None:
+        # Metadata-only import probe: require actual OpenBLAS dispatch
+        # evidence, not merely the environment variable selecting it.
+        observed=[line.split(':',1)[1].strip().upper() for line in result.stderr.splitlines()
+                  if line.startswith('Core:')]
+        if not observed or any(value!=core for value in observed):
+            raise ValueError('Preparation actual OpenBLAS core differs or unavailable')
+        runtime['openblas_coretype']=core
     if runtime['executable']!=python:
         actual=Path(runtime['executable']).resolve()
         runtime.update(interpreter_invocation=python,launcher_sha256=hashlib.sha256(Path(python).read_bytes()).hexdigest(),actual_executable_realpath=str(actual),actual_binary_sha256=hashlib.sha256(actual.read_bytes()).hexdigest())
@@ -201,7 +241,7 @@ def _required_path_facts(profile, requirements):
         root=Path(target).resolve();kind=required.get('kind')
         if kind=='file':
             if not root.is_file():raise ValueError('Required runtime file missing: '+str(root))
-            actual=hashlib.sha256(root.read_bytes()).hexdigest()
+            actual=fixed_file_sha(root)
             if actual!=required['sha256']:raise ValueError('Required runtime file hash differs: '+required['controller_path'])
             facts[alias]=dict(path=str(root),kind=kind,sha256=actual)
         elif kind=='directory':
@@ -209,11 +249,28 @@ def _required_path_facts(profile, requirements):
             if not required.get('files'):raise ValueError('Required runtime provider source manifest missing: '+required['controller_path'])
             for name,sha in required['files'].items():
                 path=root.joinpath(*artifact_path(name).parts)
-                if not path.is_file()or hashlib.sha256(path.read_bytes()).hexdigest()!=sha:
+                if not path.is_file()or fixed_file_sha(path)!=sha:
                     raise ValueError('Required runtime provider SOURCE differs: '+name)
             facts[alias]=dict(path=str(root),kind=kind,files=deepcopy(required['files']))
         else:raise ValueError('Unknown required runtime path type')
     return facts
+
+
+def verify_h8_saved_preparation_metadata(spec, path_facts):
+    """Check the archived side of H8 startup identity without numerical startup."""
+    expected = spec.get('h8_saved_preparation_hashes')
+    if not expected:
+        return
+    facts = path_facts.get('hchain_assets') or {}
+    name = 'inputs/h8_preparation_export.json'
+    if name not in facts.get('files', {}):
+        raise ValueError('H8 saved preparation export is not declared in fixed runtime inputs')
+    path = Path(facts['path'])/name
+    exported = read(path)
+    for prefix, saved in expected.items():
+        observed = (exported.get('faithful:p'+prefix) or {}).get('preparation_hash')
+        if observed != saved:
+            raise ValueError('H8 saved preparation identity differs for prefix '+prefix+': expected '+str(saved)+', observed '+str(observed))
 
 
 def pauli_calibration_runtime(profile):
@@ -451,6 +508,30 @@ def _verify_fixed_git_inputs(root, locators):
                 raise ValueError('Preparation fixed Git input differs: ' + path)
 
 
+def hchain_startup_hold(profile, request, fingerprint):
+    """Hold the same host/plan/runtime after an observed startup identity failure.
+
+    This is an operational exclusion, not a result or an absence proof. A
+    different fixed runtime or input has a different key.
+    """
+    spec = request['preparation']
+    if spec.get('provider') != 'HCHAIN_SCOPED' or not profile.get('work_dir'):
+        return None
+    contract = request.get('original_contract') or {}
+    # The worker spool is run-local. PLAN.json is split into different batch
+    # packets; a plan-wide startup mismatch must hold their shared owner,
+    # not just the single packet that first detected it.
+    plan = dict(owner=contract.get('scope_owner'), binding=contract.get('binding'),
+                fixed_plan=contract.get('fixed_plan_sha256'))
+    if not plan['owner']:
+        plan['packet'] = fingerprint['input_artifacts'].get('PLAN.json')
+    key = digest(dict(host=profile['host_id'], source=spec['source'], plan=plan,
+                      assets=fingerprint['runtime_paths'], runtime=fingerprint['runtime'],
+                      tools=fingerprint['tools'], interpreter=profile.get('interpreter'),
+                      adapter=profile.get('preparation_adapter_manifest')))
+    return Path(profile['work_dir'])/'HCHAIN_STARTUP_HOLDS'/(key+'.json')
+
+
 def current_preparation_fingerprint(assignment, base_profile, *, check_workspace=False):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
     pauli_calibration_manifest(spec)
@@ -482,6 +563,8 @@ def current_preparation_fingerprint(assignment, base_profile, *, check_workspace
         if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe required SOURCE alias')
         views['view:'+alias]=str(_source(profile,required['source']))
     path_facts=_required_path_facts(profile,spec.get('required_paths',{}))
+    if spec.get('provider') == 'HCHAIN_SCOPED':
+        verify_h8_saved_preparation_metadata(spec,path_facts)
     pauli_runtime=pauli_calibration_runtime(profile) if spec.get('publish_pauli_binding') is True else None
     input_root=_metadata_input_repository(profile,root,spec)
     try:
@@ -501,7 +584,7 @@ def current_preparation_fingerprint(assignment, base_profile, *, check_workspace
         if _head(adapter_root)!=adapter['commit']:raise ValueError('Preparation adapter SOURCE HEAD differs')
         for name,sha in adapter['files'].items():
             path=adapter_root.joinpath(*artifact_path(name).parts)
-            if not path.is_file()or hashlib.sha256(path.read_bytes()).hexdigest()!=sha:raise ValueError('Preparation adapter SOURCE hash differs: '+name)
+            if not path.is_file()or fixed_file_sha(path)!=sha:raise ValueError('Preparation adapter SOURCE hash differs: '+name)
     runtime,tools=_runtime(profile,spec.get('runtime_requirements',{}))
     inputs=input_manifest(request)
     for bundle in spec.get('input_git_bundles',[]):artifact_hash(bundle['sha256'])
@@ -519,6 +602,9 @@ def current_preparation_fingerprint(assignment, base_profile, *, check_workspace
     facts = dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=source,input_hashes=spec.get('input_hashes',[]),working_input_hashes=spec.get('working_input_hashes',[]),required_views=spec.get('required_views',{}),required_paths=spec.get('required_paths',{}),runtime_paths=path_facts,input_artifacts=inputs,profile=preparation_profile_core(profile),views=views,runtime=runtime,tools=tools)
     if pauli_runtime is not None:
         facts['pauli_calibration_runtime'] = pauli_runtime
+    hold = hchain_startup_hold(profile, request, facts)
+    if hold is not None and hold.is_file():
+        raise ValueError('HCHAIN_STARTUP_IDENTITY_HOLD: '+str(hold))
     return facts
 
 
@@ -957,6 +1043,16 @@ def execute(assignment, base_profile, directory):
             returncode=process.returncode if process.returncode>=0 else None,
             signal=-process.returncode if process.returncode<0 else None,
             scientific_body_started=True, returned_artifacts=len(artifacts))
+        if spec.get('provider') == 'HCHAIN_SCOPED' and 'StartupMismatch: HCHAIN_STARTUP_MISMATCH: ' in outcome['failure_summary']:
+            field = outcome['failure_summary'].split('HCHAIN_STARTUP_MISMATCH: ', 1)[1]
+            outcome['failure_diagnostic'].update(phase='HCHAIN_STARTUP_IDENTITY', field=field,
+                                                 leaf_started=False)
+            # Only a plan-wide binding mismatch blocks other batches. A single
+            # schedule mismatch does not prove that other cells are invalid.
+            hold = hchain_startup_hold(profile, request, fingerprint)
+            if hold is not None and field in ('binding', 'target', 'compiler', 'verified_saved_preparations'):
+                put(hold, dict(job_id=request['request_id'], request_sha256=assignment['request_sha256'],
+                               field=field, automatic_retry=False))
     outcome.update(status='PREPARATION_COMPLETE'if process.returncode==0 else'PREPARATION_FAILED',
                    artifacts=artifacts,git_bundles=bundles)
     put(directory/'ARTIFACT_MANIFEST.json',artifacts);put(directory/'OUTCOME.json',outcome)

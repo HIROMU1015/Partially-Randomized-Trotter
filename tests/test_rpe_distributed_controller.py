@@ -194,18 +194,21 @@ class ControllerFailures(unittest.TestCase):
             jobs[provider] = ex.submit_preparation(request, approved=True, budget=3)
         value = dict(host_id='local', slots=2, capacity=2, source_sha=self.source,
                      resource_report=dict(admitted_task_classes=['preparation:audit:MEASURED_A',
-                                                                 'preparation:audit:MEASURED_B']))
+                                                                 'preparation:audit:MEASURED_B'],
+                         admitted_task_class_slots={'preparation:audit:MEASURED_A':0,'preparation:audit:MEASURED_B':1}))
         assignments = ex.rpc('/v1/poll', value)['assignments']
-        self.assertEqual({item['job_id'] for item in assignments}, {jobs['MEASURED_A'], jobs['MEASURED_B']})
+        self.assertEqual({item['job_id'] for item in assignments}, {jobs['MEASURED_B']})
+        self.assertEqual(ex.store.row(jobs['MEASURED_A'])['state'], 'QUEUED')
         self.assertEqual(ex.store.row(jobs['COLD'])['state'], 'QUEUED')
 
     def close_one(self, executor):
         # The fixture starts no processes, so release only its synthetic tasks
         # to avoid hanging test teardown when testing a missing _finished call.
+        from trottertracks.rpe_optimizer_concurrent import transition_task
         with executor.state.cv:
             for task in executor.state.tasks.values():
                 if task.status == 'RUNNING':
-                    task.status = 'DONE'; task.event.set()
+                    transition_task(executor.state,task,'DONE'); task.event.set()
             executor.state.active = 0
             executor.state.cv.notify_all()
         executor.finish()
@@ -814,6 +817,69 @@ class ControllerFailures(unittest.TestCase):
         self.assertEqual(len(second), 2)
         self.assertTrue({a['job_id'] for a in first}.isdisjoint(a['job_id'] for a in second))
 
+    def test_queue_observer_reports_actual_thread_cpu_and_wall_time(self):
+        ex=self.executor(capacity=2)
+        self.enqueue(ex,'profile-fixture')
+        ex.rpc('/v1/poll',dict(host_id='server1',slots=1,capacity=1,source_sha=self.source,observe_only=True))
+        ex._timing_queue()
+        with ex.state.cv:
+            self.assertTrue(ex.state.cv.wait_for(lambda:bool(getattr(ex.state,'queue_observer_profile',{})),timeout=5))
+            profile=dict(ex.state.queue_observer_profile)
+        self.assertGreater(profile['samples'],0)
+        self.assertGreater(profile['thread_cpu_seconds'],0)
+        self.assertGreater(profile['wall_seconds'],0)
+        self.assertLessEqual(profile['report_cpu_seconds'],profile['thread_cpu_seconds'])
+
+    def test_spare_slot_matching_does_not_hold_queue_lock_and_discards_stale_result(self):
+        from concurrent.futures import ThreadPoolExecutor
+        ex=self.executor(capacity=1)
+        self.enqueue(ex,'fixture-demand')
+        ex.rpc('/v1/poll',dict(host_id='server1',slots=1,capacity=1,source_sha=self.source,observe_only=True))
+        entered=threading.Event();release=threading.Event()
+        def slow_match(*args,**kwargs):
+            entered.set();assert release.wait(3);return set()
+        with patch.object(DistributedExecutor,'_match_ready_jobs',side_effect=slow_match), ThreadPoolExecutor() as pool:
+            future=pool.submit(ex.has_spare_slot)
+            try:
+                self.assertTrue(entered.wait(3))
+                self.assertTrue(ex.state.cv.acquire(timeout=1))
+                try:ex.state.cv.notify_all()
+                finally:ex.state.cv.release()
+            finally:release.set()
+            self.assertFalse(future.result(timeout=3))
+
+    def test_full_standby_window_does_not_starve_another_method_demand(self):
+        ex = self.executor(capacity=1)
+        view = ex.for_method('PR_PAULI')
+        other = SimpleNamespace(method='PR_DF')
+        view.state.tasks['standby'] = SimpleNamespace(status='QUEUED', demand=False,
+            rule={'kind':'artificial'}, view=other)
+        view.state.active = 1
+        try:
+            self.assertFalse(view._standby_has_capacity())
+            self.assertTrue(view._demand_has_queue_room())
+            view.state.tasks['demand'] = SimpleNamespace(status='QUEUED', demand=True,
+                rule={'kind':'artificial'}, view=view)
+            self.assertFalse(view._demand_has_queue_room())
+        finally:
+            view.state.tasks.clear()
+            view.state.active = 0
+
+    def test_standby_method_turn_balances_only_ready_competing_methods(self):
+        from collections import deque
+        ex=self.executor(capacity=4)
+        a=ex.for_method('PR_PAULI'); b=ex.for_method('PR_DF')
+        a.standby=deque([{}]); b.standby=deque([{}])
+        ex.state.standby_views={'PR_PAULI':a,'PR_DF':b}
+        ex.state.tasks['standby']=SimpleNamespace(status='QUEUED',demand=False,rule={'kind':'artificial'},view=a)
+        try:
+            self.assertFalse(a._standby_method_turn())
+            self.assertTrue(b._standby_method_turn())
+            b._awaiting_probe_revision=getattr(ex.state,'probe_revision',0)
+            self.assertTrue(a._standby_method_turn())
+        finally:
+            ex.state.tasks.clear();ex.state.standby_views.clear()
+
     def test_fleet_prepares_two_waves_for_each_host_before_pbs_first_offer(self):
         from types import SimpleNamespace
         ex = self.executor(capacity='auto', controller_queue_first=True, work_conserving_search=True)
@@ -832,8 +898,10 @@ class ControllerFailures(unittest.TestCase):
         rows = ex.store.rows()
         self.assertEqual(len(rows), 3 + 2*(3+4))
         self.assertTrue(all(row['state'] == 'QUEUED' for row in rows))
-        for task in view.state.tasks.values():
-            task.supply_hosts = {'server2'}
+        from trottertracks.rpe_optimizer_concurrent import set_task_supply_hosts
+        with view.state.cv:
+            for task in view.state.tasks.values():
+                set_task_supply_hosts(view.state,task,{'server2'})
         self.assertTrue(view._standby_can_fill())
         view._fill_standby()
         self.assertGreater(len(ex.store.rows()), len(rows))
@@ -1018,6 +1086,9 @@ class ControllerFailures(unittest.TestCase):
         self.assertEqual(answer['disposition'], 'REQUEUED_PROVED_UNSTARTED')
         self.assertEqual(executor.store.row(task.job.name)['state'], 'QUEUED')
         self.assertEqual(task.status, 'QUEUED')
+        from trottertracks.rpe_optimizer_concurrent import queued_count,tasks_with_status
+        self.assertIn(task,tasks_with_status(executor.state,'QUEUED'))
+        self.assertEqual(queued_count(executor.state,'q3'),1)
         self.assertTrue((task.job/'attempt-history'/assignment['attempt_id']/'LAUNCH.json').is_file())
         self.assertEqual(executor.store.counts('PR_PAULI'), 1)
         self.assertEqual(executor.store.counts('PR_PAULI', observed_only=True), 0)
@@ -1405,6 +1476,17 @@ class ControllerFailures(unittest.TestCase):
         for name in payload['files']:
             self.assertTrue((task.job/name).samefile(stage/name), name)
         self.assertEqual((task.job/'raw/RESULT.json').read_bytes(), evidence)
+        accepted=resumed.store.row(task.job.name)
+        resumed._publish_transfer(accepted,startup=True)
+        marker=self.run/'distributed'/'publication_checks'/assigned['job_id']/(assigned['attempt_id']+'.json')
+        self.assertTrue(marker.is_file())
+        saved=json.loads(marker.read_text());stable=max(stamp[-1] for root in ('stage','job') for stamp in saved[root].values())+2_000_000_000
+        with patch('trottertracks.rpe_optimizer_concurrent.time.time_ns',return_value=stable), \
+             patch.object(Path,'rglob',side_effect=AssertionError('unchanged publication must not walk files')):
+            resumed._publish_transfer(accepted,startup=True)
+        (task.job/'raw/RESULT.json').unlink()
+        resumed._publish_transfer(accepted,startup=True)
+        self.assertTrue((task.job/'raw/RESULT.json').samefile(stage/'raw/RESULT.json'))
         answer = resumed.for_method('PR_PAULI').answer(proposal)
         self.assertEqual(answer['status'], O.PASS)
         self.assertEqual(answer['calls'], 0)
@@ -1496,3 +1578,57 @@ class ControllerFailures(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
+
+
+def test_task_index_tracks_queue_claim_cancel_resume_and_removal():
+    from trottertracks.rpe_optimizer_concurrent import TaskIndex,tasks_with_status,transition_task
+    state=SimpleNamespace(tasks=TaskIndex())
+    for number in range(1000):
+        job=Path(str(number));state.tasks[job]=SimpleNamespace(job=job,status='DONE')
+    first=SimpleNamespace(job=Path('first'),status='QUEUED')
+    state.tasks[first.job]=first
+    assert tasks_with_status(state,'QUEUED')==(first,)
+    transition_task(state,first,'RUNNING')
+    assert tasks_with_status(state,'QUEUED')==()
+    assert tasks_with_status(state,'RUNNING')==(first,)
+    transition_task(state,first,'DONE')
+    fresh=SimpleNamespace(job=first.job,status='QUEUED')
+    state.tasks[first.job]=fresh
+    transition_task(state,fresh,'CANCELLED')
+    assert not tasks_with_status(state,'QUEUED')
+    assert state.tasks.pop(first.job) is fresh
+    assert not tasks_with_status(state,'CANCELLED')
+    assert len(tasks_with_status(state,'DONE'))==1000
+
+
+def test_task_index_counts_change_only_on_owner_and_demand_transitions():
+    from trottertracks.rpe_optimizer_concurrent import TaskIndex,queued_count,set_task_demand,transition_task
+    state=SimpleNamespace(tasks=TaskIndex())
+    first=SimpleNamespace(job=Path('one'),status='QUEUED',demand=False,
+                          rule={'kind':'fixture'},view=SimpleNamespace(method='PR'))
+    state.tasks[first.job]=first
+    assert queued_count(state,'all')==queued_count(state,'q3')==1
+    assert queued_count(state,'speculative','PR')==1
+    set_task_demand(state,first,True)
+    assert queued_count(state,'speculative','PR')==0
+    assert queued_count(state,'demand','PR')==queued_count(state,'demand')==1
+    transition_task(state,first,'RUNNING')
+    assert queued_count(state,'all')==queued_count(state,'demand','PR')==0
+    transition_task(state,first,'DONE')
+    assert queued_count(state,'q3')==0
+
+
+def test_task_index_supply_counts_are_updated_for_eligibility_and_ownership():
+    from trottertracks.rpe_optimizer_concurrent import TaskIndex,queued_supply_counts,set_task_supply_hosts,transition_task
+    state=SimpleNamespace(tasks=TaskIndex())
+    task=SimpleNamespace(job=Path('task'),status='QUEUED',rule={'kind':'fixture'},supply_hosts=None)
+    state.tasks[task.job]=task
+    assert queued_supply_counts(state,('a','b'))=={'a':1,'b':1}
+    set_task_supply_hosts(state,task,frozenset({'b'}))
+    assert queued_supply_counts(state,('a','b'))=={'a':0,'b':1}
+    transition_task(state,task,'RUNNING')
+    assert queued_supply_counts(state,('a','b'))=={'a':0,'b':0}
+    transition_task(state,task,'QUEUED')
+    assert queued_supply_counts(state,('a','b'))=={'a':0,'b':1}
+    del state.tasks[task.job]
+    assert queued_supply_counts(state,('a','b'))=={'a':0,'b':0}

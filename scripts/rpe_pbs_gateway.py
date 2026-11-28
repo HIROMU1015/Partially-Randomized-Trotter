@@ -21,6 +21,7 @@ import time
 
 
 BULK_CHUNK_BYTES = 1024 * 1024
+MAX_BULK_CHUNK_BYTES = 4 * BULK_CHUNK_BYTES
 _completion_last_token = None
 
 
@@ -97,7 +98,7 @@ def submit_once(directory):
     directory = Path(directory)
     with (directory/'SUBMIT.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        if (directory/'QSUB_STARTED.json').exists():
+        if (directory/'QSUB_STARTED.json').exists() or (directory/'RELEASE.json').exists():
             return
         # A consumed marker is not retried, even if qsub's reply is lost.
         atomic(directory/'QSUB_STARTED.json', dict(epoch=time.time(), pid=os.getpid()))
@@ -105,6 +106,18 @@ def submit_once(directory):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         atomic(directory/'QSUB_RETURN.json', dict(returncode=process.returncode,
             stdout=process.stdout.strip(), stderr=process.stderr.strip(), epoch=time.time()))
+
+
+def submit_async(directory):
+    """Return from ordinary gateway ensure without waiting for scheduler qsub."""
+    directory = Path(directory)
+    if (directory/'QSUB_STARTED.json').exists():
+        return
+    # Every child uses the existing durable SUBMIT.lock and consumed-marker
+    # check. A duplicate launch cannot perform a second qsub for this token.
+    with (directory/'SUBMIT.log').open('ab') as log:
+        subprocess.Popen([sys.executable,'-B',str(Path(sys.argv[0]).resolve()),'--submit',str(directory)],
+            stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
 
 
 def ensure(root, spec):
@@ -165,12 +178,13 @@ class SchedulerCache:
         self.terminal_sessions = set()
         self.discoveries = {}
 
-    def discover(self, lookup, *, force=False):
+    def discover(self, lookup, *, force=False, key=None):
         now = time.monotonic()
-        cached = self.discoveries.get(lookup)
+        key = lookup if key is None else key
+        cached = self.discoveries.get(key)
         if force or cached is None or now - cached[0] >= self.seconds:
             cached = now, lookup()
-            self.discoveries[lookup] = cached
+            self.discoveries[key] = cached
         return cached[1]
 
     def query(self, job_ids, *, force=False):
@@ -193,6 +207,7 @@ def snapshot(root, finished=None, directories=None, *, scheduler=None, force=Fal
         return []
     ids = []
     discovery = False
+    named_discoveries = []
     ended = set()
     for directory in directories:
         marker = directory/'STATE.json'
@@ -207,7 +222,11 @@ def snapshot(root, finished=None, directories=None, *, scheduler=None, force=Fal
         elif receipt and receipt['returncode'] == 0 and receipt['stdout'].strip():
             ids.append(receipt['stdout'].split()[0])
         elif (directory/'QSUB_STARTED.json').exists() and not receipt:
-            discovery = True
+            spec = read(directory/'SPEC.json') or {}
+            if spec.get('run_managed') is True:
+                named_discoveries.append(spec['token'])
+            else:
+                discovery = True
     finished = {} if finished is None else finished
     jobs = {job_id: finished[job_id] for job_id in ids if job_id in finished}
     query = tuple(job_id for job_id in dict.fromkeys(ids) if job_id not in finished)
@@ -223,6 +242,12 @@ def snapshot(root, finished=None, directories=None, *, scheduler=None, force=Fal
                         if job.get('job_state') == 'F' and job_id in ids)
         if scheduler is not None:
             scheduler.terminal_sessions.update(ended)
+    if named_discoveries:
+        from rpe_pbs_pilot import owned_jobs_by_name
+        for token in named_discoveries:
+            lookup = lambda token=token: owned_jobs_by_name(token)
+            fresh = lookup() if scheduler is None else scheduler.discover(lookup, key=('managed_submission',token), force=force)
+            jobs.update(fresh)
     result = []
     for directory in directories:
         spec = read(directory/'SPEC.json')
@@ -262,11 +287,50 @@ def snapshot(root, finished=None, directories=None, *, scheduler=None, force=Fal
             status = 'SUBMIT_AMBIGUOUS_HOLD' if (directory/'QSUB_STARTED.json').exists() else 'SUBMIT_PENDING'
         public_job = {key:job[key] for key in ('Job_Owner','Job_Name','job_state','Resource_List','resources_used',
             'queue','ctime','qtime','stime','etime','mtime','Exit_status','exec_host','exec_vnode','run_count') if key in job}
+        if ids:
+            record_scheduler_end(directory, ids[0], public_job)
         result.append(dict(token=spec['token'], host_id=spec['profile']['host_id'], job_id=ids[0] if ids else None,
             status=status, worker=state, receipt=receipt, allocation=read(directory/'ALLOCATION.json'),
             exit_status=job.get('Exit_status'), scheduler=public_job,
             directory=str(directory)))
     return result
+
+
+def record_scheduler_end(directory, job_id, scheduler, *, physical_token=None):
+    """Durably record positive PBS F/X evidence, never history absence."""
+    token = physical_token or directory.name
+    if (not job_id or scheduler.get('job_state') not in ('F','X')
+            or scheduler.get('Job_Name') != 'RPE'+token[:12]):
+        return None
+    facts = dict(token=directory.name, physical_token=token, job_id=job_id,
+                 job_state=scheduler['job_state'], job_name=scheduler['Job_Name'])
+    previous = read(directory/'ALLOCATION_END.json')
+    if previous is not None:
+        if any(previous.get(k) != v for k,v in facts.items() if k != 'job_state'):
+            raise ValueError('PBS terminal allocation identity changed')
+        return previous
+    proof = dict(facts, epoch=time.time())
+    atomic(directory/'ALLOCATION_END.json',proof)
+    return proof
+
+
+def scheduler_attempt_exit(directory, attempt, assignment):
+    """An ended physical allocation cannot consume a successor's capacity."""
+    owner = read(attempt/'PBS_ATTEMPT_OWNER.json', {})
+    started = read(attempt/'SUPERVISOR_STARTED.json', {})
+    allocation = read(directory/'ALLOCATION.json', {})
+    ended = read(directory/'ALLOCATION_END.json', {})
+    keys = ('job_id','attempt_id','request_sha256')
+    if (not owner or any(owner.get(k) != assignment.get(k) for k in keys)
+            or owner.get('allocation_dir') != str(directory.resolve())
+            or owner.get('token') != directory.name
+            or owner.get('supervisor_pid') != started.get('pid')
+            or not owner.get('pbs_job_id') or allocation.get('job_id') != owner['pbs_job_id']
+            or ended.get('token') != directory.name or ended.get('job_id') != owner['pbs_job_id']
+            or ended.get('job_state') not in ('F','X')):
+        return None
+    return dict(owner, session_ended=True, operator_stop=(attempt/'PBS_ATTEMPT_INTERRUPTED.json').is_file(),
+                scheduler_allocation_end=ended)
 
 
 def completion_priority(path):
@@ -297,6 +361,26 @@ def fair_completion_requests(pending, *, inline):
             yield lanes[token].popleft()
             if lanes[token]:
                 ready.append(token)
+
+
+def consumed_response_receipts(root, acknowledgements):
+    '''Return positive worker receipts only after the durable request is gone.'''
+    for token, receipts in acknowledgements.items():
+        directory=root/'allocations'/safe_id(token)
+        for request_id, expected in receipts.items():
+            path=directory/'consumed'/(safe_id(request_id)+'.json')
+            if not (directory/'requests'/(request_id+'.json')).exists() and read(path)==expected:
+                try: path.unlink()
+                except FileNotFoundError: pass
+    result={}
+    for directory in (root/'allocations').glob('*'):
+        for path in (directory/'consumed').glob('*.json'):
+            if (directory/'requests'/path.name).exists():
+                continue
+            row=read(path)
+            if row is not None:
+                result.setdefault(directory.name,{})[path.stem]=row
+    return result
 
 
 def exchange(root, incoming, finished=None, snapshotter=snapshot):
@@ -376,7 +460,10 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
             _completion_last_token = token
     if incoming.get('inline_q3_completions') is True and mode == 'completion':
         return dict(requests=requests, allocations=[], inline_bytes=inline_bytes, inline_cores=inline_cores)
-    return dict(requests=requests, allocations=[] if mode == 'completion' else snapshotter(root, finished))
+    result=dict(requests=requests, allocations=[] if mode == 'completion' else snapshotter(root, finished))
+    if mode != 'completion' and incoming.get('response_consumption_receipts') is True:
+        result['consumed']=consumed_response_receipts(root,incoming.get('consumed_ack',{}))
+    return result
 
 
 def admission_exit(directory, attempt, assignment, state):
@@ -481,6 +568,9 @@ def read_bulk_chunk(directory, request):
         else:
             raise ValueError('Unknown PBS bulk receipt kind')
     offset = request['offset']
+    limit = request.get('max_bytes', BULK_CHUNK_BYTES)
+    if type(limit) is not int or not 0 < limit <= MAX_BULK_CHUNK_BYTES:
+        raise ValueError('Invalid PBS bulk chunk size')
     if type(offset) is not int or offset < 0 or path.is_symlink():
         raise ValueError('Invalid PBS bulk receipt offset or path')
     with path.open('rb') as stream:
@@ -492,7 +582,7 @@ def read_bulk_chunk(directory, request):
         if request.get('file_identity', identity) != identity:
             raise ValueError('PBS bulk receipt changed during transfer')
         stream.seek(offset)
-        raw = stream.read(BULK_CHUNK_BYTES)
+        raw = stream.read(limit)
         if kind == 'spool':
             # The durable RPC files are ASCII JSON. Its result payload is
             # already encoded, so send this slice without another base64 layer.
@@ -539,6 +629,12 @@ def harvest(directory, wanted=None, owners=None, completed_only=False, manifest_
                 incomplete.append(dict(assignment=assignment, state=state))
             continue
         if not (path.parent/'PROCESS_RETURN.json').exists():
+            terminal = scheduler_attempt_exit(directory, path.parent, assignment)
+            if terminal is not None and state.get('state') not in ('TRANSFERRED','COMPLETED_PENDING_TRANSFER'):
+                detail = dict(state.get('detail') or {},resource_released=True,automatic_retry=False,
+                              pbs_attempt_exit=terminal,reason='PBS_PHYSICAL_ALLOCATION_ENDED')
+                incomplete.append(dict(assignment=assignment,state=dict(state,state='UNKNOWN',detail=detail)))
+                continue
             # The same host directory can contain attempts from several
             # shared-pilot sessions. Only this session's own worker can prove
             # that an incomplete attempt lost its execution owner.
@@ -625,10 +721,83 @@ def attempt_control(root, value):
                 interruption=read(attempt/'PBS_ATTEMPT_INTERRUPTED.json'))
 
 
+def fence_unstarted_partition(root,value,now=None):
+    """Fence one never-started unit on the actual shared PBS filesystem.
+
+    This is an ownership operation, not a completion or a scientific start.
+    The frozen plan, existing unit lock, and export lock are its only sources.
+    """
+    root=Path(root).resolve();sha=value.get('plan_sha256');unit=safe_id(value['unit'])
+    if not isinstance(sha,str) or not re.match(r'^[0-9a-f]{64}$',sha):raise ValueError('Invalid fixed partition plan SHA')
+    raw=(root/'offline-plans'/(sha+'.json')).read_bytes()
+    if hashlib.sha256(raw).hexdigest()!=sha:raise ValueError('Fixed partition plan changed')
+    plan=json.loads(raw);settings=plan['settings']
+    if (plan.get('schema')!='RPE_PBS_OFFLINE_PLAN_V2' or settings.get('partition_start_requires_contact') is not True
+            or settings.get('partition_handoff') is not True):raise ValueError('Partition handoff was not selected in the fixed plan')
+    lease=settings.get('partition_contact_seconds',30)
+    grace=settings.get('partition_transfer_grace_seconds',lease)
+    if type(lease) is not int or lease<=0 or type(grace) is not int or grace<0:raise ValueError('Invalid contact window')
+    blocks={part['id']:part for part in plan['parts'] if part.get('owner')=='pbs'}
+    units=plan.get('packages',list(blocks.values()))
+    selected=[part for part in units if part['id']==unit]
+    if len(selected)!=1:raise ValueError('Unknown fixed PBS unit')
+    members=selected[0].get('members',[unit])
+    if not members or len(set(members))!=len(members) or not set(members)<=set(blocks):raise ValueError('Invalid unit membership')
+    expected=dict(schema='RPE_PARTITION_HANDOFF_V1',run_id=plan['run_id'],plan_sha256=sha,unit=unit,
+                  members=members,owner='central',new_claims=0)
+    offline=root/'independent-search';part=offline/'parts'/unit
+    if part.resolve()!=part or offline.is_symlink():raise ValueError('Unsafe partition directory')
+    part.mkdir(parents=True,exist_ok=True)
+    marker=part/'CENTRAL_HANDOFF.json'
+    if any(path.is_symlink() for path in (part/'OWNER.lock',offline/'EXPORT.lock',marker)):
+        raise ValueError('Partition fence paths must be ordinary files')
+    with (part/'OWNER.lock').open('a+b') as owner_lock:
+        fcntl.flock(owner_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        with (offline/'EXPORT.lock').open('a+b') as export_lock:
+            fcntl.flock(export_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            coverage=read(offline/'COVERAGE.json',{'changes':0,'parts':{}})
+            prior=read(marker)
+            if prior is not None:
+                if prior!=expected:raise ValueError('Existing partition transfer identity differs')
+            else:
+                now=time.time() if now is None else now
+                for allocation in (root/'allocations').glob('*'):
+                    if not allocation.is_dir():continue
+                    profile=read(allocation/'PROFILE.json')
+                    if profile is None:raise ValueError('Unconfirmed allocation profile')
+                    pbs=profile.get('pbs',{})
+                    if (pbs.get('offline_plan') or {}).get('sha256')!=sha:raise ValueError('Allocation has another fixed partition plan')
+                    # Even ended sessions must be positively bound to the
+                    # new protocol; an old or missing worker record is not
+                    # evidence that a later replacement honors the fence.
+                    state=read(allocation/'STATE.json',{})
+                    control=read(allocation/'CONTROL.json',{})
+                    contact=control.get('contact')
+                    if (state.get('partition_handoff_protocol')!=1 or type(contact) not in (int,float)
+                            or not 0<=now-contact or now-contact<lease+grace):
+                        raise ValueError('PBS ownership/contact is not safely expired')
+                if any(child.name!='OWNER.lock' for child in part.iterdir()):raise ValueError('Partition has checkpoint or claim evidence')
+                if unit in coverage.get('parts',{}) or (offline/'reports'/unit).exists():raise ValueError('Partition has coverage evidence')
+                results=read(offline/'RESULTS.json',{})
+                if any(row.get('part') in set(members+[unit]) for row in results.values()):raise ValueError('Partition has exported results')
+                if any(str(job.relative_to(offline/'jobs')) not in results for job in (offline/'jobs').glob('*/*') if job.is_dir()):
+                    raise ValueError('Unreconciled export workspace')
+                atomic(marker,expected)
+                descriptor=os.open(str(part),os.O_RDONLY|os.O_DIRECTORY)
+                try:os.fsync(descriptor)
+                finally:os.close(descriptor)
+            status={'handoff':expected}
+            if coverage['parts'].get(unit)!=status:
+                if unit in coverage['parts']:raise ValueError('Partition coverage changed after fence')
+                coverage['parts'][unit]=status;coverage['changes']+=1
+                atomic(offline/'COVERAGE.json',coverage)
+            return expected
+
+
 def handle(root, value, finished=None, scheduler=None):
     action = value['action']
     if action == 'managed_capabilities':
-        return dict(managed_keeper=True, mode='run-per-host', worker_session_replacement=True)
+        return dict(managed_keeper=True, mode='run-per-host', worker_session_replacement=True, managed_afterany_successor=True, response_consumption_receipts=True, partition_handoff_protocol=1)
     if action in ('attempt_stop', 'attempt_status'):
         return attempt_control(root, value)
     if action == 'intent_present':
@@ -646,15 +815,25 @@ def handle(root, value, finished=None, scheduler=None):
     if action == 'snapshot':
         from rpe_pbs_pilot import session_snapshot
         return dict(allocations=session_snapshot(root, finished, scheduler=scheduler, force=True))
+    if action == 'stage_managed_successor':
+        from rpe_pbs_pilot import stage_managed_successor
+        return stage_managed_successor(root, value)
     if action == 'release_managed_node':
         from rpe_pbs_pilot import release_managed_node
         return release_managed_node(root, safe_id(value['host_id']))
+    if action == 'fence_unstarted':
+        from rpe_pbs_pilot import fence_unstarted, fence_legacy_unstarted
+        directory=root/'allocations'/safe_id(value['token'])
+        return dict(state=(fence_unstarted(root,value) if (directory/'PILOT.json').exists()
+                           else fence_legacy_unstarted(root,value)))
     if action == 'harvest':
         return harvest(root/'allocations'/safe_id(value['token']), value.get('hashes'), value.get('owners'),
                        completed_only=value.get('completed_only') is True,
                        manifest_only=value.get('manifest_only') is True)
     if action == 'read_bulk_chunk':
         return read_bulk_chunk(root/'allocations'/safe_id(value['token']), value)
+    if action == 'fence_unstarted_partition':
+        return fence_unstarted_partition(root,value)
     if action == 'offline_results':
         directory = offline_root(root/'allocations'/safe_id(value['token']))
         return dict(jobs=read(directory/'RESULTS.json', {}), coverage=read(directory/'COVERAGE.json', {}))

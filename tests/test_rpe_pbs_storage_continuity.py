@@ -48,7 +48,9 @@ def test_independent_copies_only_share_adopted_byte_identical_results(tmp_path):
 def test_independent_admission_sampling_never_reclaims_or_repeats_scan(tmp_path):
     policy=dict(limit_bytes=50*GIB, roots=[str(tmp_path)], sample_path=str(tmp_path/'STORAGE_USAGE_GATEWAY.json'))
     (tmp_path/'OFFLINE_ACTIVE').touch()
-    with patch.object(storage,'_used_bytes',return_value=48*GIB) as measure, patch.object(storage,'_reclaim') as cleanup:
+    with (patch.object(storage,'_used_bytes',return_value=48*GIB) as measure,
+          patch.object(storage,'_reclaim') as cleanup,
+          patch.object(storage.shutil,'disk_usage',return_value=type('Usage',(),{'free':40*GIB})())):
         first=storage.report(policy,spools=(str(tmp_path),),proactive=True,measurement_only=True)
         second=storage.report(policy,spools=(str(tmp_path),),proactive=True,measurement_only=True)
     assert measure.call_count==1 and cleanup.call_count==0 and first==second
@@ -135,3 +137,124 @@ def test_bundled_streaming_cache_installs_initialization_and_helpers(tmp_path, m
     assert cache.missing([sha])==[sha]
     cache.put({sha:base64.b64encode(data).decode()})
     assert cache.missing([sha])==[] and cache.get([sha])[sha]==base64.b64encode(data).decode()
+
+
+def test_cleanup_failure_does_not_invalidate_fresh_capacity_measurement(tmp_path):
+    policy = dict(roots=[str(tmp_path)], limit_bytes=100, sample_path=str(tmp_path/'sample.json'))
+    with patch.object(storage, '_used_bytes', return_value=81) as measure, \
+         patch.object(storage, '_reclaim', side_effect=OSError('artificial cleanup failure')):
+        result = storage.report(policy, spools=[str(tmp_path)], proactive=True)
+    assert result['used_bytes'] == 81
+    assert result['accepting_new_jobs'] is True
+    assert 'cleanup_error' in result
+    assert measure.call_count == 2
+
+
+def test_background_storage_never_blocks_poll_or_offers_unmeasured_capacity(tmp_path):
+    from threading import Event
+    policy=dict(limit_bytes=100, roots=[str(tmp_path)], sample_path=str(tmp_path/'sample.json'))
+    ready=Event(); started=Event()
+    def measure(*args, **kwargs):
+        started.set(); assert ready.wait(2)
+        return dict(limit_bytes=100,used_bytes=10,accepting_new_jobs=True,reason=None,
+                    filesystem_free_bytes=1000,filesystem_min_free_bytes=10)
+    with patch.object(storage,'report',side_effect=measure):
+        lane=storage.BackgroundStorage(policy)
+        try:
+            assert not lane.poll()['accepting_new_jobs']
+            assert started.wait(1)
+            assert not lane.poll()['accepting_new_jobs']
+            ready.set(); lane.sample.result(timeout=2)
+            assert lane.poll()['accepting_new_jobs']
+        finally:
+            ready.set(); lane.close()
+
+
+def test_owned_sampler_child_is_reaped_when_stopping(tmp_path):
+    import subprocess, sys, threading, time
+    from trottertracks import rpe_worker_storage as storage
+    stop = threading.Event()
+    errors = []
+    marker = tmp_path/'pid'
+    def sample():
+        storage.set_storage_stop_event(stop)
+        try:
+            storage._du_output([sys.executable,'-c',
+                'import os,time,pathlib,sys; pathlib.Path(sys.argv[1]).write_text(str(os.getpid())); time.sleep(60)',str(marker)],
+                timeout=60,text=True,stderr=subprocess.PIPE)
+        except subprocess.TimeoutExpired:
+            errors.append('cancelled')
+    thread = threading.Thread(target=sample)
+    thread.start()
+    try:
+        deadline = time.monotonic()+5
+        while not marker.exists() and time.monotonic()<deadline:
+            time.sleep(.01)
+        assert marker.exists()
+        pid = int(marker.read_text())
+    finally:
+        stop.set()
+        thread.join(timeout=5)
+    assert not thread.is_alive() and errors == ['cancelled']
+    assert not Path('/proc',str(pid)).exists()
+
+
+def test_contended_storage_sampler_uses_only_recent_actual_sample(tmp_path):
+    import fcntl,time,json
+    policy=dict(limit_bytes=10*2**30,roots=[str(tmp_path)],sample_path=str(tmp_path/'sample.json'))
+    sample=storage.report(policy,refresh=True,proactive=True,measurement_only=True)
+    assert sample['used_bytes'] is not None
+    with (tmp_path/'sample.lock').open('a+b') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        result=storage.report(policy,refresh=True,proactive=True,measurement_only=True,nonblocking=True)
+        assert result['measurement_in_progress'] is True
+        assert result['measurement_age_seconds']<storage.SAMPLE_SECONDS
+        assert result['used_bytes']==sample['used_bytes']
+        saved=json.loads((tmp_path/'sample.json').read_text())
+        saved['sampled_epoch']=time.time()-storage.SAMPLE_SECONDS-1
+        (tmp_path/'sample.json').write_text(json.dumps(saved))
+        result=storage.report(policy,refresh=True,proactive=True,measurement_only=True,nonblocking=True)
+        assert result['reason']=='STORAGE_MEASUREMENT_PENDING' and not result['accepting_new_jobs']
+
+
+def test_terminal_copy_ledger_reuses_estimates_and_invalidates_changed_paths(tmp_path):
+    ledger=storage.TerminalCopyLedger()
+    path=tmp_path/'terminal-copy';path.write_bytes(b'old')
+    names=[str(path)]
+    with patch.object(storage,'_du_output',return_value=f'4096\t{path}\n') as measure:
+        assert ledger.sizes(names,10)=={str(path):4096}
+        assert ledger.sizes(names,10)=={str(path):4096} and measure.call_count==1
+        path.write_bytes(b'changed')
+        ledger.sizes(names,10)
+        assert measure.call_count==2
+        ledger.retire(path);ledger.sizes(names,10)
+        assert measure.call_count==3
+        ledger.retain([])
+        assert not ledger.entries
+
+
+def test_incremental_storage_ledger_matches_du_with_hardlinks_sparse_mutation_and_delete(tmp_path):
+    import os
+    ledger=storage.IncrementalStorageLedger()
+    left=tmp_path/'left';right=tmp_path/'right';left.mkdir();right.mkdir()
+    file=left/'raw';file.write_bytes(b'a'*8192);os.link(file,right/'link')
+    sparse=right/'sparse'
+    with sparse.open('wb') as stream:stream.seek(1024*1024);stream.write(b'x')
+    (left/'sym').symlink_to(sparse)
+    roots=[str(left),str(right)]
+    expected=lambda:storage._used_bytes(roots)
+    assert ledger.scan(roots)==expected()
+    file.write_bytes(b'b'*32768)
+    assert ledger.scan(roots)==expected()
+    (right/'link').unlink();(left/'new').mkdir();(left/'new'/'leaf').write_bytes(b'z'*4096)
+    assert ledger.scan(roots)==expected()
+    file.unlink();sparse.unlink()
+    assert ledger.scan(roots)==expected()
+    assert not ledger.disabled
+
+
+def test_incremental_storage_ledger_disables_on_reconciliation_mismatch(tmp_path):
+    ledger=storage.IncrementalStorageLedger()
+    assert ledger.measure([str(tmp_path)],timeout=5,du=lambda:123)==123
+    assert ledger.disabled
+    assert ledger.measure([str(tmp_path)],timeout=5,du=lambda:456)==456

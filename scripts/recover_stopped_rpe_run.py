@@ -51,14 +51,30 @@ def safe_name(value):
     return value
 
 
-def read_rows(run):
+def read_rows(run, *, request_mode='all'):
     database = run/'distributed/QUEUE.sqlite3'
     if not database.is_file():
         return []
+    request_sql = {
+        'all': 'request',
+        'recovery': "CASE WHEN state IN ('QUEUED','ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER','UNKNOWN') THEN request END",
+        'archive': "CASE WHEN json_array_length(request,'$.preparation.input_git_bundles') > 0 THEN request END",
+    }[request_mode]
     with sqlite3.connect(database.as_uri()+'?mode=ro', uri=True) as db:
         db.row_factory = sqlite3.Row
-        return [dict(row, request=json.loads(row['request'])) for row in db.execute(
-            'SELECT job_id,method,state,host_id,attempt_id,request_sha256,request,adopted_epoch,completion_sha256 FROM jobs ORDER BY enqueued_epoch')]
+        return [dict(row, request=json.loads(row['request']) if row['request'] is not None else {})
+                for row in db.execute(
+                    'SELECT job_id,method,state,host_id,attempt_id,request_sha256,'
+                    f'{request_sql} AS request,adopted_epoch,completion_sha256 FROM jobs ORDER BY enqueued_epoch')]
+
+
+def has_owned_attempts(run):
+    database = run/'distributed/QUEUE.sqlite3'
+    if not database.is_file():
+        return False
+    with sqlite3.connect(database.as_uri()+'?mode=ro', uri=True) as db:
+        return db.execute("SELECT 1 FROM jobs WHERE state IN "
+                          "('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER','UNKNOWN') LIMIT 1").fetchone() is not None
 
 
 @contextmanager
@@ -242,7 +258,12 @@ def pbs_results(run, rows, cache):
     if not configured:
         for row in rows.values(): yield row, dict(state='NO_PINNED_PBS_RECOVERY_ROUTE'), None
         return
-    saved_allocations = optional(directory/'STATE.json').get('allocations', {})
+    state_path=directory/'STATE.json'
+    if state_path.with_name('STATE_DELTAS.jsonl').is_file():
+        from trottertracks.rpe_pbs_state import read_pbs_state
+        saved_allocations=read_pbs_state(state_path).get('allocations',{})
+    else:
+        saved_allocations=optional(state_path).get('allocations',{})
     gateway = Gateway(configured)
     pending = {job:dict(state='NO_SAVED_PBS_COMPLETION') for job in rows}
     try:
@@ -471,7 +492,7 @@ def recover(state, run, *, remote=True):
     from trottertracks.rpe_preparation_artifacts import ArtifactCache
     from trottertracks.rpe_q3_store import JobStore
     launch = optional(run/'LAUNCH.json')
-    rows = read_rows(run)
+    rows = read_rows(run, request_mode='recovery')
     cache = ArtifactCache(run/'distributed/artifacts')
     report = dict(run_id=run.name, invocation_id=launch.get('invocation_id'), epoch=time.time(),
                   jobs=[], repaired_inputs=[], new_scientific_calls=0)

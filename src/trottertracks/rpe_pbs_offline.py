@@ -5,6 +5,7 @@ import os
 import fcntl
 import hashlib
 import json
+import math
 from fractions import Fraction
 from pathlib import Path
 import shutil
@@ -13,6 +14,210 @@ import subprocess
 import time
 
 from .rpe_q3_worker import atomic, digest, read
+
+
+def queued_independent_q3_seconds(connection,policy,host,*,part=None):
+    """Estimate positively ready local demand using the fixed PBS policy.
+
+    Preparation inputs must already be available; this is advisory only and
+    the child retains its normal exact claim and input verification.
+    """
+    from .rpe_pbs import task_estimate
+    estimates=[]
+    for method,kind,commit in connection.execute("""
+        SELECT DISTINCT method,json_extract(request,'$.route.kind'),
+               json_extract(request,'$.route.view_commit')
+        FROM jobs WHERE state='QUEUED' AND method NOT LIKE 'PREPARATION:%'
+          AND EXISTS (SELECT 1 FROM json_each(eligibility,'$.eligible_host_ids') WHERE value='local')
+    """):
+        estimate=task_estimate(dict(method=method,route={'kind':kind,'view_commit':commit}),policy,host)
+        if type(estimate) in (int,float) and math.isfinite(estimate) and estimate>0:
+            estimates.append(estimate)
+    if part is not None:
+        from .rpe_preparation_artifacts import ArtifactCache, preparation_dependency_manifest
+        part=Path(part)
+        cache=ArtifactCache(part/'distributed'/'artifacts')
+        outcomes={}
+        def outcome_for(predecessor):
+            if predecessor not in outcomes:
+                row=connection.execute('SELECT method,state FROM jobs WHERE job_id=?',(predecessor,)).fetchone()
+                if row is None or row[1]!='ACCEPTED':raise ValueError('Dependency not accepted')
+                outcome=read(part/'jobs'/row[0]/predecessor/'OUTCOME.json')
+                if outcome.get('status')!='PREPARATION_COMPLETE':raise ValueError('Dependency did not complete')
+                outcomes[predecessor]=outcome
+            return outcomes[predecessor]
+        for raw, in connection.execute("""
+            SELECT request FROM jobs WHERE state='QUEUED' AND method LIKE 'PREPARATION:%'
+              AND EXISTS (SELECT 1 FROM json_each(eligibility,'$.eligible_host_ids') WHERE value='local')
+        """):
+            try:
+                request=json.loads(raw)
+                prep=request['preparation']
+                estimate=task_estimate(request,policy,host)
+                if (type(estimate) not in (int,float) or not math.isfinite(estimate)
+                        or estimate<=max(estimates,default=0)):
+                    continue
+                for predecessor in prep.get('dependencies',[]):outcome_for(predecessor)
+                manifest=preparation_dependency_manifest(request,outcome_for)
+                if cache.available(manifest.values()):estimates.append(estimate)
+            except (KeyError,ValueError,TypeError,OSError):
+                continue
+    return max(estimates,default=0)
+
+
+def partition_contact_valid(plan,contact,*,now=None):
+    """New opt-in plans may start a block only during fresh central contact."""
+    settings=plan['settings']
+    if settings.get('partition_start_requires_contact') is not True:return True
+    lease=settings.get('partition_contact_seconds',30)
+    if type(lease) is not int or lease<=0:raise ValueError('Invalid partition contact window')
+    age=(time.time() if now is None else now)-contact if type(contact) in (int,float) else float('inf')
+    return math.isfinite(age) and 0<=age<lease
+
+
+def partition_plan_sha(plan):
+    return hashlib.sha256(json.dumps(plan,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+
+def partition_handoff_record(plan,unit):
+    members=unit.get('members',[unit['id']])
+    return dict(schema='RPE_PARTITION_HANDOFF_V1',run_id=plan['run_id'],plan_sha256=partition_plan_sha(plan),
+                unit=unit['id'],members=members,owner='central',new_claims=0)
+
+
+def partition_handed_off(plan,unit,path):
+    marker=Path(path)/'CENTRAL_HANDOFF.json'
+    if not marker.is_file():return False
+    if plan['settings'].get('partition_handoff') is not True or marker.is_symlink():
+        raise ValueError('Partition handoff was not selected in the fixed plan')
+    if read(marker)!=partition_handoff_record(plan,unit):raise ValueError('Partition handoff identity differs')
+    return True
+
+
+def local_handoff_scope(plan,receipt):
+    """Prepare exact local child scope from a positive remote fence; no launch.
+
+    The parent plan and its existing queue remain immutable. This retains the
+    original per-block budget and prior-charge allocation, rather than adding
+    another copy of the parent's budget.
+    """
+    if not independent_plan(plan) or plan['settings'].get('partition_handoff') is not True:
+        raise ValueError('Partition handoff is not selected')
+    units=[unit for unit in pbs_units(plan) if unit['id']==receipt.get('unit')]
+    if len(units)!=1 or receipt!=partition_handoff_record(plan,units[0]):raise ValueError('Partition handoff identity differs')
+    spec=restrict_round(plan,unit_members(plan,units[0]))
+    distributed=spec['executor'].get('distributed') or {}
+    local=distributed.get('local_worker')
+    if not local:raise ValueError('No fixed RomuTail local worker in the original plan')
+    for key in ('pbs','pbs_pinned_settings','relay','pbs_offline_plan','legacy_relay_command'):
+        distributed.pop(key,None)
+    distributed['execution_hosts']=[local['host_id']]
+    if 'preparation_profiles' in distributed:
+        distributed['preparation_profiles']={host:profile for host,profile in distributed['preparation_profiles'].items() if host==local['host_id']}
+    for field in ('preparation_provider_hosts','preparation_request_hosts'):
+        if field in distributed:distributed[field]={key:[host for host in hosts if host==local['host_id']] for key,hosts in distributed[field].items()}
+    if spec.get('hchain'):
+        spec['hchain']['pbs_nodes']=0;spec['hchain'].pop('pbs_offline_search',None)
+    spec['round_id']=str(spec['round_id'])+'-romutail-handoff-'+receipt['unit']
+    # Adoption/start of this child is separately scoped by the normal entry.
+    spec['science_approved']=False
+    return deepcopy(plan['problem']),spec
+
+
+def register_local_handoff_completion(plan,directory):
+    """Adopt only an exact, normally finished local child; never run a leaf."""
+    from contextlib import closing
+    directory=Path(directory).resolve();receipt=read(directory/'HANDOFF.json')
+    problem,spec=local_handoff_scope(plan,receipt)
+    if read(directory/'PROBLEM.json')!=problem or read(directory/'ROUND.json')!=spec:
+        raise ValueError('Prepared local handoff documents differ')
+    child=directory/'child-run'
+    if child.resolve()!=child:raise ValueError('Local handoff child directory differs')
+    running_spec=dict(spec,science_approved=True)
+    if read(child/'PROBLEM.json')!=problem or read(child/'ROUND.json')!=running_spec:
+        raise ValueError('Local child has a different fixed scope')
+    termination=read(child/'SEARCH_TERMINATION.json')
+    if termination.get('reason') not in ('REQUESTED_WIDTH_RULE_EXHAUSTED','Q3_BUDGET_EXHAUSTED','EXPLICIT_STEP_LIMIT','HCHAIN_SCOPE_COMPLETE'):
+        raise ValueError('Local child has no normal terminal scope')
+    if (child/'STOP_REQUESTED.json').exists():raise ValueError('Local child has a STOP requiring review')
+    report=read(child/'ROUND_RESULT.json')
+    if set(report.get('methods',{}))!=set(spec['methods']):raise ValueError('Local child report methods differ')
+    if spec.get('hchain') and report.get('scope_owner')!=plan['hchain_preparation']['owner']:
+        raise ValueError('Local child H-chain binding differs')
+    database=child/'distributed'/'QUEUE.sqlite3'
+    if not database.is_file():raise ValueError('Local child has no durable queue')
+    caps=dict(spec['max_new_q3_per_method'])
+    caps.update({'PREPARATION:'+stage:cap for stage,cap in spec['executor']['distributed'].get('preparation',{}).get('budgets',{}).items()})
+    counts=Counter();accepted_ids=[]
+    with closing(sqlite3.connect(database.resolve().as_uri()+'?mode=ro',uri=True)) as db:
+        db.row_factory=sqlite3.Row;db.execute('BEGIN')
+        for row in db.execute('SELECT job_id,method,state,host_id,attempt_id,request,request_sha256,completion_sha256,detail FROM jobs'):
+            method=row['method'];job=row['job_id']
+            if method not in caps or Path(job).name!=job:raise ValueError('Local child job outside fixed scope')
+            if row['state']=='CANCELLED' and not row['attempt_id']:continue
+            if (row['state']!='ACCEPTED' or not row['attempt_id'] or Path(row['attempt_id']).name!=row['attempt_id']
+                    or not row['completion_sha256'] or len(row['completion_sha256'])!=64):
+                raise ValueError('Local child still has unconfirmed ownership')
+            job_dir=child/'jobs'/method/job
+            request=read(job_dir/'REQUEST.json');outcome=read(job_dir/'OUTCOME.json');returned=read(job_dir/'PROCESS_RETURN.json')
+            if (request.get('request_id')!=job or request!=json.loads(row['request']) or digest(request)!=row['request_sha256']
+                    or outcome.get('request_id')!=job or returned.get('returncode')!=0 or returned.get('signal') is not None):
+                raise ValueError('Local child receipt identity differs')
+            if spec.get('hchain') and not method.startswith('PREPARATION:') and request.get('configuration_id') not in spec['hchain']['case_ids']:
+                raise ValueError('Local child H-chain case outside transferred unit')
+            # Use the normal controller's accepted transfer rather than a report
+            # alone. Prior-partition imports require separate provenance review.
+            if json.loads(row['detail']).get('prior_partition_reuse') is True:
+                raise ValueError('Local child prior-partition evidence requires reconciliation')
+            if row['host_id']!=spec['executor']['distributed']['local_worker']['host_id']:
+                raise ValueError('Local child receipt has a different worker owner')
+            stage=child/'distributed'/'transfers'/job/row['attempt_id']
+            for name in ('OUTCOME.json','PROCESS_RETURN.json'):
+                if not (stage/name).is_file() or not (stage/name).samefile(job_dir/name):
+                    raise ValueError('Local child accepted transfer is not published')
+            counts[method]+=1;accepted_ids.append(job)
+        if any(cap not in (None,'UNLIMITED') and counts[method]>cap for method,cap in caps.items()):
+            raise ValueError('Local child exceeds transferred budget')
+    # A second locally executed owner is not a reusable partition import.
+    # Check the parent and any sibling transferred child before publishing.
+    other_queues=[path for path in directory.parent.glob('*/child-run/distributed/QUEUE.sqlite3') if path!=database]
+    if directory.parent.name=='partition-handoffs' and directory.parent.parent.name=='pbs':
+        other_queues.append(directory.parents[3]/'distributed'/'QUEUE.sqlite3')
+    for other in other_queues:
+        if not other.is_file():continue
+        with closing(sqlite3.connect(other.resolve().as_uri()+'?mode=ro',uri=True)) as db:
+            for start in range(0,len(accepted_ids),500):
+                block=accepted_ids[start:start+500]
+                placeholders=','.join('?' for _ in block)
+                if db.execute(f"SELECT 1 FROM jobs WHERE state!='CANCELLED' AND job_id IN ({placeholders}) LIMIT 1",block).fetchone():
+                    raise ValueError('Local child job has another local owner')
+    files={name:hashlib.sha256((child/name).read_bytes()).hexdigest() for name in ('ROUND_RESULT.json','SEARCH_TERMINATION.json')}
+    if (child/'SCOPE_MAP.json').is_file():files['SCOPE_MAP.json']=hashlib.sha256((child/'SCOPE_MAP.json').read_bytes()).hexdigest()
+    completion=dict(handoff=receipt,termination=termination,child=str(child),files=files,counts=dict(counts))
+    marker=directory/'LOCAL_COMPLETION.json'
+    if marker.is_file() and read(marker)!=completion:raise ValueError('Existing local handoff completion differs')
+    if not marker.is_file():atomic(marker,completion)
+    return completion
+
+
+def local_handoff_coverage(plan,directory):
+    """Read exact immutable local handoff view without treating a fence as done."""
+    directory=Path(directory);result={}
+    for unit in pbs_units(plan):
+        path=directory/unit['id'];marker=path/'HANDOFF.json'
+        if not marker.is_file():continue
+        expected=partition_handoff_record(plan,unit)
+        if read(marker)!=expected:raise ValueError('Saved partition handoff identity differs')
+        row=dict(handoff=expected)
+        complete=path/'LOCAL_COMPLETION.json'
+        if complete.is_file():
+            value=read(complete);child=path/'child-run'
+            if value['handoff']!=expected or Path(value['child']).resolve()!=child.resolve():raise ValueError('Local handoff completion identity differs')
+            if any(hashlib.sha256((child/name).read_bytes()).hexdigest()!=sha for name,sha in value['files'].items()):
+                raise ValueError('Local handoff report changed')
+            row.update(termination=value['termination'],local_child=str(child))
+        result[unit['id']]=row
+    return result
 
 
 def sqlite_busy(error):
@@ -93,13 +298,59 @@ def partition_round(round_spec, problem=None, *, independent=False):
     return parts
 
 
-def divide_budget(value, blocks):
+def divide_budget(value, blocks, *, weights=None):
     if value == 'UNLIMITED':
         return {block['id']: value for block in blocks}
     if type(value) is not int or value < 0:
         raise ValueError('Invalid fixed search budget')
     count = len(blocks)
+    if weights is not None:
+        sizes = [weights.get(block['id'], 0) for block in blocks]
+        if any(type(n) is not int or n < 0 for n in sizes):
+            raise ValueError('Invalid preparation leaf weights')
+        total = sum(sizes)
+        if total:
+            shares = [Fraction(value*n, total) for n in sizes]
+            caps = [int(share) for share in shares]
+            for i in sorted(range(count), key=lambda i: -(shares[i]-caps[i]))[:value-sum(caps)]:
+                caps[i] += 1
+            return {block['id']:cap for block,cap in zip(blocks,caps)}
     return {block['id']: value//count + (i < value%count) for i, block in enumerate(blocks)}
+
+
+def hchain_preparation_weights(plan, parts):
+    """Count fixed preparation leaves by width block, including shared price probes."""
+    stages = {stage:{} for stage in ('signal','compile','audit')}
+    cases = {case['id']:case for case in plan['cases']}
+    def group(cell, step=None):
+        raw = cell['actual_step'] if step is None else step
+        step = Fraction(raw['numerator'],raw['denominator']) if isinstance(raw,dict) else Fraction(raw)
+        return cell['method'],cell['formula'],cell['prefix'],step,cell['K']
+    def paths(cell):
+        return plan['scope']['price_paths'] if cell['method'] == 'PR' else 1
+    for part in parts:
+        cid = part['id']
+        cells = {cell['id']:cell for case_id in part['case_ids'] for cell in cases[case_id]['rounds']}
+        stages['signal'][cid] = len(cells)
+        if not plan.get('designs'):
+            stages['compile'][cid] = stages['audit'][cid] = 0
+            continue
+        # The same dependency identity as the fixed provider's select_cases:
+        # direct designs include selected physical cells; fitted designs share
+        # all calibration anchors and their holdout inside this block.
+        used = {group(cell) for cell in cells.values()}
+        anchors, holdouts = {}, {}
+        for design in plan['designs']:
+            first = next(iter(design['anchors']), design.get('reference'))
+            if first is None or group(first, design['target_step']) not in used:
+                continue
+            anchors.update((cell['id'],cell) for cell in design['anchors']
+                if design['mode'] != 'DIRECT' or cell['id'] in cells)
+            if design.get('holdout') is not None:
+                cell = design['holdout']; holdouts[cell['id']] = cell
+        stages['compile'][cid] = sum(paths(cell) for cell in anchors.values())
+        stages['audit'][cid] = sum(paths(cell) for key,cell in holdouts.items() if key not in anchors)
+    return stages
 
 
 def prepare_plan(run, settings, *, round_spec=None):
@@ -124,6 +375,11 @@ def prepare_plan(run, settings, *, round_spec=None):
     if {'max_steps_per_method', 'max_cycles'}.intersection(scope.get('scope', {}).get('stop', {})):
         return None  # These whole-run limits cannot be silently multiplied.
     independent = setup.get('mode') == 'independent'
+    if setup.get('partition_start_requires_contact') is True:
+        if not independent:raise ValueError('Partition contact leases require independent blocks')
+        partition_contact_valid({'settings':setup},None)
+    if setup.get('partition_handoff') is True and setup.get('partition_start_requires_contact') is not True:
+        raise ValueError('Partition handoff requires the fixed contact lease policy')
     if not independent and any(v not in ('UNLIMITED', 0) for v in (*budgets.values(), *prep.values())):
         return None
     parts = partition_round(round_spec, problem, independent=independent)
@@ -185,12 +441,18 @@ def prepare_plan(run, settings, *, round_spec=None):
         remaining = {method: cap if cap == 'UNLIMITED' else max(
             0, cap-sum(charges.get(p['id'],0) for p in grouped[method]))
                      for method, cap in budgets.items()}
+        prep_weights = {}
+        if hchain:
+            from .rpe_hchain_scope import fixed_plan
+            _, physical = fixed_plan(round_spec['hchain'])
+            prep_weights = hchain_preparation_weights(physical, parts)
+        prep_quotas = {stage: divide_budget(cap, parts, weights=prep_weights.get(stage))
+                       for stage,cap in prep.items()}
         for block in parts:
             quota = divide_budget(remaining[block['method']], grouped[block['method']])[block['id']]
             block.update(owner='pbs' if block['id'] in pbs_ids else 'central',
                          q3_budget=quota if quota == 'UNLIMITED' else quota+charges.get(block['id'],0),
-                         preparation_budgets={stage: divide_budget(cap, parts)[block['id']]
-                                              for stage, cap in prep.items()})
+                         preparation_budgets={stage: quotas[block['id']] for stage,quotas in prep_quotas.items()})
         # The local optimizer must never receive its parent's PBS plan back.
         (round_spec['executor'].get('distributed') or {}).pop('pbs_offline_plan', None)
     plan = dict(schema='RPE_PBS_OFFLINE_PLAN_V2' if independent else 'RPE_PBS_OFFLINE_PLAN_V1',
@@ -482,6 +744,7 @@ class OfflineSearch:
         self.popen = popen
         self.cursor = 0
         self.retry_after = {}
+        self.input_holds = {}
         self.validated_entry = None
         self.environment = None
         self.recheck_at = 0.
@@ -510,6 +773,7 @@ class OfflineSearch:
 
     def pending(self):
         return any(not (self.parts_dir/p['id']/'SEARCH_TERMINATION.json').is_file()
+                   and not (self.independent and partition_handed_off(self.plan,p,self.parts_dir/p['id']))
                    for p in self.parts) if self.parts_dir is not None else True
 
     def _entry(self):
@@ -587,7 +851,60 @@ class OfflineSearch:
                                                  sample_path=str(self.parts_dir/'STORAGE_USAGE.json'))
             self.storage_ready = True
 
-    def advance(self, *, disconnected, runnable, batch, stop=False):
+    def _input_revision(self, part):
+        # Use the logical queue revision rather than WAL mtime: opening a new
+        # process or checkpointing SQLite is not evidence of new inputs.
+        db = part/'distributed'/'QUEUE.sqlite3'
+        queue = None
+        if db.is_file():
+            try:
+                from contextlib import closing
+                with closing(sqlite3.connect(db.resolve().as_uri()+'?mode=ro', uri=True, timeout=1)) as connection:
+                    queue = connection.execute('SELECT max(sequence) FROM events').fetchone()[0]
+            except sqlite3.OperationalError as error:
+                if not sqlite_busy(error):
+                    raise
+                return None  # Do not reopen a held block on an unknown revision.
+        paths = (part/'ROUND_RESULT.json', part/'KAPPA_STATE.json',
+                 self.directory/'CENTRAL_SHORTLIST.json', part/'ROUND.json', part/'PROBLEM.json')
+        revision = [queue]
+        for path in paths:
+            try:
+                stat = path.stat()
+            except FileNotFoundError:
+                revision.append(None)
+            else:
+                revision.append([stat.st_mtime_ns, stat.st_size])
+        return revision
+
+    def _input_wait_unchanged(self, part):
+        status = part/'BLOCK_STATUS.json'
+        if not status.is_file():
+            return False
+        saved = read(status)
+        if saved.get('status') != 'WAITING_FOR_INPUTS' or 'input_revision' not in saved:
+            return False
+        revision = self._input_revision(part)
+        return revision is None or revision == saved['input_revision']
+
+    def _hold_input_wait(self, part):
+        if (part/'SEARCH_TERMINATION.json').exists() or (part/'STOP_REQUESTED.json').exists():
+            return
+        result = part/'ROUND_RESULT.json'
+        state = part/'KAPPA_STATE.json'
+        reasons = set()
+        if result.is_file():
+            reasons.update(r.get('stop_reason') for r in read(result).get('methods', {}).values())
+        if state.is_file():
+            reasons.add((read(state).get('stop') or {}).get('reason'))
+        if not reasons.intersection({'WAITING_FOR_INPUTS', 'SCOPE_HELD_INPUTS'}):
+            return
+        revision = self._input_revision(part)
+        atomic(part/'BLOCK_STATUS.json', dict(status='WAITING_FOR_INPUTS',
+            reasons=sorted(r for r in reasons if r), input_revision=revision))
+        self.input_holds[part.name] = revision
+
+    def advance(self, *, disconnected, runnable, batch, stop=False, contact=None):
         if self.process is not None:
             if stop or (not self.independent and not disconnected):
                 self.request_stop()
@@ -600,6 +917,8 @@ class OfflineSearch:
                     self.next_export_at = time.monotonic()+20
                 return True
             added = self.export(self.part)
+            if self.independent and not stop:
+                self._hold_input_wait(self.part)
             self.record_coverage(self.part)
             if added and not self.independent and not (self.part/'SEARCH_TERMINATION.json').exists():
                 self.cursor = (self.cursor-1) % len(self.parts)
@@ -609,7 +928,8 @@ class OfflineSearch:
             if self.independent and not (self.part/'SEARCH_TERMINATION.json').exists():
                 self.retry_after[self.part.name] = time.monotonic()+30
             self.process, self.part = None, None
-        if (stop or (not self.independent and not disconnected) or not runnable or self.parts_dir is None or not self.storage_ready
+        if (stop or (self.independent and not partition_contact_valid(self.plan,contact))
+                or (not self.independent and not disconnected) or not runnable or self.parts_dir is None or not self.storage_ready
                 or self.slots < 1
                 or time.monotonic() < self.recheck_at):
             return False
@@ -621,6 +941,9 @@ class OfflineSearch:
             if time.monotonic() < self.retry_after.get(part['id'],0):
                 continue
             path = self.parts_dir/part['id']
+            if self._input_wait_unchanged(path):
+                continue
+            self.input_holds.pop(part['id'], None)
             if (path/'SEARCH_TERMINATION.json').exists():
                 if self.independent:
                     coverage = self.directory/'COVERAGE.json'
@@ -639,6 +962,12 @@ class OfflineSearch:
                     claim.close()
                     continue
                 self.claim = claim
+                try:
+                    handed_off=partition_handed_off(self.plan,part,path)
+                except BaseException:
+                    claim.close();self.claim=None;raise
+                if handed_off:
+                    claim.close();self.claim=None;continue
             try:
                 if self._start_part(path, part, batch):
                     return True
@@ -666,14 +995,30 @@ class OfflineSearch:
                 not (self.parts_dir/p['id']/'SEARCH_TERMINATION.json').exists() for p in self.parts):
             return
         state = self.part/'KAPPA_STATE.json'
-        if not state.is_file() or not read(state).get('recovery_wait'):
+        hchain = self.part/'HCHAIN_IDLE_WAIT.json'
+        try:
+            wait = read(hchain)
+        except FileNotFoundError:
+            wait = None
+        hchain_wait = isinstance(wait,dict) and wait.get('reason') == 'NO_RESERVED_WORK'
+        if not hchain_wait and (not state.is_file() or not read(state).get('recovery_wait')):
             return
         database = self.part/'distributed'/'QUEUE.sqlite3'
+        if hchain_wait and not database.is_file():
+            return
         if database.is_file():
             from contextlib import closing
             try:
                 with closing(sqlite3.connect(database.resolve().as_uri()+'?mode=ro',uri=True,timeout=1)) as connection:
-                    live, = connection.execute("SELECT count(*) FROM jobs WHERE state IN ('ASSIGNED','STARTING','RUNNING')").fetchone()
+                    connection.execute('BEGIN')
+                    if hchain_wait:
+                        revision = connection.execute('SELECT COALESCE(max(sequence),0) FROM events').fetchone()[0]
+                        if revision != wait.get('queue_revision') or not hchain.is_file():
+                            return
+                        live = connection.execute("SELECT 1 FROM jobs WHERE state IN ('QUEUED','ASSIGNED','STARTING','RUNNING',"
+                            "'COMPLETED_PENDING_TRANSFER','UNKNOWN') LIMIT 1").fetchone()
+                    else:
+                        live, = connection.execute("SELECT count(*) FROM jobs WHERE state IN ('ASSIGNED','STARTING','RUNNING')").fetchone()
             except sqlite3.OperationalError as error:
                 if not sqlite_busy(error):
                     raise
@@ -835,6 +1180,7 @@ class OfflineSearch:
                 self.recheck_at = time.monotonic()+30
                 return False
             marker.unlink()
+        (path/'HCHAIN_IDLE_WAIT.json').unlink(missing_ok=True)
         command = self._controller_command(entry)+[
                    '--problem', str(path/'PROBLEM.json'), '--round', str(path/'ROUND.json'),
                    '--run-dir', str(path)]
@@ -868,7 +1214,15 @@ class OfflineSearch:
 
     def _export(self, part):
         manifest = self.directory/'RESULTS.json'
-        records = read(manifest) if manifest.exists() else {}
+        def signature():
+            try:
+                stat = manifest.stat()
+                return (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+            except FileNotFoundError:
+                return None
+        revision = signature()
+        cached = getattr(self, '_export_manifest_cache', None)
+        records = cached[1].copy() if cached is not None and cached[0] == revision else (read(manifest) if revision else {})
         new = 0
         for outcome in (part/'jobs').glob('*/*/OUTCOME.json'):
             job = outcome.parent
@@ -880,6 +1234,9 @@ class OfflineSearch:
                 method = job.parent.name.replace(':','-')
             else:
                 method = job.parent.name
+            key = f'{method}/{job.name}'
+            if key in records:
+                continue
             names = ('REQUEST.json', 'OUTCOME.json', 'PROCESS_RETURN.json')
             if any(not (job/name).is_file() for name in names):
                 continue
@@ -887,9 +1244,6 @@ class OfflineSearch:
             request = read(job/'REQUEST.json')
             if (receipt.get('returncode') != 0 or receipt.get('signal') is not None
                     or request.get('request_id') != job.name):
-                continue
-            key = f'{method}/{job.name}'
-            if key in records:
                 continue
             origin = None
             if self.independent and method.startswith('PREPARATION-'):
@@ -946,6 +1300,7 @@ class OfflineSearch:
         if new:
             atomic(manifest, records)
             self.revision += new
+        self._export_manifest_cache = (signature(), records)
         return new
 
     def _q3_resource_receipt(self, part, job, request, receipt, outcome):
@@ -1002,6 +1357,10 @@ class OfflineSearch:
                 with closing(sqlite3.connect(db.resolve().as_uri()+'?mode=ro', uri=True,timeout=1)) as connection:
                     for method, state, total in connection.execute("SELECT method,state,count(*) FROM jobs GROUP BY 1,2"):
                         counts.setdefault(method, {})[state] = total
+                    policy=self.profile.get('pbs',{}).get('successor_task_estimates')
+                    if self.independent and policy is not None:
+                        seconds=queued_independent_q3_seconds(connection,policy,self.profile['host_id'],part=part)
+                        self.waiting_estimate=dict(part=part.name,seconds=seconds,epoch=time.time())
             except sqlite3.OperationalError as error:
                 if not sqlite_busy(error):
                     raise
@@ -1085,9 +1444,11 @@ def advance_independent(worker, control):
         report = worker._resource_offer()
         storage = (report or {}).get('storage') or {}
     try:
-        busy = search.advance(disconnected=False, runnable=not active and
-                              storage.get('accepting_new_jobs', True),
-                              batch=max(1, worker.slots), stop=stopping)
+        arguments=dict(disconnected=False,runnable=not active and storage.get('accepting_new_jobs',True),
+                       batch=max(1,worker.slots),stop=stopping)
+        if search.plan['settings'].get('partition_start_requires_contact') is True:
+            arguments['contact']=control.get('contact')
+        busy=search.advance(**arguments)
     except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
         from .rpe_q3_worker import event
         search.recheck_at = time.monotonic()+30
@@ -1292,7 +1653,13 @@ def publish_partition_view(run, *, locked=False):
             old=coverage.get(key,{})
             if row.get('report_revision',0)>=old.get('report_revision',0):
                 coverage[key]=row
-    report_paths = [(part['id'],history/'reports'/part['id']) for part in pbs_units(plan)]
+    local_handoffs=local_handoff_coverage(plan,run/'distributed'/'pbs'/'partition-handoffs')
+    for unit,row in local_handoffs.items():
+        if coverage.get(unit,{}).get('termination'):raise ValueError('Local handoff also has PBS terminal evidence')
+        coverage[unit]=row
+    report_paths = [(part['id'],Path(local_handoffs[part['id']]['local_child']) if
+                     part['id'] in local_handoffs and local_handoffs[part['id']].get('local_child') else history/'reports'/part['id'])
+                    for part in pbs_units(plan)]
     files=[run/'SCOPE_MAP_CENTRAL.json',run/'ROUND_RESULT_CENTRAL.json']
     files.extend(root/name for _,root in report_paths for name in ('SCOPE_MAP.json','ROUND_RESULT.json'))
     revision = [[str(path),path.stat().st_mtime_ns,path.stat().st_size] for path in files if path.is_file()]

@@ -91,6 +91,17 @@ class ReadySupplyTests(unittest.TestCase):
         self.assertEqual(sum(row['missing_cpu'] for row in offers.values()), 12)
 
 
+def test_refill_distinguishes_live_fitting_supply_from_replacement_work():
+    from threading import Condition
+    ex = DistributedExecutor.__new__(DistributedExecutor)
+    ex.state = SimpleNamespace(cv=Condition(), ready_cpu_supply={'pbs': dict(
+        available_cpu=8, ready_cpu=16, ready_cpu_fitting_now=0, missing_cpu=0, unestimated_jobs=0)})
+    ex._offer_fresh = lambda host: True
+    assert ex.preparation_needs_refill()
+    ex.state.ready_cpu_supply['pbs']['ready_cpu_fitting_now'] = 8
+    assert not ex.preparation_needs_refill()
+
+
 class AutoAllocationTests(unittest.TestCase):
     setUp = Base.EligibilityQueue.setUp
     close = Base.EligibilityQueue.close

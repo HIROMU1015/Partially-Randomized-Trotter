@@ -413,7 +413,7 @@ class AllocationWorker(Worker):
                 if state['state'] == 'ASSIGNED' and assignment.get('pbs_launch_resources'):
                     continue
                 if state['state'] == 'TRANSFERRED':
-                    self.transferred_attempts.add(attempt)
+                    self._remember_transferred(attempt, assignment)
                     continue
                 if (state['state'] == 'RUNNING' and self.reported.get(attempt) == state and
                         not (attempt/'PROCESS_RETURN.json').exists()):
@@ -915,7 +915,7 @@ class AllocationWorker(Worker):
                      resources=self.pbs_resources, capacity=self.slots,
                      remaining_seconds=self.remaining(),
                      start_clock=self.start_clock,
-                     exit_reason=self.exit_reason)
+                     exit_reason=self.exit_reason,rollover_guard=True,partition_handoff_protocol=1)
         if getattr(self, 'offline_search', None) is not None:
             value['offline_revision'] = self.offline_search.shared_revision()
             if self.offline_search.independent:
@@ -963,7 +963,14 @@ class AllocationWorker(Worker):
         # A slow transport reply can arrive after the last admission check. Keep
         # its original attempt and make the non-launch explicit; never roll its
         # reservation back or silently create another scientific attempt.
-        if self.control().get('stop') or self.draining or self.stop.is_set() or self.remaining() <= self.drain_seconds+self.minimum_task_seconds:
+        guard=getattr(self,'records',{}).get(attempt,{}).get('pbs_rollover_guard')
+        if guard is not None:
+            from .rpe_pbs_attempt_control import rollover_owner_live
+            from .rpe_q3_worker import process_alive
+            rollover_ok=rollover_owner_live(self.records,guard,process_alive)
+        else:rollover_ok=True
+        if (not rollover_ok or self.control().get('stop') or self.draining or self.stop.is_set()
+                or self.remaining() <= self.drain_seconds+self.minimum_task_seconds):
             self._decline_before_launch(attempt)
             return
         super()._launch(attempt)

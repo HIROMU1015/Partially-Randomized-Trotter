@@ -1,3 +1,4 @@
+import pytest
 import json
 import os
 from pathlib import Path
@@ -389,3 +390,190 @@ while not (d/'CONTROL.json').is_file():
             G.atomic(attempt/'PROCESS_RETURN.json', {})
             self.assertFalse(worker.pending())
             self.assertEqual(G.read(attempt/'WORKER_STATE.json')['state'], 'COMPLETED_PENDING_TRANSFER')
+
+
+def test_managed_rejection_requires_return_receipt_and_checked_history(tmp_path):
+    pool = tmp_path/'pool'
+    generation = pool/'allocations'/'test-token'
+    generation.mkdir(parents=True)
+    G.atomic(generation/'SPEC.json', {'run_managed':True})
+    receipt = {'returncode':1, 'epoch':0, 'stdout':'', 'stderr':'artificial rejection'}
+    row = {'status':'SUBMIT_REJECTED', 'receipt':receipt, 'job_id':None}
+    with patch.object(G, 'snapshot', return_value=[row.copy()]), \
+         patch.object(pilot, 'owned_jobs_by_name', return_value={}):
+        assert pilot.physical(pool, generation.name)['status'] == 'SUBMIT_LOST'
+    with patch.object(G, 'snapshot', return_value=[row.copy()]), \
+         patch.object(pilot, 'owned_jobs_by_name', side_effect=RuntimeError('scheduler unavailable')):
+        with pytest.raises(RuntimeError):
+            pilot.physical(pool, generation.name)
+    with patch.object(G, 'snapshot', return_value=[{'status':'SUBMIT_AMBIGUOUS_HOLD','receipt':None}]), \
+         patch.object(pilot, 'owned_jobs_by_name', side_effect=AssertionError('no absence proof')):
+        assert pilot.physical(pool, generation.name)['status'] == 'SUBMIT_AMBIGUOUS_HOLD'
+
+
+def test_managed_rejected_generation_allows_new_session_token(tmp_path, monkeypatch):
+    root = tmp_path/'run'
+    submits = []
+    def submit(directory):
+        if (directory/'QSUB_STARTED.json').exists():
+            return
+        submits.append(directory.name)
+        G.atomic(directory/'QSUB_STARTED.json', {'epoch':0})
+        G.atomic(directory/'QSUB_RETURN.json', dict(returncode=1, stdout='', stderr='fixture', epoch=0))
+    def spec(token):
+        return dict(token=token, resources=pilot.RESOURCES, profile=dict(host_id='pbs-0',
+            work_dir=str(root/'workers'/'pbs-0')), python=sys.executable, transport_root=str(tmp_path))
+    monkeypatch.setattr(G, 'submit_async', submit)
+    monkeypatch.setattr(pilot, 'owned_jobs_by_name', lambda token:{})
+    first = pilot.attach_managed(root, spec('first'))
+    rows = pilot.session_snapshot(root)
+    assert rows[0]['status'] == 'F' and rows[0]['reservation_status'] == 'SUBMIT_LOST'
+    assert rows[0]['session_end']['reason'] == 'SUBMIT_REJECTED_BEFORE_SESSION_START'
+    generation = pilot.managed_pool(root, 'pbs-0')/'allocations'/first['pilot']
+    assert (generation/'RELEASE.json').exists() and (generation/'SUBMIT_LOST.json').exists()
+    second = pilot.attach_managed(root, spec('second'))
+    assert second['pilot'] != first['pilot']
+    assert len(submits) == 2
+    assert pilot.attach_managed(root, spec('second'))['pilot'] == second['pilot']
+    assert len(submits) == 2
+
+
+def test_fence_unstarted_requires_reaped_session_and_no_launch_marker(tmp_path):
+    root = tmp_path/'run'; directory = root/'allocations'/'session'
+    generation = pilot.managed_pool(root,'pbs-0')/'allocations'/'generation'
+    work = root/'workers'/'pbs-0'; attempt = work/'job'/'attempt'
+    attempt.mkdir(parents=True)
+    (work/'WORKER.lock').touch()
+    G.atomic(directory/'PILOT.json', {'managed_host':'pbs-0','token':'generation'})
+    G.atomic(generation/'sessions'/'session.json', {'directory':str(directory)})
+    G.atomic(directory/'PROFILE.json', {'host_id':'pbs-0','work_dir':str(work)})
+    identity = dict(job_id='job', attempt_id='attempt',request_sha256='fixed')
+    G.atomic(attempt/'ASSIGNMENT.json',dict(identity,request={'fixture':True}))
+    G.atomic(attempt/'ORIGINAL_REQUEST.json',{'fixture':True})
+    G.atomic(attempt/'WORKER_PROFILE.json',{'pbs':{'allocation_dir':str(directory)}})
+    G.atomic(attempt/'WORKER_STATE.json',{'state':'ASSIGNED','detail':{}})
+    G.atomic(directory/'SESSION_START.json',{'job_id':'1.fixture','epoch':1})
+    G.atomic(directory/'ALLOCATION.json',{'job_id':'1.fixture'})
+    value = dict(identity,token='session')
+    assert pilot.fence_unstarted(root,value) is None
+    G.atomic(directory/'SESSION_END.json',{'reason':'WORKER_ERROR','returncode':1,'epoch':2})
+    (attempt/'SUPERVISOR_LAUNCH.json').touch()
+    assert pilot.fence_unstarted(root,value) is None
+    (attempt/'SUPERVISOR_LAUNCH.json').unlink()
+    successor = root/'allocations'/'successor'
+    G.atomic(generation/'sessions'/'successor.json',{'directory':str(successor)})
+    G.atomic(successor/'SESSION_START.json',{'job_id':'1.fixture','epoch':3})
+    assert pilot.fence_unstarted(root,value) is None
+    G.atomic(successor/'SESSION_END.json',{'reason':'WORKER_EXIT','returncode':0,'epoch':4})
+    with (work/'WORKER.lock').open('rb') as lock:
+        pilot.fcntl.flock(lock,pilot.fcntl.LOCK_EX | pilot.fcntl.LOCK_NB)
+        assert pilot.fence_unstarted(root,value) is None
+    fenced = pilot.fence_unstarted(root,value)
+    assert fenced['state'] == 'UNKNOWN'
+    assert fenced['detail']['pbs_admission_exit']['kind']=='KEEPER_SESSION_ENDED_BEFORE_LAUNCH'
+    assert pilot.fence_unstarted(root,value) == fenced
+    assert pilot.fence_unstarted(root,dict(value,request_sha256='different')) is None
+
+
+def test_positive_terminal_scheduler_receipt_is_exact_and_never_a_retry(tmp_path):
+    directory=tmp_path/'session'; attempt=tmp_path/'attempt'; attempt.mkdir()
+    G.atomic(directory/'ALLOCATION.json',{'job_id':'1.fixture'})
+    identity=dict(job_id='j',attempt_id='a',request_sha256='fixed')
+    G.atomic(attempt/'PBS_ATTEMPT_OWNER.json',dict(identity,allocation_dir=str(directory),token='session',pbs_job_id='1.fixture',supervisor_pid=42))
+    G.atomic(attempt/'SUPERVISOR_STARTED.json',{'pid':42})
+    assert G.record_scheduler_end(directory,'1.fixture',{'job_state':'R','Job_Name':'RPEgeneration'},physical_token='generation') is None
+    assert G.scheduler_attempt_exit(directory,attempt,identity) is None
+    assert G.record_scheduler_end(directory,'1.fixture',{'job_state':'F','Job_Name':'RPEwrong'},physical_token='generation') is None
+    receipt=G.record_scheduler_end(directory,'1.fixture',{'job_state':'F','Job_Name':'RPEgeneration'},physical_token='generation')
+    proof=G.scheduler_attempt_exit(directory,attempt,identity)
+    assert proof['scheduler_allocation_end']==receipt and proof['session_ended']
+    assert G.scheduler_attempt_exit(directory,attempt,dict(identity,attempt_id='different')) is None
+
+
+def test_managed_submit_returns_before_qsub_and_named_recovery(tmp_path,monkeypatch):
+    directory=tmp_path/'allocations'/'token'; directory.mkdir(parents=True)
+    G.atomic(directory/'SPEC.json',{'token':'token','run_managed':True,'profile':{'host_id':'pbs-0'}})
+    with patch.object(G.subprocess,'Popen') as child:
+        G.submit_async(directory)
+        assert child.call_args.args[0][-2:]==['--submit',str(directory)]
+        assert child.call_args.kwargs['start_new_session'] is True
+        G.atomic(directory/'QSUB_STARTED.json',{'epoch':1})
+        G.submit_async(directory)
+        assert child.call_count==1
+    with patch.object(G,'qstat',side_effect=AssertionError('global qstat prohibited')), \
+         patch.object(pilot,'owned_jobs_by_name',return_value={}) as named:
+        assert G.snapshot(tmp_path)[0]['status']=='SUBMIT_AMBIGUOUS_HOLD'
+        named.assert_called_once_with('token')
+    matching={'1.fixture':{'Job_Name':'RPEtoken','job_state':'Q'}}
+    with patch.object(pilot,'owned_jobs_by_name',return_value=matching):
+        assert G.snapshot(tmp_path)[0]['job_id']=='1.fixture'
+    assert G.read(directory/'JOB_ID.json')['recovered'] is True
+
+
+def test_direct_unstarted_fence_requires_positive_terminal_identity(tmp_path):
+    root=tmp_path/'run';directory=root/'allocations'/'token';work=root/'workers'/'pbs';attempt=work/'job'/'attempt'
+    attempt.mkdir(parents=True);(work/'WORKER.lock').touch()
+    G.atomic(directory/'SPEC.json',{'token':'token','profile':{'host_id':'pbs'}})
+    G.atomic(directory/'PROFILE.json',{'host_id':'pbs','work_dir':str(work)})
+    G.atomic(directory/'ALLOCATION.json',{'job_id':'1.fixture'});G.atomic(directory/'JOB_ID.json',{'job_id':'1.fixture'})
+    identity=dict(job_id='job',attempt_id='attempt',request_sha256='fixture')
+    G.atomic(attempt/'ASSIGNMENT.json',dict(identity,request={'fixture':True}))
+    G.atomic(attempt/'ORIGINAL_REQUEST.json',{'fixture':True})
+    G.atomic(attempt/'WORKER_PROFILE.json',{'pbs':{'allocation_dir':str(directory)}})
+    G.atomic(attempt/'WORKER_STATE.json',{'state':'ASSIGNED','detail':{}})
+    value=dict(identity,token='token')
+    assert pilot.fence_legacy_unstarted(root,value) is None
+    G.record_scheduler_end(directory,'1.fixture',{'job_state':'F','Job_Name':'RPEtoken'})
+    (attempt/'SUPERVISOR_LAUNCH.json').touch()
+    assert pilot.fence_legacy_unstarted(root,value) is None
+    (attempt/'SUPERVISOR_LAUNCH.json').unlink()
+    got=pilot.fence_legacy_unstarted(root,value)
+    assert got['detail']['pbs_admission_exit']['kind']=='DIRECT_ALLOCATION_ENDED_BEFORE_LAUNCH'
+    assert pilot.fence_legacy_unstarted(root,value)==got
+
+
+def test_managed_afterany_successor_is_same_resource_and_idempotent(tmp_path, monkeypatch):
+    root = tmp_path/'run'
+    submits = []
+    monkeypatch.setattr(G, 'submit_async', lambda directory: submits.append(directory.name))
+    spec = dict(token='session', resources=dict(pilot.RESOURCES, walltime='11:00:00'),
+                profile=dict(host_id='pbs-0'), python=sys.executable, transport_root=str(tmp_path))
+    attached = pilot.attach_managed(root, spec)
+    pool = pilot.managed_pool(root, 'pbs-0')
+    old = pool/'allocations'/attached['pilot']
+    G.atomic(old/'ALLOCATION.json', {'job_id':'1.fixture'})
+    monkeypatch.setattr(pilot, 'physical', lambda pool, token, **kw:
+        dict(job_id='1.fixture',status='R') if token==old.name else dict(job_id=None,status='SUBMIT_PENDING'))
+    request = dict(token='session', job_id='1.fixture')
+    first = pilot.stage_managed_successor(root, request)
+    second = pilot.stage_managed_successor(root, request)
+    assert first == second
+    successor = pool/'allocations'/first['token']
+    assert G.read(successor/'SPEC.json')['resources'] == spec['resources']
+    assert '#PBS -W depend=afterany:1.fixture' in (successor/'worker.pbs').read_text()
+    assert not list(pilot.sessions(successor))
+    assert G.read(pool/'CURRENT.json')['token'] == old.name
+    G.atomic(root/'allocations'/'session'/'CONTROL.json', {'stop':True})
+    with pytest.raises(ValueError, match='not accepting'):
+        pilot.stage_managed_successor(root, request)
+
+
+def test_managed_successor_explicit_release_fences_unsubmitted_target(tmp_path, monkeypatch):
+    root = tmp_path/'run'
+    monkeypatch.setattr(G,'submit_async',lambda directory:None)
+    spec = dict(token='session', resources=pilot.RESOURCES, profile=dict(host_id='pbs-0'),
+                python=sys.executable, transport_root=str(tmp_path))
+    attached = pilot.attach_managed(root,spec)
+    pool = pilot.managed_pool(root,'pbs-0')
+    old = pool/'allocations'/attached['pilot']
+    G.atomic(old/'ALLOCATION.json',{'job_id':'1.fixture'})
+    monkeypatch.setattr(pilot,'physical',lambda pool,token,**kw:
+        dict(job_id='1.fixture',status='R') if token==old.name else dict(job_id=None,status='SUBMIT_PENDING'))
+    result = pilot.stage_managed_successor(root,dict(token='session',job_id='1.fixture'))
+    successor = pool/'allocations'/result['token']
+    G.atomic(root/'allocations'/'session'/'SESSION_END.json',{'returncode':0})
+    pilot.release_managed_node(root,'pbs-0')
+    assert (old/'RELEASE.json').exists() and (successor/'RELEASE.json').exists()
+    with patch.object(G.subprocess,'run',side_effect=AssertionError('no scheduler')):
+        G.submit_once(successor)
+    assert not (successor/'QSUB_STARTED.json').exists()

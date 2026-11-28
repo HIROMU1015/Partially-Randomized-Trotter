@@ -1,5 +1,6 @@
 """Host-wide intake limits and reclamation of acknowledged worker copies."""
 from contextlib import ExitStack, closing
+from concurrent.futures import ThreadPoolExecutor
 import ctypes
 import fcntl
 import hashlib
@@ -12,6 +13,7 @@ import sqlite3
 import stat
 import subprocess
 import tempfile
+import threading
 import time
 import uuid
 
@@ -246,6 +248,8 @@ def policy_identity(policy):
     A removed config immediately invalidates a prior discounted sample.
     """
     identity = dict(limit_bytes=policy['limit_bytes'], roots=policy['roots'])
+    if policy.get('incremental_usage') is True:
+        identity['incremental_usage']=True
     try:
         config = json.loads(storage_exclusion_file(policy).read_bytes())
     except FileNotFoundError:
@@ -266,6 +270,40 @@ def policy_identity(policy):
     return identity
 
 
+_storage_thread = threading.local()
+
+
+def set_storage_stop_event(event):
+    """Bind only the calling sampler thread's du subprocesses to its lifetime."""
+    _storage_thread.stop = event
+
+
+def _du_output(command, *, timeout, **kwargs):
+    stop = getattr(_storage_thread, 'stop', None)
+    if stop is None:
+        return subprocess.check_output(command, timeout=timeout, **kwargs)
+    if stop.is_set():
+        raise subprocess.TimeoutExpired(command, 0)
+    with subprocess.Popen(command, stdout=subprocess.PIPE, **kwargs) as process:
+        deadline = time.monotonic()+timeout
+        try:
+            while True:
+                remaining = deadline-time.monotonic()
+                if stop.is_set() or remaining <= 0:
+                    raise subprocess.TimeoutExpired(command, timeout)
+                try:
+                    output, errors = process.communicate(timeout=min(0.2,remaining))
+                    if process.returncode:
+                        raise subprocess.CalledProcessError(process.returncode,command,output,errors)
+                    return output
+                except subprocess.TimeoutExpired:
+                    continue
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.communicate()
+
+
 def _used_bytes(roots, *, timeout=10, excluded_paths=()):
     existing = set()
     for path in roots:
@@ -284,7 +322,7 @@ def _used_bytes(roots, *, timeout=10, excluded_paths=()):
     command = ['du', '--summarize', '--total', '--block-size=1',
                *('--exclude='+path for path in excluded_paths), '--', *map(str, distinct)]
     try:
-        output = subprocess.check_output(command, text=True, stderr=subprocess.PIPE, timeout=timeout)
+        output = _du_output(command, text=True, stderr=subprocess.PIPE, timeout=timeout)
     except subprocess.CalledProcessError as error:
         # A worker can retire files during du. Retry only that ordinary race;
         # permission errors and a real timeout must remain unavailable.
@@ -293,6 +331,110 @@ def _used_bytes(roots, *, timeout=10, excluded_paths=()):
             raise
         output = subprocess.check_output(command, text=True, stderr=subprocess.PIPE, timeout=timeout)
     return int(output.splitlines()[-1].split('\t', 1)[0])
+
+
+class IncrementalStorageLedger:
+    """Local allocated-block inventory with exact inode deduplication.
+
+    Directory membership is reused only across identical directory identities;
+    every file is restatted, so content growth and cross-root hardlinks are not
+    estimated from old terminal states. Full du remains the reconciliation and
+    fallback for unsupported or concurrently changing inventories.
+    """
+    def __init__(self):
+        self.directories={}
+        self.entries={}
+        self.samples=0
+        self.disabled=False
+        self.lock=threading.Lock()
+
+    @staticmethod
+    def signature(info):
+        return (info.st_dev,info.st_ino,info.st_mode,info.st_mtime_ns,info.st_ctime_ns)
+
+    def scan(self,roots,*,deadline=None):
+        existing=sorted({Path(path).resolve() for path in roots if Path(path).exists()},key=lambda p:(len(p.parts),str(p)))
+        distinct=[p for i,p in enumerate(existing) if not any(p.is_relative_to(parent) for parent in existing[:i])]
+        next_dirs={};next_entries={};seen_dirs=set();stack=[(path,True) for path in distinct]
+        while stack:
+            if deadline is not None and time.monotonic()>=deadline:raise TimeoutError('Incremental storage scan timed out')
+            path,is_root=stack.pop();info=path.lstat();identity=(info.st_dev,info.st_ino)
+            before=self.signature(info)
+            if is_root and not stat.S_ISDIR(info.st_mode):raise ValueError('Storage root is not a directory')
+            if stat.S_ISDIR(info.st_mode):
+                if identity in seen_dirs:raise ValueError('Repeated directory inode; use du')
+                seen_dirs.add(identity)
+                old=self.directories.get(path)
+                if old is not None and old[0]==before:children=old[1]
+                else:
+                    with os.scandir(path) as directory:children=tuple(sorted(entry.name for entry in directory))
+                if self.signature(path.lstat())!=before:raise ValueError('Directory changed during inventory')
+                next_dirs[path]=(before,children)
+                stack.extend((path/name,False) for name in children)
+            blocks=info.st_blocks*512
+            if identity in next_entries and next_entries[identity]!=blocks:raise ValueError('Hardlink changed during inventory')
+            next_entries[identity]=blocks
+        # Detect a membership change since an ancestor was enumerated. This is
+        # a sampling boundary, like du, not a filesystem-wide write lock.
+        for path,(signature,_) in next_dirs.items():
+            if self.signature(path.lstat())!=signature:raise ValueError('Directory changed during inventory')
+        total=sum(next_entries.values())
+        delta=sum(next_entries.get(key,0)-old for key,old in self.entries.items())
+        delta+=sum(size for key,size in next_entries.items() if key not in self.entries)
+        if sum(self.entries.values())+delta!=total:raise ValueError('Storage delta total differs')
+        self.directories,self.entries=next_dirs,next_entries
+        return total
+
+    def measure(self,roots,*,timeout,du):
+        with self.lock:
+            if self.disabled:return du()
+            try:
+                measured=self.scan(roots,deadline=time.monotonic()+timeout)
+            except (OSError,ValueError,TimeoutError):
+                self.directories.clear();self.entries.clear();self.samples=0
+                return du()
+            self.samples+=1
+            # Reconcile the first inventory and every five subsequent samples.
+            if self.samples==1 or self.samples%5==0:
+                actual=du()
+                if actual!=measured:
+                    self.disabled=True;self.directories.clear();self.entries.clear()
+                    return actual
+            return measured
+
+
+def _local_storage_roots(roots):
+    """Only local POSIX filesystems with coherent directory stat caching."""
+    try:
+        mounts=[]
+        for line in Path('/proc/self/mountinfo').read_text().splitlines():
+            left,right=line.split(' - ',1)
+            mount=left.split()[4]
+            for encoded,decoded in (('\\040',' '),('\\011','\t'),('\\134','\\')):mount=mount.replace(encoded,decoded)
+            mounts.append((Path(mount),right.split()[0]))
+        for name in roots:
+            path=Path(name).resolve()
+            match=max((item for item in mounts if path.is_relative_to(item[0])),key=lambda item:len(item[0].parts))
+            supported=('ext4','xfs','btrfs','tmpfs')
+            if match[1] not in supported or any(mount.is_relative_to(path) and kind not in supported for mount,kind in mounts):return False
+        return True
+    except (OSError,ValueError,IndexError):return False
+
+
+_USAGE_LEDGER_LOCK=threading.Lock()
+_USAGE_LEDGER=None
+
+
+def policy_used_bytes(policy,roots,*,timeout,excluded_paths=()):
+    def exact():return _used_bytes(roots,timeout=timeout,excluded_paths=excluded_paths)
+    if policy.get('incremental_usage') is not True or excluded_paths or not _local_storage_roots(roots):return exact()
+    global _USAGE_LEDGER
+    identity=tuple(sorted(map(str,roots)))
+    with _USAGE_LEDGER_LOCK:
+        if _USAGE_LEDGER is None or _USAGE_LEDGER[0]!=identity:
+            _USAGE_LEDGER=(identity,IncrementalStorageLedger())
+        ledger=_USAGE_LEDGER[1]
+    return ledger.measure(roots,timeout=timeout,du=exact)
 
 
 def _attempt_copies(marker):
@@ -646,23 +788,70 @@ def acknowledge_pbs_completions(profile, spool, receipts):
     return dict(acknowledged=acknowledged, mismatch=mismatch, deferred=deferred)
 
 
-def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=(), remeasure=True):
+class TerminalCopyLedger:
+    """Delta estimates of currently reclaimable terminal copies, not quota proof.
+
+    Each successful removal retires its estimate. Root changes invalidate it;
+    a later full policy measurement remains authoritative even for unchanged
+    directories (nested changes and hardlinks can affect actual disk use).
+    """
+    def __init__(self):
+        self.entries={}
+        self.lock=threading.Lock()
+
+    @staticmethod
+    def signature(path):
+        try:info=Path(path).lstat()
+        except OSError:return None
+        return (info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_ctime_ns,info.st_nlink)
+
+    def retain(self,paths):
+        paths=set(map(str,paths))
+        with self.lock:
+            self.entries={name:value for name,value in self.entries.items() if name in paths}
+
+    def retire(self,path):
+        with self.lock:self.entries.pop(str(path),None)
+
+    def sizes(self,paths,timeout):
+        signatures={name:self.signature(name) for name in paths}
+        with self.lock:
+            result={name:self.entries[name][1] for name in paths if signatures[name] is not None
+                    and name in self.entries and self.entries[name][0]==signatures[name]}
+        missing=[name for name in paths if name not in result]
+        if missing:
+            raw=_du_output(['du','--summarize','--block-size=1','--count-links','--',*missing],
+                           text=True,stderr=subprocess.PIPE,timeout=timeout)
+            measured={name:int(size) for size,name in (line.split('\t',1) for line in raw.splitlines())}
+            result.update(measured)
+            with self.lock:
+                for name,size in measured.items():
+                    signature=signatures.get(name)
+                    if signature is not None and self.signature(name)==signature:
+                        self.entries[name]=(signature,size)
+        return result
+
+
+_TERMINAL_COPY_LEDGER=TerminalCopyLedger()
+
+
+def _reclaim(spools, roots, used, target, *, du_timeout=10, excluded_paths=(), remeasure=True, ledger=None):
     if used <= target:
         return used, 0
     copies = sorted(_acknowledged_copies(spools, roots))
+    ledger=_TERMINAL_COPY_LEDGER if ledger is None else ledger
+    ledger.retain(path for _,_,path in copies)
     removed = 0
     # Batch sizes are only a cleanup work estimate. Re-measure once at the
     # end, never use the estimate as an admission sample.
     initial = used
     for offset in range(0, len(copies), 32):
         paths = [str(path) for _, _, path in copies[offset:offset+32]]
-        output = subprocess.check_output(
-            ['du', '--summarize', '--block-size=1', '--', *paths],
-            text=True, stderr=subprocess.PIPE, timeout=du_timeout)
-        sizes = {name: int(size) for size, name in (line.split('\t', 1) for line in output.splitlines())}
+        sizes=ledger.sizes(paths,du_timeout)
         remaining = used
         for filename in paths:
             if _remove_copy(Path(filename)):
+                ledger.retire(filename)
                 removed += 1
                 remaining -= sizes.get(filename, 0)
                 if remaining <= target:
@@ -958,7 +1147,7 @@ def parent_compute_storage_report(policy):
 
 
 def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(),
-           refresh=False, compact_metadata=False, proactive=False, du_timeout=10, measurement_only=False):
+           refresh=False, compact_metadata=False, proactive=False, du_timeout=10, measurement_only=False, cache_only=False, nonblocking=False):
     """Report intake state and reclaim copies independently of the hard limit."""
     if policy is None:
         return None
@@ -979,8 +1168,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                       if str(path) not in caches)
     cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_caches=caches)
 
-    def recent():
-        if refresh:
+    def recent(*,while_measuring=False):
+        if refresh and not while_measuring:
             return None
         try:
             saved = json.loads(sample.read_bytes())
@@ -995,6 +1184,19 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     return None
                 if (report['used_bytes'] is None or report['used_bytes'] < start
                         or (same_watermarks and saved.get('cleanup') == cleanup)):
+                    if while_measuring:
+                        # A valid measured age is never refreshed just because
+                        # another sampler holds the lock.
+                        report=dict(report,measurement_in_progress=True,
+                                    measurement_age_seconds=max(0,time.time()-saved['sampled_epoch']))
+                    # Physical free space can shrink even during a fresh
+                    # logical quota sample. Keep that existing hard boundary.
+                    existing=[Path(root) for root in roots if Path(root).exists()]
+                    if existing:
+                        free=min(shutil.disk_usage(root).free for root in existing)
+                        report=dict(report,filesystem_free_bytes=free)
+                        if free<report.get('filesystem_min_free_bytes',0):
+                            report.update(accepting_new_jobs=False,reason='FILESYSTEM_SPACE_LOW')
                     return report
         except (OSError, KeyError, TypeError, ValueError):
             pass
@@ -1004,50 +1206,66 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
         cached = recent()
         if cached is not None:
             return cached
+        if cache_only:
+            return dict(limit_bytes=limit,used_bytes=None,accepting_new_jobs=False,
+                        reason='STORAGE_MEASUREMENT_PENDING')
         sample.parent.mkdir(parents=True, exist_ok=True)
         compacted = abandoned = 0
         if compact_metadata and not measurement_only:
             observation = report(policy, spools=spools, pbs_runs=pbs_runs,
                                  cache_directories=caches, refresh=refresh, proactive=proactive,
-                                 du_timeout=du_timeout)
+                                 du_timeout=du_timeout,nonblocking=nonblocking)
             if observation.get('reclaim_pending'):
                 compacted, abandoned = _compact_metadata_packs(policy, spools, pbs_runs)
             if not (compacted or abandoned):
                 return observation
             refresh = True
         with sample.with_suffix('.lock').open('a+b') as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
+            try:
+                fcntl.flock(lock,fcntl.LOCK_EX | (fcntl.LOCK_NB if nonblocking else 0))
+            except BlockingIOError:
+                cached=recent(while_measuring=True)
+                return cached if cached is not None else dict(limit_bytes=limit,used_bytes=None,
+                        accepting_new_jobs=False,reason='STORAGE_MEASUREMENT_PENDING')
             cached = recent()
             if cached is not None:
                 return cached
             started = time.monotonic()
             try:
-                used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
+                used = policy_used_bytes(policy,roots,timeout=du_timeout,excluded_paths=excluded_paths)
                 before, reclaimed, pack_bytes = used, 0, 0
                 cleanup_due = used >= start
-                if cleanup_due and not measurement_only and (spools or pbs_runs):
-                    candidates = list(spools)
-                    if pbs_runs:
-                        candidates.extend(Path(pbs_runs).glob('*/workers/*'))
-                        candidates.extend(Path(pbs_runs).glob('*/independent-search/parts/*/worker'))
-                    # Leave room for new attempts before the next cleanup pass.
-                    used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout, excluded_paths=excluded_paths, remeasure=False)
-                if cleanup_due and not measurement_only and used > target and (spools or pbs_runs):
-                    pack_bytes = _share_transferred_git_packs(candidates, roots, used-target)
-                    used = max(0, used-pack_bytes)
+                cleanup_error = None
                 evicted = 0
-                if cleanup_due and not measurement_only and used > target:
-                    for path in caches:
-                        cache = Path(path).resolve()
-                        if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
-                            cache_size = _used_bytes([str(cache)], timeout=du_timeout)
-                            store = PrefixStore(cache)
-                            evicted += store.reclaim(cache_size - (used-target))
-                            used = max(0, used-store.last_evicted_bytes)
-                            if used <= target:
-                                break
-                if reclaimed or pack_bytes or evicted:
-                    used = _used_bytes(roots, timeout=du_timeout, excluded_paths=excluded_paths)
+                try:
+                    if cleanup_due and not measurement_only and (spools or pbs_runs):
+                        candidates = list(spools)
+                        if pbs_runs:
+                            candidates.extend(Path(pbs_runs).glob('*/workers/*'))
+                            candidates.extend(Path(pbs_runs).glob('*/independent-search/parts/*/worker'))
+                        # Leave room for new attempts before the next cleanup pass.
+                        used, reclaimed = _reclaim(candidates, roots, used, target, du_timeout=du_timeout, excluded_paths=excluded_paths, remeasure=False)
+                    if cleanup_due and not measurement_only and used > target and (spools or pbs_runs):
+                        pack_bytes = _share_transferred_git_packs(candidates, roots, used-target)
+                        used = max(0, used-pack_bytes)
+                    if cleanup_due and not measurement_only and used > target:
+                        for path in caches:
+                            cache = Path(path).resolve()
+                            if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
+                                cache_size = _used_bytes([str(cache)], timeout=du_timeout)
+                                store = PrefixStore(cache)
+                                evicted += store.reclaim(cache_size - (used-target))
+                                used = max(0, used-store.last_evicted_bytes)
+                                if used <= target:
+                                    break
+                    if reclaimed or pack_bytes or evicted:
+                        used = policy_used_bytes(policy,roots,timeout=du_timeout,excluded_paths=excluded_paths)
+                except (OSError, ValueError, subprocess.SubprocessError) as error:
+                    # A cleanup failure does not imply an unavailable capacity
+                    # measurement. Remeasure because partial cleanup can leave
+                    # temporary copies; never offer based on an unsafe estimate.
+                    cleanup_error = type(error).__name__ + ': ' + str(error)
+                    used = policy_used_bytes(policy,roots,timeout=du_timeout,excluded_paths=excluded_paths)
                 filesystem_free = {}
                 for name in roots:
                     root = Path(name)
@@ -1068,6 +1286,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                                 reclaim_start_bytes=start, reclaim_target_bytes=target,
                                 reclaim_checked=cleanup_due or bool(compacted or abandoned),
                                 reclaim_pending=(cleanup_due or bool(compacted or abandoned)) and used > target)
+                if cleanup_error is not None:
+                    measured['cleanup_error'] = cleanup_error
                 if used < before:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:
@@ -1142,6 +1362,60 @@ def reclaim_from_measurement(policy, measured, *, spools=(), pbs_runs=None, cach
                 continue
         return dict(status='CHECKED', copied_files=removed, shared_files=shared['files'],
                     shared_bytes=shared['bytes']+pack_bytes, evicted_prefix_checkpoints=evicted)
+
+
+
+class BackgroundStorage:
+    """Use the existing measured-admission and reclamation paths off the poll lane.
+
+    A stale/missing measurement never authorizes new work. Cleanup estimates
+    are diagnostic only; transfer and receipt polling need not wait for them.
+    """
+    def __init__(self, policy, *, spools=(), cache_directories=()):
+        self.policy = policy
+        self.spools = spools
+        self.caches = cache_directories
+        self.pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix='rpe-storage')
+        self.sample = self.cleanup = None
+        self.measured = None
+        self.measured_at = float('-inf')
+        self.cleanup_error = None
+
+    def poll(self):
+        now = time.monotonic()
+        if self.cleanup is not None and self.cleanup.done():
+            try:
+                self.cleanup.result()
+                self.cleanup_error = None
+            except (OSError, ValueError, subprocess.SubprocessError) as error:
+                self.cleanup_error = str(error)
+            self.cleanup = None
+        if self.sample is not None and self.sample.done():
+            try:
+                observation=self.sample.result()
+                if observation.get('reason')!='STORAGE_MEASUREMENT_PENDING' or self.measured is None:
+                    self.measured=observation
+                    self.measured_at=now-observation.get('measurement_age_seconds',0)
+            except (OSError, ValueError, subprocess.SubprocessError):
+                self.measured = None
+                self.measured_at = now
+            self.sample = None
+            if self.measured and self.cleanup is None and duplicate_reclaim_target(self.measured):
+                self.cleanup = self.pool.submit(reclaim_from_measurement, self.policy, self.measured,
+                    spools=self.spools, cache_directories=self.caches, du_timeout=10)
+        if self.sample is None and now-self.measured_at >= .8*SAMPLE_SECONDS:
+            self.sample = self.pool.submit(report, self.policy, spools=self.spools,
+                cache_directories=self.caches, proactive=True, measurement_only=True, refresh=True,nonblocking=True)
+        if self.measured is None or now-self.measured_at >= SAMPLE_SECONDS:
+            return dict(limit_bytes=self.policy['limit_bytes'], used_bytes=None, accepting_new_jobs=False,
+                        reason='STORAGE_MEASUREMENT_PENDING')
+        value = dict(self.measured)
+        if self.cleanup_error is not None:
+            value['cleanup_error'] = self.cleanup_error
+        return value
+
+    def close(self):
+        self.pool.shutdown(wait=True, cancel_futures=True)
 
 
 _Q3_RESULT_COPY_NAMES = ('RESULT.json', 'API_RETURN.json')

@@ -217,7 +217,8 @@ def make_executor(root, run, routes, expected, problem, spec):
             compact_q3_evidence=options.get('compact_q3_evidence',False),
             large_shot_bounds=options.get('large_shot_bounds',False),
             parallel_dp_residual=options.get('parallel_dp_residual',False),
-            profile_dp_residual=options.get('profile_dp_residual',False))
+            profile_dp_residual=options.get('profile_dp_residual',False),
+            persistent_dp_residual_pool=options.get('persistent_dp_residual_pool',False))
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
     else:
         executor=O.Executor(root,run,routes,expected,problem,**common);optimize=O.optimize

@@ -723,3 +723,156 @@ print(json.dumps(dict(limit=getattr(sys,'get_int_max_str_digits',lambda:0)(),
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_prior_keeper_session_end_releases_resources_without_retry(tmp_path):
+    from trottertracks import rpe_pbs_attempt_control as control
+    old = tmp_path/'old-session'; old.mkdir()
+    attempt = tmp_path/'attempt'; attempt.mkdir()
+    assignment = dict(job_id='j', attempt_id='a', request_sha256='fixed')
+    owner = dict(assignment, allocation_dir=str(old), token=old.name, pbs_job_id='123.artificial',
+                 clock_id='prior:boot', supervisor_pid=42)
+    W.atomic(attempt/control.OWNER, owner)
+    W.atomic(attempt/'SUPERVISOR_STARTED.json', {'pid':42})
+    W.atomic(old/'ALLOCATION.json', {'job_id':owner['pbs_job_id']})
+    W.atomic(old/'SESSION_START.json', {'job_id':owner['pbs_job_id'],'epoch':1})
+    profile = {'pbs':{'allocation_dir':str(tmp_path/'new-session')}}
+    assert control.exit_evidence(attempt, assignment, profile, lambda *_:False) is None
+    W.atomic(old/'SESSION_END.json', {'reason':'WORKER_ERROR','returncode':3,'epoch':2})
+    proof = control.exit_evidence(attempt, assignment, profile, lambda *_:False)
+    assert proof['keeper_session_end']['returncode'] == 3
+    assert proof['attempt_id'] == 'a' and not proof['operator_stop']
+    assert control.exit_evidence(attempt, dict(assignment, attempt_id='different'), profile, lambda *_:False) is None
+
+
+def test_mailbox_readiness_reuses_resource_bounded_parallel_checker():
+    challenges=[{'job_id':'a'},{'job_id':'b'},{'job_id':'c'}]
+    profile={'host_id':'fixture'}
+    with patch.object(W.Resources,'resource_snapshot',return_value={'allowed_cpu_count':4,'machine_mem_available_bytes':4*1024**3}), \
+         patch.object(W,'host_fingerprints',return_value={'host_fingerprints':{},'readiness_errors':{}}) as check:
+        assert W.mailbox(profile,'readiness',{'challenges':challenges})['host_id']=='fixture'
+        assert check.call_args.kwargs['q3_parallel']==2
+        assert check.call_args.kwargs['preparation_parallel']==2
+
+
+def test_terminal_telemetry_ack_drops_only_matching_sample():
+    worker=object.__new__(W.Worker)
+    worker.profile={}
+    sample={'attempt_id':'a','completed':True}
+    worker._terminal_preparation_observations={'path':sample}
+    worker._capacity_feedback({'preparation_observation_ack':{'a':'wrong'}})
+    assert worker._terminal_preparation_observations
+    worker._capacity_feedback({'preparation_observation_ack':{'a':W.digest(sample)}})
+    assert not worker._terminal_preparation_observations
+
+
+def test_mailbox_cached_storage_never_scans_on_pending_measurement(tmp_path):
+    from trottertracks import rpe_worker_storage as storage
+    policy={'limit_bytes':1000000,'roots':[str(tmp_path)],'sample_path':str(tmp_path/'sample.json')}
+    with patch.object(storage,'_used_bytes',side_effect=AssertionError('poll must not scan disk')):
+        result=storage.report(policy,proactive=True,cache_only=True)
+    assert not result['accepting_new_jobs'] and result['reason']=='STORAGE_MEASUREMENT_PENDING'
+
+
+def test_native_overlay_new_mailbox_action_does_not_use_old_parser(tmp_path,monkeypatch,capsys):
+    import io, sys
+    import run_rpe_native_worker_overlay as overlay
+    from trottertracks import rpe_q3_worker as worker
+    path=tmp_path/'profile.json';path.write_text('{}')
+    monkeypatch.setattr(overlay,'load_overlay',lambda:tmp_path)
+    monkeypatch.setattr(overlay.runpy,'run_path',lambda *_a,**_kw:pytest.fail('frozen CLI rejects new action'))
+    monkeypatch.setattr(worker,'mailbox',lambda profile,action,payload:{'ok':action=='storage-sample'})
+    monkeypatch.setattr(sys,'argv',['overlay','--profile',str(path),'--mailbox','storage-sample'])
+    monkeypatch.setattr(sys,'stdin',io.StringIO('{}'))
+    overlay.main()
+    assert json.loads(capsys.readouterr().out)=={'ok':True}
+
+
+def test_artifact_inventory_worker_sends_full_after_ack_loss(tmp_path,monkeypatch):
+    from types import SimpleNamespace
+    worker=object.__new__(W.Worker);worker.profile={'work_dir':str(tmp_path)}
+    hashes=['a'*64];cache=SimpleNamespace(hashes=lambda:list(hashes))
+    monkeypatch.setattr(W,'worker_cache',lambda *_:cache)
+    full=worker._artifact_inventory_payload()
+    assert full['cached_artifact_sha256']==hashes
+    worker._capacity_feedback({'artifact_inventory_ack':full['artifact_inventory_revision']})
+    assert 'cached_artifact_sha256' not in worker._artifact_inventory_payload()
+    hashes.append('b'*64)
+    assert worker._artifact_inventory_payload()['cached_artifact_sha256']==hashes
+    worker._capacity_feedback({})
+    assert worker._artifact_inventory_payload()['cached_artifact_sha256']==hashes
+
+
+def test_fixed_git_blob_cache_keeps_full_sha_and_resolves_locator():
+    from trottertracks import rpe_q3_coordinator as Q
+    commit = W.head(ROOT)
+    path = 'AGENTS.md'
+    expected = hashlib.sha256(subprocess.check_output(['git','show',commit+':'+path],cwd=ROOT)).hexdigest()
+    Q._immutable_git_blob_sha.cache_clear()
+    assert Q.fixed_git_blob_sha(ROOT,commit,path)==expected
+    assert Q.fixed_git_blob_sha(ROOT,commit,path)==expected
+    assert Q._immutable_git_blob_sha.cache_info().hits==1
+
+
+def test_native_overlay_import_check_rejects_stale_bound_attribute():
+    import run_rpe_native_worker_overlay as overlay
+    from trottertracks import rpe_host_profiles as profiles,rpe_q3_timing as timing
+    from types import SimpleNamespace
+    import pytest
+    resources=SimpleNamespace(stamp=timing.stamp)
+    storage=object()
+    worker=SimpleNamespace(Resources=resources,Storage=storage,stamp=timing.stamp,
+        timing_append=timing.append,_select_q3_profile=profiles.select_host_profile,
+        validate_adapter_profile=profiles.validate_adapter_profile,check_runtime_profile=profiles.check_runtime_profile)
+    overlay.check_imports(worker,resources,storage,timing,profiles)
+    worker.stamp=lambda:None
+    with pytest.raises(ValueError,match='reference differs: stamp'):
+        overlay.check_imports(worker,resources,storage,timing,profiles)
+
+
+def test_default_prefix_cache_limit_uses_existing_storage_high_water_policy(tmp_path):
+    profile,assignment=fixture(str(tmp_path))
+    profile['prefix_cache_directory']=str(tmp_path/'prefix')
+    profile['storage_limit']={'limit_bytes':10*2**30,'roots':[str(tmp_path)],
+                              'sample_path':str(tmp_path/'storage.json')}
+    resolved=W.validate_assignment(profile,assignment)
+    assert resolved['execution_profile']['prefix_cache_max_bytes']==7*2**30
+    assignment['request']['execution_profile']={'prefix_cache_max_bytes':123}
+    assignment['request_sha256']=W.digest(assignment['request'])
+    assert W.validate_assignment(profile,assignment)['execution_profile']['prefix_cache_max_bytes']==123
+
+
+def test_readiness_runtime_cache_is_batch_local_and_stat_bound(tmp_path):
+    from trottertracks.rpe_plan_readiness import RuntimeProbeBatch
+    interpreter=tmp_path/'launcher'
+    interpreter.write_text('first')
+    calls=[]
+    def probe():
+        calls.append(1)
+        return {'version':str(len(calls))}
+    first=RuntimeProbeBatch()
+    assert first.get(str(interpreter),False,probe)=={'version':'1'}
+    assert first.get(str(interpreter),False,probe)=={'version':'1'}
+    interpreter.write_text('second')
+    assert first.get(str(interpreter),False,probe)=={'version':'2'}
+    assert RuntimeProbeBatch().get(str(interpreter),False,probe)=={'version':'3'}
+
+
+def test_readiness_view_cache_detects_tracked_edits_and_index_changes(tmp_path):
+    import subprocess
+    from unittest.mock import patch
+    from trottertracks import rpe_plan_readiness as readiness
+    def git(*args):return subprocess.check_output(['git',*args],cwd=tmp_path)
+    git('init','-q');git('config','user.name','fixture');git('config','user.email','fixture@example.invalid')
+    tracked=tmp_path/'tracked';tracked.write_text('one');git('add','tracked');git('commit','-qm','fixture')
+    cache=readiness.RuntimeProbeBatch()
+    with patch.object(readiness,'_view_fingerprint',wraps=readiness._view_fingerprint) as probe:
+        first=cache.view(tmp_path)
+        assert cache.view(tmp_path)==first and probe.call_count==1
+        tracked.write_text('two')
+        changed=cache.view(tmp_path)
+        assert changed['tracked_changes'] and probe.call_count==2
+        git('add','tracked')
+        assert cache.view(tmp_path)==changed and probe.call_count==3
+        tracked.unlink()
+        assert cache.view(tmp_path)['tracked_changes']['tracked']=='MISSING'

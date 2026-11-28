@@ -49,7 +49,8 @@ def test_storage_budget_reserves_other_owners_without_blocking_independent_work(
     assert fits(report, dict(storage_bytes=60))
     assert not fits(report, dict(storage_bytes=61))
     assert not fits(report, dict(storage_bytes=40), reserved=21)
-    assert fits(report, {}, reserved=60)
+    assert not fits(report, {}, reserved=60)  # unmeasured storage is not zero
+    assert fits(report, {'storage_bytes':0}, reserved=60)  # exact declared zero
     assert not fits(dict(storage=dict(limit_bytes=100)), dict(storage_bytes=1))
     assert not fits(dict(storage=dict(used_bytes=10, limit_bytes=100, filesystem_free_bytes=20, filesystem_min_free_bytes=5)), dict(storage_bytes=16))
 
@@ -213,3 +214,73 @@ def test_controller_metadata_lanes_follow_memory_and_cpu_allowance():
     assert controller_metadata_workers(concurrent_producers=3,snapshot=dict(base,machine_mem_available_bytes=6*gib))==1
     assert controller_metadata_workers(concurrent_producers=3,snapshot=dict(base,remaining_group_memory_bytes=12*gib))==2
     assert controller_metadata_workers(concurrent_producers=3,snapshot=dict(base,allowed_cpu_count=2))==2
+
+
+def test_preparation_telemetry_ack_only_after_durable_write(tmp_path, monkeypatch):
+    import threading
+    from trottertracks import rpe_q3_coordinator as Q
+    ex = object.__new__(DistributedExecutor)
+    ex.preparation_observation_lock = threading.Lock()
+    ex.preparation_observations = {}
+    ex.preparation_observations_path = tmp_path/'observations.json'
+    ex.distributed = {}; ex.pbs_manager = None
+    row = dict(job_id='job', attempt_id='attempt', host_id='host',request_sha256='fixed',request=request(tmp_path))
+    ex.store = SimpleNamespace(rows_for=lambda jobs:{'job':row})
+    sample = dict(job_id='job',attempt_id='attempt',request_sha256='fixed',completed=True,elapsed_seconds=1.,peak_rss_bytes=100)
+    report = dict(preparation_observations=[sample])
+    publish=Q.atomic_json
+    with monkeypatch.context() as patcher:
+        def fail(*args): raise OSError('synthetic write error')
+        patcher.setattr(Q,'atomic_json',fail)
+        with pytest.raises(OSError): ex._learn_preparation_resources('host',report)
+    assert ex.preparation_observations == {} and ex._preparation_observation_ack('host',report)=={}
+    ex._learn_preparation_resources('host',report)
+    assert ex.preparation_observations_path.is_file()
+    assert ex._preparation_observation_ack('host',report)=={'attempt':Q.digest(sample)}
+    assert ex._preparation_observation_ack('other',report)=={}
+    assert ex._preparation_observation_ack('host',dict(preparation_observations=[dict(sample,peak_rss_bytes=101)]))=={}
+
+
+def test_observation_delta_replays_without_full_snapshot_rewrite(tmp_path):
+    from trottertracks.rpe_q3_resources import save_observation_delta, load_observation_deltas
+    path=tmp_path/'observations.json'
+    base=dict(a={'attempt_id':'a','peak_rss_bytes':1})
+    save_observation_delta(path,base,base)
+    old=path.read_bytes()
+    new=dict(a={'attempt_id':'a','peak_rss_bytes':2})
+    save_observation_delta(path,new,new)
+    assert path.read_bytes()==old
+    assert list(load_observation_deltas(path))==list(new.values())
+    with path.with_suffix('.jsonl').open('ab') as stream:stream.write(b'{incomplete')
+    last=dict(a={'attempt_id':'a','peak_rss_bytes':3})
+    save_observation_delta(path,last,last)
+    assert list(load_observation_deltas(path))==[new['a'],last['a']]
+
+
+def test_artifact_inventory_reuses_unchanged_shard_and_sees_external_changes(tmp_path,monkeypatch):
+    import hashlib
+    from trottertracks.rpe_preparation_artifacts import ArtifactCache
+    cache=ArtifactCache(tmp_path/'cache')
+    first=hashlib.sha256(b'first').hexdigest();second=hashlib.sha256(b'second').hexdigest()
+    path=cache.path(first);path.parent.mkdir(parents=True);path.write_bytes(b'first')
+    assert cache.hashes()==[first]
+    with monkeypatch.context() as patcher:
+        from trottertracks import rpe_preparation_artifacts
+        patcher.setattr(rpe_preparation_artifacts.time,'time_ns',lambda:path.parent.stat().st_ctime_ns+2_000_000_000)
+        patcher.setattr(Path,'iterdir',lambda self:pytest.fail('unchanged shard rescanned'))
+        assert cache.hashes()==[first]
+    added=cache.path(second);added.parent.mkdir(parents=True,exist_ok=True);added.write_bytes(b'second')
+    assert cache.hashes()==sorted([first,second])
+    path.unlink();assert cache.hashes()==[second]
+
+
+def test_forecast_updates_only_changed_group_and_matches_full_rebuild(tmp_path):
+    a=request(tmp_path,system='a');b=request(tmp_path,system='b')
+    samples=[dict(attempt_id='a',workload=R.preparation_workload(a),peak_rss_bytes=100,cpu_count=2,host='local'),
+             dict(attempt_id='b',workload=R.preparation_workload(b),peak_rss_bytes=200,cpu_count=2,host='local')]
+    index=R.PreparationForecastIndex(samples)
+    changed=dict(samples[0],peak_rss_bytes=300)
+    updated=index.with_updates([changed]);full=R.PreparationForecastIndex([changed,samples[1]])
+    unchanged=R._forecast_group(samples[1]['workload'])
+    assert updated.group_caches[unchanged] is index.group_caches[unchanged]
+    for item in (a,b):assert updated.forecast(item,cpu_count=2,host='local')==full.forecast(item,cpu_count=2,host='local')

@@ -4,10 +4,10 @@ Scientific leaves are the published method-specific providers/acquisition paths.
 The public API accepts the optimizer's input request/canonical configuration.
 """
 from concurrent.futures import ThreadPoolExecutor
+from collections import defaultdict
 from contextlib import ExitStack, nullcontext
 from copy import deepcopy
 from fractions import Fraction
-from functools import lru_cache
 import hashlib
 import ast
 import json
@@ -145,17 +145,88 @@ with runpy.run_path(helper)['reuse_df_price_flanks'](module):
 
 def git(*args,cwd=ROOT):return subprocess.check_output(['git',*args],cwd=cwd,text=True).strip()
 def read(p):return json.loads(Path(p).read_text())
+
+
+def read_completion_state(path):
+    """Replay durable transient records, retrying a concurrent checkpoint."""
+    path = Path(path)
+    journal = path.with_name('STATE_DELTAS.jsonl')
+    while True:
+        with path.open() as stream:
+            revision = os.fstat(stream.fileno())
+            state = json.load(stream)
+        sequence = int(state.get('record_checkpoint_seq', 0))
+        gap = False
+        try:
+            with journal.open('rb') as stream:
+                for raw in stream:
+                    if not raw.endswith(b'\n'):
+                        break
+                    event = json.loads(raw)
+                    if event['seq'] <= sequence:
+                        continue
+                    if event['seq'] != sequence + 1:
+                        gap = True
+                        break
+                    state['records'][event['key']] = event['record']
+                    sequence = event['seq']
+        except FileNotFoundError:
+            pass
+        current = path.stat()
+        if (revision.st_dev, revision.st_ino) != (current.st_dev, current.st_ino):
+            continue
+        if gap:
+            raise ValueError('Completion record journal has a sequence gap')
+        if sequence:
+            state['record_checkpoint_seq'] = sequence
+        return state
+
+
+def repair_completion_delta_tail(path):
+    """Only the owning controller discards an interrupted final append."""
+    if path.is_file():
+        with path.open('r+b') as stream:
+            while raw := stream.readline():
+                if not raw.endswith(b'\n'):
+                    stream.seek(-len(raw), 1)
+                    stream.truncate()
+                    break
+
 class _LargeFixedLocator(Exception):
     pass
 
 
-@lru_cache(maxsize=512)
+_fixed_locator_cache = {}
+_fixed_locator_bytes = 0
+_fixed_locator_lock = threading.Lock()
+# Retain the previous 512*256KiB maximum payload memory, but keep small
+# fixed objects by bytes rather than evicting every entry at 513 records.
+_FIXED_LOCATOR_BUDGET = 512*256*1024
+
+
 def _fixed_json_locator(root,commit,path):
-    # A full Git object ID is immutable. Cache only small serialized metadata,
-    # not expanded signal/evidence documents or branch/ref names.
+    global _fixed_locator_bytes
+    key_ = (root,commit,path)
+    with _fixed_locator_lock:
+        cached = _fixed_locator_cache.get(key_)
+    if cached is not None:return cached
     raw=subprocess.check_output(['git','show',commit+':'+path],cwd=root)
     if len(raw)>256*1024:raise _LargeFixedLocator(raw)
+    cost=len(raw)+sum(map(len,key_))+128
+    with _fixed_locator_lock:
+        if key_ not in _fixed_locator_cache and _fixed_locator_bytes+cost<=_FIXED_LOCATOR_BUDGET:
+            _fixed_locator_cache[key_]=raw
+            _fixed_locator_bytes+=cost
     return raw
+
+
+def _clear_fixed_locator_cache():
+    global _fixed_locator_bytes
+    with _fixed_locator_lock:
+        _fixed_locator_cache.clear();_fixed_locator_bytes=0
+
+
+_fixed_json_locator.cache_clear = _clear_fixed_locator_cache
 
 
 def value(loc):
@@ -370,7 +441,7 @@ class Completion:
         self.directory=Path(directory).resolve();self.directory.mkdir(parents=True,exist_ok=True)
         self.settings=settings
         self.state_path=self.directory/'STATE.json'
-        prior=read(self.state_path)if self.state_path.exists()else None
+        prior=read_completion_state(self.state_path)if self.state_path.exists()else None
         self.source=settings.get('source')or (prior or{}).get('source')or git('rev-parse','HEAD')
         self.state=prior or dict(schema='PR_CANDIDATE_COMPLETION_V1',source=self.source,records={})
         imported=settings.get('resume_preparation_from')
@@ -413,6 +484,7 @@ class Completion:
                 self.state['preparation_repairs'] = repairs
         if self.state['source']!=self.source:raise ValueError('Completion SOURCE changed; preserve prior state')
         self.lock=threading.RLock()
+        repair_completion_delta_tail(self.state_path.with_name('STATE_DELTAS.jsonl'))
         self.pauli_price_lock=threading.RLock()
         self.pauli_metadata_lock=threading.RLock()
         self.stage_executor=None
@@ -532,7 +604,7 @@ class Completion:
                     or dec(spec['kappa']['value'])!=dec(design['kappa'])
                     or dec(spec['delta_pf'])!=dec(design['delta_pf'])):return False
             recovered=json.loads(git('show',command[2]))
-            state=read(directory.parent.parent/'STATE.json')
+            state=read_completion_state(directory.parent.parent/'STATE.json')
             matched=[r for r in state['records'].values() if r.get('method')=='PR_DF'
                      and r.get('configuration')==dict(commit=commit,path=path)]
             if not matched:return False
@@ -784,8 +856,61 @@ class Completion:
         return (self._step_rules().quote(config, implementation, base_quote=quote, preferred_models=preferences)
                 if preferences else quote)
 
+    def save_record(self, record):
+        """Save an in-progress record without encoding unrelated candidates."""
+        with self.lock:
+            if not self.state_path.exists():
+                self.save()
+                return
+            if self.state['records'].get(record['key']) is not record:
+                raise ValueError('Cannot journal a record without current ownership')
+            encoded=json.dumps(record,ensure_ascii=False,allow_nan=False,separators=(',',':'))
+            last=getattr(self,'_saved_record_payloads',{})
+            self._saved_record_payloads=last
+            if last.get(record['key'])==encoded:
+                return
+            sequence = int(self.state.get('record_checkpoint_seq', 0)) + 1
+            journal = self.state_path.with_name('STATE_DELTAS.jsonl')
+            fresh = not journal.exists()
+            event = dict(seq=sequence, key=record['key'], record=record)
+            with journal.open('a') as stream:
+                stream.write(json.dumps(event,ensure_ascii=False,allow_nan=False,separators=(',',':'))+'\n')
+                stream.flush();os.fsync(stream.fileno())
+            if fresh:
+                fd=os.open(journal.parent,os.O_RDONLY|os.O_DIRECTORY)
+                try:os.fsync(fd)
+                finally:os.close(fd)
+            self.state['record_checkpoint_seq'] = sequence
+            last[record['key']]=encoded
+
     def save(self):
-        with self.lock:put(self.state_path,self.state)
+        with self.lock:
+            # Keep the complete STATE.json compatibility contract for fixed
+            # continuation locators. Avoid reading the entire prior state on
+            # each save in this single owning Completion instance.
+            encoded = json.dumps(self.state,indent=2,ensure_ascii=False,allow_nan=False)+'\n'
+            path = self.state_path
+            def revision():
+                try:
+                    info=path.stat()
+                    return (info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_ctime_ns)
+                except FileNotFoundError:return None
+            cached=getattr(self,'_saved_state_encoding', None)
+            if cached is not None and cached==(revision(),encoded):return
+            path.parent.mkdir(parents=True,exist_ok=True)
+            tmp=path.with_name(path.name+'.tmp-'+str(os.getpid())+'-'+str(threading.get_ident()))
+            with tmp.open('w') as stream:
+                stream.write(encoded);stream.flush();os.fsync(stream.fileno())
+            tmp.replace(path)
+            fd=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
+            try:os.fsync(fd)
+            finally:os.close(fd)
+            journal=path.with_name('STATE_DELTAS.jsonl')
+            if journal.exists():
+                with journal.open('w') as stream:
+                    stream.flush();os.fsync(stream.fileno())
+            self._saved_state_encoding=(revision(),encoded)
+            self._saved_record_payloads={}
 
     def log(self,**event):
         with self.lock:
@@ -863,7 +988,7 @@ class Completion:
         if runtime is not None and science and runtime.handles(stage):
             # Recovery is reconciled with the original host/attempt by the
             # shared executor. A local STARTED marker is never a retry grant.
-            if poll:
+            if poll or getattr(self, 'nonblocking_distributed_preparation', False):
                 return runtime.call(self,cmd,d,stage,output,science=science,wait=False)
             return runtime.call(self,cmd,d,stage,output,science=science)
         if poll and runtime is not None:
@@ -1329,7 +1454,7 @@ class Completion:
                 rec.update(deferred_configuration=old.get('deferred_configuration') or old['configuration'],
                            deferred_tail_descriptor=old.get('deferred_tail_descriptor'))
             rec.pop('pending_preparation_job', None)
-            self.state['records'][identifier]=rec;self.save()
+            self.state['records'][identifier]=rec;self.save_record(rec)
         request=deepcopy(request)  # descriptor resolution must not change the caller's stable request key
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
         physical_guard=None
@@ -1477,13 +1602,13 @@ class Completion:
                 with ThreadPoolExecutor(max_workers=2)as pool:
                     signal_future=pool.submit(signal_work)
                     price_future=pool.submit(available_price)
-                    signal=signal_future.result();rec.update(signal=signal);self.save()
+                    signal=signal_future.result();rec.update(signal=signal);self.save_record(rec)
                     intake=intake_work(signal)
-                    rec['intake']=intake;self.save();quote=price_future.result()
+                    rec['intake']=intake;self.save_record(rec);quote=price_future.result()
             else:
-                signal=signal_work();rec.update(signal=signal);self.save()
+                signal=signal_work();rec.update(signal=signal);self.save_record(rec)
                 intake=intake_work(signal)
-                rec['intake']=intake;self.save()
+                rec['intake']=intake;self.save_record(rec)
                 quote=available_price()
             if not quote['complete'] and not exploratory:
                 quoted_registry = quote.get('price_registry_at_quote', initial_registry)
@@ -2588,17 +2713,21 @@ class Completion:
             price_source=dict(commit=frozen,path=rel(base/'AXIS_PRICES.json')),holdout_source=holdout,
             calibration_compile_axes=compile_axes['CALIBRATION'])
 
-    def common_route(self,method,cid,configuration,packet,binding):
+    def common_route(self,method,cid,configuration,packet,binding, *, view_commits=None):
         """The same fixed worker/contract for newly prepared and saved candidates."""
         view=self.path('B_VIEW') if method=='PR_PAULI'else self.path('DF_Q3_VIEW')
         maximum=self.max_width_source(configuration) if method=='PR_DF' else None
+        if view_commits is None:
+            view_commits = {}
+        if view not in view_commits:
+            view_commits[view] = git('rev-parse','HEAD',cwd=view)
         return dict(**({'max_width_source':maximum} if maximum else {}),kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=self.path('NATIVE'),
-            view=str(view),view_commit=git('rev-parse','HEAD',cwd=view),configuration_ids=[cid],
+            view=str(view),view_commit=view_commits[view],configuration_ids=[cid],
             contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
             configurations={cid:dict(configuration=configuration,signal_packet=packet,
                 binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])})
 
-    def install_saved_routes(self,context,routes):
+    def install_saved_routes(self,context,routes, *, view_commits=None):
         """Reconnect catalog-only PR cases through their own source-bound metadata.
 
         Existing usable routes remain unchanged, preserving prior-job reuse.
@@ -2607,17 +2736,32 @@ class Completion:
         """
         from . import rpe_method_optimizer as O
         reader=context.get('reader')or O.Reader(ROOT)
-        points=context.get('catalog',{}).get('candidates',[])
+        if view_commits is None:
+            view_commits = {}
+        points = defaultdict(list)
+        for point in context.get('catalog',{}).get('candidates',[]):
+            points[point.get('method'), point.get('configuration_id')].append(point)
+        named, wildcard = defaultdict(list), defaultdict(list)
+        def index(method, rule):
+            allowed = rule.get('configuration_ids')
+            if isinstance(allowed, (tuple, list)) and all(isinstance(cid, str) for cid in allowed):
+                for cid in allowed:
+                    named[method, cid].append(rule)
+            else:
+                wildcard[method].append(rule)
+        for method, rules in routes.items():
+            for rule in rules:
+                index(method, rule)
         for c in context['candidates']:
             method=c['method'];cid=c.get('configuration_id')
             if method not in('PR_PAULI','PR_DF')or not cid or not c.get('ready'):continue
             usable=False
-            for rule in routes.get(method,[]):
+            for rule in (*named[method, cid], *wildcard[method]):
                 try:usable=O.route_supports_configuration(rule,cid,reader)
                 except (KeyError,ValueError,TypeError,OSError,subprocess.CalledProcessError):continue
                 if usable:break
             if usable:continue
-            saved=[p for p in points if p.get('method')==method and p.get('configuration_id')==cid]
+            saved=points[method,cid]
             try:
                 if not saved:continue
                 p=saved[0]
@@ -2631,7 +2775,7 @@ class Completion:
                 inputs=reader.read(p['case_source'])
                 cases=[row for row in inputs['cases']if(row.get('original_configuration_id')or row.get('configuration_id'))==cid]
                 if not cases:raise ValueError('SAVED_ROUTE_CASE_MISSING')
-                rule=self.common_route(method,cid,p['configuration_source'],p['signal_source'],p)
+                rule=self.common_route(method,cid,p['configuration_source'],p['signal_source'],p,view_commits=view_commits)
                 loc=rule['contract_template'];contract=reader.read(dict(loc,selector=loc.get('inputs_selector',[])))
                 if inputs['adopted_evaluation']!=contract['adopted_evaluation']:
                     raise ValueError('SAVED_ROUTE_EVALUATION_CONTRACT_DIFFERS')
@@ -2644,6 +2788,7 @@ class Completion:
                 if any(expected.get(k)!=p[k]for k in('binding_id','total_configuration_id')):
                     raise ValueError('SAVED_ROUTE_EXPECTED_BINDING_DIFFERS')
                 routes.setdefault(method,[]).insert(0,rule)
+                index(method, rule)
                 c['execution_binding_source']=p['case_source'];c.pop('execution_binding_hold',None)
             except (KeyError,ValueError,TypeError,OSError,subprocess.CalledProcessError)as exc:
                 c['execution_binding_hold']=str(exc)
@@ -2657,14 +2802,155 @@ class Completion:
         """
         with self.lock:
             records=deepcopy([r for r in self.state['records'].values()if r.get('key')in keys and r['status']=='READY_FOR_SEARCH'])
+        return self._install_records_snapshot(context,problem,records),records
+
+    def _install_records_snapshot(self,context,problem,records):
         snapshot=object.__new__(type(self));snapshot.__dict__.update(self.__dict__)
         snapshot.state=dict(self.state,records={r['key']:r for r in records});snapshot.save=lambda:None
-        return snapshot.install(context,problem,records),records
+        return snapshot.install(context,problem,records)
+
+    @staticmethod
+    def _installation_route_index(routes):
+        index=defaultdict(list)
+        for method,rules in routes.items():
+            for rule in rules:
+                if isinstance(rule.get('configuration_ids'),(list,tuple)):
+                    for cid in rule['configuration_ids']:index[method,cid].append(rule)
+        return index
+
+    @staticmethod
+    def _installation_reusable(record,ready,routed,expected,prior):
+        if prior is None:return False
+        old,installed,bindings,bound=prior
+        cid=installed.get('installed_configuration_id',installed.get('configuration_id'))
+        # A carrier/alias may acquire a distinct durable Q3 owner between
+        # observations; repeat the original exact ownership check for it.
+        if (installed.get('signal_carrier_configuration_id') is not None
+                or str(installed.get('installation_disposition','')).startswith('PHYSICALLY_IDENTICAL_TO:')):
+            return False
+        return (old==record and not installed.get('installation_hold') and
+                (record['method'],cid) in ready and bool(bindings)
+                and bindings==routed.get((record['method'],cid)) and bound==expected.get(cid))
+
+    def install_persisted_delta(self,context,problem,records,previous):
+        """Skip unchanged real installations in this same context.
+
+        Keep this cache separate from speculative snapshot installations:
+        their state changes still have to be persisted by the ordinary owner.
+        """
+        ready={(c['method'],c.get('configuration_id')):c for c in context['candidates'] if c.get('ready')}
+        routed=self._installation_route_index(problem['execution_routes'])
+        def inputs(candidate):
+            return {key:deepcopy(candidate.get(key)) for key in
+                    ('prices','price_status','price_quote','signal_source','configuration_source','schedule_keys')}
+        changed=[]
+        for record in records:
+            prior=previous.get(record['key'])
+            if prior is not None:
+                metadata,candidate=prior
+                cid=metadata[1].get('installed_configuration_id',metadata[1].get('configuration_id'))
+                if (self._installation_reusable(record,ready,routed,context.get('expected',{}),metadata)
+                        and inputs(ready[record['method'],cid])==candidate):
+                    continue
+            changed.append(record)
+        routes=self.install(context,problem,changed)
+        routed=self._installation_route_index(routes)
+        ready={(c['method'],c.get('configuration_id')):c for c in context['candidates'] if c.get('ready')}
+        for record in changed:
+            key=record['key'];cid=record.get('installed_configuration_id',record.get('configuration_id'))
+            candidate=ready.get((record['method'],cid))
+            if candidate is None or record.get('installation_hold') or record['status']!='READY_FOR_SEARCH':
+                previous.pop(key,None);continue
+            raw=deepcopy(record)
+            previous[key]=((raw,deepcopy(raw),deepcopy(routed.get((record['method'],cid))),
+                            deepcopy(context.get('expected',{}).get(cid))),inputs(candidate))
+        keys={record['key'] for record in records}
+        for key in list(previous):
+            if key not in keys:del previous[key]
+        return routes
+
+    @staticmethod
+    def installation_base(context,problem,routes):
+        # The catalog is an immutable saved-input snapshot shared by the
+        # existing context builder; only writable tables are copied.
+        return dict(problem=deepcopy(problem),routes=deepcopy(routes),catalog=context.get('catalog'),
+                    candidates=deepcopy(context['candidates']),expected=deepcopy(context.get('expected',{})))
+
+    def restore_cycle_installation(self,base,context,records,cached):
+        """Reuse one prior initial installation only for an identical base.
+
+        Removed/changed records, alias ownership, or a changed actual view HEAD
+        fall back to the complete ordinary installer. New records are handled
+        by the same persisted delta path after restoration.
+        """
+        if not cached or cached['base']!=base:return None
+        prior=cached['persisted']
+        current={r['key']:r for r in records}
+        if not prior or not prior.keys()<=current.keys():return None
+        for key,(metadata,_) in prior.items():
+            old,installed,bindings,_=metadata
+            if (old!=current[key] or installed.get('installation_hold') or
+                    installed.get('signal_carrier_configuration_id') is not None or
+                    str(installed.get('installation_disposition','')).startswith('PHYSICALLY_IDENTICAL_TO:')
+                    or not bindings):return None
+        views={}
+        for rules in cached['routes'].values():
+            for rule in rules:
+                if rule.get('kind') in ('pauli_b_common_entry','prdf_d2_common_entry') and rule.get('view'):
+                    path=rule['view'];head=rule.get('view_commit')
+                    if path in views and views[path]!=head:return None
+                    views[path]=head
+        try:
+            if any(git('rev-parse','HEAD',cwd=path)!=head for path,head in views.items()):return None
+        except (OSError,ValueError,subprocess.CalledProcessError):return None
+        context['candidates']=deepcopy(cached['candidates'])
+        context['expected']=deepcopy(cached['expected'])
+        return deepcopy(cached['routes']),deepcopy(prior)
+
+    def capture_cycle_installation(self,base,context,routes,persisted,records):
+        # Do not retain a context containing an untracked alias/hold or a
+        # partially installed record. Only fully recorded canonical rows may
+        # be reused between independent cycle reconstructions.
+        if set(persisted)!={record['key'] for record in records}:return None
+        return dict(base=base,candidates=deepcopy(context['candidates']),expected=deepcopy(context.get('expected',{})),
+                    routes=deepcopy(routes),persisted=deepcopy(persisted))
+
+    def install_snapshot_delta(self,context,problem,keys,previous):
+        """Reuse unchanged READY installations only in this live context.
+
+        Missing routes, unresolved bindings and changed producer records all
+        go through the original installer. No saved evidence is reclassified.
+        """
+        ready = {(c['method'],c.get('configuration_id')) for c in context['candidates'] if c.get('ready')}
+        routed = self._installation_route_index(problem['execution_routes'])
+        changed, raw, ordered = [], {}, []
+        with self.lock:
+            for record in self.state['records'].values():
+                key = record.get('key')
+                if key not in keys or record['status'] != 'READY_FOR_SEARCH':
+                    continue
+                ordered.append(key)
+                if self._installation_reusable(record,ready,routed,context.get('expected',{}),previous.get(key)):
+                    continue
+                copy = deepcopy(record)
+                raw[key] = deepcopy(copy)
+                changed.append(copy)
+        routes = self._install_records_snapshot(context,problem,changed)
+        routed = self._installation_route_index(routes)
+        for record in changed:
+            cid = record.get('installed_configuration_id',record.get('configuration_id'))
+            previous[record['key']] = (raw[record['key']],record,
+                deepcopy(routed.get((record['method'],cid))), deepcopy(context.get('expected',{}).get(cid)))
+        for key in list(previous):
+            if key not in keys:
+                del previous[key]
+        return routes,[previous[key][1] for key in ordered]
 
     def install(self,context,problem,records):
         from . import rpe_method_optimizer as O,rpe_candidate_preparation as R
         routes=deepcopy(problem['execution_routes'])
         existing_q3_owners = None
+        view_commits = {}
         for rec in records:
             if rec['status']!='READY_FOR_SEARCH':continue
             config=value(rec['configuration']);method=rec['method'];binding=rec['intake'];cid=config['id']
@@ -2785,7 +3071,7 @@ class Completion:
             if rec['prices'] is None and prior_price.get('prices') is not None:
                 cand.update(prior_price)
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
-            rule=self.common_route(method,cid,configuration,packet,binding)
+            rule=self.common_route(method,cid,configuration,packet,binding,view_commits=view_commits)
             parent = rec.get('request',{}).get('horizon_parent')
             if parent:
                 from run_rpe_optimizer_q3_job import M13_RISK
@@ -2798,7 +3084,7 @@ class Completion:
                 context['expected'][cid]['M'] = config['spec']['M']
                 rule.update(horizon_parent=parent,horizon_risk_source=deepcopy(M13_RISK))
             routes[method]=[rule]+[old for old in routes.get(method,[])if old!=rule]
-        routes=self.install_saved_routes(context,routes)
+        routes=self.install_saved_routes(context,routes,view_commits=view_commits)
         self.save()
         return routes
 

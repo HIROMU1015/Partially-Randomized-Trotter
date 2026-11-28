@@ -152,7 +152,7 @@ class SpoolTransport:
     the request ID matches; the gateway persists its answer before delivery.
     """
     def __init__(self, directory, *, deadline, timeout_seconds=15.,
-                 poll_seconds=.1, heartbeat=None, bounded_results=False):
+                 poll_seconds=.1, heartbeat=None, bounded_results=False, consumption_receipts=False):
         self.directory = Path(directory)
         self.requests = self.directory / 'requests'
         self.responses = self.directory / 'responses'
@@ -163,6 +163,7 @@ class SpoolTransport:
         self.poll_seconds = poll_seconds
         self.heartbeat = heartbeat
         self.bounded_results = bounded_results
+        self.consumption_receipts = consumption_receipts
 
     def __call__(self, endpoint, payload):
         completion_prefix = ('complete-' + digest([payload.get('job_id'), payload.get('attempt_id')])[:20] + '-'
@@ -192,8 +193,8 @@ class SpoolTransport:
         else:
             request_id = completion_prefix + uuid.uuid4().hex
             request = self.requests / (request_id + '.json')
-            atomic(request, dict(request_id=request_id, endpoint=endpoint,
-                                 payload=payload, clock=stamp()))
+            saved = dict(request_id=request_id, endpoint=endpoint,payload=payload,clock=stamp())
+            atomic(request,saved)
         response = self.responses / (request_id + '.json')
         limit = min(self.deadline, time.monotonic() + self.timeout_seconds)
         while True:
@@ -203,6 +204,22 @@ class SpoolTransport:
                 value = read(response)
                 if value.get('request_id', request_id) != request_id:
                     raise ValueError('PBS spool response ID differs')
+                # Publish positive consumption evidence before removing the
+                # request. The gateway will only report it once the original
+                # request disappears, so a crash before unlink still replays.
+                # GET is already compacted via its CAS hashes; deferred
+                # evidence status has a separate idempotent protocol.
+                ordinary = endpoint in ('/v1/poll','/v1/state','/v1/artifacts/put',
+                                        '/v1/artifacts/missing','/v1/transfer-metric','/v1/complete')
+                deferred = endpoint=='/v1/complete' and bool(
+                    payload.keys() & {'pbs_evidence','pbs_evidence_status','pbs_evidence_status_batch'})
+                if self.consumption_receipts and ordinary and not deferred:
+                    receipt=self.directory/'consumed'/(request_id+'.json')
+                    try:
+                        receipt.parent.mkdir(exist_ok=True)
+                        atomic(receipt,dict(request_sha256=digest(saved),response_sha256=digest(value)))
+                    except OSError:
+                        pass  # old replay semantics remain safe without a receipt
                 request.unlink(missing_ok=True)
                 response.unlink(missing_ok=True)
                 if value.get('ok') is not True:
@@ -239,7 +256,8 @@ class AllocationWorker(Worker):
         self.start_clock = stamp()
         transport = SpoolTransport(directory, deadline=deadline,
                                    timeout_seconds=float(profile['pbs'].get('rpc_timeout_seconds', 15.)),
-                                   heartbeat=self.heartbeat, bounded_results=profile['pbs'].get('bounded_results', False))
+                                   heartbeat=self.heartbeat, bounded_results=profile['pbs'].get('bounded_results', False),
+                                   consumption_receipts=profile['pbs'].get('response_consumption_receipts',False))
         super().__init__(profile, 'http://127.0.0.1:1',
                          poll_seconds=poll_seconds, transport=transport)
         count = profile['pbs'].get('collection_workers', 0)
@@ -589,11 +607,16 @@ class AllocationWorker(Worker):
                      resources=self.pbs_resources, capacity=self.slots,
                      remaining_seconds=self.remaining(),
                      start_clock=self.start_clock,
-                     exit_reason=self.exit_reason)
+                     exit_reason=self.exit_reason,rollover_guard=True,partition_handoff_protocol=1)
         if getattr(self, 'offline_search', None) is not None:
             value['offline_revision'] = self.offline_search.shared_revision()
             if self.offline_search.independent:
                 value['independent_active'] = bool(self.offline_search.process is not None)
+                waiting=getattr(self.offline_search,'waiting_estimate',None)
+                part=getattr(self.offline_search,'part',None)
+                if (value['independent_active'] and part is not None and waiting
+                        and waiting.get('part')==part.name):
+                    value['independent_waiting']=waiting
         atomic(self.directory / 'STATE.json', value)
 
     def _post(self, endpoint, payload):
@@ -616,7 +639,14 @@ class AllocationWorker(Worker):
         # A slow transport reply can arrive after the last admission check. Keep
         # its original attempt and make the non-launch explicit; never roll its
         # reservation back or silently create another scientific attempt.
-        if self.control().get('stop') or self.draining or self.stop.is_set() or self.remaining() <= self.drain_seconds+self.minimum_task_seconds:
+        guard=getattr(self,'records',{}).get(attempt,{}).get('pbs_rollover_guard')
+        if guard is not None:
+            from .rpe_pbs_attempt_control import rollover_owner_live
+            from .rpe_q3_worker import process_alive
+            rollover_ok=rollover_owner_live(self.records,guard,process_alive)
+        else:rollover_ok=True
+        if (not rollover_ok or self.control().get('stop') or self.draining or self.stop.is_set()
+                or self.remaining() <= self.drain_seconds+self.minimum_task_seconds):
             save_state(attempt, 'UNKNOWN', reason='PBS_ADMISSION_DEADLINE_BEFORE_LAUNCH',
                        scientific_execution_started=False, automatic_retry=False)
             event(self.profile, 'PBS_ADMISSION_HOLD', job_id=Path(attempt).parent.name,

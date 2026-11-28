@@ -45,6 +45,21 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(changed,{'a'});self.assertEqual(set(updates),{'a'})
         self.assertEqual(updates['a']['state'],'ASSIGNED');self.assertGreater(next_rev,rev)
 
+    def test_requeue_after_exact_keeper_fence_not_different_token(self):
+        self.reserve()
+        row, = self.store.claim('pbs',1,allowed_jobs=['j1'],assignment_details={'j1':{'pbs_allocation_token':'old'}})
+        proof = dict(kind='KEEPER_SESSION_ENDED_BEFORE_LAUNCH',token='wrong',pbs_job_id='1.fixture',
+                     **{k:row[k] for k in ('job_id','attempt_id','request_sha256')})
+        detail = dict(reason='PBS_SESSION_ENDED_BEFORE_LAUNCH',resource_released=True,
+                      scientific_execution_started=False,automatic_retry=False,pbs_admission_exit=proof)
+        self.store.update('pbs','j1',row['attempt_id'],'UNKNOWN',detail)
+        self.assertFalse(self.store.requeue_pbs_buffer('j1',row['attempt_id']))
+        proof['token']='old'
+        self.store.update('pbs','j1',row['attempt_id'],'UNKNOWN',detail)
+        self.assertTrue(self.store.requeue_pbs_buffer('j1',row['attempt_id']))
+        self.assertEqual(self.store.row('j1')['state'],'QUEUED')
+        self.assertEqual(self.store.counts('PR_PAULI'),1)
+
     def test_concurrent_budget_reservations_are_atomic(self):
         def claim(i):
             return JobStore(self.path).reserve('PR_PAULI', 'j' + str(i), {'request_id': str(i), 'artificial': True}, 3, True)
@@ -207,3 +222,32 @@ def test_resume_rows_omit_accepted_request_and_eligibility(tmp_path):
     assert len(active)==1 and active[0]['request']==req
     assert accepted==[{'job_id':'done','method':'METHOD','attempt_id':row['attempt_id'],'state':'ACCEPTED'}]
     assert store.row('done')['request']==req
+
+
+def test_owned_snapshot_invalidates_for_exact_owner_and_detail_changes(tmp_path):
+    path=tmp_path/'queue.sqlite3'
+    owner=JobStore(path)
+    other=JobStore(path)
+    owner.reserve('PR', 'job',dict(request_id='job',artificial=True),1,True,contract='FIXED')
+    assert owner.owned_rows()==[]
+    row,=other.claim('fixture',1,allowed_jobs=['job'])
+    first=owner.owned_rows()
+    assert first[0]['attempt_id']==row['attempt_id']
+    first[0]['state']='garbage'
+    assert owner.owned_rows()[0]['state']=='ASSIGNED'
+    other.update('fixture','job',row['attempt_id'],'RUNNING',{'pid':1})
+    assert owner.owned_rows()[0]['state']=='RUNNING'
+    other.update('fixture','job',row['attempt_id'],'RUNNING',{'pid':2})
+    import json
+    assert json.loads(owner.owned_rows()[0]['detail'])['pid']==2
+
+
+def test_capacity_history_batch_matches_individual_hosts(tmp_path):
+    from trottertracks.rpe_q3_store import JobStore
+    store=JobStore(tmp_path/'queue.sqlite3')
+    for name in ('a','b','c'):
+        store.reserve('PR_DF',name,{'route':{'kind':'artificial'}},10,True)
+    store.claim('host1',2);store.claim('host2',1)
+    totals={'a':1.25,'b':2.5,'c':0.0,'missing':99}
+    hosts=['host1','host2','none']
+    assert store.capacity_history_batch(hosts,0,totals)=={h:store.capacity_history(h,0,totals) for h in hosts}

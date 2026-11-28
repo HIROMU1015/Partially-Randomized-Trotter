@@ -14,13 +14,14 @@ import math
 import os
 from pathlib import Path
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 
 from .rpe_q3_timing import stamp
 
 
 SCHEMA = 'RPE_Q3_RESOURCE_OFFER_V1'
-OCCUPIED = {'ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN', 'COMPLETED_PENDING_TRANSFER'}
+# A validated completion retains evidence ownership, not CPU/RAM occupancy.
+OCCUPIED = {'ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN'}
 
 
 def _read(path):
@@ -225,24 +226,59 @@ def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup
 
 def owned_tree_sample(pid, *, proc_root='/proc'):
     """Sample only explicitly owned supervisor/child PIDs, without process scans."""
-    proc = Path(proc_root); todo = [pid]; seen = set(); rss = 0; cpu = 0.
+    proc = Path(proc_root); todo = [pid]; seen = set(); rss = 0; hwm = 0; cpu = 0.
     ticks = os.sysconf('SC_CLK_TCK')
+    cpu_identity={};consistent=True
     while todo:
         current = todo.pop()
         if type(current) is not int or current <= 0 or current in seen: continue
         seen.add(current)
         directory = proc/str(current)
+        current_rss=current_hwm=0
         for line in (_read(directory/'status') or '').splitlines():
             if line.startswith('VmRSS:'):
-                rss += int(line.split()[1])*1024
+                current_rss=int(line.split()[1])*1024
+            elif line.startswith('VmHWM:'):
+                current_hwm=int(line.split()[1])*1024
+        rss+=current_rss
+        # Individual high-water marks need not be simultaneous. Keep this
+        # diagnostic separate from the sampled aggregate RSS peak.
+        hwm+=max(current_rss,current_hwm)
         text = _read(directory/'stat')
         if text and ')' in text:
             values = text.rsplit(')', 1)[1].split()
-            try: cpu += (float(values[11])+float(values[12]))/ticks
-            except (IndexError, ValueError): pass
+            try:
+                cpu += (float(values[11])+float(values[12]))/ticks
+                cpu+=(max(0.,float(values[13]))+max(0.,float(values[14])))/ticks
+                cpu_identity[current]=(values[1],values[13],values[14],values[19])
+            except (IndexError,ValueError):consistent=False
+        else:consistent=False
         try: todo.extend(map(int, (_read(directory/'task'/str(current)/'children') or '').split()))
-        except ValueError: pass
-    return dict(rss_bytes=rss, cpu_seconds=cpu, sampled_pids=len(seen))
+        except ValueError:consistent=False
+    # Reaping a child during traversal can move its CPU into the parent's
+    # cumulative child counter. Never learn a peak from such a mixed sample.
+    for current,identity in cpu_identity.items():
+        text=_read(proc/str(current)/'stat')
+        try:
+            values=text.rsplit(')',1)[1].split()
+            if (values[1],values[13],values[14],values[19])!=identity:consistent=False
+        except (AttributeError,IndexError):consistent=False
+    return dict(rss_bytes=rss,rss_high_water_sum_bytes=hwm,cpu_seconds=cpu,
+                sampled_pids=len(seen),cpu_sample_consistent=consistent and bool(cpu_identity))
+
+
+def owned_cpu_observation(sample,previous,observed):
+    """Keep a last valid cumulative CPU baseline across unstable samples."""
+    old=previous.get('cpu_baseline') or {}
+    peak=previous.get('observed_cpu_cores',0)
+    if sample.get('cpu_sample_consistent') is not True:
+        return dict(cpu_seconds=old.get('seconds',0),cpu_baseline=old,observed_cpu_cores=peak)
+    now=dict(seconds=sample['cpu_seconds'],clock_id=observed['clock_id'],monotonic=observed['monotonic'])
+    if old.get('clock_id')==now['clock_id']:
+        elapsed=now['monotonic']-old['monotonic']
+        delta=now['seconds']-old['seconds']
+        if elapsed>0 and delta>=0:peak=max(peak,delta/elapsed)
+    return dict(cpu_seconds=now['seconds'],cpu_baseline=now,observed_cpu_cores=peak)
 
 
 
@@ -266,7 +302,9 @@ def sample_q3_execution(pid, enabled, *, interval=.25):
     def observe():
         while not stop.is_set():
             try:
-                rss = owned_tree_sample(pid)['rss_bytes']
+                observed=owned_tree_sample(pid)
+                rss=observed['rss_bytes']
+                sample['rss_high_water_sum_bytes']=max(sample.get('rss_high_water_sum_bytes',0),observed.get('rss_high_water_sum_bytes',rss))
                 if rss > 0:
                     sample['peak_rss_bytes'] = max(sample['peak_rss_bytes'], rss)
                     sample['samples'] += 1
@@ -502,8 +540,94 @@ def preparation_forecast(request, observations, *, cpu_count=None, host=None):
     if not observations:return {}
     target = preparation_workload(request)
     if target is None:return {}
+    return _preparation_forecast(target, observations, cpu_count=cpu_count, host=host)
+
+
+_FORECAST_FIELDS = ('family', 'shape', 'provider', 'stage', 'source', 'parallel_axes')
+
+
+def _forecast_group(workload):
+    return json.dumps([workload.get(k) for k in _FORECAST_FIELDS], sort_keys=True, separators=(',', ':'))
+
+
+class PreparationForecastIndex:
+    """Immutable observation revision with per-workload forecast caches."""
+
+    def __init__(self, observations):
+        grouped=defaultdict(list)
+        self.attempt_groups={}
+        for sample in observations:
+            group=_forecast_group(sample.get('workload') or {})
+            grouped[group].append(sample)
+            if sample.get('attempt_id'):self.attempt_groups[sample['attempt_id']]=group
+        self.groups={group:tuple(samples) for group,samples in grouped.items()}
+        self.group_caches={group:self._cache(samples) for group,samples in self.groups.items()}
+
+    @staticmethod
+    def _cache(samples):
+        @lru_cache(maxsize=512)
+        def forecast(target_json,cpu_count,host):
+            return _preparation_forecast(json.loads(target_json),samples,cpu_count=cpu_count,host=host)
+        return forecast
+
+    def with_updates(self, changed):
+        """Replace only groups touched by accepted sample deltas."""
+        result=object.__new__(PreparationForecastIndex)
+        result.groups=self.groups.copy();result.group_caches=self.group_caches.copy()
+        result.attempt_groups=self.attempt_groups.copy()
+        replacements={}
+        for item in changed:
+            attempt=item['attempt_id']
+            old=result.attempt_groups.get(attempt)
+            new=_forecast_group(item.get('workload') or {})
+            if old is not None:
+                records=replacements.setdefault(old,list(result.groups.get(old,())))
+                records[:]=[sample for sample in records if sample.get('attempt_id')!=attempt]
+            replacements.setdefault(new,list(result.groups.get(new,()))).append(item)
+            result.attempt_groups[attempt]=new
+        for group,records in replacements.items():
+            result.groups[group]=tuple(records)
+            result.group_caches[group]=self._cache(result.groups[group])
+        return result
+
+    def forecast(self, request, *, cpu_count=None, host=None):
+        target=preparation_workload(request)
+        if not target:return {}
+        cache=self.group_caches.get(_forecast_group(target))
+        return dict(cache(json.dumps(target,sort_keys=True,separators=(',',':')),cpu_count,host)) if cache else {}
+
+
+def comparable_preparation_memory(request, observations, *, cpu_count, host, runtime_sha256=None):
+    """Replace only a cold full-node fallback using a completed comparable trial.
+
+    Smaller workloads, partial peaks and another host/runtime are insufficient
+    to reduce a reservation. Existing owned/static reservations are untouched.
+    """
+    target = preparation_workload(request)
+    if target is None or not host or not observations:
+        return None
+    upper = []
+    for item in observations:
+        sample = item.get('workload') or {}
+        if (item.get('host') != host or item.get('completed') is not True
+                or (runtime_sha256 is not None and item.get('runtime_profile_sha256') != runtime_sha256)
+                or item.get('cpu_count') != cpu_count
+                or any(sample.get(k) != target.get(k) for k in _FORECAST_FIELDS)
+                or sample.get('df_event_layout') != target.get('df_event_layout')
+                or sample.get('event_shapes') != target.get('event_shapes')):
+            continue
+        if any(type(sample.get(k)) is not int or sample[k] < target[k]
+               for k in ('peak_units', 'total_units', 'axis_jobs', 'path_units')):
+            continue
+        peak = item.get('peak_rss_bytes')
+        if type(peak) is int and peak > 0:
+            upper.append(math.ceil(1.5*peak))
+    return max(upper, default=None)
+
+
+def _preparation_forecast(target, observations, *, cpu_count=None, host=None):
     forecasts = {}; legacy_storage=[]; matching_storage=[];memory_samples=[];layout_memory=[];time_samples=[]
-    keys = ('family', 'shape', 'provider', 'stage', 'source', 'parallel_axes')
+    keys = _FORECAST_FIELDS
     def add(key, value):
         forecasts[key] = max(forecasts.get(key, 0), math.ceil(value))
     for observation in observations or ():
@@ -608,11 +732,32 @@ def seed_reduced_q3_cpu_classes(peaks, policy):
                                          min(target, sample.get('observed_cpu_cores',0)))
 
 
-def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory, explicit):
-    """One class per offer, with existing attempts charged at their own size."""
+def comparable_q3_class_reservations(measured, waiting):
+    """Conservative provisional cost from the same exact runtime at no smaller shots."""
+    reservations={}
+    for kind in set(waiting):
+        if not isinstance(kind,str) or measured.get(kind,{}).get('peak_rss_bytes'):
+            continue
+        fields=kind.split(':')
+        if len(fields)!=8 or fields[:2]!=['q3','count_dp'] or not fields[-1].isdigit():
+            continue
+        samples=[]
+        for previous,sample in measured.items():
+            other=previous.split(':')
+            if (len(other)==8 and other[:-1]==fields[:-1] and other[-1].isdigit()
+                    and int(other[-1])>=int(fields[-1]) and sample.get('peak_rss_bytes',0)>0):
+                samples.append(sample)
+        if samples:
+            reservations[kind]={key:max(sample.get(key,0) for sample in samples)
+                               for key in ('peak_rss_bytes','dp_workers','observed_cpu_cores')}
+    return reservations
+
+
+def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory, explicit, *, mixed=False):
+    """Pack measured demand in priority order, charging each class separately."""
     def footprint(kind):
         sample = peaks[kind]
-        cpu_need = min(cpu, math.ceil(max(1, sample.get('dp_workers', 0), sample.get('observed_cpu_cores', 0))))
+        cpu_need = max(sample.get('declared_cpu',0), min(cpu, math.ceil(max(1, sample.get('dp_workers', 0), sample.get('observed_cpu_cores', 0)))))
         return cpu_need, math.ceil(sample['peak_rss_bytes'] * 1.5)
 
     free_cpu, free_memory = cpu, memory
@@ -620,7 +765,7 @@ def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory,
     for job in occupied:
         kind = job.get('resource_class')
         if not peaks.get(kind, {}).get('peak_rss_bytes'):
-            return 0, [], len(occupied), len(occupied)
+            return 0, [], len(occupied), len(occupied), {}
         cpu_need, rss = footprint(kind)
         free_cpu -= cpu_need
         free_memory -= rss
@@ -628,6 +773,8 @@ def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory,
         if resources.get(key) is not None:
             free_memory = min(free_memory, resources[key])
     counts = Counter(waiting)
+    quotas = {}
+    total = 0
     for kind in counts:
         if kind not in offered:
             continue
@@ -636,10 +783,15 @@ def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory,
         memory_slots = max(0, int(free_memory // rss))
         fits = min(cpu_slots, memory_slots, counts[kind])
         if explicit is not None:
-            fits = min(fits, explicit-len(occupied))
+            fits = min(fits, explicit-len(occupied)-total)
         if fits > 0:
-            return fits, [kind], len(occupied)+cpu_slots, len(occupied)+memory_slots
-    return 0, [], len(occupied), len(occupied)
+            quotas[kind] = fits
+            total += fits
+            if not mixed:
+                return fits, [kind], len(occupied)+cpu_slots, len(occupied)+memory_slots, quotas
+            free_cpu -= fits*cpu_need
+            free_memory -= fits*rss
+    return total, list(quotas), len(occupied)+total, len(occupied)+total, quotas
 
 
 def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None):
@@ -660,8 +812,11 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
     feedback = deepcopy(feedback or state.get('feedback') or {})
     unmeasured_class = False
     offered_classes = None
+    class_quotas = None
     measured_demand = feedback.get('capacity_ready_jobs', feedback.get('ready_jobs', 0))
     isolated = None
+    declared_classes = set()
+    inferred_classes = set()
     pack_classes = policy.get('pack_measured_task_classes') is True
     if policy.get('separate_task_resources'):
         peaks = state.setdefault('task_resource_peaks', {})
@@ -677,6 +832,34 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
             entry = peaks.setdefault(kind, {})
             for metric in ('peak_rss_bytes', 'observed_cpu_cores', 'dp_workers'):
                 entry[metric] = max(entry.get(metric, 0), job.get(metric, 0))
+        # Explicit request-bound reservations can admit a trial without
+        # claiming that it is a measured RSS sample. Keep them separate from
+        # persisted observed peaks; unknown classes remain isolated.
+        declarations=deepcopy(feedback.get('declared_task_class_resources') or {})
+        for job in jobs:
+            if job['state'] not in OCCUPIED:continue
+            memory=job.get('declared_memory_bytes'); cpus=job.get('dp_workers');kind=job.get('resource_class')
+            if kind and type(memory) is int and memory>0 and type(cpus) is int and cpus>0:
+                old=declarations.get(kind,{})
+                declarations[kind]=dict(memory_bytes=max(memory,old.get('memory_bytes',0)),cpu=max(cpus,old.get('cpu',0)))
+        measured_peaks=peaks
+        peaks=deepcopy(measured_peaks)
+        if pack_classes:
+            inferred=comparable_q3_class_reservations(measured_peaks,
+                active | set(feedback.get('ready_task_class_order',())) | occupied_classes)
+            for kind,sample in inferred.items():
+                peaks[kind]=sample
+                inferred_classes.add(kind)
+        for kind,declared in declarations.items():
+            memory=declared.get('memory_bytes'); cpus=declared.get('cpu')
+            if type(memory) is not int or memory<=0 or type(cpus) is not int or cpus<=0:continue
+            sample=peaks.setdefault(kind,{})
+            if memory>sample.get('peak_rss_bytes',0):
+                sample['peak_rss_bytes']=memory
+                declared_classes.add(kind)
+            if cpus>sample.get('dp_workers',0):declared_classes.add(kind)
+            sample['declared_cpu']=cpus
+            sample['dp_workers']=max(cpus,sample.get('dp_workers',0))
         active = sorted(active) or state.get('task_resource_classes', [])
         state['task_resource_classes'] = active
         if 'ready_task_class_order' in feedback:
@@ -782,8 +965,11 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         reasons.append('Insufficient new usable completions for another slot trial' if peak else 'Cold start: per-job memory and useful throughput not measured')
     if (pack_classes and offered_classes is not None and isolated is None and cpu and memory
             and resources.get('allocation_bounds_complete') is not False and not unmeasured_class):
-        slots, offered_classes, cpu_limit, memory_limit = _measured_class_slots(
-            waiting, offered_classes, peaks, jobs, resources, cpu, memory, explicit)
+        mixed = feedback.get('mixed_task_class_quotas') is True
+        slots, offered_classes, cpu_limit, memory_limit, quotas = _measured_class_slots(
+            waiting, offered_classes, peaks, jobs, resources, cpu, memory, explicit, mixed=mixed)
+        if mixed:
+            class_quotas = quotas
         target = occupied + slots
         state.pop('trial', None)
         stage = 'MEASURED_TASK_HEADROOM'
@@ -795,19 +981,85 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
             if isolated is not None:
                 target = 1
                 offered_classes = [isolated]
+                class_quotas = None
                 state['isolated_resource_class'] = isolated
                 stage = 'ISOLATED_RESOURCE_CLASS_TRIAL'
                 reasons = ['No measured class fits; sample one unmeasured class on the idle host']
-    state.update(schema='RPE_Q3_SLOT_STATE_V1', target_slots=target, peak_job_rss_bytes=peak, peak_job_cpu_cores=observed_cpu,
+    if (declared_classes or inferred_classes) and stage=='MEASURED_TASK_HEADROOM':stage='DECLARED_OR_MEASURED_TASK_HEADROOM'
+    reported_peak = max((v.get('peak_rss_bytes',0) for v in measured_peaks.values()),default=0) if (declared_classes or inferred_classes) else peak
+    state.update(schema='RPE_Q3_SLOT_STATE_V1', target_slots=target, peak_job_rss_bytes=reported_peak, peak_job_cpu_cores=observed_cpu,
                  stage=stage, feedback=feedback, decision_clock=stamp(), monotonic=now)
     report=dict(schema=SCHEMA, mode='AUTO', capacity=target, slots=max(0,target-occupied),
                 occupied=occupied, stage=stage, reasons=reasons, resources=resources,
                 limits=dict(cpu_slots=cpu_limit,memory_slots=memory_limit,explicit_max_slots=explicit,memory_sample_headroom_factor=1.5),
-                dp_workers_per_q3=dp, peak_job_rss_bytes=peak, peak_job_cpu_cores=observed_cpu, feedback=feedback,
+                dp_workers_per_q3=dp, peak_job_rss_bytes=reported_peak, peak_job_cpu_cores=observed_cpu, feedback=feedback,
                 memory_estimate_scope='SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE',
                 trial=state.get('trial'), running_jobs_may_exceed_reduced_capacity=occupied>target)
+    if declared_classes:
+        report['declared_trial_classes']=sorted(declared_classes)
+        report['memory_estimate_scope']='MAX_OF_DECLARED_RESERVATION_AND_SAMPLED_RSS_WITH_HEADROOM'
+    if inferred_classes:
+        report['comparable_trial_classes']=sorted(inferred_classes)
+        report['memory_estimate_scope']='PROVISIONAL_SAME_RUNTIME_LARGER_SHOT_SAMPLE_WITH_HEADROOM'
     if offered_classes is not None:
         report['admitted_task_classes'] = offered_classes
+    if class_quotas is not None:
+        report['admitted_task_class_slots'] = class_quotas
     if isolated is not None:
         report['isolated_resource_class'] = isolated
     return state, report
+
+
+def load_observation_deltas(path):
+    """Replay complete durable sample batches; an incomplete last append is not an ACK."""
+    path = Path(path).with_suffix('.jsonl')
+    if not path.is_file():
+        return
+    with path.open('rb') as stream:
+        for raw in stream:
+            if not raw.endswith(b'\n'):
+                break
+            for item in json.loads(raw):
+                yield item
+
+
+def save_observation_delta(path, updated, changed):
+    """Keep the old JSON checkpoint readable and append subsequent envelope changes."""
+    from .rpe_q3_coordinator import atomic_json
+    path = Path(path)
+    journal = path.with_suffix('.jsonl')
+    if not path.is_file():
+        atomic_json(path,list(updated.values()))
+        return
+    if journal.is_file() and journal.stat().st_size > max(1024**2,2*path.stat().st_size):
+        # The new checkpoint includes every old journal event. If interrupted
+        # before unlink, replay of that same old journal must not undo the
+        # current update: append the new batch first, then compact.
+        compact = True
+    else:
+        compact = False
+    with journal.open('a+b') as stream:
+        stream.seek(0,2)
+        size=stream.tell()
+        if size:
+            stream.seek(-1,2)
+            if stream.read(1)!=b'\n':
+                start=max(0,size-4096)
+                while True:
+                    stream.seek(start)
+                    end=stream.read(size-start).rfind(b'\n')
+                    if end>=0 or start==0:
+                        stream.truncate(start+end+1)
+                        break
+                    start=max(0,start-4096)
+        stream.write(json.dumps(list(changed.values()),ensure_ascii=False,allow_nan=False,separators=(',',':')).encode()+b'\n')
+        stream.flush();os.fsync(stream.fileno())
+    fd=os.open(path.parent,os.O_RDONLY)
+    try:os.fsync(fd)
+    finally:os.close(fd)
+    if compact:
+        atomic_json(path,list(updated.values()))
+        journal.unlink()
+        fd=os.open(path.parent,os.O_RDONLY)
+        try:os.fsync(fd)
+        finally:os.close(fd)

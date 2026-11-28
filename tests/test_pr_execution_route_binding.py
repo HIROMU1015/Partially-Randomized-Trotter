@@ -44,7 +44,7 @@ def saved_context(method='PR_PAULI',cid='ARTIFICIAL_LD4'):
     context=dict(reader=reader,catalog=dict(candidates=[point]),candidates=[candidate],expected={cid:dict(
         binding_id=case['binding_id'],total_configuration_id=case['total_configuration_id'])})
     completion=C.Completion.__new__(C.Completion)
-    def route(method,cid,configuration,packet,binding):
+    def route(method,cid,configuration,packet,binding, **kwargs):
         return dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',
                     configuration_ids=[cid],contract_template=contract,configurations={cid:dict(
                         configuration=configuration,signal_packet=packet,binding_id=binding['binding_id'],
@@ -163,7 +163,9 @@ class OrdinaryEntry(unittest.TestCase):
         driver.complete_points=lambda:None
         driver.batch=lambda:{'PR_DF':dict(stop_reason='NO_CANDIDATE_LEFT_IN_RANGE',new_calls=0,
             input_requests=[dict(kind='CONFIGURATION_INPUTS_MISSING',needs=['Q3_ROUTE_CONFIGURATION_OR_TEMPLATE'])])}
-        driver.loop()
+        with tempfile.TemporaryDirectory() as directory:
+            driver.run=Path(directory)
+            driver.loop()
         self.assertEqual(driver.state['stop']['reason'],'WAITING_FOR_INPUTS')
 
     def test_catalog_route_recovery_actual_multwidth_cli_concurrent_and_resume(self):
@@ -178,7 +180,7 @@ class OrdinaryEntry(unittest.TestCase):
                         comp,fixture,reader=saved_context(method,cid)
                         # Acquisition and Q3 numerics are artificial. The saved
                         # metadata reconciliation itself is the production method.
-                        comp.common_route=lambda *args,r=rule:dict(deepcopy(r),contract_template=dict(commit='ARTIFICIAL',path='contract'))
+                        comp.common_route=lambda *args,r=rule,**kwargs:dict(deepcopy(r),contract_template=dict(commit='ARTIFICIAL',path='contract'))
                         fixture['candidates'][0]['signal_source']=fixture['catalog']['candidates'][0]['signal_source']
                         routes=comp.install_saved_routes(fixture,routes)
                         recovered.append(cid)
@@ -205,3 +207,83 @@ class OrdinaryEntry(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+def test_delta_installer_revisits_only_changed_or_unrouted_records():
+    from threading import RLock
+    comp = C.Completion.__new__(C.Completion)
+    comp.lock = RLock()
+    comp.state = {'records':{key:dict(key=key, status='READY_FOR_SEARCH', method='PR_DF',
+                                     configuration_id=key, prices=[1]) for key in ('a','b')}}
+    calls=[]
+    ctx = {'candidates':[dict(method='PR_DF',configuration_id=key,ready=True) for key in ('a','b')]}
+    routes = {'PR_DF':[dict(configuration_ids=[key]) for key in ('a','b')]}
+    def install(context,problem,records):
+        calls.append([row['key'] for row in records])
+        return problem['execution_routes']
+    comp.install=install
+    previous={}
+    install_delta=lambda:comp.install_snapshot_delta(ctx,{'execution_routes':routes},{'a','b'},previous)
+    install_delta()
+    install_delta()
+    comp.state['records']['b']['prices']=[2]
+    install_delta()
+    routes['PR_DF']=routes['PR_DF'][1:]
+    install_delta()
+    assert calls == [['a','b'],[],['b'],['a']]
+
+
+def test_distributed_candidate_lane_yields_without_waiting_for_remote_stage(tmp_path):
+    from unittest.mock import Mock
+    comp=C.Completion.__new__(C.Completion)
+    comp.stage_executor=Mock()
+    comp.stage_executor.handles.return_value=True
+    comp.stage_executor.call.side_effect=C.PreparationWait('owned wait',job_id='prep-artificial')
+    comp.nonblocking_distributed_preparation=True
+    with unittest.TestCase().assertRaises(C.PreparationWait):
+        comp.call(['artificial'],tmp_path,'DF_SIGNALS',science=True)
+    assert comp.stage_executor.call.call_args.kwargs['wait'] is False
+
+
+def test_persisted_delta_does_not_repeat_installed_or_skip_unpersisted_snapshot():
+    from threading import RLock
+    comp=C.Completion.__new__(C.Completion);comp.lock=RLock()
+    rows=[dict(key=k,status='READY_FOR_SEARCH',method='PR_DF',configuration_id=k,prices=[1]) for k in ('a','b')]
+    comp.state={'records':{row['key']:row for row in rows}}
+    context={'candidates':[dict(method='PR_DF',configuration_id=k,ready=True,prices=[1]) for k in ('a','b')]}
+    routes={'PR_DF':[dict(configuration_ids=[k]) for k in ('a','b')]}
+    calls=[]
+    def install(ctx,problem,records):
+        calls.append([row['key'] for row in records]);return problem['execution_routes']
+    comp.install=install
+    persisted={}
+    comp.install_persisted_delta(context,{'execution_routes':routes},rows[:1],persisted)
+    snapshots={key:value[0] for key,value in persisted.items()}
+    comp.install_snapshot_delta(context,{'execution_routes':routes},{'a','b'},snapshots)
+    comp.install_persisted_delta(context,{'execution_routes':routes},rows,persisted)
+    comp.install_persisted_delta(context,{'execution_routes':routes},rows,persisted)
+    context['candidates'][0]['prices']=[2]
+    comp.install_persisted_delta(context,{'execution_routes':routes},rows,persisted)
+    assert calls==[['a'],['b'],['b'],[],['a']]
+
+
+def test_cycle_install_reuse_requires_exact_base_record_and_view(tmp_path,monkeypatch):
+    comp=C.Completion.__new__(C.Completion)
+    row=dict(key='a',status='READY_FOR_SEARCH',method='PR_DF',configuration_id='a',prices=[1])
+    base_ctx={'candidates':[],'expected':{},'catalog':{'candidates':[]}}
+    base=comp.installation_base(base_ctx,{'fixed':True},{})
+    installed={'candidates':[dict(method='PR_DF',configuration_id='a',ready=True,prices=[1])],'expected':{'a':{'binding':'fixed'}}}
+    route={'kind':'prdf_d2_common_entry','configuration_ids':['a'],'view':str(tmp_path),'view_commit':'a'*40}
+    routes={'PR_DF':[route]}
+    previous={'a':((row,row,[route],installed['expected']['a']),{})}
+    cache=comp.capture_cycle_installation(base,installed,routes,previous,[row])
+    assert comp.capture_cycle_installation(base,installed,routes,previous,[row,dict(row,key='held')]) is None
+    monkeypatch.setattr(C,'git',lambda *a,**kw:'a'*40)
+    current={'candidates':[],'expected':{}}
+    restored=comp.restore_cycle_installation(base,current,[row],cache)
+    assert restored is not None and current==installed
+    assert comp.restore_cycle_installation(base,current,[dict(row,prices=[2])],cache) is None
+    assert comp.restore_cycle_installation(base,current,[],cache) is None
+    assert comp.restore_cycle_installation(dict(base,problem={'fixed':False}),current,[row],cache) is None
+    monkeypatch.setattr(C,'git',lambda *a,**kw:'b'*40)
+    assert comp.restore_cycle_installation(base,current,[row],cache) is None

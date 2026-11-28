@@ -14,7 +14,7 @@ import sqlite3
 import sys
 import time
 
-from recover_stopped_rpe_run import (OWNED, load, live_driver, optional, read_rows,
+from recover_stopped_rpe_run import (OWNED, has_owned_attempts, load, live_driver, optional, read_rows,
                                      safe_name, read_preparation_readiness)
 from publish_h4_search_run import FILES as PUBLICATION_FILES
 
@@ -51,7 +51,12 @@ def latest_wait(path):
 def wait_summary(run, recovery):
     wait = latest_wait(run/'PROGRESS.jsonl')
     relay = optional(run/'distributed/relay/STATUS.json')
-    pbs = optional(run/'distributed/pbs/STATE.json')
+    pbs_path=run/'distributed/pbs/STATE.json'
+    if pbs_path.with_name('STATE_DELTAS.jsonl').is_file():
+        from trottertracks.rpe_pbs_state import read_pbs_state
+        pbs=read_pbs_state(pbs_path)
+    else:
+        pbs=optional(pbs_path)
     allocations = [row for row in pbs.get('allocations', {}).values() if not row.get('harvested')]
     sessions = Counter(row.get('session_status') or row.get('status', 'UNCONFIRMED') for row in allocations)
     reservations = {}
@@ -72,20 +77,66 @@ def wait_summary(run, recovery):
                 delivery_hold=recovery.get('delivery_hold'))
 
 
-def archive_candidates(runs, current, rows):
+def _archive_db_signature(database):
+    signatures=[]
+    for path in (database, Path(str(database)+'-wal')):
+        try:
+            st=path.stat()
+            signatures.append([st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns,st.st_ctime_ns])
+        except FileNotFoundError:
+            signatures.append(None)
+    return signatures
+
+
+def archive_snapshot(run, ended, cache=None):
+    """Read bundle references alone; unchanged ended runs reuse the read-only snapshot."""
+    database = run/'distributed/QUEUE.sqlite3'
+    if not database.is_file():
+        return set(), []
+    signature = _archive_db_signature(database)
+    key = str(run.resolve())
+    saved = (cache or {}).get(key) if ended else None
+    if saved is not None and saved.get('signature') == signature:
+        return set(saved['hashes']), saved['candidates']
+    with sqlite3.connect(database.resolve().as_uri()+'?mode=ro', uri=True) as db:
+        db.row_factory = sqlite3.Row
+        db.execute('BEGIN')
+        hashes = {row[0] for row in db.execute("SELECT DISTINCT json_extract(b.value,'$.sha256') "
+            "FROM jobs j, json_each(j.request,'$.preparation.input_git_bundles') b")}
+        candidates = []
+        if ended and hashes and not db.execute("SELECT 1 FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED') LIMIT 1").fetchone():
+            candidates = [dict(row,request=json.loads(row['request'])) for row in db.execute(
+                "SELECT job_id,method,state,request_sha256,request,adopted_epoch FROM jobs "
+                "WHERE state='ACCEPTED' AND adopted_epoch IS NOT NULL AND "
+                "json_array_length(request,'$.preparation.input_git_bundles')>0")]
+    if cache is not None:
+        if ended and signature == _archive_db_signature(database):
+            cache[key] = dict(signature=signature, hashes=sorted(hashes), candidates=candidates)
+        else:
+            cache.pop(key,None)
+    return hashes, candidates
+
+
+def archive_candidates(runs, current, rows=None, *, cache=None):
     """Nominate ended, adopted inputs which no other registered run references."""
     referenced = Counter()
     proposals = []
     for run in runs:
-        run_rows = rows.get(run,[])
-        pending = read_preparation_readiness(run/'distributed')
-        requests = [row['request'] for row in run_rows] + [row['request'] for row in pending.values()]
-        referenced.update({bundle['sha256'] for request in requests
-                           for bundle in (request.get('preparation') or {}).get('input_git_bundles', [])})
         launch = optional(run/'LAUNCH.json'); finished = optional(run/'EXIT.json')
-        if (run == current or not launch.get('invocation_id') or launch['invocation_id'] != finished.get('invocation_id')
-                or finished.get('returncode') != 0 or live_driver(run)
-                or any(row['state'] not in ('ACCEPTED','CANCELLED') for row in run_rows)):
+        ended = (run != current and launch.get('invocation_id') and launch['invocation_id'] == finished.get('invocation_id')
+                 and finished.get('returncode') == 0 and not live_driver(run))
+        if rows is None:
+            bundles, run_rows = archive_snapshot(run, ended, cache)
+        else:
+            run_rows = rows.get(run, [])
+            bundles = {bundle['sha256'] for row in run_rows
+                       for bundle in (row['request'].get('preparation') or {}).get('input_git_bundles', [])}
+            ended = ended and all(row['state'] in ('ACCEPTED','CANCELLED') for row in run_rows)
+        pending = read_preparation_readiness(run/'distributed')
+        bundles.update(bundle['sha256'] for row in pending.values()
+                       for bundle in (row['request'].get('preparation') or {}).get('input_git_bundles', []))
+        referenced.update(bundles)
+        if not ended:
             continue
         for row in run_rows:
             if row['state'] != 'ACCEPTED' or row['adopted_epoch'] is None:
@@ -244,7 +295,11 @@ def run_pass(state, *, offline=False, resume_interrupted=False, publication_only
         previous = optional(archive_path)
         if time.time()-previous.get('epoch',0) >= 300:
             try:
-                candidates = archive_candidates(runs.values(),runs.get(current),{run:read_rows(run) for run in runs.values()})
+                cache_path = report_dir/'ARCHIVE_SNAPSHOTS.json'
+                cache = optional(cache_path)
+                cache = {key:value for key,value in cache.items() if key in {str(run.resolve()) for run in runs.values()}}
+                candidates = archive_candidates(runs.values(), runs.get(current), cache=cache)
+                save(cache_path,cache)
                 save(archive_path,dict(candidates,epoch=time.time(),warnings=warnings))
             except (OSError,ValueError,KeyError,sqlite3.Error) as error:
                 warnings.append(dict(archive_candidates_error=str(error)))
@@ -280,7 +335,7 @@ def run_pass(state, *, offline=False, resume_interrupted=False, publication_only
                     run, active=live_driver(run), previous=previous.get('publication_check', {}))
             save(report,dict(result,wait=wait_summary(run,result),observed_epoch=time.time()))
             if (run_id != current and not live_driver(run)
-                    and not any(row['state'] in OWNED for row in read_rows(run))):
+                    and not has_owned_attempts(run)):
                 monitored.discard(run_id)
         save(report_dir/'WATCH.json',dict(runs=sorted(monitored)))
         compaction_path = report_dir/'ARCHIVE_COMPACTION.json'

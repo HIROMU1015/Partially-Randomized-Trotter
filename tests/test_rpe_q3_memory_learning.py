@@ -121,3 +121,17 @@ def test_receipt_uses_reserved_claim_cpu_for_legacy_profile(tmp_path,legacy):
     assert M.observation(dict(row,detail={}),leaf) is None
     row['eligibility']={'execution_profiles':{host:runtime}}
     assert M.observation(dict(row,detail={'pbs_launch_resources':{'cpu':3}}),leaf) is None
+
+
+def test_resume_bulk_observations_preserve_original_owner_envelope(tmp_path):
+    host,runtime,pbs,req=setup(); M.apply_policy({'pbs':pbs},True)
+    learner=M.MemoryLearner(tmp_path/'bulk.json',pbs)
+    owner=dict(state='RUNNING',request=req,host_id=host,job_id='old',attempt_id='old-attempt',request_sha256=digest(req),detail={})
+    a,leaf=accepted(tmp_path,3,runtime,req,P.GIB)
+    b,leaf2=accepted(tmp_path,4,runtime,req,2*P.GIB)
+    with patch('trottertracks.rpe_q3_worker.select_host_profile',return_value=runtime):
+        observations=[M.observation(a,leaf),M.observation(b,leaf2)]
+        assert learner.update_many(observations,[owner],pbs)
+        assert P.resource_need(req,runtime,pbs,host)==(4,3*P.GIB)
+        assert P.owned_resource_need(owner,runtime,pbs,host)==(4,8*P.GIB)
+        assert not learner.update_many(observations,[owner],pbs)

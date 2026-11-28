@@ -55,7 +55,8 @@ class StorageSampleTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             policy = dict(limit_bytes=50*P.GIB, roots=[directory], sample_path=str(root/'sample.json'))
-            with patch.object(storage, '_used_bytes', return_value=42*P.GIB) as measure:
+            with patch.object(storage, '_used_bytes', return_value=42*P.GIB) as measure, \
+                 patch.object(storage.shutil,'disk_usage',return_value=SimpleNamespace(free=100*P.GIB)):
                 report = storage.report(policy, du_timeout=W.COMPUTE_DU_TIMEOUT)
                 self.assertTrue(report['accepting_new_jobs'])
                 measure.assert_called_once_with([directory], timeout=W.COMPUTE_DU_TIMEOUT, excluded_paths=())
@@ -995,6 +996,28 @@ class ManagerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'pinned PBS settings'):
                 P.PbsManager(executor, changed, gateway=FakeGateway())
 
+    def test_artifact_inventory_is_acknowledged_only_with_exact_worker_revision(self):
+        manager=P.PbsManager.__new__(P.PbsManager)
+        values=['a'*64,'b'*64];revision=P.digest(values)
+        self.assertIsNone(manager._artifact_inventory('token',{'artifact_inventory_revision':revision}))
+        self.assertEqual(manager._artifact_inventory('token',{'artifact_inventory_revision':revision,'cached_artifact_sha256':values}),revision)
+        delta={'artifact_inventory_revision':revision}
+        self.assertEqual(manager._artifact_inventory('token',delta),revision)
+        self.assertEqual(delta['cached_artifact_sha256'],values)
+        self.assertIsNone(manager._artifact_inventory('other',{'artifact_inventory_revision':revision}))
+        self.assertIsNone(manager._artifact_inventory('token',{'artifact_inventory_revision':'c'*64}))
+
+    def test_manager_save_does_not_rewrite_identical_state(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager=P.PbsManager.__new__(P.PbsManager)
+            manager.path=Path(directory)/'STATE.json';manager.state={'allocations':{}}
+            with patch.object(P,'atomic',wraps=P.atomic) as save:
+                manager.save();manager.save()
+                self.assertEqual(save.call_count,1)
+                manager.state['allocations']['fixture']={'status':'Q'}
+                manager.save()
+                self.assertEqual(save.call_count,2)
+
     def test_response_replay_does_not_repeat_rpc_and_changed_request_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, _ = self.manager(directory)
@@ -1250,10 +1273,19 @@ class GatewayTests(unittest.TestCase):
             data = G.exchange(root, {'request_mode': 'completion', 'bounded_results': True, 'limit': 4})
             receipt, = data['requests']['owned']
             self.assertEqual(receipt, {'request_id': 'complete-one', 'spool_bytes': path.stat().st_size})
-            gateway = SimpleNamespace(call=lambda value: G.handle(root, value))
+            calls = []
+            def call(value):
+                calls.append(value)
+                return G.handle(root, value)
+            gateway = SimpleNamespace(call=call)
             saved = P.PbsManager._read_bulk(gateway, 'owned', 'spool', 'complete-one',
                                             size=receipt['spool_bytes'])
+            self.assertEqual(len(calls), 1)
             self.assertEqual(saved, path.read_bytes())
+            # The old gateway ignores the optional bound and still returns
+            # its original one-MiB chunks with the same identity.
+            old = SimpleNamespace(call=lambda value:G.handle(root,{k:v for k,v in value.items() if k!='max_bytes'}))
+            self.assertEqual(P.PbsManager._read_bulk(old,'owned','spool','complete-one',size=receipt['spool_bytes']), saved)
             self.assertEqual(json.loads(saved), exact)
 
     def test_explicit_gateway_runtime_survives_exchange_to_harvest_reconnect(self):
@@ -1373,6 +1405,7 @@ class GatewayTests(unittest.TestCase):
             manager.bounded_results = True
             manager.executor = SimpleNamespace(artifact_cache=ArtifactCache(root/'central-cache'))
             data, blobs = manager._fetch_harvest(end_to_end, 'allocation', {('needs-recovery', 'attempt')})
+            self.assertEqual(blobs,{})  # bounded CAS transfer is already hash-checked on disk
             manager.executor.artifact_cache.put(blobs)
             self.assertEqual(manager.executor.artifact_cache.path(sha).read_bytes(), artifact)
             received = base64.b64decode(data['attempts'][0]['files']['OUTCOME.json'])
@@ -1490,3 +1523,187 @@ class GatewayTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_managed_successor_only_when_scoped_demand_exceeds_remaining():
+    manager = object.__new__(P.PbsManager)
+    manager.settings = {'managed_afterany_successor':True, 'drain_seconds':30}
+    manager.executor = SimpleNamespace(_user_stop_requested=lambda:False)
+    manager.gateway = Mock()
+    manager.gateway.call.side_effect = [
+        dict(managed_afterany_successor=True), dict(token='next')]
+    manager.save = Mock()
+    manager.log = Mock()
+    row = dict(status='R',pilot_token='old',token='session',job_id='1.fixture',host_id='pbs-0',
+               allocation=dict(remaining_seconds=120,recorded_epoch=time.time()))
+    rec = {}
+    with patch.object(P,'task_estimate',return_value=40):
+        manager._stage_managed_successor(row,rec,[{}])
+    manager.gateway.call.assert_not_called()
+    with patch.object(P,'task_estimate',return_value=180):
+        manager._stage_managed_successor(row,rec,[{}])
+    assert rec['managed_successor'] == dict(token='next')
+    assert manager.gateway.call.call_count == 2
+    manager._stage_managed_successor(row,rec,[{}])
+    assert manager.gateway.call.call_count == 2
+    rec.clear()
+    manager.executor._user_stop_requested=lambda:True
+    with patch.object(P,'task_estimate',return_value=180):
+        manager._stage_managed_successor(row,rec,[{}])
+    assert manager.gateway.call.call_count == 2
+
+
+def test_soft_rollover_window_does_not_follow_new_owners_or_user_stop():
+    manager = object.__new__(P.PbsManager)
+    manager.settings = {'launcher_rollover_backfill':True}
+    owners = [dict(job_id='old',attempt_id='attempt',state='RUNNING')]
+    manager.executor = SimpleNamespace(_owned_attempts=lambda:owners,_user_stop_requested=lambda:False)
+    now = P.stamp()
+    record = dict(launcher_rollover_requested=True, launcher_rollover_backfill=dict(
+        clock_id=now['clock_id'], deadline=now['monotonic']+100,
+        owners=[['old','attempt']]))
+    assert 0 < manager._rollover_backfill_remaining(record) <= 100
+    assert P.fits_request({'route':{'kind':'artificial'}},
+        {'pbs':{'remaining_seconds':manager._rollover_backfill_remaining(record),'accepting':True,
+                'minimum_task_seconds':10}}, {'drain_seconds':30})
+    assert not P.fits_request({'route':{'kind':'artificial'}},
+        {'pbs':{'remaining_seconds':manager._rollover_backfill_remaining(record),'accepting':True,
+                'minimum_task_seconds':200}}, {'drain_seconds':30})
+    manager.executor._user_stop_requested=lambda:True
+    assert manager._rollover_backfill_remaining(record)==0
+    manager.executor._user_stop_requested=lambda:False
+    owners[0] = dict(job_id='new',attempt_id='attempt',state='RUNNING')
+    assert manager._rollover_backfill_remaining(record)==0
+
+
+def test_consumed_response_compaction_requires_exact_receipt_and_ack(tmp_path):
+    manager=object.__new__(P.PbsManager)
+    manager.directory=tmp_path/'central'
+    manager.state={'allocations':{'session':{}}}
+    request=dict(request_id='rpc',endpoint='/v1/poll',payload={'host_id':'fixture'})
+    answer=dict(ok=True,result={'assignments':['fixture']})
+    proof=dict(request_sha256=P.digest(request),response_sha256=P.digest(answer))
+    manager._record_rpc_response('session','rpc',proof['request_sha256'],answer)
+    spool=tmp_path/'remote'/'allocations'/'session'
+    G.atomic(spool/'requests'/'rpc.json',request)
+    G.atomic(spool/'consumed'/'rpc.json',proof)
+    assert G.consumed_response_receipts(tmp_path/'remote',{})=={}
+    (spool/'requests'/'rpc.json').unlink()
+    received=G.consumed_response_receipts(tmp_path/'remote',{})
+    assert received=={'session':{'rpc':proof}}
+    with unittest.TestCase().assertRaisesRegex(ValueError,'identity differs'):
+        manager._compact_consumed_responses({'session':{'rpc':dict(proof,response_sha256='0'*64)}})
+    ack=manager._compact_consumed_responses(received)
+    assert ack==received
+    assert manager._compact_consumed_responses(received)==ack
+    record=P.read(manager.directory/'responses'/'session'/'rpc.json')
+    assert record['consumed'] and 'response' not in record
+    with unittest.TestCase().assertRaisesRegex(ValueError,'already consumed'):
+        manager._record_rpc_response('session','rpc',proof['request_sha256'],answer)
+    assert G.consumed_response_receipts(tmp_path/'remote',ack)=={}
+    assert not (spool/'consumed'/'rpc.json').exists()
+
+
+def test_bulk_parallel_chunks_keep_order_identity_and_old_stride(tmp_path):
+    import io
+    root=tmp_path/'remote'
+    request=dict(request_id='complete-one',endpoint='/v1/complete',payload={'data':'x'*(3*1024*1024)})
+    G.atomic(root/'allocations'/'owned'/'requests'/'complete-one.json',request)
+    observed=[]
+    def lane(n):
+        def call(value):
+            observed.append((n,value['offset']))
+            return G.handle(root,{k:v for k,v in value.items() if k!='max_bytes'})
+        return SimpleNamespace(call=call)
+    output=io.BytesIO()
+    assert P.PbsManager._read_bulk(lane(0),'owned','spool','complete-one',sink=output,
+        parallel_gateways=(lane(1),lane(2)))==len(output.getvalue())
+    assert json.loads(output.getvalue())==request
+    assert {n for n,_ in observed}=={0,1,2}
+    assert {offset for _,offset in observed}=={0,1048576,2097152,3145728}
+
+
+def test_parallel_bulk_rejects_changed_chunk_identity(tmp_path):
+    root=tmp_path/'remote'
+    G.atomic(root/'allocations'/'owned'/'requests'/'complete-one.json',
+             dict(request_id='complete-one',payload='x'*(3*1024*1024)))
+    def read(value):
+        return G.handle(root,{k:v for k,v in value.items() if k!='max_bytes'})
+    def changed(value):
+        chunk=read(value)
+        chunk['file_identity']=['changed']
+        return chunk
+    with unittest.TestCase().assertRaisesRegex(ValueError,'identity changed'):
+        P.PbsManager._read_bulk(SimpleNamespace(call=read),'owned','spool','complete-one',
+                                parallel_gateways=(SimpleNamespace(call=changed),))
+
+
+def test_pbs_state_heartbeat_debounce_never_delays_material_owner_update(tmp_path):
+    manager=object.__new__(P.PbsManager)
+    manager.path=tmp_path/'STATE.json'
+    manager.state={'allocations':{'token':{'status':'R','clock':{'t':1}}},'heartbeat':{'t':1}}
+    manager.save()
+    with patch.object(P,'atomic',wraps=P.atomic) as save:
+        manager.state['heartbeat']={'t':2}
+        manager.state['allocations']['token']['clock']={'t':2}
+        manager.save()
+        assert save.call_count==0
+        manager.state['allocations']['token']['status']='F'
+        manager.save()
+        assert save.call_count==1
+        assert P.read(manager.path)['allocations']['token']['status']=='F'
+
+
+def test_pbs_state_delta_replays_crash_tail_and_checkpoints(tmp_path):
+    from trottertracks.rpe_pbs_state import StateJournal,read_pbs_state
+    path=tmp_path/'distributed'/'pbs'/'STATE.json';path.parent.mkdir(parents=True)
+    state={'allocations':{str(i):{'status':'F','receipt':'x'*1000} for i in range(20)},'heartbeat':1}
+    journal=StateJournal(path,P.atomic)
+    journal.save(state)
+    initial=path.read_bytes()
+    state['allocations']['one']={'status':'R','owner':'fixture'}
+    state['heartbeat']=2
+    journal.save(state)
+    assert path.read_bytes()==initial
+    assert read_pbs_state(path)==state
+    delta=path.with_name('STATE_DELTAS.jsonl')
+    with delta.open('ab') as stream:stream.write(b'{"seq":')
+    assert read_pbs_state(path)==state
+    recovered=StateJournal(path,P.atomic)
+    assert recovered.last==state
+    del state['allocations']['one']
+    state['heartbeat']=3
+    recovered.save(state)
+    assert read_pbs_state(path)==state
+    recovered.save(state,checkpoint=True)
+    assert delta.read_bytes()==b''
+    assert read_pbs_state(path)==state
+    assert P.read(path)['allocations']==state['allocations']
+
+
+def test_manager_state_delta_is_visible_to_normal_resume_readers(tmp_path):
+    from trottertracks import rpe_local0_search as C,rpe_search_continuation as S
+    manager=object.__new__(P.PbsManager)
+    manager.path=tmp_path/'distributed'/'pbs'/'STATE.json'
+    manager.path.parent.mkdir(parents=True)
+    manager.settings={'state_delta_journal':True}
+    manager.state={'allocations':{str(i):{'status':'F','receipt':'x'*1000} for i in range(20)}}
+    manager.save()
+    manager.state['allocations']['live']={'status':'R','observed':{'job_id':'1.fixture'}}
+    manager.save()
+    assert 'live' not in P.read(manager.path)['allocations']
+    assert C.load(manager.path)==S.load(manager.path)==manager.state
+
+
+def test_rollover_modes_are_explicit_and_drain_extension_is_measured_not_guessed():
+    assert P.rollover_backfill_policy({})=='no_extension'
+    assert P.rollover_backfill_policy({'launcher_rollover_backfill':True})=='estimated'
+    assert P.rollover_backfill_policy({'launcher_rollover_backfill':True,'launcher_rollover_backfill_mode':'no_extension'})=='no_extension'
+    clock=lambda t:dict(clock_id='fixture',monotonic=t,epoch=t)
+    obs=dict(original_owners=[['old','attempt']],owners_exact=True,start=clock(1))
+    old=dict(job_id='old',attempt_id='attempt');new=dict(job_id='new',attempt_id='backfill')
+    P.observe_rollover_drain(obs,[old,new],clock(3))
+    assert 'original_drained' not in obs
+    P.observe_rollover_drain(obs,[new],clock(4))
+    P.observe_rollover_drain(obs,[],clock(6))
+    assert obs['observed_extension_seconds']==2 and obs['additional_owners']==[['new','backfill']]

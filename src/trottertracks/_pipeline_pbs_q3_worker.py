@@ -337,7 +337,8 @@ def _run_adapter(profile, attempt, mode, output):
             pass
     with (Path(attempt) / ('WORKER_' + mode.upper() + '.log')).open('a') as log:
         process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile.get('adapter_root', profile['root']),
-            env=PBSAttempt.adapter_environment(owner), stdout=log, stderr=subprocess.STDOUT,
+            env=(PBSAttempt.adapter_environment(owner,profile) if profile.get('library_threads') is not None
+                 else PBSAttempt.adapter_environment(owner)), stdout=log, stderr=subprocess.STDOUT,
             **({'process_group': 0} if owner else {}))
         launch_error = None
         if mode == 'execute':
@@ -525,6 +526,9 @@ class Worker:
         self.resource_report = None
         self.pbs_evidence_checks = {}
         self.transferred_attempts = set()
+        self.transferred_prefixes = set()
+        self.terminal_resources = {}
+        self.terminal_preparation_observations = {}
         self.lock = (self.work / 'WORKER.lock').open('a')
         try:
             fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -542,6 +546,13 @@ class Worker:
         return self.work
 
     def _capacity_feedback(self, response):
+        self._artifact_inventory_ack = response.get('artifact_inventory_ack')
+        ack = response.get('preparation_observation_ack') or {}
+        terminal = getattr(self, 'terminal_preparation_observations', {})
+        if ack:
+            for path, sample in list(terminal.items()):
+                if ack.get(sample.get('attempt_id')) == digest(sample):
+                    terminal.pop(path, None)
         feedback = response.get('capacity_feedback')
         if feedback is not None and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
             atomic(self.capacity_state_dir / 'CAPACITY_FEEDBACK.json', feedback)
@@ -559,12 +570,53 @@ class Worker:
         self.resource_report = report
         return report
 
+    def _remember_transferred(self, attempt, assignment):
+        if attempt in self.transferred_attempts:
+            return
+        self.transferred_attempts.add(attempt)
+        if assignment.get('prefix_key'):
+            self.transferred_prefixes.add(assignment['prefix_key'])
+        if (self.profile.get('slot_policy') or {}).get('mode') != 'auto':
+            return
+        profile_path = attempt/'WORKER_PROFILE.json'
+        if not profile_path.is_file():
+            return
+        saved = read(profile_path)
+        resource_path = attempt/'OWNED_RESOURCES.json'
+        previous = read(resource_path) if resource_path.is_file() else {}
+        job = dict(state='TRANSFERRED', resource_class=Resources.measured_resource_class(
+            assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True,
+            workload=assignment.get('preparation_workload')),
+            dp_workers=max(saved.get('dp_workers') or 1, saved.get('task_cpu_count') or 1),
+            peak_rss_bytes=previous.get('peak_rss_bytes', 0), observed_cpu_cores=previous.get('observed_cpu_cores', 0))
+        self.terminal_resources[attempt] = job
+        observation = Resources.owned_preparation_observation(attempt, assignment, saved, job['peak_rss_bytes'])
+        if observation is not None:
+            self.terminal_preparation_observations[attempt] = observation
+
+    def _cached_prefixes(self):
+        prefixes = set(self.transferred_prefixes)
+        for attempt, assignment in self.records.items():
+            if attempt in self.transferred_attempts or not assignment.get('prefix_key'):
+                continue
+            state = read(attempt/'WORKER_STATE.json')['state']
+            if state == 'TRANSFERRED':
+                self._remember_transferred(attempt, assignment)
+            if state in ('TRANSFERRED','COMPLETED_PENDING_TRANSFER'):
+                prefixes.add(assignment['prefix_key'])
+        return sorted(prefixes)
+
     def _resource_offer(self):
         if (self.profile.get('slot_policy') or {}).get('mode') != 'auto':
             jobs = []
             for path in self.records:
+                if path in self.transferred_attempts:
+                    continue
                 saved = read(path/'WORKER_STATE.json')
                 state = saved['state']
+                if state == 'TRANSFERRED':
+                    self._remember_transferred(path, self.records[path])
+                    continue
                 if state == 'UNKNOWN' and saved.get('detail', {}).get('resource_released') is True:
                     state = 'EXITED'
                 jobs.append(dict(state=state))
@@ -579,7 +631,7 @@ class Worker:
             persisted = read(attempt / 'WORKER_STATE.json')
             state = persisted['state']
             if state == 'TRANSFERRED':
-                self.transferred_attempts.add(attempt)
+                self._remember_transferred(attempt, assignment)
                 continue
             saved = read(attempt / 'WORKER_PROFILE.json')
             sample = dict(rss_bytes=0, cpu_seconds=0)
@@ -594,9 +646,7 @@ class Worker:
             previous = read(path) if path.exists() else {}
             peak = max(previous.get('peak_rss_bytes', 0), sample['rss_bytes'])
             observed = stamp()
-            seconds = observed['monotonic']-previous.get('monotonic', observed['monotonic'])
-            same_clock = previous.get('clock_id') == observed['clock_id']
-            cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
+            cpu_observation=Resources.owned_cpu_observation(sample,previous,observed)
             resource = 'EXITED' if state == 'UNKNOWN' and persisted['detail'].get('resource_released') is True else resource_state(attempt, state)
             kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True,
                                                      workload=assignment.get('preparation_workload'))
@@ -604,13 +654,18 @@ class Worker:
             # samples stay in the conservative count-DP profile.
             job = dict(state=resource, resource_class=kind, dp_workers=max(saved.get('dp_workers') or 1,
                                                  saved.get('task_cpu_count') or 1),
-                       peak_rss_bytes=peak, cpu_seconds=sample['cpu_seconds'],
-                       observed_cpu_cores=max(cores, previous.get('observed_cpu_cores', 0)))
+                       peak_rss_bytes=peak,
+                       rss_high_water_sum_bytes=max(previous.get('rss_high_water_sum_bytes',0),sample.get('rss_high_water_sum_bytes',0)),
+                       **cpu_observation)
             if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
                 atomic(path, dict(observed, **job))
+            if type(saved.get('task_memory_bytes')) is int and saved['task_memory_bytes']>0:
+                job['declared_memory_bytes']=saved['task_memory_bytes']
             jobs.append(job)
             observation = Resources.owned_preparation_observation(attempt, assignment, saved, peak)
             if observation is not None:preparation_observations.append(observation)
+        jobs.extend(list(self.terminal_resources.values()))
+        preparation_observations.extend(list(self.terminal_preparation_observations.values()))
         feedback_path = self.capacity_state_dir / 'CAPACITY_FEEDBACK.json'
         state_path = self.capacity_state_dir / 'SLOT_STATE.json'
         feedback = read(feedback_path) if feedback_path.exists() else {}
@@ -812,7 +867,12 @@ class Worker:
             event(self.profile, 'PBS_EVIDENCE_BATCH_PENDING', reason=str(error))
 
     def _service_attempt(self, attempt, assignment, *, transfer=True):
+        if attempt in self.transferred_attempts:
+            return
         state = self._reconcile(attempt, assignment)
+        if state['state'] == 'TRANSFERRED':
+            self._remember_transferred(attempt, assignment)
+            return
         if state['state'] == 'ASSIGNED':
             if assignment.get('pbs_launch_resources'):
                 return  # PBS has the current shared CPU and memory budget.
@@ -867,17 +927,23 @@ class Worker:
                     except (OSError, ValueError, urllib.error.URLError) as notify_error:
                         event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(notify_error))
 
+    def _artifact_inventory_payload(self):
+        hashes=worker_cache(self.profile).hashes()
+        revision=digest(hashes)
+        payload={'artifact_inventory_revision':revision}
+        if getattr(self,'_artifact_inventory_ack',None)!=revision:
+            payload['cached_artifact_sha256']=hashes
+        return payload
+
     def _poll_assignments(self, acquire):
         report = self._resource_offer()
         active = report['occupied']
         if acquire and not self.stop.is_set():
-            cached = sorted({a.get('prefix_key') for p, a in self.records.items()
-                if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
-                })
+            cached = self._cached_prefixes()
             try:
                 storage_accepting = report.get('storage', {}).get('accepting_new_jobs', True)
                 payload = dict(slots=report['slots'], capacity=self.slots, resource_report=report, cached_prefixes=cached,
-                               cached_artifact_sha256=worker_cache(self.profile).hashes(),
+                               **self._artifact_inventory_payload(),
                                cached_metadata_bundle_sha256=Preparation.cached_metadata_bundle_hashes(self.profile), source_sha=self.source_sha,
                                accepting_new_jobs=storage_accepting, **self._poll_readiness(report, storage_accepting))
                 response = self._post('/v1/poll', payload)
@@ -917,7 +983,12 @@ class Worker:
 
     def pending(self):
         for attempt in self.records:
+            if attempt in self.transferred_attempts:
+                continue
             state = read(attempt/'WORKER_STATE.json')
+            if state['state'] == 'TRANSFERRED':
+                self._remember_transferred(attempt, self.records[attempt])
+                continue
             if (state['state'] not in ('TRANSFERRED', 'UNKNOWN')
                     or PBSAttempt.unreleased_unknown(attempt, state)):
                 return True

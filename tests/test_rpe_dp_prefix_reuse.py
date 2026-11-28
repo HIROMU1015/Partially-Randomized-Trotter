@@ -312,6 +312,19 @@ class PrefixTests(unittest.TestCase):
                          P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))
         self.assertTrue(any(e['event']=='HIT' and e['completed']==3 for e in engine.cache_events))
 
+    def test_persistent_residual_pool_with_fixed_accelerator(self):
+        _,tt,scope=example(n=5,shots=12,states=384,pairs=95000)
+        reference=P.Accelerator(workers=1)(tt,h=10.,target=0.,scope=scope)
+        profiles=[]
+        with patch.object(C,'MIN_DROPS_PER_WORKER',32), C.installed(
+                P,directory=None,cache_namespace={'fixture':'persistent_fixed_kernel'},
+                parallel_residual=True,profile_residual=True,persistent_residual_pool=True,
+                event_sink=profiles.append):
+            self.assertEqual(P.Accelerator(workers=3)(tt,h=10.,target=0.,scope=scope),reference)
+        residual=[e for e in profiles if e['event']=='RESIDUAL_TIMING' and e['workers']>1]
+        self.assertTrue(any(e['persistent_pool'] for e in residual))
+        self.assertTrue(any(e['pool_reused'] for e in residual))
+
     def test_original_guards_stay_active(self):
         with patch.object(P,'REFERENCE_DP_AST_SHA256','WRONG'):
             with self.assertRaisesRegex(ValueError,'Reference total DP SOURCE changed'):self.engine()

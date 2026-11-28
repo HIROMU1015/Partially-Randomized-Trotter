@@ -1,0 +1,17 @@
+H8_INPUT_CHECK_PASS target=-4.307571602033466 initial_phase=0.4307571602033466
+Core: Nehalem
+Core: Nehalem
+Core: Nehalem
+H8_PREPARATION_BOUND 29 prefixes, 3 saved partial identities checked
+{"event": "HCHAIN_STARTUP_MISMATCH", "field": "verified_saved_preparations", "expected": {"14": {"saved": "45859f28ee7c8c6c8a60c3db796a11cda51132652e337d7d739400b4309fd0a3", "scoped": "8d0a007ce774777ad8c4bf8a33140ff1ec337bd180aae11e4ab921a8fb503cf0"}, "21": {"saved": "e439150b451ba542d8ed170e0ca05fa751879fc33012fb15ee8f5ac413b0f051", "scoped": "8094461085982f558984852e0100000d6623a4edebbbe5845d5ade83b456ab4e"}, "7": {"saved": "f794c14366f6081237cafd80a91b6659c98450f3eb720c90073ab5ed2263abc4", "scoped": "554c9437ccad9a9927f7c8fdb82e220b4c9623775ec56223176209ec48be65e5"}}, "observed": {"7": {"saved": "f794c14366f6081237cafd80a91b6659c98450f3eb720c90073ab5ed2263abc4", "scoped": "d975b5da2f55004a6e8df2a5d956b4afa8727586e7b742878e2772162a8c197a"}, "14": {"saved": "45859f28ee7c8c6c8a60c3db796a11cda51132652e337d7d739400b4309fd0a3", "scoped": "5f8671ab8f3c7b828619f8d83097ac45ad44d74785b26b8b3fc9ffb6417b02e2"}, "21": {"saved": "e439150b451ba542d8ed170e0ca05fa751879fc33012fb15ee8f5ac413b0f051", "scoped": "e439150b451ba542d8ed170e0ca05fa751879fc33012fb15ee8f5ac413b0f051"}}}
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 242, in <module>
+    main()
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 235, in main
+    result = run(json.loads(args.plan.read_bytes()), args.stage, args.targets, args.assets, args.output, h6_scope_worker,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 180, in run
+    mismatch('verified_saved_preparations', plan['verified_saved_preparations'],
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 176, in mismatch
+    raise StartupMismatch(field, expected, observed)
+StartupMismatch: HCHAIN_STARTUP_MISMATCH: verified_saved_preparations

@@ -9,6 +9,7 @@ import base64
 import fcntl
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import queue
@@ -27,7 +28,7 @@ from .rpe_pbs_worker import runtime_cpu_footprint, task_cpu_footprint
 from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
-TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUPERSEDED_UNSUBMITTED'}
+TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUBMIT_LOST', 'SUPERSEDED_UNSUBMITTED'}
 GIB = 1024**3
 # The controller and the independently pinned worker use the same proof lifetime.
 Q3_WORKER_PROOF_SECONDS = 120
@@ -209,12 +210,16 @@ class Gateway:
             if line is None:
                 raise OSError('PBS gateway SSH connection closed')
             value = json.loads(line)
-            if not value.get('ok'):
-                raise ValueError(value.get('error', 'PBS gateway failed'))
-            return value['result']
+            if not isinstance(value, dict) or type(value.get('ok')) is not bool:
+                raise ValueError('Invalid PBS gateway response')
         except (OSError, ValueError, queue.Empty):
             self.close()
             raise
+        if not value['ok']:
+            # A complete application-error response is not lost transport.
+            # Keep the stream aligned for the next independent request.
+            raise ValueError(value.get('error', 'PBS gateway failed'))
+        return value['result']
 
     def storage_report(self, policy):
         config = self.settings
@@ -417,7 +422,8 @@ def known_independent_search_jobs(run_dir):
         if directory==run_dir or not run_id.startswith('search-'):
             continue
         try:
-            state=json.loads((directory/'distributed/pbs/STATE.json').read_text())
+            from .rpe_pbs_state import read_pbs_state
+            state=read_pbs_state(directory/'distributed/pbs/STATE.json')
             records=state['allocations'].values()
         except (OSError,ValueError,KeyError,TypeError):
             continue
@@ -507,11 +513,13 @@ def resource_need_with_q3_memory(request, profile, settings, host):
         row = table.get('stages', {}).get(prep.get('stage'), {}).get((prep.get('inputs') or {}).get('PLAN.json'))
         if row is not None and row.get('task_cpu_count', 1) != (runtime.get('task_cpu_count') or 1):
             memory = (task_rule(request, settings, host) or {}).get('memory_bytes')
+    cold_preparation = False
     if memory is None:
         # A stage-specific resource declaration is already a verified profile
         # input; do not override it with the entire node. Unmeasured stages
         # retain conservative isolation until comparable observations exist.
         declared = runtime.get('task_memory_bytes') if request.get('preparation') else None
+        cold_preparation = bool(request.get('preparation')) and not (type(declared) is int and declared > 0)
         memory = declared if type(declared) is int and declared > 0 else (
             usable_memory(profile, settings) if request.get('preparation') else settings['allocation_sizing']['q3_startup_memory_bytes_per_task'])
     measured = measured_q3_memory(request, runtime, host, settings.get('q3_measured_memory'))
@@ -519,9 +527,16 @@ def resource_need_with_q3_memory(request, profile, settings, host):
     measurements = [v for v in (measured,learned) if v is not None]
     if measurements:
         memory = max(measurements)
-    from .rpe_q3_resources import preparation_forecast
+    from .rpe_q3_resources import preparation_forecast, comparable_preparation_memory
     cpu = runtime_cpu_footprint(profile, runtime)
-    forecast = preparation_forecast(request, settings.get('preparation_resource_observations'), cpu_count=cpu, host=host)
+    observations = settings.get('preparation_resource_observations')
+    forecast = preparation_forecast(request, observations, cpu_count=cpu, host=host)
+    if cold_preparation:
+        from .rpe_preparation_worker import digest as profile_digest, preparation_profile_core
+        completed_memory = comparable_preparation_memory(request, observations, cpu_count=cpu, host=host,
+            runtime_sha256=profile_digest(preparation_profile_core(runtime)))
+        if completed_memory is not None:
+            memory = completed_memory
     reserved = max(1, memory, forecast.get('memory_bytes', 0),
                    (profile.get('pbs') or {}).get('task_memory_bytes') or 0)
     return cpu, reserved, bool(measurements)
@@ -640,6 +655,46 @@ def packed_resources(requests, profile, settings, host, *, selected=None):
             if selected is not None:
                 selected.append(request)
     return cpus, (memory + GIB - 1) // GIB + 1, count
+
+
+def apply_common_worker_knobs(distributed, policy):
+    """Shared operational PBS settings, independent of molecular adapters."""
+    applied=set()
+    if policy.get('pbs_hold_node') is True and distributed.get('pbs'):
+        distributed['pbs_hold_node']=True
+        applied.add('pbs_hold_node')
+    if policy.get('pbs_storage_launcher'):
+        distributed['pbs_gateway_storage_launcher']=deepcopy(policy['pbs_storage_launcher'])
+        applied.add('pbs_storage_launcher')
+    for field in ('pbs_collection_workers','pbs_gateway_completion_workers'):
+        if field not in policy:continue
+        count=policy[field]
+        if type(count) is not int or count<1:
+            raise ValueError(field+' must be positive')
+        distributed[field]=count
+        applied.add(field)
+    for field in ('pbs_ready_buffer','pbs_q3_memory_backfill'):
+        if policy.get(field) is True:
+            distributed[field]=True
+            applied.add(field)
+    if 'pbs_standby_waves' in policy:
+        waves=policy['pbs_standby_waves']
+        standby_capacity(dict(cpu_count=1,memory_bytes=0),waves)
+        if waves is None or not distributed.get('pbs_ready_buffer'):
+            raise ValueError('PBS standby waves require the PBS ready buffer')
+        distributed['pbs_standby_waves']=waves
+        applied.add('pbs_standby_waves')
+    return applied
+
+
+def apply_common_artifact_staging(distributed,policy):
+    if not policy.get('pbs_stage_artifacts_over_ssh'):return False
+    pbs=distributed['pbs']
+    if not pbs.get('gateway_python') or not pbs.get('ssh_alias'):
+        raise ValueError('PBS artifact staging requires the fixed gateway interpreter and host')
+    distributed.setdefault('pbs_pinned_settings',deepcopy(pbs))
+    pbs['stage_artifacts_over_ssh']=True
+    return True
 
 
 def apply_preparation_resources(distributed, overrides):
@@ -761,6 +816,36 @@ def apply_q3_memory_reference(distributed, run, reference):
     distributed['pbs']['q3_owned_reservations'] = owners
 
 
+def rollover_backfill_policy(settings):
+    """An estimate cannot guarantee no drain extension.
+
+    New scopes may explicitly choose estimated backfill. The old opt-in bool
+    retains its estimated meaning. Exact no-extension mode never adds work
+    to the draining session, preserving all original attempts.
+    """
+    mode=settings.get('launcher_rollover_backfill_mode',
+        'estimated' if settings.get('launcher_rollover_backfill') is True else 'no_extension')
+    if mode not in ('estimated','no_extension'):raise ValueError('Unknown launcher rollover backfill mode')
+    return mode
+
+
+def observe_rollover_drain(observation,owners,clock):
+    """Operational sampled drain times, distinct from a proven duration bound."""
+    current={(row['job_id'],row['attempt_id']) for row in owners if 'job_id' in row and 'attempt_id' in row}
+    if len(current)!=len(owners) or not observation.get('owners_exact'):return observation
+    original={tuple(owner) for owner in observation['original_owners']}
+    if current-original:
+        observation['additional_owners']=sorted({tuple(owner) for owner in observation.get('additional_owners',[])} | (current-original))
+        observation['additional_owners']=[list(owner) for owner in observation['additional_owners']]
+    if not (current & original) and 'original_drained' not in observation:observation['original_drained']=dict(clock)
+    if not current and 'all_drained' not in observation:
+        observation['all_drained']=dict(clock)
+        old=observation.get('original_drained') or {}
+        if old.get('clock_id')==clock['clock_id']:
+            observation['observed_extension_seconds']=max(0,clock['monotonic']-old['monotonic'])
+    return observation
+
+
 def fits_request(request, report, settings, host_id=None):
     """Require a declared conservative runtime before starting scientific work."""
     pbs = (report or {}).get('pbs')
@@ -879,7 +964,11 @@ class PbsManager:
             raise ValueError('Existing run retains its pinned PBS settings')
         if not fixed.exists(): atomic(fixed, original)
         self.path = self.directory/'STATE.json'
-        self.state = read(self.path) if self.path.exists() else dict(allocations={}, requests={})
+        from .rpe_pbs_state import read_pbs_state
+        self.state = read_pbs_state(self.path) if self.path.exists() else dict(allocations={}, requests={})
+        if self.settings.get('state_delta_journal') is True:
+            from .rpe_pbs_state import StateJournal
+            self._state_journal=StateJournal(self.path,atomic)
         self.reconcile_dispatch_intents = set(self.state['allocations']) if getattr(
             executor, 'distributed', {}).get('pbs_reconcile_dispatch_intents') else set()
         dispatch = getattr(executor, 'distributed', {}).get('pbs_dispatch_gateway')
@@ -916,6 +1005,10 @@ class PbsManager:
         self.offline_ranks = {}
         self.gateway = gateway or Gateway(self.settings)
         self.bulk_gateway = Gateway(self.settings) if self.bounded_results else None
+        lanes=self.settings.get('bulk_parallel_lanes',1)
+        if type(lanes) is not int or lanes<1:
+            raise ValueError('Positive integer bulk_parallel_lanes required')
+        self.bulk_parallel_gateways=tuple(Gateway(self.settings) for _ in range(lanes-1)) if self.bounded_results else ()
         # Only gateways deployed with the selected-attempt harvest protocol
         # may receive an owners filter.
         self.selective_harvest = bool(dispatch and dispatch.get('selective_harvest'))
@@ -985,8 +1078,35 @@ class PbsManager:
     def log(self, event, **fields):
         append(self.directory/'EVENTS.jsonl', event, **fields)
 
+    @staticmethod
+    def _state_without_heartbeat(state):
+        # The existing one-second worker heartbeat is telemetry, not an
+        # allocation/attempt ownership change. Keep every other field exact.
+        result={key:value for key,value in state.items() if key!='heartbeat'}
+        if 'allocations' in result:
+            result['allocations']={token:{key:value for key,value in record.items() if key!='clock'}
+                                   for token,record in result['allocations'].items()}
+        return result
+
     def save(self):
-        atomic(self.path, self.state)
+        previous=getattr(self,'_last_saved_state',None)
+        present=self.path.is_file()
+        if present and previous==self.state:return
+        now=time.monotonic()
+        if (present and previous is not None
+                and now-getattr(self,'_last_state_save_monotonic',0)<1.0
+                and self._state_without_heartbeat(previous)==self._state_without_heartbeat(self.state)):
+            return
+        if getattr(self,'settings',{}).get('state_delta_journal') is True:
+            from .rpe_pbs_state import StateJournal
+            if not hasattr(self,'_state_journal'):
+                self._state_journal=StateJournal(self.path,atomic)
+            self._state_journal.save(self.state)
+            self._last_saved_state=self._state_journal.last
+        else:
+            atomic(self.path,self.state)
+            self._last_saved_state=deepcopy(self.state)
+        self._last_state_save_monotonic=now
 
     def readiness_wait_seconds(self):
         # PBS queue latency varies by queue and resource request. Keep the
@@ -995,12 +1115,40 @@ class PbsManager:
                    if 'submit_to_ready_seconds' in a]
         return max(15., min(30., median(samples[-10:]) if samples else 20.))
 
+    def _rollover_backfill_remaining(self, record):
+        """Only an explicitly opted-in soft launcher drain may backfill.
+
+        This is an estimated window, not a hard bound on scientific runtime.
+        Never extend the original window or admit after its original owners
+        finish; a user STOP and final storage drain always take precedence.
+        """
+        window=record.get('launcher_rollover_backfill')
+        if (not window or rollover_backfill_policy(self.settings)!='estimated'
+                or record.get('storage_maintenance_requested') or record.get('resize_requested')
+                or record.get('replacement_draining') or self.executor._user_stop_requested()
+                or getattr(getattr(self.executor,'state',None),'closed',False)
+                or (getattr(self,'stop',None) is not None and self.stop.is_set())):
+            return 0
+        now=stamp()
+        if now['clock_id'] != window['clock_id']:
+            return 0
+        remaining=window['deadline']-now['monotonic']
+        if remaining <= 0:
+            return 0
+        original={tuple(owner) for owner in window['owners']}
+        if not any(row['state']=='RUNNING' and (row['job_id'],row['attempt_id']) in original
+                   for row in self.executor._owned_attempts()):
+            return 0
+        return remaining
+
     def accepting_allocation(self, host, job_id):
         return any(allocation['host_id'] == host and allocation['status'] == 'R'
                    and allocation['job_id'] == job_id
                    and (allocation.get('worker') or {}).get('accepting')
                    and not self.state['allocations'][allocation['token']].get('resize_requested')
-                   and not self.state['allocations'][allocation['token']].get('launcher_rollover_requested')
+                   and (not self.state['allocations'][allocation['token']].get('launcher_rollover_requested')
+                        or ((allocation.get('worker') or {}).get('rollover_guard') is True
+                            and self._rollover_backfill_remaining(self.state['allocations'][allocation['token']])>0))
                    and not self.state['allocations'][allocation['token']].get('replacement_draining')
                    for allocation in self.allocations)
 
@@ -1257,6 +1405,26 @@ class PbsManager:
         payload['host_fingerprints'] = {**{job: facts for job, (_, facts) in proofs.items()}, **received}
         return reused
 
+    def _artifact_inventory(self, token, payload):
+        """Reconstruct only a previously acknowledged advisory inventory."""
+        revision=payload.get('artifact_inventory_revision')
+        if not isinstance(revision,str) or not re.fullmatch('[0-9a-f]{64}',revision):return None
+        inventory=getattr(self,'artifact_inventory',None)
+        if inventory is None:inventory=self.artifact_inventory={}
+        if 'cached_artifact_sha256' in payload:
+            hashes=payload['cached_artifact_sha256']
+            if isinstance(hashes,list) and digest(hashes)==revision:
+                inventory[token]=(revision,hashes.copy())
+                return revision
+            return None
+        known=inventory.get(token)
+        if known and known[0]==revision:
+            payload['cached_artifact_sha256']=known[1]
+            return revision
+        # After a controller crash or version mismatch, the worker sees no
+        # ACK and resends its full inventory. Missing cache is never identity.
+        return None
+
     def _dispatch(self, token, request):
         host = self.state['allocations'][token]['spec']['profile']['host_id']
         if request['payload'].get('host_id') != host:
@@ -1275,6 +1443,8 @@ class PbsManager:
             record = read(saved)
             if record['request_sha256'] != identity:
                 raise ValueError('Reused PBS RPC ID has changed content')
+            if record.get('consumed') is True:
+                raise ValueError('PBS RPC response was already consumed')
             return record['response']
         # Retained predecessors still run their old allocation process.
         # Do not refresh the logical host offer or send scientific work.
@@ -1328,19 +1498,34 @@ class PbsManager:
                                              observed.get('memory_bytes') or 0))
                     else:
                         admission.pop('resource_pool', None)
+                    record=self.state['allocations'][token]
+                    if record.get('launcher_rollover_requested'):
+                        admission['remaining_seconds']=min(admission['remaining_seconds'],
+                                                          self._rollover_backfill_remaining(record))
+                        admission['accepting']=(admission['accepting'] and admission['remaining_seconds']>0
+                                                and current.get('rollover_guard') is True)
+                        # Do not put new rollover work into a delayed standby
+                        # buffer. Carry the exact original owners to launch.
+                        admission.pop('ready_buffer',None)
+                        if admission['accepting']:
+                            admission['rollover_guard']={'owners':record['launcher_rollover_backfill']['owners']}
                     if not admission['accepting'] or not admission.get('resource_pool'):
                         admission.pop('ready_buffer', None)
             if request['endpoint'] == '/v1/poll' and (allocation is None or allocation['status'] != 'R' or
                     not (allocation.get('worker') or {}).get('accepting', False) or
                     self.state['allocations'][token].get('resize_requested') or
                     self.state['allocations'][token].get('storage_maintenance_requested') or
-                    self.state['allocations'][token].get('launcher_rollover_requested')):
+                    (self.state['allocations'][token].get('launcher_rollover_requested')
+                     and (not (payload.get('resource_report') or {}).get('pbs')
+                          or self._rollover_backfill_remaining(self.state['allocations'][token])<=0))):
                 # A delayed file survives worker/PBS termination; it cannot
                 # constitute a current free-slot offer.
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
                 ((payload.get('resource_report') or {}).get('pbs') or {}).pop('ready_buffer', None)
             reused = set()
+            inventory_ack = None
             if request['endpoint'] == '/v1/poll':
+                inventory_ack = self._artifact_inventory(token,payload)
                 reused = self._reuse_q3_worker_proofs(
                     token, (allocation or {}).get('worker') or {}, request.get('clock') or {}, payload)
             result = self.executor.rpc(request['endpoint'], payload)
@@ -1355,6 +1540,8 @@ class PbsManager:
                         cached[1].pop(job_id, None)
                 result = self._prefetch_preparation_inputs(token, payload, result)
                 result = self._inline_hchain_plan_inputs(payload, result)
+                result.pop('artifact_inventory_ack',None)
+                if inventory_ack is not None:result['artifact_inventory_ack']=inventory_ack
                 cached_challenges = payload.get('pbs_cached_challenges')
                 if isinstance(cached_challenges, dict):
                     challenges = result.get('eligibility_challenges', ())
@@ -1504,7 +1691,7 @@ class PbsManager:
     def _dispatch_ready(self, token, request):
         """Bulk inputs use the worker's shared cache, leaving the poll lane free."""
         if 'spool_bytes' in request:
-            raw = self._read_bulk(self.bulk_gateway, token, 'spool', request['request_id'],
+            raw = self._read_owned_bulk(self.bulk_gateway, token, 'spool', request['request_id'],
                                   size=request['spool_bytes'])
             decoded = json.loads(raw)
             if (decoded['request_id'] != request['request_id']
@@ -1589,7 +1776,7 @@ class PbsManager:
                 names = ('REQUEST.json', 'PROCESS_RETURN.json', 'OUTCOME.json')
                 if set(item['files']) != set(names):
                     raise ValueError('PBS offline result is missing its fixed receipt')
-                files = {name: self._read_bulk(gateway, token, 'offline', name,
+                files = {name: self._read_owned_bulk(gateway, token, 'offline', name,
                             size=item['files'][name], method=method, job_id=job) for name in names}
                 request = json.loads(files['REQUEST.json'])
                 receipt = json.loads(files['PROCESS_RETURN.json'])
@@ -1834,7 +2021,46 @@ class PbsManager:
                         parts[key] = row
             except (OSError, ValueError):
                 continue
+        from .rpe_pbs_offline import local_handoff_coverage
+        for unit,row in local_handoff_coverage(self.offline_plan,self.directory/'partition-handoffs').items():
+            if parts.get(unit,{}).get('termination'):raise ValueError('Transferred partition also has PBS terminal evidence')
+            parts[unit]=row
         return parts
+
+    def prepare_unstarted_partition_handoff(self,unit_id):
+        """Explicit new-plan handoff preparation; never called by poll/Resume.
+
+        The gateway fences the original unit and returns positive evidence.
+        A fixed local child scope is saved for separate normal execution.
+        """
+        from .rpe_pbs_offline import (pbs_units,partition_handoff_record,local_handoff_scope)
+        plan=self.offline_plan
+        units=[unit for unit in pbs_units(plan) if unit['id']==unit_id]
+        if len(units)!=1:raise ValueError('Unknown fixed partition unit')
+        expected=partition_handoff_record(plan,units[0])
+        problem,spec=local_handoff_scope(plan,expected)  # validate local scope first
+        distributed=spec['executor']['distributed']
+        if any(not hosts for hosts in (distributed.get('preparation_provider_hosts') or {}).values()):
+            raise ValueError('Local preparation provider placement is unavailable')
+        directory=self.directory/'partition-handoffs'/unit_id
+        docs={'HANDOFF.json':expected,'PROBLEM.json':problem,'ROUND.json':spec}
+        for name,value in docs.items():
+            path=directory/name
+            if path.exists() and read(path)!=value:raise ValueError('Existing local handoff scope differs')
+        capabilities=self.gateway.call(dict(action='managed_capabilities'))
+        if capabilities.get('partition_handoff_protocol')!=1:raise ValueError('Gateway has no partition handoff protocol')
+        receipt=self.gateway.call(dict(action='fence_unstarted_partition',plan_sha256=expected['plan_sha256'],unit=unit_id))
+        if receipt!=expected:raise ValueError('Remote partition handoff differs from fixed scope')
+        directory.mkdir(parents=True,exist_ok=True)
+        for name,value in docs.items():
+            if not (directory/name).exists():atomic(directory/name,value)
+        return receipt
+
+    def register_local_partition_completion(self,unit_id):
+        from .rpe_pbs_offline import pbs_units,register_local_handoff_completion
+        if unit_id not in {unit['id'] for unit in pbs_units(self.offline_plan)}:
+            raise ValueError('Unknown fixed partition unit')
+        return register_local_handoff_completion(self.offline_plan,self.directory/'partition-handoffs'/unit_id)
 
     def independent_finished(self):
         from .rpe_pbs_offline import all_parts_finished
@@ -1853,10 +2079,34 @@ class PbsManager:
             self.controls[token] = self.session_control(host, self.state['allocations'][token],
                 stopping=stopping, release_when_idle=stopping)
             self._offline_contact(token)
+            if not stopping:
+                worker=allocation.get('worker') or {}
+                waiting=worker.get('independent_waiting') or {}
+                seconds=waiting.get('seconds')
+                epoch=waiting.get('epoch')
+                # Coverage is refreshed by the existing 20s export cycle.
+                fresh=type(epoch) in (int,float) and 0<=time.time()-epoch<=20+2*float(self.offline_plan['settings'].get('poll_seconds',10))
+                if (worker.get('independent_active') is True and fresh
+                        and worker.get('job_id')==allocation.get('job_id')
+                        and worker.get('host_id')==host and type(seconds) in (int,float)
+                        and math.isfinite(seconds) and seconds>0):
+                    try:
+                        self._stage_managed_successor(allocation,self.state['allocations'][token],[],
+                                                      waiting_seconds=seconds)
+                    except (OSError,ValueError,RuntimeError,subprocess.SubprocessError) as error:
+                        self.log('PBS_MANAGED_SUCCESSOR_HELD',token=token,reason=str(error))
         if not stopping:
             policy,error = self.executor._host_admission_policy()
-            pending = len([b for b in pbs_units(self.offline_plan)
-                           if not (self.independent_coverage().get(b['id'], {}).get('termination'))])
+            coverage=self.independent_coverage()
+            from .rpe_pbs_offline import partition_handoff_record
+            pending=0
+            for block in pbs_units(self.offline_plan):
+                status=coverage.get(block['id'],{})
+                if status.get('handoff') is not None:
+                    if status['handoff']!=partition_handoff_record(self.offline_plan,block):
+                        raise ValueError('Partition handoff coverage identity differs')
+                    continue
+                if not status.get('termination'):pending+=1
             for host, worker in self.configured.items():
                 if host in owned or len(owned) >= pending:
                     continue
@@ -2003,7 +2253,7 @@ class PbsManager:
         for name, size in receipt['files'].items():
             if self.stop.is_set():
                 return
-            raw = self._read_bulk(self.evidence_gateway, token, 'attempt', name, size=size,
+            raw = self._read_owned_bulk(self.evidence_gateway, token, 'attempt', name, size=size,
                                   job_id=job, attempt_id=attempt)
             install_files(transfer, {name: base64.b64encode(raw).decode('ascii')})
         publish_staged_files(transfer, target)
@@ -2037,25 +2287,63 @@ class PbsManager:
             self.evidence_pending = marker, self.evidence_pool.submit(self._archive_evidence, marker, receipt)
             return
 
+    def _read_owned_bulk(self,gateway,*args,**kwargs):
+        lanes=getattr(self,'bulk_parallel_gateways',()) if gateway is getattr(self,'bulk_gateway',None) else ()
+        return self._read_bulk(gateway,*args,parallel_gateways=lanes,**kwargs)
+
     @staticmethod
-    def _read_bulk(gateway, token, kind, name, *, size=None, **owner):
-        result = bytearray()
+    def _read_bulk(gateway, token, kind, name, *, size=None, sink=None, parallel_gateways=(), **owner):
+        result = bytearray() if sink is None else None
+        offset = 0
         identity = {}
-        while size is None or len(result) < size:
-            chunk = gateway.call(dict(action='read_bulk_chunk', token=token, kind=kind,
-                                      name=name, offset=len(result), **owner,
-                                      **identity, **({'size': size} if size is not None else {})))
-            if size is None:
-                size = chunk['size']
-            if type(size) is not int or size < 0 or chunk['size'] != size:
+        limit = 4*1024*1024
+        def read_chunk(lane, start):
+            chunk=lane.call(dict(action='read_bulk_chunk',token=token,kind=kind,name=name,
+                                 offset=start,max_bytes=limit,**owner,**identity,
+                                 **({'size':size} if size is not None else {})))
+            if type(chunk['size']) is not int or chunk['size']<0 or (size is not None and chunk['size']!=size):
                 raise ValueError('Invalid PBS bulk transfer size')
-            identity = {'file_identity': chunk['file_identity']}
-            raw = (chunk['text'].encode('ascii') if kind == 'spool' else
-                   base64.b64decode(chunk['data'], validate=True))
-            if len(raw) > 1024*1024 or len(result)+len(raw) > size or (not raw and len(result) < size):
+            if identity and identity['file_identity']!=chunk['file_identity']:
+                raise ValueError('PBS bulk receipt identity changed')
+            raw=(chunk['text'].encode('ascii') if kind=='spool' else base64.b64decode(chunk['data'],validate=True))
+            if len(raw)>limit or start+len(raw)>chunk['size'] or (not raw and start<chunk['size']):
                 raise ValueError('PBS bulk transfer made no valid progress')
-            result.extend(raw)
-        return result
+            return chunk,raw
+
+        def append(raw):
+            if sink is None:result.extend(raw)
+            else:sink.write(raw)
+
+        if size is None or size:
+            first,raw=read_chunk(gateway,0)
+            size=first['size']
+            identity={'file_identity':first['file_identity']}
+            stride=len(raw)
+            append(raw)
+            offset=stride
+        else:
+            return result if sink is None else offset
+        lanes=(gateway,*parallel_gateways)
+        if len(lanes)>1 and offset<size:
+            # Learn the stride from the first response (old gateways are
+            # still 1 MiB). Each bounded group uses independent transports;
+            # write in offset order and require the same immutable identity.
+            with ThreadPoolExecutor(max_workers=len(lanes)) as pool:
+                while offset<size:
+                    starts=list(range(offset,min(size,offset+stride*len(lanes)),stride))
+                    futures=[pool.submit(read_chunk,lane,start) for lane,start in zip(lanes,starts)]
+                    for start,future in zip(starts,futures):
+                        _,raw=future.result()
+                        if len(raw)!=min(stride,size-start):
+                            raise ValueError('PBS bulk chunk length differs from initial stride')
+                        append(raw)
+                        offset+=len(raw)
+        else:
+            while offset<size:
+                _,raw=read_chunk(gateway,offset)
+                append(raw)
+                offset+=len(raw)
+        return result if sink is None else offset
 
     def _fetch_harvest(self, gateway, token, owners=None, *, live=False):
         request = dict(action='harvest', token=token)
@@ -2075,16 +2363,25 @@ class PbsManager:
             assignment = item['assignment']
             files = {}
             for name, size in item['files'].items():
-                raw = self._read_bulk(gateway, token, 'attempt', name, size=size,
+                raw = self._read_owned_bulk(gateway, token, 'attempt', name, size=size,
                                       job_id=assignment['job_id'], attempt_id=assignment['attempt_id'])
                 if name == 'OUTCOME.json':
                     hashes.update(json.loads(raw).get('artifacts', {}).values())
                 files[name] = base64.b64encode(raw).decode('ascii')
             item['files'] = files
-        missing = self.executor.artifact_cache.missing(sorted(hashes))
-        blobs = {sha: base64.b64encode(self._read_bulk(gateway, token, 'artifact', sha)).decode('ascii')
-                 for sha in missing}
-        return data, blobs
+        cache=self.executor.artifact_cache
+        missing = cache.missing(sorted(hashes))
+        if missing:
+            # Transfer large CAS objects through a temporary file. put_file
+            # checks the complete SHA before publishing immutable bytes.
+            cache.root.mkdir(parents=True,exist_ok=True)
+            with tempfile.TemporaryDirectory(prefix='.pbs-bulk-',dir=cache.root.parent) as directory:
+                path=Path(directory)/'blob'
+                for sha in missing:
+                    with path.open('wb') as output:
+                        self._read_owned_bulk(gateway,token,'artifact',sha,sink=output)
+                    cache.put_file(path,sha)
+        return data, {}
 
     def _accept_harvested(self, allocation, data, blobs, owners, *, live=False):
         if owners is not None and data['host_id'] != allocation['host_id']:
@@ -2127,6 +2424,20 @@ class PbsManager:
                 raise ValueError('Unrequested incomplete PBS attempt returned by harvest')
             if row is None or row['attempt_id'] != assignment['attempt_id'] or row['host_id'] != data['host_id']:
                 continue
+            if (row['state'] in ('ASSIGNED','UNKNOWN') and row.get('started_epoch') is None
+                    and item.get('state', {}).get('state') == 'ASSIGNED'
+                    and (allocation.get('session_end') and allocation.get('pilot_token')
+                         or not allocation.get('pilot_token') and allocation['status'] in ('F','X'))
+                    and (row.get('detail') or {}).get('pbs_allocation_token') == token
+                    and row['request_sha256'] == assignment['request_sha256']):
+                try:
+                    fenced = self.gateway.call(dict(action='fence_unstarted', token=token,
+                        **{k:row[k] for k in ('job_id','attempt_id','request_sha256')})).get('state')
+                except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                    self.log('PBS_UNSTARTED_FENCE_HELD', token=token, job_id=row['job_id'], reason=str(error))
+                    raise  # keep the original reservation for another harvest
+                if fenced is not None:
+                    item = dict(item, state=fenced)
             detail = item.get('state', {}).get('detail') or {}
             admission_exit = detail.get('pbs_admission_exit') or {}
             released_before_launch = (detail.get('resource_released') is True and
@@ -2371,6 +2682,10 @@ class PbsManager:
         if self.hold_node and (alongside:=known_independent_search_jobs(self.executor.run_dir)):
             demand=dict(demand,alongside_search_job_ids=alongside)
         profile = deepcopy(worker['profile'])
+        if self.settings.get('response_consumption_receipts') is True:
+            capabilities=self.gateway.call(dict(action='managed_capabilities'))
+            if capabilities.get('response_consumption_receipts') is True:
+                profile.setdefault('pbs',{})['response_consumption_receipts']=True
         resources = deepcopy(self.settings['resources'])
         sizing = self.settings.get('allocation_sizing')
         if demand.get('independent_blocks'):
@@ -2473,6 +2788,9 @@ class PbsManager:
         if overlay := getattr(self.executor, 'distributed', {}).get('pbs_offline_controller_overlay'):
             profile['pbs']['offline_controller_overlay'] = deepcopy(overlay)
         if self.offline_plan:
+            if self.settings.get('managed_afterany_successor') is True and demand.get('independent_blocks'):
+                profile['pbs']['successor_task_estimates']={k:deepcopy(self.settings[k]) for k in
+                    ('task_seconds','q3_task_seconds','preparation_task_seconds') if k in self.settings}
             raw = json.dumps(self.offline_plan, sort_keys=True, separators=(',', ':')).encode()
             sha = hashlib.sha256(raw).hexdigest()
             path = self.directory/'offline-plans'/f'{sha}.json'
@@ -2549,10 +2867,32 @@ class PbsManager:
         old = record['spec'].get('reason',{}).get('retained_replacement',{}).get('old_owners',[])
         report = dict(pbs=dict(allocation_token=token,other_allocation_owners=old))
         if not record.get('launcher_rollover_requested'):
+            mode=rollover_backfill_policy(self.settings)
             record['launcher_rollover_requested']=True
+            owners=self.executor._offer_owners(host,self.executor._owned_attempts(),report)
+            original=[[row['job_id'],row['attempt_id']] for row in owners if 'job_id' in row and 'attempt_id' in row]
+            record['launcher_rollover_observation']=dict(mode=mode,start=stamp(),original_owners=original,
+                                                         owners_exact=len(original)==len(owners))
+            if (mode=='estimated' and (allocation.get('worker') or {}).get('rollover_guard') is True):
+                known=[]
+                for owner in owners:
+                    if owner['state']!='RUNNING':continue
+                    saved=self.executor.store.row(owner['job_id'])
+                    if not saved or not saved.get('started_epoch'):continue
+                    estimate=task_estimate(saved['request'],self.settings,host)
+                    if estimate:
+                        remaining=estimate-max(0,time.time()-saved['started_epoch'])
+                        if remaining>0:known.append((owner,remaining))
+                if known:
+                    now=stamp()
+                    record['launcher_rollover_backfill']=dict(
+                        clock_id=now['clock_id'],deadline=now['monotonic']+max(t for _,t in known),
+                        owners=[[owner['job_id'],owner['attempt_id']] for owner,_ in known])
             self.log('PBS_LAUNCHER_ROLLOVER_DRAIN',token=token,host_id=host,
                      job_id=allocation['job_id'],reservation_retained=True)
         owned = self.executor._offer_owners(host,self.executor._owned_attempts(),report)
+        if record.get('launcher_rollover_observation') is not None:
+            observe_rollover_drain(record['launcher_rollover_observation'],owned,stamp())
         if not owned:
             record['storage_maintenance_requested']=True
             self.log('PBS_LAUNCHER_ROLLOVER_IDLE',token=token,host_id=host,
@@ -2646,9 +2986,35 @@ class PbsManager:
             previous = read(path)
             if previous['request_sha256'] != request_sha256:
                 raise ValueError('Reused PBS RPC ID has changed content')
+            if previous.get('consumed') is True:
+                raise ValueError('PBS RPC response was already consumed')
             return previous['response']
         atomic(path, dict(request_sha256=request_sha256, response=response, clock=stamp()))
         return response
+
+    def _compact_consumed_responses(self, receipts):
+        """Only positive, exact worker consumption evidence can drop a body."""
+        acknowledgements={}
+        for token, rows in receipts.items():
+            if token not in self.state['allocations']:
+                raise ValueError('Unowned PBS consumption receipt')
+            for request_id, proof in rows.items():
+                if not request_id or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-' for c in request_id):
+                    raise ValueError('Unsafe PBS consumed request ID')
+                path=self.directory/'responses'/token/(request_id+'.json')
+                if not path.is_file():
+                    continue
+                prior=read(path)
+                if prior['request_sha256']!=proof['request_sha256']:
+                    raise ValueError('PBS consumed request identity differs')
+                response_sha=prior.get('response_sha256') if prior.get('consumed') else digest(prior['response'])
+                if response_sha!=proof['response_sha256']:
+                    raise ValueError('PBS consumed response identity differs')
+                if not prior.get('consumed'):
+                    atomic(path,dict(request_sha256=prior['request_sha256'],response_sha256=response_sha,
+                                     consumed=True,clock=prior['clock']))
+                acknowledgements.setdefault(token,{})[request_id]=proof
+        return acknowledgements
 
     def _collect_completed_requests(self, responses):
         for (token, request_id), (request, future) in tuple(self.pending_completions.items()):
@@ -2808,6 +3174,39 @@ class PbsManager:
             self._collect_completed_requests(self.responses)
         self._flush_responses()
 
+    def _stage_managed_successor(self, allocation, record, waiting, *, waiting_seconds=None):
+        """New scopes may request an afterany keeper when real demand no longer fits."""
+        if (self.settings.get('managed_afterany_successor') is not True
+                or allocation.get('status') != 'R' or not allocation.get('pilot_token')
+                or record.get('managed_successor') or record.get('resize_requested')
+                or record.get('launcher_rollover_requested')
+                or record.get('storage_maintenance_requested')
+                or (not waiting and not waiting_seconds) or self.executor._user_stop_requested()):
+            return
+        receipt = allocation.get('allocation') or {}
+        remaining, recorded = receipt.get('remaining_seconds'), receipt.get('recorded_epoch')
+        if type(remaining) not in (int,float) or type(recorded) not in (int,float):
+            return
+        remaining = max(0, remaining-max(0,time.time()-recorded))
+        estimates = [task_estimate(request,self.settings,allocation['host_id']) for request in waiting]
+        if waiting_seconds is not None:estimates.append(waiting_seconds)
+        if not any(estimate and estimate+self.settings.get('drain_seconds',30)>remaining for estimate in estimates):
+            return
+        retry_after = getattr(self,'_managed_successor_retry_after',{})
+        self._managed_successor_retry_after = retry_after
+        token = allocation['token']
+        if time.monotonic() < retry_after.get(token,0):
+            return
+        retry_after[token] = time.monotonic()+self.settings.get('request_timeout_seconds',20)
+        capabilities = self.gateway.call(dict(action='managed_capabilities'))
+        if capabilities.get('managed_afterany_successor') is not True:
+            return  # a shared-pool or a pinned older gateway is not compatible
+        successor = self.gateway.call(dict(action='stage_managed_successor',token=allocation['token'],
+                                           job_id=allocation['job_id']))
+        record['managed_successor'] = successor
+        self.save()
+        self.log('PBS_MANAGED_SUCCESSOR_STAGED', token=allocation['token'], successor=successor)
+
     def cycle(self):
         if self.defer_q3_evidence:
             self._advance_deferred_evidence()
@@ -2834,6 +3233,8 @@ class PbsManager:
         exchange_started = time.monotonic()
         response_count = sum(len(batch) for batch in self.responses.values())
         request = dict(action='exchange', responses=self.responses, controls=self.controls)
+        if self.settings.get('response_consumption_receipts') is True:
+            request.update(response_consumption_receipts=True,consumed_ack=getattr(self,'_consumed_ack',{}))
         if self.bounded_results:
             request['bounded_results'] = True
         if self.split_exchange:
@@ -2846,6 +3247,8 @@ class PbsManager:
                 exclude.setdefault(token, []).append(request_id)
             request['exclude'] = exclude
         data = self.gateway.call(request)
+        if self.settings.get('response_consumption_receipts') is True:
+            self._consumed_ack=self._compact_consumed_responses(data.get('consumed',{}))
         elapsed = time.monotonic()-exchange_started
         if elapsed >= 1:
             self.log('PBS_EXCHANGE_TIMING', seconds=elapsed, replies=response_count,
@@ -2977,6 +3380,11 @@ class PbsManager:
                 cpu_per_task = task_cpu_footprint(spec['profile'])
                 slot_memory = spec['profile'].get('pbs', {}).get('sized_task_memory_bytes')
                 waiting = [request for hosts, request in waiting_tasks if host in hosts]
+                if not stopping and not resize_allocations:
+                    try:
+                        self._stage_managed_successor(allocation,record,waiting)
+                    except (OSError,ValueError,RuntimeError,subprocess.SubprocessError) as error:
+                        self.log('PBS_MANAGED_SUCCESSOR_HELD', token=token, reason=str(error))
                 estimates = [task_memory_estimate(request, self.settings, host) for request in waiting]
                 memory_mismatch = slot_memory is not None and estimates and all(
                     estimate is None or estimate > slot_memory for estimate in estimates)
@@ -3129,7 +3537,9 @@ class PbsManager:
                 return
             self.lock = (self.directory/'MANAGER.lock').open('a')
             fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            self.state = read(self.path)
+            from .rpe_pbs_state import read_pbs_state
+            self.state = read_pbs_state(self.path)
+            if hasattr(self,'_state_journal'):del self._state_journal
         self.detached = retain_allocation
         self.stop.set()
         if self.thread:
@@ -3162,6 +3572,8 @@ class PbsManager:
             self.harvest_pool = self.harvest_pending = None
         if self.bulk_gateway is not None:
             self.bulk_gateway.close()
+        for gateway in getattr(self,'bulk_parallel_gateways',()):
+            gateway.close()
         if self.artifact_pool is not None:
             self.artifact_pool.shutdown(wait=True, cancel_futures=True)
             self.artifact_pool = None
@@ -3196,7 +3608,14 @@ class PbsManager:
         except Exception as error:
             self.log('PBS_DRAIN_CONTROL_PENDING', error=str(error), recovery='Same run resume reconciles original allocations')
         finally:
-            self.gateway.close(); self.lock.close()
+            try:
+                if getattr(self,'settings',{}).get('state_delta_journal') is True:
+                    from .rpe_pbs_state import StateJournal
+                    if not hasattr(self,'_state_journal'):
+                        self._state_journal=StateJournal(self.path,atomic)
+                    self._state_journal.save(self.state,checkpoint=True)
+            finally:
+                self.gateway.close(); self.lock.close()
 
     def metrics(self):
         return dict(allocations=[{key:value for key,value in a.items() if key != 'scheduler'} for a in self.allocations],

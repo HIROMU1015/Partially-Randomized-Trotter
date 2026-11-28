@@ -94,7 +94,7 @@ def ready_keys(candidates, records, horizons):
 
 def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_requested, on_ready=None):
     from .pr_price_rules import GitReader
-    from .pr_candidate_completion import Held
+    from .pr_candidate_completion import Held, read_completion_state
 
     if 13 not in horizons:
         return []
@@ -115,7 +115,7 @@ def prepare(root, runtime, completion, candidates, horizons, prior_runs, stop_re
         states = directory/'completion'/'STATE.json'
         if not states.is_file():
             continue
-        for record in read(states).get('records', {}).values():
+        for record in read_completion_state(states).get('records', {}).values():
             request = record.get('request') or {}
             owned_parent = (request.get('selection') or {}).get('source_configuration_id')
             if not request.get('horizon_parent') or owned_parent not in parents:

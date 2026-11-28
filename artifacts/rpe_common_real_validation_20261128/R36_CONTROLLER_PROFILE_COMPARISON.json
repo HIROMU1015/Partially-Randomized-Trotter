@@ -1,0 +1,1695 @@
+{
+  "status": "PASS_ISOLATED_CONTROLLER_GIL_AND_CPU_VALIDATION",
+  "actual_os": "RomuTail",
+  "source": {
+    "src/trottertracks/rpe_optimizer_concurrent.py": "b37a2811b01a80c7f7b88fb93120f5f1a6ded7257880fb14ac17a0afb8daa51e",
+    "src/trottertracks/rpe_q3_store.py": "1c32a506863a02e6586e6df9a92ec6614a2cf6c5a985972826232efeadca8731",
+    "scripts/check_rpe_distributed_q3.py": "79920e108c628b4d2593baa0d1f9ba94ec20253480cdf0fabbc8e58598c825a5",
+    "artifacts/rpe_common_real_validation_20261128/R36_CONTROLLER_PROFILE.py": "c37e3ffbd8a1f3d5d6e886bba71fab5b5807350c54f2f867978d76abdeec357c"
+  },
+  "actual_os_hosts": 1,
+  "simulated_worker_processes": 3,
+  "scientific_calls": 0,
+  "production_attach": "permission denied; ptrace_scope=1; perf_event_paranoid=4",
+  "production_gil_measured": false,
+  "profiles": {
+    "nonblocking": {
+      "individual": {
+        "outcomes": 18,
+        "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+        "canonical_minima": {
+          "PR_DF": {
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          },
+          "PR_PAULI": {
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          }
+        },
+        "by_host": {
+          "simulated-local": {
+            "adopted": 6,
+            "assigned": 6,
+            "completed": 6,
+            "launched": 6,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server1": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server2": {
+            "adopted": 5,
+            "assigned": 5,
+            "completed": 5,
+            "launched": 5,
+            "prefix_reuse_HITs": 0
+          }
+        },
+        "profile": {
+          "mode": "individual",
+          "observed_thread_cpu": [
+            {
+              "name": "MainThread",
+              "observed_cpu_seconds": 0.22,
+              "tid": 1106101
+            },
+            {
+              "name": "validation-cpu-sampler",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1106104
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106108
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106109
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1106110
+            },
+            {
+              "name": "Thread-1 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106113
+            },
+            {
+              "name": "Thread-2 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106114
+            },
+            {
+              "name": "ThreadPoolExecutor-0_0",
+              "observed_cpu_seconds": 0.08,
+              "tid": 1106119
+            },
+            {
+              "name": "ThreadPoolExecutor-0_1",
+              "observed_cpu_seconds": 0.07,
+              "tid": 1106120
+            },
+            {
+              "name": "Thread-32 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106169
+            },
+            {
+              "name": "Thread-54 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106198
+            },
+            {
+              "name": "Thread-55 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106199
+            },
+            {
+              "name": "Thread-56 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106200
+            },
+            {
+              "name": "Thread-57 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106201
+            },
+            {
+              "name": "Thread-58 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106202
+            },
+            {
+              "name": "Thread-59 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106203
+            },
+            {
+              "name": "Thread-60 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106204
+            },
+            {
+              "name": "Thread-61 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106205
+            },
+            {
+              "name": "Thread-77 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106232
+            },
+            {
+              "name": "Thread-78 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106233
+            },
+            {
+              "name": "Thread-79 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106234
+            },
+            {
+              "name": "Thread-84 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106243
+            },
+            {
+              "name": "Thread-114 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106280
+            },
+            {
+              "name": "Thread-115 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106281
+            },
+            {
+              "name": "Thread-150 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106331
+            },
+            {
+              "name": "Thread-153 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106334
+            },
+            {
+              "name": "Thread-154 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106335
+            },
+            {
+              "name": "Thread-155 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106336
+            },
+            {
+              "name": "Thread-156 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106337
+            },
+            {
+              "name": "Thread-168 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106350
+            },
+            {
+              "name": "Thread-179 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106361
+            },
+            {
+              "name": "Thread-224 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106499
+            },
+            {
+              "name": "Thread-225 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106500
+            },
+            {
+              "name": "Thread-226 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106501
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106510
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106511
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1106512
+            },
+            {
+              "name": "ThreadPoolExecutor-1_0",
+              "observed_cpu_seconds": 0.02,
+              "tid": 1106522
+            },
+            {
+              "name": "ThreadPoolExecutor-1_1",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1106523
+            },
+            {
+              "name": "Thread-235 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106526
+            },
+            {
+              "name": "Thread-239 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106537
+            },
+            {
+              "name": "Thread-240 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106538
+            },
+            {
+              "name": "Thread-241 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106539
+            },
+            {
+              "name": "Thread-242 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106540
+            },
+            {
+              "name": "Thread-261 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106598
+            },
+            {
+              "name": "Thread-262 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106599
+            },
+            {
+              "name": "Thread-284 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106659
+            },
+            {
+              "name": "Thread-287 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106664
+            },
+            {
+              "name": "Thread-304 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106707
+            },
+            {
+              "name": "Thread-305 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106708
+            },
+            {
+              "name": "Thread-317 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106725
+            },
+            {
+              "name": "Thread-336 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106747
+            },
+            {
+              "name": "Thread-342 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106754
+            },
+            {
+              "name": "Thread-343 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106755
+            },
+            {
+              "name": "Thread-351 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106766
+            },
+            {
+              "name": "Thread-375 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106807
+            },
+            {
+              "name": "Thread-376 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106808
+            },
+            {
+              "name": "Thread-380 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106812
+            },
+            {
+              "name": "Thread-381 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106815
+            },
+            {
+              "name": "Thread-384 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106824
+            },
+            {
+              "name": "Thread-385 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106845
+            },
+            {
+              "name": "Thread-439 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106967
+            },
+            {
+              "name": "Thread-440 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106968
+            },
+            {
+              "name": "Thread-442 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1106970
+            }
+          ],
+          "process_cpu_seconds": 1.3258289,
+          "process_peak_rss_kib": 101760,
+          "scientific_calls": 0,
+          "thread_observation_seconds": 0.05,
+          "wall_seconds": 4.511524659814313
+        },
+        "gil": {
+          "approximate_fraction_of_nominal_samples": 0.14348117946316535,
+          "configured_rate_hz": 100,
+          "gil_filtered_raw_samples": 67,
+          "nonblocking": true,
+          "participating_hosts": [
+            "simulated-local",
+            "simulated-server1",
+            "simulated-server2"
+          ],
+          "profiler_wall_seconds": 4.669601981993765,
+          "scope": "entire isolated ordinary controller process; includes startup and verification"
+        },
+        "profiler_errors": 5,
+        "queue_observer_profile": {
+          "report_cpu_seconds": 0.001103885,
+          "samples": 1,
+          "thread_cpu_seconds": 0.002304056,
+          "wall_seconds": 0.0060877089854329824
+        }
+      },
+      "batch": {
+        "outcomes": 18,
+        "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+        "canonical_minima": {
+          "PR_DF": {
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          },
+          "PR_PAULI": {
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          }
+        },
+        "by_host": {
+          "simulated-local": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server1": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server2": {
+            "adopted": 4,
+            "assigned": 4,
+            "completed": 4,
+            "launched": 4,
+            "prefix_reuse_HITs": 0
+          }
+        },
+        "profile": {
+          "mode": "batch",
+          "observed_thread_cpu": [
+            {
+              "name": "MainThread",
+              "observed_cpu_seconds": 0.24,
+              "tid": 1107058
+            },
+            {
+              "name": "validation-cpu-sampler",
+              "observed_cpu_seconds": 0.02,
+              "tid": 1107079
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107082
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107083
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1107084
+            },
+            {
+              "name": "Thread-2 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107086
+            },
+            {
+              "name": "rpe-queue-observer",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107088
+            },
+            {
+              "name": "ThreadPoolExecutor-0_0",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1107091
+            },
+            {
+              "name": "ThreadPoolExecutor-0_1",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1107092
+            },
+            {
+              "name": "Thread-3 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107093
+            },
+            {
+              "name": "Thread-4 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107095
+            },
+            {
+              "name": "native/unknown",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107103
+            },
+            {
+              "name": "Thread-29 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107147
+            },
+            {
+              "name": "Thread-30 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107148
+            },
+            {
+              "name": "Thread-50 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107173
+            },
+            {
+              "name": "Thread-51 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107174
+            },
+            {
+              "name": "Thread-52 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107175
+            },
+            {
+              "name": "Thread-53 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107176
+            },
+            {
+              "name": "Thread-55 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107178
+            },
+            {
+              "name": "Thread-66 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107194
+            },
+            {
+              "name": "Thread-106 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107249
+            },
+            {
+              "name": "Thread-110 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107256
+            },
+            {
+              "name": "Thread-113 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107259
+            },
+            {
+              "name": "Thread-143 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107298
+            },
+            {
+              "name": "Thread-164 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107323
+            },
+            {
+              "name": "Thread-165 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107324
+            },
+            {
+              "name": "Thread-166 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107325
+            },
+            {
+              "name": "Thread-167 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107326
+            },
+            {
+              "name": "Thread-178 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107339
+            },
+            {
+              "name": "Thread-194 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107360
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107369
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107370
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1107371
+            },
+            {
+              "name": "native/unknown",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107378
+            },
+            {
+              "name": "ThreadPoolExecutor-1_0",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1107379
+            },
+            {
+              "name": "ThreadPoolExecutor-1_1",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1107380
+            },
+            {
+              "name": "Thread-255 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107455
+            },
+            {
+              "name": "Thread-275 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107479
+            },
+            {
+              "name": "Thread-276 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107480
+            },
+            {
+              "name": "Thread-277 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107481
+            },
+            {
+              "name": "Thread-307 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107523
+            },
+            {
+              "name": "Thread-311 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107528
+            },
+            {
+              "name": "Thread-312 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107529
+            },
+            {
+              "name": "Thread-313 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107530
+            },
+            {
+              "name": "Thread-318 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107537
+            },
+            {
+              "name": "Thread-323 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107543
+            },
+            {
+              "name": "native/unknown",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107606
+            },
+            {
+              "name": "Thread-350 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107612
+            },
+            {
+              "name": "Thread-351 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107613
+            },
+            {
+              "name": "Thread-352 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107614
+            },
+            {
+              "name": "Thread-353 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107615
+            },
+            {
+              "name": "native/unknown",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107635
+            },
+            {
+              "name": "Thread-363 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107652
+            },
+            {
+              "name": "Thread-396 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107693
+            },
+            {
+              "name": "Thread-397 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107694
+            },
+            {
+              "name": "Thread-400 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107699
+            },
+            {
+              "name": "Thread-401 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107700
+            },
+            {
+              "name": "Thread-416 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107722
+            },
+            {
+              "name": "Thread-417 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107723
+            },
+            {
+              "name": "Thread-421 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1107728
+            }
+          ],
+          "process_cpu_seconds": 1.26265295,
+          "process_peak_rss_kib": 98760,
+          "scientific_calls": 0,
+          "thread_observation_seconds": 0.05,
+          "wall_seconds": 4.20696717989631
+        },
+        "gil": {
+          "approximate_fraction_of_nominal_samples": 0.17765393927448472,
+          "configured_rate_hz": 100,
+          "gil_filtered_raw_samples": 78,
+          "nonblocking": true,
+          "participating_hosts": [
+            "simulated-local",
+            "simulated-server1",
+            "simulated-server2"
+          ],
+          "profiler_wall_seconds": 4.390558426035568,
+          "scope": "entire isolated ordinary controller process; includes startup and verification"
+        },
+        "profiler_errors": 12,
+        "queue_observer_profile": {
+          "report_cpu_seconds": 0.000578531,
+          "samples": 1,
+          "thread_cpu_seconds": 0.00081574,
+          "wall_seconds": 0.0008312361314892769
+        }
+      }
+    },
+    "blocking": {
+      "individual": {
+        "outcomes": 18,
+        "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+        "canonical_minima": {
+          "PR_DF": {
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          },
+          "PR_PAULI": {
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          }
+        },
+        "by_host": {
+          "simulated-local": {
+            "adopted": 6,
+            "assigned": 6,
+            "completed": 6,
+            "launched": 6,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server1": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server2": {
+            "adopted": 5,
+            "assigned": 5,
+            "completed": 5,
+            "launched": 5,
+            "prefix_reuse_HITs": 0
+          }
+        },
+        "profile": {
+          "mode": "individual",
+          "observed_thread_cpu": [
+            {
+              "name": "MainThread",
+              "observed_cpu_seconds": 0.28,
+              "tid": 1110885
+            },
+            {
+              "name": "validation-cpu-sampler",
+              "observed_cpu_seconds": 0.02,
+              "tid": 1110918
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1110950
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1110951
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1110953
+            },
+            {
+              "name": "ThreadPoolExecutor-0_0",
+              "observed_cpu_seconds": 0.1,
+              "tid": 1110960
+            },
+            {
+              "name": "ThreadPoolExecutor-0_1",
+              "observed_cpu_seconds": 0.06,
+              "tid": 1110961
+            },
+            {
+              "name": "rpe-queue-observer",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1110966
+            },
+            {
+              "name": "Thread-3 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1110972
+            },
+            {
+              "name": "native/unknown",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1110986
+            },
+            {
+              "name": "native/unknown",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1110987
+            },
+            {
+              "name": "Thread-31 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111033
+            },
+            {
+              "name": "Thread-32 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111034
+            },
+            {
+              "name": "Thread-56 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111061
+            },
+            {
+              "name": "Thread-57 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111062
+            },
+            {
+              "name": "Thread-58 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111063
+            },
+            {
+              "name": "Thread-64 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111070
+            },
+            {
+              "name": "Thread-71 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111079
+            },
+            {
+              "name": "Thread-72 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111080
+            },
+            {
+              "name": "Thread-83 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111095
+            },
+            {
+              "name": "Thread-106 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111154
+            },
+            {
+              "name": "Thread-115 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111186
+            },
+            {
+              "name": "Thread-167 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111279
+            },
+            {
+              "name": "Thread-191 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111335
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111379
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111380
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1111383
+            },
+            {
+              "name": "ThreadPoolExecutor-1_0",
+              "observed_cpu_seconds": 0.02,
+              "tid": 1111388
+            },
+            {
+              "name": "ThreadPoolExecutor-1_1",
+              "observed_cpu_seconds": 0.02,
+              "tid": 1111389
+            },
+            {
+              "name": "Thread-203 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111391
+            },
+            {
+              "name": "Thread-252 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111479
+            },
+            {
+              "name": "Thread-253 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111480
+            },
+            {
+              "name": "Thread-271 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111502
+            },
+            {
+              "name": "Thread-272 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111503
+            },
+            {
+              "name": "Thread-309 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111601
+            },
+            {
+              "name": "Thread-334 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111662
+            },
+            {
+              "name": "Thread-335 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111663
+            },
+            {
+              "name": "Thread-359 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111694
+            },
+            {
+              "name": "Thread-368 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111703
+            },
+            {
+              "name": "Thread-407 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111755
+            },
+            {
+              "name": "Thread-414 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111763
+            },
+            {
+              "name": "Thread-425 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111774
+            },
+            {
+              "name": "Thread-426 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111775
+            }
+          ],
+          "process_cpu_seconds": 1.40734219,
+          "process_peak_rss_kib": 107156,
+          "scientific_calls": 0,
+          "thread_observation_seconds": 0.05,
+          "wall_seconds": 4.128863808931783
+        },
+        "gil": {
+          "approximate_fraction_of_nominal_samples": 0.2081949225527487,
+          "configured_rate_hz": 100,
+          "gil_filtered_raw_samples": 89,
+          "nonblocking": false,
+          "participating_hosts": [
+            "simulated-local",
+            "simulated-server1",
+            "simulated-server2"
+          ],
+          "profiler_wall_seconds": 4.274840082973242,
+          "scope": "entire isolated ordinary controller process; includes startup and verification"
+        },
+        "profiler_errors": 0,
+        "queue_observer_profile": {
+          "report_cpu_seconds": 0.000879882,
+          "samples": 1,
+          "thread_cpu_seconds": 0.001561042,
+          "wall_seconds": 0.002686796011403203
+        }
+      },
+      "batch": {
+        "outcomes": 18,
+        "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+        "canonical_minima": {
+          "PR_DF": {
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          },
+          "PR_PAULI": {
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            }
+          }
+        },
+        "by_host": {
+          "simulated-local": {
+            "adopted": 7,
+            "assigned": 7,
+            "completed": 7,
+            "launched": 7,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server1": {
+            "adopted": 6,
+            "assigned": 6,
+            "completed": 6,
+            "launched": 6,
+            "prefix_reuse_HITs": 0
+          },
+          "simulated-server2": {
+            "adopted": 5,
+            "assigned": 5,
+            "completed": 5,
+            "launched": 5,
+            "prefix_reuse_HITs": 0
+          }
+        },
+        "profile": {
+          "mode": "batch",
+          "observed_thread_cpu": [
+            {
+              "name": "MainThread",
+              "observed_cpu_seconds": 0.25,
+              "tid": 1111789
+            },
+            {
+              "name": "validation-cpu-sampler",
+              "observed_cpu_seconds": 0.02,
+              "tid": 1111794
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111797
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111798
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1111799
+            },
+            {
+              "name": "Thread-1 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111802
+            },
+            {
+              "name": "Thread-2 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111803
+            },
+            {
+              "name": "ThreadPoolExecutor-0_0",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1111805
+            },
+            {
+              "name": "ThreadPoolExecutor-0_1",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1111806
+            },
+            {
+              "name": "Thread-3 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111809
+            },
+            {
+              "name": "Thread-4 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111810
+            },
+            {
+              "name": "Thread-54 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111882
+            },
+            {
+              "name": "Thread-56 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111884
+            },
+            {
+              "name": "Thread-81 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111915
+            },
+            {
+              "name": "Thread-111 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111952
+            },
+            {
+              "name": "Thread-112 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1111953
+            },
+            {
+              "name": "Thread-164 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112013
+            },
+            {
+              "name": "Thread-196 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112049
+            },
+            {
+              "name": "rpe-job-dispatch",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112055
+            },
+            {
+              "name": "rpe-owned-process-monitor",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112056
+            },
+            {
+              "name": "rpe-q3-rpc",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1112057
+            },
+            {
+              "name": "ThreadPoolExecutor-1_0",
+              "observed_cpu_seconds": 0.01,
+              "tid": 1112063
+            },
+            {
+              "name": "ThreadPoolExecutor-1_1",
+              "observed_cpu_seconds": 0.02,
+              "tid": 1112064
+            },
+            {
+              "name": "Thread-201 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112065
+            },
+            {
+              "name": "Thread-202 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112066
+            },
+            {
+              "name": "Thread-230 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112107
+            },
+            {
+              "name": "Thread-248 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112130
+            },
+            {
+              "name": "Thread-273 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112159
+            },
+            {
+              "name": "Thread-280 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112170
+            },
+            {
+              "name": "Thread-281 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112171
+            },
+            {
+              "name": "Thread-288 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112180
+            },
+            {
+              "name": "Thread-298 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112191
+            },
+            {
+              "name": "Thread-310 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112203
+            },
+            {
+              "name": "Thread-312 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112206
+            },
+            {
+              "name": "Thread-314 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112209
+            },
+            {
+              "name": "Thread-324 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112222
+            },
+            {
+              "name": "Thread-325 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112223
+            },
+            {
+              "name": "Thread-326 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112224
+            },
+            {
+              "name": "Thread-361 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112264
+            },
+            {
+              "name": "Thread-384 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112295
+            },
+            {
+              "name": "Thread-415 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112332
+            },
+            {
+              "name": "Thread-427 (process_request_thread)",
+              "observed_cpu_seconds": 0.0,
+              "tid": 1112344
+            }
+          ],
+          "process_cpu_seconds": 1.321675621,
+          "process_peak_rss_kib": 98468,
+          "scientific_calls": 0,
+          "thread_observation_seconds": 0.05,
+          "wall_seconds": 4.038037266116589
+        },
+        "gil": {
+          "approximate_fraction_of_nominal_samples": 0.16215448347446393,
+          "configured_rate_hz": 100,
+          "gil_filtered_raw_samples": 68,
+          "nonblocking": false,
+          "participating_hosts": [
+            "simulated-local",
+            "simulated-server1",
+            "simulated-server2"
+          ],
+          "profiler_wall_seconds": 4.193531905068085,
+          "scope": "entire isolated ordinary controller process; includes startup and verification"
+        },
+        "profiler_errors": 0,
+        "queue_observer_profile": {
+          "report_cpu_seconds": 0.0006160180000000001,
+          "samples": 1,
+          "thread_cpu_seconds": 0.0008673180000000001,
+          "wall_seconds": 0.0008884130511432886
+        }
+      }
+    }
+  },
+  "limitation": "Short artificial ordinary-controller runs, nominal sample fractions include startup and verification; cannot infer live scientific throughput or causal GIL reduction."
+}

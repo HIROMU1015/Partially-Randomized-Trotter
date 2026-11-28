@@ -104,9 +104,9 @@ class SchedulerTests(unittest.TestCase):
         self.assertNotIn('configurations', request['route'])
         self.assertEqual(route['configurations'], registry)
         self.assertEqual(request['route']['templates'], [locator])
-        with patch.object(Q.subprocess, 'check_output', return_value=b'saved template bytes') as show:
+        with patch.object(Q, 'fixed_git_blob_sha', return_value='f'*64) as show:
             Q.input_hashes(ROOT, request)
-        show.assert_called_once_with(['git', 'show', locator['commit']+':'+locator['path']], cwd=ROOT)
+        show.assert_called_once_with(ROOT, locator['commit'], locator['path'])
 
         proposal['configuration_id'] = 'another-case'
         registered = executor.request(proposal, Path('registered-q3'), route)
@@ -138,16 +138,16 @@ class SchedulerTests(unittest.TestCase):
                 self.assertEqual(request['expected']['binding_id'], 'fixed-binding')
                 self.assertEqual(projected_rule['configurations'], {source_id: binding})
                 self.assertEqual(request['route']['configurations'], {source_id: binding, projected_id: binding})
-                with patch.object(Q.subprocess, 'check_output', return_value=b'saved signal bytes') as show:
+                with patch.object(Q, 'fixed_git_blob_sha', return_value='e'*64) as show:
                     self.assertEqual(Q.input_hashes(ROOT, request), Q.input_hashes(ROOT, original))
-                    show.assert_called_with(['git', 'show', locator['commit']+':'+locator['path']], cwd=ROOT)
+                    show.assert_called_with(ROOT, locator['commit'], locator['path'])
                 template_route = dict(projected_rule, kind='pf_b_pf6', configurations={}, templates=[locator])
                 template_request = ex.request(dict(configuration_id=projected_id, vector=(1,)*24,
                                                    cost=Fraction(1), origin={'M': 11}),
                                               Path('template-prefix'), template_route)
                 self.assertNotIn('configurations', template_request['route'])
                 self.assertEqual(template_route['configurations'], {})
-                with patch.object(Q.subprocess, 'check_output', return_value=b'saved template bytes'):
+                with patch.object(Q, 'fixed_git_blob_sha', return_value='f'*64):
                     inputs = Q.input_hashes(ROOT, template_request)
                 self.assertEqual([(item['commit'], item['path']) for item in inputs],
                                  [(locator['commit'], locator['path'])])

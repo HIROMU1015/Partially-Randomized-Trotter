@@ -9,6 +9,8 @@ from .rpe_release_registry import fingerprint
 
 
 def load(path):
+    from .rpe_pbs_state import is_pbs_state,read_pbs_state
+    if is_pbs_state(path):return read_pbs_state(path)
     return json.loads(path.read_bytes())
 
 
@@ -551,7 +553,11 @@ def verify(run, problem, spec):
         metadata_file = previous/'completion/STATE.json'
         stop_bytes = stop_file.read_bytes()
         metadata_bytes = metadata_file.read_bytes()
-        records = json.loads(metadata_bytes)['records']
+        saved_metadata = json.loads(metadata_bytes)
+        from .pr_candidate_completion import read_completion_state
+        if read_completion_state(metadata_file) != saved_metadata:
+            raise ValueError('Continuation requires a fully checkpointed completion state')
+        records = saved_metadata['records']
         hold_keys = contract.get('metadata_hold_keys')
         prefix = ('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:DF_DESCRIPTOR:'
                   'INPUT_OR_SOURCE_METADATA_UNAVAILABLE:Fixed bundle validation view SOURCE differs: ')

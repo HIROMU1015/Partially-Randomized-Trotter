@@ -1,16 +1,18 @@
 """Reuse reconciled H-chain predecessor inputs and Q3 in the common controller."""
 import hashlib
+from functools import lru_cache
 import json
 import os
 from pathlib import Path, PurePosixPath
 import shutil
 import sys
+import time
 
 from rpe_hchain_q3 import METHOD_LABELS, prepared_route, request_inputs
 from trottertracks import rpe_method_optimizer as optimizer
 
 
-def checked(settings, plan, *, verify_files=False, metadata_only=False):
+def checked(settings, plan, *, verify_files=False, metadata_only=False, receipt_plan=None, cache_path=None):
     if "legacy" not in settings:
         return None
     fixed = settings["legacy"]
@@ -29,16 +31,81 @@ def checked(settings, plan, *, verify_files=False, metadata_only=False):
         needed = ({name for files in history["cases"].values() for name in files.values()} |
                   {folder + "/REQUEST.json" for folder in history["jobs"]} |
                   {"PLAN.json", "PURE_RTE_COST_SCREEN.json"}) if metadata_only else None
-        for name, expected in history["files"].items():
-            if needed is not None and name not in needed:
-                continue
+        allowed_receipts = receipt_names(receipt_plan) if receipt_plan is not None else None
+        verified = set()
+        # Disposable run-local cache, never part of the legacy evidence.
+        # Bind it to the fixed manifest and root; rehash any changed identity.
+        cache_path = Path(cache_path) if cache_path is not None else None
+        cache_binding = dict(root=str(root), manifest_sha256=fixed["sha256"])
+        cached = {}
+        if cache_path is not None:
+            try:
+                old = json.loads(cache_path.read_bytes())
+                if old.get("binding")==cache_binding and isinstance(old.get("files"),dict):
+                    cached = old["files"]
+            except (OSError,ValueError,AttributeError):
+                pass
+        updated = {}
+
+        def verify(name):
+            if name in verified:return
+            expected = history["files"][name]
             relative = PurePosixPath(name)
             path = root / relative
             if (relative.is_absolute() or ".." in relative.parts or path.is_symlink()
-                    or not path.resolve().is_relative_to(root) or digest(path) != expected):
+                    or not path.resolve().is_relative_to(root)):
                 raise ValueError(f"Legacy H-chain evidence changed: {name}")
+            identity = _identity(path)
+            row = dict(identity=list(identity),sha256=expected)
+            stable = time.time_ns()-max(identity[-2:])>=1_000_000_000
+            if not (stable and cached.get(name)==row):
+                if digest(path) != expected:
+                    raise ValueError(f"Legacy H-chain evidence changed: {name}")
+            if _identity(path)!=identity:
+                raise ValueError(f"Legacy H-chain evidence changed: {name}")
+            if stable:
+                updated[name]=row
+            verified.add(name)
+
+        selected_jobs = None
+        if receipt_plan is not None:
+            selected = {case["id"] for case in receipt_plan["cases"]}
+            all_case_files = {name for files in history["cases"].values() for name in files.values()}
+            selected_case_files = {name for cid, files in history["cases"].items()
+                                   if cid in selected for name in files.values()}
+            # V1 legacy manifests have no folder->case index. Hash each small
+            # REQUEST to bind that mapping, but avoid all unselected raw
+            # results and candidate packets. The full inventory and all
+            # charges are still checked below, independent of the block.
+            selected_jobs = []
+            all_jobs = set(history["jobs"])
+            for folder in history["jobs"]:
+                name = folder + "/REQUEST.json"
+                verify(name)
+                raw = (root/name).read_bytes()
+                if hashlib.sha256(raw).hexdigest()!=history["files"][name]:
+                    raise ValueError(f"Legacy H-chain request changed: {name}")
+                request = json.loads(raw)
+                if request["configuration_id"] in selected:
+                    selected_jobs.append(folder)
+            selected_job_set = set(selected_jobs)
+
+        def required(name):
+            if needed is not None and name not in needed:return False
+            if allowed_receipts is None:return True
+            if name.startswith(('signals/','prices/')):
+                return name in allowed_receipts
+            if name in all_case_files:
+                return name in selected_case_files
+            folder = str(PurePosixPath(name).parent)
+            if folder in all_jobs:
+                return folder in selected_job_set
+            return True
+
         for name in history["files"]:
-            if not metadata_only and name.startswith("prices/") and name.endswith(".json"):
+            if required(name):verify(name)
+        for name in history["files"]:
+            if not metadata_only and required(name) and name.startswith("prices/") and name.endswith(".json"):
                 receipt = json.loads((root / name).read_bytes())["events"]
                 if isinstance(receipt, dict):
                     sidecar = str(Path(name).with_suffix(".events.json.xz"))
@@ -50,24 +117,60 @@ def checked(settings, plan, *, verify_files=False, metadata_only=False):
         if (len(identities) != len(charges) or len(charges) != sum(history["spent"].values())
                 or any(row[0] not in candidate_ids for row in identities)):
             raise ValueError("Legacy H-chain Q3 charge inventory is inconsistent")
+        if cache_path is not None and updated != cached:
+            # One owning package/controller writes this disposable cache.
+            # Failure to cache never invalidates otherwise verified evidence.
+            try:
+                from trottertracks.rpe_q3_worker import atomic
+                atomic(cache_path,dict(binding=cache_binding,files=updated))
+            except OSError:
+                pass
+        if selected_jobs is not None:
+            history = dict(history, jobs=selected_jobs)
     return root, history
 
 
+def _identity(path):
+    info = path.stat()
+    return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+
+
+def _read_digest(path, identity):
+    with path.open('rb') as stream:
+        value = hashlib.file_digest(stream, 'sha256').hexdigest()
+    if _identity(path) != identity:
+        raise ValueError('Legacy evidence changed during hash verification: '+str(path))
+    return value
+
+
+_verified_digest = lru_cache(maxsize=16384)(_read_digest)
+
+
 def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    path = Path(path)
+    identity = _identity(path)
+    # A freshly written file can have the same stat timestamp after another
+    # write on a coarse-grained filesystem. Only cache stable old identities.
+    if time.time_ns()-max(identity[-2:]) < 1_000_000_000:
+        return _read_digest(path, identity)
+    return _verified_digest(path, identity)
+
+
+def receipt_names(plan):
+    """Exact selected receipt closure, including the shared price design leaves."""
+    from run_rpe_hchain_preparation import planned_inputs
+    allowed = {f"signals/{cid}.json" for cid in planned_inputs(plan, "signal")}
+    for stage in ("compile", "audit"):
+        for cid, cell in planned_inputs(plan, stage).items():
+            for index in range(plan["scope"]["price_paths"] if cell["method"] == "PR" else 1):
+                allowed.add(f"prices/{cid}-{index}.json")
+                allowed.add(f"prices/{cid}-{index}.events.json.xz")
+    return allowed
 
 
 def restore_receipts(run, legacy, *, plan=None):
     root, history = legacy
-    allowed = None
-    if plan is not None:
-        from run_rpe_hchain_preparation import planned_inputs
-        allowed = {f"signals/{cid}.json" for cid in planned_inputs(plan, "signal")}
-        for stage in ("compile", "audit"):
-            for cid, cell in planned_inputs(plan, stage).items():
-                for index in range(plan["scope"]["price_paths"] if cell["method"] == "PR" else 1):
-                    allowed.add(f"prices/{cid}-{index}.json")
-                    allowed.add(f"prices/{cid}-{index}.events.json.xz")
+    allowed = receipt_names(plan) if plan is not None else None
     for name, expected in history["files"].items():
         if not name.startswith(("signals/", "prices/")) or (allowed is not None and name not in allowed):
             continue

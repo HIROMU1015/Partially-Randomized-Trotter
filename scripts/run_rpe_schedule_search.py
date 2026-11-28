@@ -382,8 +382,6 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         helper.loader.exec_module(module)
         sys.modules[name] = module
         setattr(sys.modules['trottertracks'], 'rpe_q3_resources', module)
-    if trial.get('pbs_hold_node') is True and distributed.get('pbs'):
-        distributed['pbs_hold_node'] = True
     preparation_helpers = ('candidate_completion_sha256', 'preparation_bridge_sha256')
     if any(field in trial for field in preparation_helpers) and not all(field in trial for field in preparation_helpers):
         raise ValueError('Preparation recovery requires both fixed controller helpers')
@@ -540,26 +538,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         distributed.setdefault('preparation_provider_hosts', {}).update(deepcopy(placements))
     if 'pbs_offline_controller_overlay' in trial:
         distributed['pbs_offline_controller_overlay'] = deepcopy(trial['pbs_offline_controller_overlay'])
-    if trial.get('pbs_storage_launcher'):
-        distributed['pbs_gateway_storage_launcher'] = trial['pbs_storage_launcher']
-    if 'pbs_collection_workers' in trial:
-        distributed['pbs_collection_workers'] = trial['pbs_collection_workers']
-    if 'pbs_gateway_completion_workers' in trial:
-        count = trial['pbs_gateway_completion_workers']
-        if type(count) is not int or count < 1:
-            raise ValueError('PBS gateway completion workers must be positive')
-        distributed['pbs_gateway_completion_workers'] = count
-    if trial.get('pbs_ready_buffer') is True:
-        distributed['pbs_ready_buffer'] = True
-    if trial.get('pbs_q3_memory_backfill') is True:
-        distributed['pbs_q3_memory_backfill'] = True
-    if 'pbs_standby_waves' in trial:
-        from trottertracks.rpe_pbs import standby_capacity
-        waves = trial['pbs_standby_waves']
-        standby_capacity(dict(cpu_count=1, memory_bytes=0), waves)
-        if waves is None or not distributed.get('pbs_ready_buffer'):
-            raise ValueError('PBS standby waves require the PBS ready buffer')
-        distributed['pbs_standby_waves'] = waves
+    from trottertracks.rpe_pbs import apply_common_worker_knobs
+    apply_common_worker_knobs(distributed,trial)
     if trial.get('pbs_dispatch_gateway'):
         distributed['pbs_dispatch_gateway'] = trial['pbs_dispatch_gateway']
     if trial.get('controller_queue_first'):
@@ -709,12 +689,8 @@ def apply_worker_trial(spec, trial, *, run_dir=None):
         if selection.get('pbs_adapter'):
             from trottertracks.rpe_pbs import apply_q3_adapter
             apply_q3_adapter(distributed,selection['pbs_adapter'])
-    if trial.get('pbs_stage_artifacts_over_ssh'):
-        pbs = distributed['pbs']
-        if not pbs.get('gateway_python') or not pbs.get('ssh_alias'):
-            raise ValueError('PBS artifact staging requires the fixed gateway interpreter and host')
-        distributed.setdefault('pbs_pinned_settings', deepcopy(pbs))
-        pbs['stage_artifacts_over_ssh'] = True
+    from trottertracks.rpe_pbs import apply_common_artifact_staging
+    apply_common_artifact_staging(distributed,trial)
 
     # Relocating a fixed Git view does not change science, but the selected
     # execution profile contains its exact paths. Rebind only future host
@@ -1069,6 +1045,21 @@ def shortlist_price_ids(results):
     return unresolved
 
 
+def run_selector_with_service(selector, service, on_error):
+    """Keep one selector invocation alive while its ordinary producers advance."""
+    from concurrent.futures import ThreadPoolExecutor, wait
+    with ThreadPoolExecutor(max_workers=1,thread_name_prefix='rpe-width-selector') as pool:
+        future = pool.submit(selector)
+        try:
+            while not future.done():
+                service()
+                wait([future],timeout=.25)
+            return future.result()
+        except BaseException as error:
+            on_error(error)
+            raise
+
+
 class LivePriceWork:
     """Persist selector-confirmed feasible points before the full batch ends."""
     def __init__(self, run, initial):
@@ -1170,6 +1161,7 @@ class WidthDriver:
         loader = spec_from_file_location('trottertracks.rpe_width_checkpoint', journal_path)
         journal = module_from_spec(loader);loader.loader.exec_module(journal)
         self.point_journal = journal.PointJournal(self.run/'POINT_PROGRESS.jsonl', self.state)
+        self.history_journal = journal.HistoryJournal(self.run/'KAPPA_HISTORY.jsonl', self.state)
         self.wide = self.spec.get('search_overrides', {}).get('schedule_wide', {})
         self.completion = None
         self.check_fixed_inputs()
@@ -1214,9 +1206,17 @@ class WidthDriver:
 
     def save(self):
         def write():
-            tmp=self.state_file.with_suffix('.tmp')
-            tmp.write_text(json.dumps(O.jsonable(self.state),indent=2)+'\n')
-            tmp.replace(self.state_file)
+            from trottertracks.rpe_q3_coordinator import atomic_json
+            history = getattr(self, 'history_journal', None)
+            if history is not None:
+                saved = O.jsonable(self.state)
+                history.checkpoint(saved, lambda snapshot: atomic_json(self.state_file,snapshot))
+                # Only compact after the durable snapshot is published.
+                self.state['history'] = saved['history']
+                if 'history_archive' in saved:
+                    self.state['history_archive'] = saved['history_archive']
+            else:
+                atomic_json(self.state_file,O.jsonable(self.state))
         journal = getattr(self, 'point_journal', None)
         if journal is not None:
             journal.checkpoint(self.state, write)
@@ -1713,6 +1713,8 @@ class WidthDriver:
     def complete_points(self, stop_requested=None, announce_ready=None, stop_on_error=None,
                         wait_for_preparation=None, *, continuous=False):
         comp=self.completion_api()
+        comp.nonblocking_distributed_preparation = bool(announce_ready is not None and
+            self.spec.get('search_overrides',{}).get('controller_parallel') is True)
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
         if hasattr(comp,'reconcile_committed_df_holdout'):
             from trottertracks.pr_candidate_completion import Held
@@ -1848,9 +1850,17 @@ class WidthDriver:
                 if continuous:
                     p['input_dispatch_cycle'] = cycle
                 started=time.monotonic();self.log(event='CANDIDATE_INPUTS_START',family=p['family'],kappa=p['kappa'])
-                if self.a.plan_only or self.spec.get('science_approved')is not True:
-                    record=comp.plan(p['completion_request'])
-                else:record=comp.complete(p['completion_request'])
+                try:
+                    if self.a.plan_only or self.spec.get('science_approved')is not True:
+                        record=comp.plan(p['completion_request'])
+                    else:record=comp.complete(p['completion_request'])
+                except subprocess.CalledProcessError as error:
+                    # An inaccessible candidate-specific Git/tool input is a
+                    # hold, not permission to retry a possibly started leaf.
+                    p.update(status='HELD', reason='CANDIDATE_INPUT_COMMAND_FAILED:'+str(error))
+                    self.checkpoint_point(p)
+                    self.log(event='CANDIDATE_INPUTS_HELD',family=p['family'],kappa=p['kappa'],reason=p['reason'])
+                    continue
                 self.log(event='CANDIDATE_INPUTS_END',family=p['family'],kappa=p['kappa'],status=record['status'],
                     reason=record.get('reason'),wall_seconds=time.monotonic()-started)
                 p['completion']=dict(status=record['status'],key=record.get('key'),reason=record.get('reason'),
@@ -1976,6 +1986,8 @@ class WidthDriver:
                                             self.checkpoint_point(point)
                                             backlog.append(point)
                                             self.log(event='READY_RECEIPT_REQUEUED',job=job,family=point['family'])
+                                        else:
+                                            watching.pop(point_id, None)
                             busy = {by_point[id(p)] for p in active.values()}
                             used = Counter(method for method, _ in busy)
                             limit_now=max_active
@@ -2004,6 +2016,19 @@ class WidthDriver:
                                 used[method] += 1
                                 wave['dispatched'][method] = wave['dispatched'].get(method, 0) + 1
                             if not active and not backlog:
+                                if watching and comp.nonblocking_distributed_preparation:
+                                    controller = getattr(bridge, 'executor', None)
+                                    ready_jobs = getattr(controller, 'ready_preparations', None)
+                                    if ready_jobs is not None:
+                                        jobs = {p['completion']['preparation_recovery']['job_id'] for p in watching.values()}
+                                        ready = set(ready_jobs(jobs, wait=True, stop_requested=stop_requested or (lambda:False)))
+                                        if ready:
+                                            for point_id, point in list(watching.items()):
+                                                job = point['completion']['preparation_recovery']['job_id']
+                                                if job in ready and (store.row(job) or {}).get('state') != 'ACCEPTED':
+                                                    watching.pop(point_id, None)
+                                            revision = None
+                                            continue
                                 break
                             if active:
                                 finished, _ = wait(active, return_when=FIRST_COMPLETED,
@@ -2176,7 +2201,7 @@ class WidthDriver:
         def has_new(method):
             with condition:
                 return not stop_preparation.is_set() and (
-                    bool(announced[method] - observed[method]) or
+                    len(announced[method]) > len(observed[method]) or
                     (method in pf_methods and pf_revision[method] > pf_observed[method]))
 
         def subscriber(method, context, candidates, view):
@@ -2191,7 +2216,7 @@ class WidthDriver:
             def pending():
                 with condition:
                     return not stop_preparation.is_set() and (
-                        bool(announced[method] - seen) or
+                        len(announced[method]) > len(seen) or
                         (method in pf_methods and pf_revision[method] > pf_seen))
 
             def take():
@@ -2284,17 +2309,43 @@ class WidthDriver:
                 executor.state.cycle_metric_baseline = {m:dict(counts) for m,counts in getattr(executor.state, 'by_method', {}).items()}
         return executor,optimize
 
+    def batch_problem(self):
+        problem=deepcopy(self.problem)
+        for method,widths in self.widths.items():
+            problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw'])) for w in widths]
+        search=dict(problem['search'],**self.spec.get('search_overrides',{}))
+        if search.get('exploratory_cost') is True:
+            problem['search']=dict(problem['search'],exploratory_cost=True,rule=search['rule'])
+        return problem
+
+    def plan_with_base_context(self):
+        """Overlap immutable catalog reconstruction with the independent width planner.
+
+        The width planner mutates only its proposal/decision records; the
+        context reads the fixed problem and catalog, never those new points.
+        Completion installs and price updates still have one owner in batch.
+        """
+        from concurrent.futures import ThreadPoolExecutor
+        problem=self.batch_problem()
+        self._prepared_base_context=None
+        # Warm the shared saved catalog on its existing owner before overlap.
+        self.saved_catalog(problem)
+        with ThreadPoolExecutor(max_workers=1,thread_name_prefix='rpe-base-context') as pool:
+            pending=pool.submit(self.context,problem)
+            proposals,report=self.plan()
+            self._prepared_base_context=(problem,pending.result())
+        return proposals,report
+
     def batch(self, prepare_during=False):
         # Same V2/Executor and risk contract as the old ordinary round entry.
         # Completion selects no new designs here: the width planner already did.
-        problem=deepcopy(self.problem)
-        for method, widths in self.widths.items():
-            problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
-        search = dict(problem['search'], **self.spec.get('search_overrides', {}))
-        exploratory = search.get('exploratory_cost') is True
-        if exploratory:
-            problem['search'] = dict(problem['search'], exploratory_cost=True, rule=search['rule'])
-        context=self.context(problem);comp=self.completion_api()
+        problem=self.batch_problem()
+        search=dict(problem['search'],**self.spec.get('search_overrides',{}))
+        exploratory=search.get('exploratory_cost') is True
+        prepared=getattr(self,'_prepared_base_context',None)
+        self._prepared_base_context=None
+        context=prepared[1] if prepared is not None and prepared[0]==problem else self.context(problem)
+        comp=self.completion_api()
         routes=K.CLI.merged_routes(problem,self.spec)
         pf_settings=self.spec.get('pf_completion') or self.problem.get('pf_completion') or {}
         distributed_prep = (self.spec.get('executor', {}).get('distributed') or {}).get('preparation')
@@ -2310,14 +2361,27 @@ class WidthDriver:
             from trottertracks.rpe_scaled_shots import settings as horizon_settings
             horizon_keys.update(saved_horizon_keys(context['candidates'], comp.state['records'].values(),
                                                   horizon_settings(search['scaled_shots'])['M']))
-        def install_ready(current_routes, snapshot=False):
+        installed_snapshots = {}
+        persisted_installs = {}
+        def accepted_keys():
             accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
             accepted.update(horizon_keys.copy())
-            if snapshot and hasattr(comp,'install_snapshot'):
+            return accepted
+        def install_ready(current_routes, snapshot=False):
+            accepted=accepted_keys()
+            if snapshot and hasattr(comp,'install_snapshot_delta'):
+                current_routes,records=comp.install_snapshot_delta(context,dict(problem,execution_routes=current_routes),
+                                                                    accepted,installed_snapshots)
+            elif snapshot and hasattr(comp,'install_snapshot'):
                 current_routes,records=comp.install_snapshot(context,dict(problem,execution_routes=current_routes),accepted)
             else:
                 records=[r for r in comp.state['records'].values()if r.get('key')in accepted]
-                current_routes=comp.install(context,dict(problem,execution_routes=current_routes),records)
+                if hasattr(comp,'install_persisted_delta'):
+                    current_routes=comp.install_persisted_delta(context,dict(problem,execution_routes=current_routes),
+                                                               records,persisted_installs)
+                    installed_snapshots.update({key:value[0] for key,value in persisted_installs.items()})
+                else:
+                    current_routes=comp.install(context,dict(problem,execution_routes=current_routes),records)
             installed={r['key']:r.get('installed_configuration_id',r.get('configuration_id'))for r in records}
             for p in self.state['points']:
                 canonical=installed.get(p.get('completion',{}).get('key'))
@@ -2327,7 +2391,22 @@ class WidthDriver:
             return current_routes
         if exploratory and hasattr(comp, 'refresh_exploratory_prices'):
             comp.refresh_exploratory_prices()
+        base=None
+        if (prepare_during and search.get('controller_parallel') is True
+                and hasattr(comp,'restore_cycle_installation')):
+            base=comp.installation_base(context,problem,routes)
+            keys=accepted_keys()
+            records=[r for r in comp.state['records'].values() if r.get('key') in keys]
+            restored=comp.restore_cycle_installation(base,context,records,getattr(self,'_cycle_installation_cache',None))
+            if restored is not None:
+                routes,persisted_installs=restored
+                self.log(event='CONTROLLER_CYCLE_READY_INSTALL_REUSED',records=len(persisted_installs))
         routes=install_ready(routes)
+        if base is not None:
+            keys=accepted_keys()
+            records=[r for r in comp.state['records'].values() if r.get('key') in keys]
+            self._cycle_installation_cache=comp.capture_cycle_installation(base,context,routes,persisted_installs,records)
+        else:self._cycle_installation_cache=None
         O.apply_published(context['candidates'],routes, exploratory=exploratory)
         options=self.spec.get('executor',{})
         launched={m:sum((job/'LAUNCH.json').exists()or(job/'STARTING.json').exists()
@@ -2446,7 +2525,7 @@ class WidthDriver:
                                     active_spec['executor'].get('prior_run_dirs', ()),
                                     stop_requested, on_ready=ready)
             if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
-                prepare_during = executor.replay_prior_q3() and prepare_during
+                executor.replay_prior_q3(wait=False)
             interim=None
             if prepare_during:
                 # Snapshot/install happens before starting preparation. While
@@ -2465,8 +2544,10 @@ class WidthDriver:
                 comp.stop_requested=stop_preparation.is_set
                 supports_stop='stop_requested'in inspect.signature(self.complete_points).parameters
                 prepare_options = {'stop_requested': stop_preparation.is_set} if supports_stop else {}
-                price_options = (dict(on_feasible=live_price.observe,
-                                      price_work_pending=live_price.pending.is_set) if live_price else {})
+                # Overlap mode has producer lanes even when late READY
+                # streaming is disabled. Prices must not yield every selector.
+                live_price_watch = bool(live_price)
+                price_options = (dict(on_feasible=live_price.observe) if live_price else {})
                 search_options = dict(price_options)
                 if self.live_ready_refill:
                     continuous = self.work_conserving_search and runtime is not None
@@ -2481,8 +2562,8 @@ class WidthDriver:
                               (13 in scaled_settings(search['scaled_shots'])['M']
                                or (exploratory and shortlist.get('PR_DF'))) else None)
                 parallel_families = runtime is not None and search.get('controller_parallel') is True
-                preparation_pool=ThreadPoolExecutor(max_workers=1 + bool(pf_enabled) + (df_context is not None)
-                                                    + parallel_families)
+                preparation_pool=ThreadPoolExecutor(max_workers=1 + bool(pf_enabled)
+                    + bool(df_context is not None or live_price_watch and df_enabled()) + parallel_families)
                 stopped = lambda: stop_preparation.is_set() or user_stopped()
                 notify_df = prepare_options.get('announce_ready')
                 df_future = None
@@ -2693,31 +2774,8 @@ class WidthDriver:
                 df_result_revision = executor.store.preparation_completion_revision() if runtime is not None and hasattr(getattr(executor,'store',None),'preparation_completion_revision') else 0
                 bootstrap = preparation_pool.submit(self.bootstrap_families) if parallel_families else None
                 pending=preparation_pool.submit(prepare)
-                can_search=any(c['ready']for c in context['candidates'])
-                while True:
-                    if bootstrap is not None and bootstrap.done():
-                        bootstrap.result()
-                        bootstrap = None
-                    if df_future is not None and df_future.done():
-                        df_future.result()
-                        df_future = None
-                    if pf_future is not None and pf_future.done():
-                        install_pf()
-                        can_search=any(c['ready']for c in context['candidates'])
-                        self.log(event='PF_READY_INSTALLED_DURING_PREPARATION',pr_pending=not pending.done())
-                    if can_search:
-                        if live_price:
-                            live_price.pending.clear()
-                        with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION',on_error=lambda error:stop_preparing()):
-                            interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
-                                initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True,
-                                **search_options)
-                        if O.shared_stop(interim):
-                            stop_preparing()
-                            pending.result()
-                            if df_future is not None:
-                                df_future.result()
-                            break
+                def refill_price_work():
+                    nonlocal pf_future, df_future, pf_price_submitted, df_price_submitted, df_result_revision, args
                     live_refill = bool(live_price and live_price.pending.is_set())
                     if live_price and not stopped():
                         # New points may arrive while a previous producer owns
@@ -2741,6 +2799,58 @@ class WidthDriver:
                                         on_ready=lambda record: notify_df('PR_DF', record) if notify_df else None)
                             df_future = preparation_pool.submit(live_df)
                         live_price.pending.clear()
+                    return live_refill
+
+                def service_price_work():
+                    nonlocal df_future
+                    if df_future is not None and df_future.done():
+                        df_future.result(); df_future = None
+                    if pf_future is not None and pf_future.done():
+                        install_pf()
+                    return refill_price_work()
+
+                def optimize_with_price_watch(options):
+                    arguments = dict(context=snapshot_context(context) if live_price_watch else context,
+                        methods=self.methods, initial=self.spec.get('initial','all'),max_new=budgets,
+                        executor=executor,science_approved=self.spec.get('science_approved') is True,**options)
+                    if not live_price_watch:
+                        return optimize(ROOT,dict(problem,search=search),**arguments)
+                    # The ordinary preparation producers remain the only owners
+                    # of their stage workspaces. The main lane watches arrivals
+                    # while all method selectors keep running on their snapshot.
+                    def stop_selector(error):
+                        stop_preparing()
+                        if hasattr(executor,'_stop_after_failure'):executor._stop_after_failure(error)
+                    return run_selector_with_service(
+                        lambda:optimize(ROOT,dict(problem,search=search),**arguments),
+                        service_price_work,stop_selector)
+
+                can_search=any(c['ready']for c in context['candidates'])
+                while True:
+                    if bootstrap is not None and bootstrap.done():
+                        bootstrap.result()
+                        bootstrap = None
+                    if df_future is not None and df_future.done():
+                        df_future.result()
+                        df_future = None
+                    if pf_future is not None and pf_future.done():
+                        install_pf()
+                        can_search=any(c['ready']for c in context['candidates'])
+                        self.log(event='PF_READY_INSTALLED_DURING_PREPARATION',pr_pending=not pending.done())
+                    if can_search:
+                        if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
+                            executor.replay_prior_q3(wait=False)
+                        if live_price:
+                            live_price.pending.clear()
+                        with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION',on_error=lambda error:stop_preparing()):
+                            interim=optimize_with_price_watch(search_options)
+                        if O.shared_stop(interim):
+                            stop_preparing()
+                            pending.result()
+                            if df_future is not None:
+                                df_future.result()
+                            break
+                    live_refill = refill_price_work()
                     if pending.done():
                         pending.result()
                         if pf_future is None and df_future is None and bootstrap is None: break
@@ -2785,11 +2895,21 @@ class WidthDriver:
             if interim and O.shared_stop(interim):result=interim
             else:
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
-                    result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
-                        initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,
-                        science_approved=self.spec.get('science_approved')is True,
-                        **(dict(on_feasible=live_price.observe, price_work_pending=live_price.pending.is_set)
-                           if live_price else {}))
+                    if prepare_during and live_price_watch:
+                        result=optimize_with_price_watch(search_options)
+                        # A final selector may produce a new price target just
+                        # before it exits. Retain the normal producer and its
+                        # publication, rather than dropping that notification.
+                        if not O.shared_stop(result):
+                            service_price_work()
+                            if df_future is not None:df_future.result()
+                            if pf_future is not None:install_pf()
+                    else:
+                        result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+                            initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,
+                            science_approved=self.spec.get('science_approved')is True,
+                            **(dict(on_feasible=live_price.observe, price_work_pending=live_price.pending.is_set)
+                               if live_price else {}))
             actionable = any(req['kind'] != 'HORIZON_INPUTS_MISSING'
                              for r in result.values() for req in r.get('input_requests', []))
             if not O.shared_stop(result) and actionable:
@@ -3088,8 +3208,12 @@ class WidthDriver:
                      self.spec.get('science_approved')is True)
             if not (distributed_prep and overlap):self.bootstrap_families()
             ready_families=sum(f['status']=='READY_METADATA' for f in self.state['families'].values())
-            proposals,report=self.plan();self.save()
-            self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals))
+            parallel_context=(overlap and distributed_prep and
+                dict(self.problem['search'],**self.spec.get('search_overrides',{})).get('controller_parallel') is True)
+            proposals,report=self.plan_with_base_context() if parallel_context else self.plan()
+            self.save()
+            self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals),
+                     base_context_overlapped=bool(parallel_context))
             started=time.monotonic();self.log(event='INPUTS_START')
             if not overlap:self.complete_points()
             self.save();self.log(event='INPUTS_END',wall_seconds=time.monotonic()-started,deferred_to_batch=overlap)
@@ -3244,7 +3368,12 @@ class WidthDriver:
                 result.append(None)
         if executor is not None:
             with executor.store._connection() as db:
-                result.append(db.execute("SELECT max(sequence) FROM events").fetchone()[0])
+                # Reservation, STARTING and RUNNING telemetry do not resolve
+                # an input or an owner hold. Only meaningful durable changes
+                # wake the entire planner; host changes have their own signal.
+                result.append(db.execute("SELECT max(sequence) FROM events WHERE event IN "
+                    "('RESERVE','ACCEPT','ADOPT','UNKNOWN','HOST_ELIGIBILITY_UPDATED','REDISPATCH_AFTER_DRY_CHECK',"
+                    "'PBS_READY_BUFFER_REQUEUED','CANCEL_QUEUED')").fetchone()[0])
                 unresolved = [tuple(row) for row in db.execute("SELECT method,job_id FROM jobs WHERE state='UNKNOWN'")]
             # An imported owner receipt can arrive outside the queue RPC.  It
             # must wake its current-run owner even before a ledger event.

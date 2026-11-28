@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--controller', help='Coordinator URL reached locally or through existing SSH forwarding')
     parser.add_argument('--profile', type=Path, help='Host-local worker profile JSON')
     parser.add_argument('--poll-seconds', type=float, default=1.)
-    parser.add_argument('--mailbox', choices=('status', 'submit', 'ack', 'result', 'readiness', 'resources', 'artifacts-missing', 'artifacts-get', 'artifacts-put'), help='One SSH mailbox RPC; input/output are JSON')
+    parser.add_argument('--mailbox', choices=('status', 'submit', 'ack', 'result', 'readiness', 'resources', 'artifacts-missing', 'artifacts-get', 'artifacts-put', 'storage-sample'), help='One SSH mailbox RPC; input/output are JSON')
     parser.add_argument('--once', action='store_true', help='One acquisition poll, then finish/recover and transfer')
     parser.add_argument('--drain', action='store_true', help='Recover owned attempts; acquire no new jobs')
     parser.add_argument('--storage-limit-report', action='store_true', help='Read a storage policy from stdin without starting a worker')

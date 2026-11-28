@@ -144,6 +144,19 @@ class CentralMaintenanceTests(unittest.TestCase):
         self.assertEqual(wait_summary(self.run,{})['queue_wait_reasons'],{'PREPARATION_BUDGET_HOLD':1})
         self.assertEqual(archive_candidates([self.run],None,{self.run:read_rows(self.run)})['count'],0)
 
+    def test_archive_snapshot_collects_references_without_expanding_live_requests(self):
+        from run_rpe_central_maintenance import archive_snapshot
+        self.reserve('a','compile',input_git_bundles=[{'sha256':'fixture','ref':'refs/inputs-a'}])
+        self.reserve('b','compile',input_git_bundles=[{'sha256':'fixture','ref':'refs/inputs-b'}])
+        self.assertEqual(archive_snapshot(self.run,False),({'fixture'},[]))
+        self.assertEqual(archive_snapshot(self.run,True),({'fixture'},[]))
+        cache={}
+        self.assertEqual(archive_snapshot(self.run,True,cache),({'fixture'},[]))
+        with patch('run_rpe_central_maintenance.sqlite3.connect',side_effect=AssertionError('ended cache must not open SQLite')):
+            self.assertEqual(archive_snapshot(self.run,True,cache),({'fixture'},[]))
+        self.reserve('c','audit',input_git_bundles=[{'sha256':'new','ref':'refs/inputs-c'}])
+        self.assertEqual(archive_snapshot(self.run,True,cache),({'fixture','new'},[]))
+
     def test_legacy_run_publishes_with_the_current_resume_publisher(self):
         scripts = self.run.parent/'deployment/scripts'
         scripts.mkdir(parents=True)

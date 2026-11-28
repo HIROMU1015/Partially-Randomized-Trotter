@@ -95,3 +95,90 @@ class PointJournal:
         with self.lock:
             state['point_checkpoint_seq'] = self.sequence
             write()
+
+
+class HistoryJournal:
+    """Keep complete decision history outside the frequently saved snapshot.
+
+    Each checkpoint references a committed journal head. An entry appended
+    just before a crash can remain in the journal without becoming a decision
+    of the older snapshot. Branches from interrupted writes are retained.
+    """
+    def __init__(self, path, state):
+        import hashlib
+        self.path = Path(path)
+        self.entries = {}
+        self._hash = lambda raw: hashlib.sha256(raw).hexdigest()
+        if self.path.is_file():
+            with self.path.open('r+b') as stream:
+                while raw := stream.readline():
+                    if not raw.endswith(b'\n'):
+                        stream.seek(-len(raw), 1)
+                        stream.truncate()
+                        break
+                    event = json.loads(raw)
+                    self.entries[event['id']] = event
+        if 'history_archive' in state:
+            self.full_history(state)
+
+    @staticmethod
+    def _encode(value):
+        return json.dumps(value,sort_keys=True,separators=(',', ':'),ensure_ascii=False,allow_nan=False).encode()
+
+    def full_history(self, state):
+        archive = state.get('history_archive')
+        if archive is None:
+            return list(state.get('history', ()))
+        if archive.get('file') != self.path.name:
+            raise ValueError('Decision history journal differs')
+        head, count = archive['head'], archive['count']
+        reversed_history = []
+        while head is not None:
+            event = self.entries.get(head)
+            if event is None or event['count'] != count:
+                raise ValueError('Committed decision history is incomplete')
+            payload = {k:event[k] for k in ('previous','count','entry')}
+            if self._hash(self._encode(payload)) != head:
+                raise ValueError('Committed decision history content differs')
+            reversed_history.append(event['entry'])
+            head, count = event['previous'], count-1
+        if count != 0:
+            raise ValueError('Committed decision history count differs')
+        history = list(reversed(reversed_history))
+        tail = state.get('history', ())
+        if history and (not tail or tail[0] != history[-1]):
+            raise ValueError('Decision history snapshot tail differs')
+        return history + list(tail[1:]) if history else list(tail)
+
+    def checkpoint(self, state, write):
+        import os
+        archive = state.get('history_archive') or {}
+        count, head = archive.get('count',0), archive.get('head')
+        pending = state.get('history', ())
+        if count:
+            pending = pending[1:]  # snapshot retains the last committed decision
+        additions = []
+        for entry in pending:
+            count += 1
+            payload = dict(previous=head,count=count,entry=entry)
+            head = self._hash(self._encode(payload))
+            if head not in self.entries:
+                additions.append(dict(id=head,**payload))
+        if additions:
+            self.path.parent.mkdir(parents=True,exist_ok=True)
+            with self.path.open('ab') as stream:
+                for event in additions:
+                    stream.write(self._encode(event)+b'\n')
+                stream.flush(); os.fsync(stream.fileno())
+            # Ensure first creation of the journal is durable before the
+            # snapshot can point at its contents.
+            directory = os.open(self.path.parent,os.O_RDONLY)
+            try: os.fsync(directory)
+            finally: os.close(directory)
+            self.entries.update((event['id'],event) for event in additions)
+        snapshot = dict(state)
+        if count:
+            snapshot['history_archive'] = dict(file=self.path.name,head=head,count=count)
+            snapshot['history'] = list(state['history'][-1:])
+        write(snapshot)
+        state.update(snapshot)

@@ -279,6 +279,18 @@ class ScaleTests(unittest.TestCase):
             if budget is None:
                 self.assertEqual(waves[-1], [])  # retire unclaimed, obsolete allocations at exhaustion
 
+    def test_optional_feasibility_probe_prefetch_keeps_default_and_finite_contract(self):
+        policy=S.settings(dict(M=[0],grid=dict(min_k=-2,max_k=2,divisor=2),compare_paper=False))
+        for enabled,budget,expected in ((False,None,0),(True,None,1),(True,2,0)):
+            candidate=self.candidate('fixture',None)
+            waves=[];done=threading.Event()
+            search=dict(scaled_shots=policy,exploratory_cost=True,feasibility_first=True,
+                        work_conserving_search=True,lookahead=2,feasibility_probe_prefetch=enabled)
+            S.run('PR_PAULI',[candidate],{},O.FixtureBackend(lambda *_:self.bounds(True),TAU),search,TAU,budget,
+                  submit_standby=lambda head,rest:waves.append([row['vector'] for row in rest]),
+                  on_feasible=lambda *_:done.set(),price_work_pending=done.is_set)
+            self.assertEqual(len(waves[0]),expected)
+
     def test_active_series_runs_while_late_candidate_history_is_being_checked(self):
         self._check_active_series_during_history(initial=False)
 
@@ -892,3 +904,17 @@ def test_reprice_exact_saved_q3_during_exploratory_search():
     assert result['stop_reason'] == 'EXPLORATORY_GRID_COMPLETE'
     assert result['scaled_shots']['estimated_order'][0]['cost'] == 5*sum(calls[0])
     assert result['scaled_shots']['unpriced_feasible'] == []
+
+
+def test_price_service_runs_during_the_same_selector_invocation():
+    from threading import Event
+    received=Event(); starts=[]
+    def selector():
+        starts.append('selector')
+        assert received.wait(2)
+        return {'FULL_PF':'unchanged','PR_DF':'price-ready'}
+    def service():
+        received.set()
+    result=entry.run_selector_with_service(selector,service,lambda error:received.set())
+    assert starts==['selector']
+    assert result=={'FULL_PF':'unchanged','PR_DF':'price-ready'}

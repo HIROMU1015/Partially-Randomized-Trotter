@@ -1320,6 +1320,9 @@ class DistributedPreparationBridge:
         missing = cache.missing(hashes)
         if missing:
             prior_cache = ArtifactCache(Path(prior_run)/'distributed'/'artifacts')
+            unavailable=prior_cache.missing(missing)
+            if unavailable:
+                raise ValueError('Missing cached artifacts: '+','.join(unavailable))
             for sha in missing:
                 cache.put_file(prior_cache.path(sha), sha)
 
@@ -1440,11 +1443,17 @@ class DistributedPreparationBridge:
 
     def recoverable_transport(self, directory, reason):
         """Use the original marker to identify the failed stage cheaply."""
-        if not reason.startswith(('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:', 'STAGE_FAILED:',
-                                  'PREPARATION_RESULT_MISMATCH:')):
+        if not reason.startswith(('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:', 'DISTRIBUTED_PREPARATION_IN_PROGRESS:',
+                                  'STAGE_FAILED:', 'PREPARATION_RESULT_MISMATCH:')):
             return False
         if (Path(directory)/'STOP.json').exists() or getattr(self.executor, '_user_stop_requested', lambda: False)():
             return False
+        if reason.startswith('DISTRIBUTED_PREPARATION_IN_PROGRESS:'):
+            _, _, payload = reason.partition(':')
+            stage, _, job_id = payload.partition(':')
+            # Revisit the exact received receipt, including a failed result so
+            # its normal failure classification is recorded. Never retry it.
+            return self.recovery_evidence(directory, stage, job_id).get('state') == 'ACCEPTED'
         # A later success receipt takes precedence over an old operational
         # hold for this exact request, irrespective of provider/stage.
         if self.received_after_reservation_stop(directory, reason):
@@ -1479,6 +1488,8 @@ class DistributedPreparationBridge:
     def hold_evidence(self, directory, reason):
         prefix, _, payload = reason.partition(':')
         stage, _, detail = payload.partition(':')
+        if prefix == 'DISTRIBUTED_PREPARATION_IN_PROGRESS' and stage in STAGES:
+            return self.recovery_evidence(directory, stage, detail)
         if prefix == 'PREPARATION_RESULT_ARTIFACTS_MISSING':
             return self.recovery_evidence(directory, stage, detail.split(':', 1)[0])
         if prefix == 'STAGE_FAILED':

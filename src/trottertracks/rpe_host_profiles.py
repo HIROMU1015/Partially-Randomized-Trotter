@@ -54,7 +54,7 @@ def digest(value):
 def profile_core(profile):
     keys = ('host_id', 'root', 'interpreter', 'route_views', 'dp_workers',
             'prefix_cache_directory', 'runtime', 'adapter_root', 'adapter_manifest')
-    keys += ('runtime_checks', 'reviewed_pr_q3', 'selective_pr_q3')
+    keys += ('runtime_checks', 'reviewed_pr_q3', 'selective_pr_q3', 'library_threads')
     return {key: deepcopy(profile[key]) for key in keys if key in profile}
 
 
@@ -163,7 +163,7 @@ def q3_cpu_measurement_key(request, profile, *, memory_class=False):
         host=q3_measurement_host(profile), root=profile['root'], interpreter=profile['interpreter'],
         adapter_root=profile.get('adapter_root'), adapter=(profile.get('adapter_manifest') or {}).get('commit'),
         route_view=(profile.get('route_views') or {}).get(route['view_commit']), runtime=profile.get('runtime'),
-        library_threads=(profile.get('pbs') or {}).get('library_threads', 1)))
+        library_threads=profile.get('library_threads',(profile.get('pbs') or {}).get('library_threads',1))))
 
 
 def measured_q3_cpu_choice(request, profile, measurements):
@@ -176,7 +176,7 @@ def measured_q3_cpu_choice(request, profile, measurements):
     dp = profile.get('dp_workers')
     baseline = profile.get('task_cpu_count') or dp
     if (type(dp) is not int or dp < 1 or type(baseline) is not int or baseline < dp
-            or baseline-dp not in (0,1) or (profile.get('pbs') or {}).get('library_threads', 1) != 1):
+            or baseline-dp not in (0,1) or profile.get('library_threads',(profile.get('pbs') or {}).get('library_threads',1)) != 1):
         return None
     overhead = baseline-dp
     key = q3_cpu_measurement_key(request, profile)
@@ -260,12 +260,15 @@ def select_host_profile(base, assignment):
     request = assignment['request']
     # A saved WORKER_PROFILE already has its chosen resource footprint; the
     # policy is removed so replay of an owned assignment does not reselect it.
-    apply_q3_cpu_policy(selected, request, policy, allow_measurements=(base.get('pbs') or {}).get('library_threads', 1) == 1)
+    apply_q3_cpu_policy(selected, request, policy, allow_measurements=selected.get('library_threads',(base.get('pbs') or {}).get('library_threads',1)) == 1)
     execution = request.get('execution_profile') or {}
     route = request.get('method'), request['route']['kind']
     if route[1] != 'artificial':
         files = selected.get('adapter_manifest', {}).get('files', {})
         selective = execution.get('prefix_selective_checkpoint_rounds') or execution.get('profile_dp_residual') is True
+        if execution.get('persistent_dp_residual_pool') is True and (
+                execution.get('parallel_dp_residual') is not True or not files.get('src/trottertracks/rpe_dp_prefix_reuse.py')):
+            raise ValueError('Persistent residual pool requires the fixed residual adapter manifest')
         if selective and (route not in PREFIX_PR_Q3_ROUTES or selected.get('selective_pr_q3') is not True
                 or not selected.get('prefix_cache_directory') or not files.get('src/trottertracks/rpe_dp_prefix_reuse.py')):
             raise ValueError('No compatible selective PR Q3 adapter and local cache for this request')

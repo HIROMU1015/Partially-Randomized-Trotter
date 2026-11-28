@@ -24,7 +24,8 @@ def observations(run):
                 except (ValueError,TypeError,KeyError):continue
     pbs=run/'distributed/pbs'
     if (pbs/'STATE.json').is_file():
-        allocations=read(pbs/'STATE.json').get('allocations',{})
+        from trottertracks.rpe_pbs_state import read_pbs_state
+        allocations=read_pbs_state(pbs/'STATE.json').get('allocations',{})
         for document in (pbs/'offline-history/jobs').glob('*/*/IMPORTED.json'):
             try:
                 host=allocations[read(document)['token']]['spec']['profile']['host_id']

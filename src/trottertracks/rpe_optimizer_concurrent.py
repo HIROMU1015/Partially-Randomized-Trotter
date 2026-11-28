@@ -137,12 +137,141 @@ def _tree_rss(pid):
     return total
 
 
+class RevisionCondition(threading.Condition):
+    """A notification revision prevents lost wakeups around advisory off-lock work."""
+    def __init__(self):
+        super().__init__(threading.RLock())
+        self.revision=0
+
+    def notify(self,n=1):
+        self.revision+=1
+        return super().notify(n)
+
+
+class TaskIndex(dict):
+    """The ordinary task mapping plus a live status index.
+
+    All changes are made under the existing state condition lock. Terminal
+    objects stay available to adopters/metrics without every poll scanning
+    them, and read-only snapshot/test dictionaries retain the old fallback.
+    """
+    def __init__(self):
+        super().__init__()
+        self.by_status={'QUEUED':{},'RUNNING':{}}
+        self.queued_counts=Counter()
+        self.queued_supply=Counter()
+
+    def _count_queued(self,task,delta):
+        if task.status!='QUEUED':return
+        demand=bool(getattr(task,'demand',False))
+        self.queued_counts['all']+=delta
+        if demand:self.queued_counts['demand']+=delta
+        if getattr(task,'rule',{}).get('kind')=='preparation':return
+        self.queued_counts['q3']+=delta
+        hosts=getattr(task,'supply_hosts',None)
+        for host in ((None,) if hosts is None else hosts):self.queued_supply[host]+=delta
+        method=getattr(getattr(task,'view',None),'method',None)
+        self.queued_counts[('demand' if demand else 'speculative',method)]+=delta
+
+    def set_demand(self,task,demand):
+        if self.get(task.job) is not task:
+            task.demand=demand;return
+        self._count_queued(task,-1)
+        task.demand=demand
+        self._count_queued(task,1)
+
+    def set_supply_hosts(self,task,hosts):
+        if self.get(task.job) is not task:
+            task.supply_hosts=hosts;return
+        self._count_queued(task,-1)
+        task.supply_hosts=hosts
+        self._count_queued(task,1)
+
+    def __setitem__(self,key,task):
+        old=self.get(key)
+        if old is not None:
+            self._count_queued(old,-1)
+            self.by_status.get(old.status,{}).pop(key,None)
+        super().__setitem__(key,task)
+        if task.status in self.by_status:self.by_status[task.status][key]=task
+        self._count_queued(task,1)
+
+    def __delitem__(self,key):
+        self._count_queued(self[key],-1)
+        self.by_status.get(self[key].status,{}).pop(key,None)
+        super().__delitem__(key)
+
+    def pop(self,key,*default):
+        if key not in self:
+            if default:return default[0]
+            raise KeyError(key)
+        task=self[key]
+        del self[key]
+        return task
+
+    def transition(self,task,status):
+        current=self.get(task.job) is task
+        if current:
+            self._count_queued(task,-1)
+            self.by_status.get(task.status,{}).pop(task.job,None)
+            if status in self.by_status:self.by_status[status][task.job]=task
+        task.status=status
+        if current:self._count_queued(task,1)
+
+
+def tasks_with_status(state,status):
+    tasks=state.tasks
+    if isinstance(tasks,TaskIndex) and status in tasks.by_status:
+        return tuple(tasks.by_status[status].values())
+    return tuple(task for task in tasks.values() if task.status==status)
+
+
+def transition_task(state,task,status):
+    if isinstance(state.tasks,TaskIndex):
+        state.tasks.transition(task,status)
+    else:
+        task.status=status
+
+
+def set_task_demand(state,task,demand):
+    if isinstance(state.tasks,TaskIndex):state.tasks.set_demand(task,demand)
+    else:task.demand=demand
+
+
+def set_task_supply_hosts(state,task,hosts):
+    if isinstance(state.tasks,TaskIndex):state.tasks.set_supply_hosts(task,hosts)
+    else:task.supply_hosts=hosts
+
+
+def queued_supply_counts(state,hosts):
+    if isinstance(state.tasks,TaskIndex):
+        counts=state.tasks.queued_supply
+        return {host:counts[None]+counts[host] for host in hosts}
+    covered=Counter()
+    for task in tasks_with_status(state,'QUEUED'):
+        if task.rule['kind']!='preparation':
+            allowed=task.supply_hosts
+            covered.update(hosts if allowed is None else set(hosts)&allowed)
+    return covered
+
+
+def queued_count(state,kind,method=None):
+    if isinstance(state.tasks,TaskIndex):
+        return state.tasks.queued_counts[(kind,method) if method is not None else kind]
+    tasks=tasks_with_status(state,'QUEUED')
+    if kind=='all':return len(tasks)
+    if kind=='demand' and method is None:return sum(bool(t.demand) for t in tasks)
+    tasks=[t for t in tasks if t.rule['kind']!='preparation']
+    if kind=='q3':return len(tasks)
+    return sum(t.view.method==method and (bool(t.demand)==(kind=='demand')) for t in tasks)
+
+
 class ConcurrentExecutor(O.Executor):
     supports_nonblocking_prefetch=True
     def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,
                  prefix_checkpoint_rounds=None,prefix_cache_max_bytes=None,prefix_selective_checkpoint_rounds=(),
                  prefix_selective_window_seconds=None,compact_q3_evidence=False,parallel_dp_residual=False,
-                 profile_dp_residual=False,large_shot_bounds=False,**kwargs):
+                 profile_dp_residual=False,persistent_dp_residual_pool=False,large_shot_bounds=False,**kwargs):
         super().__init__(*args,**kwargs)
         from .rpe_plan_history_cache import HistoryInventory
         self.prior_history_inventory = HistoryInventory()
@@ -158,6 +287,8 @@ class ConcurrentExecutor(O.Executor):
             raise ValueError('parallel_dp_residual must be a boolean')
         if type(profile_dp_residual) is not bool or (profile_dp_residual and not parallel_dp_residual):
             raise ValueError('profile_dp_residual requires parallel_dp_residual')
+        if type(persistent_dp_residual_pool) is not bool or (persistent_dp_residual_pool and not parallel_dp_residual):
+            raise ValueError('persistent_dp_residual_pool requires parallel_dp_residual')
         if not isinstance(prefix_selective_checkpoint_rounds,(list,tuple)) or any(
                 type(m) is not int or m not in (prefix_checkpoint_rounds or ())
                 for m in prefix_selective_checkpoint_rounds):
@@ -180,11 +311,12 @@ class ConcurrentExecutor(O.Executor):
         self.large_shot_bounds=large_shot_bounds
         self.parallel_dp_residual=parallel_dp_residual
         self.profile_dp_residual=profile_dp_residual
+        self.persistent_dp_residual_pool=persistent_dp_residual_pool
         existing={}
         for method in self.routes:
             base=self.run_dir/'jobs'/method
             existing[method]=sum((d/'LAUNCH.json').exists()or(d/'STARTING.json').exists()for d in base.iterdir())if base.exists()else 0
-        self.state=SimpleNamespace(cv=threading.Condition(threading.RLock()),tasks={},active=0,closed=False,
+        self.state=SimpleNamespace(cv=RevisionCondition(),tasks=TaskIndex(),active=0,closed=False,
             failure=None,owner_clock={},clock=0,budgets=budgets or {},approved=science_approved,existing=existing,
             reserved=Counter(),metrics=Counter(),by_method={},pids={},driver=driver,peak_RSS_KiB=0,peak_active=0,adopted_jobs=set(),observations=defaultdict(list),external={},monitor_stop=threading.Event())
         self.state.scaled_completions = defaultdict(dict)
@@ -452,6 +584,8 @@ class ConcurrentExecutor(O.Executor):
                 execution['parallel_dp_residual'] = True
             if self.profile_dp_residual:
                 execution['profile_dp_residual'] = True
+            if self.persistent_dp_residual_pool:
+                execution['persistent_dp_residual_pool']=True
         if self.compact_q3_evidence and (artificial or route in REVIEWED_PR_Q3_ROUTES):
             execution['compact_q3_evidence'] = True
         if self.large_shot_bounds and req.get('origin', {}).get('kind') == 'RPE_SCALED_SHOTS_V1':
@@ -488,7 +622,7 @@ class ConcurrentExecutor(O.Executor):
             if proposal['configuration_id']in self.execution_holds.get(self.method,{}):return None
             old=s.tasks.get(job)
             if old and old.status!='CANCELLED':
-                if demand:old.demand=True;s.cv.notify_all()
+                if demand:set_task_demand(s,old,True);s.cv.notify_all()
                 return old
             if(job/'OUTCOME.json').exists()or(job/'LAUNCH.json').exists()or(job/'STARTING.json').exists():return None
         rule=self.route(proposal['configuration_id'])
@@ -499,7 +633,7 @@ class ConcurrentExecutor(O.Executor):
             if proposal['configuration_id']in self.execution_holds.get(self.method,{}):return None
             old=s.tasks.get(job)
             if old and old.status!='CANCELLED':
-                if demand:old.demand=True;s.cv.notify_all()
+                if demand:set_task_demand(s,old,True);s.cv.notify_all()
                 return old
             if(job/'OUTCOME.json').exists()or(job/'LAUNCH.json').exists()or(job/'STARTING.json').exists():return None
             cap=s.budgets.get(self.method)
@@ -522,7 +656,7 @@ class ConcurrentExecutor(O.Executor):
         desired={self.job_dir(p)for p in proposals}
         owner=(self.method,proposals[0]['configuration_id']) if proposals else None
         with self.state.cv:
-            for t in self.state.tasks.values():
+            for t in tasks_with_status(self.state,'QUEUED'):
                 same_scope=(t.view.method==self.method) if scope=='METHOD' else t.owner==owner
                 if same_scope and t.status=='QUEUED'and not t.demand and t.job not in desired:self._cancel(t)
         for i,p in enumerate(proposals):self._enqueue(p,demand=(i==0))
@@ -532,7 +666,7 @@ class ConcurrentExecutor(O.Executor):
         with self.state.cv:
             self.standby = deque(p for p in getattr(self,'standby', ())
                                  if p['configuration_id'] not in configurations)
-            for task in self.state.tasks.values():
+            for task in tasks_with_status(self.state,'QUEUED'):
                 if task.status=='QUEUED' and task.owner[0]==self.method and task.owner[1] in configurations \
                         and task.rule['kind']!='preparation':
                     self._cancel(task)
@@ -545,7 +679,7 @@ class ConcurrentExecutor(O.Executor):
             return proposal['configuration_id'], tuple(proposal['vector'])
         with self.state.cv:
             self.standby = deque(p for p in getattr(self, 'standby', ()) if identity(p) not in keys)
-            for task in self.state.tasks.values():
+            for task in tasks_with_status(self.state,'QUEUED'):
                 if (task.status == 'QUEUED' and task.owner[0] == self.method
                         and task.rule['kind'] != 'preparation' and identity(task.proposal) in keys):
                     self._cancel(task)
@@ -560,7 +694,11 @@ class ConcurrentExecutor(O.Executor):
         demand = self.job_dir(choice) if choice is not None else None
         with self.state.cv:
             self.standby = proposals
-            speculative = [t for t in self.state.tasks.values() if t.view.method == self.method
+            views = getattr(self.state,'standby_views',None)
+            if views is None:
+                views = self.state.standby_views = {}
+            views[self.method] = self
+            speculative = [t for t in tasks_with_status(self.state,'QUEUED') if t.view.method == self.method
                            and t.status == 'QUEUED' and not t.demand]
         if speculative:
             # The dispatcher may consume the deque while route lookup runs.
@@ -597,12 +735,23 @@ class ConcurrentExecutor(O.Executor):
 
     def _standby_has_capacity(self):
         s = self.state
-        return s.active + sum(t.status == 'QUEUED' and t.rule['kind'] != 'preparation'
-                              for t in s.tasks.values()) < self._standby_capacity() + self._standby_headroom()
+        return s.active + queued_count(s,'q3') < self._standby_capacity() + self._standby_headroom()
+
+    def _standby_method_turn(self):
+        """Shared speculative window: prioritize the least supplied active method."""
+        s = self.state
+        competing = [method for method,view in getattr(s,'standby_views',{}).items()
+                     if method != self.method and getattr(view,'standby',None)
+                     and not view._budget_reserved()
+                     and (getattr(view,'_awaiting_probe_revision',None) != getattr(s,'probe_revision',0))]
+        if not competing:
+            return True
+        mine=queued_count(s,'speculative',self.method)
+        return all(mine<=queued_count(s,'speculative',method) for method in competing)
 
     def _standby_can_fill(self):
         return (getattr(self, 'standby', None) and not self.state.failure and not self.state.closed
-                and self._standby_has_capacity())
+                and self._standby_method_turn() and self._standby_has_capacity())
 
     def _fill_standby(self):
         # Prepare the next jobs while the current ones run. Advance past
@@ -635,7 +784,7 @@ class ConcurrentExecutor(O.Executor):
             return list(self.state.observations.get(self.method, ()))
 
     def _cancel(self,t):
-        t.status='CANCELLED';self.state.reserved[t.view.method]-=1
+        transition_task(self.state,t,'CANCELLED');self.state.reserved[t.view.method]-=1
         self.state.metrics['queued_cancelled']+=1;t.event.set()
         self.state.cv.notify_all()
         t.view.log(event='CANCEL_QUEUED',job=t.job.name)
@@ -643,20 +792,20 @@ class ConcurrentExecutor(O.Executor):
     def hold_configuration(self,proposal,answer):
         super().hold_configuration(proposal,answer)
         with self.state.cv:
-            for task in self.state.tasks.values():
-                if task.status=='QUEUED'and task.owner==(self.method,proposal['configuration_id']):self._cancel(task)
+            for task in tasks_with_status(self.state,'QUEUED'):
+                if task.owner==(self.method,proposal['configuration_id']):self._cancel(task)
             self.state.cv.notify_all()  # running workers finish and preserve their outcomes
 
     def _dispatch(self):
         s=self.state
         while True:
             with s.cv:
-                queue=[t for t in s.tasks.values()if t.status=='QUEUED']
+                queue=list(tasks_with_status(s,'QUEUED'))
                 if s.closed and not queue:return
                 if s.failure or not queue or s.active>=self.capacity:
                     s.cv.wait(.1);continue
                 t=min(queue,key=lambda t:(not t.demand,s.owner_clock.get(t.owner,-1),t.enqueue))
-                s.clock+=1;s.owner_clock[t.owner]=s.clock;t.status='RUNNING';t.speculative=not t.demand;s.active+=1
+                s.clock+=1;s.owner_clock[t.owner]=s.clock;transition_task(s,t,'RUNNING');t.speculative=not t.demand;s.active+=1
                 s.peak_active=max(s.peak_active,s.active)
                 s.cv.notify_all()  # the dispatch may empty the queue with spare slots
             self._start(t)
@@ -665,8 +814,8 @@ class ConcurrentExecutor(O.Executor):
         """Stop intake and release only unassigned work; preserve remote owners."""
         if not (self.run_dir/'STOP_REQUESTED.json').exists():return False
         with self.state.cv:
-            for task in self.state.tasks.values():
-                if task.status=='QUEUED':self._cancel(task)
+            for task in tasks_with_status(self.state,'QUEUED'):
+                self._cancel(task)
             self.state.cv.notify_all()
         return True
 
@@ -678,7 +827,7 @@ class ConcurrentExecutor(O.Executor):
             if self.state.failure is None:self.state.failure=str(error)
             if isinstance(error,BaseException)and getattr(self.state,'primary_exception',None)is None:
                 self.state.primary_exception=error
-            for task in self.state.tasks.values():
+            for task in tasks_with_status(self.state,'QUEUED'):
                 if task.status=='QUEUED':
                     task.error=str(error)
                     try:self._cancel(task)
@@ -724,7 +873,7 @@ class ConcurrentExecutor(O.Executor):
     def _finished(self,t,code,start):
         s=self.state
         with s.cv:
-            t.status='DONE';s.active-=1;s.pids.pop(t.job,None);s.metrics['finished']+=1
+            transition_task(s,t,'DONE');s.active-=1;s.pids.pop(t.job,None);s.metrics['finished']+=1
             t.finished_at = time.monotonic()
             try:t.view.log(event='EXIT',job=t.job.name,returncode=code,error=t.error,wall_seconds=time.time()-start)
             except OSError as exc:
@@ -819,8 +968,7 @@ class ConcurrentExecutor(O.Executor):
     def has_spare_slot(self, *, allow_queued_speculation=False):
         with self.state.cv:
             return (not self.state.failure and self.state.active < self.capacity
-                    and not any(t.status == 'QUEUED' and (t.demand or not allow_queued_speculation)
-                                for t in self.state.tasks.values()))
+                    and not queued_count(self.state,'demand' if allow_queued_speculation else 'all'))
 
     def _can_take_ready_candidates(self):
         return self.has_spare_slot()
@@ -848,12 +996,17 @@ class ConcurrentExecutor(O.Executor):
 
             while True:
                 with s.cv:
-                    s.cv.wait_for(lambda: task.event.is_set() or reselect() or self._standby_can_fill())
                     if task.event.is_set():
                         return True
-                    event = reselect()
-                    if event:
-                        break
+                    revision=s.cv.revision
+                event=reselect()
+                with s.cv:
+                    if task.event.is_set():return True
+                    if s.cv.revision!=revision:continue
+                    if event:break
+                    if not self._standby_can_fill():
+                        s.cv.wait()
+                        continue
                 self._fill_standby()
             self.log(event=event, job=task.job.name)
             return False
@@ -868,7 +1021,7 @@ class ConcurrentExecutor(O.Executor):
         with s.cv:
             task=s.tasks.get(job)
             if task and task.status=='CANCELLED':task=None
-            if task:task.demand=True;s.cv.notify_all()
+            if task:set_task_demand(s,task,True);s.cv.notify_all()
         if task and not task.event.is_set() and not self._wait_for_task(task):
             return dict(status='RESELECT_READY', job=str(job), calls=0)
         if task and task.error == 'HOST_ELIGIBILITY_HOLD':
@@ -932,6 +1085,12 @@ class ConcurrentExecutor(O.Executor):
         s=self.state
         with s.cv:
             if s.closed and s.driver.closed:return
+            if self.method is not None:
+                views = getattr(s,'standby_views',{})
+                if views.get(self.method) is self:
+                    views.pop(self.method,None)
+                if getattr(self,'standby',None):self.standby.clear()
+                s.cv.notify_all()
             for t in s.tasks.values():
                 if t.status=='QUEUED'and(self.method is None or t.view.method==self.method):
                     if (self.method is None and getattr(s, 'retain_queued_preparation', False)
@@ -1106,6 +1265,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self.eligibility_holds = {}
         # Serialize retransmissions of the same attempt without blocking other hosts.
         self.transfer_locks = tuple(threading.Lock() for _ in range(32))
+        self.launch_marker_lock = threading.Lock()
         self.eligibility_policy_cache = {}
         self.live_readiness_inflight = {}
         self.live_readiness_partial = {}
@@ -1186,6 +1346,9 @@ class DistributedExecutor(ConcurrentExecutor):
         if self.preparation_observations_path.is_file():
             try:
                 for item in json.loads(self.preparation_observations_path.read_text()):
+                    self.preparation_observations[item['attempt_id']] = item
+                from .rpe_q3_resources import load_observation_deltas
+                for item in load_observation_deltas(self.preparation_observations_path):
                     self.preparation_observations[item['attempt_id']] = item
             except (OSError, ValueError, TypeError, KeyError) as error:
                 import warnings
@@ -1298,16 +1461,26 @@ class DistributedExecutor(ConcurrentExecutor):
             # Completed results are immutable and need no scheduler lock. Only
             # inspect actual staged paths, never allocate their huge REQUESTs.
             for row in accepted_rows:self._publish_transfer(row,startup=True)
-            if self.q3_memory_learner is not None:
-                with self.state.cv:
-                    for row in accepted_rows:
-                        leaf=run/'distributed/transfers'/row['job_id']/row['attempt_id']
-                        if (row['method'].startswith('PREPARATION:') or row['attempt_id'] in self.q3_memory_learner.observations
-                                or not any((leaf/name).is_file() for name in ('Q3_EXECUTION_RESOURCES.json','OWNED_RESOURCES.json'))):
-                            continue
-                        try:self._learn_q3_memory(self.store.row(row['job_id']),leaf)
-                        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
-                            self.log(event='Q3_MEMORY_OBSERVATION_FAILED',job_id=row['job_id'],reason=str(error))
+            if self.q3_memory_learner is not None and self.q3_memory_learner.policy:
+                from .rpe_q3_memory import observation
+                samples = []
+                for row in accepted_rows:
+                    leaf=run/'distributed/transfers'/row['job_id']/row['attempt_id']
+                    if (row['method'].startswith('PREPARATION:') or row['attempt_id'] in self.q3_memory_learner.observations
+                            or not any((leaf/name).is_file() for name in ('Q3_EXECUTION_RESOURCES.json','OWNED_RESOURCES.json'))):
+                        continue
+                    try:
+                        sample = observation(self.store.row(row['job_id']), leaf)
+                        if sample is not None:
+                            samples.append(sample)
+                    except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                        self.log(event='Q3_MEMORY_OBSERVATION_FAILED',job_id=row['job_id'],reason=str(error))
+                if samples:
+                    try:
+                        owned = self.store.rows_for(r['job_id'] for r in self._owned_attempts())
+                        self.q3_memory_learner.update_many(samples, owned.values(), self.distributed['pbs'])
+                    except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                        self.log(event='Q3_MEMORY_OBSERVATION_FAILED',reason=str(error),batch_size=len(samples))
             self.rpc_server, self.rpc_thread = Q.serve(self, distributed.get('bind', '127.0.0.1'), distributed.get('port', 8763))
             address = self.rpc_server.server_address
             self.controller_url = 'http://127.0.0.1:'+str(address[1])
@@ -1665,7 +1838,7 @@ class DistributedExecutor(ConcurrentExecutor):
         return (bool(free) and min(free) >= trial['memory_reserve_bytes']
                 and (budget.get('allowed_cpu_count') or 0) >= cpus)
 
-    def _wait_for_preparation_preference(self, host, row, policy, error):
+    def _wait_for_preparation_preference(self, host, row, policy, error, *, owned=None):
         preference = self.distributed.get('preparation_host_preference')
         prep = row['request'].get('preparation') or {}
         if not preference or prep.get('provider') not in preference['providers']:
@@ -1673,30 +1846,34 @@ class DistributedExecutor(ConcurrentExecutor):
         preferred = preference['host']
         if (host == preferred or time.time() - row['enqueued_epoch'] >= preference['seconds']
                 or not self._host_supports_stage(preferred, row['request'])
-                or not self._offer_free(preferred, policy, error)):
+                or not self._offer_free(preferred, policy, error, owned=owned)):
             return False
         record = self.preparation_pending.get(row['job_id'], {})
         return preferred not in record.get('failures', {})
 
     def _owned_attempts(self):
-        with self.store._connection() as database:
-            rows = database.execute(
-                "SELECT job_id,host_id,attempt_id,request_sha256,state,method,detail,assigned_epoch FROM jobs "
-                "WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
-            # UNKNOWN still owns the request. Release only its capacity when
-            # the worker proved it exited or a retired PBS allocation is verified.
-            return [dict(row) for row in rows if not (
-                row['state'] == 'UNKNOWN' and (
-                    (row['method'].startswith('PREPARATION:')
-                     and (row['job_id'], row['attempt_id']) in self.retired_preparation_attempts)
-                    or (json.loads(row['detail']).get('resource_released') is True
-                        and json.loads(row['detail']).get('automatic_retry') is False)))]
+        if hasattr(self.store,'owned_rows'):
+            rows=self.store.owned_rows()
+        else:
+            with self.store._connection() as database:
+                rows=[dict(row) for row in database.execute(
+                    "SELECT job_id,host_id,attempt_id,request_sha256,state,method,detail,assigned_epoch FROM jobs "
+                    "WHERE host_id IS NOT NULL AND state IN "
+                    "('ASSIGNED','STARTING','RUNNING','UNKNOWN','COMPLETED_PENDING_TRANSFER') ORDER BY rowid")]
+        # UNKNOWN still owns the request. Release only its capacity when
+        # the worker proved it exited or a retired PBS allocation is verified.
+        return [row for row in rows if not (
+            row['state'] == 'UNKNOWN' and (
+                (row['method'].startswith('PREPARATION:')
+                 and (row['job_id'], row['attempt_id']) in self.retired_preparation_attempts)
+                or (json.loads(row['detail']).get('resource_released') is True
+                    and json.loads(row['detail']).get('automatic_retry') is False)))]
 
     def _check_worker_contact(self):
         """Yield waiters after lost contact while keeping the queue attempt owned."""
         state = self.state
         with state.cv:
-            if state.closed or not any(task.status == 'RUNNING' for task in state.tasks.values()):
+            if state.closed or not tasks_with_status(state,'RUNNING'):
                 return
             if not hasattr(state, 'allocation_epoch'):
                 return  # DistributedExecutor startup has not reached the worker setup.
@@ -1792,7 +1969,7 @@ class DistributedExecutor(ConcurrentExecutor):
             self.hchain_priority_pending = False
             self.state.cv.notify_all()
 
-    def _ready_queue(self, *, rows=None, readiness=None, tasks=None):
+    def _ready_queue(self, *, rows=None, readiness=None, tasks=None, include_preparation=True):
         manager = getattr(self, 'pbs_manager', None)
         offline_priority = manager.offline_priority() if hasattr(manager, 'offline_priority') else {}
 
@@ -1820,17 +1997,17 @@ class DistributedExecutor(ConcurrentExecutor):
 
         if tasks is None:
             with self.state.cv:
-                tasks = tuple(self.state.tasks.values())
+                tasks = tasks_with_status(self.state,'QUEUED')
         return sorted((task for task in tasks if task.status == 'QUEUED'
-                       and (task.rule['kind'] != 'preparation' or (rows is None or task.job.name in rows)
+                       and (task.rule['kind'] != 'preparation' or include_preparation and (rows is None or task.job.name in rows)
                             and (readiness.get(task.job.name,False) if readiness is not None else
-                                 self._task_ready(task, None if rows is None else rows[task.job.name])))), key=priority)
+                                 self._task_ready(task, None if rows is None else rows[task.job.name], verify=False)))), key=priority)
 
     def _ready_queue_snapshot(self):
         # This is the dispatch lane: read durable rows once and defer the
         # preparation dependency/artifact scan until a matching host exists.
         with self.state.cv:
-            tasks = {task.job.name:task for task in self.state.tasks.values() if task.status == 'QUEUED'}
+            tasks = {task.job.name:task for task in tasks_with_status(self.state,'QUEUED')}
         if not hasattr(self,'queue_snapshot_lock') or not hasattr(self.store,'queue_rows_delta'):
             rows = self.store.rows_for(tasks)
         else:
@@ -1865,6 +2042,7 @@ class DistributedExecutor(ConcurrentExecutor):
         owned_rows = [snapshot[row['job_id']] for row in owned]
         supply = {}
         eligible = {}
+        live_remaining = {}
         for host, info in self.hosts.items():
             if (not self._offer_fresh(host) or info.get('accepting_new_jobs') is False
                     or not self._host_admission(host, policy, error)['accepting']):
@@ -1917,13 +2095,14 @@ class DistributedExecutor(ConcurrentExecutor):
                     if (memory_limit is not None and memory > memory_limit) or (limit and cpu > limit):
                         continue
                     compatible_jobs += 1
-                    if ((free_cpu is None or cpu <= free_cpu)
+                    fits = ((free_cpu is None or cpu <= free_cpu)
                             and (free_memory is None or memory <= free_memory)
-                            and self._fits_host_preparation_forecast(host, row, live=True)):
+                            and self._fits_host_preparation_forecast(host, row, live=True))
+                    if fits:
                         fits_now += 1
                     stage = (request.get('preparation') or {}).get('stage', 'q3')
                     seconds = task_estimate(request, manager.settings, host) if pool is not None else None
-                    host_jobs[row['job_id']] = (cpu, stage, cpu * seconds if seconds else None)
+                    host_jobs[row['job_id']] = (cpu, stage, cpu * seconds if seconds else None, fits, memory)
                     estimates.append(cpu)
                     if stage == 'q3':
                         q3_estimates.append(cpu)
@@ -1939,7 +2118,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 if known_limit:
                     next_wave = min(limit, next_wave)
                 target = max(spare, next_wave) * self.ready_queue_waves
-                supply[host] = dict(available_cpu=spare, ready_cpu=0,
+                live_remaining[host] = [spare, free_memory]
+                supply[host] = dict(available_cpu=spare, ready_cpu=0, ready_cpu_fitting_now=0,
                                     capacity_source='RESOURCE_OFFER' if known_limit else 'FIXED_SLOTS_BY_READY_FOOTPRINT',
                                     ready_cpu_by_stage={}, unestimated_jobs=unknown,
                                     compatible_ready_jobs=compatible_jobs, ready_jobs_fitting_free_resources=fits_now,
@@ -1958,8 +2138,15 @@ class DistributedExecutor(ConcurrentExecutor):
             host = max(options, key=lambda h: (
                 supply[h]['missing_cpu'] / max(1, supply[h]['target_cpu']),
                 supply[h]['available_cpu'] > 0, -self._host_rank(h)))
-            cpu, stage, cpu_seconds = options[host]
+            cpu, stage, cpu_seconds, fits, memory = options[host]
             row = supply[host]
+            # A separate conservative live packing estimate prevents work that
+            # only fits after existing owners exit from suppressing refill.
+            remaining_cpu, remaining_memory = live_remaining[host]
+            if fits and cpu <= remaining_cpu and (remaining_memory is None or memory <= remaining_memory):
+                row['ready_cpu_fitting_now'] += cpu
+                live_remaining[host] = [remaining_cpu-cpu,
+                    None if remaining_memory is None else remaining_memory-memory]
             row['ready_cpu'] += cpu
             stages = row['ready_cpu_by_stage']
             stages[stage] = stages.get(stage, 0) + cpu
@@ -1979,6 +2166,7 @@ class DistributedExecutor(ConcurrentExecutor):
                       if self._offer_fresh(host)]
             return not supply or any(
                 not row['ready_cpu'] or row['missing_cpu'] or row['unestimated_jobs']
+                or row.get('available_cpu',0) > row.get('ready_cpu_fitting_now',row['ready_cpu'])
                 or (row.get('target_cpu_seconds') is not None and not row['unknown_duration_jobs']
                     and row['ready_cpu_seconds'] < row['target_cpu_seconds'])
                 for row in supply
@@ -2035,11 +2223,7 @@ class DistributedExecutor(ConcurrentExecutor):
         if self.ready_queue_waves > 1 and capacity:
             # A backlog usable only on one host can conceal a shortage on the
             # others. Look ahead by at most their missing waves as well.
-            covered = Counter()
-            for task in self.state.tasks.values():
-                if task.status == 'QUEUED' and task.rule['kind'] != 'preparation':
-                    allowed = task.supply_hosts
-                    covered.update(targets.keys() if allowed is None else targets.keys() & allowed)
+            covered = queued_supply_counts(self.state,targets.keys())
             deficits = {host: max(0, count - covered[host]) for host, count in targets.items()}
             cpu_supply = getattr(self.state, 'ready_cpu_supply', {})
             for host in targets.keys() & cpu_supply.keys():
@@ -2055,8 +2239,9 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _can_take_ready_candidates(self):
         if self.ready_queue_waves > 1 and self.state.allocation_auto and self.distributed.get('work_conserving_search'):
-            queued = sum(t.status == 'QUEUED' and t.rule['kind'] != 'preparation' for t in self.state.tasks.values())
-            return not self._budget_reserved() and queued < self._standby_headroom()
+            with self.state.cv:
+                queued = queued_count(self.state,'q3')
+                return not self._budget_reserved() and queued < self._standby_headroom()
         return super()._can_take_ready_candidates()
 
     def _live_readiness_window(self):
@@ -2184,25 +2369,42 @@ class DistributedExecutor(ConcurrentExecutor):
             self.log(event='Q3_STANDBY_REFILL', added=added, remaining=len(self.standby))
 
     def has_spare_slot(self, *, allow_queued_speculation=False):
-        # Auto capacity is sized against already queued jobs. With one job
-        # running it can equal one even when another worker has a free offer.
-        with self.state.cv:
-            if self.state.failure or self.state.closed:
-                return False
-            attempts = self._owned_attempts()
-            owned = max(self.state.active, len(attempts))
-            if not self.hosts:
-                return not owned
-            policy, error = self._host_admission_policy()
-            offers = {host: self._offer_free(host, policy, error, owned=attempts) for host in self.hosts}
-            offers = {host: count for host, count in offers.items() if count}
-            free = sum(offers.values())
-            if not self.state.allocation_auto:
-                free = min(free, self.capacity - owned)
-            if free <= 0:
-                return False
-            demand = [task for task in self._ready_queue() if task.demand and task.rule['kind'] != 'preparation']
-            return free > len(self._match_ready_jobs(demand, offers))
+        # Advisory result only: actual claim independently verifies ownership,
+        # eligibility, current resource offers and budgets in its transaction.
+        state=self.state
+        with state.cv:
+            if state.failure or state.closed:return False
+            revision=state.cv.revision
+            snapshot=copy(self)
+            snapshot.hosts=self.hosts.copy()
+            snapshot.host_admission_cache={}
+            snapshot.state=copy(state)
+            snapshot.state.cv=threading.Condition()
+            snapshot.state.owner_clock=dict(state.owner_clock)
+            queued=queued_count(state,'demand')
+        attempts=snapshot._owned_attempts()
+        owned=max(snapshot.state.active,len(attempts))
+        if not snapshot.hosts:
+            result=not owned
+        else:
+            policy,error=snapshot._host_admission_policy()
+            offers={host:snapshot._offer_free(host,policy,error,owned=attempts) for host in snapshot.hosts}
+            offers={host:count for host,count in offers.items() if count}
+            free=sum(offers.values())
+            if not snapshot.state.allocation_auto:free=min(free,snapshot.capacity-owned)
+            if free<=0:result=False
+            elif free>queued:result=True
+            else:
+                with state.cv:
+                    if state.cv.revision!=revision:return False
+                    tasks=tuple(copy(task) for task in tasks_with_status(state,'QUEUED')
+                                if task.demand and task.rule['kind']!='preparation')
+                    snapshot.preparation_pending={job:dict(record,failures=dict(record.get('failures',{})))
+                        for job,record in self.preparation_pending.items()}
+                demand=snapshot._ready_queue(tasks=tasks,include_preparation=False)
+                result=free>len(snapshot._match_ready_jobs(demand,offers,owned=attempts))
+        with state.cv:
+            return bool(result and state.cv.revision==revision and not state.failure and not state.closed)
 
     @staticmethod
     def _bound_timing_profile(request, host, profile):
@@ -2282,7 +2484,8 @@ class DistributedExecutor(ConcurrentExecutor):
         compatible = {};skipped = {h:False for h in available}
         policy, error = (self._host_admission_policy() if self.distributed.get('preparation_host_preference')
                          else (None, None))
-        if owned is None and 'local' in available and self.distributed.get('local_calibration_pair'):
+        if owned is None and (self.distributed.get('preparation_host_preference')
+                              or ('local' in available and self.distributed.get('local_calibration_pair'))):
             owned = self._owned_attempts()
         queue = list(queue)
         if rows is None:
@@ -2316,12 +2519,12 @@ class DistributedExecutor(ConcurrentExecutor):
                     skipped[h] = True
                     continue
                 if (not self._fits_host_task_class(h, row)
-                        or self._wait_for_preparation_preference(h, row, policy, error)
+                        or self._wait_for_preparation_preference(h, row, policy, error, owned=owned)
                         or not self._local_calibration_pair_allows(h, row['request'], owned=owned)):
                     skipped[h] = True
                     continue
                 if task.rule['kind']=='preparation':
-                    if dependency_ready is None:dependency_ready=self._task_ready(task,row)
+                    if dependency_ready is None:dependency_ready=self._task_ready(task,row,verify=False)
                     if not dependency_ready:
                         skipped[h]=True
                         continue
@@ -2441,13 +2644,32 @@ class DistributedExecutor(ConcurrentExecutor):
         return self._fits_preparation_storage(report, forecast)
 
     def _learn_preparation_resources(self, host, report):
-        from .rpe_q3_resources import preparation_workload
-        from .rpe_q3_coordinator import atomic_json
+        from .rpe_q3_resources import preparation_workload, save_observation_delta
         samples = (report or {}).get('preparation_observations') or ()
         if not samples:return
-        rows = self.store.rows_for(s['job_id'] for s in samples if isinstance(s, dict) and 'job_id' in s)
+        # Completed telemetry is intentionally replayable. Avoid reopening the
+        # large scientific request for a sample whose accepted envelope is unchanged.
         with self.preparation_observation_lock:
-            changed = False
+            def changed(sample):
+                if not isinstance(sample, dict) or 'job_id' not in sample:
+                    return False
+                old = self.preparation_observations.get(sample.get('attempt_id'), {})
+                if (old.get('host') != host or old.get('job_id') != sample['job_id']
+                        or old.get('request_sha256') != sample.get('request_sha256')):
+                    return True
+                for key in ('peak_rss_bytes', 'cpu_count', 'unique_event_bytes', 'stored_path_units'):
+                    value = sample.get(key)
+                    if type(value) is int and value > old.get(key, 0):
+                        return True
+                return sample.get('completed') is True and (
+                    old.get('completed') is not True or old.get('elapsed_seconds') != sample.get('elapsed_seconds'))
+            samples = [sample for sample in samples if changed(sample)]
+        if not samples:
+            return
+        rows = self.store.rows_for(s['job_id'] for s in samples)
+        with self.preparation_observation_lock:
+            changed = {}
+            updated = self.preparation_observations.copy()
             for sample in samples:
                 if not isinstance(sample, dict):continue
                 row = rows.get(sample.get('job_id'))
@@ -2456,8 +2678,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 workload = preparation_workload(row['request'])
                 if workload is None:continue
                 identity = row['attempt_id']
-                old = self.preparation_observations.get(identity, {})
-                record = dict(old, job_id=row['job_id'], attempt_id=identity, host=host, workload=workload)
+                old = updated.get(identity, {})
+                record = dict(old, job_id=row['job_id'], attempt_id=identity, host=host, workload=workload,
+                              request_sha256=row['request_sha256'])
+                runtime = ((row.get('eligibility') or {}).get('execution_profiles') or {}).get(host)
+                if runtime:
+                    from .rpe_preparation_worker import digest as profile_digest
+                    record['runtime_profile_sha256'] = profile_digest(runtime)
                 for key in ('peak_rss_bytes', 'cpu_count', 'unique_event_bytes', 'stored_path_units'):
                     value = sample.get(key)
                     if type(value) is int and value > 0:record[key] = max(old.get(key, 0), value)
@@ -2468,23 +2695,57 @@ class DistributedExecutor(ConcurrentExecutor):
                     duration = sample.get('elapsed_seconds')
                     if type(duration) in (int, float) and duration > 0 and duration < float('inf'):
                         record['elapsed_seconds'] = duration
-                if record != old:self.preparation_observations[identity] = record;changed = True
+                if record != old:
+                    updated[identity] = record
+                    changed[identity] = record
             if changed:
-                observations = list(self.preparation_observations.values())
-                atomic_json(self.preparation_observations_path, observations)
+                observations = list(updated.values())
+                save_observation_delta(self.preparation_observations_path,updated,changed)
+                self.preparation_observations = updated
+                previous=self.distributed.get('preparation_resource_observations')
+                index=getattr(self,'_preparation_forecast_index',None)
+                if index is not None and index[0] is previous:
+                    self._preparation_forecast_index=(observations,index[1].with_updates(changed.values()))
                 self.distributed['preparation_resource_observations'] = observations
                 if self.distributed.get('pbs'):
                     self.distributed['pbs']['preparation_resource_observations'] = observations
                 if self.pbs_manager:
                     self.pbs_manager.settings['preparation_resource_observations'] = observations
 
+    def _preparation_observation_ack(self, host, report):
+        from .rpe_q3_coordinator import digest
+        # Acknowledgments only suppress replay of already persisted telemetry.
+        # They do not acknowledge scientific completion or release ownership.
+        records = self.preparation_observations
+        ack = {}
+        for sample in (report or {}).get('preparation_observations') or ():
+            if not isinstance(sample,dict) or sample.get('completed') is not True:
+                continue
+            attempt = sample.get('attempt_id')
+            record = records.get(attempt,{})
+            if (record.get('host') != host or record.get('job_id') != sample.get('job_id')
+                    or record.get('request_sha256') != sample.get('request_sha256')
+                    or record.get('completed') is not True
+                    or record.get('elapsed_seconds') != sample.get('elapsed_seconds')):
+                continue
+            if any(type(sample.get(k)) is int and sample[k] > record.get(k,0) for k in
+                   ('peak_rss_bytes','cpu_count','unique_event_bytes','stored_path_units')):
+                continue
+            ack[attempt] = digest(sample)
+        return ack
+
     def _preparation_forecast(self, host, row):
-        from .rpe_q3_resources import preparation_forecast
+        from .rpe_q3_resources import PreparationForecastIndex
         observations = self.distributed.get('preparation_resource_observations')
         if not observations or not row['request'].get('preparation'):return {}
+        # Observation lists are replaced on publication, never updated in place.
+        # Store source and index as one pair to avoid mismatching revisions.
+        cached = getattr(self, '_preparation_forecast_index', None)
+        if cached is None or cached[0] is not observations:
+            cached = (observations, PreparationForecastIndex(observations))
+            self._preparation_forecast_index = cached
         runtime = ((row.get('eligibility') or {}).get('execution_profiles') or {}).get(host) or {}
-        return preparation_forecast(row['request'], observations,
-                                    cpu_count=runtime.get('task_cpu_count'), host=host)
+        return cached[1].forecast(row['request'], cpu_count=runtime.get('task_cpu_count'), host=host)
 
     @staticmethod
     def _fits_preparation_storage(report, forecast, reserved=0):
@@ -2496,7 +2757,12 @@ class DistributedExecutor(ConcurrentExecutor):
             return False
         used, limit = storage.get('used_bytes'), storage.get('limit_bytes')
         free, minimum = storage.get('filesystem_free_bytes'), storage.get('filesystem_min_free_bytes')
-        return (type(used) is int and type(limit) is int and used + reserved < limit
+        # An absent forecast is unknown, not a zero-byte guarantee. A
+        # declared zero-byte footprint may fit exactly at the reservation
+        # boundary, but unmeasured work may not consume nonexistent space.
+        known_zero = 'storage_bytes' in forecast and type(needed) is int and needed == 0
+        return (type(used) is int and type(limit) is int
+                and (used + reserved < limit or known_zero and used + reserved == limit)
                 and used + reserved + needed <= limit
                 and (type(free) is not int or type(minimum) is not int or free-reserved-needed >= minimum))
 
@@ -2512,14 +2778,26 @@ class DistributedExecutor(ConcurrentExecutor):
         # their share of the metadata window, including zero-fit classes.
         return (fitting[:preferred] + other + fitting[preferred:])[:limit]
 
-    def _capacity_feedback(self, host):
-        epoch = self.state.allocation_epoch
-        now = time.monotonic()
-        totals = dict(self.state.allocation_wait_totals)
-        for job, starts in self.state.allocation_waits.items():
-            if starts:
-                totals[job] = totals.get(job, 0) + sum(now-start for start in starts)
-        usable, adopted, selected = self.store.capacity_history(host, epoch, totals)
+    def _capacity_wait_totals(self,now):
+        totals=dict(self.state.allocation_wait_totals)
+        for job,starts in self.state.allocation_waits.items():
+            if starts:totals[job]=totals.get(job,0)+sum(now-start for start in starts)
+        return totals
+
+    def _capacity_feedback_batch(self):
+        now=time.monotonic()
+        histories=self.store.capacity_history_batch(self.hosts,self.state.allocation_epoch,self._capacity_wait_totals(now))
+        tasks=tasks_with_status(self.state,'QUEUED')
+        rows=self.store.rows_for(task.job.name for task in tasks)
+        ready_preparations={task.job.name:self._task_ready(task,rows[task.job.name],verify=False)
+            for task in tasks if task.rule['kind']=='preparation' and task.job.name in rows}
+        return {host:self._capacity_feedback(host,history=histories[host],now=now,
+                    queue_rows=rows,ready_preparations=ready_preparations) for host in self.hosts}
+
+    def _capacity_feedback(self, host, *, history=None, now=None, queue_rows=None, ready_preparations=None):
+        now=time.monotonic() if now is None else now
+        if history is None:history=self.store.capacity_history(host,self.state.allocation_epoch,self._capacity_wait_totals(now))
+        usable, adopted, selected = history
         classify = self.distributed.get('live_readiness_max_workers') is not None
         local = self.distributed.get('local_worker') or {}
         class_admission = (classify and host == local.get('host_id')
@@ -2527,6 +2805,7 @@ class DistributedExecutor(ConcurrentExecutor):
         ready = 0
         capacity_ready = 0
         ready_classes = set()
+        declared_classes = {}
         class_order = []
         pending_class_order = []
         observed = self.hosts.get(host, {})
@@ -2537,13 +2816,17 @@ class DistributedExecutor(ConcurrentExecutor):
         can_plan = (admission.get('accepting', True) and admission.get('max_slots') != 0
                     and observed.get('accepting_new_jobs', True) and storage.get('accepting_new_jobs', True)
                     and not self._user_stop_requested() and not self.state.failure and not self.state.closed)
-        queue = self._ready_queue() if class_admission else self.state.tasks.values()
-        pending = [task for task in queue if can_plan and task.status == 'QUEUED']
-        rows = self.store.rows_for(task.job.name for task in pending)
+        if class_admission:
+            queue=self._ready_queue(rows=queue_rows,readiness=ready_preparations) if queue_rows is not None else self._ready_queue()
+        else:queue=tasks_with_status(self.state,'QUEUED')
+        pending=[task for task in queue if can_plan and task.status=='QUEUED']
+        rows=queue_rows if queue_rows is not None else self.store.rows_for(task.job.name for task in pending)
         for task in pending:
             row = rows.get(task.job.name)
-            if row is not None and task.rule['kind'] == 'preparation' and not self._task_ready(task, row):
-                continue
+            if row is not None and task.rule['kind']=='preparation':
+                deps_ready=(ready_preparations.get(task.job.name,False) if ready_preparations is not None
+                       else self._task_ready(task,row,verify=False))
+                if not deps_ready:continue
             if (row is None or not self._host_supports_stage(host, row['request'])
                     or not self._fits_host_walltime(host, row['request'])
                     or not self._fits_host_preparation_forecast(host, row)):
@@ -2569,6 +2852,12 @@ class DistributedExecutor(ConcurrentExecutor):
                     # start due to RAM or storage. Independent classes remain
                     # eligible for a cold trial or a measured free slot.
                     (class_order if fresh else pending_class_order).append(kind)
+                    runtime=(eligibility.get('execution_profiles') or {}).get(host) or {}
+                    memory=runtime.get('task_memory_bytes'); cpus=runtime.get('task_cpu_count')
+                    if type(memory) is int and memory>0 and type(cpus) is int and cpus>0:
+                        old=declared_classes.get(kind,{})
+                        declared_classes[kind]=dict(memory_bytes=max(memory,old.get('memory_bytes',0)),
+                                                     cpu=max(cpus,old.get('cpu',0)))
         ready_now = ready
         if self.distributed.get('work_conserving_search'):
             recent = getattr(self.state, 'host_ready_backlog', {})
@@ -2589,7 +2878,7 @@ class DistributedExecutor(ConcurrentExecutor):
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
             ready_jobs=ready, ready_jobs_now=ready_now, capacity_ready_jobs=capacity_ready,
             ready_task_classes=sorted(ready_classes), capacity=self.capacity,
-            **({'ready_task_class_order': class_order or pending_class_order} if class_admission else {}))
+            **({'ready_task_class_order': class_order or pending_class_order, 'mixed_task_class_quotas': True, 'declared_task_class_resources': declared_classes} if class_admission else {}))
 
     def _restore_queued_eligibility(self,row,policy):
         """Reuse the fixed durable request's proof, not any stale worker offer."""
@@ -2720,7 +3009,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 and row['detail'].get('prelaunch_recovery') is not True
                 and row['eligibility'] != decision
                 and self.store.set_eligibility(job_id, decision)):
-            task.supply_hosts = hosts
+            set_task_supply_hosts(self.state,task,hosts)
 
     def _plan_pbs_q3_checks(self, job_id, request, decision):
         """Let the allocated worker check shortlisted requests before reservation."""
@@ -2958,34 +3247,44 @@ class DistributedExecutor(ConcurrentExecutor):
     def _preparation_request(request):
         return request.get('preparation') if request.get('route', {}).get('kind') == 'preparation' else None
 
-    def _preparation_inputs(self, request):
-        preparation = self._preparation_request(request)
-        manifest = preparation.get('inputs', {})
-        if isinstance(manifest, list): manifest = {item['path']:item['sha256'] for item in manifest}
-        manifest = dict(manifest)
-        # Named dependency outputs are bound to the same immutable predecessor
-        # task, and resolved only after its validated completion is accepted.
-        for predecessor, paths in preparation.get('dependency_inputs', {}).items():
-            row = self.store.row(predecessor)
-            if row is None or row['state'] != 'ACCEPTED': raise ValueError('Preparation dependency is not accepted: '+predecessor)
-            outcome = json.loads((self.run_dir/'jobs'/row['method']/predecessor/'OUTCOME.json').read_text())
-            if outcome.get('status') != 'PREPARATION_COMPLETE': raise ValueError('Preparation dependency did not complete: '+predecessor)
-            for source, target in paths.items():
-                sha = outcome['artifacts'][source]
-                if target in manifest and manifest[target] != sha: raise ValueError('Dependency artifact binding conflicts: '+target)
-                manifest[target] = sha
-        return manifest
+    def _preparation_dependency_outcome(self, predecessor):
+        row = self.store.row(predecessor)
+        if row is None or row['state'] != 'ACCEPTED':
+            raise ValueError('Preparation dependency is not accepted: '+predecessor)
+        path = self.run_dir/'jobs'/row['method']/predecessor/'OUTCOME.json'
+        def signature():
+            info=path.stat()
+            return (row['completion_sha256'],info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_ctime_ns)
+        revision=signature()
+        cache=getattr(self,'_dependency_outcomes',None)
+        if cache is None:cache=self._dependency_outcomes={}
+        saved=cache.get(predecessor)
+        stable=time.time_ns()-max(revision[-2:])>=1_000_000_000
+        if stable and saved is not None and saved[0]==revision:
+            return saved[1]
+        outcome=json.loads(path.read_text())
+        if outcome.get('status')!='PREPARATION_COMPLETE':
+            raise ValueError('Preparation dependency did not complete: '+predecessor)
+        if stable and signature()==revision:
+            cache[predecessor]=(revision,outcome)
+        return outcome
 
-    def _task_ready(self, task, row=None):
+    def _preparation_inputs(self, request, *, outcomes=None):
+        from .rpe_preparation_artifacts import preparation_dependency_manifest
+        def outcome_for(predecessor):
+            outcome=(outcomes or {}).get(predecessor)
+            return self._preparation_dependency_outcome(predecessor) if outcome is None else outcome
+        return preparation_dependency_manifest(request,outcome_for)
+
+    def _task_ready(self, task, row=None, *, verify=True):
         request = (self.store.row(task.job.name) if row is None else row)['request']
         preparation = self._preparation_request(request)
         if preparation is None: return True
-        for predecessor in preparation.get('dependencies', []):
-            row = self.store.row(predecessor)
-            if row is None or row['state'] != 'ACCEPTED': return False
-            outcome = self.run_dir/'jobs'/row['method']/predecessor/'OUTCOME.json'
-            if not outcome.exists() or json.loads(outcome.read_text()).get('status') != 'PREPARATION_COMPLETE': return False
-        try: return not self.artifact_cache.missing(self._preparation_inputs(request).values())
+        try:
+            outcomes={predecessor:self._preparation_dependency_outcome(predecessor)
+                      for predecessor in preparation.get('dependencies',[])}
+            hashes = self._preparation_inputs(request,outcomes=outcomes).values()
+            return not self.artifact_cache.missing(hashes) if verify else self.artifact_cache.available(hashes)
         except (KeyError, ValueError, OSError): return False
 
     def _preparation_eligibility_for(self, request, job_id):
@@ -3037,7 +3336,21 @@ class DistributedExecutor(ConcurrentExecutor):
         if isinstance(configured, (str, Path)):
             path = Path(configured)
             if not path.is_absolute(): path = self.root/path
-            configured = json.loads(path.read_text())
+            def signature():
+                stat = path.stat()
+                return (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+            before = signature()
+            cache = getattr(self, '_preparation_profile_cache', None)
+            if cache is None:
+                cache = self._preparation_profile_cache = {}
+            previous = cache.get(path)
+            stable = time.time_ns()-max(before[-2:]) >= 1_000_000_000
+            if stable and previous is not None and previous[0] == before:
+                configured = deepcopy(previous[1])
+            else:
+                configured = json.loads(path.read_text())
+                if stable and signature() == before:
+                    cache[path] = (before, deepcopy(configured))
         if not isinstance(configured, dict) or configured.get('host_id') != host:
             raise ValueError('No configured preparation stage profiles for host: '+host)
         return configured
@@ -3722,7 +4035,7 @@ class DistributedExecutor(ConcurrentExecutor):
         job = self.run_dir/'jobs'/method/row['job_id']
         old = self.state.tasks.get(job)
         if old and old.status != 'CANCELLED':
-            old.demand |= demand
+            set_task_demand(self.state,old,old.demand or demand)
             return old
         job.mkdir(parents=True, exist_ok=True)
         if not (job/'REQUEST.json').exists(): _write(job/'REQUEST.json', request)
@@ -3746,15 +4059,54 @@ class DistributedExecutor(ConcurrentExecutor):
             self.state.reserved[method] += 1
         if row['state'] == 'UNKNOWN':
             task.error = 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED'
-            task.status = 'DONE'; task.event.set()
+            transition_task(self.state,task,'DONE'); task.event.set()
         self.state.peak_active = max(self.state.peak_active, self.state.active)
         return task
 
-    def replay_prior_q3(self):
-        """Resolve exact allocations authorized in the successor's fixed round."""
+    def _late_parent_replay(self, hold, view, proposal, parent_job, request):
+        """Retire only an unowned replay; accept a late parent with exact durable ownership."""
+        job=view.job_dir(proposal)
+        with self.state.cv:
+            row=self.store.row(job.name)
+            if row is not None and row['state']=='QUEUED' and row.get('attempt_id') is None:
+                if row.get('detail',{}).get('prelaunch_recovery'):
+                    return False
+                task=self.state.tasks.get(job)
+                if task is not None:
+                    if task.status!='QUEUED':return False
+                    view._cancel(task)
+                else:
+                    self.store.cancel(view.method,job.name)
+                row=self.store.row(job.name)
+            if (row is not None and (row['state']!='CANCELLED' or row.get('attempt_id') is not None)
+                    or (job/'LAUNCH.json').exists() or (job/'STARTING.json').exists()):
+                return False
+        database=Path(hold['parent_directory'])/'distributed/QUEUE.sqlite3'
+        if not database.is_file():return False
+        db=sqlite3.connect(database.resolve().as_uri()+'?mode=ro',uri=True)
+        try:
+            db.row_factory=sqlite3.Row
+            prior=db.execute("SELECT state,host_id,attempt_id,request_sha256,completion_sha256 FROM jobs WHERE job_id=?",
+                             (parent_job.name,)).fetchone()
+        finally:db.close()
+        launch=O.load_json(parent_job/'LAUNCH.json')
+        if (prior is None or prior['state']!='ACCEPTED' or not prior['completion_sha256']
+                or prior['request_sha256']!=hold['request_sha256']
+                or prior['host_id']!=launch.get('host_id') or prior['attempt_id']!=launch.get('attempt_id')):
+            return False
+        if not view.same_route(parent_job,proposal['configuration_id']):
+            return False
+        result=view.ingest_prior(parent_job,proposal)
+        return bool(result and result['status'] in (O.PASS,O.FAIL,'INCONCLUSIVE'))
+
+
+    def replay_prior_q3(self, *, wait=True):
+        """Dispatch authorized exact replays; nonblocking calls retain unresolved holds."""
         from .rpe_q3_coordinator import digest
 
+        if self._user_stop_requested():return False
         checked = []
+        resolved = set()
         for hold in self.prior_q3_holds:
             if hold.get('replay_exact') is not True:
                 continue
@@ -3766,30 +4118,69 @@ class DistributedExecutor(ConcurrentExecutor):
             proposal = dict(configuration_id=cid, vector=O.interleave(request['N_X'], request['N_Y']),
                             origin=request['origin'], cost=None if request['cost'] is None else O.frac(request['cost']))
             row = self.store.row(job_id)
+            if (parent_job/'OUTCOME.json').exists() and not wait:
+                # A duplicate parent publication must never open a new
+                # successor attempt. Positive accepted ownership is required
+                # before removing the original hold.
+                try:
+                    valid=(digest(request)==hold['request_sha256']
+                           and request['optimizer_source']==self.computation_source
+                           and view.job_dir(proposal).name==job_id
+                           and (row is None or row['request']==request))
+                    if valid and self._late_parent_replay(hold,view,proposal,parent_job,request):
+                        resolved.add((method,job_id))
+                        view.log(event='PRIOR_Q3_LATE_PARENT_VALIDATED',job=job_id)
+                        continue
+                except (OSError,ValueError,KeyError,sqlite3.Error):
+                    pass
+                view.log(event='PRIOR_Q3_REPLAY_HELD', job=job_id, reason='PARENT_OUTCOME_RECONCILIATION_REQUIRED')
+                continue
             if (digest(request) != hold['request_sha256']
                     or request['optimizer_source'] != self.computation_source
                     or view.job_dir(proposal).name != job_id or not view.same_route(parent_job, cid)
                     or view.prior_job(proposal, exclude=(parent_job.resolve(), view.job_dir(proposal).resolve())) is not None
                     or (row is not None and row['request'] != request)
                     or (parent_job/'OUTCOME.json').exists()):
+                if not wait:
+                    view.log(event='PRIOR_Q3_REPLAY_HELD',job=job_id,reason='BINDING_OR_OWNER_CHANGED')
+                    continue
                 raise ValueError('Prior Q3 replay binding or ownership changed: '+job_id)
             checked.append((view, proposal, parent_job, request))
 
         # Dispatch the whole independent set before waiting for any result.
         for view, proposal, parent_job, request in checked:
-            view._enqueue(proposal, demand=True, replay=(parent_job, request))
+            if self._user_stop_requested():
+                return False
+            view._enqueue(proposal, demand=True, replay=(parent_job, request), defer_readiness=not wait)
         for view, proposal, parent_job, request in checked:
             row = self.store.row(request['request_id'])
+            if not wait:
+                if not row or row['state'] != 'ACCEPTED':
+                    # Keep the exact hold until its own durable result arrives.
+                    # The independent selector can continue while this owner waits.
+                    continue
+                job = view.job_dir(proposal)
+                if not (job/'OUTCOME.json').is_file():
+                    continue  # ACCEPTED can precede publication of the last file.
+                with self.state.cv:
+                    task = self.state.tasks.get(job)
+                    if task is not None and not task.event.is_set():
+                        continue
             if row is None or row['state'] == 'CANCELLED':
                 if self._user_stop_requested():
                     return False
                 raise RuntimeError('No eligible allocation for exact Q3 replay: '+parent_job.name)
             answer = view.answer(proposal, allow_new=False)
             if not answer or answer['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
+                if not wait:
+                    view.log(event='PRIOR_Q3_REPLAY_HELD', job=parent_job.name, reason='RESULT_RECONCILIATION_REQUIRED')
+                    continue
                 raise RuntimeError('Exact Q3 replay requires reconciliation: '+parent_job.name)
+            resolved.add((view.method, parent_job.name))
             view.log(event='PRIOR_Q3_REPLAY_VALIDATED', job=parent_job.name, parent_job=str(parent_job))
-        self.prior_q3_holds = [hold for hold in self.prior_q3_holds if hold.get('replay_exact') is not True]
-        return True
+        self.prior_q3_holds[:] = [hold for hold in self.prior_q3_holds if
+            hold.get('replay_exact') is not True or (hold['method'],hold['job_id']) not in resolved]
+        return not any(hold.get('replay_exact') is True for hold in self.prior_q3_holds)
 
     def _enqueue(self, proposal, demand=False, *, replay=None, defer_readiness=False):
         from .rpe_q3_coordinator import prefix_key
@@ -3805,7 +4196,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 raise RuntimeError('Executor persistence failure: ' + s.failure)
             task = s.tasks.get(job)
             if task and task.status != 'CANCELLED':
-                task.demand |= demand
+                set_task_demand(s,task,task.demand or demand)
                 s.cv.notify_all()
                 return True, task, None
             row = self.store.row(job.name)
@@ -3906,7 +4297,7 @@ class DistributedExecutor(ConcurrentExecutor):
         if not handoff:
             return super()._user_stop_requested()
         with self.state.cv:
-            for task in self.state.tasks.values():
+            for task in tasks_with_status(self.state,'QUEUED'):
                 if task.status != 'QUEUED':
                     continue
                 row = self.store.row(task.job.name)
@@ -3944,6 +4335,23 @@ class DistributedExecutor(ConcurrentExecutor):
             reference = continuation['references'][host]
         return deepcopy(reference)
 
+    def _publish_launch_marker(self, row):
+        """The durable queue owns the attempt; publish its marker before delivery.
+
+        A concurrent replay or Resume can reconstruct the identical marker if
+        the first poll was interrupted after the claim transaction committed.
+        """
+        from .rpe_q3_coordinator import atomic_json
+        job = self.run_dir/'jobs'/row['method']/row['job_id']
+        path = job/'LAUNCH.json'
+        with self.launch_marker_lock:
+            if path.is_file():
+                old = json.loads(path.read_bytes())
+                if old.get('attempt_id') == row['attempt_id']:
+                    return
+            atomic_json(path,dict(host_id=row['host_id'],attempt_id=row['attempt_id'],pid=None,
+                started=row['assigned_epoch'],kind=row['request']['route']['kind'],transport='distributed'))
+
     def _assignment(self, row, host_id=None, *, eligibility=None):
         from .rpe_q3_coordinator import input_hashes, prefix_key, digest
         from .rpe_host_profiles import profile_core
@@ -3977,6 +4385,8 @@ class DistributedExecutor(ConcurrentExecutor):
         launch_fit = detail.get('pbs_launch_resources')
         if launch_fit is not None and row.get('state') == 'ASSIGNED':
             value['pbs_launch_resources'] = launch_fit
+        if row.get('state')=='ASSIGNED' and detail.get('pbs_rollover_guard') is not None:
+            value['pbs_rollover_guard']=detail['pbs_rollover_guard']
         reference = self._task_release(row['request'], host)
         if reference is not None:
             value['required_release'] = reference
@@ -3996,8 +4406,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 job: dict(record, failures=dict(record.get('failures', {})))
                 for job, record in self.preparation_pending.items()}
             snapshot.state = copy(state)
-            snapshot.state.tasks = {path: copy(task) for path, task in state.tasks.items()
-                                    if task.status in ('QUEUED', 'RUNNING')}
+            snapshot.state.tasks = {task.job: copy(task) for status in ('QUEUED','RUNNING')
+                                    for task in tasks_with_status(state,status)}
             snapshot.state.owner_clock = dict(state.owner_clock)
             snapshot.state.host_ready_backlog = dict(getattr(state, 'host_ready_backlog', {}))
             state.queue_observation_active = True
@@ -4007,14 +4417,20 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _collect_queue_observation(self, snapshot):
         state = self.state
+        started=time.monotonic();cpu_started=time.thread_time()
         try:
             with self.lock:
                 snapshot.state.allocation_wait_totals = dict(state.allocation_wait_totals)
                 snapshot.state.allocation_waits = {job: tuple(starts) for job, starts in state.allocation_waits.items()}
             snapshot._report_queue_snapshot()
-            feedback = {host: snapshot._capacity_feedback(host) for host in snapshot.hosts}
+            report_cpu=time.thread_time()-cpu_started
+            feedback = snapshot._capacity_feedback_batch()
+            profile=dict(samples=1,wall_seconds=time.monotonic()-started,
+                         thread_cpu_seconds=time.thread_time()-cpu_started,report_cpu_seconds=report_cpu)
             with state.cv:
                 if not state.closed:
+                    totals=getattr(state,'queue_observer_profile',Counter())
+                    totals.update(profile);state.queue_observer_profile=totals
                     state.queue_feedback = feedback
                     state.last_timing_queue = getattr(snapshot.state, 'last_timing_queue', None)
                     state.last_timing_queue_at = getattr(snapshot.state, 'last_timing_queue_at', 0)
@@ -4032,7 +4448,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def _report_queue_snapshot(self):
         """Measure ready work without holding the allocation lock."""
         s=self.state;reasons={}
-        started = time.monotonic()
+        started = time.monotonic();cpu_started=time.thread_time()
         admission=None;admission_error=None
         # Use the newer optional-host policy when supplied by the integration;
         # do not copy or change its dispatch/admission implementation here.
@@ -4041,16 +4457,18 @@ class DistributedExecutor(ConcurrentExecutor):
         # Compact operational columns only: do not deserialize every saved REQUEST.
         with self.store._connection() as db:
             snapshot={r['job_id']:dict(r)for r in db.execute(
-                "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
+                "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state IN "
+                "('QUEUED','ASSIGNED','STARTING','RUNNING','UNKNOWN','COMPLETED_PENDING_TRANSFER')")}
         owned_attempts = self._owned_attempts()
-        queued_preparation = [task.job.name for task in s.tasks.values()
-                              if task.status == 'QUEUED' and task.rule['kind'] == 'preparation']
+        queued_tasks=tasks_with_status(s,'QUEUED')
+        queued_preparation = [task.job.name for task in queued_tasks
+                              if task.rule['kind'] == 'preparation']
         preparation_rows = self.store.rows_for(queued_preparation)
         dependencies_ready = {
-            task.job.name: self._task_ready(task, preparation_rows[task.job.name])
-            for task in s.tasks.values() if task.job.name in preparation_rows}
+            task.job.name: self._task_ready(task, preparation_rows[task.job.name],verify=False)
+            for task in queued_tasks if task.job.name in preparation_rows}
         owned=Counter(r['host_id'] for r in owned_attempts)
-        for task in s.tasks.values():
+        for task in queued_tasks:
             if task.status!='QUEUED':continue
             row=snapshot.get(task.job.name)
             if row is None:continue
@@ -4133,6 +4551,7 @@ class DistributedExecutor(ConcurrentExecutor):
             previous = getattr(s, 'last_queue_reasons', None)
             payload.pop('reasons')
             self.log(event='QUEUE_WAIT_STATE', report_seconds=now-started,
+                     thread_cpu_seconds=time.thread_time()-cpu_started,
                      **payload, **compact_queue_reasons(reasons, previous))
             s.last_queue_reasons = reasons
 
@@ -4195,7 +4614,14 @@ class DistributedExecutor(ConcurrentExecutor):
             if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
             raise ValueError('Unknown artifact RPC endpoint')
         if path == '/v1/poll':
-            return self._poll(host, value)
+            response = self._poll(host, value)
+            ack = self._preparation_observation_ack(host, value.get('resource_report'))
+            if ack: response['preparation_observation_ack'] = ack
+            revision=value.get('artifact_inventory_revision')
+            if isinstance(revision,str) and not (value.get('resource_report') or {}).get('pbs'):
+                # Direct HTTP acquisition does not consume the advisory list.
+                response['artifact_inventory_ack']=revision
+            return response
         with self._rpc_queue_lock(path, host):
             row = self.store.row(value['job_id'])
             attempt = value['attempt_id']
@@ -4217,7 +4643,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     if (value['state'] == 'UNKNOWN' and not s.closed and not s.failure
                             and not self._user_stop_requested() and self._restore_pbs_unstarted(updated)):
                         if task and task.status == 'RUNNING':
-                            task.status, task.started, task.error = 'QUEUED', False, None
+                            transition_task(s,task,'QUEUED')
+                            task.started,task.error=False,None
                             s.active -= 1
                         else:
                             s.tasks.pop(job, None)
@@ -4233,6 +4660,7 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _poll(self, host, value):
         started = checkpoint = time.monotonic()
+        cpu_started=time.thread_time()
         phases = {}
         def mark(phase):
             nonlocal checkpoint
@@ -4246,6 +4674,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if seconds >= 2:
                 mark('reply')
                 self.log(event='POLL_PHASE_TIMING', host_id=host, seconds=seconds, phases=phases,
+                         thread_cpu_seconds=time.thread_time()-cpu_started,
                          observe_only=value.get('observe_only') is True)
 
     def _poll_prepared(self, host, value, mark):
@@ -4398,8 +4827,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 if (row['job_id'], row['attempt_id'], row['request_sha256']) not in durable
                 and self._belongs_to_resource_offer(dict(row), host, value.get('resource_report'))][:delivery_slots]
         replay_rows = self.store.rows_for(replay_ids)
-        assignments = [self._assignment(replay_rows[job]) for job in replay_ids
-                       if replay_rows[job]['state'] == 'ASSIGNED' and replay_rows[job]['host_id'] == host]
+        assignments = []
+        for job in replay_ids:
+            row = replay_rows.get(job)
+            if row is None or row['state'] != 'ASSIGNED' or row['host_id'] != host:
+                continue
+            self._publish_launch_marker(row)
+            assignments.append(self._assignment(row))
         if stopping:
             return reply(assignments=assignments, stop=False,
                          host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
@@ -4466,7 +4900,7 @@ class DistributedExecutor(ConcurrentExecutor):
                         skipped = True
                         continue
                     self.eligibility_holds.pop(row['job_id'], None)
-                    task.supply_hosts = None if decision is None else frozenset(decision['eligible_host_ids'])
+                    set_task_supply_hosts(s,task,None if decision is None else frozenset(decision['eligible_host_ids']))
                     row = rows[row['job_id']] = dict(row, eligibility=decision)
             if decision is not None and host not in decision['eligible_host_ids']:
                 skipped = True
@@ -4561,6 +4995,7 @@ class DistributedExecutor(ConcurrentExecutor):
             return reply(assignments=assignments, stop=False, probe_rows=challenges, host_admission=admission)
         mark('select_assignments')
         claimed = []
+        publications = []
         latest_policy, latest_error = self._host_admission_policy()
         with self._rpc_queue_lock('/v1/poll', host):
             stopping = self._user_stop_requested() or s.failure or s.closed or getattr(self,'hchain_priority_pending',False)
@@ -4636,17 +5071,23 @@ class DistributedExecutor(ConcurrentExecutor):
                 if q3_headroom is not None:
                     eligible.sort(key=lambda task: task is not q3_headroom[0])
             standby_claimed = 0
+            planned, details, expected = {}, {}, {}
+            class_quotas = (value.get('resource_report') or {}).get('admitted_task_class_slots')
+            class_claimed = Counter()
             for task in (() if stale or stopping else eligible):
                 if (remaining <= 0 and (not extra or not spare_delivery)) or self._user_stop_requested(): break
                 if task.status != 'QUEUED': continue
                 row = self.store.row(task.job.name)
                 if row is None or row['state']!='QUEUED':continue
-                if task.rule['kind']=='preparation' and not self._task_ready(task,row):continue
+                if task.rule['kind']=='preparation' and not self._task_ready(task,row,verify=False):continue
                 if not self._fits_host_walltime(host, row['request']) or not self._fits_host_task_class(host, row):
                     continue
-                if self._wait_for_preparation_preference(host, row, admission_policy, admission_error):
+                task_class = self._task_resource_class(row, host) if class_quotas is not None else None
+                if class_quotas is not None and class_claimed[task_class] >= class_quotas.get(task_class, 0):
                     continue
-                if not self._local_calibration_pair_allows(host, row['request']):
+                if self._wait_for_preparation_preference(host, row, admission_policy, admission_error, owned=owned_now):
+                    continue
+                if not self._local_calibration_pair_allows(host, row['request'], owned=owned_now):
                     continue
                 forecast = self._preparation_forecast(host, row)
                 report = value.get('resource_report') or {}
@@ -4692,6 +5133,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 elif not remaining:
                     break
                 detail = {'pbs_launch_resources': launch_fit} if launch_fit else {}
+                if pbs_offer.get('rollover_guard') is not None:
+                    detail['pbs_rollover_guard']=deepcopy(pbs_offer['rollover_guard'])
                 if forecast.get('storage_bytes'):
                     detail['storage_reservation_bytes'] = forecast['storage_bytes']
                 if pbs_offer.get('allocation_token'):
@@ -4700,45 +5143,54 @@ class DistributedExecutor(ConcurrentExecutor):
                     from .rpe_q3_resources import preparation_workload
                     workload = preparation_workload(row['request'])
                     if workload:detail['preparation_workload'] = workload
-                options = {'assignment_detail': detail} if detail else {}
-                result_rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
-                                        host_fingerprints=fingerprints, **options)
-                if not result_rows: continue
-                row = result_rows[0]
+                planned[row['job_id']] = (task, standby)
+                if class_quotas is not None:
+                    class_claimed[task_class] += 1
+                details[row['job_id']] = detail
+                expected[row['job_id']] = (row['request_sha256'],row['eligibility'],row['detail'])
+                # Charge proposed owners conservatively before the single
+                # transaction. A rejected owner can only leave capacity idle;
+                # it cannot let later work overbook CPU/RAM/storage.
                 reserved_storage += forecast.get('storage_bytes', 0)
                 reserved_memory += forecast.get('memory_bytes', 0)
                 new_memory += forecast.get('memory_bytes', 0)
-                if resource_pool is not None:
-                    if not standby:
-                        free_cpu -= cpu
-                        free_memory -= memory
-                        if task.rule['kind'] in Q3_EXECUTION_ROUTE_KINDS:
-                            q3_headroom = None
-                # Assignment and reservation are committed before a worker
-                # receives anything. A lost HTTP response retains ownership.
-                Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],
-                    pid=None, started=row['assigned_epoch'], kind=task.rule['kind'], transport='distributed'))
-                task.status = 'RUNNING'; task.started = True; task.speculative = not task.demand
-                s.clock += 1; s.owner_clock[task.owner] = s.clock; s.active += 1
-                s.peak_active = max(s.peak_active, s.active)
-                self.uncounted.add(task.job)
-                s.metrics['launched'] += 1
-                s.by_method.setdefault(row['method'], Counter())['launched'] += 1
-                if task.speculative: s.metrics['speculative_launched'] += 1
-                task.view.log(event='LAUNCH', job=row['job_id'], host_id=host, attempt_id=row['attempt_id'],
-                    configuration=task.proposal['configuration_id'], queue_wait_seconds=time.monotonic()-task.enqueue,
-                    active=s.active, demand=task.demand, phase='ASSIGNED', pbs_standby=standby,
-                    provider=(row['request'].get('preparation') or {}).get('provider'),
-                    eligible_hosts=(row['eligibility'] or {}).get('eligible_host_ids'))
-                claimed.append(row)
+                owned_now.append(dict(row,host_id=host,state='ASSIGNED'))
                 spare_delivery -= 1
                 if standby:
-                    standby_claimed += 1
                     standby_cpu += cpu
                     standby_memory += memory
                 else:
                     remaining -= 1
                     host_busy = True
+                    if resource_pool is not None:
+                        free_cpu -= cpu
+                        free_memory -= memory
+                        if task.rule['kind'] in Q3_EXECUTION_ROUTE_KINDS:
+                            q3_headroom = None
+            if planned and not self._user_stop_requested():
+                claimed = self.store.claim(host,len(planned),value.get('cached_prefixes', []),list(planned),
+                    host_fingerprints=fingerprints,assignment_details=details,expected=expected)
+            for row in claimed:
+                task, standby = planned[row['job_id']]
+                transition_task(s,task,'RUNNING'); task.started = True; task.speculative = not task.demand
+                s.clock += 1; s.owner_clock[task.owner] = s.clock; s.active += 1
+                s.peak_active = max(s.peak_active,s.active)
+                self.uncounted.add(task.job)
+                s.metrics['launched'] += 1
+                s.by_method.setdefault(row['method'],Counter())['launched'] += 1
+                if task.speculative: s.metrics['speculative_launched'] += 1
+                standby_claimed += int(standby)
+                publications.append((row,task.view,dict(event='LAUNCH',job=row['job_id'],host_id=host,
+                    attempt_id=row['attempt_id'],configuration=task.proposal['configuration_id'],
+                    queue_wait_seconds=time.monotonic()-task.enqueue,active=s.active,demand=task.demand,
+                    phase='ASSIGNED',pbs_standby=standby,
+                    provider=(row['request'].get('preparation') or {}).get('provider'),
+                    eligible_hosts=(row['eligibility'] or {}).get('eligible_host_ids'))))
+        # SQLite ownership was committed in one transaction. File publication
+        # and progress logging no longer serialize unrelated worker polls.
+        for row, view, event in publications:
+            self._publish_launch_marker(row)
+            view.log(**event)
         if standby_claimed:
             self.log(event='PBS_READY_BUFFER_ASSIGNED', host_id=host, jobs=standby_claimed,
                      standby_cpu=standby_cpu, standby_memory_bytes=standby_memory)
@@ -4878,11 +5330,14 @@ class DistributedExecutor(ConcurrentExecutor):
             return dict(ok=True, duplicate=duplicate)
 
     def _learn_q3_memory(self,row,transfer):
+        if self.q3_memory_learner is None or not self.q3_memory_learner.policy:
+            return
         from .rpe_q3_memory import observation
         self._update_q3_memory(observation(row,transfer))
 
     def _update_q3_memory(self,sample):
-        if sample is None:return
+        if (sample is None or self.q3_memory_learner is None or not self.q3_memory_learner.policy
+                or sample['attempt_id'] in self.q3_memory_learner.observations):return
         pbs=self.distributed['pbs']
         owned=self.store.rows_for(r['job_id'] for r in self._owned_attempts())
         if self.q3_memory_learner.update(sample,owned.values(),pbs) and self.pbs_manager is not None:
@@ -4914,27 +5369,68 @@ class DistributedExecutor(ConcurrentExecutor):
         raise ValueError(reason)
 
     def _publish_transfer(self, row, *, startup=False):
-        from .rpe_q3_coordinator import publish_staged_files
+        from .rpe_q3_coordinator import publish_staged_files, publication_directory_stamp as signature, atomic_json
 
         job = self.run_dir/'jobs'/row['method']/row['job_id']
         stage = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
         if not stage.exists():
             if (job/'OUTCOME.json').exists(): return
             raise ValueError('Accepted completion is missing its transfer directory')
+        marker = self.run_dir/'distributed'/'publication_checks'/row['job_id']/(row['attempt_id']+'.json')
         if startup and (job/'OUTCOME.json').is_file() and (job/'PROCESS_RETURN.json').is_file():
-            # OUTCOME was published last. Check every existing staged path is
-            # still the same ordinary-file hard link before avoiding redundant
-            # fsync; absent or independently copied paths use the normal repair.
+            # An accepted transfer's directory entries are immutable. Reuse
+            # a previously verified link walk only while *all* source and
+            # destination directory identities (including empty source dirs)
+            # remain unchanged. A replaced/deleted child updates its parent.
+            identity = row.get('completion_sha256')
+            try:
+                saved = json.loads(marker.read_bytes())
+                if identity and saved.get('completion_sha256') == identity:
+                    paths = [(stage, saved['stage']), (job, saved['job'])]
+                    now_ns=time.time_ns()
+                    if all('.' in stamps and all(not Path(name).is_absolute() and '..' not in Path(name).parts
+                                                  and now_ns-max(stamp[-2:])>=1_000_000_000
+                                                  and signature(root/name)==stamp for name,stamp in stamps.items())
+                           for root,stamps in paths):
+                        return
+            except (OSError, ValueError, KeyError, TypeError):
+                pass  # The receipt is advisory; retain the normal repair path.
+            # Start a fresh check. Save the directory snapshot only if the
+            # complete traversal was link-identical and no directory changed.
             def linked():
+                stage_dirs, job_dirs = {'.':signature(stage)}, {'.':signature(job)}
                 for source in stage.rglob('*'):
+                    name = source.relative_to(stage)
+                    if source.is_dir() and not source.is_symlink():
+                        stage_dirs[name.as_posix()] = signature(source)
+                        continue
                     if source==stage/'REQUEST.json' or not (source.is_file() or source.is_symlink()):continue
-                    target=job/source.relative_to(stage)
+                    target=job/name
                     if (source.is_symlink() or target.is_symlink() or not target.is_file()
                             or not target.resolve().is_relative_to(job.resolve()) or not source.samefile(target)):
                         return False
+                    for parent in name.parents:
+                        key = parent.as_posix()
+                        if key not in job_dirs:
+                            job_dirs[key] = signature(job/parent)
+                if identity and all(signature(root/name)==stamp for root,stamps in ((stage,stage_dirs),(job,job_dirs))
+                                    for name,stamp in stamps.items()):
+                    try:
+                        marker.parent.mkdir(parents=True,exist_ok=True)
+                        atomic_json(marker,dict(completion_sha256=identity,stage=stage_dirs,job=job_dirs))
+                    except OSError:
+                        pass  # A missing acceleration record is not a hold.
                 return True
-            if linked():return
-        publish_staged_files(stage, job)
+            try:
+                if linked():return
+            except (OSError,ValueError):
+                pass
+        captured = publish_staged_files(stage, job, capture_signature=True)
+        if captured and row.get('completion_sha256'):
+            try:
+                marker.parent.mkdir(parents=True,exist_ok=True)
+                atomic_json(marker,dict(completion_sha256=row['completion_sha256'],**captured))
+            except OSError:pass  # acceleration only
 
     def recover_scaled_completions(self):
         with self.state.cv:
@@ -4982,6 +5478,12 @@ class DistributedExecutor(ConcurrentExecutor):
         return dict(answer, failure_scope='CONFIGURATION',
                     reason=reason or row['detail'].get('reason') or 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED')
 
+    def _demand_has_queue_room(self):
+        # Standby is a prefetch window, not a priority inversion. Permit one
+        # queued demand per method outside it. Claim still enforces resource
+        # availability and the ordinary method budget.
+        return self._standby_has_capacity() or not queued_count(self.state,'demand',self.method)
+
     def answer_now(self, proposal):
         """Advance one independent scaled allocation without waiting for its worker."""
         if self._user_stop_requested():
@@ -4995,7 +5497,7 @@ class DistributedExecutor(ConcurrentExecutor):
         has_job = self.has_job(proposal)
         with self.state.cv:
             revision = getattr(self.state, 'probe_revision', 0)
-            if (not has_job and not self._budget_reserved() and not self._standby_has_capacity()):
+            if (not has_job and not self._budget_reserved() and not self._demand_has_queue_room()):
                 return dict(status='DISPATCH_PENDING', reason='Q3_QUEUE_WINDOW_FULL', job_id=job.name, calls=0)
         task = self._enqueue_demand(proposal)
         if task is _CHECK_PENDING or (task and not task.event.is_set()):
@@ -5126,6 +5628,7 @@ class DistributedExecutor(ConcurrentExecutor):
             snapshot.state.cv = threading.Condition()
             snapshot.state.tasks = {job: copy(task) for job, task in self.state.tasks.items()}
             snapshot.state.metrics = self.state.metrics.copy()
+            snapshot.state.queue_observer_profile=dict(getattr(self.state,'queue_observer_profile',{}))
             snapshot.state.by_method = {m: counts.copy() for m, counts in self.state.by_method.items()}
             snapshot.hosts = self.hosts.copy()
             snapshot.eligibility_holds = self.eligibility_holds.copy()
@@ -5156,6 +5659,7 @@ class DistributedExecutor(ConcurrentExecutor):
         admissions = {host:self._host_admission(host, admission_policy, admission_error)
                       for host in sorted(set(self.hosts) | set(admission_policy['hosts']))}
         result.update(distributed=True, by_host=by_host, host_admission=admissions,
+                      queue_observer_profile=dict(getattr(self.state,'queue_observer_profile',{})),
                       pbs=self.pbs_manager.metrics() if self.pbs_manager else None,
                       host_admission_error=admission_error,
                       allocation_settings=deepcopy(self.allocation_settings),
@@ -5241,8 +5745,8 @@ class DistributedExecutor(ConcurrentExecutor):
             with self.lock:
                 self.progress_start=(self.run_dir/'PROGRESS.jsonl').stat().st_size
             s.cycle_measurement_seed=dict(monotonic=time.monotonic(),capacity=self.capacity,
-                active=[job.name for job,task in s.tasks.items() if task.status=='RUNNING'],
-                queued=[job.name for job,task in s.tasks.items() if task.status=='QUEUED'])
+                active=[task.job.name for task in tasks_with_status(s,'RUNNING')],
+                queued=[task.job.name for task in tasks_with_status(s,'QUEUED')])
 
     def queued_preparation_count(self):
         with self.store._connection() as db:
@@ -5356,8 +5860,14 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
 
                 while futures:
                     with state.cv:
-                        state.cv.wait_for(lambda: any(f.done() for f in futures.values()) or idle_ready())
-                        done = [m for m, f in futures.items() if f.done()]
+                        revision=state.cv.revision
+                        done=[m for m,f in futures.items() if f.done()]
+                    ready=[] if done else idle_ready()
+                    if not done and not ready:
+                        with state.cv:
+                            if state.cv.revision==revision and not any(f.done() for f in futures.values()):
+                                state.cv.wait()
+                        continue
                     for method in done:
                         out[method] = futures.pop(method).result()[method]
                     if not futures or any(r['stop_reason'] == 'UNKNOWN_RESULT' for r in out.values()):
@@ -5365,8 +5875,7 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
                         # same failure callback and existing stop contract.
                         out.update((m, f.result()[m]) for m, f in futures.items())
                         break
-                    with state.cv:
-                        restart = idle_ready()
+                    restart = idle_ready() if done else ready
                     for method in restart:
                         futures[method] = submit(method)
     except BaseException:

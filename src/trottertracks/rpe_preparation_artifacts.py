@@ -67,6 +67,8 @@ class ArtifactCache:
         self._verified = {}
         self._verification_locks = {}
         self._verification_lock = threading.Lock()
+        self._inventory_lock = threading.Lock()
+        self._inventory = {}
 
     @staticmethod
     def _identity(path):
@@ -78,6 +80,25 @@ class ArtifactCache:
     def path(self, sha):
         sha = artifact_hash(sha)
         return self.root / sha[:2] / sha
+
+    def available(self, hashes):
+        """Cheap advisory presence check; never authorizes content adoption.
+
+        The dispatch/transfer/materialization paths still hash exact bytes.
+        A scheduler predicate must not read a multi-GiB bundle under its lock.
+        """
+        for sha in dict.fromkeys(hashes):
+            path = self.path(sha)
+            candidates = (path, *(root/sha[:2]/sha for root in self.prior_roots))
+            for candidate in candidates:
+                try:
+                    self._identity(candidate)
+                except (OSError, ValueError):
+                    continue
+                break
+            else:
+                return False
+        return True
 
     def missing(self, hashes):
         result = []
@@ -139,8 +160,26 @@ class ArtifactCache:
         return False
 
     def hashes(self):
-        if not self.root.exists():return []
-        return sorted(p.name for p in self.root.glob('*/*') if p.is_file() and len(p.name) == 64)
+        """Advisory inventory: only rescan shards whose directory entries changed."""
+        with self._inventory_lock:
+            updated = {}
+            for shard in self.root.glob('*'):
+                try:
+                    info = shard.stat()
+                    if not stat.S_ISDIR(info.st_mode):continue
+                    revision = (info.st_dev,info.st_ino,info.st_mtime_ns,info.st_ctime_ns)
+                    cached = self._inventory.get(shard)
+                    # Coarse/shared filesystem timestamp ticks can hide
+                    # rapid add/remove operations. Reuse only a stable shard.
+                    stable = time.time_ns()-max(revision[-2:])>=1_000_000_000
+                    if cached is None or cached[0] != revision or not stable:
+                        names = tuple(p.name for p in shard.iterdir() if p.is_file() and len(p.name)==64)
+                        cached = revision,names
+                    updated[shard]=cached
+                except FileNotFoundError:
+                    continue  # concurrent safe reclamation; inventory is advisory
+            self._inventory=updated
+            return sorted(name for _,names in updated.values() for name in names)
 
     def put(self, blobs):
         count = size = 0
@@ -180,15 +219,31 @@ class ArtifactCache:
             target.parent.mkdir(parents=True, exist_ok=True)
             source = self.path(sha)
             if immutable and not target.exists():
-                try:
-                    os.link(source, target)
-                except FileExistsError:
-                    pass  # Another reader materialized the result first.
-                except OSError as error:
-                    if error.errno not in (errno.EXDEV, errno.EOPNOTSUPP, errno.ENOSYS, errno.EMLINK):
-                        raise
-                else:
-                    continue
+                with self._verification_lock:
+                    lock=self._verification_locks.setdefault(sha,threading.Lock())
+                with lock:
+                    before=self._identity(source)
+                    links=source.stat().st_nlink
+                    verified=self._verified.get(sha)==before
+                    try:
+                        os.link(source,target)
+                    except FileExistsError:
+                        pass  # Another reader materialized the result first.
+                    except OSError as error:
+                        if error.errno not in (errno.EXDEV, errno.EOPNOTSUPP, errno.ENOSYS, errno.EMLINK):
+                            raise
+                    else:
+                        after=self._identity(source)
+                        # Only our own successful link can carry a previously
+                        # verified identity over the ctime change. The ordinary
+                        # one-second stability rule in missing() still applies.
+                        if (verified and before[:4]==after[:4]
+                                and source.stat().st_nlink==links+1
+                                and self._identity(target)==after):
+                            self._verified[sha]=after
+                        else:
+                            self._verified.pop(sha,None)
+                        continue
             if immutable and target.is_file() and not target.is_symlink() and source.samefile(target):
                 continue
             if target.exists():
@@ -271,6 +326,21 @@ def input_manifest(request):
     if isinstance(inputs, list):inputs = {row['path']:row['sha256'] for row in inputs}
     if not isinstance(inputs, dict):raise ValueError('Preparation inputs must be an artifact manifest')
     return {str(artifact_path(name)):artifact_hash(sha) for name, sha in inputs.items()}
+
+
+def preparation_dependency_manifest(request, outcome_for):
+    """Resolve named inputs from accepted predecessor outcomes."""
+    preparation=request.get('preparation') or {}
+    manifest=input_manifest(request)
+    for predecessor,paths in preparation.get('dependency_inputs',{}).items():
+        outcome=outcome_for(predecessor)
+        for source,target in paths.items():
+            target=str(artifact_path(target))
+            sha=artifact_hash(outcome['artifacts'][source])
+            if target in manifest and manifest[target]!=sha:
+                raise ValueError('Dependency artifact binding conflicts: '+target)
+            manifest[target]=sha
+    return manifest
 
 
 def assigned_artifacts(assignment):

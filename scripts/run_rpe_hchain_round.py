@@ -1,12 +1,15 @@
 """Provide scoped H-chain candidates to the ordinary distributed round."""
 import base64
 from collections import Counter
+from copy import deepcopy
+from threading import RLock
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import importlib
 import json
 from pathlib import Path
 import signal
+import subprocess
 import sys
 import time
 
@@ -94,6 +97,21 @@ def preparation_order(kind, cell, base_priority):
     return (size, base_priority) if kind == "price" else (base_priority, size)
 
 
+def signal_batch_policy(plan, worker):
+    """Use a provider-declared phase-cache policy, retaining fixed H8 defaults."""
+    policy=getattr(worker,'SIGNAL_BATCH_POLICY',None)
+    if policy is None:
+        if plan['scope']['system']=='H8':
+            policy={'phase_keys':{'2nd':1,'4th':2,'4th(m5_best)':6},'phase_key_limit':32}
+        else:
+            return {},None
+    weights=policy['phase_keys'];limit=policy['phase_key_limit']
+    if (not isinstance(weights,dict) or not weights or type(limit) is not int or limit<1
+            or any(type(value) is not int or not 0<value<=limit for value in weights.values())):
+        raise ValueError('Invalid provider signal phase-cache batch policy')
+    return weights,limit
+
+
 def batches(plan, run, worker, sizes, budgets):
     priority = worker.h8_preparation_priority(plan, run, circuit_size)
     work = []
@@ -114,12 +132,15 @@ def batches(plan, run, worker, sizes, budgets):
     phase_keys = 0
     # Each H8 signal uses the symmetric weights of its fixed PF formula.
     # Count an upper bound per target, even when times repeat across targets.
-    h8_phase_keys = {"2nd": 1, "4th": 2, "4th(m5_best)": 6}
+    phase_weights,phase_limit=signal_batch_policy(plan,worker)
     for _, _, stage, cell, index in work:
-        keys = (h8_phase_keys[cell["formula"]]
-                if plan["scope"]["system"] == "H8" and stage == "signal" else 0)
+        keys=0
+        if stage=='signal' and phase_limit is not None:
+            if cell['formula'] not in phase_weights:
+                raise ValueError('Provider has no signal phase-cache policy for formula: '+cell['formula'])
+            keys=phase_weights[cell['formula']]
         if pending and (pending[0][0] != stage or len(pending) == sizes.get(stage, 1)
-                        or phase_keys + keys > 32):
+                        or (phase_limit is not None and phase_keys + keys > phase_limit)):
             yield pending
             pending = []
             phase_keys = 0
@@ -132,7 +153,7 @@ def batches(plan, run, worker, sizes, budgets):
 def task_graph(executor, plan, run, worker, settings, budgets):
     definitions = []
     metadata = {k: plan[k] for k in (
-        "owner", "binding", "target", "compiler", "scope", "price_cohort", "verified_saved_preparations") if k in plan}
+        "owner", "binding", "target", "compiler", "scope", "price_cohort", "verified_saved_preparations", "provider_contract") if k in plan}
     for batch in batches(plan, run, worker, settings["batch_sizes"], budgets):
         stage = batch[0][0]
         cells = {cell["id"]: cell for _, cell, _ in batch}
@@ -148,7 +169,8 @@ def task_graph(executor, plan, run, worker, settings, budgets):
         executor.artifact_cache.put({checksum: base64.b64encode(raw).decode()})
         targets = [[cell["id"], index] for _, cell, index in batch]
         request = preparation_request(packet, checksum, stage, targets, source=settings["provider_source"],
-                                      assets=settings["assets"], spectral_signals=settings.get("spectral_signals", False))
+                                      assets=settings["assets"], spectral_signals=settings.get("spectral_signals", False),
+                                      openblas_coretype=settings.get("openblas_coretype"))
         contract = dict(request["original_contract"], fixed_plan_sha256=settings["plan"]["sha256"])
         definitions.append(dict(name=f"hchain-{stage}-{len(definitions)}", request=request, contract=contract,
                                 approved=True, budget=budgets[stage]))
@@ -212,30 +234,35 @@ def install_preparation_priorities(executor, ranks):
         executor.hchain_preparation_priority = ranks
 
 
-def preparation_priorities(graph, executor, plan, run, worker, screen=None, *, small_price_size=64):
-    """Re-rank the frozen tasks using saved completion filenames, never resize them."""
+def preparation_priority_descriptors(graph, executor):
     from trottertracks.rpe_preparation_queue import preparation_job_id
+    descriptors = []
+    for task in graph['tasks']:
+        if task.get('dependencies'):
+            raise ValueError('Unexpected H-chain preparation dependencies')
+        request = task['request']; prep = request['preparation']
+        command = prep['command']
+        targets = json.loads(command[command.index('--targets')+1])
+        job = preparation_job_id(request, source_manifest=executor.source_manifest, dependencies=[])
+        descriptors.append((job, prep['stage'], targets))
+    return descriptors
 
+
+def preparation_priorities(graph, executor, plan, run, worker, screen=None, *, small_price_size=64, descriptors=None):
+    """Re-rank the frozen tasks using saved completion filenames, never resize them."""
     priority = worker.h8_preparation_priority(plan, run, circuit_size)
     inputs = {stage: planned_inputs(plan, stage) for stage in scope.STAGES}
     costs = approximate_price_priorities(plan, worker, screen)
     ranks = {}
-    for task in graph["tasks"]:
-        if task.get("dependencies"):
-            raise ValueError("Unexpected H-chain preparation dependencies")
-        request = task["request"]
-        prep = request["preparation"]
-        stage = prep["stage"]
-        command = prep["command"]
-        targets = json.loads(command[command.index("--targets") + 1])
-        kind = "signal" if stage == "signal" else "price"
+    if descriptors is None:
+        descriptors = preparation_priority_descriptors(graph, executor)
+    for job, stage, targets in descriptors:
+        kind = 'signal' if stage == 'signal' else 'price'
         rank = min(dispatch_preparation_order(kind, inputs[stage][cid],
-                    priority((kind, inputs[stage][cid], index, None, plan["owner"])), costs.get(cid),
+                    priority((kind, inputs[stage][cid], index, None, plan['owner'])), costs.get(cid),
                     small_price_size=small_price_size) for cid, index in targets)
-        job = preparation_job_id(request, source_manifest=executor.source_manifest, dependencies=[])
         ranks[job] = rank
     return ranks
-
 
 def install_ready(provider, plan, run, rows, routes, expected, spec, *, final, excluded=()):
     methods = spec["methods"]
@@ -243,25 +270,57 @@ def install_ready(provider, plan, run, rows, routes, expected, spec, *, final, e
     caps = spec["max_new_q3_per_method"]
     finite = [method for method in methods if caps[method] != "UNLIMITED"]
     changed = set()
-    ready = (provider.select_cases(plan, [case for case in plan["cases"] if case["id"] not in installed])
-             if final else provider.ready_batch(plan, run, methods, installed, require_all=finite))
+    remaining=[case for case in plan['cases'] if case['id'] not in installed]
+    try:
+        ready = (provider.select_cases(plan,remaining) if final else
+                 provider.ready_batch(plan, run, methods, installed, require_all=finite))
+    except (OSError,subprocess.CalledProcessError):
+        # Preserve a finite method's all-ready contract. Independent unlimited
+        # candidate metadata may be recovered separately after a local IO
+        # error. Do not catch a whole-plan binding/identity mismatch here.
+        recovered=[]
+        for method in methods:
+            cases=[case for case in remaining if case['method']==method]
+            batches=[cases] if method in finite else [[case] for case in cases]
+            for batch in batches:
+                if not batch:continue
+                try:
+                    subset=provider.select_cases(plan,batch)
+                    observed=subset if final else provider.ready_batch(subset,run,[method],installed,
+                                                                       require_all=[method] if method in finite else [])
+                    recovered.extend(observed['cases'])
+                except (OSError,subprocess.CalledProcessError) as error:
+                    for case in batch:rows[case['id']]['preparation_hold']=str(error)
+        priority=plan.get('exploration_priority')
+        if recovered and not final and not finite and priority:
+            tier=min(priority[case['id']] for case in recovered)
+            recovered=[case for case in recovered if priority[case['id']]==tier]
+        ready=provider.select_cases(plan,recovered)
     if not ready["cases"]:
         return changed
     model_dir = run / "price_models"
     model_dir.mkdir(exist_ok=True)
-    models, _ = provider.price_models(ready, run, require_holdout=not final)
-    for key, model in models.items():
-        if model["estimate"] is not None:
-            path = model_dir / (provider.digest(str(key)) + ".json")
-            if path.exists():
-                models[key] = provider.read(path)
-            else:
-                provider.retain(path, model)
+    def models_for(subset):
+        models,_=provider.price_models(subset,run,require_holdout=not final)
+        for key,model in list(models.items()):
+            try:
+                if model['estimate'] is not None:
+                    path=model_dir/(provider.digest(str(key))+'.json')
+                    if path.exists():models[key]=provider.read(path)
+                    else:provider.retain(path,model)
+            except (OSError,ValueError,KeyError,subprocess.CalledProcessError):
+                models.pop(key)  # never replace a saved model with a new one
+        return models
+    try:
+        shared_models=models_for(ready)
+    except (OSError,subprocess.CalledProcessError):
+        shared_models=None
     for case in ready["cases"]:
         cid, method = case["id"], case["method"]
         try:
+            models=shared_models if shared_models is not None else models_for(provider.select_cases(ready,[case]))
             axes, entry, route = prepared_case(provider, run, plan, case, models, interpreter=sys.executable)
-        except (OSError, ValueError, KeyError) as error:
+        except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
             rows[cid]["preparation_hold"] = str(error)
             continue
         rows[cid].update(ready=True, needs=[], prices=[optimizer.frac(axis["unit_price_RZ"]) for axis in axes],
@@ -384,6 +443,74 @@ def finish_block(run, results, methods):
               methods={method: row["stop_reason"] for method, row in results.items()}))
 
 
+def stream_ready_in_wave(screen, settings, spec, executor):
+    """A screened wave may only stream with an explicit new ordering policy.
+
+    Finite Q3 budgets retain the original all-ready ordering; the exclusion
+    set is frozen until the active selector returns.
+    """
+    if not getattr(executor,'supports_nonblocking_prefetch',False):
+        return False
+    if screen is None:
+        return True
+    return (settings.get('screened_ready_streaming') is True
+            and all(spec['max_new_q3_per_method'].get(method)=='UNLIMITED'
+                    for method in spec['methods']))
+
+
+class HChainReadySource:
+    """Publish immutable late READY candidates through the shared selector API."""
+    def __init__(self, executor, rows):
+        self.executor = executor
+        self.lock = RLock()
+        self.sent = {cid for cid, row in rows.items() if row['ready']}
+        self.pending = {}
+        self.routes = {}
+        self.expected = {}
+
+    def publish(self, rows, routes, expected, excluded):
+        with self.lock:
+            for cid, row in rows.items():
+                if row['ready'] and cid not in self.sent and cid not in excluded:
+                    self.pending.setdefault(row['method'], {})[cid] = deepcopy(row)
+                    self.sent.add(cid)
+            self.routes = {method:list(rules) for method,rules in routes.items()}
+            self.expected = dict(expected)
+        with self.executor.state.cv:
+            self.executor.state.cv.notify_all()
+
+    def has_new(self, method):
+        with self.lock:
+            return bool(self.pending.get(method))
+
+    def subscribe(self, method, context, candidates, view):
+        def pending():
+            return self.has_new(method)
+        def take():
+            with self.lock:
+                rows = list(self.pending.pop(method, {}).values())
+                routes = self.routes.copy()
+                expected = self.expected.copy()
+            trial = view.for_method(method)
+            trial.routes, trial.expected = routes, expected
+            new_routes, added = [], []
+            bindings = dict(view.expected)
+            for row in rows:
+                cid = row['configuration_id']
+                route = trial.route(cid)
+                if route is None or trial.refresh_execution_hold(cid):
+                    continue
+                row['execution_needs'] = []
+                row.pop('execution_hold', None)
+                new_routes.append(dict(route, configuration_ids=[cid]))
+                bindings[cid] = trial.expected_for(cid, route)
+                added.append(row)
+            view.routes = dict(view.routes, **{method:new_routes+view.routes.get(method,[])})
+            view.expected = bindings
+            return added, None
+        return pending, take
+
+
 def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False, partition=None):
     settings = spec["hchain"]
     plan, cases = selected_plan(settings, problem, spec["methods"])
@@ -423,7 +550,9 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
     expected, results, withheld = {}, {}, {}
     selected = set(rows)
     inherited = {}
-    legacy = legacy_io.checked(settings, full_plan, verify_files=True)
+    legacy = legacy_io.checked(settings, full_plan, verify_files=True,
+                               receipt_plan=plan if "case_ids" in settings else None,
+                               cache_path=run/"LEGACY_HASH_CACHE.json")
     if legacy is not None:
         if "case_ids" in settings:
             directory, history = legacy
@@ -486,7 +615,9 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
         small_price_size = settings.get("small_price_priority_size", 64)
         if type(small_price_size) is not int or small_price_size < 1:
             raise ValueError("small_price_priority_size must be positive")
-        ranks = preparation_priorities(graph, executor, plan, run, worker, screen, small_price_size=small_price_size)
+        priority_descriptors = preparation_priority_descriptors(graph, executor)
+        ranks = preparation_priorities(graph, executor, plan, run, worker, screen,
+            small_price_size=small_price_size, descriptors=priority_descriptors)
         last_priority_refresh = time.monotonic()
         priority_dirty = False
         if screen is not None:
@@ -502,6 +633,10 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
         install_preparation_priorities(executor, ranks)
         with ThreadPoolExecutor(max_workers=1, thread_name_prefix="hchain-search") as pool:
             future = None
+            live_source = None
+            idle_marker = run/'HCHAIN_IDLE_WAIT.json'
+            idle_marker.unlink(missing_ok=True)
+            last_idle_check = 0.
             refresh = True
             initial_ready = {row["method"] for row in rows.values() if row["ready"]
                              and spec["max_new_q3_per_method"][row["method"]] == "UNLIMITED"}
@@ -516,7 +651,8 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                     if receipt["status"] != "PREPARATION_COMPLETE":
                         withheld[job] = receipt
                 if priority_dirty and time.monotonic() - last_priority_refresh >= 30:
-                    install_preparation_priorities(executor, preparation_priorities(graph, executor, plan, run, worker, screen, small_price_size=small_price_size))
+                    install_preparation_priorities(executor, preparation_priorities(graph, executor, plan, run, worker, screen,
+                        small_price_size=small_price_size, descriptors=priority_descriptors))
                     last_priority_refresh = time.monotonic()
                     priority_dirty = False
                 if future is not None and future.done():
@@ -525,8 +661,33 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                     report()
                     if optimizer.shared_stop(observed):
                         break
+                    if live_source is not None:
+                        if screen is not None:
+                            refresh=True  # update screening only after the frozen wave ends
+                        # A selector that already exited before observing a
+                        # publication is restarted in the ordinary next wave.
+                        initial_ready.update(method for method in spec['methods'] if live_source.has_new(method))
                     future = None
-                if future is None and refresh:
+                    live_source = None
+                if future is not None and live_source is not None and refresh:
+                    # The opt-in screened wave uses its original exclusion
+                    # set; never re-screen while the selector is running.
+                    updated_routes = {method:list(items) for method,items in routes.items()}
+                    updated_expected = dict(expected)
+                    changed = install_ready(provider, plan, run, rows, updated_routes, updated_expected, spec,
+                                             final=not pending, excluded=excluded)
+                    refresh = False
+                    if changed:
+                        routes, expected = updated_routes, updated_expected
+                        with executor.state.cv:
+                            executor.routes, executor.expected = routes, expected
+                        live_source.publish(rows, routes, expected, excluded)
+                if future is None and (refresh or initial_ready):
+                    # Explicit inherited exact replays use the same ordinary
+                    # nonblocking owner reconciliation as schedule searches.
+                    # Legacy holds without replay permission are untouched.
+                    if any(hold.get('replay_exact') is True for hold in getattr(executor,'prior_q3_holds',())):
+                        executor.replay_prior_q3(wait=False)
                     if screen is not None:
                         excluded = screen.update(results)
                         retire_pruned_batches(executor, pending, requests, screen.state["skip_price_cells"])
@@ -540,15 +701,34 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                         if methods:
                             refresh = bool(pending)  # A coarse wave may have unsubmitted ready successors.
                             prices = {cid: row["prices"] for cid, row in rows.items() if row["ready"]}
-                            context = dict(candidates=[row for cid, row in rows.items() if cid not in excluded],
+                            context = dict(candidates=deepcopy([row for cid, row in rows.items() if cid not in excluded]),
                                            tau=optimizer.tau(problem),
-                                           expected=expected, saved=optimizer.SavedBackend([], prices),
+                                           expected=dict(expected), saved=optimizer.SavedBackend([], prices),
                                            catalog={"candidates": []}, generate=None, generation={})
+                            options = {}
+                            if stream_ready_in_wave(screen,settings,spec,executor):
+                                live_source = HChainReadySource(executor, rows)
+                                options['ready_source'] = live_source
                             future = pool.submit(optimize, root, problem, context=context, executor=executor,
                                                  methods=methods, extra_results=extra,
-                                                 max_new=spec["max_new_q3_per_method"], science_approved=True)
+                                                 max_new=spec["max_new_q3_per_method"], science_approved=True, **options)
                 if future is None and not pending:
                     break
+                if 'case_ids' in settings and hasattr(executor.store,'idle_revision'):
+                    # Only the independent package driver knows that no
+                    # selector is active. The scheduler rechecks the queue
+                    # revision and owners before issuing a normal handoff.
+                    if future is not None:
+                        idle_marker.unlink(missing_ok=True)
+                    elif time.monotonic()-last_idle_check >= 5:
+                        last_idle_check = time.monotonic()
+                        revision = executor.store.idle_revision()
+                        if revision is None:
+                            idle_marker.unlink(missing_ok=True)
+                        elif not idle_marker.is_file():
+                            write(idle_marker,dict(queue_revision=revision,reason='NO_RESERVED_WORK'))
+                        elif json.loads(idle_marker.read_bytes()).get('queue_revision') != revision:
+                            write(idle_marker,dict(queue_revision=revision,reason='NO_RESERVED_WORK'))
                 with executor.state.cv:
                     if executor.state.failure:
                         raise RuntimeError(executor.state.failure)
@@ -566,6 +746,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
             complete = partition is None
     finally:
         try:
+            (run/'HCHAIN_IDLE_WAIT.json').unlink(missing_ok=True)
             executor.finish()
         finally:
             if sigint is not None:

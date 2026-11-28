@@ -142,3 +142,17 @@ class WidthOverlap(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+def test_width_plan_reconstructs_base_context_in_background_without_second_selection():
+    from types import SimpleNamespace
+    from threading import Event
+    started=Event();planned=Event()
+    fixture=SimpleNamespace(batch_problem=lambda:{'fixed':'problem'},saved_catalog=lambda p:None)
+    def context(problem):
+        started.set();assert planned.wait(2);return {'context':problem}
+    def plan():
+        assert started.wait(2);planned.set();return ['one'],{'report':1}
+    fixture.context=context;fixture.plan=plan
+    assert E.WidthDriver.plan_with_base_context(fixture)==(['one'],{'report':1})
+    assert fixture._prepared_base_context==({'fixed':'problem'},{'context':{'fixed':'problem'}})

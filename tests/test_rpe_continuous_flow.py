@@ -383,3 +383,49 @@ def test_resume_publication_skips_only_intact_hardlinks(tmp_path, monkeypatch):
     ex._publish_transfer(row,startup=True);repair.assert_not_called()
     (job/'raw.json').unlink();ex._publish_transfer(row,startup=True);repair.assert_called_once()
     assert (job/'raw.json').samefile(stage/'raw.json')
+
+
+def test_history_journal_compacts_snapshot_and_preserves_interrupted_branch(tmp_path):
+    import pytest
+    from trottertracks.rpe_width_checkpoint import HistoryJournal
+    from copy import deepcopy
+    path=tmp_path/'KAPPA_HISTORY.jsonl'
+    state={'history':[{'cycle':i,'decisions':[i]} for i in range(100)]}
+    expected=deepcopy(state['history'])
+    saves=[]
+    js=HistoryJournal(path,state)
+    js.checkpoint(state,lambda v:saves.append(deepcopy(v)))
+    assert state['history']==expected[-1:] and state['history_archive']['count']==100
+    assert js.full_history(state)==expected
+    old=deepcopy(state)
+    state['history'].append({'cycle':100,'interrupted':True})
+    def interrupted(data): raise OSError('artificial snapshot interruption')
+    with pytest.raises(OSError):js.checkpoint(state,interrupted)
+    reopened=HistoryJournal(path,old)
+    assert reopened.full_history(old)==expected
+    old['history'].append({'cycle':100,'recovered':True})
+    reopened.checkpoint(old,lambda v:saves.append(deepcopy(v)))
+    assert reopened.full_history(old)==expected+[{'cycle':100,'recovered':True}]
+    assert len(path.read_text().splitlines())==102
+
+
+def test_completion_save_reuses_identical_encoding_and_detects_external_replacement(tmp_path):
+    comp=P.Completion.__new__(P.Completion)
+    comp.lock=threading.RLock();comp.state_path=tmp_path/'STATE.json';comp.state={'records':{'a':{'status':'READY'}}}
+    comp.save();first=comp.state_path.stat().st_ino
+    comp.save();assert comp.state_path.stat().st_ino==first
+    comp.state_path.write_text('{}')
+    comp.save();assert json.loads(comp.state_path.read_text())==comp.state
+    comp.state['records']['a']['status']='HELD';comp.save()
+    assert json.loads(comp.state_path.read_text())==comp.state
+
+
+def test_fixed_locator_cache_keeps_small_history_beyond_old_lru_count(monkeypatch):
+    calls=[];P._fixed_json_locator.cache_clear()
+    try:
+        monkeypatch.setattr(P.subprocess,'check_output',lambda command,**kw:calls.append(command) or b'{"fixture":1}')
+        commit='a'*40
+        for i in range(600):P._fixed_json_locator('/fixture',commit,str(i))
+        for i in range(600):P._fixed_json_locator('/fixture',commit,str(i))
+        assert len(calls)==600
+    finally:P._fixed_json_locator.cache_clear()

@@ -8,6 +8,7 @@ import sys
 from threading import Condition
 from types import SimpleNamespace
 from unittest.mock import Mock
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "scripts")]
@@ -103,8 +104,10 @@ def test_normal_start_resume_pin_the_same_two_worker_round(tmp_path, monkeypatch
     assert len(list((run / "stop-history").glob("*.json"))) == 1
 
 
-def test_new_round_feeds_collected_inputs_back_to_the_common_optimizer(tmp_path, monkeypatch):
+@pytest.mark.parametrize('screened',[False,True])
+def test_new_round_feeds_collected_inputs_back_to_the_common_optimizer(tmp_path, monkeypatch,screened):
     plan, options = fixed_scope(tmp_path)
+    if screened:options['screened_ready_streaming']=True
     run = tmp_path / "run"
     run.mkdir()
     cfg = run / "round.json"
@@ -123,12 +126,23 @@ def test_new_round_feeds_collected_inputs_back_to_the_common_optimizer(tmp_path,
             case for case in plan["cases"] if case["id"] not in installed
             and (run / "signals" / (case["rounds"][0]["id"] + ".json")).is_file()]))
     worker = SimpleNamespace(h8_preparation_priority=lambda *args: lambda job: (0, 1))
+    from threading import Event
+    import time
+    active=Event();received=[];screen_updates=[]
+    if screened:
+        executor.supports_nonblocking_prefetch=True
+        def update(*_):
+            assert not active.is_set(), 'screen must not change during active selector'
+            screen_updates.append(1)
+            return set()
+        screen=SimpleNamespace(update=update,state={'skip_price_cells':set()})
+        monkeypatch.setattr(hchain,'price_screen',lambda *_a,**_k:screen)
     monkeypatch.setattr(scope, "provider_root", lambda settings: ROOT)
     monkeypatch.setattr(hchain, "load_provider", lambda path: (provider, worker))
     monkeypatch.setattr(hchain, "prepared_case", lambda provider, run, plan, case, models, **kwargs: (
         [dict(unit_price_RZ=1)] * 2, dict(signal_packet=case["id"]), dict(kind="hchain_scoped_q3")))
 
-    def register(graph):
+    def register(graph,**kwargs):
         assert len(graph["tasks"]) == 2
         mapping = {}
         for task in graph["tasks"]:
@@ -139,15 +153,36 @@ def test_new_round_feeds_collected_inputs_back_to_the_common_optimizer(tmp_path,
         return mapping
 
     executor.configure_preparation_graph = register
-    executor.ready_preparations = lambda jobs, **kwargs: sorted(jobs)[:1]
+    executor.ready_preparations = lambda jobs, **kwargs: (
+        sorted(jobs)[:1] if not screened or not received or active.is_set() else [])
 
     def receive(ex, job, run):
+        received.append(job)
         central.write(run / job, {"status": "synthetic"})
         return {"status": "PREPARATION_COMPLETE"}
 
     def optimize(root, problem, *, context, **kwargs):
         ready = tuple(row["configuration_id"] for row in context["candidates"] if row["ready"])
         calls.append(ready)
+        if screened:
+            source=kwargs['ready_source']
+            active.set()
+            try:
+                deadline=time.monotonic()+5
+                view=Mock();trial=Mock()
+                view.for_method.return_value=trial
+                view.routes={'FULL_PF':[]};view.expected={}
+                trial.route.return_value={'kind':'fixture'}
+                trial.refresh_execution_hold.return_value=None
+                trial.expected_for.return_value={}
+                pending,take=source.subscribe('FULL_PF',{},[],view)
+                while not pending():
+                    if time.monotonic()>deadline:pytest.fail('late READY never reached active selector')
+                    with executor.state.cv:executor.state.cv.wait(.02)
+                late,_=take()
+                assert [row['configuration_id'] for row in late]==[HOSTS[1]]
+                return {'FULL_PF':{'stop_reason':'SCALED_SHOT_GRID_COMPLETE'}}
+            finally:active.clear()
         evaluator = ConcurrentExecutor(root, run / "toy-optimizer", {"FULL_PF": []}, {}, problem,
                                        budgets={"FULL_PF": 0}, science_approved=False)
         try:
@@ -158,7 +193,8 @@ def test_new_round_feeds_collected_inputs_back_to_the_common_optimizer(tmp_path,
 
     monkeypatch.setattr(hchain, "publish_preparation", receive)
     hchain.run_round(ROOT, run, problem, spec, [], make_executor=lambda *args: (executor, optimize))
-    assert calls == [(HOSTS[0],), HOSTS]
+    assert calls == ([(HOSTS[0],)] if screened else [(HOSTS[0],), HOSTS])
+    if screened:assert len(screen_updates)>=2
     assert set(central.load(run/"ROUND_RESULT.json")["ready"]) == set(HOSTS)
 
 
@@ -259,7 +295,8 @@ def test_two_allocations_sample_and_recover_their_own_artifacts(tmp_path, monkey
             assert method.answer(proposal)["status"] == optimizer.PASS
             assert (task.job / "HCHAIN_RESULT.json").read_bytes() == data
         assert len(set(tokens)) == 2
-        assert list(observed.values()) == [2, 2]
+        # Both independently owned artifacts fit the upgraded bounded chunk.
+        assert list(observed.values()) == [1, 1]
         remote.storage_report.assert_not_called()
     finally:
         manager.close = lambda **kwargs: manager.lock.close()
@@ -447,3 +484,195 @@ def test_saved_approximate_cost_ranks_direct_and_shared_price_dependencies():
     screen=SimpleNamespace(approximation=SimpleNamespace(estimates={'chosen':{'estimated_total_RZ':{'numerator':7,'denominator':2}},'excluded':{'estimated_total_RZ':1}}),state={'excluded':{'excluded':{}}})
     assert hchain.approximate_price_priorities(plan,worker,screen)=={k:Fraction(7,2) for k in ('a','probe','audit')}
     assert hchain.approximate_price_priorities(plan,worker,None)=={}
+
+
+def test_new_local_only_scope_needs_no_pbs_gateway(tmp_path):
+    _, options = fixed_scope(tmp_path)
+    options['pbs_nodes'] = 0
+    options['pbs_offline_search'] = {'mode': 'independent'}
+    round_path = tmp_path / 'template.json'
+    central.write(round_path, dict(max_new_q3_per_method={'FULL_PF': 0}, executor=dict(
+        scheduler='concurrent', distributed=dict(local_worker=dict(host_id='local', slots=1)))))
+    _, spec, canonical = scope.resolve(dict(hchain=options, round=str(round_path)),
+                                      dict(scope=dict(system='H8'), action='preview'))
+    assert canonical['execution_hosts'] == ['local']
+    assert spec['executor']['distributed']['execution_hosts'] == ['local']
+    assert 'pbs_offline_search' not in spec['hchain']
+
+
+def test_hchain_disposition_applies_shared_queue_policy(tmp_path):
+    _, options = fixed_scope(tmp_path)
+    round_path = tmp_path/'template.json'
+    central.write(round_path, dict(max_new_q3_per_method={'FULL_PF':0}, executor=dict(
+        scheduler='concurrent', distributed=transport(pool(tmp_path)))))
+    policy = dict(controller_parallel=True, ready_queue_waves=3, controller_queue_first=True,
+                  pbs_collection_workers=2, calibration_workers=5, pbs_hold_node=True,
+                  pbs_ready_buffer=True,pbs_q3_memory_backfill=True,pbs_standby_waves=2)
+    _, spec, _ = scope.resolve(dict(hchain=options, round=str(round_path), release_worker_policy=policy),
+                               dict(scope=dict(system='H8'), action='preview'))
+    assert spec['search_overrides']['controller_parallel'] is True
+    assert spec['executor']['distributed']['ready_queue_waves'] == 3
+    assert spec['executor']['distributed']['controller_queue_first'] is True
+    assert spec['executor']['distributed']['pbs_hold_node'] is True
+    assert spec['executor']['distributed']['pbs_ready_buffer'] is True
+    assert spec['executor']['distributed']['pbs_q3_memory_backfill'] is True
+    assert spec['executor']['distributed']['pbs_standby_waves']==2
+    assert spec['hchain']['worker_policy_disposition']['not_applied'] == ['calibration_workers']
+
+
+def test_legacy_digest_remains_content_bound_on_file_change(tmp_path):
+    import rpe_hchain_legacy as legacy
+    path = tmp_path/'legacy.json'
+    path.write_bytes(b'first')
+    assert legacy.digest(path) == hashlib.sha256(b'first').hexdigest()
+    path.write_bytes(b'other')
+    assert legacy.digest(path) == hashlib.sha256(b'other').hexdigest()
+
+
+def test_hchain_ready_source_delivers_only_new_candidate_and_its_route():
+    from threading import Condition
+    from unittest.mock import Mock
+    executor = SimpleNamespace(state=SimpleNamespace(cv=Condition()))
+    rows = {'first':{'configuration_id':'first','method':'FULL_PF','ready':True},
+            'late':{'configuration_id':'late','method':'FULL_PF','ready':False}}
+    source = hchain.HChainReadySource(executor, rows)
+    view = Mock()
+    trial = Mock()
+    view.for_method.return_value = trial
+    view.routes = {'FULL_PF':[{'configuration_ids':['first']}]}
+    view.expected = {'first':{'binding':'fixed'}}
+    trial.route.return_value = {'kind':'fixture','configuration_ids':['late']}
+    trial.refresh_execution_hold.return_value = None
+    trial.expected_for.return_value = {'binding':'late-fixed'}
+    pending, take = source.subscribe('FULL_PF', {}, [], view)
+    assert not pending()
+    rows['late']['ready'] = True
+    source.publish(rows, {'FULL_PF':[trial.route.return_value]}, {'late':trial.expected_for.return_value}, set())
+    assert pending()
+    added, saved = take()
+    assert [row['configuration_id'] for row in added] == ['late']
+    assert saved is None
+    assert view.expected == {'first':{'binding':'fixed'}, 'late':{'binding':'late-fixed'}}
+    assert not pending()
+    assert take() == ([],None)
+
+
+def test_selected_legacy_receipt_closure_skips_only_unselected_large_receipts(tmp_path):
+    import rpe_hchain_legacy as legacy
+    import hashlib
+    plan,options=fixed_scope(tmp_path)
+    root=tmp_path/'legacy-closure';root.mkdir()
+    selected=dict(plan,cases=plan['cases'][:1],designs=[])
+    receipt=next(name for name in legacy.receipt_names(selected) if name.startswith('signals/'))
+    path=root/receipt;path.parent.mkdir();path.write_bytes(b'fixture')
+    record=dict(schema='RPE_HCHAIN_LEGACY_V1',owner=plan['owner'],plan_sha256=options['plan']['sha256'],
+                records=[],holds=[],spent={},cases={},jobs=[],files={receipt:hashlib.sha256(b'fixture').hexdigest(),
+                'prices/not-selected.events.json.xz':'d'*64})
+    central.write(root/'LEGACY.json',record)
+    options['legacy']=dict(directory=str(root),sha256=hashlib.sha256((root/'LEGACY.json').read_bytes()).hexdigest())
+    assert legacy.checked(options,plan,verify_files=True,receipt_plan=selected)[1]==record
+    with pytest.raises((ValueError,OSError)):
+        legacy.checked(options,plan,verify_files=True)
+    path.write_bytes(b'changed')
+    with pytest.raises(ValueError,match='evidence changed'):
+        legacy.checked(options,plan,verify_files=True,receipt_plan=selected)
+
+
+def test_candidate_local_io_hold_does_not_abort_independent_hchain_ready(tmp_path,monkeypatch):
+    cases=[{'id':'bad','method':'FULL_PF'},{'id':'good','method':'FULL_PF'}]
+    plan={'cases':cases}
+    def select(plan,cases):return dict(plan,cases=list(cases))
+    def ready_batch(plan,*args,**kwargs):
+        if any(case['id']=='bad' for case in plan['cases']):raise OSError('fixture missing input')
+        return plan
+    provider=SimpleNamespace(select_cases=select,ready_batch=ready_batch,price_models=lambda *_a,**_kw:({},{}))
+    monkeypatch.setattr(hchain,'prepared_case',lambda *_a,**_kw:([{'unit_price_RZ':1}],{'signal_packet':'fixture'},{'fixture':True}))
+    rows={case['id']:{'ready':False,'method':case['method'],'M':1} for case in cases}
+    routes={'FULL_PF':[]};expected={};spec={'methods':['FULL_PF'],'max_new_q3_per_method':{'FULL_PF':'UNLIMITED'}}
+    assert hchain.install_ready(provider,plan,tmp_path,rows,routes,expected,spec,final=False)=={'FULL_PF'}
+    assert rows['good']['ready'] and not rows['bad']['ready']
+    assert 'missing input' in rows['bad']['preparation_hold']
+    # A finite method must not bypass its all-ready gate by narrowing to one case.
+    rows={case['id']:{'ready':False,'method':case['method'],'M':1} for case in cases}
+    spec['max_new_q3_per_method']['FULL_PF']=2
+    assert not hchain.install_ready(provider,plan,tmp_path,rows,{'FULL_PF':[]},{},spec,final=False)
+    assert not rows['good']['ready']
+
+
+def test_selected_legacy_jobs_bind_small_requests_and_skip_other_raw(tmp_path):
+    import rpe_hchain_legacy as legacy
+    plan,options=fixed_scope(tmp_path)
+    assert len(plan['cases']) >= 2
+    selected=dict(plan,cases=plan['cases'][:1],designs=[])
+    root=tmp_path/'legacy-jobs';root.mkdir()
+    files={}
+    jobs=[]
+    for i,case in enumerate(plan['cases'][:2]):
+        folder='jobs/method/job-'+str(i)
+        jobs.append(folder)
+        path=root/folder/'REQUEST.json'
+        path.parent.mkdir(parents=True)
+        central.write(path,dict(configuration_id=case['id']))
+        files[folder+'/REQUEST.json']=hashlib.sha256(path.read_bytes()).hexdigest()
+        path=root/folder/'OUTCOME.json'
+        if i==0:
+            path.write_bytes(b'fixture')
+            files[folder+'/OUTCOME.json']=hashlib.sha256(path.read_bytes()).hexdigest()
+        else:
+            files[folder+'/OUTCOME.json']='e'*64
+    record=dict(schema='RPE_HCHAIN_LEGACY_V1',owner=plan['owner'],plan_sha256=options['plan']['sha256'],
+                records=[],holds=[],spent={},cases={},jobs=jobs,files=files)
+    central.write(root/'LEGACY.json',record)
+    options['legacy']=dict(directory=str(root),sha256=hashlib.sha256((root/'LEGACY.json').read_bytes()).hexdigest())
+    assert legacy.checked(options,plan,verify_files=True,receipt_plan=selected)[1]['jobs']==jobs[:1]
+    with pytest.raises((ValueError,OSError)):
+        legacy.checked(options,plan,verify_files=True)
+    (root/jobs[1]/'REQUEST.json').write_text('{}')
+    with pytest.raises(ValueError,match='evidence changed'):
+        legacy.checked(options,plan,verify_files=True,receipt_plan=selected)
+
+
+def test_legacy_run_cache_reuses_only_stable_content_bound_identity(tmp_path,monkeypatch):
+    import rpe_hchain_legacy as legacy
+    plan,options=fixed_scope(tmp_path)
+    root=tmp_path/'legacy-cache';root.mkdir()
+    path=root/'fixture.json';path.write_bytes(b'fixed')
+    record=dict(schema='RPE_HCHAIN_LEGACY_V1',owner=plan['owner'],plan_sha256=options['plan']['sha256'],
+                records=[],holds=[],spent={},cases={},jobs=[],
+                files={'fixture.json':hashlib.sha256(path.read_bytes()).hexdigest()})
+    central.write(root/'LEGACY.json',record)
+    options['legacy']=dict(directory=str(root),sha256=hashlib.sha256((root/'LEGACY.json').read_bytes()).hexdigest())
+    cache=tmp_path/'LEGACY_HASH_CACHE.json'
+    import time
+    real=time.time_ns
+    monkeypatch.setattr(legacy.time,'time_ns',lambda:real()+2_000_000_000)
+    assert legacy.checked(options,plan,verify_files=True,cache_path=cache)[1]==record
+    assert cache.is_file()
+    legacy._verified_digest.cache_clear()
+    with monkeypatch.context() as m:
+        m.setattr(legacy,'digest',lambda path:pytest.fail('stable cache should avoid reading'))
+        assert legacy.checked(options,plan,verify_files=True,cache_path=cache)[1]==record
+    path.write_bytes(b'other')
+    with pytest.raises(ValueError,match='evidence changed'):
+        legacy.checked(options,plan,verify_files=True,cache_path=cache)
+
+
+def test_screened_ready_streaming_preserves_default_and_finite_wave_order():
+    executor=SimpleNamespace(supports_nonblocking_prefetch=True)
+    spec=dict(methods=['FULL_PF'],max_new_q3_per_method={'FULL_PF':'UNLIMITED'})
+    assert hchain.stream_ready_in_wave(None,{},spec,executor)
+    assert not hchain.stream_ready_in_wave(object(),{},spec,executor)
+    settings={'screened_ready_streaming':True}
+    assert hchain.stream_ready_in_wave(object(),settings,spec,executor)
+    spec['max_new_q3_per_method']['FULL_PF']=2
+    assert not hchain.stream_ready_in_wave(object(),settings,spec,executor)
+
+
+def test_signal_batch_policy_reuses_fixed_h8_and_accepts_explicit_provider_policy():
+    assert hchain.signal_batch_policy({'scope':{'system':'H8'}},SimpleNamespace())==(
+        {'2nd':1,'4th':2,'4th(m5_best)':6},32)
+    provider=SimpleNamespace(SIGNAL_BATCH_POLICY={'phase_keys':{'synthetic-formula':2},'phase_key_limit':8})
+    assert hchain.signal_batch_policy({'scope':{'system':'Hsynthetic'}},provider)==({'synthetic-formula':2},8)
+    provider.SIGNAL_BATCH_POLICY['phase_key_limit']=1
+    with pytest.raises(ValueError,match='Invalid provider'):
+        hchain.signal_batch_policy({'scope':{'system':'Hsynthetic'}},provider)

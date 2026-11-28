@@ -277,10 +277,17 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                 if feasible_k is None:
                     # Probe the largest and then a middle distinct vector.
                     # A FAIL does not imply anything about other shot counts.
+                    probes = []
                     for probe in (all_grid[-1], all_grid[len(all_grid)//2]):
-                        if probe['status'] == 'PENDING' and probe in grid:
+                        if probe['status'] == 'PENDING' and probe in grid and probe not in probes:
                             priorities[id(probe)] = 0
-                            return [probe]
+                            probes.append(probe)
+                    if probes:
+                        # The default fixed scope still runs one probe at a
+                        # time. Only a new explicitly configured unlimited
+                        # scope can reserve an independent second probe.
+                        prefetch = search.get('feasibility_probe_prefetch') is True and budget is None
+                        return probes[:limit] if prefetch else probes[:1]
                     for r in grid:
                         priorities[id(r)] = 2
                 else:
@@ -294,6 +301,9 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         nonlocal used, fatal
         used += answer.get('calls', 0)
         absorb(c, row, answer)
+        group = groups.get((c['method'], c['configuration_id'] or c['name'], c['M']))
+        if group is not None:
+            group.pop('pending_cache', None)
         trace.append(dict(row, calls=answer.get('calls', 0), answer_source=answer.get('source'),
                           cls='SCALED_SHOTS', selected_by_rule=selected))
         if row['status'] in ('TECHNICAL_HOLD', 'IN_PROGRESS', 'UNKNOWN'):
@@ -332,7 +342,14 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         if price_work_pending is not None and price_work_pending():
             requested_stop = 'WORK_SLICE_YIELDED'
             break
-        series = [rows for group in groups.values() if (rows := pending_allocations(group, depth))]
+        # A pending dispatch does not change any series. Recompute a group's
+        # head only after its own evidence changes or it is registered anew.
+        series = []
+        for group in groups.values():
+            if 'pending_cache' not in group:
+                group['pending_cache'] = pending_allocations(group, depth)
+            if group['pending_cache']:
+                series.append(group['pending_cache'])
         if retire_allocations is not None:
             terminal = {key for key, (_, row) in registered.items()
                         if row['status'] in evaluated or row['status'] in ('COST_PRUNED', 'TECHNICAL_HOLD')}

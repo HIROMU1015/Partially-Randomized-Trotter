@@ -197,6 +197,10 @@ class SpoolTests(unittest.TestCase):
             instance = object.__new__(worker.Worker)
             instance.profile = dict(pbs=dict(defer_q3_evidence=True))
             instance.reported = {}
+            instance.transferred_attempts = set()
+            instance.transferred_prefixes = set()
+            instance.terminal_resources = {}
+            instance.terminal_preparation_observations = {}
             instance.pbs_evidence_checks = {}
             calls = []
 
@@ -289,6 +293,9 @@ class AdmissionTests(unittest.TestCase):
         worker.host_id = 'pbs-artificial'
         worker.profile = profile()
         worker.profile['work_dir'] = directory
+        worker._terminal_resources = {}
+        worker._terminal_prefixes = set()
+        worker._terminal_preparation_observations = {}
         return worker
 
     def test_busy_preparation_readiness_does_not_block_q3_assignment(self):
@@ -570,3 +577,52 @@ class AdmissionTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_pipeline_terminal_prefix_cached_without_reopening_state(tmp_path):
+    from trottertracks import _pipeline_pbs_q3_worker as worker
+    instance=worker.Worker.__new__(worker.Worker)
+    attempt=tmp_path/'attempt'; attempt.mkdir()
+    worker.save_state(attempt,'TRANSFERRED')
+    instance.profile={}
+    instance.records={attempt:{'prefix_key':'prefix'}}
+    instance.transferred_attempts=set(); instance.transferred_prefixes=set()
+    instance.terminal_resources={}; instance.terminal_preparation_observations={}
+    assert instance._cached_prefixes() == ['prefix']
+    with patch.object(worker,'read',side_effect=AssertionError('terminal state was already recorded')):
+        assert instance._cached_prefixes() == ['prefix']
+        assert not instance.pending()
+
+
+def test_spool_consumption_receipt_binds_original_request_and_response(tmp_path):
+    transport=P.SpoolTransport(tmp_path,deadline=time.monotonic()+3,timeout_seconds=.005,
+                               poll_seconds=.001,consumption_receipts=True)
+    try:
+        transport('/v1/poll',{'host_id':'fixture','slots':1})
+    except TimeoutError:
+        pass
+    else:
+        raise AssertionError('expected artificial timeout')
+    request=next(transport.requests.glob('*.json'))
+    original=P.read(request)
+    answer=dict(ok=True,result=dict(assignments=['fixture']))
+    P.atomic(transport.responses/request.name,answer)
+    assert transport('/v1/poll',{'host_id':'fixture','slots':2})['assignments']==['fixture']
+    assert not request.exists()
+    assert P.read(tmp_path/'consumed'/request.name)==dict(
+        request_sha256=P.digest(original),response_sha256=P.digest(answer))
+
+
+def test_rollover_guard_requires_positive_live_original_adapter(tmp_path):
+    from trottertracks.rpe_pbs_attempt_control import rollover_owner_live
+    import json
+    old=tmp_path/'job'/'attempt';old.mkdir(parents=True)
+    (old/'WORKER_STATE.json').write_text(json.dumps({'state':'RUNNING'}))
+    (old/'WORKER_LAUNCH.json').write_text(json.dumps({'pid':123}))
+    records={old:{'job_id':'job','attempt_id':'attempt'}}
+    guard={'owners':[['job','attempt']]}
+    assert rollover_owner_live(records,guard,lambda pid,path:pid==123 and path==old)
+    assert not rollover_owner_live(records,guard,lambda *_:False)
+    (old/'PROCESS_RETURN.json').write_text('{}')
+    assert not rollover_owner_live(records,guard,lambda *_:True)
+    assert rollover_owner_live(records,None,lambda *_:False)

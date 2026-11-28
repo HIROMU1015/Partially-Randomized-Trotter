@@ -7,10 +7,12 @@ from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
 import time
+import threading
 
 from . import rpe_method_optimizer as O
 from . import rpe_q3_coordinator as Q
@@ -198,12 +200,94 @@ def _view_fingerprint(path):
     path = Path(path).resolve()
     head = _git(path, 'rev-parse', 'HEAD').decode().strip()
     dirty = _git(path, 'diff', 'HEAD', '--name-only').decode().splitlines()
-    changed = {name: _sha((path / name).read_bytes()) if (path / name).is_file() else 'MISSING'
+    from .rpe_preparation_worker import fixed_file_sha
+    changed = {name: fixed_file_sha(path / name) if (path / name).is_file() else 'MISSING'
                for name in dirty}
     return dict(path=str(path), head=head, tracked_changes=changed)
 
 
-def dry_check_fingerprint(root, assignment, profile, *, verified_assignment=False, runtime=None):
+class RuntimeProbeBatch:
+    """Reuse metadata probes within one readiness batch, never across polls."""
+    def __init__(self):
+        self.values={}
+        self.locks={}
+        self.view_values={}
+        self.lock=threading.Lock()
+
+    @staticmethod
+    def identity(interpreter, compact):
+        path=Path(interpreter)
+        def stat_key(stat):
+            return stat.st_dev,stat.st_ino,stat.st_size,stat.st_mtime_ns,stat.st_ctime_ns
+        return (str(path),stat_key(path.lstat()),str(path.resolve()),stat_key(path.stat()),compact)
+
+    def get(self, interpreter, compact, probe):
+        key=self.identity(interpreter,compact)
+        with self.lock:
+            lock=self.locks.setdefault(key,threading.Lock())
+        with lock:
+            if key not in self.values:
+                value=probe()
+                if self.identity(interpreter,compact)!=key:
+                    raise ValueError('Interpreter changed during readiness metadata probe')
+                self.values[key]=value
+            return deepcopy(self.values[key])
+
+    @staticmethod
+    def _stat_key(path):
+        try:
+            info=path.lstat()
+        except FileNotFoundError:
+            return None
+        return (info.st_dev,info.st_ino,info.st_mode,info.st_size,info.st_mtime_ns,info.st_ctime_ns)
+
+    def view(self, path):
+        """Cache Git's exact view result only while its tracked stat inventory agrees.
+
+        This cache belongs to a single metadata batch. Every worker execution
+        still performs the ordinary unshared SOURCE/dry-check guards. Gitlinks,
+        sparse/unmerged indices and unstable inventories use the original path.
+        """
+        root=Path(path).resolve()
+        with self.lock:
+            lock=self.locks.setdefault(('view',str(root)),threading.Lock())
+        with lock:
+            head=_git(root,'rev-parse','HEAD').decode().strip()
+            entry=self.view_values.get(root)
+            if entry is not None:
+                old_head,meta,files,before,value=entry
+                if (head==old_head and tuple(self._stat_key(p) for p in meta+files)==before):
+                    return deepcopy(value)
+            # A sparse or unmerged index, or a submodule, cannot be described
+            # by ordinary tracked file stat signatures alone.
+            meta=tuple(root/Path(os.fsdecode(_git(root,'rev-parse','--git-path',name).strip()))
+                       for name in ('index','config','config.worktree','HEAD','info/exclude','info/attributes'))
+            if any(p.is_symlink() for p in meta):
+                self.view_values.pop(root,None)
+                return _view_fingerprint(root)
+            meta_initial=tuple(self._stat_key(p) for p in meta)
+            rows=_git(root,'ls-files','--stage','-z').split(b'\0')
+            files=[]
+            for row in rows:
+                if not row:continue
+                info,name=row.split(b'\t',1)
+                mode,_,stage=info.split()
+                if stage!=b'0' or mode not in (b'100644',b'100755',b'120000'):
+                    self.view_values.pop(root,None)
+                    return _view_fingerprint(root)
+                files.append(root/os.fsdecode(name))
+            files=tuple(files)
+            before=tuple(self._stat_key(p) for p in meta+files)
+            value=_view_fingerprint(root)
+            after=tuple(self._stat_key(p) for p in meta+files)
+            if before==after and before[:len(meta)]==meta_initial and value['head']==head:
+                self.view_values[root]=(head,meta,files,after,deepcopy(value))
+            else:
+                self.view_values.pop(root,None)
+            return value
+
+
+def dry_check_fingerprint(root, assignment, profile, *, verified_assignment=False, runtime=None, runtime_cache=None):
     """Refresh source/input/route/runtime evidence before considering a cache."""
     from .rpe_host_profiles import (COMPACT_Q3_RUNTIME_PROBE, check_compact_q3_runtime,
                                     needs_compact_q3_runtime, select_host_profile, profile_core)
@@ -218,14 +302,20 @@ def dry_check_fingerprint(root, assignment, profile, *, verified_assignment=Fals
                     '\n except m.PackageNotFoundError: d[n]=None'
                     '\nprint(json.dumps(dict(executable=sys.executable,version=sys.version,platform=platform.platform(),packages=d),sort_keys=True))')
     if runtime is None:
-        if needs_compact_q3_runtime(assignment['request']):
-            runtime = json.loads(check_compact_q3_runtime(profile['interpreter'], COMPACT_Q3_RUNTIME_PROBE + runtime_code))
-            runtime['compact_q3_sqlite'] = 'PASS'
-        else:
-            runtime = json.loads(subprocess.check_output([profile['interpreter'], '-B', '-c', runtime_code]))
+        compact=needs_compact_q3_runtime(assignment['request'])
+        def probe():
+            if compact:
+                observed=json.loads(check_compact_q3_runtime(profile['interpreter'], COMPACT_Q3_RUNTIME_PROBE + runtime_code))
+                observed['compact_q3_sqlite']='PASS'
+                return observed
+            return json.loads(subprocess.check_output([profile['interpreter'], '-B', '-c', runtime_code]))
+        # Actual runtime AST guards are deliberately not shared.
+        runtime=(runtime_cache.get(profile['interpreter'],compact,probe)
+                 if runtime_cache is not None and not profile.get('runtime_checks') else probe())
     executable = Path(profile['interpreter']).resolve()
     stat = executable.stat()
-    views = [_view_fingerprint(view)]
+    fingerprint_view = runtime_cache.view if runtime_cache is not None else _view_fingerprint
+    views = [fingerprint_view(view)]
     # The pinned PR-DF caller loads this nested absolute view before runtime_check.
     if route['kind'].startswith('prdf_d2'):
         if profile.get('adapter_root'):
@@ -241,7 +331,7 @@ def dry_check_fingerprint(root, assignment, profile, *, verified_assignment=Fals
             nested = Path(profile['route_views'][inner_commit])
         else:
             nested = Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115')
-        views.append(_view_fingerprint(nested))
+        views.append(fingerprint_view(nested))
     if verified_assignment:
         source = assignment['source_manifest']
         source_head = source['commit']
@@ -277,6 +367,7 @@ def run_server2_dry_checks(root, assignments, profile, output, *, cache=None, ch
         if cache_path.is_file():
             old = _read(cache_path).get('methods', {})
     started = time.monotonic()
+    runtime_cache=RuntimeProbeBatch()
 
     def check(item):
         method, assignment_path = item
@@ -284,7 +375,7 @@ def run_server2_dry_checks(root, assignments, profile, output, *, cache=None, ch
         target = output / method
         error = None
         try:
-            fingerprint = dry_check_fingerprint(root, assignment, profile_data)
+            fingerprint = dry_check_fingerprint(root, assignment, profile_data,runtime_cache=runtime_cache)
         except Exception as exc:
             # Incomplete evidence disables cache, then real dry-check records the error.
             fingerprint = None

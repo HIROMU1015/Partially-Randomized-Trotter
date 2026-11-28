@@ -1,0 +1,15 @@
+H8_INPUT_CHECK_PASS target=-4.307571602033466 initial_phase=0.4307571602033466
+Matplotlib created a temporary cache directory at /tmp/rpe-h8-startup-check-20261128-TUQSG0/matplotlib-icor94nw because the default path (/home/abe/.config/matplotlib) is not a writable directory; it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+H8_PREPARATION_BOUND 29 prefixes, 3 saved partial identities checked
+{"event": "HCHAIN_STARTUP_MISMATCH", "field": "verified_saved_preparations", "expected": {"14": {"saved": "45859f28ee7c8c6c8a60c3db796a11cda51132652e337d7d739400b4309fd0a3", "scoped": "8d0a007ce774777ad8c4bf8a33140ff1ec337bd180aae11e4ab921a8fb503cf0"}, "21": {"saved": "e439150b451ba542d8ed170e0ca05fa751879fc33012fb15ee8f5ac413b0f051", "scoped": "8094461085982f558984852e0100000d6623a4edebbbe5845d5ade83b456ab4e"}, "7": {"saved": "f794c14366f6081237cafd80a91b6659c98450f3eb720c90073ab5ed2263abc4", "scoped": "554c9437ccad9a9927f7c8fdb82e220b4c9623775ec56223176209ec48be65e5"}}, "observed": {"7": {"saved": "f794c14366f6081237cafd80a91b6659c98450f3eb720c90073ab5ed2263abc4", "scoped": "cd61e7287cd03281ec169776f4e20e85b7bb6d0964a296b920f94426e345a6be"}, "14": {"saved": "45859f28ee7c8c6c8a60c3db796a11cda51132652e337d7d739400b4309fd0a3", "scoped": "3dd1215fd97460e25df629bfda0758e38c6faacb44ee2ce73c9eb5d81477eef7"}, "21": {"saved": "e439150b451ba542d8ed170e0ca05fa751879fc33012fb15ee8f5ac413b0f051", "scoped": "e8900f5ef5713a65cd32af9a0c0c62157530521f4346e4fe83797924a8548389"}}}
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 242, in <module>
+    main()
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 235, in main
+    result = run(json.loads(args.plan.read_bytes()), args.stage, args.targets, args.assets, args.output, h6_scope_worker,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 180, in run
+    mismatch('verified_saved_preparations', plan['verified_saved_preparations'],
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-common-review-fixes-20261128/scripts/run_rpe_hchain_preparation.py", line 176, in mismatch
+    raise StartupMismatch(field, expected, observed)
+StartupMismatch: HCHAIN_STARTUP_MISMATCH: verified_saved_preparations

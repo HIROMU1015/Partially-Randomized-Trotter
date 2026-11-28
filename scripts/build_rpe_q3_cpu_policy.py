@@ -24,6 +24,8 @@ def metadata_int(value):
 
 
 def read(path):
+    from trottertracks.rpe_pbs_state import is_pbs_state,read_pbs_state
+    if is_pbs_state(path):return read_pbs_state(path)
     return json.loads(path.read_bytes(), parse_int=metadata_int)
 
 

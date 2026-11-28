@@ -17,6 +17,36 @@ from trottertracks import pr_candidate_completion as C,rpe_method_optimizer as O
 
 
 class CompletionTests(unittest.TestCase):
+    def test_completion_record_delta_replay_and_checkpoint(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            c = object.__new__(C.Completion)
+            c.state_path = Path(temporary)/'STATE.json'
+            c.lock = threading.RLock()
+            c.state = dict(records={'old': dict(status='READY_FOR_SEARCH')})
+            c.save()
+            original = c.state_path.read_bytes()
+            r = dict(key='new', status='SELECTED', request={'method':'PR'})
+            c.state['records']['new'] = r
+            c.save_record(r)
+            r['signal'] = {'packet_source':'synthetic'}
+            c.save_record(r)
+            self.assertEqual(c.state_path.read_bytes(), original)
+            self.assertEqual(C.read_completion_state(c.state_path), c.state)
+            journal = c.state_path.with_name('STATE_DELTAS.jsonl')
+            prior = journal.read_bytes()
+            c.save_record(r)
+            self.assertEqual(journal.read_bytes(), prior)
+            with journal.open('ab') as stream:
+                stream.write(b'{"seq":3')
+            self.assertEqual(C.read_completion_state(c.state_path), c.state)
+            C.repair_completion_delta_tail(journal)
+            self.assertTrue(journal.read_bytes().endswith(b'\n'))
+            r['status'] = 'HELD_WITH_REASON'
+            c.save()
+            self.assertEqual(journal.read_bytes(), b'')
+            self.assertEqual(C.read_completion_state(c.state_path), c.state)
+            self.assertEqual(C.read(c.state_path), c.state)
+
     def test_df_price_owner_is_not_deferred_by_exploratory_q3(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)

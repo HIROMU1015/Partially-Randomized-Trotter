@@ -422,7 +422,7 @@ def test_fixed_input_recovery_preserves_pre_science_stop_and_refuses_owned_job(t
 def test_independent_storage_recovery_refreshes_blocked_offer(tmp_path):
     from types import SimpleNamespace
     from trottertracks.rpe_pbs_offline import advance_independent
-    search=SimpleNamespace(directory=tmp_path/'run',process=None,pending=lambda:True,
+    search=SimpleNamespace(directory=tmp_path/'run',process=None,pending=lambda:True,plan={'settings':{}},
                            advance=lambda **kw: kw['runnable'])
     search.directory.mkdir(); worker_dir=tmp_path/'allocation';worker_dir.mkdir()
     worker=SimpleNamespace(offline_search=search,directory=worker_dir,records={},
@@ -790,3 +790,268 @@ def test_interrupted_export_hardlink_does_not_block_other_results(tmp_path, monk
     assert set(read(search.directory/'RESULTS.json'))=={'PR_DF/old','PR_DF/new'}
     monkeypatch.setattr(offline,'publish_result_file',publish)
     assert search.export(part)==1 and search.export(part)==0
+
+
+def test_independent_input_wait_is_not_relaunched_on_timer_alone(tmp_path, monkeypatch):
+    plan = independent_fixture(tmp_path/'run')
+    allocation = tmp_path/'remote'/'allocations'/'token'
+    allocation.mkdir(parents=True)
+    profile = {'host_id':'pbs0', 'dp_workers':2, 'pbs':{'library_threads':1,
+        'independent_root':str(tmp_path/'remote'/'independent-search')}}
+    resources = {'cpu_count':8, 'maximum_slots':8, 'memory_bytes':12*rpe_pbs.GIB}
+    launches = []
+    def launch(*args, **kwargs):
+        launches.append(args)
+        return SimpleNamespace(poll=lambda:0)
+    search = OfflineSearch(plan, profile, allocation, resources, popen=launch)
+    search.validated_entry = ROOT/'scripts/run_rpe_schedule_search.py'
+    assert search.advance(disconnected=False, runnable=True, batch=8)
+    held = search.part
+    atomic(held/'KAPPA_STATE.json', {'stop':{'reason':'WAITING_FOR_INPUTS'}})
+    search.advance(disconnected=False, runnable=False, batch=8)
+    assert read(held/'BLOCK_STATUS.json')['status'] == 'WAITING_FOR_INPUTS'
+    assert held.name in search.input_holds
+    assert not (held/'SEARCH_TERMINATION.json').exists()
+    search.parts = [p for p in search.parts if p['id'] == held.name]
+    search.recheck_at = 0
+    search.retry_after.clear()
+    assert not search.advance(disconnected=False, runnable=True, batch=8)
+    assert len(launches) == 1
+    # A fresh keeper/worker opens the same durable block, not a timer retry.
+    other = OfflineSearch(plan, profile, allocation, resources, popen=launch)
+    other.validated_entry = search.validated_entry
+    other.parts = search.parts
+    assert not other.advance(disconnected=False, runnable=True, batch=8)
+    assert len(launches) == 1
+    atomic(other.directory/'CENTRAL_SHORTLIST.json', {'new_input':True})
+    other.recheck_at = 0
+    assert other.advance(disconnected=False, runnable=True, batch=8)
+    assert len(launches) == 2
+
+
+def test_preparation_budget_weighting_preserves_total_and_zero_leaf_blocks():
+    from trottertracks.rpe_pbs_offline import divide_budget, hchain_preparation_weights
+    parts = [dict(id='short',case_ids=['a']),dict(id='long',case_ids=['b']),dict(id='none',case_ids=[])]
+    plan = dict(cases=[dict(id='a', rounds=[dict(id='one')]),
+                       dict(id='b', rounds=[dict(id=str(i)) for i in range(4)])], designs=[])
+    weights = hchain_preparation_weights(plan, parts)
+    assert divide_budget(10, parts, weights=weights['signal']) == {'short':2,'long':8,'none':0}
+    assert sum(divide_budget(7, parts, weights=weights['signal']).values()) == 7
+    assert divide_budget('UNLIMITED', parts, weights=weights['signal']) == {p['id']:'UNLIMITED' for p in parts}
+
+
+def test_hchain_idle_package_rotation_requires_same_revision_and_no_owners(tmp_path):
+    from trottertracks.rpe_q3_store import JobStore
+    search=object.__new__(OfflineSearch)
+    search.independent=True; search.parts_dir=tmp_path
+    search.part=tmp_path/'first';search.part.mkdir()
+    search.parts=[{'id':'first'},{'id':'second'}]
+    store=JobStore(search.part/'distributed/QUEUE.sqlite3')
+    marker=search.part/'HCHAIN_IDLE_WAIT.json'
+    atomic(marker,{'reason':'NO_RESERVED_WORK','queue_revision':store.idle_revision()})
+    assert store.reserve('ARTIFICIAL','job',{'artificial':True},1,True)
+    search._rotate_waiting_part()
+    assert not (search.part/'STOP_REQUESTED.json').exists()
+    store.cancel('ARTIFICIAL','job')
+    search._rotate_waiting_part()
+    assert not (search.part/'STOP_REQUESTED.json').exists()
+    atomic(marker,{'reason':'NO_RESERVED_WORK','queue_revision':store.idle_revision()})
+    search._rotate_waiting_part()
+    assert read(search.part/'STOP_REQUESTED.json')['reason']=='PBS_BLOCK_HANDOFF'
+
+
+def test_independent_successor_wait_estimate_only_counts_eligible_ready_q3(tmp_path):
+    from trottertracks.rpe_pbs_offline import queued_independent_q3_seconds
+    import sqlite3,json
+    with sqlite3.connect(tmp_path/'fixture.sqlite3') as db:
+        db.execute('CREATE TABLE jobs(method TEXT,state TEXT,request TEXT,eligibility TEXT)')
+        def add(method,state,kind,host):
+            db.execute('INSERT INTO jobs VALUES(?,?,?,?)',(method,state,json.dumps(
+                {'route':{'kind':kind,'view_commit':'fixed'}}),
+                json.dumps({'eligible_host_ids':[host]})))
+        add('FULL_PF','QUEUED','hchain_scoped_q3','local')
+        add('PR_DF','QUEUED','hchain_scoped_q3','different')
+        add('PR_DF','RUNNING','hchain_scoped_q3','local')
+        add('PREPARATION:compile','QUEUED','preparation','local')
+        policy={'q3_task_seconds':[dict(method=method,route_kind='hchain_scoped_q3',
+                view_commit='fixed',hosts=['pbs-fixture'],seconds=seconds)
+                for method,seconds in [('FULL_PF',100),('PR_DF',200)]]}
+        assert queued_independent_q3_seconds(db,policy,'pbs-fixture')==100
+        assert queued_independent_q3_seconds(db,policy,'other')==0
+
+
+def test_independent_successor_uses_only_fresh_matching_worker_estimate(tmp_path):
+    from unittest.mock import Mock
+    import time
+    manager=object.__new__(rpe_pbs.PbsManager)
+    manager.offline_plan=independent_fixture(tmp_path/'run')
+    manager.directory=tmp_path/'manager'
+    manager.settings={'managed_afterany_successor':True}
+    manager.configured={'pbs0':{}}
+    manager.state={'allocations':{'token':{'status':'R','spec':{'profile':{'host_id':'pbs0'}}}}}
+    manager.controls={}
+    manager.executor=SimpleNamespace(_host_admission_policy=lambda:({},None),
+        _host_admission=lambda *a:{'accepting':True})
+    manager._offline_contact=lambda *_:None
+    manager.session_control=lambda *a,**k:{}
+    manager._stage_managed_successor=Mock()
+    manager.save=lambda:None;manager.log=lambda *_a,**_k:None
+    worker=dict(independent_active=True,job_id='1.fixture',host_id='pbs0',
+                independent_waiting=dict(seconds=180,epoch=time.time(),part='fixture'))
+    allocation=dict(token='token',host_id='pbs0',job_id='1.fixture',status='R',worker=worker)
+    manager.allocations=[allocation]
+    assert manager._independent_demand(False)
+    manager._stage_managed_successor.assert_called_once_with(
+        allocation,manager.state['allocations']['token'],[],waiting_seconds=180)
+    manager._stage_managed_successor.reset_mock()
+    worker['independent_waiting']['epoch']=time.time()-1000
+    assert manager._independent_demand(False)
+    manager._stage_managed_successor.assert_not_called()
+    worker['independent_waiting']['epoch']=time.time()
+    assert manager._independent_demand(True)
+    manager._stage_managed_successor.assert_not_called()
+
+
+def test_independent_successor_wait_estimate_requires_ready_preparation_inputs(tmp_path):
+    import sqlite3,json
+    from trottertracks.rpe_pbs_offline import queued_independent_q3_seconds
+    from trottertracks.rpe_preparation_artifacts import ArtifactCache
+    from trottertracks.rpe_q3_worker import atomic
+    sha='a'*64
+    cache=ArtifactCache(tmp_path/'distributed'/'artifacts')
+    request={'method':'PREPARATION:compile','route':{'kind':'preparation'},'preparation':{
+        'stage':'compile','provider':'fixture','source':{'commit':'fixed'},
+        'dependencies':['parent'],'dependency_inputs':{'parent':{'output':'input'}}}}
+    policy={'preparation_task_seconds':[dict(stage='compile',provider='fixture',source='fixed',seconds=200)]}
+    eligibility=json.dumps({'eligible_host_ids':['local']})
+    with sqlite3.connect(':memory:') as db:
+        db.execute('CREATE TABLE jobs(job_id TEXT,method TEXT,state TEXT,request TEXT,eligibility TEXT)')
+        db.execute('INSERT INTO jobs VALUES(?,?,?,?,?)',('child','PREPARATION:compile','QUEUED',json.dumps(request),eligibility))
+        db.execute('INSERT INTO jobs VALUES(?,?,?,?,?)',('parent','PREPARATION:signal','RUNNING','{}',eligibility))
+        estimate=lambda:queued_independent_q3_seconds(db,policy,'pbs-fixture',part=tmp_path)
+        assert estimate()==0
+        db.execute("UPDATE jobs SET state='ACCEPTED' WHERE job_id='parent'")
+        outcome=tmp_path/'jobs'/'PREPARATION:signal'/'parent'/'OUTCOME.json'
+        outcome.parent.mkdir(parents=True)
+        atomic(outcome,{'status':'PREPARATION_COMPLETE','artifacts':{'output':sha}})
+        assert estimate()==0
+        cache.path(sha).parent.mkdir(parents=True)
+        cache.path(sha).touch()
+        assert estimate()==200
+
+
+def test_opt_in_partition_lease_fails_closed_on_missing_expired_or_future_contact():
+    from trottertracks.rpe_pbs_offline import partition_contact_valid
+    legacy={'settings':{}}
+    plan={'settings':{'partition_start_requires_contact':True,'partition_contact_seconds':20}}
+    assert partition_contact_valid(legacy,None,now=100)
+    assert partition_contact_valid(plan,90,now=100)
+    assert not partition_contact_valid(plan,None,now=100)
+    assert not partition_contact_valid(plan,80,now=100)
+    assert not partition_contact_valid(plan,101,now=100)
+
+
+def test_opt_in_partition_lease_blocks_new_process_but_does_not_stop_existing_one(tmp_path):
+    import time
+    plan=independent_fixture(tmp_path/'run')
+    plan['settings'].update(partition_start_requires_contact=True,partition_contact_seconds=30)
+    allocation=tmp_path/'remote'/'allocations'/'token';allocation.mkdir(parents=True)
+    profile={'host_id':'pbs0','dp_workers':2,'pbs':{'library_threads':1,
+        'independent_root':str(tmp_path/'remote'/'independent-search')}}
+    resources={'cpu_count':8,'maximum_slots':8,'memory_bytes':12*rpe_pbs.GIB}
+    launches=[]
+    def launch(*args,**kwargs):
+        launches.append(args);return SimpleNamespace(poll=lambda:None)
+    search=OfflineSearch(plan,profile,allocation,resources,popen=launch)
+    search.validated_entry=ROOT/'scripts/run_rpe_schedule_search.py'
+    assert not search.advance(disconnected=False,runnable=True,batch=8,contact=None)
+    assert not launches
+    assert search.advance(disconnected=False,runnable=True,batch=8,contact=time.time())
+    search.next_export_at=float('inf')
+    assert search.advance(disconnected=True,runnable=True,batch=8,contact=None)
+    assert len(launches)==1 and not (search.part/'STOP_REQUESTED.json').exists()
+    search.claim.close()
+
+
+def test_unstarted_partition_fence_replays_and_worker_cannot_restart_after_contact(tmp_path):
+    import time,json,hashlib,fcntl
+    import rpe_pbs_gateway as gateway
+    from trottertracks.rpe_pbs_offline import pbs_units,local_handoff_scope,unit_members
+    plan=independent_fixture(tmp_path/'central')
+    plan['settings'].update(partition_start_requires_contact=True,partition_handoff=True,partition_contact_seconds=30)
+    plan['round']['executor']['distributed']['local_worker']={'host_id':'local','slots':2}
+    remote=tmp_path/'remote';allocation=remote/'allocations'/'token';allocation.mkdir(parents=True)
+    raw=json.dumps(plan,sort_keys=True,separators=(',',':')).encode();sha=hashlib.sha256(raw).hexdigest()
+    plans=remote/'offline-plans';plans.mkdir();(plans/(sha+'.json')).write_bytes(raw)
+    atomic(allocation/'PROFILE.json',{'pbs':{'offline_plan':{'sha256':sha}}})
+    atomic(allocation/'STATE.json',{'partition_handoff_protocol':1})
+    atomic(allocation/'CONTROL.json',{'contact':100})
+    unit=pbs_units(plan)[0];request={'unit':unit['id'],'plan_sha256':sha}
+    with pytest.raises(ValueError,match='not safely expired'):
+        gateway.fence_unstarted_partition(remote,request,now=120)
+    part=remote/'independent-search'/'parts'/unit['id']
+    with (part/'OWNER.lock').open('a+b') as owner:
+        fcntl.flock(owner,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        with pytest.raises(BlockingIOError):gateway.fence_unstarted_partition(remote,request,now=200)
+    receipt=gateway.fence_unstarted_partition(remote,request,now=200)
+    assert gateway.fence_unstarted_partition(remote,request,now=201)==receipt
+    _,spec=local_handoff_scope(plan,receipt)
+    members=unit_members(plan,unit)
+    assert sum(spec['max_new_q3_per_method'].values())==sum(p['q3_budget'] for p in members)
+    assert not spec['science_approved'] and spec['executor']['distributed']['execution_hosts']==['local']
+    profile={'host_id':'pbs0','dp_workers':2,'pbs':{'library_threads':1,'independent_root':str(remote/'independent-search')}}
+    resources={'cpu_count':8,'maximum_slots':8,'memory_bytes':12*rpe_pbs.GIB}
+    search=OfflineSearch(plan,profile,allocation,resources,popen=lambda *_a,**_kw:pytest.fail('fenced unit launched'))
+    search.parts=[unit]
+    assert not search.pending()
+    assert not search.advance(disconnected=False,runnable=True,batch=8,contact=time.time())
+    assert not read(remote/'independent-search'/'COVERAGE.json')['parts'][unit['id']].get('termination')
+
+
+def test_local_handoff_completion_requires_accepted_local_receipt(tmp_path):
+    """Artificial queue and files only; no fixed scientific child is launched."""
+    import os
+    from trottertracks.rpe_pbs_offline import (pbs_units, partition_handoff_record,
+        local_handoff_scope, register_local_handoff_completion, local_handoff_coverage)
+    from trottertracks.rpe_q3_store import JobStore
+    plan=independent_fixture(tmp_path/'central')
+    plan['settings'].update(partition_start_requires_contact=True,partition_handoff=True)
+    plan['round']['executor']['distributed']['local_worker']={'host_id':'local','slots':2}
+    unit=pbs_units(plan)[0]
+    receipt=partition_handoff_record(plan,unit)
+    problem,spec=local_handoff_scope(plan,receipt)
+    root=tmp_path/'central'/'distributed'/'pbs'/'partition-handoffs';directory=root/unit['id'];directory.mkdir(parents=True)
+    for name,value in [('HANDOFF.json',receipt),('PROBLEM.json',problem),('ROUND.json',spec)]:
+        atomic(directory/name,value)
+    assert not local_handoff_coverage(plan,root)[unit['id']].get('termination')
+    child=directory/'child-run';child.mkdir()
+    for name,value in [('PROBLEM.json',problem),('ROUND.json',dict(spec,science_approved=True)),
+                       ('ROUND_RESULT.json',{'methods':{method:{} for method in spec['methods']}}),
+                       ('SEARCH_TERMINATION.json',{'reason':'REQUESTED_WIDTH_RULE_EXHAUSTED'})]:
+        atomic(child/name,value)
+    (child/'distributed').mkdir()
+    store=JobStore(child/'distributed'/'QUEUE.sqlite3')
+    method=next(m for m in spec['methods'] if spec['max_new_q3_per_method'][m]>0)
+    request={'request_id':'artificial-job','artificial':True}
+    assert store.reserve(method,'artificial-job',request,1,True)
+    row,=store.claim('local',1)
+    with pytest.raises(ValueError,match='unconfirmed ownership'):
+        register_local_handoff_completion(plan,directory)
+    job=child/'jobs'/method/'artificial-job';job.mkdir(parents=True)
+    stage=child/'distributed'/'transfers'/'artificial-job'/row['attempt_id'];stage.mkdir(parents=True)
+    atomic(job/'REQUEST.json',request)
+    for name,value in [('OUTCOME.json',{'request_id':'artificial-job'}),('PROCESS_RETURN.json',{'returncode':0})]:
+        atomic(stage/name,value);os.link(stage/name,job/name)
+    store.complete('local','artificial-job',row['attempt_id'],row['request_sha256'],{'artificial':'files'})
+    parent=JobStore(tmp_path/'central'/'distributed'/'QUEUE.sqlite3')
+    assert parent.reserve(method,'artificial-job',request,1,True)
+    with pytest.raises(ValueError,match='another local owner'):
+        register_local_handoff_completion(plan,directory)
+    assert parent.cancel(method,'artificial-job')
+    complete=register_local_handoff_completion(plan,directory)
+    assert complete['counts']=={method:1}
+    assert register_local_handoff_completion(plan,directory)==complete
+    assert local_handoff_coverage(plan,root)[unit['id']]['termination']==complete['termination']
+    atomic(child/'ROUND_RESULT.json',{'methods':{}})
+    with pytest.raises(ValueError,match='report changed'):
+        local_handoff_coverage(plan,root)

@@ -101,7 +101,7 @@ def _fingerprint(assignment, profile, runtime, views=None, actual=None, runtime_
     return result
 
 
-def current_host_fingerprint(assignment, profile, *, readiness=None):
+def current_host_fingerprint(assignment, profile, *, readiness=None, runtime_cache=None):
     """Read actual source, input, route and interpreter metadata for a poll.
 
     Reuse the existing readiness fingerprint, including its known nested route
@@ -123,7 +123,8 @@ def current_host_fingerprint(assignment, profile, *, readiness=None):
     if profile.get('runtime_checks') and (not precheck or precheck.get('status') != 'PASS'):
         raise ValueError('Required actual-runtime precheck is absent or did not pass')
     raw = dry_check_fingerprint(profile['root'], assignment, profile, verified_assignment=readiness is not None,
-                                runtime=precheck['runtime'] if readiness is not None and precheck else None)
+                                runtime=precheck['runtime'] if readiness is not None and precheck else None,
+                                **({'runtime_cache':runtime_cache} if runtime_cache is not None else {}))
     # The older readiness helper labels its fixed source as 28d. Actual HEAD is
     # separate and must be used for a newly fixed worker source as well.
     raw['source'] = dict(raw['source'], commit=raw['source_head'])

@@ -213,12 +213,12 @@ def validate_assignment(profile, assignment):
         raise ValueError('Worker HEAD differs from fixed SOURCE')
     for name, expected in manifest['files'].items():
         path = root / safe_relative(name)
-        if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+        if not path.is_file() or Preparation.fixed_file_sha(path) != expected:
             raise ValueError('Worker SOURCE hash differs: ' + name)
     for locator in assignment.get('input_hashes', []):
         safe_relative(locator['path'])
-        blob = subprocess.check_output(['git', 'show', locator['commit'] + ':' + locator['path']], cwd=root)
-        if hashlib.sha256(blob).hexdigest() != locator['sha256']:
+        from .rpe_q3_coordinator import fixed_git_blob_sha
+        if fixed_git_blob_sha(root,locator['commit'],locator['path']) != locator['sha256']:
             raise ValueError('Fixed input hash differs: ' + locator['path'])
     resolved = deepcopy(request)
     rule = resolved['route']
@@ -238,6 +238,19 @@ def validate_assignment(profile, assignment):
         execution['dp_workers'] = workers
     if profile.get('prefix_cache_directory') is not None:
         execution['prefix_cache_directory'] = str(Path(profile['prefix_cache_directory']).resolve())
+        # The cache is disposable acceleration, not a scientific budget.
+        # Derive the implicit limit from the actual storage policy rather
+        # than using the reference 40 GiB default on every filesystem.
+        policy=profile.get('storage_limit') or {}
+        limit=policy.get('limit_bytes')
+        cache=Path(execution['prefix_cache_directory'])
+        if ('prefix_cache_max_bytes' not in execution and type(limit) is int and limit>0
+                and policy.get('sample_path') and any(cache.is_relative_to(Path(root).resolve())
+                                                       for root in policy.get('roots',()))):
+            identity=Storage.policy_identity(policy)
+            if not any(cache.is_relative_to(Path(root)) for root in identity.get('excluded_paths',())):
+                _,target=Storage.reclaim_watermarks(limit,proactive=True)
+                execution['prefix_cache_max_bytes']=max(1,target)
     else:
         execution.pop('prefix_cache_directory', None)
     return resolved
@@ -246,6 +259,12 @@ def validate_assignment(profile, assignment):
 def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_parallel=1, deployment=None):
     """Read current execution identities; never acquire or launch a job."""
     from .rpe_host_eligibility import current_host_fingerprint
+    # Operational overlays can run against an older pinned host module.
+    import inspect
+    runtime_cache=None
+    if 'runtime_cache' in inspect.signature(current_host_fingerprint).parameters:
+        from .rpe_plan_readiness import RuntimeProbeBatch
+        runtime_cache=RuntimeProbeBatch()
     fingerprints, errors = {}, {}
     deployment = deployment or profile.get('pbs') or profile
     def check(assignment):
@@ -255,7 +274,8 @@ def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_paralle
                 from .rpe_release_deployment import prepare_worker_assignment
                 prepare_worker_assignment(profile, assignment, deployment)
             fact = (Preparation.current_preparation_fingerprint(assignment, profile, check_workspace=True)
-                    if Preparation.is_preparation(assignment) else current_host_fingerprint(assignment, profile))
+                    if Preparation.is_preparation(assignment) else current_host_fingerprint(assignment, profile,
+                         **({'runtime_cache':runtime_cache} if runtime_cache is not None else {})))
             return job, fact, None
         except Exception as error:
             return job, None, type(error).__name__ + ': ' + str(error)
@@ -331,7 +351,8 @@ def _run_adapter(profile, attempt, mode, output):
             pass
     with (Path(attempt) / ('WORKER_' + mode.upper() + '.log')).open('a') as log:
         process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile.get('adapter_root', profile['root']),
-            env=PBSAttempt.adapter_environment(owner), stdout=log, stderr=subprocess.STDOUT,
+            env=(PBSAttempt.adapter_environment(owner,profile) if profile.get('library_threads') is not None
+                 else PBSAttempt.adapter_environment(owner)), stdout=log, stderr=subprocess.STDOUT,
             **({'process_group': 0} if owner else {}))
         launch_error = None
         if mode == 'execute':
@@ -509,6 +530,7 @@ class Worker:
         self.eligibility_challenges = []
         self.stop = threading.Event(); self.processes = {}; self.reported = {}; self.records = {}
         self.resource_report = None
+        self.mixed_task_class_quotas = False
         self._terminal_resources = {}
         self._terminal_prefixes = set()
         self._terminal_preparation_observations = {}
@@ -529,16 +551,27 @@ class Worker:
         return self.work
 
     def _capacity_feedback(self, response):
+        self._artifact_inventory_ack = response.get('artifact_inventory_ack')
+        ack = response.get('preparation_observation_ack') or {}
+        terminal = getattr(self, '_terminal_preparation_observations', {})
+        if ack:
+            for path, sample in list(terminal.items()):
+                if ack.get(sample.get('attempt_id')) == digest(sample):
+                    terminal.pop(path, None)
         feedback = response.get('capacity_feedback')
         if feedback is not None and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
+            self.mixed_task_class_quotas = feedback.get('mixed_task_class_quotas') is True
             atomic(self.capacity_state_dir / 'CAPACITY_FEEDBACK.json', feedback)
 
     def resource_snapshot(self):
         return Resources.resource_snapshot(self.profile)
 
     def _storage_offer(self, report):
-        storage = Storage.report(self.profile.get('storage_limit'), spools=(str(self.work),),
-                                 cache_directories=Storage.prefix_caches(self.profile), proactive=True)
+        background = getattr(self, '_background_storage', None)
+        storage = background.poll() if background is not None else Storage.report(
+            self.profile.get('storage_limit'), spools=(str(self.work),),
+            cache_directories=Storage.prefix_caches(self.profile), proactive=True,
+            **({'cache_only':True} if getattr(self,'_mailbox_cached_storage',False) else {}))
         if storage is not None:
             report['storage'] = storage
             if not storage['accepting_new_jobs']:
@@ -620,9 +653,7 @@ class Worker:
             previous = read(path) if path.exists() else {}
             peak = max(previous.get('peak_rss_bytes', 0), sample['rss_bytes'])
             observed = stamp()
-            seconds = observed['monotonic']-previous.get('monotonic', observed['monotonic'])
-            same_clock = previous.get('clock_id') == observed['clock_id']
-            cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
+            cpu_observation=Resources.owned_cpu_observation(sample,previous,observed)
             resource = 'EXITED' if state == 'UNKNOWN' and persisted['detail'].get('resource_released') is True else resource_state(attempt, state)
             kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True,
                                                      workload=assignment.get('preparation_workload'))
@@ -630,10 +661,13 @@ class Worker:
             # samples stay in the conservative count-DP profile.
             job = dict(state=resource, resource_class=kind, dp_workers=max(saved.get('dp_workers') or 1,
                                                  saved.get('task_cpu_count') or 1),
-                       peak_rss_bytes=peak, cpu_seconds=sample['cpu_seconds'],
-                       observed_cpu_cores=max(cores, previous.get('observed_cpu_cores', 0)))
+                       peak_rss_bytes=peak,
+                       rss_high_water_sum_bytes=max(previous.get('rss_high_water_sum_bytes',0),sample.get('rss_high_water_sum_bytes',0)),
+                       **cpu_observation)
             if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
                 atomic(path, dict(observed, **job))
+            if type(saved.get('task_memory_bytes')) is int and saved['task_memory_bytes']>0:
+                job['declared_memory_bytes']=saved['task_memory_bytes']
             jobs.append(job)
             observation = Resources.owned_preparation_observation(attempt, assignment, saved, peak)
             if observation is not None:preparation_observations.append(observation)
@@ -642,6 +676,7 @@ class Worker:
         feedback_path = self.capacity_state_dir / 'CAPACITY_FEEDBACK.json'
         state_path = self.capacity_state_dir / 'SLOT_STATE.json'
         feedback = read(feedback_path) if feedback_path.exists() else {}
+        feedback['mixed_task_class_quotas'] = getattr(self, 'mixed_task_class_quotas', False)
         previous = read(state_path) if state_path.exists() else {}
         resources = self.resource_snapshot() if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}
         state, report = Resources.decide_slots(self.profile, previous, resources, jobs, feedback)
@@ -906,6 +941,14 @@ class Worker:
             except (OSError, ValueError, urllib.error.URLError) as error:
                 event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
 
+    def _artifact_inventory_payload(self):
+        hashes=worker_cache(self.profile).hashes()
+        revision=digest(hashes)
+        payload={'artifact_inventory_revision':revision}
+        if getattr(self,'_artifact_inventory_ack',None)!=revision:
+            payload['cached_artifact_sha256']=hashes
+        return payload
+
     def _poll_assignments(self, acquire):
         started = time.monotonic()
         report = self._resource_offer()
@@ -916,7 +959,7 @@ class Worker:
             try:
                 storage_accepting = report.get('storage', {}).get('accepting_new_jobs', True)
                 payload = dict(slots=report['slots'], capacity=self.slots, resource_report=report, cached_prefixes=cached,
-                               cached_artifact_sha256=worker_cache(self.profile).hashes(),
+                               **self._artifact_inventory_payload(),
                                cached_metadata_bundle_sha256=Preparation.cached_metadata_bundle_hashes(self.profile), source_sha=self.source_sha,
                                accepting_new_jobs=storage_accepting,
                                durable_assignments=[[a['job_id'],a['attempt_id'],a['request_sha256']]
@@ -1019,6 +1062,10 @@ class Worker:
         self._native_readiness = ThreadPoolExecutor(max_workers=bound, thread_name_prefix='rpe-local-readiness')
         self._native_receipts, self._native_launches, self._native_retired = {}, {}, set()
         self._native_proofs, self._native_probes = {}, {}
+        policy = self.profile.get('storage_limit')
+        if policy and not policy.get('parent_compute_sample'):
+            self._background_storage = Storage.BackgroundStorage(policy, spools=(str(self.work),),
+                cache_directories=Storage.prefix_caches(self.profile))
         self.inline_readiness_retry = False
 
     def _readiness_delivered(self, response):
@@ -1043,6 +1090,10 @@ class Worker:
             self.close()
 
     def close(self):
+        background = getattr(self, '_background_storage', None)
+        if background is not None:
+            background.close()
+            self._background_storage = None
         for name in ('_native_readiness', '_native_launch', '_native_collection'):
             pool = getattr(self, name, None)
             if pool is not None:
@@ -1099,6 +1150,13 @@ def mailbox(profile, action, payload=None):
     capacity and attempt state, and result retrieves a specific validated attempt.
     """
     payload = payload or {}
+    if action == 'storage-sample':
+        # This path owns only the existing storage sample lock, never the
+        # worker spool/attempt-launch lock. The relay can keep collecting.
+        return dict(ok=True, storage=Storage.report(profile.get('storage_limit'),
+                    spools=(str(Path(profile['work_dir']).resolve()),),
+                    cache_directories=Storage.prefix_caches(profile),proactive=True,refresh=True,
+                    **({'nonblocking':True} if 'nonblocking' in __import__('inspect').signature(Storage.report).parameters else {})))
     if action in ('artifacts-missing', 'artifacts-get', 'artifacts-put'):
         cache = worker_cache(profile)
         if action == 'artifacts-missing':
@@ -1115,8 +1173,11 @@ def mailbox(profile, action, payload=None):
         if action == 'artifacts-get':return dict(blobs=cache.get(payload.get('hashes', [])))
         return dict(ok=True, **cache.put(payload.get('blobs', {})))
     if action == 'readiness':
-        return dict(host_id=profile['host_id'], **host_fingerprints(profile, payload.get('challenges', []),
-                                                                 deployment=payload.get('deployment')))
+        challenges = payload.get('challenges', [])
+        parallel = (min(len(challenges), Resources.controller_metadata_workers(snapshot=Resources.resource_snapshot(profile)))
+                    if len(challenges)>1 else 1)
+        return dict(host_id=profile['host_id'], **host_fingerprints(profile, challenges,
+                    q3_parallel=parallel, preparation_parallel=parallel, deployment=payload.get('deployment')))
     if action == 'result':
         job = safe_id(payload['job_id']); attempt_id = safe_id(payload['attempt_id'])
         attempt = Path(profile['work_dir']).resolve()/job/attempt_id
@@ -1140,6 +1201,7 @@ def mailbox(profile, action, payload=None):
             result['artifact_manifest'] = read(attempt/'OUTCOME.json').get('artifacts', {})
         return result
     worker = Worker(profile, 'http://127.0.0.1:1')
+    worker._mailbox_cached_storage = payload.get('cached_storage') is True and action in ('status','resources')
     try:
         if action == 'resources':
             worker._capacity_feedback(payload)
@@ -1185,7 +1247,8 @@ def mailbox(profile, action, payload=None):
                         accepting_new_jobs=report.get('storage', {}).get('accepting_new_jobs', True),
                         cached_prefixes=sorted(cached), cached_artifact_sha256=worker_cache(profile).hashes(),
                         cached_metadata_bundle_sha256=Preparation.cached_metadata_bundle_hashes(profile),
-                        attempts=attempts, metadata_only=metadata_only)
+                        attempts=attempts, metadata_only=metadata_only,
+                        storage_async_supported=bool(profile.get('storage_limit')))
         raise ValueError('Unknown mailbox action')
     finally:
         worker.close()

@@ -33,6 +33,8 @@ def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
 
 def load(path):
+    from .rpe_pbs_state import is_pbs_state,read_pbs_state
+    if is_pbs_state(path):return read_pbs_state(path)
     return json.loads(Path(path).read_text())
 
 def write(path, value):
@@ -497,7 +499,7 @@ def summarize(problem, spec, canonical):
         result['reviewed_pr_q3'] = {key: execution[key] for key in
             ('compact_q3_evidence', 'parallel_dp_residual', 'prefix_cache_max_bytes',
              'prefix_checkpoint_rounds', 'prefix_selective_checkpoint_rounds',
-             'prefix_selective_window_seconds', 'profile_dp_residual') if key in execution}
+             'prefix_selective_window_seconds', 'profile_dp_residual','persistent_dp_residual_pool') if key in execution}
     if policy := spec.get('release_worker_policy'):
         result['release_worker_policy'] = dict(fields=sorted(policy))
         if policy.get('df_max_width'):
@@ -627,7 +629,8 @@ def local0_progress(applied, spec, run=None):
     if scope is not None:
         completion = run/'completion/STATE.json'
         if completion.is_file():
-            preparation_records.extend(load(completion).get('records', {}).values())
+            from .pr_candidate_completion import read_completion_state
+            preparation_records.extend(read_completion_state(completion).get('records', {}).values())
     shortlist = run/'LIVE_SHORTLIST.json'
     if shortlist.is_file():
         progress['live_shortlist'] = dict(load(shortlist), snapshot_epoch=shortlist.stat().st_mtime)
@@ -888,11 +891,14 @@ class Gateway:
                 raise RequestError('run', 'no matching killed-controller receipt')
             authorization = load(run/'AUTHORIZATION.json')
             scope, spec = load(run/'APPLIED_SCOPE.json'), load(run/'ROUND.requested.json')
-            if (scope['entry'] != 'schedule' or not spec.get('executor', {}).get('distributed')
+            distributed = spec.get('executor', {}).get('distributed') or {}
+            hchain_resume = (scope['entry'] == 'method' and spec.get('hchain') and not distributed.get('relay')
+                             and (distributed.get('pbs') or distributed.get('local_worker')))
+            if ((scope['entry'] != 'schedule' and not hchain_resume) or not distributed
                     or spec.get('science_approved') is not True
                     or authorization.get('scope_signature') != scope['signature']
                     or authorization.get('kind') != 'EXPLICIT_USER_START'):
-                raise RequestError('run', 'no resumable authorized distributed schedule')
+                raise RequestError('run', 'no resumable authorized distributed search')
             self.resume_controller_kill = invocation
             previous = run/'AUTO_RESUME.json'
             if previous.is_file() and load(previous).get('authorized_utc') == authorization.get('authorized_utc'):
@@ -1586,6 +1592,9 @@ def reconcile_hchain_pinned_pbs_setup(run, history, driver):
     for name in ('distributed/pbs/STATE.json','distributed/pbs/EVENTS.jsonl'):
         if (run/name).stat().st_mtime >= launched:
             return None
+    delta=run/'distributed/pbs/STATE_DELTAS.jsonl'
+    if delta.exists() and delta.stat().st_mtime>=launched:
+        return None
     for owner in (load(history/'LAUNCH.json'),driver):
         try:
             if (Path('/proc')/str(owner['pid'])/'cmdline').read_bytes().strip(b'\0'):
@@ -1741,14 +1750,14 @@ def reconcile_controller_kill(run, launch, ended, invocation):
         driver = load(run/'NORMAL_DRIVER.json')
         spec = load(run/'ROUND.json')
         distributed = spec.get('executor', {}).get('distributed', {})
-        if (spec.get('hchain') and distributed.get('pbs')
-                and not distributed.get('relay') and not distributed.get('local_worker')
+        if (spec.get('hchain') and (distributed.get('pbs') or distributed.get('local_worker'))
+                and not distributed.get('relay')
                 and load(run/'APPLIED_SCOPE.json')['entry'] == 'method'):
             # A deliberate controller-only interruption preserves the PBS
             # workers, their spools, and every durable attempt. This is not
             # the schedule restart path that requires closed allocations.
             if (launch.get('invocation_id') != invocation or ended.get('invocation_id') != invocation
-                    or ended.get('returncode') != -signal.SIGTERM
+                    or ended.get('returncode') not in (-signal.SIGTERM, -signal.SIGKILL)
                     or launch != load(archived/'LAUNCH.json') or ended != load(archived/'EXIT.json')
                     or driver.get('invocation_id') != invocation
                     or load(run/'distributed/ENDPOINT.json')['pid'] != driver['pid']):
@@ -1766,18 +1775,29 @@ def reconcile_controller_kill(run, launch, ended, invocation):
                     pass
             local_worker_for_reattachment(run)
             with ExitStack() as locks:
-                for name in ('FAST_DRIVER.lock', 'distributed/pbs/MANAGER.lock'):
+                names = ['FAST_DRIVER.lock']
+                allocations = []
+                if distributed.get('pbs'):
+                    names.append('distributed/pbs/MANAGER.lock')
+                for name in names:
                     fcntl.flock(locks.enter_context((run/name).open('rb')), fcntl.LOCK_EX | fcntl.LOCK_NB)
-                pbs = load(run/'distributed/pbs/STATE.json')
-                allocations = [a for a in pbs['allocations'].values() if a['status'] in ('Q', 'R')]
-                if (not allocations or any(not (a.get('observed') or {}).get('job_id') for a in allocations)):
-                    raise ValueError('existing H-chain PBS allocation ownership is missing')
+                if distributed.get('pbs'):
+                    pbs = load(run/'distributed/pbs/STATE.json')
+                    allocations = [a for a in pbs['allocations'].values() if a['status'] in ('Q', 'R')]
+                    if not allocations or any(not (a.get('observed') or {}).get('job_id') for a in allocations):
+                        raise ValueError('existing H-chain PBS allocation ownership is missing')
                 queue = (run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro'
                 with sqlite3.connect(queue, uri=True) as db:
                     if db.execute('PRAGMA quick_check').fetchall() != [('ok',)]:
                         raise ValueError('H-chain queue integrity check failed')
                     verify_reattachable_attempts(run, db)
-            return dict(reason='HCHAIN_CONTROLLER_INTERRUPTED_PBS_REATTACHED',
+                    if not distributed.get('pbs'):
+                        host = distributed['local_worker'].get('host_id')
+                        if not host or db.execute("SELECT 1 FROM jobs WHERE state NOT IN ('QUEUED','ACCEPTED','CANCELLED') "
+                            "AND (host_id IS NULL OR host_id != ?) LIMIT 1",(host,)).fetchone():
+                            raise ValueError('H-chain local-only resume has an owner outside the fixed local host')
+            return dict(reason=('HCHAIN_CONTROLLER_INTERRUPTED_PBS_REATTACHED' if distributed.get('pbs')
+                                else 'HCHAIN_CONTROLLER_INTERRUPTED_LOCAL_REATTACHED'),
                         invocation_id=invocation, returncode=ended['returncode'],
                         allocations=[a['observed']['job_id'] for a in allocations])
         relay = load(run/'distributed/relay/STATUS.json')

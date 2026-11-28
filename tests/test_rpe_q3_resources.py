@@ -158,12 +158,14 @@ class ResourceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory()as temporary:
             base=Path(temporary)
             for pid,rss,child in ((11,20,'12'),(12,30,'')):
-                write(base/str(pid)/'status','VmRSS: '+str(rss)+' kB\n')
-                values=['R']+['0']*20;values[11]='10';values[12]='20'
+                write(base/str(pid)/'status','VmRSS: '+str(rss)+' kB\nVmHWM: '+str(rss+10)+' kB\n')
+                values=['R']+['0']*20;values[11]='10';values[12]='20';values[13]='5';values[14]='5'
                 write(base/str(pid)/'stat',str(pid)+' (owned process) '+' '.join(values))
                 write(base/str(pid)/'task'/str(pid)/'children',child)
             got=R.owned_tree_sample(11,proc_root=base)
             self.assertEqual(got['rss_bytes'],50*1024)
+            self.assertEqual(got['rss_high_water_sum_bytes'],70*1024)
+            self.assertAlmostEqual(got['cpu_seconds'],80/R.os.sysconf('SC_CLK_TCK'))
             self.assertEqual(got['sampled_pids'],2)
             self.assertGreater(got['cpu_seconds'],0)
 
@@ -199,10 +201,11 @@ class ResourceTests(unittest.TestCase):
         self.assertEqual(offer['capacity'],1)
         self.assertEqual(offer['stage'],'MEASURED_TRIAL_REVERT_DRAIN')
 
-    def test_unknown_and_untransferred_completion_hold_slots_fixed_mode_unchanged(self):
-        for status in ('UNKNOWN','COMPLETED_PENDING_TRANSFER'):
-            _,offer=R.decide_slots(profile(),{},resources(),[dict(state=status)])
-            self.assertEqual(offer['slots'],0)
+    def test_unknown_holds_slot_but_validated_completion_releases_cpu(self):
+        _,offer=R.decide_slots(profile(),{},resources(),[dict(state='UNKNOWN')])
+        self.assertEqual(offer['slots'],0)
+        _,offer=R.decide_slots(profile(),{},resources(),[dict(state='COMPLETED_PENDING_TRANSFER')])
+        self.assertEqual(offer['slots'],1)
         _,offer=R.decide_slots(dict(slots=3),{},resources(cpu=1),[dict(state='RUNNING')])
         self.assertEqual(offer['capacity'],3)
         self.assertEqual(offer['slots'],2)
@@ -221,6 +224,28 @@ class ResourceTests(unittest.TestCase):
         jobs[1]['state'] = 'RUNNING'
         _, offer = R.decide_slots(p, {}, resources(cpu=30), jobs, order)
         self.assertEqual(offer['slots'], 0)
+
+    def test_mixed_measured_offer_charges_per_class_and_legacy_offer_is_unchanged(self):
+        p = profile(separate_task_resources=True, pack_measured_task_classes=True)
+        jobs = [dict(resource_class='heavy',state='TRANSFERRED',dp_workers=5,peak_rss_bytes=2_000_000),
+                dict(resource_class='light',state='TRANSFERRED',dp_workers=2,peak_rss_bytes=1_000_000)]
+        demand = feedback(0,1,ready_task_class_order=['heavy']+['light']*9)
+        _, legacy = R.decide_slots(p,{},resources(cpu=9),jobs,demand)
+        self.assertEqual((legacy['slots'],legacy['admitted_task_classes']),(1,['heavy']))
+        self.assertNotIn('admitted_task_class_slots',legacy)
+        _, mixed = R.decide_slots(p,{},resources(cpu=9),jobs,dict(demand,mixed_task_class_quotas=True))
+        self.assertEqual(mixed['admitted_task_class_slots'],{'heavy':1,'light':2})
+        self.assertEqual(mixed['slots'],3)
+
+    def test_declared_trial_can_pack_with_measured_without_fabricating_rss(self):
+        p=profile(separate_task_resources=True,pack_measured_task_classes=True)
+        jobs=[dict(resource_class='measured',state='TRANSFERRED',dp_workers=2,peak_rss_bytes=1000000)]
+        demand=feedback(0,1,ready_task_class_order=['declared','measured'],mixed_task_class_quotas=True,
+                        declared_task_class_resources={'declared':{'memory_bytes':1000000,'cpu':2}})
+        state,offer=R.decide_slots(p,{},resources(cpu=8),jobs,demand)
+        self.assertEqual(offer['admitted_task_class_slots'],{'declared':1,'measured':1})
+        self.assertEqual(offer['declared_trial_classes'],['declared'])
+        self.assertNotIn('declared',state['task_resource_peaks'])
 
     def test_blocked_measured_class_does_not_hide_a_cold_class_on_an_idle_host(self):
         p = profile(separate_task_resources=True, pack_measured_task_classes=True)
@@ -251,6 +276,26 @@ class DiscoveryTests(unittest.TestCase):
         config=base/'relay.json';write(config,json.dumps(dict(state_directory=str(base/'state'),
             controller={},workers=workers,external_tunnel=True,poll_seconds=.02)))
         return Relay.Relay(config)
+
+    def test_storage_sampling_does_not_wait_on_mailbox_status(self):
+        import threading
+        with tempfile.TemporaryDirectory() as temporary:
+            worker={'host_id':'fixture'};relay=self.relay(Path(temporary),[worker]);release=threading.Event();started=threading.Event();calls=[]
+            def remote(_worker,action,payload):
+                calls.append((action,payload))
+                if action=='storage-sample':
+                    started.set(); release.wait(3); return {'ok':True},0
+                return {'host_id':'fixture','storage_async_supported':True},0
+            try:
+                with patch.object(relay,'remote',side_effect=remote):
+                    relay._mailbox_status(worker)
+                    relay._mailbox_status(worker)
+                    self.assertTrue(started.wait(1))
+                    self.assertFalse(relay.storage_futures['fixture'].done())
+                    self.assertTrue([p for action,p in calls if action=='status'][-1]['cached_storage'])
+            finally:
+                release.set()
+                if relay.storage_pool:relay.storage_pool.shutdown(wait=True)
 
     def test_all_ready_host_offers_precede_claims_even_when_wsl_listed_first(self):
         with tempfile.TemporaryDirectory()as temporary:
@@ -375,3 +420,62 @@ def test_policy_packs_24_small_jobs_into_96_cpus_with_old_larger_worker_sample()
     _,offer=R.decide_slots(p,state,resources(cpu=96,memory=350*1024**3,free=350*1024**3),[],f)
     assert offer['capacity']==24 and offer['slots']==24
     assert offer['stage']=='MEASURED_TASK_HEADROOM'
+
+
+def test_forecast_index_matches_scan_and_does_not_share_mutable_results():
+    from unittest.mock import patch
+    target = dict(family='PF_STEP_COUNT_V1', shape=['H4','FULL'], provider='PF_COMPILE',
+                  stage='compile', source='fixed', parallel_axes=False,
+                  peak_units=10, total_units=20, path_units=20, axis_jobs=2)
+    samples = [dict(workload=target, cpu_count=2, peak_rss_bytes=1000,
+                    completed=True, elapsed_seconds=5, host='local'),
+               dict(workload=dict(target, source='other'), cpu_count=2, peak_rss_bytes=999999)]
+    request = {'preparation':{}}
+    with patch.object(R, 'preparation_workload', return_value=target):
+        expected = R.preparation_forecast(request, samples, cpu_count=2, host='local')
+        index = R.PreparationForecastIndex(samples)
+        assert index.forecast(request, cpu_count=2, host='local') == expected
+        index.forecast(request, cpu_count=2, host='local').clear()
+        assert index.forecast(request, cpu_count=2, host='local') == expected
+        assert index.group_caches[R._forecast_group(target)].cache_info().hits == 2
+
+
+def test_cold_fallback_reduction_requires_completed_matching_host_and_scale():
+    from unittest.mock import patch
+    target = dict(family='PF_STEP_COUNT_V1', shape=['H4','FULL'], provider='PF_COMPILE',
+                  stage='compile', source='fixed', parallel_axes=False,
+                  peak_units=10, total_units=20, path_units=20, axis_jobs=2)
+    sample = dict(workload=target, cpu_count=2, peak_rss_bytes=1000, completed=True, host='local')
+    with patch.object(R, 'preparation_workload', return_value=target):
+        estimate = lambda rows: R.comparable_preparation_memory({}, rows, cpu_count=2, host='local')
+        assert estimate([sample]) == 1500
+        assert estimate([dict(sample, completed=False)]) is None
+        assert estimate([dict(sample, host='other')]) is None
+        assert estimate([dict(sample, workload=dict(target, total_units=10))]) is None
+        assert R.comparable_preparation_memory({}, [sample], cpu_count=2, host='local', runtime_sha256='fixed') is None
+        assert R.comparable_preparation_memory({}, [dict(sample,runtime_profile_sha256='fixed')],
+                                               cpu_count=2, host='local', runtime_sha256='fixed') == 1500
+
+
+def test_comparable_q3_reservations_pack_without_persisting_inferred_measurement():
+    measured='q3:count_dp:FULL_PF:fixed::3:26:8'
+    pending='q3:count_dp:FULL_PF:fixed::3:26:7'
+    larger='q3:count_dp:FULL_PF:fixed::3:26:9'
+    foreign='q3:count_dp:FULL_PF:other::3:26:7'
+    initial=dict(task_resource_peaks={measured:dict(peak_rss_bytes=1024**3,dp_workers=4,observed_cpu_cores=3)})
+    p=dict(profile(separate_task_resources=True,pack_measured_task_classes=True,max_slots=96),dp_workers=3)
+    f=feedback(1,10,capacity_ready_jobs=16,ready_task_classes=[pending],ready_task_class_order=[pending]*16)
+    saved,offer=R.decide_slots(p,initial,resources(cpu=96,memory=350*1024**3,free=350*1024**3),[],f)
+    assert offer['slots']>1 and offer['comparable_trial_classes']==[pending]
+    assert pending not in saved['task_resource_peaks']
+    assert not R.comparable_q3_class_reservations(initial['task_resource_peaks'],[larger,foreign])
+
+
+def test_owned_cpu_baseline_skips_reaping_race_and_recovers():
+    from trottertracks.rpe_q3_resources import owned_cpu_observation
+    stamp=lambda t:{'clock_id':'clock','monotonic':t}
+    first=owned_cpu_observation({'cpu_seconds':12,'cpu_sample_consistent':True},{},stamp(10))
+    invalid=owned_cpu_observation({'cpu_seconds':100,'cpu_sample_consistent':False},first,stamp(11))
+    assert invalid==first
+    last=owned_cpu_observation({'cpu_seconds':16,'cpu_sample_consistent':True},invalid,stamp(12))
+    assert last['observed_cpu_cores']==2

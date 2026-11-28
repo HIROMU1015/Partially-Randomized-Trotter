@@ -6,11 +6,13 @@ candidates, creates approvals, expires leases, or starts a numerical worker.
 import base64
 import errno
 import hashlib
+from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
 from pathlib import Path, PurePosixPath
 import subprocess
+import stat
 import threading
 
 
@@ -52,10 +54,33 @@ def source_manifest(root, commit):
                  'src/trottertracks/rpe_preparation_artifacts.py',
                  'src/trottertracks/rpe_metadata_bundle.py'):
         if (Path(root)/path).exists():paths += (path,)
-    for path in ('src/trottertracks/rpe_pbs.py', 'src/trottertracks/rpe_pbs_worker.py',
+    for path in ('src/trottertracks/rpe_pbs.py', 'src/trottertracks/rpe_pbs_state.py', 'src/trottertracks/rpe_pbs_worker.py',
                  'scripts/run_rpe_pbs_worker.py', 'scripts/rpe_pbs_gateway.py'):
         if (Path(root)/path).exists():paths += (path,)
-    return dict(commit=commit, files={p: hashlib.sha256((Path(root)/p).read_bytes()).hexdigest() for p in paths})
+    from .rpe_preparation_worker import fixed_file_sha
+    return dict(commit=commit, files={p: fixed_file_sha(Path(root)/p) for p in paths})
+
+
+@lru_cache(maxsize=16384)
+def _immutable_git_blob_sha(root, object_id):
+    # Git objects are content-addressed. Keep the scientific SHA-256 of
+    # the complete blob, not just the Git (possibly SHA-1) object name.
+    blob = subprocess.check_output(['git','--no-replace-objects','cat-file','blob',object_id],cwd=root)
+    return hashlib.sha256(blob).hexdigest()
+
+
+def fixed_git_blob_sha(root, commit, path):
+    root = str(Path(root).resolve())
+    locator = commit+':'+path
+    if len(commit) in (40,64) and all(c in '0123456789abcdef' for c in commit) and '\n' not in path:
+        # One batch-check resolves the locator and verifies that the blob
+        # exists even on a cache hit (sparse/promisor roots).
+        result = subprocess.check_output(['git','--no-replace-objects','cat-file','--batch-check=%(objectname) %(objecttype)'],
+                                         cwd=root,text=True,input=locator+'\n').strip().split()
+        if len(result)!=2 or result[1]!='blob':
+            raise ValueError('Fixed Git input blob is missing: '+path)
+        return _immutable_git_blob_sha(root,result[0])
+    return hashlib.sha256(subprocess.check_output(['git','show',locator],cwd=root)).hexdigest()
 
 
 def input_hashes(root, request, cache=None):
@@ -70,8 +95,7 @@ def input_hashes(root, request, cache=None):
                 key = (value['commit'], value['path'])
                 if key not in found:
                     if key not in cache:
-                        blob = subprocess.check_output(['git', 'show', key[0]+':'+key[1]], cwd=root)
-                        cache[key] = dict(commit=key[0], path=key[1], sha256=hashlib.sha256(blob).hexdigest())
+                        cache[key] = dict(commit=key[0], path=key[1], sha256=fixed_git_blob_sha(root,*key))
                     found[key] = cache[key]
             for item in value.values(): visit(item)
     if request['route']['kind'] != 'artificial':
@@ -154,11 +178,32 @@ def _same_artifact(source, destination):
         return all(block == saved.read(len(block)) for block in iter(lambda: original.read(1 << 20), b''))
 
 
-def publish_staged_files(stage, job):
-    """Expose accepted immutable bytes at the job path, with OUTCOME last."""
+def publication_directory_stamp(path):
+    info = Path(path).lstat()
+    if not stat.S_ISDIR(info.st_mode):
+        raise ValueError('Publication directory is not an ordinary directory')
+    return [info.st_dev,info.st_ino,info.st_mtime_ns,info.st_ctime_ns]
+
+
+def publish_staged_files(stage, job, *, capture_signature=False):
+    """Expose accepted immutable bytes at the job path, with OUTCOME last.
+
+    Optionally capture the directory identities during the existing traversal,
+    so a clean first Resume need not walk every staged file again.
+    """
     stage, job = Path(stage), Path(job)
-    sources = (path for path in stage.rglob('*')
-               if path != stage/'REQUEST.json' and (path.is_file() or path.is_symlink()))
+    stage_dirs, job_dirs = {}, {'.'}
+    linked = capture_signature
+    if linked:
+        try:stage_dirs['.']=publication_directory_stamp(stage)
+        except (OSError,ValueError):linked=False
+    sources=[]
+    for path in stage.rglob('*'):
+        if linked and path.is_dir() and not path.is_symlink():
+            try:stage_dirs[path.relative_to(stage).as_posix()]=publication_directory_stamp(path)
+            except (OSError,ValueError):linked=False
+        if path != stage/'REQUEST.json' and (path.is_file() or path.is_symlink()):
+            sources.append(path)
     for source in sorted(sources, key=lambda path: (path == stage/'OUTCOME.json', path)):
         name = source.relative_to(stage).as_posix()
         if source.is_symlink() or not source.resolve().is_relative_to(stage.resolve()):
@@ -170,13 +215,22 @@ def publish_staged_files(stage, job):
         except FileExistsError:
             if not _same_artifact(source, destination):
                 raise ValueError('Changed immutable artifact: '+name)
+            if linked and not source.samefile(destination):linked=False
         except OSError as error:
             if error.errno not in (errno.EXDEV, errno.EOPNOTSUPP, errno.ENOSYS, errno.EMLINK):
                 raise
             # Some deployments place jobs on another filesystem. The original
             # atomic installer remains the fallback for that file only.
             install_files(job, {name: base64.b64encode(source.read_bytes())})
+            linked=False
+        if linked:job_dirs.update(parent.as_posix() for parent in PurePosixPath(name).parents)
         _sync_directory(destination.parent)
+    if linked:
+        try:
+            if all(publication_directory_stamp(stage/name)==stamp for name,stamp in stage_dirs.items()):
+                return dict(stage=stage_dirs,job={name:publication_directory_stamp(job/name) for name in job_dirs})
+        except (OSError,ValueError):pass
+    return None
 
 
 class Server(ThreadingHTTPServer):
