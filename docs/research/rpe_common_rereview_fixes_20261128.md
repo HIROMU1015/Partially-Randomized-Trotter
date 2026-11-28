@@ -49,14 +49,14 @@
 | N39 | 対応 | numpy/scipy.linalg両importの実kernel metadata照合、READY再告知の独立retry。RomuTail .venv311でHASWELL/NEHALEMのimportのみ各2個の一致Core行を確認。固定H8 scoped数値はN01の未許可範囲。 |
 | N40 | 対応 | inodeに加えsize/mtime/ctimeを確認、読取りの再試行を有限化。 |
 | N41 | 対応 | 選択関数のAST比較を確認済み固定基点 `512978edcb` に整合し、4関数を比較対象から除外しない。 |
-| N42 | 部分 | S01–S14を再点検。コード追加・inventory・人工検証までは実施、未実施の旧データ移動・削除は完了扱いしない。 |
+| N42 | 対応 | S01–S14の既存実装・追加実装・隔離移行/復元の回帰を統合。実データの物理整理・稼働版への導入は今回の利用者指示に従い行わない。 |
 | N43 | 対応 | 既存回帰にphase境界、alias owner、旧helper欠損、index再開、価格lock、転送timeout、静的メタデータ、graph hash、保存export、diagnostic archiveを追加。広域人工回帰成功。全テストの修正前反証を再現したとは主張しない。 |
 
 ## S01–S14
 
 | ID | 判定 | 最新共有版と今回の扱い |
 |---|---|---|
-| S01 | 部分 | 停止runの固定Resumeにrestore_provider_sourceがある場合に限定する遡及compact入口を追加。人工Git workspaceで保留/compact/restore確認。最新共有版の永続SHARED_INPUT_BASES・local-only共有Git object経路とsparse-indexを再利用。明示停止run restore入口も追加。旧非互換版の遡及compactと可変workspace全体の共有は未実施。 |
+| S01 | 対応 | 既存compact/restoreを利用。停止runの旧版向け明示オプションと通常Start/Resume前の復元、旧Gateway用の明示復元入口を追加。Git blob・ファイルmode、固有source・証跡・固定configを保持する人工往復。可変workspace共有は採用せず、共通Git objects・sparse-index・bundle再利用を維持。 |
 | S02 | 既存 | 停止sessionのRPCを外部mountへ退避して元の再送pathを保持、検証された大ファイル選別と消費receipt機構あり。T7実データは今回移動しない。 |
 | S03 | 既存 | 停止runの完全一致event三重複をhardlink、`install_files` の共通event実体共有を人工検証。 |
 | S04 | 対応 | 新規runのsplit_eligibility opt-inでdeferred_hosts/host_decisions/decision_sha256を小さな別表へ分離、claim/read/Resumeは完全decisionを復元。永続入力とhost fingerprintはjobs側に維持。完全一致はwrite transactionなし。人工fixtureで大きなbase行・updated_epoch不変とclaim・復元・イベント完全一致を確認。 |
@@ -65,11 +65,11 @@
 | S07 | 既存 | local workerと中央CASで検証済み同一内容を共有。人工fixtureでinodeとSHAを確認。 |
 | S08 | 対応 | 負回収防止と再pack抑制を再利用、pack前後件数・byte・index存在を集計。明示opt-in `--multi-pack-index` で既存保守lock内のGit MIDX write/verifyを追加（pack削除なし）。2 packの人工fixtureで検証成功。稼働repoのrepack/index変更なし。 |
 | S09 | 既存 | settled DBだけ `VACUUM INTO`、行・連番・索引の検証後に置換する機構を人工検証。実台帳には未適用。 |
-| S10 | 部分 | 現行systemd設定41ファイルを含む読み取り参照inventoryでpublication 2件とも参照あり。新target単独のrefs/reflogs/index到達objectの存在を非破壊的に照合する `--check-alternate` を追加。既存clone削除・alternate付替は、現在両方に参照が存在するため保留。 |
-| S11 | 部分 | 現行参照inventoryで最新inventoryでrelease 125参照・40未確認、deployment 323参照・127未確認。未確認は削除許可ではない。証跡配置移行・実際の削除は旧固定runの保護上保留。現行create_run_directoryはGit locator公開のためrun_evidence_rootを固定controller checkout内に要求する。外部配置にはlocator契約との整合が必要。 |
-| S12 | 部分 | planning 8参照・51未確認、acceptance 14参照・62未確認、validation 1参照・6未確認。参照解析と新target単独のobject可用性人工チェックは成功、Git alternateの物理移行・実試験process変更は保留。 |
+| S10 | 対応 | publication cloneの参照inventoryと、全Git object（未参照objectを含む）を保存する独立copy・移行先alternate照合を実装。既存cloneとalternateを一切変更せず、人工cloneで旧依存先が無くてもGit参照・commitが成立することを確認。現物切替は行わない。 |
+| S11 | 対応 | `evidence-service` で新規run向けに固定SOURCEを別Git viewへ配置し、その内側へ証跡を保存。旧releaseの設定と通常Git locator方式を再利用し、固定service入力をbyte一致で移す。人工Prepare、pin参照、Git locator、Statusと旧release不在時の解決を確認。既存runの固定pathは不変。 |
+| S12 | 対応 | 試験成果物の検証済みcold copy、外部symlink/alternateの明示、linked worktreeも対象にした独立bare object storeのstageと全object検証を実装。人工worktreeでalternateの切替後に旧planning無しでもGit fsck成功。現物移行・実processの変更なし。 |
 | S13 | 既存 | 最新基点の親死亡監視を再利用。既に孤立している実processを終了していない。 |
-| S14 | 部分 | 停止runの受理済み診断ファイルを内容SHA付きJSONL.xzにまとめ検証する入口を追加。人工原本同一性・欠落原本の復元を確認。旧読取り互換を守り現物の原本削除・cold移行は実施しない。 |
+| S14 | 対応 | 受理済みjobとbyte一致するtransfer診断だけを検証済みJSONL.xzへ集約・除去し、固定旧版の読み取り前に復元。未settled/異なる診断・科学receiptは保持。7万桁超の人工HCHAIN_RESULTをraw byteのままcold圧縮/復元。新規runの共有版gzip proofも再利用。実データには未適用。 |
 
 ## 検証
 
@@ -125,3 +125,16 @@
 - 追加の公開共有版 `6948e237471ac3ad3e24c139d8007f0cd987ea2c` に含まれる履歴cache、Git bundle再利用、provider sparse-indexを統合する。
 - この段階の分類は45対応（代替・既存再利用を含む）、部分対応6（N42/S01/S10/S11/S12/S14）、PBS実機待6。未対応部分を実データの破壊的変更で埋めない。稼働固定版、PBS予約、実データ、固定科学契約は変更しない。
 - `6948e23747` へのrebase後の実装commit `8f9dd3ba2b218565e54e4e0eaae4af6a43540cf7` で広域人工回帰 **770 passed, 1 skipped, 53 subtests passed (123.59s)**。Git履歴cacheの追加回帰も含む。`git diff --check` 成功、H4 controller/workerの既存PID 665284/669005を読み取り確認。実機PBS・新規科学計算なし。
+
+## 保存データ6項目の隔離環境での最終対応
+
+- 対象はN42、S01、S10、S11、S12、S14。今回の利用者指示は隔離環境での実装・技術検収に限定し、稼働版・現物の保存データを変更しない。
+- S01/S14：旧版source復元と診断重複整理を既存停止run保護・固定入力照合に接続。新Gatewayでは通常Start/Resume前に保存layoutを復元する。旧Gatewayでは `--restore-saved-layout --run-id` による明示復元が必要（旧固定版を書換えない）。人工試験で、復元先の衝突/改変・保護対象をHOLD、正常経路でpreflight→launchの順序を確認。
+- S10/S12：`scripts/rpe_saved_data_migration.py` の `copy-git` はsourceの全object（到達不能objectも含む）、refs/index/reflogsとファイルを保持した新しいcopyを検証する。`stage-object-store` はlinked worktreeも含む独立bare object storeを作る。`copy-tree` は外部参照を明示して試験成果物をbyte照合コピーする。いずれもsource削除・実alternate変更・timer/process変更は行わない。
+- S11：`evidence-service` は独立object storeから別の固定実行/evidence viewを作成し、従来の `run_evidence_root` とGit locator規則を使う。元releaseのsparse scope・固定SOURCEを保持し、内部の固定service入力ファイルをbyte一致で複製。その他の明示provider/runtime依存はそのまま残す。登録・採択は別の操作。旧版に対するretention inventoryは引き続き参照あり/未確認を削除許可と見なさない。
+- S14：`--pack-diagnostics` のあと `--retire-diagnostics` はsettled runのjob側と同一の転送診断だけを対象にする。scientific receipts・異なる転送証跡は保持。raw resultのcold copyは `compress-file` / `restore-file` のSHA照合で実行し、旧版のraw JSON byte表現を変えない。
+- 追加の共有版 `f585a0f5dd396d846e90f5b7939a806a73965122` のH-chain exact leaf再利用、中間report削減、gzip proof保存を統合する。新規runのgzip proofと、旧版rawのcold copyは別用途。
+- 隔離fixtureではS01/S10/S11/S12/S14の正常復元・改変拒否・source不変を確認。対象回帰26件成功。
+- **技術対応51件（採用された代替策・既存再利用を含む）、PBS実機待ち6件（N13/N15/N31/N32/N33/N34）**。実データの回収量・本番運用の成立や性能はこの検証では主張しない。
+- 最新共有版統合後の実装commit `3055d1fff435536f894d1a19bebba27bba9b215e` の広域人工回帰：**861 passed, 1 skipped, 60 subtests passed (130.62s)**。追加の未確定owner拒否・衝突保護・内部hardlink保持修正後の保存物対象回帰27件成功。科学計算・PBS実機なし。
+- 最終実装commit `8b3e985901709198c276090a858373d50edc77e9` の広域人工回帰 **862 passed, 1 skipped, 60 subtests passed (138.59s)**、失敗0。`git diff --check` 成功。RomuTail H4の既存controller/worker PID 665284/669005継続を読取りで確認。技術対応51件、PBS実機待ち6件、部分対応0件（実データの移行・稼働版への採択は今回の対象外）。

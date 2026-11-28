@@ -1003,6 +1003,13 @@ class Gateway:
             from .rpe_search_continuation import verify_budget_parents
             immutable(run/'Q3_BUDGET_CONTINUATION.json',verify_budget_parents(run,problem,spec))
         archive_recovery = None
+        # Retained layouts are restored only after existing STOP/ownership and
+        # fixed-input checks, before the pinned provider or preflight reads them.
+        from .rpe_saved_layout import restore_saved_layout
+        try:
+            saved_layout = restore_saved_layout(run)
+        except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+            raise RequestError('saved_layout', str(error)) from error
         if request['action'] == 'resume' and not getattr(self.preflight, 'restores_preparation_archives', False):
             from .rpe_preparation_retention import restore_resume_archives
             try:
@@ -1014,6 +1021,8 @@ class Gateway:
                       elapsed_seconds=time.monotonic() - preflight_started)
         if archive_recovery and any(archive_recovery.values()):
             report['preparation_archive_recovery'] = archive_recovery
+        if any(saved_layout.values()):
+            report['saved_layout_recovery'] = saved_layout
         write(run/'DUPLICATE_PREFLIGHT.json', report)
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
         immutable(run/'ROUND.json', spec)
