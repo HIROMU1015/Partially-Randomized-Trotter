@@ -481,6 +481,7 @@ class DistributedPreparationBridge:
         self.aliases=read(self.alias_path)if self.alias_path.exists()else{}
         self.lock=threading.RLock()
         self.bundle_hashes = {}
+        self.saved_bundle_hashes = None
         self.bundle_locks = {}
         self.shared_bundle_heads = {}
         self.compact_bindings = {}
@@ -1757,21 +1758,79 @@ class DistributedPreparationBridge:
         bundles.append(self._pack_bundle(root,ref,prerequisites,input_hashes,tracked_workspace))
         return bundles
 
+    def _saved_bundle(self, key):
+        if self.settings.get('stable_input_bundle') is not True:
+            return None
+        with self.lock:
+            if self.saved_bundle_hashes is None:
+                self.saved_bundle_hashes={}
+                path=Path(self.executor.run_dir)/'preparation/BUNDLE_CACHE.jsonl'
+                if path.is_file():
+                    try:
+                        with path.open('r',errors='replace') as stream:
+                            for line in stream:
+                                try:
+                                    row=json.loads(line)
+                                    if re.fullmatch('[0-9a-f]{64}',row['key']) and re.fullmatch('[0-9a-f]{64}',row['sha256']):
+                                        self.saved_bundle_hashes[row['key']]=row['sha256']
+                                except (ValueError,KeyError,TypeError):
+                                    continue  # a truncated disposable cache record
+                    except OSError:
+                        pass  # exact pack generation remains available
+            return self.saved_bundle_hashes.get(key)
+
+    def _remember_bundle(self, key, sha):
+        if self.settings.get('stable_input_bundle') is not True:
+            return
+        with self.lock:
+            if self.saved_bundle_hashes.get(key)==sha:
+                return
+            path=Path(self.executor.run_dir)/'preparation/BUNDLE_CACHE.jsonl'
+            try:
+                path.parent.mkdir(parents=True,exist_ok=True)
+                # Do not rewrite the accumulated index. A leading newline
+                # isolates any last incomplete record after a controller crash.
+                with path.open('a') as stream:
+                    stream.write('\n'+json.dumps(dict(key=key,sha256=sha),separators=(',',':'))+'\n')
+                    stream.flush();os.fsync(stream.fileno())
+                self.saved_bundle_hashes[key]=sha
+            except OSError:
+                pass  # the verified CAS object is already durable
+
     def _pack_bundle(self, root, ref, prerequisites, input_hashes, checkout, workspace_objects=()):
         locators = sorted({(row['commit'], row['path']) for row in input_hashes})
-        key = (ref, tuple(prerequisites), tuple(locators), tuple(workspace_objects))
+        key = (str(Path(root).resolve()),ref, tuple(prerequisites), tuple(locators), tuple(workspace_objects))
         with self.lock:
             lock=self.bundle_locks.setdefault(key,threading.Lock())
         with lock:
             with self.lock:
                 sha = self.bundle_hashes.get(key)
-            if not sha or not self.executor.artifact_cache.path(sha).is_file():
-                with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
-                    path = Path(temporary) / 'input.bundle'
-                    build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
-                    from .rpe_preparation_artifacts import file_digest
-                    sha = file_digest(path)
-                    self.executor.artifact_cache.put_file(path,sha)
+            cache=self.executor.artifact_cache
+            if not sha or not cache.path(sha).is_file():
+                # The ref is an immutable synthetic tip, but bind its actual
+                # Git identity too. Never reuse a packing recipe for new input.
+                saved_key=None
+                if self.settings.get('stable_input_bundle') is True:
+                    tip=subprocess.check_output(['git','rev-parse',ref],cwd=root,text=True).strip()
+                    saved_key=digest(('RPE_PREPARATION_BUNDLE_V1',key,tip))
+                sha=self._saved_bundle(saved_key) if saved_key else None
+                if sha and not cache.missing([sha]):
+                    try:
+                        heads=subprocess.check_output(['git','bundle','list-heads',str(cache.path(sha)),ref],
+                                                      cwd=root,text=True).splitlines()
+                        if heads != [tip+' '+ref]:sha=None
+                    except (OSError,subprocess.SubprocessError):
+                        sha=None
+                else:
+                    sha=None
+                if sha is None:
+                    with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
+                        path = Path(temporary) / 'input.bundle'
+                        build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
+                        from .rpe_preparation_artifacts import file_digest
+                        sha = file_digest(path)
+                        cache.put_file(path,sha)
+                    if saved_key:self._remember_bundle(saved_key,sha)
                 with self.lock:
                     self.bundle_hashes[key] = sha
         return dict(sha256=sha, ref=ref, checkout_input_head=checkout)

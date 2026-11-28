@@ -34,6 +34,28 @@ class SavedHistoryDeltas(unittest.TestCase):
         self.cache = HistoryCache(self.cachefile)
         self.addCleanup(lambda: self.cache.close())
 
+    def test_registered_continuations_share_disposable_validated_cache(self):
+        from trottertracks.rpe_plan_history_cache import optimizer_history_directory
+        state=self.root/'state';state.mkdir()
+        first=self.root/'first';second=self.root/'second'
+        for run in (first,second):
+            run.mkdir();(run/'CONTROLLER_CONFIG.json').write_text(json.dumps({'state_directory':str(state)}))
+        (state/'RUNS.json').write_text(json.dumps({run.name:{'run_directory':str(run)} for run in (first,second)}))
+        first_dir=optimizer_history_directory(first,self.executor)
+        second_dir=optimizer_history_directory(second,self.executor)
+        self.assertEqual(first_dir,second_dir)
+        self.assertTrue(first_dir.is_relative_to(state))
+        self.evidence(1)
+        with HistoryCache(first_dir/'FULL_PF.sqlite3') as original:
+            known,refused,stats=original.prior_records(self.executor,self.candidates)
+            self.assertEqual(stats['validated_jobs'],1)
+        with HistoryCache(second_dir/'FULL_PF.sqlite3') as resumed:
+            again,refused_again,stats=resumed.prior_records(self.executor,self.candidates)
+            self.assertEqual(stats['cache_hits'],1)
+            self.assertEqual((again,refused_again),(known,refused))
+        unregistered=self.root/'other';unregistered.mkdir()
+        self.assertEqual(optimizer_history_directory(unregistered,self.executor),unregistered/'cache/prior-q3')
+
     def evidence(self, n, status=O.PASS, outcome=True):
         proposal = dict(configuration_id='cfg', vector=(n, n), cost=Fraction(2*n), origin=dict(kind='SYNTHETIC'))
         job = self.prior / 'jobs' / self.executor.method / self.executor.job_dir(proposal).name

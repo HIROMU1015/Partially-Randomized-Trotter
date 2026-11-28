@@ -22,6 +22,23 @@ def put(path,value):
 def git(root,*args):return subprocess.check_output(['git',*args],cwd=root,text=True).strip()
 
 
+def create_provider_workspace(original, workspace, source):
+    """A newly owned PF view keeps a sparse index, not a full archive index."""
+    workspace=Path(workspace)
+    if workspace.exists():
+        raise ValueError('Unidentified PF producer workspace; preserve it')
+    subprocess.run(['git','clone','--shared','--no-checkout',str(original),str(workspace)],check=True,
+                   stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+    from .rpe_metadata_bundle import flatten_new_clone_alternates
+    flatten_new_clone_alternates(workspace)
+    subprocess.run(['git','sparse-checkout','init','--cone','--sparse-index'],cwd=workspace,check=True,
+                   capture_output=True)
+    subprocess.run(['git','sparse-checkout','set','--stdin'],cwd=workspace,check=True,
+                   input='scripts\nsrc\nconfigs\nreferences\n',text=True,capture_output=True)
+    subprocess.run(['git','checkout','-b','selected-preparation',source],cwd=workspace,check=True,
+                   stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+
+
 def run_preflight(command, **options):
     """Limit a failed metadata probe to its candidate and tolerate a departing PID."""
     from .pr_candidate_completion import Held, PreparationWait
@@ -539,14 +556,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
     workspace=run/'provider_workspace';marker=run/'PROVIDER_SOURCE.json'
     if not marker.exists():
         source=git(original,'rev-parse','HEAD')
-        if workspace.exists():raise ValueError('Unidentified PF producer workspace; preserve it')
-        subprocess.run(['git','clone','--shared','--no-checkout',str(original),str(workspace)],check=True,
-            stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
-        from .rpe_metadata_bundle import flatten_new_clone_alternates
-        flatten_new_clone_alternates(workspace)
-        subprocess.run(['git','sparse-checkout','set','--cone','scripts','src','configs','references'],cwd=workspace,check=True)
-        subprocess.run(['git','checkout','-b','selected-preparation',source],cwd=workspace,check=True,
-            stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        create_provider_workspace(original,workspace,source)
         put(marker,dict(root=str(original),source=source))
     from .rpe_worker_storage import compact_provider_source, restore_provider_source
     restore_provider_source(workspace)

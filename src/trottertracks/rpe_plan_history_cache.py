@@ -244,6 +244,44 @@ def _validator_sources(paths):
     return sorted((Path(path).parent.name, Path(path).name, sha) for path, sha in paths.items())
 
 
+def optimizer_history_directory(run, executor):
+    """Use one disposable local cache for registered central continuations.
+
+    The full exact source/route/context check below remains the reuse
+    authority. A non-central worker, unregistered fixture, or unavailable
+    cache keeps its original run-local path.
+    """
+    run=Path(run).resolve()
+    fallback=run/'cache'/'prior-q3'
+    try:
+        config=json.loads((run/'CONTROLLER_CONFIG.json').read_text())
+        state=Path(config['state_directory']).resolve(strict=True)
+        registry=json.loads((state/'RUNS.json').read_text())
+        registered=Path(registry[run.name]['run_directory']).resolve(strict=True)
+        if registered!=run or state.stat().st_uid!=os.getuid():
+            return fallback
+        # Separate incompatible exact parser/validator contexts. The
+        # executor_root is itself a retained validation-context field.
+        identity=dict(schema=SCHEMA,python=list(sys.version_info[:2]),
+                      validator=_validator_sources(_validator(executor)),
+                      executor_root=str(Path(executor.root).resolve()))
+        namespace=hashlib.sha256(_json(identity).encode()).hexdigest()
+        cache=state/'cache'/'prior-q3-v1'/namespace
+        cache.mkdir(mode=0o700,parents=True,exist_ok=True)
+        info=cache.stat()
+        # The cache contains locally generated binary exact values; never
+        # select a remotely supplied or shared-writable directory.
+        if cache.resolve()!=cache or info.st_uid!=os.getuid() or info.st_mode & 0o022:
+            return fallback
+        for file in cache.glob('*.sqlite3'):
+            item=file.lstat()
+            if file.is_symlink() or item.st_uid!=os.getuid() or item.st_mode & 0o022:
+                return fallback
+        return cache
+    except (OSError,ValueError,KeyError,TypeError):
+        return fallback
+
+
 def _legacy_validator_digests(path, signature):
     # Stat fields can remain unchanged for two same-sized writes in the same
     # filesystem clock tick. Verify bytes; the AST digest is still content-cached.
@@ -558,11 +596,19 @@ class HistoryCache:
         if current is not None and current.version == version and not modified:
             return current
         with self.db:
-            self.db.executemany('DELETE FROM history_job WHERE directory=? AND job=?',
-                                ((key, name) for name in previous.keys() - names.keys()))
-            self.db.executemany('INSERT OR REPLACE INTO history_job VALUES (?, ?, ?, ?, ?)',
-                                ((key, name, *identity, cid) for name, (identity, cid) in modified.items()))
-            self.db.execute('INSERT OR REPLACE INTO history_directory VALUES (?, ?)', (key, _json(version)))
+            # Other controllers may share this disposable index. Do not
+            # overwrite a different saved revision with deltas against a
+            # stale revision. The current local index is still usable.
+            self.db.execute('BEGIN IMMEDIATE')
+            saved=self.db.execute('SELECT version FROM history_directory WHERE directory=?',(key,)).fetchone()
+            if (saved is None or current is not None and saved[0]==_json(current.version)
+                    or saved is not None and saved[0]==_json(version)):
+                if _directory_version(directory)==version:
+                    self.db.executemany('DELETE FROM history_job WHERE directory=? AND job=?',
+                                        ((key, name) for name in previous.keys() - names.keys()))
+                    self.db.executemany('INSERT OR REPLACE INTO history_job VALUES (?, ?, ?, ?, ?)',
+                                        ((key, name, *identity, cid) for name, (identity, cid) in modified.items()))
+                    self.db.execute('INSERT OR REPLACE INTO history_directory VALUES (?, ?)', (key, _json(version)))
         return _DirectoryIndex.build(version, names)
 
     def prior_records(self, executor, candidates, *, details=True):

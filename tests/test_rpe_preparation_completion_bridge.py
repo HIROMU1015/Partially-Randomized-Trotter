@@ -1021,6 +1021,12 @@ def test_stable_fixed_input_bundle_ignores_unrelated_publication_head(tmp_path):
     for i in range(3):
         (root/'unrelated.json').write_text(str(i));git('add','.');git('commit','-qm','publication')
         assert bridge()._bundle(root,source,locators)==first
+    # The next invocation must not recompress either base or request.
+    with patch.object(B,'build_preparation_git_bundle',side_effect=AssertionError('must use verified persistent CAS')):
+        assert bridge()._bundle(root,source,locators)==first
+    # Missing disposable bytes are regenerated with the exact same identity.
+    missing=cache.path(first[-1]['sha256']);missing.unlink()
+    assert bridge()._bundle(root,source,locators)==first
     owned=W._clone(worker,tmp_path/'owned',first,cache)
     assert git('rev-parse','HEAD',cwd=owned)==source
     W._verify_fixed_git_inputs(owned,locators)
@@ -1052,3 +1058,27 @@ def test_flatten_new_clone_alternates_handles_deep_chain_without_rewriting_sourc
     result=git(repo,'cat-file','-p',oid)
     assert result.stdout=='fixed' and not result.stderr
     assert all(file.read_bytes()==raw for file,raw in snapshots.items())
+
+def test_pf_provider_sparse_index_keeps_source_and_publication(tmp_path):
+    from trottertracks.pf_distributed_preparation import create_provider_workspace
+    from trottertracks.rpe_worker_storage import compact_provider_source,restore_provider_source
+    root=tmp_path/'source';root.mkdir()
+    def git(*args,cwd=root):
+        return subprocess.check_output(['git',*args],cwd=cwd,text=True,stderr=subprocess.PIPE).strip()
+    git('init','-q');git('config','user.name','fixture');git('config','user.email','fixture@example.invalid')
+    (root/'src').mkdir();(root/'src/base.py').write_text('fixed source')
+    archive=root/'docs/archive';archive.mkdir(parents=True)
+    for i in range(128):(archive/f'{i}.json').write_text(str(i))
+    git('add','.');git('commit','-qm','fixed');source=git('rev-parse','HEAD')
+    workspace=tmp_path/'provider';create_provider_workspace(root,workspace,source)
+    assert git('config','--bool','index.sparse',cwd=workspace)=='true'
+    assert (workspace/'.git/index').stat().st_size < (root/'.git/index').stat().st_size/4
+    assert not (workspace/'docs/archive').exists()
+    (workspace/'src/new.py').write_text('candidate evidence')
+    git('add','src/new.py',cwd=workspace)
+    git('-c','user.name=fixture','-c','user.email=fixture@example.invalid','commit','-qm','evidence',cwd=workspace)
+    assert compact_provider_source(workspace,source)>0
+    restore_provider_source(workspace)
+    assert (workspace/'src/base.py').read_text()=='fixed source'
+    assert (workspace/'src/new.py').read_text()=='candidate evidence'
+    assert git('show',source+':docs/archive/71.json',cwd=workspace)=='71'
