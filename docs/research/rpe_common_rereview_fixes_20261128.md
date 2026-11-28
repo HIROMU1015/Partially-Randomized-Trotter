@@ -124,3 +124,4 @@
 - 追加修正を含む広域人工回帰：750 passed, 1 skipped, 49 subtests passed (132.32s)。
 - 追加の公開共有版 `6948e237471ac3ad3e24c139d8007f0cd987ea2c` に含まれる履歴cache、Git bundle再利用、provider sparse-indexを統合する。
 - この段階の分類は45対応（代替・既存再利用を含む）、部分対応6（N42/S01/S10/S11/S12/S14）、PBS実機待6。未対応部分を実データの破壊的変更で埋めない。稼働固定版、PBS予約、実データ、固定科学契約は変更しない。
+- `6948e23747` へのrebase後の実装commit `8f9dd3ba2b218565e54e4e0eaae4af6a43540cf7` で広域人工回帰 **770 passed, 1 skipped, 53 subtests passed (123.59s)**。Git履歴cacheの追加回帰も含む。`git diff --check` 成功、H4 controller/workerの既存PID 665284/669005を読み取り確認。実機PBS・新規科学計算なし。
