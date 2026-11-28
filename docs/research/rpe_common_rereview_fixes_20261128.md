@@ -137,3 +137,4 @@
 - 隔離fixtureではS01/S10/S11/S12/S14の正常復元・改変拒否・source不変を確認。対象回帰26件成功。
 - **技術対応51件（採用された代替策・既存再利用を含む）、PBS実機待ち6件（N13/N15/N31/N32/N33/N34）**。実データの回収量・本番運用の成立や性能はこの検証では主張しない。
 - 最新共有版統合後の実装commit `3055d1fff435536f894d1a19bebba27bba9b215e` の広域人工回帰：**861 passed, 1 skipped, 60 subtests passed (130.62s)**。追加の未確定owner拒否・衝突保護・内部hardlink保持修正後の保存物対象回帰27件成功。科学計算・PBS実機なし。
+- 最終実装commit `8b3e985901709198c276090a858373d50edc77e9` の広域人工回帰 **862 passed, 1 skipped, 60 subtests passed (138.59s)**、失敗0。`git diff --check` 成功。RomuTail H4の既存controller/worker PID 665284/669005継続を読取りで確認。技術対応51件、PBS実機待ち6件、部分対応0件（実データの移行・稼働版への採択は今回の対象外）。
