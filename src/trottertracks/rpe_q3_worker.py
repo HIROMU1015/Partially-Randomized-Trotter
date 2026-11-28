@@ -488,25 +488,44 @@ _TRANSFER_OMIT = {'ASSIGNMENT.json', 'WORKER_PROFILE.json', 'WORKER_STATE.json',
 _TRANSFER_OMIT.update((PBSAttempt.OWNER, PBSAttempt.REQUEST, PBSAttempt.INTERRUPTED))
 
 
-def result_bundle(attempt):
+def result_bundle_paths(attempt):
     attempt = Path(attempt)
     assignment_path = attempt/'ASSIGNMENT.json'
     if assignment_path.exists() and Preparation.is_preparation(read(assignment_path)):
         names = ('OUTCOME.json', 'PROCESS_RETURN.json', 'ARTIFACT_MANIFEST.json', 'PREPARATION_RECEIPT.json',
                  'JOB_STAGES.jsonl', 'TRANSPORT_TIMING.jsonl', 'WORKER_COLLECT_RETURN.json')
-        files = {name:base64.b64encode((attempt/name).read_bytes()).decode('ascii')
-                 for name in names if (attempt/name).is_file()}
-        if 'OUTCOME.json' not in files or 'PROCESS_RETURN.json' not in files:raise ValueError('Incomplete preparation result bundle')
-        return files
-    files = {}
-    for path in sorted(Path(attempt).rglob('*')):
-        if path.is_symlink():
-            raise ValueError('Symlink in result bundle')
-        if path.is_file() and path.relative_to(attempt).parts[0] != '_dry_check' and str(path.relative_to(attempt)) not in _TRANSFER_OMIT:
-            name = str(path.relative_to(attempt)); safe_relative(name)
-            files[name] = base64.b64encode(path.read_bytes()).decode('ascii')
+        files = {name:attempt/name for name in names if (attempt/name).is_file()}
+    else:
+        files = {}
+        for path in sorted(attempt.rglob('*')):
+            if path.is_symlink():
+                raise ValueError('Symlink in result bundle')
+            if path.is_file() and path.relative_to(attempt).parts[0] != '_dry_check' and str(path.relative_to(attempt)) not in _TRANSFER_OMIT:
+                name = str(path.relative_to(attempt)); safe_relative(name)
+                files[name] = path
     if 'OUTCOME.json' not in files or 'PROCESS_RETURN.json' not in files:
         raise ValueError('Incomplete result bundle')
+    return files
+
+
+def result_bundle(attempt):
+    return {name:base64.b64encode(path.read_bytes()).decode('ascii')
+            for name,path in result_bundle_paths(attempt).items()}
+
+
+def local_result_manifest(attempt):
+    """A finalized local result can be transferred by immutable inode, not base64."""
+    from .rpe_preparation_artifacts import file_digest
+    files = {}
+    for name,path in result_bundle_paths(attempt).items():
+        if path.is_symlink() or path.resolve() != path.absolute():
+            raise ValueError('Symlink in local result bundle')
+        before = path.stat()
+        path.chmod(before.st_mode & ~0o222)
+        files[name] = dict(sha256=file_digest(path),size=before.st_size)
+        after = path.stat()
+        if (before.st_ino,before.st_size,before.st_mtime_ns)!=(after.st_ino,after.st_size,after.st_mtime_ns):
+            raise ValueError('Local result changed after completion')
     return files
 
 
@@ -828,6 +847,18 @@ class Worker:
         hashes = list(dict.fromkeys(manifest.values()))
         missing = self._post('/v1/artifacts/missing', dict(hashes=hashes))['missing']
         cache = worker_cache(self.profile)
+        # The controller explicitly supplies this path to its local worker.
+        # Only immutable worker-CAS objects are linked; remote workers use RPC.
+        shared = self.profile.get('central_artifact_cache_directory')
+        if shared and missing:
+            from .rpe_preparation_artifacts import ArtifactCache
+            central = ArtifactCache(Path(shared))
+            original_missing = len(missing)
+            missing = [sha for sha in missing
+                       if not central.share_verified_file(cache.path(sha), sha)]
+            # The normal central endpoint still checks the shared object bytes.
+            if len(missing) != original_missing:
+                missing = self._post('/v1/artifacts/missing', dict(hashes=hashes))['missing']
         # Upload one missing immutable object at a time. Reconnect asks again,
         # so completed large objects are never retransmitted with every status.
         for sha in missing:
@@ -921,13 +952,19 @@ class Worker:
             try:
                 started = time.monotonic()
                 self._upload_artifacts(attempt, assignment)
-                files = result_bundle(attempt)
+                if self.profile.get('local_result_manifest') is True and not Preparation.is_preparation(assignment):
+                    manifest = local_result_manifest(attempt)
+                    transfer = dict(local_files=manifest)
+                    size = sum(row['size'] for row in manifest.values())
+                else:
+                    files = result_bundle(attempt)
+                    transfer = dict(files=files)
+                    size = sum(len(v)*3//4-v.count('=') for v in files.values())
                 response = self._post('/v1/complete', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                    request_sha256=assignment['request_sha256'], files=files))
+                    request_sha256=assignment['request_sha256'], **transfer))
                 if response.get('ok') is not True:
                     raise ValueError('Controller refused completion')
-                timing = dict(upload_roundtrip_seconds=time.monotonic()-started,
-                              bytes=sum(len(base64.b64decode(v)) for v in files.values()))
+                timing = dict(upload_roundtrip_seconds=time.monotonic()-started, bytes=size)
                 save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
                 Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
                 event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],

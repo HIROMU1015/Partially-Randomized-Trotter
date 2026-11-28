@@ -1693,6 +1693,13 @@ class DistributedPreparationBridge:
         if input_hashes:
             commits=sorted({row['commit']+'^{commit}' for row in input_hashes})
             resolved=subprocess.check_output(['git','rev-parse',*commits],cwd=root,text=True).split()
+        # The fixed-provider checkout does not use the synthetic input tip's
+        # tree. For newly prepared runs, anchor it to the fixed SOURCE, not
+        # the continually advancing controller publication HEAD.
+        stable = (self.settings.get('stable_input_bundle') is True and not tracked_workspace
+                  and bool(input_hashes) and (shared_base or self.settings.get('bundle_fixed_source_only') is True))
+        if stable:
+            head = source
         shared_locators=()
         if shared_base:
             # Private callers use the provider's fixed checkout. Carry the

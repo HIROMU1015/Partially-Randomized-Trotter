@@ -284,3 +284,23 @@ def test_forecast_updates_only_changed_group_and_matches_full_rebuild(tmp_path):
     unchanged=R._forecast_group(samples[1]['workload'])
     assert updated.group_caches[unchanged] is index.group_caches[unchanged]
     for item in (a,b):assert updated.forecast(item,cpu_count=2,host='local')==full.forecast(item,cpu_count=2,host='local')
+
+def test_local_preparation_upload_links_cas_without_base64(tmp_path):
+    from trottertracks.rpe_q3_worker import Worker
+    from trottertracks.rpe_preparation_artifacts import worker_cache
+    central=ArtifactCache(tmp_path/'central')
+    profile=dict(work_dir=str(tmp_path/'worker'),central_artifact_cache_directory=str(central.root))
+    cache=worker_cache(profile)
+    raw=b'fixed output';sha=hashlib.sha256(raw).hexdigest()
+    source=tmp_path/'output';source.write_bytes(raw);cache.put_file(source,sha)
+    attempt=tmp_path/'attempt';attempt.mkdir()
+    (attempt/'OUTCOME.json').write_text(json.dumps({'artifacts':{'result':sha}}))
+    endpoints=[]
+    def post(path,payload):
+        endpoints.append(path)
+        assert path=='/v1/artifacts/missing'
+        return {'missing':central.missing(payload['hashes'])}
+    worker=SimpleNamespace(profile=profile,_post=post)
+    Worker._upload_artifacts(worker,attempt,{'request':{'route':{'kind':'preparation'},'preparation':{}}})
+    assert central.path(sha).samefile(cache.path(sha))
+    assert endpoints==['/v1/artifacts/missing']*2

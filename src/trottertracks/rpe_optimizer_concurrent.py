@@ -1529,6 +1529,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 profile.setdefault('work_dir', str(run/'distributed'/'server2-worker'))
                 # Only controller-launched local workers use the central CAS.
                 profile['central_artifact_cache_directory'] = str(self.artifact_cache.root)
+                if distributed.get('local_result_manifest') is True:
+                    profile['local_result_manifest'] = True
                 if distributed.get('local_deployment_layout') and self.release_manifest:
                     profile['deployment'] = dict(manifest=distributed['release_manifest'],
                                                  layout=distributed['local_deployment_layout'])
@@ -5252,14 +5254,39 @@ class DistributedExecutor(ConcurrentExecutor):
                 raise ValueError('Different execution host/attempt')
             if value['request_sha256'] != row['request_sha256']:
                 raise ValueError('Completion request hash differs')
-            files = value['files']
-            completion_sha = Q.digest(files)
             job = self.run_dir/'jobs'/row['method']/job_id
             transfer = self.run_dir/'distributed'/'transfers'/job_id/attempt
             preparation = self._preparation_request(row['request'])
+            local_manifest = value.get('local_files')
+            if local_manifest is not None:
+                if preparation or 'files' in value or self.distributed.get('local_result_manifest') is not True:
+                    raise ValueError('Local completion transport is not configured for this job')
+                profile = json.loads((self.run_dir/'distributed/LOCAL_WORKER.json').read_text())
+                if host != profile.get('host_id') or profile.get('local_result_manifest') is not True:
+                    raise ValueError('Local completion host differs')
+                if any(Path(name).name!=name or name in ('','.','..') for name in (job_id,attempt)):
+                    raise ValueError('Unsafe local completion identity')
+                directory = Path(profile['work_dir']).resolve()/job_id/attempt
+                if directory.resolve()!=directory:
+                    raise ValueError('Local completion directory is not owned')
+                assignment=json.loads((directory/'ASSIGNMENT.json').read_text())
+                state=json.loads((directory/'WORKER_STATE.json').read_text())
+                if ((assignment['job_id'],assignment['attempt_id'],assignment['request_sha256']) !=
+                        (job_id,attempt,row['request_sha256']) or Q.digest(assignment['request'])!=row['request_sha256']
+                        or state['state'] not in ('COMPLETED_PENDING_TRANSFER','TRANSFERRED')):
+                    raise ValueError('Local completion ownership differs')
+                from .rpe_q3_worker import result_bundle_paths
+                local_files = result_bundle_paths(directory)
+                completion_sha = Q.local_result_digest(local_files, local_manifest)
+                transfer_bytes = sum(item['size'] for item in local_manifest.values())
+                files = None
+            else:
+                files = value['files']
+                completion_sha = Q.digest(files)
+                transfer_bytes = sum(len(x)*3//4-x.count('=') for x in files.values())
             if row['state'] == 'ACCEPTED':
                 if row['completion_sha256'] != completion_sha and not (
-                        preparation_transfer_retry_matches(
+                        files is not None and preparation_transfer_retry_matches(
                             files, transfer/'TRANSPORT_TIMING.jsonl', row['completion_sha256'])):
                     raise ValueError('Duplicate completion changed artifacts')
                 self._publish_transfer(row)
@@ -5276,7 +5303,10 @@ class DistributedExecutor(ConcurrentExecutor):
             view = self.for_method(row['method'])
             view.log(event='RESULT_RECEIVED', job=job_id, host_id=host, attempt_id=attempt)
             transfer.mkdir(parents=True, exist_ok=True)
-            Q.install_files(transfer, files)
+            if local_manifest is not None:
+                Q.install_local_result(transfer,local_files,local_manifest)
+            else:
+                Q.install_files(transfer, files)
             if not (transfer/'REQUEST.json').exists():
                 source=job/'REQUEST.json'
                 expected=(json.dumps(row['request'],default=str)+'\n').encode()
@@ -5309,7 +5339,6 @@ class DistributedExecutor(ConcurrentExecutor):
                         rejection = 'Transferred outcome identity mismatch: '+str(validation.get('reason'))
                     if success and rejection is None and task is not None:
                         validation_key = owner._transfer_validation_key(proposal, row['request'])
-            transfer_bytes = sum(len(x)*3//4-x.count('=') for x in files.values())
             verified = time.monotonic()
             with self.state.cv:
                 current = self.store.row(job_id)

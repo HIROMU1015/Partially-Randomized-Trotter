@@ -587,8 +587,17 @@ def input_environment(repositories):
                 raise ValueError('Missing PBS offline input objects: '+str(directory))
             object_dirs.append(str(directory))
         if inherited := environment.get('GIT_ALTERNATE_OBJECT_DIRECTORIES'):
-            object_dirs.append(inherited)
-        environment['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(object_dirs)
+            # Git may quote complex inherited paths; keep the original value
+            # in that uncommon case rather than misparse its syntax.
+            if inherited.startswith('"') or '"' in inherited:
+                from .rpe_metadata_bundle import flattened_object_directories
+                environment['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(
+                    flattened_object_directories(object_dirs)+[inherited])
+                return environment
+            object_dirs.extend(item for item in inherited.split(os.pathsep) if item)
+        from .rpe_metadata_bundle import flattened_object_directories
+        environment['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(
+            flattened_object_directories(object_dirs))
     return environment
 
 

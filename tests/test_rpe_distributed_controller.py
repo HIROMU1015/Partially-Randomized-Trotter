@@ -238,6 +238,36 @@ class ControllerFailures(unittest.TestCase):
             request_sha256=assignment['request_sha256'],
             files={name: base64.b64encode(json.dumps(value).encode()).decode() for name, value in files.items()})
 
+    def test_local_manifest_completion_shares_inode_and_keeps_legacy_digest(self):
+        from trottertracks.rpe_q3_worker import local_result_manifest
+        executor=self.executor(local_result_manifest=True)
+        task=self.enqueue(executor,'local-manifest')
+        assignment,=executor.rpc('/v1/poll',dict(host_id='local',slots=1,source_sha=self.source))['assignments']
+        spool=Path(self.tmp.name)/'spool';directory=spool/assignment['job_id']/assignment['attempt_id']
+        directory.mkdir(parents=True)
+        Q.atomic_json(self.run/'distributed/LOCAL_WORKER.json',dict(host_id='local',work_dir=str(spool),local_result_manifest=True))
+        Q.atomic_json(directory/'ASSIGNMENT.json',assignment)
+        Q.atomic_json(directory/'WORKER_STATE.json',dict(state='COMPLETED_PENDING_TRANSFER'))
+        legacy=self.completion(assignment)
+        for name,value in legacy['files'].items():
+            (directory/name).write_bytes(base64.b64decode(value))
+        # A long and odd-sized file exercises streaming base64 boundary parity.
+        extra=b'0123456789'*100000+b'abcde'
+        (directory/'proof.json').write_bytes(extra)
+        legacy['files']['proof.json']=base64.b64encode(extra).decode()
+        payload=dict(host_id='local',job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],
+                     request_sha256=assignment['request_sha256'],local_files=local_result_manifest(directory))
+        self.assertEqual(executor.rpc('/v1/complete',payload),dict(ok=True,duplicate=False))
+        self.assertEqual(executor.rpc('/v1/complete',payload),dict(ok=True,duplicate=True))
+        row=executor.store.row(task.job.name)
+        self.assertEqual(row['completion_sha256'],Q.digest(legacy['files']))
+        transfer=self.run/'distributed/transfers'/assignment['job_id']/assignment['attempt_id']
+        self.assertTrue((directory/'proof.json').samefile(transfer/'proof.json'))
+        self.assertTrue((transfer/'proof.json').samefile(task.job/'proof.json'))
+        altered=deepcopy(payload);altered['local_files']['proof.json']['sha256']='0'*64
+        with self.assertRaisesRegex(ValueError,'content differs'):
+            executor.rpc('/v1/complete',altered)
+
     def test_hchain_start_fence_allows_replay_but_not_new_claims_until_ranked(self):
         executor = self.executor(hchain_initialize_priority=True)
         first = self.enqueue(executor, 'before-ranking')

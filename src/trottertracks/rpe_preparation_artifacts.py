@@ -276,6 +276,30 @@ class ArtifactCache:
                 if self.missing([sha]):raise ValueError('Concurrent artifact install failed')
         finally:temporary.unlink(missing_ok=True)
 
+    def share_verified_file(self, source, sha):
+        """Link an immutable CAS object from a trusted local worker, or defer to upload."""
+        source = Path(source)
+        path = self.path(sha)
+        if not self.missing([sha]):
+            return True
+        temporary = path.with_name(path.name + '.local-' + uuid.uuid4().hex)
+        try:
+            identity = self._identity(source)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            os.link(source, temporary)
+            # Verify before making the CAS name visible to any other reader.
+            if file_digest(temporary) != sha or self._identity(temporary)[:4] != identity[:4]:
+                raise ValueError('Local CAS source changed: '+sha)
+            try:
+                os.link(temporary, path)
+            except FileExistsError:
+                return not self.missing([sha])
+            return True
+        except OSError:
+            return False
+        finally:
+            temporary.unlink(missing_ok=True)
+
     def capture(self, directory, outputs):
         directory = Path(directory).resolve();manifest = {}; files = {}
         for name in outputs:

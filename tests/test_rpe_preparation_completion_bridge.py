@@ -1001,3 +1001,46 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
 
 
 if __name__=='__main__':unittest.main()
+
+def test_stable_fixed_input_bundle_ignores_unrelated_publication_head(tmp_path):
+    root=tmp_path/'controller';root.mkdir()
+    def git(*args,cwd=root):
+        return subprocess.check_output(['git',*args],cwd=cwd,text=True,stderr=subprocess.PIPE).strip()
+    git('init','-q');git('config','user.name','fixture');git('config','user.email','fixture@example.invalid')
+    (root/'provider.py').write_text('fixed');git('add','.');git('commit','-qm','source')
+    source=git('rev-parse','HEAD')
+    worker=tmp_path/'worker';git('clone','-q',str(root),str(worker))
+    (root/'input.json').write_text('declared evidence');git('add','.');git('commit','-qm','input')
+    commit=git('rev-parse','HEAD');raw=(root/'input.json').read_bytes()
+    locators=[dict(commit=commit,path='input.json',sha256=hashlib.sha256(raw).hexdigest())]
+    cache=ArtifactCache(tmp_path/'cache')
+    def bridge():
+        return B.DistributedPreparationBridge(SimpleNamespace(artifact_cache=cache,run_dir=tmp_path/'run'),root,
+                   {'bundle_fixed_source_only':True,'stable_input_bundle':True})
+    first=bridge()._bundle(root,source,locators)
+    for i in range(3):
+        (root/'unrelated.json').write_text(str(i));git('add','.');git('commit','-qm','publication')
+        assert bridge()._bundle(root,source,locators)==first
+    owned=W._clone(worker,tmp_path/'owned',first,cache)
+    assert git('rev-parse','HEAD',cwd=owned)==source
+    W._verify_fixed_git_inputs(owned,locators)
+
+
+def test_flatten_new_clone_alternates_handles_deep_chain_without_rewriting_sources(tmp_path):
+    from trottertracks.rpe_metadata_bundle import flatten_new_clone_alternates
+    def git(repo,*args):
+        return subprocess.run(['git','-C',str(repo),*args],check=True,capture_output=True,text=True)
+    original=tmp_path/'original';original.mkdir();git(original,'init','-q')
+    (original/'evidence').write_text('fixed')
+    git(original,'add','evidence');git(original,'-c','user.name=Fixture','-c','user.email=f@example.invalid','commit','-qm','fixed')
+    oid=git(original,'rev-parse','HEAD:evidence').stdout.strip()
+    previous=original/'.git/objects';snapshots={}
+    for i in range(8):
+        repo=tmp_path/str(i);repo.mkdir();git(repo,'init','-q')
+        current=repo/'.git/objects';file=current/'info/alternates';file.write_text(str(previous)+'\n')
+        if i<7:snapshots[file]=file.read_bytes()
+        previous=current
+    flatten_new_clone_alternates(repo)
+    result=git(repo,'cat-file','-p',oid)
+    assert result.stdout=='fixed' and not result.stderr
+    assert all(file.read_bytes()==raw for file,raw in snapshots.items())

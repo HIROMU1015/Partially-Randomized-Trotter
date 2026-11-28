@@ -12,6 +12,46 @@ def git(repo, *args, env=None):
                                    env=env, stderr=subprocess.PIPE, text=True)
 
 
+def flattened_object_directories(directories):
+    """Return direct object-store references, deepest first, without copying Git objects."""
+    seen, visiting, ordered = set(), set(), []
+    def visit(directory):
+        directory = Path(directory).resolve()
+        # An old alternate may have been detached. Keep Git's normal
+        # tolerance for missing optional stores; exact input checks still hold.
+        if not directory.is_dir():
+            return
+        if directory in seen:
+            return
+        if directory in visiting:
+            return
+        visiting.add(directory)
+        alternate = directory/'info/alternates'
+        if alternate.is_file():
+            for line in alternate.read_text().splitlines():
+                if line:
+                    path = Path(line)
+                    visit(path if path.is_absolute() else directory/path)
+        visiting.remove(directory)
+        seen.add(directory)
+        ordered.append(str(directory))
+    for directory in directories:
+        visit(directory)
+    return ordered
+
+
+def flatten_new_clone_alternates(repo):
+    """Only called immediately after creating a private clone."""
+    objects = Path(git(repo,'rev-parse','--path-format=absolute','--git-path','objects').strip())
+    alternate = objects/'info/alternates'
+    if not alternate.is_file():
+        return
+    source = [objects/line for line in alternate.read_text().splitlines() if line]
+    entries = flattened_object_directories(source)
+    # Do not rewrite an inherited object database, only this new clone.
+    alternate.write_text(''.join(path+'\n' for path in entries))
+
+
 def bundle_heads(path, repo):
     heads = [line.split(maxsplit=1) for line in
              git(repo, 'bundle', 'list-heads', path).splitlines()]

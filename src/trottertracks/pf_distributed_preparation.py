@@ -542,6 +542,8 @@ def complete_selected(root,spec,run,request,entry,output,runtime,*,inherited_reg
         if workspace.exists():raise ValueError('Unidentified PF producer workspace; preserve it')
         subprocess.run(['git','clone','--shared','--no-checkout',str(original),str(workspace)],check=True,
             stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        from .rpe_metadata_bundle import flatten_new_clone_alternates
+        flatten_new_clone_alternates(workspace)
         subprocess.run(['git','sparse-checkout','set','--cone','scripts','src','configs','references'],cwd=workspace,check=True)
         subprocess.run(['git','checkout','-b','selected-preparation',source],cwd=workspace,check=True,
             stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)

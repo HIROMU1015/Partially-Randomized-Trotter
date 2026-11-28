@@ -443,6 +443,8 @@ def _metadata_input_repository(profile, root, spec):
         fcntl.flock(lock, fcntl.LOCK_EX)
         if not target.exists():
             subprocess.run(['git','clone','--shared','--bare',str(root),str(target)],check=True,capture_output=True)
+            from .rpe_metadata_bundle import flatten_new_clone_alternates
+            flatten_new_clone_alternates(target)
         imported = read(marker) if marker.exists() else []
         receipts = _bundle_receipts(target)
         changed = False
@@ -661,6 +663,8 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
         # The working tree and new commits still belong to this attempt.
         clone.extend(['--reference',str(metadata_repository)])
     subprocess.run(clone+[str(source),str(destination)],check=True,capture_output=True)
+    from .rpe_metadata_bundle import flatten_new_clone_alternates
+    flatten_new_clone_alternates(destination)
     commit=_head(source)
     directories=checkout_directories(source_files)
     # Older supported Git versions interpret --cone after set as a path.

@@ -967,3 +967,9 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - `--legacy-inventory` と任意の `--reference-file` は管理run、固定release、配置、Git alternateなどの参照を調べる読取り専用機能。未確認は削除可能を意味しない。旧公開cloneの重複object整理は、依存するalternateも維持し、復元可能な退避とGit objectの照合後に限る。試験配置・planning・既存のraw成果の一律削除はしない。
 - 保存済み履歴のdecode専用spawn子は、親プロセスの消失を検知したら自分だけを終了する。正常な親が稼働中は動作を継続し、計算workerの停止や再投入には使わない。
 - 新規Q3の `HCHAIN_RESULT.json` は可逆なcompact JSONで保存する。既存receipt/rawファイルのバイト列とdigestは書き換えず、未照合の多数の小ファイルの集約も行わない。
+
+### データ生成元の削減と稼働runの保護（2026-11-28）
+
+- DM-01/02: 診断PROGRESSの追記失敗は結果受理を阻害しない。新規の再利用記録は台帳にも保存し、旧ログは互換読取りを維持する。ログ欠落時の性能統計は不完全になりうる。通常Resumeで再利用するルートのPROGRESS/DRIVER.logは保守で退避しない。保守対象判定では、稼働中・終了未確認・現在選択runの系譜とprior-runを再帰的に保護し、交換直前にも再確認する。
+- DM-12/21: 新規通常入口は `stable_input_bundle` を固定する。固定SOURCEのみを使用する非checkout入力bundleは現在の中央HEADを親にせず、同じ宣言locatorで同じSHAを返す。既存runの固定要求・checkout用bundle経路を継続する。新規workspaceやmetadata cloneのGit alternateは深い参照先から直接並べ、元のobject storeは書換えない。全hostが共有objectを持つことが保証されない混在環境では従来のbundle輸送を保持する。
+- DM-26/28: 新規通常入口のcontroller起動local workerはQ3完了ファイルを読取り専用にし、SHA-256/サイズのmanifestだけをloopbackで返す。中央は固定profileでspoolの所有を照合し、レガシーbase64表現と同一のcompletion digestをストリーム計算し、同一FSではhardlinkで回収する。別FSは個別のコピー、remoteは従来転送。準備結果のworker CASから中央CASへの引渡しも同一FSのSHA照合付きlinkを使用する。科学的受理条件、予算、原本、重複受理照合を維持する。

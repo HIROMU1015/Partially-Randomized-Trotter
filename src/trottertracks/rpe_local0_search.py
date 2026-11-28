@@ -854,6 +854,12 @@ class Gateway:
                 spec.setdefault('executor', {})['prior_run_dirs'] = sorted(set(str(Path(p).resolve()) for p in prior))
                 distributed=spec.get('executor',{}).get('distributed')
                 if distributed:
+                    # Pin transport identity on newly prepared runs only.
+                    # Existing RUNS/ROUND.requested remain byte-for-byte unchanged.
+                    if distributed.get('preparation') is not None:
+                        distributed['preparation'].setdefault('stable_input_bundle', True)
+                    if distributed.get('local_worker'):
+                        distributed.setdefault('local_result_manifest', True)
                     for key,name in [('host_admission','HOST_ADMISSION.json'),('host_eligibility','HOST_ELIGIBILITY.json')]:
                         if distributed.get(key):
                             source=Path(distributed[key]);target=run/name

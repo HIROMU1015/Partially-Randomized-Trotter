@@ -14,6 +14,7 @@ from pathlib import Path, PurePosixPath
 import subprocess
 import stat
 import threading
+import uuid
 
 
 def digest(value):
@@ -180,6 +181,67 @@ def install_files(job, files):
             _sync_directory(destination.parent)
         if key is not None and not destination.is_symlink():
             shared_events.setdefault(key, destination)
+
+
+def local_result_digest(files, manifest):
+    """Verify local source bytes and reproduce the *legacy* base64 completion digest.
+
+    Stream groups divisible by three, never build a base64 document in memory.
+    Keeping the legacy digest preserves stopped-run recovery/publication.
+    """
+    if set(files) != set(manifest):
+        raise ValueError('Local result manifest does not match completed files')
+    digest_state=hashlib.sha256();digest_state.update(b'{')
+    for index,name in enumerate(sorted(files)):
+        path=Path(files[name]);expected=manifest[name]
+        before=path.lstat()
+        if (not stat.S_ISREG(before.st_mode) or before.st_mode & 0o222
+                or type(expected.get('size')) is not int or expected['size']!=before.st_size):
+            raise ValueError('Local result is not finalized: '+name)
+        if index:digest_state.update(b',')
+        digest_state.update((json.dumps(name)+':"').encode())
+        checksum=hashlib.sha256()
+        with path.open('rb') as stream:
+            for block in iter(lambda:stream.read(3*256*1024), b''):
+                checksum.update(block);digest_state.update(base64.b64encode(block))
+        digest_state.update(b'"')
+        after=path.lstat()
+        if (before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns)!=(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns) or checksum.hexdigest()!=expected.get('sha256'):
+            raise ValueError('Local result content differs: '+name)
+    digest_state.update(b'}')
+    return digest_state.hexdigest()
+
+
+def install_local_result(job, files, manifest):
+    """Install finalized files at trusted owned paths, retaining exact content."""
+    import shutil
+    job=Path(job)
+    for name,source in files.items():
+        source=Path(source)
+        target=_artifact_destination(job,name)
+        target.parent.mkdir(parents=True,exist_ok=True)
+        if target.exists() or target.is_symlink():
+            if not _same_artifact(source,target):raise ValueError('Changed immutable artifact: '+name)
+            continue
+        temporary=target.with_name(target.name+'.local-transfer-'+uuid.uuid4().hex)
+        try:
+            try:
+                os.link(source,temporary)
+            except OSError as error:
+                if error.errno != errno.EXDEV:raise
+                with source.open('rb') as original, temporary.open('xb') as copy:
+                    shutil.copyfileobj(original,copy,1<<20)
+                    copy.flush();os.fsync(copy.fileno())
+                temporary.chmod(temporary.stat().st_mode & ~0o222)
+            with temporary.open('rb') as stream:
+                checksum=hashlib.file_digest(stream,'sha256').hexdigest()
+                os.fsync(stream.fileno())
+            if checksum!=manifest[name]['sha256']:
+                raise ValueError('Changed local result during transfer: '+name)
+            temporary.replace(target)
+            _sync_directory(target.parent)
+        finally:
+            temporary.unlink(missing_ok=True)
 
 
 def _same_artifact(source, destination):
