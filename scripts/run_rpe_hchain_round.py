@@ -623,13 +623,20 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
         write(run / "HCHAIN_INHERITED.json", inherited)
     sigint = signal.signal(signal.SIGINT, lambda *_: None) if (run / "CONTROLLER_CONFIG.json").exists() else None
     result_path = run / ("ROUND_RESULT_CENTRAL.json" if partition is not None else "ROUND_RESULT.json")
-    def report():
-        write(result_path, optimizer.jsonable(dict(methods=results, scope_owner=plan["owner"],
+    def report(*,final=False):
+        document=dict(methods=results, scope_owner=plan["owner"],
               ready=[cid for cid, row in rows.items() if row["ready"]], held_tasks=withheld, inherited=inherited,
-              price_pruned=sorted(excluded))), compact=True, only_changed=True)
+              price_pruned=sorted(excluded))
+        if not final and settings.get("compact_intermediate_reports") is True:
+            from rpe_hchain_reporting import intermediate_report
+            document=intermediate_report(document)
+        write(result_path, optimizer.jsonable(document), compact=True, only_changed=True)
     try:
         budgets = distributed["preparation"]["budgets"]
         graph_path = run / "distributed" / "PREPARATION_GRAPH.json"
+        if not graph_path.exists() and settings.get("reuse_preparation_leaves") is True:
+            from rpe_hchain_preparation_reuse import reuse_prior_leaves
+            reuse_prior_leaves(executor,plan,settings,budgets,run)
         from trottertracks.rpe_preparation_queue import load_preparation_graph
         graph = (load_preparation_graph(graph_path) if graph_path.exists()
                  else task_graph(executor, plan, run, worker, settings, budgets))
@@ -771,7 +778,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
             if result["stop_reason"] != "UNKNOWN_RESULT" and any(
                     row["method"] == method and not row["ready"] and cid not in excluded for cid, row in rows.items()):
                 result.update(hchain_search_stop=result["stop_reason"], stop_reason="WAITING_FOR_INPUTS")
-        report()
+        report(final=True)
         if partition is not None and not optimizer.shared_stop(results):
             complete = wait_partition(run, executor)
         else:

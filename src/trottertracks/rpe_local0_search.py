@@ -857,6 +857,9 @@ class Gateway:
                 prior = list(spec.get('executor', {}).get('prior_run_dirs', []))
                 prior += [v['run_directory'] for v in registry.values() if v['evaluation_identity'] == evaluation]
                 spec.setdefault('executor', {})['prior_run_dirs'] = sorted(set(str(Path(p).resolve()) for p in prior))
+                if spec.get('hchain'):
+                    spec['hchain'].setdefault('reuse_preparation_leaves', True)
+                    spec['hchain'].setdefault('compact_intermediate_reports', True)
                 distributed=spec.get('executor',{}).get('distributed')
                 if distributed:
                     # Pin transport identity on newly prepared runs only.
