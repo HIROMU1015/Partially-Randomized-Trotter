@@ -793,8 +793,24 @@ class Executor:
         if rule.get('kind') == 'pf_b_pf6':
             omitted.add('templates')
         source_cid = (rule.get('horizon_projection') or {}).get('source_configuration_id', cid)
-        return dict(route={k: v for k, v in rule.items() if k not in omitted},
-                    entry=(rule.get('configurations') or {}).get(source_cid))
+        entry = (rule.get('configurations') or {}).get(source_cid)
+        if rule.get('kind') == 'hchain_scoped_q3' and entry is not None:
+            import hashlib
+            from .rpe_preparation_artifacts import artifact_hash, HCHAIN_CAS_INPUTS, HCHAIN_Q3_NAMES
+            if set(entry) != set(HCHAIN_Q3_NAMES):
+                raise ValueError('Incomplete H-chain prepared inputs')
+            storage = rule.get('input_storage')
+            if storage not in (None, HCHAIN_CAS_INPUTS):
+                raise ValueError('Unknown H-chain input storage')
+            for item in entry.values():
+                sha = artifact_hash(item['sha256'])
+                if storage is None and hashlib.sha256(item['json'].encode('utf-8')).hexdigest() != sha:
+                    raise ValueError('Prepared H-chain input hash differs')
+                if storage == HCHAIN_CAS_INPUTS and set(item) != {'sha256'}:
+                    raise ValueError('Invalid H-chain CAS reference')
+            entry = {name: {'sha256': item['sha256']} for name, item in entry.items()}
+            omitted.add('input_storage')
+        return dict(route={k: v for k, v in rule.items() if k not in omitted}, entry=entry)
 
     def same_route(self, job, cid, *, request=None):
         """A prior job is reusable only if it ran the same route (kind, worker view, contract, signal packet, binding)."""

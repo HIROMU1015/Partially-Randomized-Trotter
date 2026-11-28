@@ -117,6 +117,18 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
             raise SystemExit(0)
     effective = select_host_profile(configured, assignment)
     route = assignment['request']['route']
+    if route.get('input_storage') == 'HCHAIN_Q3_CAS_V1':
+        from trottertracks.rpe_preparation_artifacts import hchain_q3_hashes, worker_cache
+        hashes = set(hchain_q3_hashes(assignment['request']).values())
+        cache = worker_cache(effective)
+        blobs = payload.get('input_artifact_blobs', {})
+        if not set(blobs) <= hashes:
+            raise ValueError('Q3 CAS input delivery outside assignment references')
+        cache.put(blobs)
+        absent = cache.missing(hashes)
+        if absent:
+            print(json.dumps(dict(status='NEEDS_Q3_CAS_INPUTS', hashes=absent)))
+            raise SystemExit(0)
     repositories = {Path(effective['root']).resolve()}
     view = effective.get('route_views', {}).get(route.get('view_commit'))
     if view:
@@ -501,7 +513,11 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
                     return json.loads(checked.stdout)
             elif worker is None:
                 root = executor.worker_script.parent.parent
-                payload.update(profile=local, worker_root=str(root))
+                local_profile = dict(local)
+                if request['route'].get('input_storage') == 'HCHAIN_Q3_CAS_V1':
+                    local_profile['central_artifact_cache_directory'] = str(executor.artifact_cache.root)
+                    local_profile.setdefault('work_dir',str(executor.run_dir/'distributed'/'server2-worker'))
+                payload.update(profile=local_profile, worker_root=str(root))
                 if (root/'NATIVE_WORKER_OVERLAY.json').is_file():
                     payload['native_worker_script'] = str(executor.worker_script)
                 distributed=executor.distributed
@@ -523,6 +539,12 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
                     return bridge.remote_command(worker, [worker.get('python', 'python3'), '-B', '-c', _REMOTE_PROBE],
                                                  'q3-readiness', data)[0]
             result = invoke(payload)
+            if result['status'] == 'NEEDS_Q3_CAS_INPUTS':
+                from .rpe_preparation_artifacts import hchain_q3_hashes
+                hashes = result['hashes']
+                if not hashes or not set(hashes) <= set(hchain_q3_hashes(request).values()):
+                    raise ValueError('Host requested CAS input outside the assignment')
+                result = invoke(dict(payload,input_artifact_blobs=executor.artifact_cache.get(hashes)))
             if result['status'] == 'NEEDS_Q3_INPUT_OBJECTS':
                 result = _supply_inputs(executor, payload, invoke, result)
             return host, result

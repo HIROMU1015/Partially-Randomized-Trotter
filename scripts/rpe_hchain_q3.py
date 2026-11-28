@@ -173,12 +173,24 @@ def request_inputs(request):
         raise ValueError("Wrong scoped Q3 route or risk source")
     cid = request["configuration_id"]
     bundle = route["configurations"][cid]
+    documents = {}
+    storage = route.get("input_storage")
+    if storage not in (None, "HCHAIN_Q3_CAS_V1"):
+        raise ValueError("Unknown H-chain input storage")
+    if set(bundle) != {"configuration", "signal_packet", "registered_prices"}:
+        raise ValueError("Incomplete H-chain prepared inputs")
     for name, item in bundle.items():
-        if hashlib.sha256(item["json"].encode("utf-8")).hexdigest() != item["sha256"]:
+        sha = item["sha256"]
+        if storage == "HCHAIN_Q3_CAS_V1":
+            if set(item) != {"sha256"} or len(sha) != 64 or any(c not in "0123456789abcdef" for c in sha):
+                raise ValueError("Invalid H-chain CAS reference")
+            raw = (Path(request["hchain_input_cache"]) / sha[:2] / sha).read_bytes()
+        else:
+            raw = item["json"].encode("utf-8")
+        if hashlib.sha256(raw).hexdigest() != sha:
             raise ValueError(f"Prepared {name} bytes differ from the Q3 assignment")
-    config = json.loads(bundle["configuration"]["json"])
-    signals = json.loads(bundle["signal_packet"]["json"])
-    registry = json.loads(bundle["registered_prices"]["json"])
+        documents[name] = json.loads(raw)
+    config, signals, registry = (documents[name] for name in ("configuration", "signal_packet", "registered_prices"))
     name = METHOD_LABELS[request["method"]]
     M, h, target = signals["M"], signals["h"], signals["target"]
     binding = config["spec"]["binding"]

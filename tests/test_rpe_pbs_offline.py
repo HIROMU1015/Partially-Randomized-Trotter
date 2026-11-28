@@ -13,11 +13,12 @@ from trottertracks.rpe_q3_worker import atomic, read
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_offline_parts_advance_and_import_only_completed_results(tmp_path, monkeypatch):
+@pytest.mark.parametrize("delta", [False, True])
+def test_offline_parts_advance_and_import_only_completed_results(tmp_path, monkeypatch, delta):
     revision = 'a'*40
     spec = {'science_approved': True, 'methods':['PR_PAULI', 'PR_DF'],
             'round_id':'fixed', 'max_new_q3_per_method':{'PR_PAULI':'UNLIMITED', 'PR_DF':'UNLIMITED'},
-            'search_overrides':{'requested_widths':{'PR_PAULI':[1,2]}}, 'executor':{}}
+            'search_overrides':{'requested_widths':{'PR_PAULI':[1,2]}}, 'executor':{'distributed':{'offline_export_delta':True}} if delta else {}}
     run = tmp_path/'central'
     run.mkdir()
     for name, value in (('ROUND.json', spec), ('PROBLEM.json', {}), ('APPLIED_SCOPE.json', {'run_id':'search-test'})):
@@ -62,7 +63,12 @@ def test_offline_parts_advance_and_import_only_completed_results(tmp_path, monke
     spec = importlib.util.spec_from_file_location('offline_gateway_test', ROOT/'scripts/rpe_pbs_gateway.py')
     gateway = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(gateway)
-    connection = SimpleNamespace(call=lambda value: gateway.handle(remote, value), close=lambda: None)
+    progress=[]
+    def call(value):
+        result=gateway.handle(remote,value)
+        if value['action']=='offline_results':progress.append((value['after'],set(result['jobs'])))
+        return result
+    connection = SimpleNamespace(call=call, close=lambda: None)
     manager = object.__new__(rpe_pbs.PbsManager)
     manager.offline_plan, manager.settings, manager.directory = plan, {}, run/'distributed'/'pbs'
     manager.executor = SimpleNamespace(computation_source=revision)
@@ -70,6 +76,7 @@ def test_offline_parts_advance_and_import_only_completed_results(tmp_path, monke
     with patch.object(rpe_pbs, 'Gateway', return_value=connection):
         manager._collect_offline_history('token')
         manager._collect_offline_history('token')
+    assert progress==[(0,{'PR_PAULI/saved-job'}),(1,set())] if delta else progress==[(0,{'PR_PAULI/saved-job'})]*2
     recovered = manager.directory/'offline-history'/'jobs'/'PR_PAULI'/'saved-job'
     assert (recovered/'OUTCOME.json').read_bytes() == (job/'OUTCOME.json').read_bytes()
     coverage = read(manager.directory/'offline-history'/'coverage'/'token.json')
@@ -167,8 +174,9 @@ def test_independent_keeps_running_connected_claims_disjoint_and_resumes(tmp_pat
     assert all_parts_finished(plan,read(durable/'COVERAGE.json')['parts'])
 
 
+@pytest.mark.parametrize("delta", [False, True])
 @pytest.mark.parametrize("hchain, invalid", [(False, None), (True, None), (False, "stage"), (True, "stage"), (True, "scope")])
-def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain, invalid):
+def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain, invalid, delta):
     import threading
     import hashlib
     from trottertracks.rpe_preparation_artifacts import ArtifactCache
@@ -177,6 +185,9 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain, invali
     from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
     from trottertracks.rpe_pbs_offline import pbs_parts
     run=tmp_path/'central';plan=independent_fixture(run)
+    if delta:
+        plan['round']['executor'].setdefault('distributed',{})['offline_export_delta']=True
+        atomic(run/'PBS_PARTITION_PLAN.json',plan)
     if hchain:
         plan['hchain_preparation'] = dict(owner='fixed-owner', binding={'system':'H8'},
             stages={'signal':['physical']})
@@ -229,9 +240,12 @@ def test_independent_preparation_export_and_exact_reuse(tmp_path, hchain, invali
                 manager._collect_offline_history('token')
             assert manager.executor.artifact_cache.missing([sha])
             assert not list((manager.directory/'offline-history/jobs').glob('*/*/IMPORTED.json'))
+            assert not list((manager.directory/'offline-history/cursors').glob('*.json'))
             return
         manager._collect_offline_history('token')
         manager._collect_offline_history('token')
+    if delta:
+        assert read(manager.directory/'offline-history/cursors/token.json')=={'cursor':1}
     assert manager.executor.artifact_cache.path(sha).read_bytes()==b'artificial result'
     history=manager.directory/'offline-history'
     destination=JobStore(run/'distributed'/'QUEUE.sqlite3')
@@ -455,7 +469,8 @@ def test_controller_overlay_preserves_fixed_entry_and_checks_identity(tmp_path):
         search._controller_command(entry)
 
 
-def test_readiness_uses_the_native_workers_fixed_base(tmp_path):
+@pytest.mark.parametrize("cas", [False, True])
+def test_readiness_uses_the_native_workers_fixed_base(tmp_path, cas):
     import hashlib
     import json
     import subprocess
@@ -492,10 +507,29 @@ def test_readiness_uses_the_native_workers_fixed_base(tmp_path):
         paths[name] = hashlib.sha256(path.read_bytes()).hexdigest()
     atomic(overlay/'NATIVE_WORKER_OVERLAY.json', dict(base_root=str(base), modules=paths))
     assignment = dict(request={'route':{'kind':'test'}}, request_sha256='fixed-request', input_hashes=[])
-    report = subprocess.run([sys.executable, '-IB', '-c', _HOST_PROBE], check=True, text=True,
-                            capture_output=True, input=json.dumps(dict(assignment=assignment,
-                            worker_root=str(overlay), native_worker_script=str(script), profile={'root':str(base)})))
-    result = json.loads(report.stdout)
+    payload=dict(assignment=assignment,worker_root=str(overlay),native_worker_script=str(script),profile={'root':str(base)})
+    def probe():
+        report=subprocess.run([sys.executable,'-IB','-c',_HOST_PROBE],check=True,text=True,
+                              capture_output=True,input=json.dumps(payload))
+        return json.loads(report.stdout)
+    if cas:
+        from trottertracks.rpe_preparation_artifacts import ArtifactCache, reference_hchain_q3, hchain_q3_hashes
+        copyfile(ROOT/'src/trottertracks/rpe_preparation_artifacts.py',package/'rpe_preparation_artifacts.py')
+        cache=ArtifactCache(tmp_path/'central')
+        entries={}
+        for name in ('configuration','signal_packet','registered_prices'):
+            raw=json.dumps({'fixture':name})
+            entries[name]={'json':raw,'sha256':hashlib.sha256(raw.encode()).hexdigest()}
+        assignment['request']=reference_hchain_q3({'configuration_id':'case','route':{
+            'kind':'hchain_scoped_q3','configurations':{'case':entries}}},cache)
+        payload['profile']['work_dir']=str(tmp_path/'remote-work')
+        first=probe()
+        assert first['status']=='NEEDS_Q3_CAS_INPUTS'
+        assert set(first['hashes'])==set(hchain_q3_hashes(assignment['request']).values())
+        payload['input_artifact_blobs']=cache.get(first['hashes'])
+        assert probe()['status']=='PASS'
+        del payload['input_artifact_blobs']
+    result=probe()
     assert result['status'] == 'PASS' and result['fingerprint'] == {'fixed': True}
 
 def test_parent_storage_sample_reused_without_directory_scan(tmp_path, monkeypatch):
@@ -1117,3 +1151,84 @@ def test_exact_preparation_weights_count_phase_split(tmp_path):
     weights=exact_hchain_preparation_weights(plan,[dict(id='part',case_ids=['case'])],
         {'batch_sizes':{'signal':50}},{'signal':3},tmp_path,provider,worker)
     assert weights['signal']=={'part':2}
+
+
+def test_delta_export_only_new_rows_for_each_allocation_cursor(tmp_path):
+    import importlib.util
+    from trottertracks.rpe_pbs_offline import export_count
+    spec=importlib.util.spec_from_file_location('delta_gateway', ROOT/'scripts/rpe_pbs_gateway.py')
+    gateway=importlib.util.module_from_spec(spec);spec.loader.exec_module(gateway)
+    search=object.__new__(OfflineSearch);search.directory=tmp_path/'export';search.directory.mkdir()
+    search.independent=True;search.revision=0
+    search.plan={'round':{'executor':{'distributed':{'offline_export_delta':True}}}}
+    part=tmp_path/'part'
+    def add(name):
+        job=part/'jobs'/'PR_DF'/name;job.mkdir(parents=True)
+        atomic(job/'REQUEST.json',{'request_id':name})
+        atomic(job/'PROCESS_RETURN.json',{'returncode':0,'signal':None})
+        atomic(job/'OUTCOME.json',{'status':'ARTIFICIAL'})
+    add('first')
+    assert search.export(part)==1
+    initial,cursor=gateway.offline_index(search.directory,after=0)
+    assert set(initial)=={'PR_DF/first'} and cursor==1
+    assert gateway.offline_index(search.directory,after=cursor)==({},cursor)
+    add('second')
+    assert search.export(part)==1 and search.export(part)==0
+    delta,high=gateway.offline_index(search.directory,after=cursor)
+    assert set(delta)=={'PR_DF/second'} and high==2
+    assert gateway.offline_index(search.directory,key='PR_DF/first')[0]==initial['PR_DF/first']
+    assert export_count(search.directory)==2 and search.shared_revision()==2
+    assert not (search.directory/'RESULTS.json').exists()
+    assert set(gateway.offline_index(search.directory)[0])=={'PR_DF/first','PR_DF/second'}
+    with pytest.raises(ValueError,match='cursor'):
+        gateway.offline_index(search.directory,after=3)
+
+
+def test_delta_export_hchain_q3_includes_and_recovers_only_referenced_cas(tmp_path):
+    import hashlib
+    from trottertracks.rpe_preparation_artifacts import ArtifactCache, reference_hchain_q3
+    remote=tmp_path/'remote';allocation=remote/'allocations'/'token';allocation.mkdir(parents=True)
+    search=object.__new__(OfflineSearch);search.directory=allocation/'offline-search';search.directory.mkdir()
+    search.independent=True;search.revision=0
+    search.plan={'round':{'executor':{'distributed':{'offline_export_delta':True}}}}
+    part=search.directory/'parts'/'block'
+    cache=ArtifactCache(part/'distributed'/'artifacts')
+    bundle={}
+    for name in ('configuration','signal_packet','registered_prices'):
+        raw='{"synthetic":"'+name+'"}'
+        bundle[name]={'json':raw,'sha256':hashlib.sha256(raw.encode()).hexdigest()}
+    request=reference_hchain_q3({'request_id':'j','method':'PR_DF','configuration_id':'cid',
+        'route':{'kind':'hchain_scoped_q3','configurations':{'cid':bundle}}},cache)
+    job=part/'jobs'/'PR_DF'/'j';job.mkdir(parents=True)
+    atomic(job/'REQUEST.json',request)
+    atomic(job/'PROCESS_RETURN.json',{'returncode':0,'signal':None})
+    atomic(job/'OUTCOME.json',{'status':'ARTIFICIAL'})
+    sha=bundle['configuration']['sha256']
+    original=cache.path(sha).read_bytes()
+    cache.path(sha).unlink()
+    assert search.export(part)==0
+    assert search._delta_export_pending[part.name]==1
+    import base64
+    cache.put({sha:base64.b64encode(original).decode('ascii')})
+    assert search.export(part)==1
+    assert not search._delta_export_pending[part.name]
+    spec=importlib.util.spec_from_file_location('cas_gateway',ROOT/'scripts/rpe_pbs_gateway.py')
+    gateway=importlib.util.module_from_spec(spec);spec.loader.exec_module(gateway)
+    item=gateway.offline_index(search.directory)[0]['PR_DF/j']
+    assert set(item['input_artifacts'])=={x['sha256'] for x in bundle.values()}
+    calls=[]
+    def call(value):
+        calls.append(value)
+        return gateway.handle(remote,value)
+    manager=object.__new__(rpe_pbs.PbsManager)
+    central=ArtifactCache(tmp_path/'central')
+    manager.executor=SimpleNamespace(artifact_cache=central)
+    staging=tmp_path/'staging';staging.mkdir()
+    connection=SimpleNamespace(call=call)
+    manager._import_offline_q3_inputs(connection,'token',item,request,staging,'PR_DF','j')
+    first=len(calls)
+    assert first==3 and not central.missing(item['input_artifacts'])
+    manager._import_offline_q3_inputs(connection,'token',item,request,staging,'PR_DF','j')
+    assert len(calls)==first
+    with pytest.raises(ValueError,match='manifest differs'):
+        manager._import_offline_q3_inputs(connection,'token',{},request,staging,'PR_DF','j')

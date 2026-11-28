@@ -11,7 +11,7 @@ from . import rpe_q3_resources as Resources
 from . import rpe_worker_storage as Storage
 from .rpe_host_profiles import select_host_profile as _select_q3_profile, validate_adapter_profile, check_runtime_profile
 from . import rpe_preparation_worker as Preparation
-from .rpe_preparation_artifacts import worker_cache, input_manifest
+from .rpe_preparation_artifacts import worker_cache, input_manifest, hchain_q3_hashes, resolve_hchain_q3
 import base64
 from concurrent.futures import ThreadPoolExecutor
 import fcntl
@@ -237,7 +237,7 @@ def validate_assignment(profile, assignment):
             lambda root,commit,path:hashlib.sha256(subprocess.check_output(['git','show',commit+':'+path],cwd=root)).hexdigest())
         if fixed_git_blob_sha(root,locator['commit'],locator['path']) != locator['sha256']:
             raise ValueError('Fixed input hash differs: ' + locator['path'])
-    resolved = deepcopy(request)
+    resolved = resolve_hchain_q3(deepcopy(request), profile)
     rule = resolved['route']
     rule['interpreter'] = profile['interpreter']
     if rule['kind'] != 'artificial':
@@ -879,6 +879,15 @@ class Worker:
             if missing:
                 cache.put(self._post('/v1/artifacts/get', dict(hashes=missing))['blobs'])
             if cache.missing(hashes):raise ValueError('Preparation input artifacts not available')
+        else:
+            hashes = hchain_q3_hashes(assignment['request'])
+            if hashes:
+                cache = worker_cache(self.profile)
+                cache.put(incoming)
+                for sha in cache.missing(hashes.values()):
+                    cache.put(self._post('/v1/artifacts/get', dict(hashes=[sha]))['blobs'])
+                if cache.missing(hashes.values()):
+                    raise ValueError('H-chain Q3 input artifacts not available')
         # Fixed release validation also checks the preparation input metadata.
         # It needs the verified bundles but must precede durable ownership.
         self._validate_acquisition(assignment)
@@ -982,6 +991,7 @@ class Worker:
         hashes=[]
         for assignment in challenges:
             if Preparation.is_preparation(assignment):hashes.extend(Preparation.missing_metadata_bundle_hashes(assignment,self.profile))
+            else:hashes.extend(hchain_q3_hashes(assignment.get('request',{})).values())
         if not hashes:return
         cache=worker_cache(self.profile)
         for sha in cache.missing(hashes):

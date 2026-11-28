@@ -16,6 +16,8 @@ from pathlib import Path
 import re
 import shlex
 import subprocess
+import sqlite3
+from contextlib import closing
 import sys
 import time
 
@@ -27,6 +29,29 @@ _completion_last_token = None
 
 def read(path, default=None):
     return json.loads(Path(path).read_text()) if Path(path).exists() else default
+
+
+def offline_index(directory, after=None, key=None):
+    """Read old full manifests or a consistent append-only export snapshot."""
+    directory = Path(directory)
+    index = directory/'RESULTS.sqlite3'
+    legacy = directory/'RESULTS.json'
+    if not index.is_file() or legacy.is_file():
+        rows = read(legacy, {})
+        return (rows if key is None else rows.get(key)), None
+    with closing(sqlite3.connect(index.resolve().as_uri()+'?mode=ro', uri=True, timeout=10)) as db:
+        if key is not None:
+            row = db.execute('SELECT record FROM results WHERE key=?',(key,)).fetchone()
+            return (json.loads(row[0]) if row else None), None
+        db.execute('BEGIN')
+        high = db.execute('SELECT COALESCE(MAX(seq),0) FROM results').fetchone()[0]
+        if after is None:
+            after = 0
+        if type(after) is not int or not 0 <= after <= high:
+            raise ValueError('Invalid offline export cursor')
+        rows = {k:json.loads(record) for k,record in db.execute(
+            'SELECT key,record FROM results WHERE seq>? AND seq<=? ORDER BY seq',(after,high))}
+        return rows, high
 
 
 def atomic(path, value):
@@ -552,8 +577,8 @@ def read_bulk_chunk(directory, request):
         else:
             if not re.fullmatch(r'[0-9a-f]{64}',name):
                 raise ValueError('Invalid independent artifact hash')
-            item = read(work/'RESULTS.json', {}).get(safe_id(request['method'])+'/'+safe_id(request['job_id']))
-            if not item or item['part'] != part or name not in item.get('artifacts',{}):
+            item, _ = offline_index(work, key=safe_id(request['method'])+'/'+safe_id(request['job_id']))
+            if not item or item['part'] != part or (name not in item.get('artifacts',{}) and name not in item.get('input_artifacts',{})):
                 raise ValueError('Independent artifact not in returned receipt')
             path = work/'parts'/part/'distributed'/'artifacts'/name[:2]/name
         path.resolve().relative_to(work.resolve())
@@ -787,7 +812,7 @@ def fence_unstarted_partition(root,value,now=None):
                         raise ValueError('PBS ownership/contact is not safely expired')
                 if any(child.name!='OWNER.lock' for child in part.iterdir()):raise ValueError('Partition has checkpoint or claim evidence')
                 if unit in coverage.get('parts',{}) or (offline/'reports'/unit).exists():raise ValueError('Partition has coverage evidence')
-                results=read(offline/'RESULTS.json',{})
+                results,_=offline_index(offline)
                 if any(row.get('part') in set(members+[unit]) for row in results.values()):raise ValueError('Partition has exported results')
                 if any(str(job.relative_to(offline/'jobs')) not in results for job in (offline/'jobs').glob('*/*') if job.is_dir()):
                     raise ValueError('Unreconciled export workspace')
@@ -845,7 +870,14 @@ def handle(root, value, finished=None, scheduler=None):
         return fence_unstarted_partition(root,value)
     if action == 'offline_results':
         directory = offline_root(root/'allocations'/safe_id(value['token']))
-        return dict(jobs=read(directory/'RESULTS.json', {}), coverage=read(directory/'COVERAGE.json', {}))
+        # Read coverage first so a later terminal update cannot get ahead of
+        # the captured result high-water mark.
+        coverage = read(directory/'COVERAGE.json', {})
+        jobs,cursor = offline_index(directory, after=value.get('after'))
+        result = dict(jobs=jobs, coverage=coverage)
+        if cursor is not None:
+            result['cursor'] = cursor
+        return result
     if action == 'delete':
         directory = root/'allocations'/safe_id(value['token'])
         if (directory/'PILOT.json').exists():

@@ -997,3 +997,11 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - `compact_intermediate_reports` は新規H-chain runの中間ROUND_RESULTで重複するevaluated/resume_records配列を省き、件数を記す。最良値、allocation、停止・hold・正確なOUTCOME、最終報告は保持する。中間版・partition合成のcompact版はresume exportではないことを明示する。
 - 新規H-chain要求の `hchain_proof_storage=GZIP_JSON_V1` は完全な科学proofのcompact JSONをそのまま可逆gzip streamとして保存する。非圧縮の巨大な一時原本を生成せず、中間値も省略しない。旧要求は従来JSONを保存・収集する。圧縮proofは同じcollect・所有・受理の経路を通る。人工fixtureでは解凍後のJSON全バイトおよびOUTCOME一致を確認した。
 - 明示固定数値環境のない過去run（RomuTailの旧H8保存PLANを含む）や異なるscope/batch契約の自動流用は未許可の科学的同等性を仮定しない。幅によるpartitionの変更、実機PBS検収、新規科学評価はこの改修範囲外。
+
+
+### H-chain Q3入力と独立計算exportの重複防止（DM-36/39）
+
+- 新規H-chain通常入口の `hchain_cas_inputs` では、Q3のconfiguration、signal packet、registered pricesの正確なUTF-8原本を既存CASへ保存し、要求のrouteは `input_storage=HCHAIN_Q3_CAS_V1` と3つのSHA-256参照だけを持つ。要求SHA、所有、価格、候補、科学条件の検証は維持する。workerは不足分だけ既存artifact取得経路で受け、解決したローカルCASパスから各原本SHAを照合する。旧inline要求は従来どおり読み、既存要求を置き換えない。別途固定された旧adapterを使う独立計算子ではinlineを維持する。
+- 独立計算のQ3結果がCAS参照の場合、exportに必要な原本SHAとサイズを明記し、中央は未保有の入力原本だけを検証付きで回収する。元の要求・結果・receiptを変更しない。
+- 新規通常入口の `offline_export_delta` はexport索引を `RESULTS.sqlite3` の追記専用row（連番、job key、既存manifest record）にする。SQLiteトランザクションで新規行だけを追加し、gatewayはallocationごとの前回回収cursorより後の行だけ返す。中央はreceipt・原本・報告の回収が成功してからcursorを保存し、失敗時は同じ差分を再取得する。既存 `RESULTS.json` は従来の全文方式で読める。固定runや旧索引の自動移行は行わない。
+- 本変更の実機反映は新規または適切に固定・照合された次のrunで行う。実PBSでの検収、新規科学評価、稼働runの切替は別範囲とする。

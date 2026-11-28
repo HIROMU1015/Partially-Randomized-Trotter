@@ -49,7 +49,8 @@ def prepared(tmp_path, cid):
     return route
 
 
-def test_prepared_q3_uses_shared_assignment_and_completion_on_two_workers(tmp_path, monkeypatch):
+@pytest.mark.parametrize("cas", [False, True])
+def test_prepared_q3_uses_shared_assignment_and_completion_on_two_workers(tmp_path, monkeypatch, cas):
     cids = ("early", "later")
     routes = {"PR_DF": [prepared(tmp_path, cid) for cid in cids]}
     expected = {cid: dict(M=0) for cid in cids}
@@ -59,7 +60,7 @@ def test_prepared_q3_uses_shared_assignment_and_completion_on_two_workers(tmp_pa
     monkeypatch.setattr(transport, "serve", lambda *args: (server, SimpleNamespace(join=lambda: None)))
     executor = DistributedExecutor(ROOT, tmp_path / "run", routes, expected, problem,
                                    optimizer_source=source, max_concurrent=2, budgets={"PR_DF": 2},
-                                   distributed=dict(port=0, affinity_wait_seconds=0))
+                                   distributed=dict(port=0, affinity_wait_seconds=0, hchain_cas_inputs=cas))
     try:
         method = executor.for_method("PR_DF")
         proposals = [dict(configuration_id=cid, vector=(1, 1), cost=Fraction(20),
@@ -88,9 +89,18 @@ def test_prepared_q3_uses_shared_assignment_and_completion_on_two_workers(tmp_pa
             # The synthetic worker skips the real risk checkout. Its only task
             # is reconstructing the result envelope from synthetic evidence.
             request = assignment["request"]
+            if cas:
+                from trottertracks.rpe_preparation_artifacts import hchain_q3_hashes, worker_cache, resolve_hchain_q3
+                profile["work_dir"] = str(tmp_path / host / "work")
+                hashes = hchain_q3_hashes(request)
+                assert len(hashes) == 3
+                assert all("json" not in entry for entry in request["route"]["configurations"][request["configuration_id"]].values())
+                cache = worker_cache(profile)
+                cache.put(executor.rpc("/v1/artifacts/get", dict(host_id=host, hashes=list(hashes.values())))["blobs"])
+                request = resolve_hchain_q3(dict(request), profile)
             name, *_, provenance, identity = hchain.request_inputs(request)
             out = tmp_path / host
-            out.mkdir()
+            out.mkdir(exist_ok=True)
             request_path = out / "request.json"
             write(request_path, request)
             proof_path = out / "HCHAIN_RESULT.json"
@@ -139,3 +149,61 @@ def test_hchain_proof_compact_json_preserves_exact_integer_values(tmp_path):
     write(pretty,data);write(compact,data,compact=True)
     assert json.loads(compact.read_text())==json.loads(pretty.read_text())==data
     assert compact.stat().st_size<pretty.stat().st_size
+
+
+def test_hchain_cas_exact_input_equivalence_and_missing_corrupt_bytes(tmp_path):
+    from trottertracks.rpe_preparation_artifacts import ArtifactCache, reference_hchain_q3, resolve_hchain_q3
+    route = prepared(tmp_path, "candidate")
+    inline = dict(route=route, configuration_id="candidate", method="PR_DF", cost="20",
+                  N_X=[1], N_Y=[1], expected=dict(configuration_id="candidate"))
+    cache = ArtifactCache(tmp_path/"cas")
+    ref = reference_hchain_q3(inline, cache)
+    assert len(list(cache.root.glob("*/*"))) == 3
+    assert reference_hchain_q3(inline, cache) == ref
+    assert len(json.dumps(ref)) < len(json.dumps(inline))
+    profile = dict(work_dir=str(tmp_path/"work"), artifact_cache_directory=str(cache.root))
+    resolved = resolve_hchain_q3(dict(ref), profile)
+    assert hchain.request_inputs(resolved) == hchain.request_inputs(inline)
+    sha = ref["route"]["configurations"]["candidate"]["signal_packet"]["sha256"]
+    path = cache.path(sha)
+    original = path.read_bytes()
+    path.unlink()
+    with pytest.raises(ValueError, match="not available"):
+        resolve_hchain_q3(dict(ref), profile)
+    path.write_bytes(original+b" ")
+    with pytest.raises(ValueError, match="signal_packet bytes differ"):
+        hchain.request_inputs(resolved)
+    with pytest.raises(ValueError, match="Corrupt cached artifact"):
+        resolve_hchain_q3(dict(ref), profile)
+
+
+@pytest.mark.parametrize("pipeline", [False, True])
+def test_worker_acquires_cas_once_before_durable_attempt(tmp_path, monkeypatch, pipeline):
+    from trottertracks import _pipeline_pbs_q3_worker
+    from trottertracks.rpe_preparation_artifacts import ArtifactCache, reference_hchain_q3, hchain_q3_hashes
+    w = _pipeline_pbs_q3_worker if pipeline else worker
+    route = prepared(tmp_path, "candidate")
+    inline = dict(route=route, configuration_id="candidate", method="PR_DF", cost="20",
+                  N_X=[1], N_Y=[1], expected=dict(configuration_id="candidate"), request_id="j")
+    central=ArtifactCache(tmp_path/"central")
+    request=reference_hchain_q3(inline,central)
+    daemon=object.__new__(w.Worker)
+    daemon.work=tmp_path/"worker"
+    daemon.profile=dict(work_dir=str(daemon.work),host_id="fixture",root=str(ROOT),interpreter=sys.executable)
+    daemon.records={}
+    calls=[]
+    def fetch(endpoint, payload):
+        assert endpoint=="/v1/artifacts/get"
+        calls.extend(payload["hashes"])
+        return {"blobs":central.get(payload["hashes"])}
+    daemon._post=fetch
+    daemon._validate_acquisition=lambda assignment:None
+    monkeypatch.setattr(w,"event",lambda *a,**k:None)
+    assignment=dict(request=request,request_sha256=transport.digest(request),job_id="j",
+                    attempt_id="attempt",method="PR_DF")
+    daemon._acquire(assignment)
+    assert set(calls)==set(hchain_q3_hashes(request).values()) and len(calls)==3
+    attempt=daemon.work/"j"/"attempt"
+    assert json.loads((attempt/"ORIGINAL_REQUEST.json").read_text())==request
+    daemon._acquire(assignment)
+    assert len(calls)==3

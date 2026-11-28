@@ -521,7 +521,10 @@ class Relay:
         hashes = set()
         for assignment in challenges:
             request=assignment.get('request',{})
-            if(request.get('route')or{}).get('kind')!='preparation':continue
+            route=request.get('route') or {}
+            if route.get('input_storage') == 'HCHAIN_Q3_CAS_V1':
+                hashes.update(item['sha256'] for item in route['configurations'][request['configuration_id']].values())
+            if route.get('kind')!='preparation':continue
             spec=request.get('preparation', {})
             hashes.update(row['sha256']for row in spec.get('input_git_bundles',[]))
             for workspace in spec.get('workspaces',{}).values():
@@ -550,7 +553,7 @@ class Relay:
         if not hashes:return
         preparation = [row for row in challenges if row.get('request', {}).get('route', {}).get('kind') == 'preparation']
         response,_=self.remote(worker,'artifacts-missing',dict(hashes=sorted(hashes),
-                    direct_hashes=[],preparation_challenges=self._metadata_requirements(preparation)))
+                    direct_hashes=sorted(self._readiness_bundle_hashes([row for row in challenges if row not in preparation])),preparation_challenges=self._metadata_requirements(preparation)))
         for sha in response['missing']:
             try:
                 result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
@@ -683,7 +686,11 @@ class Relay:
         hashes=[]; direct=[]; preparation=[]
         for assignment in assignments:
             request=assignment.get('request', {})
-            if (request.get('route') or {}).get('kind') != 'preparation':continue
+            route=request.get('route') or {}
+            if route.get('input_storage') == 'HCHAIN_Q3_CAS_V1':
+                need=[item['sha256'] for item in route['configurations'][request['configuration_id']].values()]
+                direct.extend(need); hashes.extend(need)
+            if route.get('kind') != 'preparation':continue
             spec=request['preparation'];inputs=assignment.get('artifact_manifest', spec.get('inputs', {}))
             need=list(inputs.values() if isinstance(inputs,dict) else [row['sha256'] for row in inputs])
             direct.extend(need); hashes.extend(need); preparation.append(assignment)

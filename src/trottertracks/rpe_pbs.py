@@ -1774,6 +1774,23 @@ class PbsManager:
                  bytes=paths[0].stat().st_size)
         return response
 
+    def _offline_progress(self, gateway, token):
+        from .rpe_q3_worker import safe_id
+        checkpoint = self.directory/'offline-history'/'cursors'/(safe_id(token)+'.json')
+        after = read(checkpoint).get('cursor',0) if checkpoint.is_file() else 0
+        progress = gateway.call(dict(action='offline_results', token=token, after=after))
+        if 'cursor' in progress and (type(progress['cursor']) is not int or progress['cursor'] < after):
+            raise ValueError('Offline export cursor moved backwards')
+        return progress, checkpoint
+
+    @staticmethod
+    def _save_offline_cursor(progress, checkpoint):
+        if 'cursor' in progress:
+            value = dict(cursor=progress['cursor'])
+            if not checkpoint.is_file() or read(checkpoint) != value:
+                checkpoint.parent.mkdir(parents=True, exist_ok=True)
+                atomic(checkpoint, value)
+
     def _collect_offline_history(self, token):
         from .rpe_q3_worker import safe_id
 
@@ -1782,8 +1799,9 @@ class PbsManager:
             return self._collect_independent_history(token)
         gateway = Gateway(self.settings)
         try:
-            progress = gateway.call(dict(action='offline_results', token=token))
+            progress, checkpoint = self._offline_progress(gateway, token)
             history = self.directory/'offline-history'/'jobs'
+            held = False
             copied = 0
             for key, item in progress['jobs'].items():
                 method, job = key.split('/')
@@ -1806,8 +1824,10 @@ class PbsManager:
                         or request.get('optimizer_source') != self.executor.computation_source
                         or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
                     self.log('PBS_OFFLINE_RESULT_NOT_IMPORTED', job_id=job, method=method)
+                    held = True
                     continue
                 target.mkdir(parents=True, exist_ok=True)
+                self._import_offline_q3_inputs(gateway, token, item, request, target, method, job)
                 for name in names:
                     temporary = target/(name+'.tmp')
                     temporary.write_bytes(files[name])
@@ -1816,6 +1836,10 @@ class PbsManager:
             reports = self.directory/'offline-history'/'coverage'
             reports.mkdir(parents=True, exist_ok=True)
             atomic(reports/(safe_id(token)+'.json'), progress['coverage'])
+            if not held:
+                self._save_offline_cursor(progress, checkpoint)
+            elif 'cursor' in progress:
+                raise RuntimeError('Offline receipts pending')
             if copied:
                 self.log('PBS_OFFLINE_RESULTS_IMPORTED', count=copied, token=token)
         finally:
@@ -1848,13 +1872,29 @@ class PbsManager:
             finally:
                 temporary.unlink(missing_ok=True)
 
+    def _import_offline_q3_inputs(self, gateway, token, item, request, staging, method, job):
+        from .rpe_preparation_artifacts import hchain_q3_hashes
+        references = set(hchain_q3_hashes(request).values())
+        manifest = item.get('input_artifacts', {})
+        if set(manifest) != references:
+            raise ValueError('Offline Q3 input artifact manifest differs')
+        if not references:
+            return
+        cache = self.executor.artifact_cache
+        for sha in cache.missing(references):
+            path = staging/sha
+            self._receive_independent_file(gateway,token,'offline_artifact',sha,path,
+                size=manifest[sha],sha=sha,part=item['part'],method=method,job_id=job)
+            cache.put_file(path,sha)
+            path.unlink()
+
     def _collect_independent_history(self, token):
         from .rpe_pbs_offline import pbs_units, unit_members
         from .rpe_q3_worker import safe_id
         from .rpe_preparation_queue import normalize_preparation_request
         gateway = Gateway(self.settings)
         try:
-            progress = gateway.call(dict(action='offline_results', token=token))
+            progress, checkpoint = self._offline_progress(gateway, token)
             history = self.directory/'offline-history'
             parts = {p['id']:p for p in pbs_units(self.offline_plan)}
             names = ('REQUEST.json','PROCESS_RETURN.json','OUTCOME.json')
@@ -1923,6 +1963,8 @@ class PbsManager:
                         atomic(staging/'ORIGIN.json',origin)
                     elif request.get('optimizer_source') != self.executor.computation_source:
                         raise ValueError('Independent Q3 SOURCE differs')
+                    if not preparation:
+                        self._import_offline_q3_inputs(gateway, token, item, request, staging, method, job)
                     if not preparation and (measurement := item.get('q3_execution_resources')):
                         from .rpe_q3_resources import valid_q3_execution_receipt
                         host = self.state['allocations'][token]['spec']['profile']['host_id']
@@ -1984,6 +2026,7 @@ class PbsManager:
                 self.executor.state.cv.notify_all()
             if held:
                 raise RuntimeError('Independent receipts pending: '+str(len(held)))
+            self._save_offline_cursor(progress, checkpoint)
         finally:
             gateway.close()
 

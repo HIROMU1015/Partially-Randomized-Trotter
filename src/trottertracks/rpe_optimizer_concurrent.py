@@ -643,6 +643,10 @@ class ConcurrentExecutor(O.Executor):
             req['completion_transport_version']='REFERENCE_ORIGINAL_REQUEST_V1'
         if rule['kind']=='hchain_scoped_q3' and getattr(self,'distributed',{}).get('hchain_compressed_proof') is True:
             req['hchain_proof_storage']='GZIP_JSON_V1'
+        if (rule['kind']=='hchain_scoped_q3' and getattr(self,'distributed',{}).get('hchain_cas_inputs') is True
+                and hasattr(self, 'artifact_cache')):
+            from .rpe_preparation_artifacts import reference_hchain_q3
+            req = reference_hchain_q3(req, self.artifact_cache)
         execution = req['execution_profile'] = dict(dp_workers=self.dp_workers)
         artificial = rule['kind'] == 'artificial'
         route = req['method'], rule['kind']

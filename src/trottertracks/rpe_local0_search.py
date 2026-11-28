@@ -869,8 +869,10 @@ class Gateway:
                     if distributed.get('local_worker'):
                         distributed.setdefault('local_result_manifest', True)
                     distributed.setdefault('compact_candidate_requests', True)
+                    distributed.setdefault('offline_export_delta', True)
                     if spec.get('hchain'):
                         distributed.setdefault('hchain_compressed_proof', True)
+                        distributed.setdefault('hchain_cas_inputs', True)
                         distributed.setdefault('compact_preparation_graph', True)
                     for key,name in [('host_admission','HOST_ADMISSION.json'),('host_eligibility','HOST_ELIGIBILITY.json')]:
                         if distributed.get(key):

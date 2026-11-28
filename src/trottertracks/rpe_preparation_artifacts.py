@@ -368,6 +368,52 @@ class ArtifactCache:
                     temporary.unlink(missing_ok=True)
 
 
+HCHAIN_CAS_INPUTS = 'HCHAIN_Q3_CAS_V1'
+HCHAIN_Q3_NAMES = ('configuration', 'signal_packet', 'registered_prices')
+
+
+def hchain_q3_hashes(request):
+    route = request.get('route', {})
+    if route.get('input_storage') != HCHAIN_CAS_INPUTS:
+        return {}
+    if route.get('kind') != 'hchain_scoped_q3':
+        raise ValueError('CAS input storage on non H-chain route')
+    bundle = route['configurations'][request['configuration_id']]
+    if set(bundle) != set(HCHAIN_Q3_NAMES) or any(set(item) != {'sha256'} for item in bundle.values()):
+        raise ValueError('Invalid H-chain CAS references')
+    return {name: artifact_hash(item['sha256']) for name, item in bundle.items()}
+
+
+def reference_hchain_q3(request, cache):
+    """Keep exact prepared JSON bytes once, not in every allocation request."""
+    route = request['route']
+    cid = request['configuration_id']
+    bundle = route['configurations'][cid]
+    if set(bundle) != set(HCHAIN_Q3_NAMES):
+        raise ValueError('Incomplete H-chain preparation')
+    hashes = {}
+    for name, item in bundle.items():
+        sha = artifact_hash(item['sha256'])
+        raw = item['json'].encode('utf-8')
+        if hashlib.sha256(raw).hexdigest() != sha:
+            raise ValueError('Prepared H-chain input hash differs')
+        if cache.missing([sha]):
+            cache.put({sha: base64.b64encode(raw).decode('ascii')})
+        hashes[name] = {'sha256': sha}
+    return dict(request, route=dict(route, input_storage=HCHAIN_CAS_INPUTS,
+                                   configurations={cid: hashes}))
+
+
+def resolve_hchain_q3(request, profile):
+    hashes = hchain_q3_hashes(request)
+    if hashes:
+        cache = worker_cache(profile)
+        if cache.missing(hashes.values()):
+            raise ValueError('H-chain Q3 input artifacts not available')
+        request['hchain_input_cache'] = str(cache.root)
+    return request
+
+
 def input_manifest(request):
     inputs = request.get('preparation', {}).get('inputs', {})
     if isinstance(inputs, list):inputs = {row['path']:row['sha256'] for row in inputs}

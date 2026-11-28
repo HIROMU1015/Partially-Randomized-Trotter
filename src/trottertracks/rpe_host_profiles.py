@@ -258,6 +258,15 @@ def select_host_profile(base, assignment):
         raise ValueError('Route-specific profile belongs to another host')
     selected.pop('route_profiles', None)
     request = assignment['request']
+    if request.get('route', {}).get('input_storage') == 'HCHAIN_Q3_CAS_V1':
+        # All route-specific workers receive artifacts through the base host's
+        # transport CAS; keep that path in the durable selected profile too.
+        if base.get('artifact_cache_directory'):
+            selected['artifact_cache_directory'] = base['artifact_cache_directory']
+        elif base.get('work_dir'):
+            selected['artifact_cache_directory'] = str(Path(base['work_dir'])/'artifacts')
+        if base.get('central_artifact_cache_directory'):
+            selected['central_artifact_cache_directory'] = base['central_artifact_cache_directory']
     # A saved WORKER_PROFILE already has its chosen resource footprint; the
     # policy is removed so replay of an owned assignment does not reselect it.
     apply_q3_cpu_policy(selected, request, policy, allow_measurements=selected.get('library_threads',(base.get('pbs') or {}).get('library_threads',1)) == 1)

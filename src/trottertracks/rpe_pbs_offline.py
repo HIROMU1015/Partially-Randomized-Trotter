@@ -1,5 +1,6 @@
 """Partition a fixed search and reconcile the PBS allocation's local work."""
 from collections import Counter
+from contextlib import closing
 from copy import deepcopy
 import os
 import fcntl
@@ -14,6 +15,35 @@ import subprocess
 import time
 
 from .rpe_q3_worker import atomic, digest, read
+
+
+def delta_export_enabled(plan):
+    return (plan.get('round', {}).get('executor', {}).get('distributed') or {}).get('offline_export_delta') is True
+
+
+def export_count(directory):
+    legacy = Path(directory)/'RESULTS.json'
+    if legacy.is_file():
+        return len(read(legacy))
+    index = Path(directory)/'RESULTS.sqlite3'
+    if index.is_file():
+        with closing(sqlite3.connect(index.resolve().as_uri()+'?mode=ro', uri=True, timeout=10)) as db:
+            return db.execute('SELECT COALESCE(MAX(seq),0) FROM results').fetchone()[0]
+    return 0
+
+
+def open_delta_export(directory):
+    index = Path(directory)/'RESULTS.sqlite3'
+    index.parent.mkdir(parents=True, exist_ok=True)
+    db = sqlite3.connect(index, timeout=10)
+    try:
+        db.execute('CREATE TABLE IF NOT EXISTS results (seq INTEGER PRIMARY KEY, '
+                   'key TEXT NOT NULL UNIQUE, record TEXT NOT NULL)')
+        db.commit()
+        return db
+    except BaseException:
+        db.close()
+        raise
 
 
 def queued_independent_q3_seconds(connection,policy,host,*,part=None):
@@ -693,6 +723,8 @@ def part_documents(plan, part, profile, path):
         nested = profile.get('pbs', {})
         overlay = nested.get('offline_controller_overlay') or {}
         if adapter := overlay.get('q3_adapter'):
+            # A separately pinned historical adapter may only accept inline JSON.
+            distributed.pop('hchain_cas_inputs', None)
             if (not spec.get('hchain') or overlay.get('base_source') != settings['source']
                     or set(adapter) != {'adapter_root', 'adapter_manifest'}):
                 raise ValueError('Q3 adapter selection does not match the fixed H-chain plan')
@@ -800,8 +832,7 @@ class OfflineSearch:
             pointer = Path(directory)/'offline-search'
             pointer.mkdir(parents=True, exist_ok=True)
             atomic(pointer/'INDEPENDENT.json', dict(root=str(self.directory)))
-        manifest = self.directory/'RESULTS.json'
-        self.revision = len(read(manifest)) if manifest.exists() else 0
+        self.revision = export_count(self.directory)
         coverage = self.directory/'COVERAGE.json'
         if coverage.exists():
             self.revision += read(coverage)['changes']
@@ -809,10 +840,13 @@ class OfflineSearch:
     def shared_revision(self):
         if not self.independent:
             return self.revision
-        manifest, coverage = self.directory/'RESULTS.json', self.directory/'COVERAGE.json'
+        manifest = self.directory/'RESULTS.json'
+        if not manifest.is_file():
+            manifest = self.directory/'RESULTS.sqlite3'
+        coverage = self.directory/'COVERAGE.json'
         version = tuple(p.stat().st_mtime_ns if p.is_file() else None for p in (manifest,coverage))
         if getattr(self, '_revision_version', None) != version:
-            self._shared_revision = (len(read(manifest)) if manifest.is_file() else 0) + (
+            self._shared_revision = export_count(self.directory) + (
                 read(coverage).get('changes', 0) if coverage.is_file() else 0)
             self._revision_version = version
         return self._shared_revision
@@ -1276,6 +1310,15 @@ class OfflineSearch:
 
     def _export(self, part):
         manifest = self.directory/'RESULTS.json'
+        # The immutable plan selects the format. Never migrate a live legacy
+        # export implicitly, or maintain two competing authoritative indexes.
+        if delta_export_enabled(getattr(self, 'plan', {})) and not manifest.exists():
+            with closing(open_delta_export(self.directory)) as db:
+                return self._export_records(part, db)
+        return self._export_records(part)
+
+    def _export_records(self, part, delta=None):
+        manifest = self.directory/'RESULTS.json'
         def signature():
             try:
                 stat = manifest.stat()
@@ -1284,8 +1327,11 @@ class OfflineSearch:
                 return None
         revision = signature()
         cached = getattr(self, '_export_manifest_cache', None)
-        records = cached[1].copy() if cached is not None and cached[0] == revision else (read(manifest) if revision else {})
+        records = {} if delta is not None else (
+            cached[1].copy() if cached is not None and cached[0] == revision else (read(manifest) if revision else {}))
         new = 0
+        incomplete = 0
+        input_cache = None
         for outcome in (part/'jobs').glob('*/*/OUTCOME.json'):
             job = outcome.parent
             if job.parent.name.startswith('PREPARATION:'):
@@ -1297,10 +1343,11 @@ class OfflineSearch:
             else:
                 method = job.parent.name
             key = f'{method}/{job.name}'
-            if key in records:
+            if key in records or (delta is not None and delta.execute('SELECT 1 FROM results WHERE key=?',(key,)).fetchone()):
                 continue
             names = ('REQUEST.json', 'OUTCOME.json', 'PROCESS_RETURN.json')
             if any(not (job/name).is_file() for name in names):
+                incomplete += 1
                 continue
             receipt = read(job/'PROCESS_RETURN.json')
             request = read(job/'REQUEST.json')
@@ -1312,6 +1359,7 @@ class OfflineSearch:
                 from contextlib import closing
                 db = part/'distributed'/'QUEUE.sqlite3'
                 if not db.is_file():
+                    incomplete += 1
                     continue
                 try:
                     with closing(sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True,timeout=1)) as connection:
@@ -1320,11 +1368,28 @@ class OfflineSearch:
                 except sqlite3.OperationalError as error:
                     if not sqlite_busy(error):
                         raise
+                    incomplete += 1
                     continue  # The next export will recover the intact receipt.
                 if not row or row[4] != 'ACCEPTED' or not row[2] or row[0] != digest(request):
+                    incomplete += 1
                     continue
                 origin = dict(request_sha256=row[0], contract=json.loads(row[1]), attempt_id=row[2],
                               completion_sha256=row[3], host_id=self.profile['host_id'], part=part.name)
+            from .rpe_preparation_artifacts import ArtifactCache, hchain_q3_hashes
+            input_hashes = hchain_q3_hashes(request)
+            input_artifacts = {}
+            if input_hashes:
+                if input_cache is None:
+                    input_cache = ArtifactCache(part/'distributed'/'artifacts')
+                cache = input_cache
+                try:
+                    missing = cache.missing(input_hashes.values())
+                except (OSError, ValueError):
+                    missing = True
+                if missing:
+                    incomplete += 1
+                    continue  # Do not advertise a receipt with unrecoverable input references.
+                input_artifacts = {sha:cache.path(sha).stat().st_size for sha in set(input_hashes.values())}
             destination = self.directory/'jobs'/key
             destination.mkdir(parents=True, exist_ok=True)
             try:
@@ -1332,6 +1397,8 @@ class OfflineSearch:
                     publish_result_file(job/name, destination/name)
                 records[key] = dict(part=part.name, files={name: (destination/name).stat().st_size
                                                            for name in names})
+                if input_artifacts:
+                    records[key]['input_artifacts'] = input_artifacts
             except OSError as error:
                 # A single interrupted/temporarily unavailable file must not
                 # prevent other confirmed results from reaching the manifest.
@@ -1341,6 +1408,7 @@ class OfflineSearch:
                     from .rpe_q3_worker import event
                     event(self.profile, 'PBS_INDEPENDENT_EXPORT_PENDING', job=job.name, reason=str(error))
                 pending[key] = str(error)
+                incomplete += 1
                 continue
             getattr(self, 'export_pending', {}).pop(key, None)
             if self.independent and not method.startswith('PREPARATION-'):
@@ -1353,6 +1421,7 @@ class OfflineSearch:
                 cache = part/'distributed'/'artifacts'
                 if not all((cache/sha[:2]/sha).is_file() for sha in artifacts.values()):
                     del records[key]
+                    incomplete += 1
                     continue
                 records[key]['artifacts'] = {sha: (cache/sha[:2]/sha).stat().st_size
                                             for sha in set(artifacts.values())}
@@ -1360,9 +1429,19 @@ class OfflineSearch:
                 atomic(destination/'ORIGIN.json',origin)
             new += 1
         if new:
-            atomic(manifest, records)
+            if delta is not None:
+                with delta:
+                    delta.executemany('INSERT INTO results(key,record) VALUES (?,?)',
+                        [(key,json.dumps(item,sort_keys=True,separators=(',',':'))) for key,item in records.items()])
+            else:
+                atomic(manifest, records)
             self.revision += new
-        self._export_manifest_cache = (signature(), records)
+        if delta is None:
+            self._export_manifest_cache = (signature(), records)
+        else:
+            pending_parts = getattr(self, '_delta_export_pending', {})
+            pending_parts[part.name] = incomplete
+            self._delta_export_pending = pending_parts
         return new
 
     def _q3_resource_receipt(self, part, job, request, receipt, outcome):
@@ -1428,6 +1507,9 @@ class OfflineSearch:
                     raise
                 return  # Keep the last valid coverage; do not end the worker.
         observed = dict(counts=counts, termination=read(marker) if marker.exists() else None)
+        if (incomplete := getattr(self,'_delta_export_pending',{}).get(part.name)):
+            observed['termination'] = None
+            observed['export_pending'] = incomplete
         if self.independent:
             status_path=part/'BLOCK_STATUS.json'
             if status_path.is_file():
