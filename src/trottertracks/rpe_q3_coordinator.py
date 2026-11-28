@@ -187,6 +187,15 @@ def install_files(job, files):
         _sync_directory(directory)
 
 
+def duplicate_original_request(attempt, request):
+    """A new-format completion need not publish the controller's request again."""
+    if request.get('completion_transport_version') != 'REFERENCE_ORIGINAL_REQUEST_V1':
+        return False
+    path=Path(attempt)/'ORIGINAL_REQUEST.json'
+    if path.is_symlink() or not path.is_file():
+        return False
+    return path.read_bytes()==(json.dumps(request,default=str,allow_nan=False)+'\n').encode()
+
 def local_result_digest(files, manifest):
     """Verify local source bytes and reproduce the *legacy* base64 completion digest.
 

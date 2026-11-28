@@ -81,6 +81,54 @@ def write(path,value):
     else:path.write_text(text)
 
 
+def shared_selection_snapshot(run, selection):
+    """Publish one immutable ranking list for a wave, never one per candidate."""
+    body={'candidates':selection['candidates']}
+    # Preserve the exact ranking, including the candidate evidence records.
+    encoded=json.dumps(body,ensure_ascii=False,separators=(',',':'),default=str)
+    sha=hashlib.sha256(encoded.encode()).hexdigest()
+    path=Path(run)/'pf_auto/selection-inventory'/f'{sha}.json'
+    path.parent.mkdir(parents=True,exist_ok=True)
+    if path.exists():
+        if path.read_text()!=encoded+'\n':raise ValueError('PF selection inventory differs')
+    else:
+        # The wave coordinator is the single writer; publish atomically.
+        import os,tempfile
+        with tempfile.NamedTemporaryFile('w',dir=path.parent,delete=False) as stream:
+            temporary=Path(stream.name)
+            try:
+                stream.write(encoded+'\n');stream.flush();os.fsync(stream.fileno());stream.close()
+                try:os.link(temporary,path)
+                except FileExistsError:
+                    if path.read_text()!=encoded+'\n':raise ValueError('PF selection inventory differs')
+            finally:temporary.unlink(missing_ok=True)
+        descriptor=os.open(path.parent,os.O_RDONLY)
+        try:os.fsync(descriptor)
+        finally:os.close(descriptor)
+    return path,sha
+
+
+def selection_for_candidate(selection, chosen, shared, candidate_directory):
+    if shared is None:
+        return dict(selection,selected=chosen)
+    import os
+    path,sha=shared
+    folder=Path(candidate_directory)/'pf_auto'
+    return dict({key:value for key,value in selection.items() if key!='candidates'},
+                selected=chosen,candidate_inventory=dict(path=os.path.relpath(path,folder),sha256=sha))
+
+
+def read_full_selection(path):
+    """Explicit full-ranking reader; normal Resume only needs selected identity."""
+    path=Path(path);selection=json.loads(path.read_text())
+    if reference:=selection.get('candidate_inventory'):
+        raw=(path.parent/reference['path']).read_bytes()
+        if not raw.endswith(b'\n') or hashlib.sha256(raw[:-1]).hexdigest()!=reference['sha256']:
+            raise ValueError('Saved PF selection inventory differs')
+        selection['candidates']=json.loads(raw)['candidates']
+    return selection
+
+
 def evaluated_prefixes(context):
     return sorted({p['L_D'] for p in context['catalog']['candidates']
         if p['method']=='TRUNCATED_PF' and p.get('q3_status') in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD','INCONCLUSIVE') and type(p.get('L_D'))is int})
@@ -819,6 +867,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
 
     if not wave:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
+    compact=(spec.get('executor',{}).get('distributed') or {}).get('compact_candidate_requests') is True
+    shared=shared_selection_snapshot(run,selection) if compact else None
     def acquire(chosen):
         if stop_requested is not None and stop_requested():return None
         cid=chosen['configuration_id']
@@ -848,7 +898,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         candidate_folder=base/'candidates'/cid
         try:
             after,_,status=prepare(root,problem,snapshot_context(context),one_spec,candidate_folder,
-                                  deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
+                                  deepcopy(routes),stage_executor=stage_executor,
+                                  selection=selection_for_candidate(selection,chosen,shared,candidate_folder))
         except subprocess.CalledProcessError as error:
             failure=metadata_tool_failure(error,candidate_folder,one_settings)
             if failure is None:

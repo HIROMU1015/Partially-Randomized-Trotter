@@ -1662,14 +1662,15 @@ class DistributedPreparationBridge:
         return subprocess.check_output(args+['-m','Make declared preparation input commits reachable'],cwd=root,text=True,
             env=dict(os.environ,GIT_AUTHOR_DATE=date,GIT_COMMITTER_DATE=date)).strip()
 
-    def _shared_local_git_inputs(self, source, input_hashes):
+    def _shared_local_git_inputs(self, source, input_hashes, *, provider=None):
         """A node-local worker inherits the same immutable object stores.
 
         Confirm the exact locators from an otherwise empty object database;
         the normal worker still verifies each content hash and fixed SOURCE.
         Do not replace a requested workspace checkout with locator-only data.
         """
-        if not self.settings.get('local_shared_git_inputs') or not input_hashes:
+        providers=getattr(getattr(self,'executor',None),'local_shared_preparation_providers',set())
+        if (not self.settings.get('local_shared_git_inputs') and provider not in providers) or not input_hashes:
             return False
         if not os.environ.get('GIT_ALTERNATE_OBJECT_DIRECTORIES'):
             return False
@@ -1685,8 +1686,8 @@ class DistributedPreparationBridge:
                     all(len(row.split())==3 and row.split()[1] in ('commit','blob','tree')
                         for row in rows))
 
-    def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False, shared_base=False):
-        if not tracked_workspace and self._shared_local_git_inputs(source, input_hashes):
+    def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False, shared_base=False, provider=None):
+        if not tracked_workspace and self._shared_local_git_inputs(source, input_hashes, provider=provider):
             return []
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         resolved=[]
@@ -2177,9 +2178,13 @@ class DistributedPreparationBridge:
         with self.lock:
             aliases = dict(self.aliases)
         bindings.update(used_path_aliases(aliases, bindings, original_documents, command))
+        checkout_input_head=not script.is_relative_to(root) and not df_max_width
+        if self.settings.get('stable_input_bundle') is True and (pf_terminal_signal or df_transport):
+            # These paths already force checkout_input_head=False below.
+            checkout_input_head=False
         root_bundles=self._bundle(root,source,input_hashes,
-                                 tracked_workspace=not script.is_relative_to(root) and not df_max_width,
-                                 shared_base=df_max_width)
+                                 tracked_workspace=checkout_input_head,
+                                 shared_base=df_max_width,provider=stage)
         if script.is_relative_to(root) or pf_terminal_signal or df_transport:
             # This bundle supplies locators for frozen inputs. Checking out
             # its HEAD would substitute controller code for the provider.

@@ -979,3 +979,6 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - DM-18/20/24/29/40: 内容不変のH-chain報告・区分statusは同じファイルを置換しない。資源供給の揺らぎは定期観測に残すが変化判定から外し、診断HOLDには理由の要約、request/decision識別を記録する。割当台帳の適格性原本はそのまま保持する。同一状態・同一detailの再送は台帳を変更しない。読み手のない `RESOURCE_OFFER.json` は明示的な診断設定 `persist_resource_offer` がある場合のみ出力する。
 - DM-03/04: Git pack生成後に回収効果なし・loose inventory変化で見送ったobject集合も既存の期限付き再試行除外へ記録する。inventoryは起動情報、invocation、同一ユーザーのローカルprocess引数のうち該当path、関連unit・symlinkの参照も調べる。結果は削除許可ではない。
 - 再現性を保つため、科学証明中間値の省略、H-chain葉単位の異なるscope/batch間再利用、幅によるpartition変更、遠隔readiness時点のbundle配送廃止、旧requestの保存形式の変更はこの段階で未採用。別途、対応する科学条件・復元・所有・通常入口を照合する。lossless Q3 sidecar既定値も既存設定のまま。
+
+- DM-12/27追加: 新規runでprovider配置が明示的にlocalだけに固定されている場合は、controller起動local workerに同じGit object dirsを渡し、宣言locatorが共有storeから解決できることを確認した準備要求はbundle自体を生成しない。PFの旧compile配置やremoteとの混在provider、checkoutを必要とする入力は従来経路へ戻す。workerの実入力SHA照合は省略しない。
+- DM-14/16追加: 新規要求には `REFERENCE_ORIGINAL_REQUEST_V1` を固定し、workerのORIGINAL_REQUESTが中央のrequestと同じバイト表現の場合だけ転送から除く。worker側の復旧用原本、RESOLVED_REQUEST、OUTCOME、科学証跡は維持する。PF waveの候補ランキング一覧は内容アドレスの共有snapshotとして一度だけ書き、候補ごとのSELECTION・STATUSは選定済み行と相対参照を持つ。全ランキングの確認時には `read_full_selection` でSHA照合して読む。旧保存形式を保持する。

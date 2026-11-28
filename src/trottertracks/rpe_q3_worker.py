@@ -491,17 +491,24 @@ _TRANSFER_OMIT.update((PBSAttempt.OWNER, PBSAttempt.REQUEST, PBSAttempt.INTERRUP
 def result_bundle_paths(attempt):
     attempt = Path(attempt)
     assignment_path = attempt/'ASSIGNMENT.json'
-    if assignment_path.exists() and Preparation.is_preparation(read(assignment_path)):
+    assignment=read(assignment_path) if assignment_path.exists() else {}
+    if assignment and Preparation.is_preparation(assignment):
         names = ('OUTCOME.json', 'PROCESS_RETURN.json', 'ARTIFACT_MANIFEST.json', 'PREPARATION_RECEIPT.json',
                  'JOB_STAGES.jsonl', 'TRANSPORT_TIMING.jsonl', 'WORKER_COLLECT_RETURN.json')
         files = {name:attempt/name for name in names if (attempt/name).is_file()}
     else:
         files = {}
+        try:
+            from .rpe_q3_coordinator import duplicate_original_request
+            omit_original=duplicate_original_request(attempt,assignment.get('request',{}))
+        except ImportError:
+            omit_original=False  # old fixed operational overlay
         for path in sorted(attempt.rglob('*')):
             if path.is_symlink():
                 raise ValueError('Symlink in result bundle')
             if path.is_file() and path.relative_to(attempt).parts[0] != '_dry_check' and str(path.relative_to(attempt)) not in _TRANSFER_OMIT:
                 name = str(path.relative_to(attempt)); safe_relative(name)
+                if omit_original and name=='ORIGINAL_REQUEST.json':continue
                 files[name] = path
     if 'OUTCOME.json' not in files or 'PROCESS_RETURN.json' not in files:
         raise ValueError('Incomplete result bundle')
@@ -536,6 +543,9 @@ class Worker:
         self.work = Path(profile['work_dir']).resolve(); self.work.mkdir(parents=True, exist_ok=True)
         self.profile.update(root=str(self.root), work_dir=str(self.work))
         self.host_id = safe_id(profile['host_id'])
+        if (self.host_id=='local' and profile.get('central_artifact_cache_directory')
+                and profile.get('local_shared_git_object_directories')):
+            os.environ['GIT_ALTERNATE_OBJECT_DIRECTORIES']=profile['local_shared_git_object_directories']
         self.slots = (profile.get('slot_policy') or {}).get('initial_slots', profile.get('slots', 1))
         if type(self.slots) is not int or self.slots < 1:
             raise ValueError('Positive integer worker slots required')

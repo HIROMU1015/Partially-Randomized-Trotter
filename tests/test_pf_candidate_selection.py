@@ -128,3 +128,18 @@ class Selection(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+def test_shared_pf_wave_ranking_is_stored_once_and_roundtrips(tmp_path):
+    rows=[dict(configuration_id=str(i),evidence='data'*1000) for i in range(30)]
+    selection=dict(candidate_count=len(rows),candidates=rows,selected=rows[0])
+    shared=S.shared_selection_snapshot(tmp_path,selection)
+    for row in rows:
+        candidate=tmp_path/'pf_auto/candidates'/row['configuration_id']
+        path=candidate/'pf_auto/SELECTION.json'
+        S.write(path,S.selection_for_candidate(selection,row,shared,candidate))
+        value=json.loads(path.read_text())
+        assert 'candidates' not in value and value['selected']==row
+        assert S.read_full_selection(path)['candidates']==rows
+    inventory=list((tmp_path/'pf_auto/selection-inventory').glob('*.json'))
+    assert len(inventory)==1
+    assert S.shared_selection_snapshot(tmp_path,selection)==shared

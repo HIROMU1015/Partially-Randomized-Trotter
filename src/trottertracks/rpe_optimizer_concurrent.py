@@ -640,6 +640,7 @@ class ConcurrentExecutor(O.Executor):
             compact=self.compact_candidate_route(rule,proposal['configuration_id'])
             if self.expected_for(proposal['configuration_id'],compact)==req['expected']:
                 req['route']=compact
+            req['completion_transport_version']='REFERENCE_ORIGINAL_REQUEST_V1'
         execution = req['execution_profile'] = dict(dp_workers=self.dp_workers)
         artificial = rule['kind'] == 'artificial'
         route = req['method'], rule['kind']
@@ -1583,6 +1584,20 @@ class DistributedExecutor(ConcurrentExecutor):
                 profile['central_artifact_cache_directory'] = str(self.artifact_cache.root)
                 if distributed.get('local_result_manifest') is True:
                     profile['local_result_manifest'] = True
+                providers=self.local_only_preparation_providers(distributed)
+                if providers:
+                    try:
+                        # Expose only already-local Git object stores to the
+                        # controller and its own worker. The bridge checks
+                        # each requested locator before omitting a bundle.
+                        from .rpe_pbs_offline import input_environment
+                        env=input_environment(list(dict.fromkeys([self.root,self.computation_root])))
+                        profile['local_shared_git_object_directories']=env['GIT_ALTERNATE_OBJECT_DIRECTORIES']
+                        os.environ['GIT_ALTERNATE_OBJECT_DIRECTORIES']=env['GIT_ALTERNATE_OBJECT_DIRECTORIES']
+                        self.local_shared_preparation_providers=providers
+                    except (OSError,ValueError,subprocess.SubprocessError):
+                        # The ordinary verified bundle remains available.
+                        pass
                 if distributed.get('local_deployment_layout') and self.release_manifest:
                     profile['deployment'] = dict(manifest=distributed['release_manifest'],
                                                  layout=distributed['local_deployment_layout'])
@@ -1699,6 +1714,19 @@ class DistributedExecutor(ConcurrentExecutor):
     def alive(self, launch, job):
         if launch.get('attempt_id'): return False  # a remote PID has no controller-local meaning
         return super().alive(launch, job)
+
+    @staticmethod
+    def local_only_preparation_providers(distributed):
+        """Only the already-declared local placements can bypass Git transport."""
+        local=distributed.get('local_worker') or {}
+        if local.get('host_id') != 'local' or not (distributed.get('preparation') or {}).get('stable_input_bundle'):
+            return set()
+        providers={provider for provider,hosts in (distributed.get('preparation_provider_hosts') or {}).items()
+                   if hosts and set(hosts)=={'local'}}
+        legacy=distributed.get('pf_legacy_compile_hosts')
+        if legacy and set(legacy)!={'local'}:
+            providers.difference_update(('PF_COMPILE','PF_HOLDOUT_COMPILE'))
+        return providers
 
     def _local_daemon_alive(self, pid, profile_path):
         if type(pid) is not int: return False

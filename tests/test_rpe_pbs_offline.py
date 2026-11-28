@@ -592,6 +592,10 @@ def test_shared_local_git_inputs_omit_bundle_only_with_visible_locators(tmp_path
     assert not bridge._shared_local_git_inputs(source,[{'commit':source,'path':'missing'}])
     bridge.settings={}
     assert not bridge._shared_local_git_inputs(source,inputs)
+    from types import SimpleNamespace
+    bridge.executor=SimpleNamespace(local_shared_preparation_providers={'PF_AUDIT'})
+    assert bridge._bundle(root,source,inputs,provider='PF_AUDIT')==[]
+    assert not bridge._shared_local_git_inputs(source,inputs,provider='PF_COMPILE')
 
 def test_coverage_read_contention_keeps_last_snapshot(tmp_path, monkeypatch):
     import sqlite3

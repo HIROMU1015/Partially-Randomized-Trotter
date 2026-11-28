@@ -1712,3 +1712,37 @@ def test_hold_diagnostic_drops_full_inputs_without_changing_decision():
     assert summary['host_decisions']['local']['reasons']==['last']
     assert summary['reasons']==['short'] and 'input_hashes' not in summary
     assert full['input_hashes']=={'x':'big'}
+
+def test_only_explicit_local_preparation_placement_can_skip_bundle():
+    d=dict(local_worker={'host_id':'local'},preparation={'stable_input_bundle':True},
+           preparation_provider_hosts={'PF_COMPILE':['local'],'PF_AUDIT':['local','remote'],'DF_SIGNALS':['local']},
+           pf_legacy_compile_hosts=['remote'])
+    assert DistributedExecutor.local_only_preparation_providers(d)=={'DF_SIGNALS'}
+    d['pf_legacy_compile_hosts']=['local']
+    assert DistributedExecutor.local_only_preparation_providers(d)=={'PF_COMPILE','DF_SIGNALS'}
+    d['preparation']['stable_input_bundle']=False
+    assert not DistributedExecutor.local_only_preparation_providers(d)
+
+def test_new_completion_format_omits_only_byte_identical_original_request(tmp_path):
+    from trottertracks.rpe_q3_worker import result_bundle
+    from trottertracks._pipeline_pbs_q3_worker import result_bundle as pipeline_bundle
+    req={'request_id':'fixture','route':{'kind':'artificial'},
+         'completion_transport_version':'REFERENCE_ORIGINAL_REQUEST_V1'}
+    Q.atomic_json(tmp_path/'ASSIGNMENT.json',dict(request=req))
+    for name in ('OUTCOME.json','PROCESS_RETURN.json','RESOLVED_REQUEST.json'):
+        (tmp_path/name).write_text('{}')
+    original=tmp_path/'ORIGINAL_REQUEST.json'
+    original.write_text(json.dumps(req)+'\n')
+    for bundle in (result_bundle,pipeline_bundle):
+        files=bundle(tmp_path)
+        assert 'ORIGINAL_REQUEST.json' not in files
+        assert 'RESOLVED_REQUEST.json' in files
+    # A different byte sequence is retained as evidence; legacy requests
+    # also retain the original transfer shape.
+    original.write_text(json.dumps(req,indent=2)+'\n')
+    assert 'ORIGINAL_REQUEST.json' in result_bundle(tmp_path)
+    assert 'ORIGINAL_REQUEST.json' in pipeline_bundle(tmp_path)
+    req.pop('completion_transport_version')
+    Q.atomic_json(tmp_path/'ASSIGNMENT.json',dict(request=req))
+    original.write_text(json.dumps(req)+'\n')
+    assert 'ORIGINAL_REQUEST.json' in result_bundle(tmp_path)

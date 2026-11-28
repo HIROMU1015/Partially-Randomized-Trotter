@@ -482,7 +482,8 @@ _DEFERRED_PBS_FILES = frozenset(('RESULT.json', 'API_RETURN.json', 'COLLECTED_OU
 def result_bundle(attempt, *, deferred=None):
     attempt = Path(attempt)
     assignment_path = attempt/'ASSIGNMENT.json'
-    if assignment_path.exists() and Preparation.is_preparation(read(assignment_path)):
+    assignment=read(assignment_path) if assignment_path.exists() else {}
+    if assignment and Preparation.is_preparation(assignment):
         names = ('OUTCOME.json', 'PROCESS_RETURN.json', 'ARTIFACT_MANIFEST.json', 'PREPARATION_RECEIPT.json',
                  'JOB_STAGES.jsonl', 'TRANSPORT_TIMING.jsonl', 'WORKER_COLLECT_RETURN.json')
         files = {name:base64.b64encode((attempt/name).read_bytes()).decode('ascii')
@@ -490,11 +491,17 @@ def result_bundle(attempt, *, deferred=None):
         if 'OUTCOME.json' not in files or 'PROCESS_RETURN.json' not in files:raise ValueError('Incomplete preparation result bundle')
         return files
     files = {}
+    try:
+        from .rpe_q3_coordinator import duplicate_original_request
+        omit_original=duplicate_original_request(attempt,assignment.get('request',{}))
+    except ImportError:
+        omit_original=False  # legacy fixed controller/worker overlay
     for path in sorted(Path(attempt).rglob('*')):
         if path.is_symlink():
             raise ValueError('Symlink in result bundle')
         if path.is_file() and path.relative_to(attempt).parts[0] != '_dry_check' and str(path.relative_to(attempt)) not in _TRANSFER_OMIT:
             name = str(path.relative_to(attempt)); safe_relative(name)
+            if omit_original and name=='ORIGINAL_REQUEST.json':continue
             if deferred is not None and path.name in _DEFERRED_PBS_FILES:
                 deferred[name] = path.stat().st_size
             else:
