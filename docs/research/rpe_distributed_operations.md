@@ -982,3 +982,4 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 
 - DM-12/27追加: 新規runでprovider配置が明示的にlocalだけに固定されている場合は、controller起動local workerに同じGit object dirsを渡し、宣言locatorが共有storeから解決できることを確認した準備要求はbundle自体を生成しない。PFの旧compile配置やremoteとの混在provider、checkoutを必要とする入力は従来経路へ戻す。workerの実入力SHA照合は省略しない。
 - DM-14/16追加: 新規要求には `REFERENCE_ORIGINAL_REQUEST_V1` を固定し、workerのORIGINAL_REQUESTが中央のrequestと同じバイト表現の場合だけ転送から除く。worker側の復旧用原本、RESOLVED_REQUEST、OUTCOME、科学証跡は維持する。PF waveの候補ランキング一覧は内容アドレスの共有snapshotとして一度だけ書き、候補ごとのSELECTION・STATUSは選定済み行と相対参照を持つ。全ランキングの確認時には `read_full_selection` でSHA照合して読む。旧保存形式を保持する。
+- DM-30: 共通workerは同一job/attempt/requestに対する中央の明示的な `STATE_OUTSIDE_CURRENT_RUN` 応答を受けたときだけ、旧runの通知・完了転送の反復を抑制する。409だけでは所有不一致と決めず、中央へ同一attemptを照会する。元の成果・worker状態は保持し、同じ正式割当の再送で抑制を解除する。

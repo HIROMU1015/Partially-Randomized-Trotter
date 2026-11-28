@@ -558,6 +558,7 @@ class Worker:
         self.source_sha = head(self.root)
         self.eligibility_challenges = []
         self.stop = threading.Event(); self.processes = {}; self.reported = {}; self.records = {}
+        self.outside_current_run = set()
         self.resource_report = None
         self.mixed_task_class_quotas = False
         self._terminal_resources = {}
@@ -947,17 +948,43 @@ class Worker:
 
     def _receive_assignment(self, assignment):
         self._acquire(assignment)
+        outside=getattr(self,'outside_current_run',set())
+        if outside:
+            attempt=self.work/assignment['job_id']/assignment['attempt_id']
+            if attempt in outside:
+                outside.discard(attempt)
+                self.reported.pop(attempt,None)
         getattr(self, '_native_proofs', {}).pop(assignment['job_id'], None)
 
     def _service_attempt(self, attempt, assignment, *, transfer=True):
+        outside=getattr(self,'outside_current_run',None)
+        if outside is None:
+            outside=self.outside_current_run=set()
+        if attempt in outside:
+            return  # a fresh exact assignment clears this advisory suppression
         state = self._reconcile(attempt, assignment)
         if state['state'] == 'ASSIGNED':
             self._launch(attempt); state = read(attempt / 'WORKER_STATE.json')
         payload = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], state=state['state'], detail=state['detail'])
         if state['state'] != 'TRANSFERRED' and self.reported.get(attempt) != state:
             try:
-                self._post('/v1/state', payload); self.reported[attempt] = state
+                response=self._post('/v1/state', payload)
+                self.reported[attempt] = state
+                if (response or {}).get('disposition')=='STATE_OUTSIDE_CURRENT_RUN':
+                    outside.add(attempt)
+                    return
             except (OSError, ValueError, urllib.error.URLError) as error:
+                if getattr(error,'code',None)==409:
+                    # A generic conflict is not proof of absent ownership.
+                    # Ask the current controller about this exact attempt.
+                    try:
+                        owner={key:assignment[key] for key in ('job_id','attempt_id','request_sha256')}
+                        response=self._post('/v1/attempt',owner)
+                    except (KeyError,OSError,ValueError,urllib.error.URLError):
+                        response={}
+                    if (response or {}).get('disposition')=='STATE_OUTSIDE_CURRENT_RUN':
+                        outside.add(attempt)
+                        return
                 event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(error))
         if transfer and state['state'] == 'COMPLETED_PENDING_TRANSFER':
             try:

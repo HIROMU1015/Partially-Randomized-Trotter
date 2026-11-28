@@ -1746,3 +1746,25 @@ def test_new_completion_format_omits_only_byte_identical_original_request(tmp_pa
     Q.atomic_json(tmp_path/'ASSIGNMENT.json',dict(request=req))
     original.write_text(json.dumps(req)+'\n')
     assert 'ORIGINAL_REQUEST.json' in result_bundle(tmp_path)
+
+def test_stale_worker_notification_does_not_repeat_or_discard_result(tmp_path):
+    from trottertracks.rpe_q3_worker import Worker
+    from urllib.error import HTTPError
+    worker=Worker.__new__(Worker);worker.work=tmp_path;worker.outside_current_run=set();worker.reported={}
+    assignment=dict(job_id='old',attempt_id='attempt',request_sha256='fixed')
+    attempt=tmp_path/'old/attempt'
+    calls=[]
+    def post(endpoint,payload):
+        calls.append(endpoint)
+        if endpoint=='/v1/state':
+            raise HTTPError('http://127.0.0.1',409,'fixture',None,None)
+        if endpoint=='/v1/attempt':
+            return {'disposition':'STATE_OUTSIDE_CURRENT_RUN'}
+        raise AssertionError('old result must not be sent to a different run')
+    worker._post=post;worker._reconcile=lambda *_:dict(state='COMPLETED_PENDING_TRANSFER',detail={})
+    worker._acquire=lambda _:None
+    worker._service_attempt(attempt,assignment)
+    worker._service_attempt(attempt,assignment)
+    assert calls==['/v1/state','/v1/attempt'] and attempt in worker.outside_current_run
+    worker._receive_assignment(assignment)
+    assert attempt not in worker.outside_current_run
