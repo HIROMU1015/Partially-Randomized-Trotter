@@ -29,8 +29,8 @@ def restore_providers(run):
     restored=0
     for workspace in provider_workspaces(run):
         marker=workspace.parent/'RETAINED_PROVIDER_SOURCE.json'
+        if marker.is_symlink():raise ValueError('Invalid retained provider marker')
         if marker.is_file():
-            if marker.is_symlink():raise ValueError('Invalid retained provider marker')
             restore_provider_source(workspace)
             restored+=1
     return restored
@@ -72,8 +72,8 @@ def sync_directory(path):
 def restore_retained_diagnostics(run):
     """Restore only explicitly removed transfer diagnostics, before Resume."""
     run=Path(run).resolve(strict=True);marker=run/'RETAINED_DIAGNOSTICS.json'
-    if not marker.exists():return 0
     if marker.is_symlink():raise ValueError('Invalid retained diagnostic marker')
+    if not marker.exists():return 0
     record=json.loads(marker.read_bytes())
     if record.get('schema')!='RPE_RETAINED_DIAGNOSTICS_V1' or record.get('run_id')!=run.name:
         raise ValueError('Retained diagnostic layout differs')
@@ -119,8 +119,9 @@ def restore_saved_layout(run):
     run=Path(run).resolve(strict=True)
     marker=run/'RETAINED_LEGACY_PROVIDER_SOURCE.json'
     providers=0
+    if marker.is_symlink():raise ValueError('Invalid legacy provider retention marker')
     if marker.exists():
-        if marker.is_symlink() or json.loads(marker.read_bytes())!={'run_id':run.name}:
+        if json.loads(marker.read_bytes())!={'run_id':run.name}:
             raise ValueError('Legacy provider retention identity differs')
         providers=restore_providers(run)
         marker.unlink()

@@ -61,6 +61,7 @@ def test_git_migration_preserves_unreferenced_objects_and_alternate_switch(tmp_p
 
 def test_trial_copy_keeps_bytes_and_flags_external_dependencies(tmp_path):
     trial=tmp_path/'planning';trial.mkdir();(trial/'raw.json').write_bytes(b'{"raw":1}\n')
+    os.link(trial/'raw.json',trial/'second.json')
     (trial/'internal').symlink_to('raw.json');external=tmp_path/'other';external.write_text('outside');(trial/'external').symlink_to(external)
     copied=tmp_path/'cold/trial'
     before=inventory(trial);report=copy_saved_tree(trial,copied)
@@ -68,6 +69,7 @@ def test_trial_copy_keeps_bytes_and_flags_external_dependencies(tmp_path):
     assert inventory(copied)==before==inventory(trial)
     assert (copied/'internal').read_bytes()==b'{"raw":1}\n'
     assert not (trial/'raw.json').samefile(copied/'raw.json')
+    assert (copied/'raw.json').samefile(copied/'second.json')
     with pytest.raises(ValueError,match='destination already exists'):copy_saved_tree(trial,copied)
     (trial/'external').unlink()
     assert copy_saved_tree(trial,tmp_path/'cold/independent')['independent']
@@ -169,6 +171,11 @@ def test_legacy_source_and_diagnostic_retirement_resume_compatibility(tmp_path):
         gate.handle(resume)
     assert seen==[] and not transfer.exists()
     arch.write_bytes(archive_bytes)
+    transfer.write_text('conflicting fixture')
+    with pytest.raises(RequestError,match='Retained diagnostic path differs'):
+        gate.handle(resume)
+    assert transfer.read_text()=='conflicting fixture' and seen==[]
+    transfer.unlink()
     result=gate.handle(resume)
     assert result['status']=='STARTED' and seen==['preflight','launch']
     assert result['preflight']['saved_layout_recovery']['diagnostic_files']==1
@@ -188,3 +195,12 @@ def test_old_gateway_explicit_restore_keeps_unique_files_and_protects_owner(tmp_
     assert restore_stopped_layout(state,run.name)=={'provider_workspaces':1,'diagnostic_files':1}
     assert (workspace/'src/file.py').read_text()=='fixed fixture\n' and transfer.read_bytes()==original.read_bytes()
     assert restore_stopped_layout(state,run.name)=={'provider_workspaces':0,'diagnostic_files':0}
+
+
+def test_unsettled_attempt_blocks_legacy_retention(tmp_path):
+    state,run,workspace,original,transfer,nonduplicate,receipt,gate,seen=setup_retained(tmp_path)
+    with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+        db.execute("UPDATE jobs SET state='UNKNOWN'")
+    result=compact_stopped_provider_sources(state,run.name,legacy_restore=True)
+    assert result['compacted']==0 and 'Unsettled worker ownership' in result['skipped'][0]['reason']
+    assert (workspace/'src/file.py').is_file() and not (run/'RETAINED_LEGACY_PROVIDER_SOURCE.json').exists()

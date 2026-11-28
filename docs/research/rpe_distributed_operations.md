@@ -997,3 +997,12 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - `compact_intermediate_reports` は新規H-chain runの中間ROUND_RESULTで重複するevaluated/resume_records配列を省き、件数を記す。最良値、allocation、停止・hold・正確なOUTCOME、最終報告は保持する。中間版・partition合成のcompact版はresume exportではないことを明示する。
 - 新規H-chain要求の `hchain_proof_storage=GZIP_JSON_V1` は完全な科学proofのcompact JSONをそのまま可逆gzip streamとして保存する。非圧縮の巨大な一時原本を生成せず、中間値も省略しない。旧要求は従来JSONを保存・収集する。圧縮proofは同じcollect・所有・受理の経路を通る。人工fixtureでは解凍後のJSON全バイトおよびOUTCOME一致を確認した。
 - 明示固定数値環境のない過去run（RomuTailの旧H8保存PLANを含む）や異なるscope/batch契約の自動流用は未許可の科学的同等性を仮定しない。幅によるpartitionの変更、実機PBS検収、新規科学評価はこの改修範囲外。
+
+### 保存データ移行の隔離準備と旧版復元互換（2026-11-28）
+
+- `rpe_saved_data_migration.py copy-tree SOURCE DESTINATION` は試験物の全ファイル・mode・symlink文字列を照合して独立copyを作る。内部hardlinkを保持し、元ファイルとは共有しない。外部symlinkやGit alternateを明示して、未解決の依存があるcopyを独立済みとは扱わない。
+- `copy-git SOURCE DESTINATION [--target-objects OBJECTS]` は新しいstandalone checkoutへGit metadata、refs・reflogs・index、未参照を含む全objectを保持する。`stage-object-store SOURCE BARE_DESTINATION` はlinked worktreeやbare viewから独立object storeを準備できる。元のalternateは変更しない。移行後の実切替・原本整理・公開timer変更とは分離する。
+- `evidence-service SERVICE_JSON OBJECT_REPOSITORY NEW_CHECKOUT` は新規run向けに独立した固定SOURCEのexecution/evidence viewを準備し、従来のcheckout内Git locatorを維持した新service設定を標準出力へ返す。元service・registry・既存runは変更しない。他の固定provider/runtime依存を無断で書き換えない。新しいserviceの登録・採択は別途実施する。
+- `rpe_romutail_retention.py --compact-provider-sources --run-id ... --legacy-provider-restore` は停止が確認され、所有未確定がない旧run向けの明示選択機能。新Gatewayは通常Start/Resumeの固定入力・所有照合後、preflight前に復元する。旧Gatewayの場合は先に `--restore-saved-layout --run-id ...` で復元し、従来の入口を使う。固定版自身を更新しない。既存の標準compact経路は維持する。
+- `--pack-diagnostics ARCHIVE --run-id ...` で検証済みarchiveを準備し、`--retire-diagnostics ARCHIVE --run-id ...` では全jobsがsettledで、ACCEPTEDのjob側に同一bytesがある診断transferだけを除去する。科学receipt・異なる診断は対象外。復元は上記の保存layout経路を使用する。`compress-file SOURCE ARCHIVE` / `restore-file ARCHIVE DESTINATION --sha256 ...` は旧rawのbyte一致を保つcold copy/復元であり、元のrawを削除しない。
+- これらの追加経路は隔離fixtureでの実装・検証のみ。既存稼働版、実データ、実alternate、PBS予約を変更していない。

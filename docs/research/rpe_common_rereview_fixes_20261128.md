@@ -136,3 +136,4 @@
 - 追加の共有版 `f585a0f5dd396d846e90f5b7939a806a73965122` のH-chain exact leaf再利用、中間report削減、gzip proof保存を統合する。新規runのgzip proofと、旧版rawのcold copyは別用途。
 - 隔離fixtureではS01/S10/S11/S12/S14の正常復元・改変拒否・source不変を確認。対象回帰26件成功。
 - **技術対応51件（採用された代替策・既存再利用を含む）、PBS実機待ち6件（N13/N15/N31/N32/N33/N34）**。実データの回収量・本番運用の成立や性能はこの検証では主張しない。
+- 最新共有版統合後の実装commit `3055d1fff435536f894d1a19bebba27bba9b215e` の広域人工回帰：**861 passed, 1 skipped, 60 subtests passed (130.62s)**。追加の未確定owner拒否・衝突保護・内部hardlink保持修正後の保存物対象回帰27件成功。科学計算・PBS実機なし。

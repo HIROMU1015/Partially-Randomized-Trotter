@@ -350,6 +350,12 @@ def compact_stopped_provider_sources(state,run_id,*,legacy_restore=False):
                     raise ValueError('Pinned Resume does not restore retained provider source')
         except (OSError,KeyError,ValueError,SyntaxError) as error:
             result['skipped'].append(dict(run=run.name,reason=str(error)));continue
+        if legacy_restore:
+            from recover_stopped_rpe_run import has_owned_attempts
+            with stopped_lock(state,run,launch,protect_references=True):
+                if has_owned_attempts(run):
+                    result['skipped'].append(dict(run=run.name,reason='Unsettled worker ownership prevents legacy source compaction'))
+                    continue
         pf=run/'pf_auto'
         for candidates in [pf/'candidates',*pf.glob('price-recovery/recheck-*/candidates')]:
             for workspace in candidates.glob('*/pf_auto/pf_completion/provider_workspace'):

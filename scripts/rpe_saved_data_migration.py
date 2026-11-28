@@ -56,13 +56,27 @@ def inventory(root, *, skip=None):
     return dict(walk(root))
 
 
+def copy_tree(source,destination,**options):
+    """Preserve internal hardlinks without linking destination to source."""
+    linked={}
+    def copy_file(original,target):
+        info=os.stat(original);key=(info.st_dev,info.st_ino)
+        if info.st_nlink>1 and key in linked:
+            os.link(linked[key],target)
+        else:
+            shutil.copy2(original,target)
+            if info.st_nlink>1:linked[key]=target
+        return target
+    return shutil.copytree(source,destination,symlinks=True,copy_function=copy_file,**options)
+
+
 def copy_saved_tree(source, destination):
     """Copy a settled trial/evidence directory to an independently checked copy."""
     source,destination=new_destination(source,destination)
     before=inventory(source)
     with tempfile.TemporaryDirectory(prefix='.rpe-migrate-',dir=destination.parent) as tmp:
         staged=Path(tmp)/'copy'
-        shutil.copytree(source,staged,symlinks=True)
+        copy_tree(source,staged)
         if inventory(staged)!=before or inventory(source)!=before:
             raise ValueError('Saved directory changed or copied bytes differ')
         if destination.exists() or destination.is_symlink():
@@ -163,7 +177,7 @@ def migrate_git_repository(source, destination, *, target_objects=None):
             raise ValueError('No Git objects to migrate')
         def ignore(directory,names):
             return ['objects'] if Path(directory)==git_dir else []
-        shutil.copytree(source,staged,symlinks=True,ignore=ignore)
+        copy_tree(source,staged,ignore=ignore)
         if inventory(staged)!=before or inventory(source,skip='.git/objects')!=before:
             raise ValueError('Git checkout changed during migration')
         objects=staged/'.git/objects';(objects/'pack').mkdir(parents=True);(objects/'info').mkdir()
@@ -249,7 +263,9 @@ def prepare_evidence_service(config, object_repository, checkout, *, checkout_pa
             relative=Path('service-inputs')/original.relative_to(release)
             target=staged/relative;target.parent.mkdir(parents=True,exist_ok=True)
             expected=sha256(original)
-            shutil.copy2(original,target)
+            if target.is_symlink() or (target.exists() and (not target.is_file() or sha256(target)!=expected)):
+                raise ValueError('Conflicting fixed service input in new view')
+            if not target.exists():shutil.copy2(original,target)
             if sha256(target)!=expected or sha256(original)!=expected:raise ValueError('Fixed service input changed')
             return str(checkout/relative)
         for key in ('problem','round','pbs_walltime_policy'):

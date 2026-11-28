@@ -604,9 +604,9 @@ def compact_provider_source(workspace, source):
 def restore_provider_source(workspace):
     workspace = Path(workspace).resolve()
     layout = workspace.parent/'RETAINED_PROVIDER_SOURCE.json'
+    if layout.is_symlink():raise ValueError('Invalid retained source marker')
     if not layout.is_file():
         return
-    if layout.is_symlink():raise ValueError('Invalid retained source marker')
     record = json.loads(layout.read_bytes())
     names=record['files']
     modes=record.get('modes',{})
