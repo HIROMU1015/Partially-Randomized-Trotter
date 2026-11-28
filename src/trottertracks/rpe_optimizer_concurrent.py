@@ -641,6 +641,8 @@ class ConcurrentExecutor(O.Executor):
             if self.expected_for(proposal['configuration_id'],compact)==req['expected']:
                 req['route']=compact
             req['completion_transport_version']='REFERENCE_ORIGINAL_REQUEST_V1'
+        if rule['kind']=='hchain_scoped_q3' and getattr(self,'distributed',{}).get('hchain_compressed_proof') is True:
+            req['hchain_proof_storage']='GZIP_JSON_V1'
         execution = req['execution_profile'] = dict(dp_workers=self.dp_workers)
         artificial = rule['kind'] == 'artificial'
         route = req['method'], rule['kind']

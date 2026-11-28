@@ -4,6 +4,8 @@ import argparse
 from contextlib import contextmanager
 from fractions import Fraction
 import hashlib
+import gzip
+import io
 import importlib.util
 import json
 import math
@@ -38,6 +40,28 @@ def write(path, record, *, compact=False):
             os.link(pending, path)
         finally:
             pending.unlink(missing_ok=True)
+
+
+def write_compressed_proof(path, proof):
+    """Write the exact compact JSON stream directly into gzip, never a raw duplicate."""
+    with tempfile.NamedTemporaryFile(mode='wb',dir=path.parent,delete=False) as stream:
+        pending=Path(stream.name)
+        try:
+            with gzip.GzipFile(fileobj=stream,mode='wb',filename='',mtime=0,compresslevel=3) as compressed:
+                with io.TextIOWrapper(compressed,encoding='utf-8') as output:
+                    json.dump(proof,output,allow_nan=False,separators=(',',':'))
+                    output.write('\n')
+            stream.flush();os.fsync(stream.fileno())
+            os.link(pending,path)
+        finally:
+            pending.unlink(missing_ok=True)
+
+
+def read_proof(path):
+    if path.suffix=='.gz':
+        with gzip.open(path,'rt',encoding='utf-8') as stream:
+            return json.load(stream)
+    return read(path)
 
 
 def check_registered_prices(registry, signal_sha, compiler, method, M):
@@ -316,12 +340,15 @@ def outcome(request, proof):
 
 def run(request, output, mode):
     name, rows, shots, h, target, source, identity = request_inputs(request)
-    proof_path = output / "HCHAIN_RESULT.json"
+    format=request.get('hchain_proof_storage')
+    if format not in (None,'GZIP_JSON_V1'):
+        raise ValueError('Unknown H-chain proof storage format')
+    proof_path = output / ("HCHAIN_RESULT.json.gz" if format else "HCHAIN_RESULT.json")
     outcome_path = output / "OUTCOME.json"
     if mode == "collect":
         if not proof_path.is_file():
             return 3
-        proof = read(proof_path)
+        proof = read_proof(proof_path)
         if (proof["identity"] != identity or proof["source"] != source
                 or proof["request_id"] != request["request_id"] or proof["result"]["method"] != name):
             raise ValueError("Collected Q3 result does not match its request")
@@ -356,7 +383,10 @@ def run(request, output, mode):
     write(output / "HCHAIN_STARTED.json", receipt)
     result = compute((name, rows, shots, source, min(workers, affinity), h, target))
     proof = dict(receipt, result=result)
-    write(proof_path, proof, compact=True)
+    if format:
+        write_compressed_proof(proof_path,proof)
+    else:
+        write(proof_path, proof, compact=True)
     record = outcome(request, proof)
     write(outcome_path, record)
     return 2 if record["status"] == "UNKNOWN" else 0

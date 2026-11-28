@@ -476,7 +476,8 @@ _TRANSFER_OMIT = {'ASSIGNMENT.json', 'WORKER_PROFILE.json', 'WORKER_STATE.json',
 
 
 _DEFERRED_PBS_FILES = frozenset(('RESULT.json', 'API_RETURN.json', 'COLLECTED_OUTCOME.json',
-    'FINITE_SUPPORT.json', 'PARTIAL_COARSE.json', 'PARTIAL_LEMMA.json', 'PARTIAL_TOTAL_DP.json'))
+    'FINITE_SUPPORT.json', 'PARTIAL_COARSE.json', 'PARTIAL_LEMMA.json', 'PARTIAL_TOTAL_DP.json',
+    'HCHAIN_RESULT.json.gz'))
 
 
 def result_bundle(attempt, *, deferred=None):

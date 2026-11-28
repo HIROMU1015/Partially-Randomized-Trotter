@@ -53,6 +53,17 @@ def _completion(prior,row):
                  ('PROCESS_RETURN.json','OUTCOME.json','PREPARATION_RECEIPT.json'))
 
 
+def _accepted_rows(db):
+    try:
+        with closing(sqlite3.connect(db.as_uri()+'?mode=ro&immutable=1',uri=True)) as connection:
+            connection.row_factory=sqlite3.Row
+            yield from connection.execute("""SELECT job_id,attempt_id,host_id,request,contract,request_sha256,
+                completion_sha256,eligibility FROM jobs WHERE state='ACCEPTED' AND adopted_epoch IS NOT NULL
+                AND method LIKE 'PREPARATION:%' AND json_extract(request,'$.preparation.provider')='HCHAIN_SCOPED'""")
+    except (OSError,sqlite3.Error):
+        return  # optional reuse cannot prevent a normal fresh graph
+
+
 def reuse_prior_leaves(executor,plan,settings,budgets,run):
     """Only exact fixed-plan, explicitly pinned-runtime leaves are reused.
 
@@ -60,6 +71,12 @@ def reuse_prior_leaves(executor,plan,settings,budgets,run):
     is synthesized: the original accepted owner remains the provenance.
     """
     run=Path(run).resolve()
+    # A lost graph in an existing invocation is not a new graph authorization.
+    store=getattr(executor,'store',None)
+    if store is not None:
+        with store._connection() as db:
+            if db.execute('SELECT 1 FROM jobs LIMIT 1').fetchone():
+                return 0
     core=settings.get('openblas_coretype')
     if core not in ('HASWELL','NEHALEM'):
         return 0
@@ -84,79 +101,83 @@ def reuse_prior_leaves(executor,plan,settings,budgets,run):
         if wal.is_file() and wal.stat().st_size:
             continue  # immutable SQLite must not ignore committed WAL rows
         old=ArtifactCache(root)
-        with closing(sqlite3.connect(db.as_uri()+'?mode=ro&immutable=1',uri=True)) as connection:
-            connection.row_factory=sqlite3.Row
-            rows=connection.execute("""SELECT job_id,attempt_id,host_id,request,contract,request_sha256,
-                completion_sha256,eligibility FROM jobs WHERE state='ACCEPTED' AND adopted_epoch IS NOT NULL
-                AND method LIKE 'PREPARATION:%' AND json_extract(request,'$.preparation.provider')='HCHAIN_SCOPED'""")
-            for record in rows:
-                if getattr(executor,'_user_stop_requested',lambda:False)():
-                    return reused
-                try:
-                    row=dict(record)
-                    for field in ('request','contract','eligibility'):row[field]=json.loads(row[field])
-                    request=row['request'];prep=request['preparation'];stage=prep['stage']
-                    if (digest(request)!=row['request_sha256'] or
-                            row['contract']['evaluation'].get('fixed_plan_sha256')!=settings['plan']['sha256'] or
-                            prep['source']!=settings['provider_source'] or
-                            prep['required_paths']!={'hchain_assets':settings['assets']} or
-                            prep['runtime_requirements'].get('openblas_coretype')!=core):
+        for record in _accepted_rows(db):
+            if getattr(executor,'_user_stop_requested',lambda:False)():
+                return reused
+            try:
+                row=dict(record)
+                for field in ('request','contract','eligibility'):row[field]=json.loads(row[field])
+                request=row['request'];prep=request['preparation'];stage=prep['stage']
+                if (digest(request)!=row['request_sha256'] or
+                        row['contract']['evaluation'].get('fixed_plan_sha256')!=settings['plan']['sha256'] or
+                        prep['source']!=settings['provider_source'] or
+                        prep['required_paths']!={'hchain_assets':settings['assets']} or
+                        prep['runtime_requirements'].get('openblas_coretype')!=core):
+                    continue
+                packet_sha=prep['inputs']['PLAN.json']
+                if old.missing([packet_sha]):continue
+                packet=_read(old.path(packet_sha))
+                if not _matching_packet(packet,plan):continue
+                command=prep['command']
+                if ('--spectral-signals' in command)!=(stage=='signal' and bool(settings.get('spectral_signals'))):
+                    continue
+                batch=json.loads(command[command.index('--targets')+1])
+                matching=[]
+                for cell,index,name in leaves(packet,stage,batch):
+                    key=(stage,cell['id'],index)
+                    if targets.get(key)==cell and not (run/name).exists():
+                        matching.append((key,cell,name))
+                if not matching:continue
+                expected=preparation_request(packet,packet_sha,stage,batch,source=settings['provider_source'],
+                    assets=settings['assets'],spectral_signals=bool(settings.get('spectral_signals')),
+                    openblas_coretype=core)['preparation']
+                if prep['runtime_requirements']!=expected['runtime_requirements'] or prep['command']!=expected['command']:
+                    continue
+                process,outcome,receipt=_completion(prior,row)
+                if outcome.get('status')!='PREPARATION_COMPLETE':continue
+                validate_preparation_result(row,process,outcome,old)
+                runtime=receipt['runtime'];environment=receipt['numerical_environment']
+                if (receipt['returncode']!=0 or receipt.get('signal') is not None or
+                        receipt['source']!=prep['source'] or runtime.get('openblas_coretype')!=core or
+                        runtime['packages']!=prep['runtime_requirements']['packages'] or
+                        environment.get('OPENBLAS_CORETYPE')!=core or
+                        any(environment.get(k)!='1' for k in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS'))):
+                    continue
+                if set(outcome['artifacts'])!=set(prep['outputs']):continue
+                for key,cell,name in matching:
+                    manifest={name:outcome['artifacts'][name]}
+                    value=_read(old.path(manifest[name]))
+                    if value.get('owner')!=plan['owner'] or value.get('candidate')!=cell:
                         continue
-                    packet_sha=prep['inputs']['PLAN.json']
-                    if old.missing([packet_sha]):continue
-                    packet=_read(old.path(packet_sha))
-                    if not _matching_packet(packet,plan):continue
-                    command=prep['command']
-                    if ('--spectral-signals' in command)!=(stage=='signal' and bool(settings.get('spectral_signals'))):
-                        continue
-                    batch=json.loads(command[command.index('--targets')+1])
-                    matching=[]
-                    for cell,index,name in leaves(packet,stage,batch):
-                        key=(stage,cell['id'],index)
-                        if targets.get(key)==cell and not (run/name).exists():
-                            matching.append((key,cell,name))
-                    if not matching:continue
-                    expected=preparation_request(packet,packet_sha,stage,batch,source=settings['provider_source'],
-                        assets=settings['assets'],spectral_signals=bool(settings.get('spectral_signals')),
-                        openblas_coretype=core)['preparation']
-                    if prep['runtime_requirements']!=expected['runtime_requirements'] or prep['command']!=expected['command']:
-                        continue
-                    process,outcome,receipt=_completion(prior,row)
-                    if outcome.get('status')!='PREPARATION_COMPLETE':continue
-                    validate_preparation_result(row,process,outcome,old)
-                    runtime=receipt['runtime'];environment=receipt['numerical_environment']
-                    if (receipt['returncode']!=0 or receipt.get('signal') is not None or
-                            receipt['source']!=prep['source'] or runtime.get('openblas_coretype')!=core or
-                            runtime['packages']!=prep['runtime_requirements']['packages'] or
-                            environment.get('OPENBLAS_CORETYPE')!=core or
-                            any(environment.get(k)!='1' for k in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS'))):
-                        continue
-                    if set(outcome['artifacts'])!=set(prep['outputs']):continue
-                    for key,cell,name in matching:
-                        manifest={name:outcome['artifacts'][name]}
-                        value=_read(old.path(manifest[name]))
-                        if value.get('owner')!=plan['owner']:continue
-                        if stage!='signal' and cell.get('R_outer'):
+                    if stage!='signal':
+                        cohort=plan.get('price_cohort','H6_SCOPE_'+plan['owner'])
+                        if (value.get('index')!=key[2] or value.get('cohort')!=cohort
+                                or value.get('compiler')!=plan['compiler']):
+                            continue
+                        if cell.get('R_outer'):
                             side=str(Path(name).with_suffix('.events.json.xz'))
                             manifest[side]=outcome['artifacts'][side]
-                            if value.get('events',{}).get('sha256')!=manifest[side]:continue
-                        cache=executor.artifact_cache
-                        for sha in cache.missing(manifest.values()):
-                            if not cache.share_verified_file(old.path(sha),sha):
-                                cache.put_file(old.path(sha),sha)
-                        # Write the original owner link before the JSON marker
-                        # becomes visible to batches()/the candidate assembler.
-                        provenance=run/'distributed/HCHAIN_PREPARATION_REUSE.jsonl'
-                        provenance.parent.mkdir(parents=True,exist_ok=True)
-                        with provenance.open('a') as stream:
-                            stream.write(json.dumps(dict(stage=key[0],cell=key[1],index=key[2],
-                                prior_run=str(prior),job_id=row['job_id'],attempt_id=row['attempt_id'],
-                                request_sha256=row['request_sha256'],completion_sha256=row['completion_sha256'],
-                                artifacts=manifest),separators=(',',':'))+'\n')
-                            stream.flush();os.fsync(stream.fileno())
-                        ordered=sorted(manifest,key=lambda n:(not n.endswith('.events.json.xz'),n))
-                        cache.materialize({n:manifest[n] for n in ordered},run,immutable=True)
-                        targets.pop(key,None);reused+=1
-                except (OSError,ValueError,KeyError,TypeError,IndexError,sqlite3.Error):
-                    continue
+                            event=value.get('events',{})
+                            if (event.get('sha256')!=manifest[side] or event.get('file')!=Path(side).name
+                                    or event.get('size_bytes')!=old.path(manifest[side]).stat().st_size):
+                                continue
+                    cache=executor.artifact_cache
+                    for sha in cache.missing(manifest.values()):
+                        if not cache.share_verified_file(old.path(sha),sha):
+                            cache.put_file(old.path(sha),sha)
+                    # Write the original owner link before the JSON marker
+                    # becomes visible to batches()/the candidate assembler.
+                    provenance=run/'distributed/HCHAIN_PREPARATION_REUSE.jsonl'
+                    provenance.parent.mkdir(parents=True,exist_ok=True)
+                    with provenance.open('a') as stream:
+                        stream.write(json.dumps(dict(stage=key[0],cell=key[1],index=key[2],
+                            prior_run=str(prior),job_id=row['job_id'],attempt_id=row['attempt_id'],
+                            request_sha256=row['request_sha256'],completion_sha256=row['completion_sha256'],
+                            artifacts=manifest),separators=(',',':'))+'\n')
+                        stream.flush();os.fsync(stream.fileno())
+                    ordered=sorted(manifest,key=lambda n:(not n.endswith('.events.json.xz'),n))
+                    cache.materialize({n:manifest[n] for n in ordered},run,immutable=True)
+                    targets.pop(key,None);reused+=1
+            except (OSError,ValueError,KeyError,TypeError,IndexError,sqlite3.Error):
+                continue
     return reused

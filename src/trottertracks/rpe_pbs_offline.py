@@ -1551,6 +1551,9 @@ def compact_block_report(report):
                 'comparison_delta_RZ','paper_comparison_pending','promising')
     method_fields=('method','best','stop_reason','new_calls','evaluated_count','budget','evaluation_summary')
     result={key:report[key] for key in ('schema','optimizer_source','scope_owner','ready','price_pruned','inherited') if key in report}
+    result['resume_records_exported']=False
+    if 'report_phase' in report:result['report_phase']=report['report_phase']
+    if 'exact_result_source' in report:result['exact_result_source']=report['exact_result_source']
     result['methods']={}
     for method,entry in report.get('methods',{}).items():
         projected={key:entry[key] for key in method_fields if key in entry}
@@ -1701,6 +1704,10 @@ def merge_partition_reports(plan, central, remote, coverage, scope_map=None):
     result['methods']=methods
     if plan['round'].get('hchain'):
         reports = [central or {}, *remote.values()]
+        if any(report.get('resume_records_exported') is False for report in reports):
+            result['resume_records_exported']=False
+        if any(report.get('report_phase')=='INTERMEDIATE' for report in reports):
+            result['report_phase']='INTERMEDIATE'
         result['ready'] = sorted({cid for report in reports for cid in report.get('ready',[])})
         result['price_pruned'] = sorted({cid for report in reports for cid in report.get('price_pruned',[])})
     return result

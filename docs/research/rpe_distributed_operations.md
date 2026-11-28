@@ -989,3 +989,11 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - 既存のbundle作成方式・ref・SHAを変更せず、新規stable-input運用では生成recipe（root、ref/tip、prerequisite、locator、追加object）のkeyとCAS SHAを `preparation/BUNDLE_CACHE.jsonl` に追記する。再開時はCAS内容とref/tipを照合して再利用し、欠落時は同じ方式で復元する。indexは使い捨てであり読書き障害で科学結果を止めない。旧固定runのbundle形式は保持する。
 - 登録済み中央runのQ3履歴cacheは同一executor root・validator・Python版のnamespace内でmethod別SQLiteを共有する。元jobの絶対path、signature、validator、route/contract、現在の選択・価格を照合してから再利用する。共有indexは他controllerが更新した別revisionを古い差分で上書きしない。非中央や未登録runは従来のrun-local cacheを使う。既存cacheの削除・移動は行わない。
 - 新しいPF provider workspaceはGitのsparse-indexを最初から使用する。固定SOURCE、所有済みworkspace、証跡の出版・復元を変更しない。人工検証でsource checkoutからのindex縮小、候補証跡commit、clean SOURCEの退避・復元、元blob照合を確認した。
+
+### H-chainの葉単位再利用・原本の可逆保存（DM-18/33/35/37）
+
+- 共通版 `962e771237` の準備graph圧縮・一時適格性とfamily metadata分離等を保持する。新規H-chain通常入口では `compact_preparation_graph` を選択する（明示設定優先）。既存GRAPHや過去の固定runは書き換えない。
+- `reuse_preparation_leaves` は新規で空の所有台帳かつGRAPH未生成の場合だけ働く。同一固定PLAN SHA、owner、scope、binding、provider SOURCE、assets、cohort、cell/index、明示固定OpenBLAS coreとpackage条件を確認する。停止確認済みの旧台帳のACCEPTED・adopted、元のcompletion digest、清浄終了、runtime、原本CAS SHA、候補・価格compiler・event sidecarの一致を確認してから原本を共有する。再利用する元job/attempt/digestは `HCHAIN_PREPARATION_REUSE.jsonl` に記録する。新しい科学jobや所有・課金を作らない。既存graph、未確定owner、未固定runtime、異なるPLAN/価格cohort、非空WALの旧台帳は対象外。異なる条件の結果を再評価したりownerを書き換えたりしない。
+- `compact_intermediate_reports` は新規H-chain runの中間ROUND_RESULTで重複するevaluated/resume_records配列を省き、件数を記す。最良値、allocation、停止・hold・正確なOUTCOME、最終報告は保持する。中間版・partition合成のcompact版はresume exportではないことを明示する。
+- 新規H-chain要求の `hchain_proof_storage=GZIP_JSON_V1` は完全な科学proofのcompact JSONをそのまま可逆gzip streamとして保存する。非圧縮の巨大な一時原本を生成せず、中間値も省略しない。旧要求は従来JSONを保存・収集する。圧縮proofは同じcollect・所有・受理の経路を通る。人工fixtureでは解凍後のJSON全バイトおよびOUTCOME一致を確認した。
+- 明示固定数値環境のない過去run（RomuTailの旧H8保存PLANを含む）や異なるscope/batch契約の自動流用は未許可の科学的同等性を仮定しない。幅によるpartitionの変更、実機PBS検収、新規科学評価はこの改修範囲外。

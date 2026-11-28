@@ -16,7 +16,7 @@ from trottertracks.rpe_preparation_artifacts import ArtifactCache
 from trottertracks.rpe_q3_coordinator import digest
 
 
-def fixture(tmp_path, *, stage='signal'):
+def fixture(tmp_path, *, stage='signal', changed_candidate=False):
     prior=tmp_path/'prior';run=tmp_path/'new';prior.mkdir();run.mkdir()
     for name in ('LAUNCH.json','EXIT.json'):
         (prior/name).write_text(json.dumps({'invocation_id':'ended'}))
@@ -44,10 +44,11 @@ def fixture(tmp_path, *, stage='signal'):
     req_sha=digest(request)
     prep=request['preparation']
     name=prep['outputs'][0];manifest={}
-    value={'owner':plan['owner'],'data':'saved exact bytes'}
+    value={'owner':plan['owner'],'candidate':dict(cell,id='wrong') if changed_candidate else cell,'data':'saved exact bytes'}
     if stage!='signal':
         side=prep['outputs'][1];manifest[side]=put(b'artificial events')
-        value['events']={'sha256':manifest[side]}
+        value.update(index=0,cohort=plan['price_cohort'],compiler=plan['compiler'],
+                     events={'sha256':manifest[side],'size_bytes':len(b'artificial events'),'file':Path(side).name})
     manifest[name]=put(json.dumps(value).encode())
     process={'returncode':0,'signal':None}
     receipt=dict(source=prep['source'],returncode=0,signal=None,
@@ -85,9 +86,9 @@ def test_exact_leaf_reuse_without_new_owner(tmp_path,stage):
         assert (run/path).samefile(old.path(sha))
 
 
-@pytest.mark.parametrize('change',['owner','plan','core','unpinned','unaccepted','unadopted','digest','active','missing'])
+@pytest.mark.parametrize('change',['owner','plan','core','unpinned','unaccepted','unadopted','digest','active','missing','candidate'])
 def test_changed_or_unresolved_predecessor_is_not_reused(tmp_path,change):
-    executor,plan,settings,run,prior,name,manifest,old,db=fixture(tmp_path,stage='compile')
+    executor,plan,settings,run,prior,name,manifest,old,db=fixture(tmp_path,stage='compile',changed_candidate=change=='candidate')
     if change=='owner':plan['owner']='different'
     elif change=='plan':settings['plan']['sha256']='e'*64
     elif change=='core':settings['openblas_coretype']='NEHALEM'
@@ -116,3 +117,37 @@ def test_intermediate_report_omits_duplicate_exact_arrays_only():
     assert compact['resume_records_exported'] is False and compact['held_tasks']==full['held_tasks']
     assert len(json.dumps(compact))<len(json.dumps(full))/10
     assert len(full['methods']['FULL_PF']['resume_records'])==30
+
+def test_lossless_compressed_proof_and_collect_match_legacy(tmp_path,monkeypatch):
+    import gzip
+    import rpe_hchain_q3 as q
+    proof=dict(request_id='fixture',source={'fixed':'source'},identity={'id':'fixed'},
+               result=dict(method='Full PF',status='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD',
+                           MSE_lower=0,MSE_upper=0,intermediate=[10**1000]*30))
+    old=tmp_path/'plain.json';compressed=tmp_path/'HCHAIN_RESULT.json.gz'
+    q.write(old,proof,compact=True)
+    q.write_compressed_proof(compressed,proof)
+    assert gzip.decompress(compressed.read_bytes())==old.read_bytes()
+    assert compressed.stat().st_size<old.stat().st_size/10
+    monkeypatch.setattr(q,'request_inputs',lambda request:('Full PF',[],[],1,0,proof['source'],proof['identity']))
+    request={'request_id':'fixture','hchain_proof_storage':'GZIP_JSON_V1'}
+    assert q.run(request,tmp_path,'collect')==0
+    assert json.loads((tmp_path/'OUTCOME.json').read_text())==q.outcome(request,proof)
+    assert not (tmp_path/'HCHAIN_RESULT.json').exists()
+    assert q.run(request,tmp_path,'collect')==0
+
+def test_existing_queue_is_not_treated_as_new_graph(tmp_path):
+    executor,plan,settings,run,prior,name,manifest,old,db=fixture(tmp_path)
+    from trottertracks.rpe_q3_store import JobStore
+    executor.store=JobStore(run/'distributed/QUEUE.sqlite3')
+    executor.store.reserve('FULL_PF','existing',{'route':{'kind':'artificial'}},1,True)
+    assert reuse_prior_leaves(executor,plan,settings,{'signal':1},run)==0
+    assert not (run/name).exists()
+
+
+def test_partition_progress_cannot_masquerade_as_exact_resume_export():
+    from trottertracks.rpe_pbs_offline import compact_block_report
+    report=intermediate_report({'methods':{'FULL_PF':{'evaluated':[{'x':1}],'resume_records':[{'x':1}]}}})
+    compact=compact_block_report(report)
+    assert compact['resume_records_exported'] is False
+    assert compact['report_phase']=='INTERMEDIATE'
