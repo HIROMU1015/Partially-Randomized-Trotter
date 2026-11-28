@@ -257,7 +257,11 @@ class ControllerFailures(unittest.TestCase):
         legacy['files']['proof.json']=base64.b64encode(extra).decode()
         payload=dict(host_id='local',job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],
                      request_sha256=assignment['request_sha256'],local_files=local_result_manifest(directory))
+        transfer=self.run/'distributed/transfers'/assignment['job_id']/assignment['attempt_id']
+        transfer.mkdir(parents=True)
+        (transfer/'proof.json.local-transfer').write_bytes(b'interrupted unpublished copy')
         self.assertEqual(executor.rpc('/v1/complete',payload),dict(ok=True,duplicate=False))
+        self.assertFalse((transfer/'proof.json.local-transfer').exists())
         self.assertEqual(executor.rpc('/v1/complete',payload),dict(ok=True,duplicate=True))
         row=executor.store.row(task.job.name)
         self.assertEqual(row['completion_sha256'],Q.digest(legacy['files']))
@@ -1677,3 +1681,34 @@ def test_progress_unavailable_does_not_prevent_completion_telemetry(tmp_path):
     assert ex.store.record_result_reuse('synthetic','local')
     assert not ex.store.record_result_reuse('synthetic','local')
     assert DistributedExecutor._reuse_counts(ex)=={'local':1}
+
+def test_compact_candidate_request_recognized_routes_only_and_keeps_projection():
+    from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor
+    original=dict(kind='pauli_b_common_entry', configurations={'target':{'x':1},'source':{'x':1},'unrelated':{'x':2}},
+                  configuration_ids=['target','unrelated'],horizon_projection={'source_configuration_id':'source'})
+    result=ConcurrentExecutor.compact_candidate_route(SimpleNamespace(),original,'target')
+    assert result['configurations']=={'target':{'x':1},'source':{'x':1}}
+    assert result['configuration_ids']==['target']
+    assert set(original['configurations'])=={'target','source','unrelated'}
+    custom=dict(original,kind='custom')
+    assert ConcurrentExecutor.compact_candidate_route(SimpleNamespace(),custom,'target') is custom
+
+def test_pf_compact_candidate_request_retains_exact_first_template():
+    from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor
+    rule=dict(kind='pf_b_pf6',templates=[dict(commit='old',path='unrelated'),dict(commit='fixed',path='selected'),
+                                        dict(commit='later',path='duplicate')])
+    ex=SimpleNamespace(pf_template_reader=SimpleNamespace(commit=lambda value:value),
+                       pf_template_source=lambda rule,cid:dict(commit='fixed',path='selected',selector=[]))
+    result=ConcurrentExecutor.compact_candidate_route(ex,rule,'cfg')
+    assert result['templates']==[rule['templates'][1]]
+    assert len(rule['templates'])==3
+
+
+def test_hold_diagnostic_drops_full_inputs_without_changing_decision():
+    from trottertracks.rpe_optimizer_concurrent import compact_hold_diagnostic
+    full=dict(request_sha256='request',decision_sha256='decision',input_hashes={'x':'big'},
+              reasons=['header\nshort'],host_decisions={'local':{'status':'HOLD','reasons':['x'*20000+'\nlast']}})
+    summary=compact_hold_diagnostic(full)
+    assert summary['host_decisions']['local']['reasons']==['last']
+    assert summary['reasons']==['short'] and 'input_hashes' not in summary
+    assert full['input_hashes']=={'x':'big'}

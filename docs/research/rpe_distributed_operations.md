@@ -973,3 +973,9 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - DM-01/02: 診断PROGRESSの追記失敗は結果受理を阻害しない。新規の再利用記録は台帳にも保存し、旧ログは互換読取りを維持する。ログ欠落時の性能統計は不完全になりうる。通常Resumeで再利用するルートのPROGRESS/DRIVER.logは保守で退避しない。保守対象判定では、稼働中・終了未確認・現在選択runの系譜とprior-runを再帰的に保護し、交換直前にも再確認する。
 - DM-12/21: 新規通常入口は `stable_input_bundle` を固定する。固定SOURCEのみを使用する非checkout入力bundleは現在の中央HEADを親にせず、同じ宣言locatorで同じSHAを返す。既存runの固定要求・checkout用bundle経路を継続する。新規workspaceやmetadata cloneのGit alternateは深い参照先から直接並べ、元のobject storeは書換えない。全hostが共有objectを持つことが保証されない混在環境では従来のbundle輸送を保持する。
 - DM-26/28: 新規通常入口のcontroller起動local workerはQ3完了ファイルを読取り専用にし、SHA-256/サイズのmanifestだけをloopbackで返す。中央は固定profileでspoolの所有を照合し、レガシーbase64表現と同一のcompletion digestをストリーム計算し、同一FSではhardlinkで回収する。別FSは個別のコピー、remoteは従来転送。準備結果のworker CASから中央CASへの引渡しも同一FSのSHA照合付きlinkを使用する。科学的受理条件、予算、原本、重複受理照合を維持する。
+
+- DM-12補強: 新規固定SOURCEの入力bundleはrunごとの共通baseを `preparation/SHARED_INPUT_BASES.json` に固定し、別invocation・別入力でも同じbaseを再利用する。producer locatorの回収・復元規則は変えず、bundleはファイルからストリームハッシュしてCASに保存する。旧runは従来の要求形式を保持する。
+- DM-13/22/26: 新規runの `compact_candidate_requests` は既知のアダプタについて当該configurationと投影元のentryだけを保存する。PFの実効templateは既存のfirst-match規則で選び、入力identityが一致するときだけ縮小する。他の歴史template経路はリスト比較互換のため保持する。結果stagingのディレクトリ同期はまとめ、公開ではOUTCOMEの前に他のファイルのdirectoryを同期する。local manifestの中断後再送では未公開の一時ファイルのみ整理する。
+- DM-18/20/24/29/40: 内容不変のH-chain報告・区分statusは同じファイルを置換しない。資源供給の揺らぎは定期観測に残すが変化判定から外し、診断HOLDには理由の要約、request/decision識別を記録する。割当台帳の適格性原本はそのまま保持する。同一状態・同一detailの再送は台帳を変更しない。読み手のない `RESOURCE_OFFER.json` は明示的な診断設定 `persist_resource_offer` がある場合のみ出力する。
+- DM-03/04: Git pack生成後に回収効果なし・loose inventory変化で見送ったobject集合も既存の期限付き再試行除外へ記録する。inventoryは起動情報、invocation、同一ユーザーのローカルprocess引数のうち該当path、関連unit・symlinkの参照も調べる。結果は削除許可ではない。
+- 再現性を保つため、科学証明中間値の省略、H-chain葉単位の異なるscope/batch間再利用、幅によるpartition変更、遠隔readiness時点のbundle配送廃止、旧requestの保存形式の変更はこの段階で未採用。別途、対応する科学条件・復元・所有・通常入口を照合する。lossless Q3 sidecar既定値も既存設定のまま。

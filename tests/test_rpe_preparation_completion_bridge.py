@@ -1024,6 +1024,14 @@ def test_stable_fixed_input_bundle_ignores_unrelated_publication_head(tmp_path):
     owned=W._clone(worker,tmp_path/'owned',first,cache)
     assert git('rev-parse','HEAD',cwd=owned)==source
     W._verify_fixed_git_inputs(owned,locators)
+    # A new input and a new bridge invocation still reuse the same persisted base.
+    (root/'second.json').write_text('another declared input');git('add','.');git('commit','-qm','next')
+    locators2=[dict(commit=git('rev-parse','HEAD'),path='second.json',
+                    sha256=hashlib.sha256((root/'second.json').read_bytes()).hexdigest())]
+    second=bridge()._bundle(root,source,locators2)
+    assert second[0]==first[0] and second[1]!=first[1]
+    owned2=W._clone(worker,tmp_path/'owned2',second,cache)
+    W._verify_fixed_git_inputs(owned2,locators2)
 
 
 def test_flatten_new_clone_alternates_handles_deep_chain_without_rewriting_sources(tmp_path):

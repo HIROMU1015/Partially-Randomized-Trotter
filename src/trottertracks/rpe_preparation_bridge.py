@@ -1700,6 +1700,9 @@ class DistributedPreparationBridge:
                   and bool(input_hashes) and (shared_base or self.settings.get('bundle_fixed_source_only') is True))
         if stable:
             head = source
+            # One common first input base per fixed run/source, including
+            # ordinary fixed-source preparations, not just max-width callers.
+            shared_base = True
         shared_locators=()
         if shared_base:
             # Private callers use the provider's fixed checkout. Carry the
@@ -1709,7 +1712,24 @@ class DistributedPreparationBridge:
             identity=(str(root),source)
             with self.lock:
                 if identity not in self.shared_bundle_heads:
-                    self.shared_bundle_heads[identity]=(self._input_tip(root,head,resolved),deepcopy(input_hashes))
+                    saved_path=Path(self.executor.run_dir)/'preparation/SHARED_INPUT_BASES.json'
+                    key=digest(identity)
+                    saved=read(saved_path) if stable and saved_path.is_file() else {}
+                    base=saved.get(key)
+                    if base is None:
+                        tip=self._input_tip(root,head,resolved)
+                        locators=deepcopy(input_hashes)
+                        if stable:
+                            ref='refs/rpe-preparation/input-bundles/base-'+tip
+                            subprocess.run(['git','update-ref',ref,tip],cwd=root,check=True)
+                            from .rpe_q3_coordinator import atomic_json
+                            saved[key]=dict(tip=tip,locators=locators)
+                            saved_path.parent.mkdir(parents=True,exist_ok=True)
+                            atomic_json(saved_path,saved)
+                    else:
+                        tip,locators=base['tip'],base['locators']
+                        subprocess.run(['git','cat-file','-e',tip+'^{commit}'],cwd=root,check=True,capture_output=True)
+                    self.shared_bundle_heads[identity]=(tip,locators)
                 head,shared_locators=self.shared_bundle_heads[identity]
         bundles = []
         namespace = 'refs/rpe-preparation/input-bundles/'
@@ -1748,7 +1768,9 @@ class DistributedPreparationBridge:
                 with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
                     path = Path(temporary) / 'input.bundle'
                     build_preparation_git_bundle(root, ref, prerequisites, locators, path, workspace_objects)
-                    sha = self._blob(path.read_bytes())
+                    from .rpe_preparation_artifacts import file_digest
+                    sha = file_digest(path)
+                    self.executor.artifact_cache.put_file(path,sha)
                 with self.lock:
                     self.bundle_hashes[key] = sha
         return dict(sha256=sha, ref=ref, checkout_input_head=checkout)

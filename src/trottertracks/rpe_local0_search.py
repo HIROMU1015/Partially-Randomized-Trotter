@@ -37,10 +37,15 @@ def load(path):
     if is_pbs_state(path):return read_pbs_state(path)
     return json.loads(Path(path).read_text())
 
-def write(path, value, *, compact=False):
+def write(path, value, *, compact=False, only_changed=False):
     path = Path(path); path.parent.mkdir(parents=True, exist_ok=True)
     formatting = dict(separators=(',', ':')) if compact else dict(indent=2)
     raw = json.dumps(value, ensure_ascii=False, allow_nan=False, **formatting) + '\n'
+    if only_changed and path.is_file() and not path.is_symlink():
+        with path.open('r') as saved:
+            if all(saved.read(len(raw[start:start+65536]))==raw[start:start+65536]
+                   for start in range(0,len(raw),65536)) and not saved.read(1):
+                return
     temp = path.with_name(path.name + '.tmp'); temp.write_text(raw); os.replace(temp, path)
 
 def immutable(path, value):
@@ -860,6 +865,7 @@ class Gateway:
                         distributed['preparation'].setdefault('stable_input_bundle', True)
                     if distributed.get('local_worker'):
                         distributed.setdefault('local_result_manifest', True)
+                    distributed.setdefault('compact_candidate_requests', True)
                     for key,name in [('host_admission','HOST_ADMISSION.json'),('host_eligibility','HOST_ELIGIBILITY.json')]:
                         if distributed.get(key):
                             source=Path(distributed[key]);target=run/name

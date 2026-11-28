@@ -268,6 +268,8 @@ def compact(repository, state, *, min_age=600, minimum_object_bytes=10*1024**2,
                         try:
                             packed, key = future.result()
                             saved, status = install(rows, stores, work, packed, key)
+                            if status in ('NO_MATERIAL_SAVINGS','LOOSE_INVENTORY_CHANGED'):
+                                rejected.update({row[2]:time.time() for row in rows})
                             entry = dict(kind=kind, objects=len(rows), old_bytes=sum(row[1] for row in rows),
                                          packed_bytes=packed, pack=key, reclaimed_bytes=saved, status=status, stores=len(stores))
                             report['reclaimed_bytes'] += saved

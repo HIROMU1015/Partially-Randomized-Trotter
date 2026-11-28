@@ -14,7 +14,6 @@ from pathlib import Path, PurePosixPath
 import subprocess
 import stat
 import threading
-import uuid
 
 
 def digest(value):
@@ -155,6 +154,7 @@ def install_files(job, files):
     """Idempotent import; controller-owned request/launch records stay original."""
     job = Path(job)
     shared_events = {}
+    dirty=set()
     for name, encoded in files.items():
         destination = _artifact_destination(job, name)
         value = base64.b64decode(encoded, validate=True)
@@ -172,15 +172,19 @@ def install_files(job, files):
                 except OSError:
                     pass
                 else:
-                    _sync_directory(destination.parent)
+                    dirty.add(destination.parent)
                     continue
             temporary = destination.with_name(destination.name+'.transfer')
             with temporary.open('wb') as output:
                 output.write(value); output.flush(); os.fsync(output.fileno())
             temporary.replace(destination)
-            _sync_directory(destination.parent)
+            dirty.add(destination.parent)
         if key is not None and not destination.is_symlink():
             shared_events.setdefault(key, destination)
+        # A replay may have followed an interrupted directory sync.
+        dirty.add(destination.parent)
+    for directory in sorted(dirty):
+        _sync_directory(directory)
 
 
 def local_result_digest(files, manifest):
@@ -220,10 +224,17 @@ def install_local_result(job, files, manifest):
         source=Path(source)
         target=_artifact_destination(job,name)
         target.parent.mkdir(parents=True,exist_ok=True)
+        temporary=target.with_name(target.name+'.local-transfer')
+        if temporary.relative_to(job).as_posix() in files:
+            raise ValueError('Local transfer temporary name collides with a result')
+        # The controller's attempt lock excludes another installer. A prior
+        # interrupted install can leave exactly this unpublished link/copy.
+        if temporary.is_symlink():
+            raise ValueError('Symlink in local transfer staging')
+        temporary.unlink(missing_ok=True)
         if target.exists() or target.is_symlink():
             if not _same_artifact(source,target):raise ValueError('Changed immutable artifact: '+name)
             continue
-        temporary=target.with_name(target.name+'.local-transfer-'+uuid.uuid4().hex)
         try:
             try:
                 os.link(source,temporary)
@@ -281,7 +292,11 @@ def publish_staged_files(stage, job, *, capture_signature=False):
             except (OSError,ValueError):linked=False
         if path != stage/'REQUEST.json' and (path.is_file() or path.is_symlink()):
             sources.append(path)
+    dirty=set()
     for source in sorted(sources, key=lambda path: (path == stage/'OUTCOME.json', path)):
+        if source==stage/'OUTCOME.json':
+            for directory in sorted(dirty):_sync_directory(directory)
+            dirty.clear()
         name = source.relative_to(stage).as_posix()
         if source.is_symlink() or not source.resolve().is_relative_to(stage.resolve()):
             raise ValueError('Unsafe staged artifact path: '+name)
@@ -301,7 +316,8 @@ def publish_staged_files(stage, job, *, capture_signature=False):
             install_files(job, {name: base64.b64encode(source.read_bytes())})
             linked=False
         if linked:job_dirs.update(parent.as_posix() for parent in PurePosixPath(name).parents)
-        _sync_directory(destination.parent)
+        dirty.add(destination.parent)
+    for directory in sorted(dirty):_sync_directory(directory)
     if linked:
         try:
             if all(publication_directory_stamp(stage/name)==stamp for name,stamp in stage_dirs.items()):

@@ -263,3 +263,13 @@ def test_retention_protects_transitive_live_ancestors_and_rechecks_lock(tmp_path
             raise AssertionError('unexpected permission to compact ancestor')
     (child/'EXIT.json').write_text('{"invocation_id":"sample"}')
     assert {run for run,_ in stopped_runs(state)}=={grand,parent,child,unrelated}
+
+def test_change_only_report_keeps_inode_and_mtime(tmp_path):
+    from trottertracks.rpe_local0_search import write
+    target=tmp_path/'ROUND_RESULT.json'
+    value={'integer':2**100,'text':'α'*100000}
+    write(target,value,compact=True,only_changed=True);before=target.stat()
+    write(target,value,compact=True,only_changed=True);after=target.stat()
+    assert (after.st_ino,after.st_mtime_ns)==(before.st_ino,before.st_mtime_ns)
+    write(target,dict(value,new=True),compact=True,only_changed=True)
+    assert json.loads(target.read_text())['new'] is True

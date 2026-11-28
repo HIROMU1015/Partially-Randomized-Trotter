@@ -1675,8 +1675,9 @@ def publish_partition_view(run, *, locked=False):
     revision += [[key,row.get('termination')] for key,row in sorted(coverage.items()) if row.get('termination')]
     status=optional(run/'PBS_PARTITION_STATUS.json') or {}
     if status.get('publication_revision')==revision:
-        atomic(run/'PBS_PARTITION_STATUS.json',dict(status,coverage=coverage,
-                pbs_complete=all_parts_finished(plan,coverage)))
+        updated=dict(status,coverage=coverage,pbs_complete=all_parts_finished(plan,coverage))
+        if updated!=status:
+            atomic(run/'PBS_PARTITION_STATUS.json',updated)
         return
     for part,path in report_paths:
         if value:=optional(path/'SCOPE_MAP.json'):

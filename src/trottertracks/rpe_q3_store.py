@@ -646,6 +646,8 @@ class JobStore:
                 if field in previous:
                     detail[field] = previous[field]
             value = canonical(detail)
+            if state == old['state'] and value == old['detail'] and started == old['started_epoch']:
+                return self._decoded(old)
             db.execute('UPDATE jobs SET state=?,detail=?,updated_epoch=?,started_epoch=? WHERE job_id=?',
                        (state, value, now, started, job_id))
             if state != old['state'] or value != old['detail']:

@@ -708,8 +708,9 @@ class Worker:
                 event(self.profile, 'SLOT_CAPACITY_DECISION', capacity=report['capacity'], stage=report['stage'],
                       reasons=report['reasons'], limits=report['limits'],
                       dp_workers_per_q3=report['dp_workers_per_q3'], feedback=report['feedback'])
-            atomic(state_path, state)
-            atomic(self.work / 'RESOURCE_OFFER.json', report)
+            if state != previous:atomic(state_path, state)
+            if self.profile.get('persist_resource_offer') is True:
+                atomic(self.work / 'RESOURCE_OFFER.json', report)
         return report
 
     def _http(self, endpoint, payload):

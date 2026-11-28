@@ -50,6 +50,24 @@ def readiness_hold_signature(decision):
                          for host,row in (decision.get('host_decisions') or {}).items())))
 
 
+def diagnostic_hold_reason(value):
+    lines=[line.strip() for line in str(value).splitlines()
+           if line.strip() and 'nesting too deep' not in line]
+    return lines[-1][-512:] if lines else ''
+
+
+def compact_hold_diagnostic(decision):
+    """Diagnostic-only summary; durable eligibility is left byte-identical."""
+    if decision is None:return None
+    return dict(request_sha256=decision.get('request_sha256'),
+                decision_sha256=decision.get('decision_sha256'),
+                eligible_host_ids=decision.get('eligible_host_ids',[]),
+                reasons=[diagnostic_hold_reason(value) for value in decision.get('reasons',[])],
+                host_decisions={host:dict(status=row.get('status'),
+                    reasons=[diagnostic_hold_reason(value) for value in row.get('reasons',[])])
+                    for host,row in (decision.get('host_decisions') or {}).items()})
+
+
 def readiness_retry_seconds(decision):
     # Input identity errors cannot be repaired by polling the same bytes every
     # ten seconds. Keep a watchdog for changed remote deployments; do not
@@ -122,7 +140,11 @@ def queue_wait_signature(payload):
     """Resource byte counters are telemetry, not changes in eligibility."""
     stable = deepcopy(payload)
     for host in stable.get('hosts', {}).values():
+        # CPU-supply estimates fluctuate on each poll. Preserve them in
+        # the timed snapshot (at most 30 s apart), not the change signature.
+        host.pop('cpu_supply',None)
         storage = host.get('storage') or {}
+        storage.pop('measurement_seconds',None)
         for field in ('used_bytes', 'filesystem_free_bytes'):
             storage.pop(field, None)
     return json.dumps(stable, sort_keys=True)
@@ -569,6 +591,32 @@ class ConcurrentExecutor(O.Executor):
                 # Diagnostic I/O must not veto a durable completion or adoption.
                 self.state.progress_write_failures = getattr(self.state,'progress_write_failures',0)+1
 
+    def compact_candidate_route(self, rule, cid):
+        """Keep only the immutable entries consumed by this candidate's reviewed adapter."""
+        kind=rule.get('kind')
+        if kind not in ('pf_b_pf6','pauli_b_ld3','pauli_b_ld5','prdf_d2_split',
+                        'pauli_b_common_entry','prdf_d2_common_entry'):
+            return rule
+        compact=dict(rule)
+        source=(rule.get('horizon_projection') or {}).get('source_configuration_id',cid)
+        if 'configurations' in rule:
+            compact['configurations']={key:rule['configurations'][key]
+                                        for key in dict.fromkeys((cid,source)) if key in rule['configurations']}
+        if isinstance(rule.get('configuration_ids'),list) and cid in rule['configuration_ids']:
+            compact['configuration_ids']=[cid]
+        # The PF route already compares the first effective template on reuse.
+        # Other historical template adapters still compare their full list.
+        if kind=='pf_b_pf6' and rule.get('templates'):
+            try:
+                selected=self.pf_template_source(rule,cid)
+                locator=next(loc for loc in rule['templates'] if
+                             dict(commit=self.pf_template_reader.commit(loc['commit']),path=loc['path'],
+                                  selector=list(loc.get('inputs_selector',[])))==selected)
+            except (StopIteration,KeyError,TypeError,ValueError,OSError,subprocess.SubprocessError):
+                return rule
+            compact['templates']=[locator]
+        return compact
+
     def request(self,proposal,job,rule):
         from .rpe_host_profiles import PREFIX_PR_Q3_ROUTES, REVIEWED_PR_Q3_ROUTES
         projection = rule.get('horizon_projection')
@@ -588,6 +636,10 @@ class ConcurrentExecutor(O.Executor):
                 # ID and validates the requested prefix against that source.
                 rule = dict(rule, configurations={**configurations, request_id: source})
         req=super().request(proposal,job,rule)
+        if getattr(self,'distributed',{}).get('compact_candidate_requests') is True:
+            compact=self.compact_candidate_route(rule,proposal['configuration_id'])
+            if self.expected_for(proposal['configuration_id'],compact)==req['expected']:
+                req['route']=compact
         execution = req['execution_profile'] = dict(dp_workers=self.dp_workers)
         artificial = rule['kind'] == 'artificial'
         route = req['method'], rule['kind']
@@ -3828,7 +3880,8 @@ class DistributedExecutor(ConcurrentExecutor):
                         self.log(event='PREPARATION_PROBE_PENDING',job=job_id,stage=preparation['stage'])
                     else:
                         self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],
-                            reason=hold['reason'],host_reasons=hold.get('host_reasons', {}))
+                            reason=hold['reason'],host_reasons={host:diagnostic_hold_reason(value)
+                                for host,value in hold.get('host_reasons', {}).items()})
                     return job_id
                 if not self.store.reserve(method, job_id, request, budget, approved, contract=task_contract,eligibility=eligibility):
                     stage = preparation['stage']
@@ -4304,7 +4357,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 previous_hold = self.eligibility_holds.get(job.name)
                 self.eligibility_holds[job.name] = eligibility
                 if readiness_hold_signature(previous_hold) != readiness_hold_signature(eligibility):
-                    self.log(event='HOST_ELIGIBILITY_HOLD', job=job.name, eligibility=eligibility)
+                    self.log(event='HOST_ELIGIBILITY_HOLD', job=job.name, eligibility=compact_hold_diagnostic(eligibility))
                 return False
             self.eligibility_holds.pop(job.name, None)
             if row and row['state'] == 'QUEUED':

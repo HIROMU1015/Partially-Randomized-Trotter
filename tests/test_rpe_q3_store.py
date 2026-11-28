@@ -34,6 +34,14 @@ class StoreTests(unittest.TestCase):
         self.assertFalse(self.reserve('j3', approved=False))
         self.assertEqual(len(self.store.rows()), 2)
 
+    def test_unchanged_worker_state_does_not_rewrite_durable_row(self):
+        self.reserve()
+        row,=self.store.claim('worker',1,allowed_jobs=['j1'])
+        old=self.store.update('worker','j1',row['attempt_id'],'RUNNING',{'pid':42})
+        new=self.store.update('worker','j1',row['attempt_id'],'RUNNING',{'pid':42})
+        self.assertEqual(new,old)
+        self.assertEqual([e['event'] for e in self.store.events()].count('RUNNING'),1)
+
     def test_delta_snapshot_tracks_changed_jobs_not_whole_queue(self):
         self.reserve('a');self.reserve('b')
         rev,changed,rows=self.store.queue_rows_delta(['a','b'],None,{})

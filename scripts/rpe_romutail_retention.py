@@ -628,12 +628,18 @@ def storage_dependency_inventory(state, reference_files=()):
     for path in (state/'RUNS.json',central/'RELEASES.json',central/'SERVICE.json',central/'CLIENT.json',
                  state/'CURRENT_TARGET.json',*map(Path,reference_files)):
         scan(path)
+    units=Path.home()/'.config/systemd/user'
+    for pattern in ('rpe-*.service','rpe-*.service.d/*.conf','rpe-*.timer','rpe-*.timer.d/*.conf'):
+        for path in units.glob(pattern):scan(path)
     for row in optional(state/'RUNS.json').values():
         try:run=Path(row['run_directory']).resolve(strict=True)
         except (OSError,KeyError,TypeError) as error:errors.append(dict(path=str(row),reason=str(error)));continue
         inspect(str(run),'registered run '+run.name)
-        for filename in ('CONTROLLER_CONFIG.json','ROUND.json','ROUND.requested.json','APPLIED_SCOPE.json'):
+        for filename in ('CONTROLLER_CONFIG.json','ROUND.json','ROUND.requested.json','APPLIED_SCOPE.json',
+                         'LAUNCH.json','NORMAL_DRIVER.json','RUN_LINEAGE.json','distributed/LOCAL_DAEMON.json',
+                         'distributed/LOCAL_WORKER.json'):
             scan(run/filename)
+        for path in (run/'invocations').glob('*/LAUNCH.json'):scan(path)
         pf=run/'pf_auto'
         for candidates in [pf/'candidates',*pf.glob('price-recovery/recheck-*/candidates')]:
             for path in candidates.glob('*/pf_auto/pf_completion/provider_workspace/.git/objects/info/alternates'):scan(path)
@@ -643,6 +649,21 @@ def storage_dependency_inventory(state, reference_files=()):
                     'transport-flat/*/objects.git/objects/info/alternates','publication/.git/objects/info/alternates',
                     'results-publication/.git/objects/info/alternates'):
         for path in central.glob(pattern):scan(path)
+    # Report only matched paths, not unrelated process arguments or contents.
+    for process in Path('/proc').glob('[0-9]*'):
+        try:
+            if process.stat().st_uid==os.getuid():
+                inspect((process/'cmdline').read_bytes().decode(errors='replace').replace('\0',' '),
+                        'local process '+process.name)
+        except (FileNotFoundError,PermissionError,ProcessLookupError):continue
+        except OSError as error:errors.append(dict(path=str(process),reason=str(error)))
+    for category in ('deployment','releases'):
+        for entry in (central/category).glob('*'):
+            if entry.is_symlink():
+                inspect(str(entry.resolve()),str(entry))
+            elif entry.is_dir():
+                for child in entry.iterdir():
+                    if child.is_symlink():inspect(str(child.resolve()),str(child))
     for row in entries.values():
         row['status']='REFERENCED' if row['references'] else 'UNCONFIRMED_NOT_A_DELETION_CANDIDATE'
     return dict(status='INVENTORY_ONLY',entries=sorted(entries.values(),key=lambda r:r['path']),references=refs,errors=errors)
