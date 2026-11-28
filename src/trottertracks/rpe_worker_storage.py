@@ -544,6 +544,13 @@ def _remove_copy(path):
         return False
 
 
+def provider_source_blobs(workspace, revision):
+    raw = subprocess.check_output(['git','ls-tree','-r','-z',revision,'--','src','scripts','configs',
+                                   'schemas','references','docs/archive'],cwd=workspace,stderr=subprocess.PIPE)
+    return {os.fsdecode(name):(header.split()[2],header.split()[0]) for row in raw.split(b'\0') if row
+            for header,name in [row.split(b'\t',1)] if header.split()[0] in (b'100644',b'100755')}
+
+
 def compact_provider_source(workspace, source):
     """Retain candidate evidence and Git objects, not repeated clean source files.
 
@@ -556,37 +563,34 @@ def compact_provider_source(workspace, source):
         return subprocess.check_output(['git', *args], cwd=workspace,
                                        input=input, stderr=subprocess.PIPE)
     head = git('rev-parse', 'HEAD').decode().strip()
-    def blobs(revision):
-        raw = git('ls-tree', '-r', '-z', revision, '--', 'src', 'scripts', 'configs',
-                  'schemas', 'references', 'docs/archive')
-        return {os.fsdecode(name): header.split()[2] for row in raw.split(b'\0') if row
-                for header, name in [row.split(b'\t', 1)]
-                if header.split()[0] in (b'100644', b'100755')}
-    base, current = blobs(source), blobs(head)
-    names = [name for name, oid in base.items() if current.get(name) == oid
+    base, current = provider_source_blobs(workspace,source), provider_source_blobs(workspace,head)
+    names = [name for name, binding in base.items() if current.get(name) == binding
              and '\n' not in name and '\r' not in name
-             and (workspace/name).is_file() and (workspace/name).resolve() == workspace/name]
+             and (workspace/name).is_file() and (workspace/name).resolve() == workspace/name
+             and bool((workspace/name).stat().st_mode&stat.S_IXUSR)==(binding[1]==b'100755')]
     if not names:
         return 0
-    oids = sorted({base[name] for name in names})
+    oids = sorted({base[name][0] for name in names})
     rows = git('cat-file', '--batch-check', input=b'\n'.join(oids)+b'\n').splitlines()
     if len(rows) != len(oids):
         return 0
     available = {oid for oid, row in zip(oids, rows) if row.split()[1:2] == [b'blob']}
-    names = [name for name in names if base[name] in available]
+    names = [name for name in names if base[name][0] in available]
     if not names:
         return 0
     actual = git('hash-object', '--no-filters', '--stdin-paths',
                  input=os.fsencode('\n'.join(names)+'\n')).splitlines()
     if len(actual) != len(names):
         return 0
-    removable = [name for name, oid in zip(names, actual) if oid == base[name]]
+    removable = [name for name, oid in zip(names, actual) if oid == base[name][0]]
     if not removable:
         return 0
     previous = json.loads(layout.read_bytes()) if layout.is_file() else {}
     if previous and previous.get('source') != source:
         raise ValueError('Compacted provider source changed')
-    atomic_json(layout, dict(source=source, files=sorted(set(previous.get('files', ())) | set(removable))))
+    modes=dict(previous.get('modes',{}))
+    modes.update({name:stat.S_IMODE((workspace/name).stat().st_mode) for name in removable})
+    atomic_json(layout, dict(source=source, files=sorted(set(previous.get('files', ())) | set(removable)),modes=modes))
     reclaimed = 0
     for name in removable:
         path = workspace/name
@@ -602,17 +606,33 @@ def restore_provider_source(workspace):
     layout = workspace.parent/'RETAINED_PROVIDER_SOURCE.json'
     if not layout.is_file():
         return
+    if layout.is_symlink():raise ValueError('Invalid retained source marker')
     record = json.loads(layout.read_bytes())
-    missing = [name for name in record['files'] if not (workspace/name).exists()
-               and not (workspace/name).is_symlink()]
+    names=record['files']
+    modes=record.get('modes',{})
+    bindings=provider_source_blobs(workspace,record['source'])
+    if any(name not in bindings or Path(name).is_absolute() or '..' in Path(name).parts
+           or '\n' in name or '\r' in name or (workspace/name).resolve()!=workspace/name for name in names):
+        raise ValueError('Invalid retained source path')
+    if not set(modes)<=set(names) or any(type(mode) is not int or not 0<=mode<=0o7777 for mode in modes.values()):
+        raise ValueError('Invalid retained source mode')
+    missing = [name for name in names if not (workspace/name).exists()]
     if missing:
-        if any(Path(name).is_absolute() or '..' in Path(name).parts for name in missing):
-            raise ValueError('Invalid retained source path')
         subprocess.run(['git', '--literal-pathspecs', 'restore', '--source='+record['source'],
                         '--worktree', '--ignore-skip-worktree-bits', '--pathspec-from-file=-',
                         '--pathspec-file-nul'], cwd=workspace,
                        input=b'\0'.join(map(os.fsencode, missing))+b'\0', check=True,
                        stderr=subprocess.PIPE)
+        for name in missing:
+            if name in modes:
+                (workspace/name).chmod(modes[name])
+    if names:
+        actual=subprocess.check_output(['git','hash-object','--no-filters','--stdin-paths'],cwd=workspace,
+            input=os.fsencode('\n'.join(names)+'\n'),stderr=subprocess.PIPE).splitlines()
+        if actual!=[bindings[name][0] for name in names]:
+            raise ValueError('Retained source bytes differ; preserve workspace and marker')
+        if any(stat.S_IMODE((workspace/name).stat().st_mode)!=mode for name,mode in modes.items()):
+            raise ValueError('Retained source mode differs; preserve workspace and marker')
     layout.unlink()
 
 

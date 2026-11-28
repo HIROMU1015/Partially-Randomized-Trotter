@@ -329,7 +329,7 @@ def share_stopped_provider_git_packs(state, run_id=None):
     return dict(shared_files=shared,reclaimed_bytes=reclaimed)
 
 
-def compact_stopped_provider_sources(state,run_id):
+def compact_stopped_provider_sources(state,run_id,*,legacy_restore=False):
     """Compact only clean provider files whose pinned Resume can restore them.
 
     Reuse the ordinary provider compactor; never change a fixed code root or
@@ -346,7 +346,8 @@ def compact_stopped_provider_sources(state,run_id):
             tree=ast.parse(code.read_text())
             if not any(isinstance(node,ast.Call) and isinstance(node.func,ast.Name)
                        and node.func.id=='restore_provider_source' for node in ast.walk(tree)):
-                raise ValueError('Pinned Resume does not restore retained provider source')
+                if not legacy_restore:
+                    raise ValueError('Pinned Resume does not restore retained provider source')
         except (OSError,KeyError,ValueError,SyntaxError) as error:
             result['skipped'].append(dict(run=run.name,reason=str(error)));continue
         pf=run/'pf_auto'
@@ -358,6 +359,11 @@ def compact_stopped_provider_sources(state,run_id):
                     source=marker['source']
                     if not re.fullmatch('[0-9a-f]{40,64}',source):raise ValueError('Unfixed provider source')
                     with stopped_lock(state,run,launch,protect_references=True):
+                        if legacy_restore:
+                            # The ordinary new Gateway restores this layout;
+                            # an older Gateway must use --restore-saved-layout
+                            # before handing control to its fixed controller.
+                            atomic_json(run/'RETAINED_LEGACY_PROVIDER_SOURCE.json',dict(run_id=run.name))
                         size=compact_provider_source(workspace,source)
                     if size:result['compacted']+=1;result['reclaimed_bytes']+=size
                 except (OSError,KeyError,ValueError,subprocess.SubprocessError) as error:
@@ -367,20 +373,13 @@ def compact_stopped_provider_sources(state,run_id):
 
 def restore_stopped_provider_sources(state, run_id):
     """Restore retained bytes before handing a stopped run to a legacy release."""
-    from trottertracks.rpe_worker_storage import restore_provider_source
+    from trottertracks.rpe_saved_layout import restore_providers
     run, launch = next(((r,l) for r,l in stopped_runs(state) if r.name == run_id), (None,None))
     if run is None:
         raise ValueError('No stopped registered run')
-    restored = 0
     with stopped_lock(state, run, launch, protect_references=True):
-        pf = run/'pf_auto'
-        for candidates in [pf/'candidates', *pf.glob('price-recovery/recheck-*/candidates')]:
-            for workspace in candidates.glob('*/pf_auto/pf_completion/provider_workspace'):
-                if workspace.resolve() != workspace:
-                    raise ValueError('Provider workspace is not local')
-                if (workspace.parent/'RETAINED_PROVIDER_SOURCE.json').is_file():
-                    restore_provider_source(workspace)
-                    restored += 1
+        restored=restore_providers(run)
+        (run/'RETAINED_LEGACY_PROVIDER_SOURCE.json').unlink(missing_ok=True)
     return dict(restored=restored)
 
 
@@ -682,23 +681,59 @@ def pack_stopped_diagnostics(state,run_id,archive):
                                                  'data':base64.b64encode(raw).decode()},separators=(',',':'))+'\n')
                         count+=1;size+=len(raw)
         if verify_diagnostic_archive(temporary,run_id)!=count:raise ValueError('Diagnostic archive verification differs')
+        with temporary.open('rb') as stream:os.fsync(stream.fileno())
         os.link(temporary,archive)
+        fd=os.open(archive.parent,os.O_RDONLY|os.O_DIRECTORY)
+        try:os.fsync(fd)
+        finally:os.close(fd)
         return dict(files=count,original_bytes=size,archive_bytes=archive.stat().st_size,originals_preserved=True)
     finally:temporary.unlink(missing_ok=True)
 
 
 def verify_diagnostic_archive(archive,run_id):
-    import lzma
-    count=0;seen=set()
-    with lzma.open(archive,'rt',encoding='utf-8') as reader:
-        if json.loads(reader.readline())!={'schema':'RPE_DIAGNOSTIC_ARCHIVE_V1','run_id':run_id}:raise ValueError('Diagnostic archive identity differs')
-        for line in reader:
-            row=json.loads(line);path=Path(row['path'])
-            if path.is_absolute() or '..' in path.parts or row['path'] in seen:raise ValueError('Invalid diagnostic archive path')
-            raw=base64.b64decode(row['data'],validate=True)
-            if hashlib.sha256(raw).hexdigest()!=row['sha256']:raise ValueError('Diagnostic archive digest differs')
-            seen.add(row['path']);count+=1
-    return count
+    from trottertracks.rpe_saved_layout import diagnostic_rows
+    return sum(1 for _ in diagnostic_rows(archive,run_id))
+
+
+def retire_stopped_diagnostics(state,run_id,archive):
+    """Retire only exact duplicate accepted transfer diagnostics, reversibly."""
+    from trottertracks.rpe_saved_layout import diagnostic_rows
+    archive=Path(archive).resolve(strict=True)
+    run,launch=next(((r,l) for r,l in stopped_runs(state) if r.name==run_id),(None,None))
+    if run is None:raise ValueError('No stopped registered run')
+    marker=run/'RETAINED_DIAGNOSTICS.json'
+    with stopped_lock(state,run,launch,protect_references=True),closing(sqlite3.connect((run/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro',uri=True)) as db:
+        if marker.exists() or marker.is_symlink():raise ValueError('Restore existing retained diagnostics first')
+        if db.execute("SELECT 1 FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED') LIMIT 1").fetchone():
+            raise ValueError('Queue contains unsettled jobs')
+        owners={(safe_name(job),safe_name(attempt)):safe_name(method) for job,method,attempt in db.execute("SELECT job_id,method,attempt_id FROM jobs WHERE state='ACCEPTED'")}
+        archive_sha=sha256(archive);selected={};reclaimed=0
+        for relative,digest,raw in diagnostic_rows(archive,run_id):
+            if relative.parts[:2]!=('distributed','transfers'):continue
+            _,_,job,attempt,name=relative.parts
+            method=owners.get((job,attempt))
+            if method is None:continue
+            path=run/relative;original=run/'jobs'/method/job/name
+            if (path.resolve()!=path or original.resolve()!=original or not path.is_file() or not original.is_file()
+                    or sha256(path)!=digest or sha256(original)!=digest):continue
+            selected[relative.as_posix()]=digest
+        if sha256(archive)!=archive_sha:raise ValueError('Diagnostic archive changed')
+        if not selected:return dict(retired=0,reclaimed_bytes=0)
+        atomic_json(marker,dict(schema='RPE_RETAINED_DIAGNOSTICS_V1',run_id=run_id,archive=str(archive),archive_sha256=archive_sha,files=selected))
+        for relative,digest in selected.items():
+            path=run/relative
+            if sha256(path)!=digest:raise ValueError('Diagnostic changed before retirement')
+            info=path.stat();path.unlink()
+            if info.st_nlink==1:reclaimed+=info.st_blocks*512
+        return dict(retired=len(selected),reclaimed_bytes=reclaimed)
+
+
+def restore_stopped_layout(state,run_id):
+    from trottertracks.rpe_saved_layout import restore_saved_layout
+    run,launch=next(((r,l) for r,l in stopped_runs(state) if r.name==run_id),(None,None))
+    if run is None:raise ValueError('No stopped registered run')
+    with stopped_lock(state,run,launch,protect_references=True):
+        return restore_saved_layout(run)
 
 
 def restore_diagnostic_archive(state,run_id,archive):
@@ -770,7 +805,7 @@ def alternate_relocation_readiness(repository, target_objects):
 def storage_dependency_inventory(state, reference_files=()):
     """Read-only legacy storage inventory, never a declaration of safe deletion."""
     central=state.parent.resolve();repo=central.parent
-    categories=('releases','deployment','planning','acceptance','validation','price-validation','operation-acceptance')
+    categories=('releases','deployment','planning','acceptance','validation','price-validation','operation-acceptance','evidence-views')
     entries={}
     for category in categories:
         for path in (central/category).glob('*'):
@@ -809,7 +844,7 @@ def storage_dependency_inventory(state, reference_files=()):
         for candidates in [pf/'candidates',*pf.glob('price-recovery/recheck-*/candidates')]:
             for path in candidates.glob('*/pf_auto/pf_completion/provider_workspace/.git/objects/info/alternates'):scan(path)
     scan(repo/'.git/objects/info/alternates')
-    for pattern in ('releases/*/.git/objects/info/alternates','deployment/*/.git/objects/info/alternates',
+    for pattern in ('releases/*/.git/objects/info/alternates','evidence-views/*/.git/objects/info/alternates','deployment/*/.git/objects/info/alternates',
                     'deployment/*/*/.git/objects/info/alternates','planning/*/*/objects/info/alternates',
                     'transport-flat/*/objects.git/objects/info/alternates','publication/.git/objects/info/alternates',
                     'results-publication/.git/objects/info/alternates'):
@@ -846,6 +881,9 @@ def main():
     parser.add_argument('--share-requests', action='store_true')
     parser.add_argument('--share-provider-packs', action='store_true')
     parser.add_argument('--compact-provider-sources',action='store_true')
+    parser.add_argument('--legacy-provider-restore',action='store_true',help='Allow legacy stopped-run compaction; restore layout before old Gateway Resume')
+    parser.add_argument('--restore-saved-layout',action='store_true')
+    parser.add_argument('--retire-diagnostics',type=Path,help='Retire exact accepted transfer duplicates from an existing verified archive')
     parser.add_argument('--restore-provider-sources',action='store_true')
     parser.add_argument('--check-alternate',type=Path,nargs=2,metavar=('REPOSITORY','TARGET_OBJECTS'))
     parser.add_argument('--pack-diagnostics',type=Path)
@@ -865,12 +903,18 @@ def main():
     if args.restore_diagnostics:
         if not args.run_id:parser.error('--restore-diagnostics requires --run-id')
         print(restore_diagnostic_archive(state,args.run_id,args.restore_diagnostics));return
+    if args.retire_diagnostics:
+        if not args.run_id:parser.error('--retire-diagnostics requires --run-id')
+        print(retire_stopped_diagnostics(state,args.run_id,args.retire_diagnostics));return
+    if args.restore_saved_layout:
+        if not args.run_id:parser.error('--restore-saved-layout requires --run-id')
+        print(restore_stopped_layout(state,args.run_id));return
     if args.pack_diagnostics:
         if not args.run_id:parser.error('--pack-diagnostics requires --run-id')
         print(pack_stopped_diagnostics(state,args.run_id,args.pack_diagnostics));return
     if args.compact_provider_sources:
         if not args.run_id:parser.error('--compact-provider-sources requires --run-id')
-        print(compact_stopped_provider_sources(state,args.run_id));return
+        print(compact_stopped_provider_sources(state,args.run_id,legacy_restore=args.legacy_provider_restore));return
     if args.restore_provider_sources:
         if not args.run_id:parser.error('--restore-provider-sources requires --run-id')
         print(restore_stopped_provider_sources(state,args.run_id));return
