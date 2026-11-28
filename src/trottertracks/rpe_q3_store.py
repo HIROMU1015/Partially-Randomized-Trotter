@@ -83,6 +83,7 @@ class JobStore:
                     epoch REAL NOT NULL,
                     detail TEXT NOT NULL
                 );
+                CREATE INDEX IF NOT EXISTS result_reuse_events ON events(job_id) WHERE event='RESULT_REUSE';
                 CREATE TABLE IF NOT EXISTS eligibility_event_payloads (
                     sha256 TEXT PRIMARY KEY,
                     compressed BLOB NOT NULL
@@ -253,6 +254,19 @@ class JobStore:
             row = db.execute("SELECT host_id FROM jobs WHERE job_id=? AND method=? AND state='ACCEPTED'",
                              (job_id, method)).fetchone()
             return row[0] if row is not None else None
+
+    def record_result_reuse(self, job_id, host):
+        """Persist distinct reuse telemetry independently of diagnostic logging."""
+        with self._connection(write=True) as db:
+            if db.execute("SELECT 1 FROM events WHERE job_id=? AND event='RESULT_REUSE'", (job_id,)).fetchone():
+                return False
+            self._event(db, job_id, 'RESULT_REUSE', {'host_id':host})
+            return True
+
+    def result_reuses(self):
+        with self._connection() as db:
+            return {row['job_id']: json.loads(row['detail'])['host_id'] for row in
+                    db.execute("SELECT job_id,detail FROM events WHERE event='RESULT_REUSE'")}
 
     def idle_revision(self):
         """Positive idle snapshot for a block handoff, not scientific completion."""

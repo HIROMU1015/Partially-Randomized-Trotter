@@ -1632,3 +1632,18 @@ def test_task_index_supply_counts_are_updated_for_eligibility_and_ownership():
     assert queued_supply_counts(state,('a','b'))=={'a':0,'b':1}
     del state.tasks[task.job]
     assert queued_supply_counts(state,('a','b'))=={'a':0,'b':0}
+
+def test_progress_unavailable_does_not_prevent_completion_telemetry(tmp_path):
+    from types import SimpleNamespace
+    from collections import Counter
+    from trottertracks.rpe_optimizer_concurrent import ConcurrentExecutor, DistributedExecutor, reuse_history
+    from trottertracks.rpe_q3_store import JobStore
+    (tmp_path/'PROGRESS.jsonl').symlink_to(tmp_path/'missing-mount/PROGRESS.jsonl')
+    ex=SimpleNamespace(run_dir=tmp_path, method='fake', invocation='one', lock=threading.Lock(),
+                       state=SimpleNamespace(),store=JobStore(tmp_path/'queue.sqlite'))
+    ConcurrentExecutor.log(ex,event='RESULT_RECEIVED',job='synthetic')
+    assert ex.state.progress_write_failures==1
+    assert reuse_history(tmp_path/'PROGRESS.jsonl')==(Counter(),set())
+    assert ex.store.record_result_reuse('synthetic','local')
+    assert not ex.store.record_result_reuse('synthetic','local')
+    assert DistributedExecutor._reuse_counts(ex)=={'local':1}

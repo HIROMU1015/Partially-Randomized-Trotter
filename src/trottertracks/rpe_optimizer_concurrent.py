@@ -7,6 +7,7 @@ launch; running scientific workers are never cancelled to discard lookahead.
 from collections import Counter, defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
+from io import BytesIO
 from copy import copy, deepcopy
 import fcntl
 import hashlib
@@ -70,7 +71,13 @@ _REUSE_HISTORY = {}
 def reuse_history(path):
     """Incremental diagnostic index, shared by executor instances of a run."""
     path = Path(path).resolve()
-    with _REUSE_HISTORY_LOCK, path.open('rb') as progress:
+    try:
+        stream = path.open('rb')
+    except OSError:
+        with _REUSE_HISTORY_LOCK:
+            cached = _REUSE_HISTORY.get(path)
+            return (cached[2].copy(), cached[3].copy()) if cached else (Counter(), set())
+    with _REUSE_HISTORY_LOCK, stream as progress:
         stat = os.fstat(progress.fileno())
         identity = (stat.st_dev, stat.st_ino)
         previous, offset, counts, jobs = _REUSE_HISTORY.get(path, (None, 0, None, None))
@@ -95,6 +102,20 @@ def reuse_history(path):
             offset += len(line)
         _REUSE_HISTORY[path] = (identity, offset, counts, jobs)
         return counts.copy(), jobs.copy()
+
+
+def diagnostic_size(path):
+    try:
+        return path.stat().st_size
+    except OSError:
+        return 0
+
+
+def open_diagnostic(path):
+    try:
+        return path.open('rb')
+    except OSError:
+        return BytesIO()
 
 
 def queue_wait_signature(payload):
@@ -326,7 +347,7 @@ class ConcurrentExecutor(O.Executor):
         self.state.reused_jobs = set()
         self.invocation=str(os.getpid())+'-'+str(time.time_ns())
         progress = self.run_dir/'PROGRESS.jsonl'
-        self.progress_start = progress.stat().st_size if progress.exists() else 0
+        self.progress_start = diagnostic_size(progress)
         self.log(event='EXECUTOR_START',capacity=self.capacity,dp_workers=dp_workers)
         for method in self.routes:
             base=self.run_dir/'jobs'/method
@@ -533,16 +554,20 @@ class ConcurrentExecutor(O.Executor):
             marker = self.run_dir/'jobs'/str(self.method)/event['job']/'LAUNCH.json'
             try:
                 owner = json.loads(marker.read_text())
-            except (FileNotFoundError, json.JSONDecodeError):
+            except (OSError, ValueError):
                 # An independent local launcher may still be writing the
                 # receipt. Event annotations must not stop the evaluator.
                 owner = {}
             for key in ('host_id', 'attempt_id'):
                 if owner.get(key) is not None:event.setdefault(key, owner[key])
         with self.lock:
-            with(self.run_dir/'PROGRESS.jsonl').open('a')as f:
-                f.write(json.dumps(dict(UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
-                    **stamp(),invocation=self.invocation,method=self.method,**event),default=str)+'\n')
+            try:
+                with (self.run_dir/'PROGRESS.jsonl').open('a') as f:
+                    f.write(json.dumps(dict(UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
+                        **stamp(),invocation=self.invocation,method=self.method,**event),default=str)+'\n')
+            except OSError:
+                # Diagnostic I/O must not veto a durable completion or adoption.
+                self.state.progress_write_failures = getattr(self.state,'progress_write_failures',0)+1
 
     def request(self,proposal,job,rule):
         from .rpe_host_profiles import PREFIX_PR_Q3_ROUTES, REVIEWED_PR_Q3_ROUTES
@@ -1126,12 +1151,16 @@ class ConcurrentExecutor(O.Executor):
                 interval_capacity = seed['capacity']
                 adopted.update(job.name for job in s.adopted_jobs)
             unreadable_lines = 0
-            with (self.run_dir/'PROGRESS.jsonl').open('rb') as progress:
+            with open_diagnostic(self.run_dir/'PROGRESS.jsonl') as progress:
                 with self.lock:
-                    end = os.fstat(progress.fileno()).st_size
+                    try:end = os.fstat(progress.fileno()).st_size
+                    except OSError:end = 0
                 progress.seek(self.progress_start)
                 while progress.tell() < end:
-                    line = progress.readline()
+                    try:line = progress.readline()
+                    except OSError:
+                        unreadable_lines += 1
+                        break
                     if not line.endswith(b'\n'): break
                     try:
                         e = json.loads(line)
@@ -1171,6 +1200,7 @@ class ConcurrentExecutor(O.Executor):
                 integrated_available_slot_seconds=available,
                 slot_utilization=busy/available if available else 0,
                 unreadable_progress_lines=unreadable_lines,
+                progress_write_failures=getattr(s,'progress_write_failures',0),
                 capacity_measurement='INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS',
                 speculative_adoption_fraction=s.metrics['speculative_adopted']/s.metrics['speculative_launched']if s.metrics['speculative_launched']else None,
                 memory_scope='sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted')
@@ -5570,6 +5600,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if not getattr(self.state, 'reuse_history_loaded', False):
                 _, jobs = reuse_history(self.run_dir/'PROGRESS.jsonl')
                 self.state.reused_jobs.update(jobs)
+                self.state.reused_jobs.update(self.store.result_reuses())
                 self.state.reuse_history_loaded = True
             if job.name in self.state.reused_jobs:
                 return
@@ -5578,6 +5609,7 @@ class DistributedExecutor(ConcurrentExecutor):
             with self.state.reuse_lock:
                 if job.name in self.state.reused_jobs:
                     return
+                self.store.record_result_reuse(job.name, host)
                 self.state.reused_jobs.add(job.name)
             self.log(event='RESULT_REUSE', job=job.name, host_id=host)
 
@@ -5649,7 +5681,12 @@ class DistributedExecutor(ConcurrentExecutor):
     def _reuse_counts(self):
         # Reuses are distinct saved jobs, not the number of times the same
         # optimizer reread one receipt. Keep legacy jobless log rows readable.
-        return reuse_history(self.run_dir/'PROGRESS.jsonl')[0]
+        counts, jobs = reuse_history(self.run_dir/'PROGRESS.jsonl')
+        if hasattr(self, 'store'):
+            for job, host in self.store.result_reuses().items():
+                if job not in jobs:
+                    counts[host] += 1
+        return counts
 
     def _metrics_snapshot(self, reused):
         result = super().metrics()
@@ -5752,7 +5789,7 @@ class DistributedExecutor(ConcurrentExecutor):
                         s.metrics['archived_real_route_launches'] += 1
                     del s.tasks[job]
             with self.lock:
-                self.progress_start=(self.run_dir/'PROGRESS.jsonl').stat().st_size
+                self.progress_start=diagnostic_size(self.run_dir/'PROGRESS.jsonl')
             s.cycle_measurement_seed=dict(monotonic=time.monotonic(),capacity=self.capacity,
                 active=[task.job.name for task in tasks_with_status(s,'RUNNING')],
                 queued=[task.job.name for task in tasks_with_status(s,'QUEUED')])

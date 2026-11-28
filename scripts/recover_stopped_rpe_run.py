@@ -45,6 +45,47 @@ def live_driver(run):
     return False
 
 
+def protected_run_directories(state):
+    """Run paths that are live, not positively ended, or required by them.
+
+    Resolve only registered run paths and explicit lineage/prior-round
+    references. Do not read any live SQLite ledger or contact a worker.
+    """
+    registry = optional(state/'RUNS.json')
+    current = optional(state/'CURRENT_TARGET.json').get('run_id')
+    registered = {key: Path(row['run_directory']).resolve() for key, row in registry.items()}
+    protected = set()
+    pending = []
+    for key, run in registered.items():
+        launch, ended = optional(run/'LAUNCH.json'), optional(run/'EXIT.json')
+        if (key == current or run.name == current or not launch.get('invocation_id')
+                or launch.get('invocation_id') != ended.get('invocation_id') or live_driver(run)):
+            pending.append(run)
+    while pending:
+        run = pending.pop()
+        if run in protected:
+            continue
+        protected.add(run)
+        lineage = optional(run/'RUN_LINEAGE.json')
+        pin = optional(run/'CONTROLLER_CONFIG.json')
+        round_spec = optional(run/'ROUND.json')
+        requested = optional(run/'ROUND.requested.json')
+        values = [lineage.get('parent_directory'), *lineage.get('prior_run_dirs', ())]
+        for document in (round_spec, requested):
+            values.extend(document.get('executor', {}).get('prior_run_dirs', ()))
+        for value in values:
+            if not value:
+                continue
+            path = Path(value)
+            if path.is_absolute():
+                pending.append(path.resolve())
+            else:
+                bases = (run, Path(pin.get('code_root', run)), state.parent.parent)
+                pending.extend(candidate for base in bases
+                               if (candidate := (base/path).resolve()) in registered.values())
+    return protected
+
+
 def safe_name(value):
     if not isinstance(value, str) or value in ('', '.', '..') or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:_.-' for c in value):
         raise ValueError('Invalid saved job, method or attempt ID')
@@ -78,7 +119,7 @@ def has_owned_attempts(run):
 
 
 @contextmanager
-def stopped_lock(state, run, launch):
+def stopped_lock(state, run, launch, *, protect_references=False):
     with ExitStack() as stack:
         central = stack.enter_context((state/'REGISTRY.lock').open('rb'))
         fcntl.flock(central, fcntl.LOCK_EX)
@@ -87,7 +128,8 @@ def stopped_lock(state, run, launch):
             if path.is_file():
                 owner = stack.enter_context(path.open('rb'))
                 fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        if optional(run/'LAUNCH.json') != launch or live_driver(run):
+        if (optional(run/'LAUNCH.json') != launch or live_driver(run)
+                or protect_references and run.resolve() in protected_run_directories(state)):
             raise BlockingIOError('Original invocation ownership changed')
         yield
 

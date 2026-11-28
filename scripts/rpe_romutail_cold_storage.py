@@ -15,7 +15,7 @@ import tempfile
 import time
 
 from compact_rpe_git_objects import GIB, free_bytes
-from recover_stopped_rpe_run import live_driver, optional, stopped_lock
+from recover_stopped_rpe_run import live_driver, optional, stopped_lock, protected_run_directories
 from trottertracks.rpe_q3_coordinator import atomic_json
 
 MOUNT = Path('/media/abe/T7')
@@ -41,6 +41,8 @@ def exchange(left, right):
 
 
 def eligible(state, run, min_age):
+    if run.resolve() in protected_run_directories(state):
+        return None
     current = optional(state/'CURRENT_TARGET.json').get('run_id')
     launch, end = optional(run/'LAUNCH.json'), optional(run/'EXIT.json')
     if (run.name == current or not launch.get('invocation_id') or
@@ -135,7 +137,7 @@ def archive_one(state, run, archive_root, *, min_age=86400, minimum_bytes=GIB):
     parked = source.with_name('.artifacts-cold-'+launch['invocation_id'])
     record['parked'] = str(parked)
     atomic_json(local, record)
-    with stopped_lock(state, run, launch):
+    with stopped_lock(state, run, launch, protect_references=True):
         if eligible(state, run, min_age) != launch or not same_inventory(items, inventory(source)):
             return None
         if parked.exists() or parked.is_symlink():

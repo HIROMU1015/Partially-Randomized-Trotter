@@ -100,11 +100,12 @@ def test_old_retention_only_verified_readonly_replies(tmp_path):
     assert outcome['compacted_responses']==1 and not (replies/'good.json').exists()
     assert (replies/'bad.json').is_file() and (replies/'state.json').is_file()
     assert json.loads((replies.parent.parent/'responses-replay/token/good.json').read_text())['hashes']==[sha]
-    (old/'PROGRESS.jsonl').write_text('history\n');mount=tmp_path/'external';mount.mkdir()
+    (old/'PROGRESS.jsonl').write_text('live append target\n'); archived=old/'invocations/sample/PROGRESS.jsonl'; archived.parent.mkdir(parents=True); archived.write_text('history\n');mount=tmp_path/'external';mount.mkdir()
     with patch('rpe_romutail_retention.mounted_separately',return_value=True):
         result=archive_old_logs(state,mount,minimum_bytes=1)
-    assert len(result['archived_files'])==1 and (old/'PROGRESS.jsonl').is_symlink()
-    assert (old/'PROGRESS.jsonl').read_text()=='history\n'
+    assert len(result['archived_files'])==1 and archived.is_symlink()
+    assert archived.read_text()=='history\n'
+    assert not (old/'PROGRESS.jsonl').is_symlink()
 
 
 def test_terminal_rpc_archive_retains_original_replay_path(tmp_path):
@@ -245,3 +246,20 @@ def test_storage_inventory_marks_release_and_alternate_and_never_authorizes_dele
     assert lookup[str(planning)]['status']=='REFERENCED'
     assert lookup[str(extra)]['status']=='UNCONFIRMED_NOT_A_DELETION_CANDIDATE'
     assert data['status']=='INVENTORY_ONLY' and extra.is_dir()
+
+def test_retention_protects_transitive_live_ancestors_and_rechecks_lock(tmp_path):
+    from rpe_romutail_retention import stopped_runs
+    from recover_stopped_rpe_run import stopped_lock
+    from pytest import raises
+    state=tmp_path/'state';state.mkdir()
+    grand=stopped_run(state,'grand'); parent=stopped_run(state,'parent')
+    child=stopped_run(state,'child'); unrelated=stopped_run(state,'unrelated')
+    (parent/'RUN_LINEAGE.json').write_text(json.dumps({'parent_directory':str(grand)}))
+    (child/'ROUND.json').write_text(json.dumps({'executor':{'prior_run_dirs':[str(parent)]}}))
+    (child/'EXIT.json').unlink()
+    assert [run for run,_ in stopped_runs(state)]==[unrelated]
+    with raises(BlockingIOError):
+        with stopped_lock(state,grand,{'invocation_id':'sample'},protect_references=True):
+            raise AssertionError('unexpected permission to compact ancestor')
+    (child/'EXIT.json').write_text('{"invocation_id":"sample"}')
+    assert {run for run,_ in stopped_runs(state)}=={grand,parent,child,unrelated}

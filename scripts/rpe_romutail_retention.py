@@ -16,17 +16,17 @@ import stat
 import time
 import uuid
 
-from recover_stopped_rpe_run import live_driver, optional, safe_name, stopped_lock
+from recover_stopped_rpe_run import live_driver, optional, safe_name, stopped_lock, protected_run_directories
 from rpe_romutail_cold_storage import MOUNT, copy_verified, exchange, mounted_separately, sha256
 from trottertracks.rpe_q3_coordinator import atomic_json
 from trottertracks.rpe_q3_store import digest as request_digest
 
 
 def stopped_runs(state):
-    current = optional(state/'CURRENT_TARGET.json').get('run_id')
+    protected = protected_run_directories(state)
     for row in optional(state/'RUNS.json').values():
         run = Path(row['run_directory']).resolve()
-        if not run.is_relative_to(state.parent) or run.name == current:
+        if not run.is_relative_to(state.parent) or run in protected:
             continue
         launch, ended = optional(run/'LAUNCH.json'), optional(run/'EXIT.json')
         if launch.get('invocation_id') and ended.get('invocation_id') == launch['invocation_id'] and not live_driver(run):
@@ -66,7 +66,7 @@ def deduplicate_old_artifacts(state, *, minimum_bytes=1024**2):
                     checked.add(left)
                 if sha256(path) != path.name or identity(path) != right:
                     continue
-                with stopped_lock(state, run, launch):
+                with stopped_lock(state, run, launch, protect_references=True):
                     if identity(source) != left or identity(path) != right:
                         continue
                     info = path.stat()
@@ -131,7 +131,7 @@ def compact_readonly_pbs_replies(state, *, minimum_bytes=1024**2, progress=None)
                 if not valid:
                     continue
                 replay = replies.parent/'responses-replay'/path.relative_to(replies)
-                with stopped_lock(state, run, launch):
+                with stopped_lock(state, run, launch, protect_references=True):
                     if identity(path) != before:
                         continue
                     info = path.stat()
@@ -162,8 +162,11 @@ def archive_old_logs(state, mount=MOUNT, *, minimum_bytes=64*1024**2):
     archived = []
     reclaimed = 0
     for run, launch in stopped_runs(state):
+        # The root logs are reused by normal Resume. Only ended invocation
+        # snapshots have an immutable lifecycle; never link an append target.
+        invocation = run/'invocations'/launch['invocation_id']
         for name in ('PROGRESS.jsonl', 'DRIVER.log'):
-            path = run/name
+            path = invocation/name
             try:
                 before = identity(path)
                 if before[2] < minimum_bytes:
@@ -171,7 +174,7 @@ def archive_old_logs(state, mount=MOUNT, *, minimum_bytes=64*1024**2):
                 target = root/run.name/launch['invocation_id']/name
                 digest = sha256(path)
                 copy_verified(path, target, digest, before[2])
-                with stopped_lock(state, run, launch):
+                with stopped_lock(state, run, launch, protect_references=True):
                     if identity(path) != before:
                         continue
                     info = path.stat()
@@ -212,7 +215,7 @@ def share_stopped_event_originals(state, run_id=None):
                     continue
                 if len({sha256(p) for p in paths}) != 1:
                     continue
-                with stopped_lock(state, run, launch):
+                with stopped_lock(state, run, launch, protect_references=True):
                     if [identity(p) for p in paths] != before:
                         continue
                     for p in paths[1:]:
@@ -258,7 +261,7 @@ def share_stopped_accepted_requests(state, run_id=None):
                     raw=source.read_bytes()
                     if request_digest(json.loads(raw)) != digest or target.read_bytes()!=raw:
                         continue
-                    with stopped_lock(state, run, launch):
+                    with stopped_lock(state, run, launch, protect_references=True):
                         if (identity(source)!=left or identity(target)!=right
                                 or optional(run/'EXIT.json').get('invocation_id')!=launch['invocation_id']):
                             continue
@@ -305,7 +308,7 @@ def share_stopped_provider_git_packs(state, run_id=None):
                             continue
                         if any(sha256(a)!=sha256(b) for a,b in zip(original,pair)):
                             continue
-                        with stopped_lock(state,run,launch):
+                        with stopped_lock(state,run,launch,protect_references=True):
                             if (tuple(identity(path) for path in original)!=old
                                     or tuple(identity(path) for path in pair)!=identities):
                                 continue
@@ -403,7 +406,7 @@ def archive_terminal_rpc_sessions(state, mount=MOUNT, *, run_id=None, session_id
             finally:
                 os.close(fd)
             parked = source.with_name('.responses-cold-'+session)
-            with stopped_lock(state, run, launch):
+            with stopped_lock(state, run, launch, protect_references=True):
                 if (not terminal_response_session(run, session) or rpc_session_inventory(source) != items
                         or optional(run/'EXIT.json').get('invocation_id') != launch['invocation_id']):
                     raise ValueError('Stopped response session changed')
@@ -481,7 +484,7 @@ def archive_terminal_rpc_large_files(state, mount=MOUNT, *, run_id=None, session
                 os.close(fd)
             reclaimed=linked=0
             for start in range(0,len(pending),128):
-                with stopped_lock(state,run,launch):
+                with stopped_lock(state,run,launch,protect_references=True):
                     if (not terminal_response_session(run,session)
                             or optional(run/'EXIT.json').get('invocation_id')!=launch['invocation_id']):
                         raise ValueError('Stopped response session changed')
@@ -575,7 +578,7 @@ def compact_stopped_queues(state, run_id=None, *, minimum_bytes=64*1024**2):
             if not _same_queue_contents(dbpath,tmp):
                 results.append(dict(run_id=run.name,status='CONTENT_OR_ROWID_DIFFERS'));continue
             with tmp.open('rb') as stream:os.fsync(stream.fileno())
-            with stopped_lock(state,run,launch):
+            with stopped_lock(state,run,launch,protect_references=True):
                 if (_queue_db_signature(dbpath)!=before or wal.exists() or wal.is_symlink()
                         or shm.exists() or shm.is_symlink() or dbpath.stat().st_nlink!=1
                         or not _queue_is_settled(dbpath)
