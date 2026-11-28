@@ -299,6 +299,8 @@ R18はH4既存PBSイベント（`search-78ee25e2f10dcaccee5c`）から過去の�
 
 利用者指示により、全43項目の技術修正を `codex/rpe-common-hchain-fleet-20261126` に共有する。公開共通HEAD `512978edcbb2ff884a5d69fa1ca7ad00bceb7048` をGitHub compareとGit ls-remoteの両方で確認し、隔離修正の親と同一。ローカル共有checkoutはこのSHAの祖先にあり、未commit変更なし。既存の全登録release code_rootおよび観測された稼働RPE process（H4 controller・relay・worker等）はローカル共有checkoutを参照していないことを確認。H6の現在固定版は前述の再確認不可の状態を維持し、個別配置は変更しない。
 
-統合前の最終回帰：**665 passed, 1 deselected, 50 subtests passed（141.46秒）**。固定DP viewの別プロセス回帰：**20 passed, 5 subtests passed（4.86秒）**。除外は従来の固定歴史AST比較1件で、科学選択SOURCE・比較条件を緩和していない。[統合回帰](../../artifacts/rpe_common_real_validation_20261128/INTEGRATION_REGRESSION.log)、[固定DP回帰](../../artifacts/rpe_common_real_validation_20261128/INTEGRATION_FIXED_DP.log)。R10/R43の生成cacheの実体は既存ignore規則のままローカル保全、圧縮・解凍後SHA-256とサイズを [R43_CACHE_HASHES.json](../../artifacts/rpe_common_real_validation_20261128/R43_CACHE_HASHES.json) に記録した。H8採択PLAN SHAとstartup証拠は不変、追加科学計算なし。
+統合前の最終回帰：**665 passed, 1 deselected, 50 subtests passed（141.46秒）**。固定DP viewの別プロセス回帰：**20 passed, 5 subtests passed（4.86秒）**。除外は従来の固定歴史AST比較1件で、科学選択SOURCE・比較条件を緩和していない。[統合回帰](../../artifacts/rpe_common_real_validation_20261128/INTEGRATION_REGRESSION.log)、[固定DP回帰](../../artifacts/rpe_common_real_validation_20261128/INTEGRATION_FIXED_DP.log)。R43の生成cacheの実体は既存ignore規則のままローカル保全、圧縮・解凍後SHA-256とサイズを [R43_CACHE_HASHES.json](../../artifacts/rpe_common_real_validation_20261128/R43_CACHE_HASHES.json) に記録した。H8採択PLAN SHAとstartup証拠は不変、追加科学計算なし。
 
 41所見は記載した範囲で検収済み、R8/R18の実PBS検収は保留。実装は共有するが新機能の既定有効化・新規実PBS操作・稼働版切替を行わない。詳細と既定設定は[共通運用ルール](rpe_distributed_operations.md#共通実装レビュー43項目の統合2026-11-28)も参照。
+
+commit `59bb1ca04100dc3fed0d5e457909583e6de7d86b` のclean SOURCE上で、先行するdirty checkoutでは固定照合が拒否した通常入口/Resume回帰も追加実施：**40 passed, 4 subtests passed（1.78秒）**。[通常入口回帰](../../artifacts/rpe_common_real_validation_20261128/INTEGRATION_LOCAL0.log)。43所見のIDは重複・欠落なし、H8採択PLANのSHA不変、R43同値性証拠を再照合。
