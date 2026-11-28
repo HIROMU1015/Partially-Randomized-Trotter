@@ -356,6 +356,25 @@ class _DirectoryIndex:
         return cls(version, names, dict(configurations), tuple(pending))
 
 
+def history_decode_bootstrap(modules, owner_pid):
+    # Spawn may originate in a selector thread. Linux PDEATHSIG follows the
+    # creating *thread*, not the whole controller, so use a child-only parent
+    # process watcher instead. These children decode saved records only.
+    return ('import os, threading, time\n'
+            f'def _watch_history_owner(_os=os, _time=time, _pid={int(owner_pid)}):\n'
+            '    while _os.getppid() == _pid: _time.sleep(.5)\n'
+            '    _os._exit(1)\n'
+            f'if os.getppid() != {int(owner_pid)}: os._exit(1)\n'
+            'threading.Thread(target=_watch_history_owner, daemon=True).start()\n'
+            'import importlib.util, sys, trottertracks\n'
+            'for name, path in '+repr(modules)+':\n'
+            '    spec = importlib.util.spec_from_file_location(name, path)\n'
+            '    module = importlib.util.module_from_spec(spec)\n'
+            '    sys.modules[name] = module\n'
+            '    spec.loader.exec_module(module)\n'
+            '    setattr(trottertracks, name.rsplit(".", 1)[-1], module)\n')
+
+
 class HistoryInventory:
     """Share lightweight history lookups and exact cache hits within an invocation."""
 
@@ -387,13 +406,7 @@ class HistoryInventory:
                 # scientific checkout on sys.path.
                 modules = [(O.__name__, str(Path(O.__file__).resolve())),
                            (__name__, str(Path(__file__).resolve()))]
-                bootstrap = ('import importlib.util, sys, trottertracks\n'
-                             'for name, path in '+repr(modules)+':\n'
-                             '    spec = importlib.util.spec_from_file_location(name, path)\n'
-                             '    module = importlib.util.module_from_spec(spec)\n'
-                             '    sys.modules[name] = module\n'
-                             '    spec.loader.exec_module(module)\n'
-                             '    setattr(trottertracks, name.rsplit(".", 1)[-1], module)\n')
+                bootstrap = history_decode_bootstrap(modules, os.getpid())
                 self.decode_pool = ProcessPoolExecutor(max_workers=max(1, min(cpus-2, memory_workers)),
                         mp_context=multiprocessing.get_context('spawn'), initializer=exec, initargs=(bootstrap,))
             return self.decode_pool.submit(_decode_outcome, job, signature)

@@ -353,3 +353,32 @@ class SavedHistoryDeltas(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_history_decode_child_exits_when_parent_disappears(tmp_path):
+    import os,subprocess,time
+    from trottertracks.rpe_plan_history_cache import history_decode_bootstrap
+    if not sys.platform.startswith('linux'):
+        return
+    pidfile=tmp_path/'child.pid'
+    # Isolated process fixture: the watched child only sleeps, never runs a calculator.
+    parent_code=('import os,subprocess,sys,time\n'
+                 'from pathlib import Path\n'
+                 'from trottertracks.rpe_plan_history_cache import history_decode_bootstrap\n'
+                 'body=history_decode_bootstrap([],os.getpid())+"\\nimport time\\ntime.sleep(60)"\n'
+                 'body="def invoke():\\n    exec("+repr(body)+")\\ninvoke()"\n'
+                 'child=subprocess.Popen([sys.executable,"-c",body],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)\n'
+                 f'Path({str(pidfile)!r}).write_text(str(child.pid))\n'
+                 'time.sleep(.8)\n')
+    env=dict(os.environ,PYTHONPATH=str(ROOT/'src'))
+    subprocess.run([sys.executable,'-c',parent_code],env=env,check=True,timeout=5)
+    pid=int(pidfile.read_text());deadline=time.monotonic()+5
+    while time.monotonic()<deadline:
+        try:
+            state=Path(f'/proc/{pid}/stat').read_text().split(') ',1)[1][0]
+        except FileNotFoundError:return
+        if state=='Z':return
+        time.sleep(.1)
+    # Only the isolated fixture child may be stopped on test failure.
+    os.kill(pid,15)
+    raise AssertionError('orphan decode child did not exit')

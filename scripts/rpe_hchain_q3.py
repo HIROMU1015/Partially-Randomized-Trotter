@@ -27,11 +27,12 @@ def read(path):
     return json.loads(path.read_bytes())
 
 
-def write(path, record):
+def write(path, record, *, compact=False):
     with tempfile.NamedTemporaryFile(mode="w", dir=path.parent, delete=False) as stream:
         pending = Path(stream.name)
         try:
-            json.dump(record, stream, indent=2, allow_nan=False)
+            formatting = dict(separators=(",", ":")) if compact else dict(indent=2)
+            json.dump(record, stream, allow_nan=False, **formatting)
             stream.write("\n")
             stream.close()
             os.link(pending, path)
@@ -331,7 +332,7 @@ def run(request, output, mode):
     write(output / "HCHAIN_STARTED.json", receipt)
     result = compute((name, rows, shots, source, min(workers, affinity), h, target))
     proof = dict(receipt, result=result)
-    write(proof_path, proof)
+    write(proof_path, proof, compact=True)
     record = outcome(request, proof)
     write(outcome_path, record)
     return 2 if record["status"] == "UNKNOWN" else 0

@@ -962,3 +962,8 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - 大容量の旧provider workspaceのclean SOURCEを遡及compactするのは、そのrunの通常Resumeに復元経路があり、稼働中の別runが依存しないと確認できる場合に限る。新規runのsparse checkoutと既存 `compact_provider_source` / `restore_provider_source` は引き続き使用する。固定版の探索・実行・所有を無断で切り替えない。
 
 先行する公開共通版の43件のR系対応（R1/R2/R11/R12を含む）を保持し、ここでは独立した保存データ対策と候補系列の再走査削減のみを統合する。稼働中の固定版は切り替えない。
+
+- `--compact-settled-queues --run-id ...` は終了確認済み・所有未確定なし・WAL/SHMなしの旧台帳に限り、空きページを `VACUUM INTO` で回収する。schema、全行とrowid、SQLite整合性を照合し、所有を再確認して原本と交換する。例外時は交換済み原本を保持する。UNKNOWNを含む台帳は対象外。
+- `--legacy-inventory` と任意の `--reference-file` は管理run、固定release、配置、Git alternateなどの参照を調べる読取り専用機能。未確認は削除可能を意味しない。旧公開cloneの重複object整理は、依存するalternateも維持し、復元可能な退避とGit objectの照合後に限る。試験配置・planning・既存のraw成果の一律削除はしない。
+- 保存済み履歴のdecode専用spawn子は、親プロセスの消失を検知したら自分だけを終了する。正常な親が稼働中は動作を継続し、計算workerの停止や再投入には使わない。
+- 新規Q3の `HCHAIN_RESULT.json` は可逆なcompact JSONで保存する。既存receipt/rawファイルのバイト列とdigestは書き換えず、未照合の多数の小ファイルの集約も行わない。

@@ -207,3 +207,41 @@ def test_selective_rpc_archive_keeps_tiny_replies_and_reuses_verified_copy(tmp_p
     assert result['sessions'][0]['files']==1 and not again['sessions']
     assert (source/'large.json').is_symlink() and (source/'large.json').read_bytes()==large
     assert not (source/'small.json').is_symlink() and (source/'small.json').read_bytes()==b'{}'
+
+
+def test_vacuum_settled_queue_preserves_rows_and_excludes_unresolved(tmp_path):
+    import sqlite3
+    from contextlib import closing
+    from rpe_romutail_retention import compact_stopped_queues
+    state=tmp_path/'state';state.mkdir();old=stopped_run(state,'old');owned=stopped_run(state,'owned')
+    for run,status in ((old,'ACCEPTED'),(owned,'UNKNOWN')):
+        p=run/'distributed/QUEUE.sqlite3';p.parent.mkdir()
+        with closing(sqlite3.connect(p)) as db, db:
+            db.execute('PRAGMA journal_mode=WAL')
+            db.execute('CREATE TABLE jobs(job_id TEXT PRIMARY KEY,state TEXT,request TEXT)')
+            db.execute('INSERT INTO jobs VALUES(?,?,?)',('keep',status,'exact'))
+            db.execute('CREATE TABLE temporary_history(id INTEGER PRIMARY KEY,payload TEXT)')
+            db.executemany('INSERT INTO temporary_history(payload) VALUES(?)',[('x'*4000,)]*400)
+            db.execute('DELETE FROM temporary_history')
+    before=(owned/'distributed/QUEUE.sqlite3').read_bytes()
+    result=compact_stopped_queues(state,minimum_bytes=1)
+    assert result['reclaimed_bytes']>0
+    with closing(sqlite3.connect(old/'distributed/QUEUE.sqlite3')) as db:
+        assert db.execute('SELECT * FROM jobs').fetchall()==[('keep','ACCEPTED','exact')]
+        assert db.execute('PRAGMA journal_mode').fetchone()==('wal',)
+    assert (owned/'distributed/QUEUE.sqlite3').read_bytes()==before
+
+
+def test_storage_inventory_marks_release_and_alternate_and_never_authorizes_deletion(tmp_path):
+    from rpe_romutail_retention import storage_dependency_inventory
+    base=tmp_path/'repo/.rpe-central';state=base/'state';state.mkdir(parents=True)
+    release=base/'releases/used';run=release/'search-evidence/old';run.mkdir(parents=True)
+    planning=base/'planning/input';planning.mkdir(parents=True)
+    extra=base/'deployment/unknown';extra.mkdir(parents=True)
+    (state/'RUNS.json').write_text(json.dumps({'old':{'run_directory':str(run)}}))
+    alternate=base.parent/'.git/objects/info/alternates';alternate.parent.mkdir(parents=True);alternate.write_text(str(planning/'objects')+'\n')
+    data=storage_dependency_inventory(state);lookup={row['path']:row for row in data['entries']}
+    assert lookup[str(release)]['status']=='REFERENCED'
+    assert lookup[str(planning)]['status']=='REFERENCED'
+    assert lookup[str(extra)]['status']=='UNCONFIRMED_NOT_A_DELETION_CANDIDATE'
+    assert data['status']=='INVENTORY_ONLY' and extra.is_dir()

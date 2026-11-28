@@ -3,6 +3,8 @@
 import argparse
 import base64
 import ctypes
+from contextlib import closing
+from itertools import zip_longest
 import hashlib
 import json
 import os
@@ -503,12 +505,155 @@ def archive_terminal_rpc_large_files(state, mount=MOUNT, *, run_id=None, session
     return dict(status='CHECKED',sessions=results,reclaimed_bytes=sum(r['reclaimed_bytes'] for r in results))
 
 
+
+def _queue_db_signature(path):
+    return tuple(identity(item) if item.is_file() and not item.is_symlink() else None
+                 for item in (path,Path(str(path)+'-wal'),Path(str(path)+'-shm')))
+
+
+def _offline_queue(path):
+    # No WAL/SHM is allowed; immutable reads do not create either sidecar.
+    return closing(sqlite3.connect(path.as_uri()+'?mode=ro&immutable=1',uri=True))
+
+
+def _queue_is_settled(path):
+    with _offline_queue(path) as db:
+        return db.execute("SELECT 1 FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED') LIMIT 1").fetchone() is None
+
+
+def _same_queue_contents(original, compacted):
+    """Compare every schema entry and ordered row, including original rowids."""
+    with _offline_queue(original) as a, _offline_queue(compacted) as b:
+        if b.execute('PRAGMA quick_check').fetchall()!=[('ok',)]:return False
+        schema="SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name"
+        left=a.execute(schema).fetchall();right=b.execute(schema).fetchall()
+        if left!=right:return False
+        for pragma in ('user_version','application_id'):
+            if a.execute('PRAGMA '+pragma).fetchone()!=b.execute('PRAGMA '+pragma).fetchone():return False
+        for kind,name,_,definition in left:
+            if kind!='table':continue
+            quoted='"'+name.replace('"','""')+'"'
+            query='SELECT rowid,* FROM '+quoted+' ORDER BY rowid'
+            if definition and 'WITHOUT ROWID' in definition.upper():
+                columns=a.execute('PRAGMA table_info('+quoted+')').fetchall()
+                keys=[row[1] for row in sorted((r for r in columns if r[5]),key=lambda r:r[5])]
+                query='SELECT * FROM '+quoted+' ORDER BY '+','.join('"'+k.replace('"','""')+'"' for k in keys)
+            if any(x!=y for x,y in zip_longest(a.execute(query),b.execute(query))):return False
+        return True
+
+
+def compact_stopped_queues(state, run_id=None, *, minimum_bytes=64*1024**2):
+    """Reclaim freelist pages only in settled ended ledgers, retaining every row."""
+    results=[]
+    for run,launch in stopped_runs(state):
+        if run_id is not None and run.name!=run_id:continue
+        dbpath=run/'distributed/QUEUE.sqlite3'
+        if not dbpath.is_file() or dbpath.is_symlink():continue
+        wal=Path(str(dbpath)+'-wal');shm=Path(str(dbpath)+'-shm')
+        # A WAL-backed active or unresolved ledger is never replaced.
+        if (wal.exists() or wal.is_symlink() or shm.exists() or shm.is_symlink()
+                or dbpath.stat().st_nlink != 1 or not _queue_is_settled(dbpath)):
+            results.append(dict(run_id=run.name,status='OWNED_OR_WAL_HELD'));continue
+        before=_queue_db_signature(dbpath)
+        with _offline_queue(dbpath) as db:
+            free=db.execute('PRAGMA freelist_count').fetchone()[0]*db.execute('PRAGMA page_size').fetchone()[0]
+        if free<minimum_bytes:continue
+        tmp=dbpath.with_name('.queue-vacuum-'+uuid.uuid4().hex+'.sqlite3')
+        exchanged=False
+        try:
+            if shutil.disk_usage(dbpath.parent).free<dbpath.stat().st_size:
+                results.append(dict(run_id=run.name,status='INSUFFICIENT_WORKSPACE'));continue
+            with _offline_queue(dbpath) as db:
+                db.execute('VACUUM INTO ?', (str(tmp),))
+            # VACUUM INTO defaults to rollback journaling; preserve a WAL ledger's format.
+            with dbpath.open('rb') as stream:
+                stream.seek(18); journal_header=stream.read(2)
+            if journal_header==b'\x02\x02':
+                with closing(sqlite3.connect(tmp)) as db:
+                    if db.execute('PRAGMA journal_mode=WAL').fetchone()!=('wal',):
+                        raise ValueError('Unable to preserve WAL format')
+            if not _same_queue_contents(dbpath,tmp):
+                results.append(dict(run_id=run.name,status='CONTENT_OR_ROWID_DIFFERS'));continue
+            with tmp.open('rb') as stream:os.fsync(stream.fileno())
+            with stopped_lock(state,run,launch):
+                if (_queue_db_signature(dbpath)!=before or wal.exists() or wal.is_symlink()
+                        or shm.exists() or shm.is_symlink() or dbpath.stat().st_nlink!=1
+                        or not _queue_is_settled(dbpath)
+                        or optional(run/'EXIT.json').get('invocation_id')!=launch['invocation_id']):
+                    results.append(dict(run_id=run.name,status='OWNERSHIP_CHANGED'));continue
+                info=dbpath.stat();os.chmod(tmp,stat.S_IMODE(info.st_mode))
+                reclaimed=info.st_blocks*512-tmp.stat().st_blocks*512
+                if reclaimed<=0:continue
+                exchange(dbpath,tmp)
+                exchanged=True
+                # The verified new DB is now visible; the original remains at tmp until synced.
+                fd=os.open(dbpath.parent,os.O_RDONLY|os.O_DIRECTORY)
+                try:os.fsync(fd)
+                finally:os.close(fd)
+                tmp.unlink()
+                results.append(dict(run_id=run.name,status='COMPACTED_VERIFIED',reclaimed_bytes=reclaimed))
+        finally:
+            # An exception after exchange must retain the old DB for recovery.
+            if tmp.exists() and not exchanged:tmp.unlink()
+    return dict(runs=results,reclaimed_bytes=sum(r.get('reclaimed_bytes',0) for r in results))
+
+
+
+def storage_dependency_inventory(state, reference_files=()):
+    """Read-only legacy storage inventory, never a declaration of safe deletion."""
+    central=state.parent.resolve();repo=central.parent
+    categories=('releases','deployment','planning','acceptance','validation','price-validation','operation-acceptance')
+    entries={}
+    for category in categories:
+        for path in (central/category).glob('*'):
+            if path.is_dir():entries[str(path)]=dict(category=category,path=str(path),references=[])
+    for name in ('publication','results-publication'):
+        path=central/name
+        if path.is_dir():entries[str(path)]=dict(category='publication',path=str(path),references=[])
+    prefix=re.escape(str(central))+r'/([^/\s"\\]+)(?:/([^/\s"\\]+))?'
+    refs=0;errors=[]
+    def inspect(text, origin):
+        nonlocal refs
+        for first,second in re.findall(prefix,text):
+            key=str(central/first/second) if first in categories and second else str(central/first)
+            if key in entries and origin not in entries[key]['references']:
+                entries[key]['references'].append(origin);refs+=1
+    def scan(path):
+        if not path.is_file():return
+        try:inspect(path.read_text(),str(path))
+        except (OSError,UnicodeError) as error:errors.append(dict(path=str(path),reason=str(error)))
+    for path in (state/'RUNS.json',central/'RELEASES.json',central/'SERVICE.json',central/'CLIENT.json',
+                 state/'CURRENT_TARGET.json',*map(Path,reference_files)):
+        scan(path)
+    for row in optional(state/'RUNS.json').values():
+        try:run=Path(row['run_directory']).resolve(strict=True)
+        except (OSError,KeyError,TypeError) as error:errors.append(dict(path=str(row),reason=str(error)));continue
+        inspect(str(run),'registered run '+run.name)
+        for filename in ('CONTROLLER_CONFIG.json','ROUND.json','ROUND.requested.json','APPLIED_SCOPE.json'):
+            scan(run/filename)
+        pf=run/'pf_auto'
+        for candidates in [pf/'candidates',*pf.glob('price-recovery/recheck-*/candidates')]:
+            for path in candidates.glob('*/pf_auto/pf_completion/provider_workspace/.git/objects/info/alternates'):scan(path)
+    scan(repo/'.git/objects/info/alternates')
+    for pattern in ('releases/*/.git/objects/info/alternates','deployment/*/.git/objects/info/alternates',
+                    'deployment/*/*/.git/objects/info/alternates','planning/*/*/objects/info/alternates',
+                    'transport-flat/*/objects.git/objects/info/alternates','publication/.git/objects/info/alternates',
+                    'results-publication/.git/objects/info/alternates'):
+        for path in central.glob(pattern):scan(path)
+    for row in entries.values():
+        row['status']='REFERENCED' if row['references'] else 'UNCONFIRMED_NOT_A_DELETION_CANDIDATE'
+    return dict(status='INVENTORY_ONLY',entries=sorted(entries.values(),key=lambda r:r['path']),references=refs,errors=errors)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state-directory', type=Path, required=True)
     parser.add_argument('--mount', type=Path, default=MOUNT)
     parser.add_argument('--logs-only', action='store_true')
     parser.add_argument('--share-events', action='store_true')
+    parser.add_argument('--compact-settled-queues', action='store_true')
+    parser.add_argument('--legacy-inventory', action='store_true')
+    parser.add_argument('--reference-file', type=Path, action='append', default=[])
     parser.add_argument('--share-requests', action='store_true')
     parser.add_argument('--share-provider-packs', action='store_true')
     parser.add_argument('--archive-terminal-responses', action='store_true')
@@ -517,6 +662,10 @@ def main():
     parser.add_argument('--session-id')
     args = parser.parse_args()
     state = args.state_directory.resolve()
+    if args.legacy_inventory:
+        print(json.dumps(storage_dependency_inventory(state,args.reference_file),ensure_ascii=False));return
+    if args.compact_settled_queues:
+        print(compact_stopped_queues(state,args.run_id));return
     if args.share_provider_packs:
         print(share_stopped_provider_git_packs(state, args.run_id)); return
     if args.share_requests:

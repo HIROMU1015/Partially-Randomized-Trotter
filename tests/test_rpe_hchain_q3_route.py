@@ -129,3 +129,13 @@ def test_packed_input_binds_cost_and_signal(tmp_path):
     route["configurations"]["candidate"]["signal_packet"]["json"] += " "
     with pytest.raises(ValueError, match="signal_packet bytes differ"):
         hchain.request_inputs(request)
+
+
+def test_hchain_proof_compact_json_preserves_exact_integer_values(tmp_path):
+    from rpe_hchain_q3 import write
+    import json
+    data={'integers':[10**1000,10**700,0],'nested':{'exact':True}}
+    pretty=tmp_path/'pretty.json';compact=tmp_path/'compact.json'
+    write(pretty,data);write(compact,data,compact=True)
+    assert json.loads(compact.read_text())==json.loads(pretty.read_text())==data
+    assert compact.stat().st_size<pretty.stat().st_size
