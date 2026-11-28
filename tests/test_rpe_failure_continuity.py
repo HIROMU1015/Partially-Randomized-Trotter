@@ -212,6 +212,7 @@ class FailureContinuity(unittest.TestCase):
         with tempfile.TemporaryDirectory()as tmp:
             root=pathlib.Path(tmp);comp=C.Completion.__new__(C.Completion)
             comp.directory=root;comp.lock=threading.RLock();comp.settings={};comp.state={'records':{}}
+            comp.state_path=root/'STATE.json'
             comp.save=lambda:None;comp.log=lambda **row:None
             def resolve(request,directory):
                 request['tail_descriptor']={'fixture':'ARTIFICIAL_DESCRIPTOR'}
@@ -234,7 +235,8 @@ class FailureContinuity(unittest.TestCase):
                 self.assertEqual(preserved['key'],key);self.assertEqual(len(comp.state['records']),1)
                 comp.state['records'][key]['status']='HELD_WITH_REASON'
                 comp.state['records'][key]['reason']='PRIOR_STAGE_FAILED_NO_RETRY:ARTIFICIAL'
-                comp.ingest_price_results=lambda:None;comp.refresh_price_hold=lambda record:None
+                comp.ingest_price_results=lambda:None;comp.refresh_price_hold=lambda record,**kwargs:None
+                comp.price_registry_digest=lambda:'fixture'
                 held=comp.complete(historical)
                 self.assertEqual(held['reason'],'PRIOR_STAGE_FAILED_NO_RETRY:ARTIFICIAL')
                 # Python equality merges signed zeros; request serialization must not.
@@ -294,3 +296,13 @@ class FailureContinuity(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+def test_exact_replay_active_uses_only_explicit_owned_attempt():
+    from types import SimpleNamespace
+    rows={'old':{'state':'RUNNING'},'new':{'state':'QUEUED'}}
+    ex=SimpleNamespace(prior_q3_holds=[{'job_id':'old','replay_exact':False},{'job_id':'new','replay_exact':True}],
+        store=SimpleNamespace(row=rows.get))
+    assert E.WidthDriver.exact_replay_active(ex)
+    rows['new']['state']='ACCEPTED'
+    assert not E.WidthDriver.exact_replay_active(ex)

@@ -188,7 +188,9 @@ def configure_allocation_worker(profile, launcher):
         def _resource_offer(self):
             report = super()._resource_offer()
             observations = {item['attempt_id']: item for item in report.get('preparation_observations', ())}
+            terminal=getattr(self,'terminal_resources',{})
             for attempt, assignment in self.records.items():
+                if attempt in terminal:continue
                 spec = assignment['request'].get('preparation', {})
                 if not spec or assignment['attempt_id'] in observations:
                     continue

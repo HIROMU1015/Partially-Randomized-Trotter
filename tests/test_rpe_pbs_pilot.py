@@ -407,8 +407,11 @@ def test_managed_rejection_requires_return_receipt_and_checked_history(tmp_path)
         with pytest.raises(RuntimeError):
             pilot.physical(pool, generation.name)
     with patch.object(G, 'snapshot', return_value=[{'status':'SUBMIT_AMBIGUOUS_HOLD','receipt':None}]), \
-         patch.object(pilot, 'owned_jobs_by_name', side_effect=AssertionError('no absence proof')):
+         patch.object(pilot, 'owned_jobs_by_name', return_value={}):
         assert pilot.physical(pool, generation.name)['status'] == 'SUBMIT_AMBIGUOUS_HOLD'
+    with patch.object(G,'snapshot',side_effect=[[{'status':'SUBMIT_AMBIGUOUS_HOLD'}],[{'status':'Q','job_id':'1.fixture'}]]),          patch.object(pilot,'owned_jobs_by_name',return_value={'1.fixture':{'Job_Name':'RPE'+generation.name[:12]}}):
+        assert pilot.physical(pool,generation.name)['job_id']=='1.fixture'
+        assert G.read(generation/'JOB_ID.json')['recovered'] is True
 
 
 def test_managed_rejected_generation_allows_new_session_token(tmp_path, monkeypatch):
@@ -577,3 +580,56 @@ def test_managed_successor_explicit_release_fences_unsubmitted_target(tmp_path, 
     with patch.object(G.subprocess,'run',side_effect=AssertionError('no scheduler')):
         G.submit_once(successor)
     assert not (successor/'QSUB_STARTED.json').exists()
+
+
+def test_release_before_qsub_retires_only_proved_unsubmitted_generation(tmp_path,monkeypatch):
+    # Independent review's release-before-qsub fixture, with no scheduler.
+    G=pilot.gateway
+    root=tmp_path.resolve()/'run'
+    monkeypatch.setattr(G,'submit_async',lambda directory:None)
+    monkeypatch.setattr(G,'qstat',lambda *ids:{})
+    def spec(token):
+        return dict(token=token,resources=pilot.RESOURCES,profile=dict(host_id='pbs-0',
+            work_dir=str(root/'workers'/'pbs-0')),python=sys.executable,transport_root=str(tmp_path))
+    first=pilot.attach_managed(root,spec('a'))
+    pool=pilot.managed_pool(root,'pbs-0'); gen=pool/'allocations'/first['pilot']
+    pilot.stop_session(root/'allocations'/'a')
+    pilot.release_managed_node(root,'pbs-0')
+    monkeypatch.setattr(G.subprocess,'run',lambda *a,**k:(_ for _ in ()).throw(AssertionError('no real qsub')))
+    G.submit_once(gen)
+    assert not (gen/'QSUB_STARTED.json').exists()
+    assert pilot.physical(pool,gen.name)['status']=='RELEASED_UNSUBMITTED'
+    assert pilot.attach_managed(root,spec('b'))['pilot']!=first['pilot']
+
+
+def test_managed_contact_receipt_is_gateway_local_and_not_refreshed_by_duplicates(tmp_path,monkeypatch):
+    monkeypatch.setattr(pilot.time,'time',lambda:100.)
+    pilot.update_session_control(tmp_path,{'contact_protocol':2,'contact':99999})
+    assert G.read(tmp_path/'CONTROL.json')['contact_received_epoch']==100.
+    monkeypatch.setattr(pilot.time,'time',lambda:200.)
+    pilot.update_session_control(tmp_path,{'contact_protocol':2,'contact':99999})
+    assert G.read(tmp_path/'CONTROL.json')['contact_received_epoch']==100.
+    pilot.update_session_control(tmp_path,{'contact_protocol':2,'contact':100000})
+    assert G.read(tmp_path/'CONTROL.json')['contact_received_epoch']==200.
+
+
+def test_stop_fences_unattached_successor_but_keeps_current_reservation(tmp_path,monkeypatch):
+    root=tmp_path/'run'
+    monkeypatch.setattr(G,'submit_async',lambda directory:None)
+    spec=dict(token='session',resources=pilot.RESOURCES,profile=dict(host_id='pbs-0'),
+              python=sys.executable,transport_root=str(tmp_path))
+    attached=pilot.attach_managed(root,spec)
+    pool=pilot.managed_pool(root,'pbs-0');old=pool/'allocations'/attached['pilot']
+    G.atomic(old/'ALLOCATION.json',{'job_id':'1.fixture'})
+    monkeypatch.setattr(pilot,'physical',lambda pool,token,**kw:
+        dict(job_id='1.fixture',status='R') if token==old.name else dict(job_id=None,status='SUBMIT_PENDING'))
+    result=pilot.stage_managed_successor(root,dict(token='session',job_id='1.fixture'))
+    target=pool/'allocations'/result['token']
+    with patch.object(G,'exchange',return_value={}),patch.object(G,'handle',side_effect=AssertionError('no qdel')):
+        pilot.managed_exchange(root,{'controls':{'session':{'stop':True}}})
+    assert (target/'RELEASE.json').exists()
+    assert not (old/'RELEASE.json').exists()
+    assert G.read(root/'allocations'/'session'/'CONTROL.json')['stop'] is True
+    with patch.object(G.subprocess,'run',side_effect=AssertionError('no qsub')):
+        G.submit_once(target)
+    assert not (target/'QSUB_STARTED.json').exists()

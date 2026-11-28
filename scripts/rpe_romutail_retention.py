@@ -13,6 +13,7 @@ import re
 import shutil
 import sqlite3
 import stat
+import subprocess
 import time
 import uuid
 
@@ -328,6 +329,61 @@ def share_stopped_provider_git_packs(state, run_id=None):
     return dict(shared_files=shared,reclaimed_bytes=reclaimed)
 
 
+def compact_stopped_provider_sources(state,run_id):
+    """Compact only clean provider files whose pinned Resume can restore them.
+
+    Reuse the ordinary provider compactor; never change a fixed code root or
+    Git objects. Old releases without the restore path remain untouched.
+    """
+    from trottertracks.rpe_worker_storage import compact_provider_source
+    import ast
+    result=dict(compacted=0,reclaimed_bytes=0,skipped=[])
+    for run,launch in stopped_runs(state):
+        if run.name!=run_id:continue
+        config=optional(run/'CONTROLLER_CONFIG.json')
+        try:
+            code=Path(config['code_root']).resolve(strict=True)/'src/trottertracks/pf_distributed_preparation.py'
+            tree=ast.parse(code.read_text())
+            if not any(isinstance(node,ast.Call) and isinstance(node.func,ast.Name)
+                       and node.func.id=='restore_provider_source' for node in ast.walk(tree)):
+                raise ValueError('Pinned Resume does not restore retained provider source')
+        except (OSError,KeyError,ValueError,SyntaxError) as error:
+            result['skipped'].append(dict(run=run.name,reason=str(error)));continue
+        pf=run/'pf_auto'
+        for candidates in [pf/'candidates',*pf.glob('price-recovery/recheck-*/candidates')]:
+            for workspace in candidates.glob('*/pf_auto/pf_completion/provider_workspace'):
+                try:
+                    if workspace.resolve()!=workspace:continue
+                    marker=optional(workspace.parent/'PROVIDER_SOURCE.json')
+                    source=marker['source']
+                    if not re.fullmatch('[0-9a-f]{40,64}',source):raise ValueError('Unfixed provider source')
+                    with stopped_lock(state,run,launch,protect_references=True):
+                        size=compact_provider_source(workspace,source)
+                    if size:result['compacted']+=1;result['reclaimed_bytes']+=size
+                except (OSError,KeyError,ValueError,subprocess.SubprocessError) as error:
+                    result['skipped'].append(dict(workspace=str(workspace),reason=str(error)))
+    return result
+
+
+def restore_stopped_provider_sources(state, run_id):
+    """Restore retained bytes before handing a stopped run to a legacy release."""
+    from trottertracks.rpe_worker_storage import restore_provider_source
+    run, launch = next(((r,l) for r,l in stopped_runs(state) if r.name == run_id), (None,None))
+    if run is None:
+        raise ValueError('No stopped registered run')
+    restored = 0
+    with stopped_lock(state, run, launch, protect_references=True):
+        pf = run/'pf_auto'
+        for candidates in [pf/'candidates', *pf.glob('price-recovery/recheck-*/candidates')]:
+            for workspace in candidates.glob('*/pf_auto/pf_completion/provider_workspace'):
+                if workspace.resolve() != workspace:
+                    raise ValueError('Provider workspace is not local')
+                if (workspace.parent/'RETAINED_PROVIDER_SOURCE.json').is_file():
+                    restore_provider_source(workspace)
+                    restored += 1
+    return dict(restored=restored)
+
+
 def rpc_session_inventory(directory):
     if directory.is_symlink() or not directory.is_dir():
         raise ValueError('Not a local response directory')
@@ -602,6 +658,115 @@ def compact_stopped_queues(state, run_id=None, *, minimum_bytes=64*1024**2):
 
 
 
+def pack_stopped_diagnostics(state,run_id,archive):
+    """Create a lossless diagnostic archive; do not delete any original path."""
+    import lzma
+    archive=Path(archive);archive.parent.mkdir(parents=True,exist_ok=True)
+    if archive.exists():raise ValueError('Diagnostic archive already exists')
+    run,launch=next(((r,l) for r,l in stopped_runs(state) if r.name==run_id),(None,None))
+    if run is None:raise ValueError('No stopped registered run')
+    db_path=run/'distributed/QUEUE.sqlite3'
+    names=('TRANSPORT_TIMING.jsonl','JOB_STAGES.jsonl','WORKER_COLLECT_RETURN.json')
+    temporary=archive.with_name(archive.name+'.tmp-'+uuid.uuid4().hex);count=size=0
+    try:
+        with stopped_lock(state,run,launch,protect_references=True),closing(sqlite3.connect(db_path.as_uri()+'?mode=ro',uri=True)) as db, lzma.open(temporary,'wt',encoding='utf-8') as writer:
+            writer.write(json.dumps({'schema':'RPE_DIAGNOSTIC_ARCHIVE_V1','run_id':run_id})+'\n')
+            for job,method,attempt in db.execute("SELECT job_id,method,attempt_id FROM jobs WHERE state='ACCEPTED'"):
+                for folder in (run/'jobs'/safe_name(method)/safe_name(job),run/'distributed/transfers'/safe_name(job)/safe_name(attempt)):
+                    for name in names:
+                        path=folder/name
+                        if path.resolve()!=path or not path.is_file():continue
+                        before=identity(path);raw=path.read_bytes()
+                        if identity(path)!=before:raise ValueError('Diagnostic changed during archive')
+                        writer.write(json.dumps({'path':str(path.relative_to(run)),'sha256':hashlib.sha256(raw).hexdigest(),
+                                                 'data':base64.b64encode(raw).decode()},separators=(',',':'))+'\n')
+                        count+=1;size+=len(raw)
+        if verify_diagnostic_archive(temporary,run_id)!=count:raise ValueError('Diagnostic archive verification differs')
+        os.link(temporary,archive)
+        return dict(files=count,original_bytes=size,archive_bytes=archive.stat().st_size,originals_preserved=True)
+    finally:temporary.unlink(missing_ok=True)
+
+
+def verify_diagnostic_archive(archive,run_id):
+    import lzma
+    count=0;seen=set()
+    with lzma.open(archive,'rt',encoding='utf-8') as reader:
+        if json.loads(reader.readline())!={'schema':'RPE_DIAGNOSTIC_ARCHIVE_V1','run_id':run_id}:raise ValueError('Diagnostic archive identity differs')
+        for line in reader:
+            row=json.loads(line);path=Path(row['path'])
+            if path.is_absolute() or '..' in path.parts or row['path'] in seen:raise ValueError('Invalid diagnostic archive path')
+            raw=base64.b64decode(row['data'],validate=True)
+            if hashlib.sha256(raw).hexdigest()!=row['sha256']:raise ValueError('Diagnostic archive digest differs')
+            seen.add(row['path']);count+=1
+    return count
+
+
+def restore_diagnostic_archive(state,run_id,archive):
+    """Restore missing diagnostic paths only from a verified stopped-run pack."""
+    import lzma
+    expected=verify_diagnostic_archive(archive,run_id)
+    run,launch=next(((r,l) for r,l in stopped_runs(state) if r.name==run_id),(None,None))
+    if run is None:raise ValueError('No stopped registered run')
+    names={'TRANSPORT_TIMING.jsonl','JOB_STAGES.jsonl','WORKER_COLLECT_RETURN.json'}
+    restored=0
+    with stopped_lock(state,run,launch,protect_references=True),lzma.open(archive,'rt',encoding='utf-8') as reader:
+        header=json.loads(reader.readline())
+        if header!={'schema':'RPE_DIAGNOSTIC_ARCHIVE_V1','run_id':run_id}:raise ValueError('Diagnostic archive identity differs')
+        seen=set()
+        for line in reader:
+            row=json.loads(line);relative=Path(row['path']);parts=relative.parts
+            if (relative.is_absolute() or '..' in parts or not parts or parts[-1] not in names
+                    or not (len(parts)==4 and parts[0]=='jobs' or len(parts)==5 and parts[:2]==('distributed','transfers'))
+                    or row['path'] in seen):raise ValueError('Invalid diagnostic restore path')
+            seen.add(row['path']);raw=base64.b64decode(row['data'],validate=True)
+            if hashlib.sha256(raw).hexdigest()!=row['sha256']:raise ValueError('Diagnostic archive digest differs')
+            path=run/relative
+            if path.resolve()!=path:raise ValueError('Diagnostic restore escapes original path')
+            if path.exists():
+                if path.read_bytes()!=raw:raise ValueError('Diagnostic original differs; preserve it')
+                continue
+            path.parent.mkdir(parents=True,exist_ok=True)
+            temporary=path.with_name(path.name+'.restore-'+uuid.uuid4().hex)
+            try:
+                with temporary.open('xb') as output:output.write(raw);output.flush();os.fsync(output.fileno())
+                os.link(temporary,path);restored+=1
+            finally:temporary.unlink(missing_ok=True)
+        if len(seen)!=expected:raise ValueError('Diagnostic archive count differs')
+    return dict(restored=restored,files=expected)
+
+
+def alternate_relocation_readiness(repository, target_objects):
+    """Conservative read-only check: target alone must cover every reachable object.
+
+    A PASS is object availability evidence, not authorization to change an
+    alternate or delete any source. Include refs, reflogs and index objects.
+    The target must not itself rely on the old store being retired.
+    """
+    from compact_rpe_git_objects import git_environment
+    repository = Path(repository).resolve(strict=True)
+    target_objects = Path(target_objects).resolve(strict=True)
+    if not target_objects.is_dir() or (target_objects/'info/alternates').exists():
+        return dict(status='HOLD_TARGET_NOT_INDEPENDENT')
+    env = git_environment()
+    base = ['git','-C',str(repository)]
+    # Stream the two Git processes; no persistent list or object copy.
+    missing = total = 0
+    with subprocess.Popen([*base,'rev-list','--objects','--all','--reflog','--indexed-objects','--no-object-names','HEAD'],
+                          stdout=subprocess.PIPE, env=env) as listing:
+        with subprocess.Popen([*base,'cat-file','--batch-check'], stdin=listing.stdout,
+                              stdout=subprocess.PIPE, env=dict(env,GIT_OBJECT_DIRECTORY=str(target_objects))) as check:
+            listing.stdout.close()
+            for row in check.stdout:
+                total += 1
+                values = row.split()
+                if len(values) != 3 or not values[-1].isdigit():
+                    missing += 1
+            if check.wait() != 0 or listing.wait() != 0:
+                return dict(status='HOLD_GIT_ERROR', checked=total, missing=missing)
+    return dict(status='OBJECTS_AVAILABLE' if total and not missing else 'HOLD_MISSING_OBJECTS',
+                checked=total, missing=missing, mutation=False)
+
+
 def storage_dependency_inventory(state, reference_files=()):
     """Read-only legacy storage inventory, never a declaration of safe deletion."""
     central=state.parent.resolve();repo=central.parent
@@ -680,16 +845,35 @@ def main():
     parser.add_argument('--reference-file', type=Path, action='append', default=[])
     parser.add_argument('--share-requests', action='store_true')
     parser.add_argument('--share-provider-packs', action='store_true')
+    parser.add_argument('--compact-provider-sources',action='store_true')
+    parser.add_argument('--restore-provider-sources',action='store_true')
+    parser.add_argument('--check-alternate',type=Path,nargs=2,metavar=('REPOSITORY','TARGET_OBJECTS'))
+    parser.add_argument('--pack-diagnostics',type=Path)
+    parser.add_argument('--restore-diagnostics',type=Path)
     parser.add_argument('--archive-terminal-responses', action='store_true')
     parser.add_argument('--large-files-only', action='store_true')
     parser.add_argument('--run-id')
     parser.add_argument('--session-id')
     args = parser.parse_args()
     state = args.state_directory.resolve()
+    if args.check_alternate:
+        print(alternate_relocation_readiness(*args.check_alternate));return
     if args.legacy_inventory:
         print(json.dumps(storage_dependency_inventory(state,args.reference_file),ensure_ascii=False));return
     if args.compact_settled_queues:
         print(compact_stopped_queues(state,args.run_id));return
+    if args.restore_diagnostics:
+        if not args.run_id:parser.error('--restore-diagnostics requires --run-id')
+        print(restore_diagnostic_archive(state,args.run_id,args.restore_diagnostics));return
+    if args.pack_diagnostics:
+        if not args.run_id:parser.error('--pack-diagnostics requires --run-id')
+        print(pack_stopped_diagnostics(state,args.run_id,args.pack_diagnostics));return
+    if args.compact_provider_sources:
+        if not args.run_id:parser.error('--compact-provider-sources requires --run-id')
+        print(compact_stopped_provider_sources(state,args.run_id));return
+    if args.restore_provider_sources:
+        if not args.run_id:parser.error('--restore-provider-sources requires --run-id')
+        print(restore_stopped_provider_sources(state,args.run_id));return
     if args.share_provider_packs:
         print(share_stopped_provider_git_packs(state, args.run_id)); return
     if args.share_requests:

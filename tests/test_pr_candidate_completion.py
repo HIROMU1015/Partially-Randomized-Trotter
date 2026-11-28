@@ -405,3 +405,51 @@ class Continuation(unittest.TestCase):
             self.assertEqual(ex.routes,{'PR_DF':['original_route']})
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+def test_fixed_large_locator_reuses_blob_within_total_byte_budget():
+    C._fixed_json_locator.cache_clear()
+    try:
+        raw=b'x'*(373418)
+        with patch.object(C.subprocess,'check_output',return_value=raw) as git:
+            for _ in range(5):
+                assert C._fixed_json_locator('/synthetic','a'*40,'fixture.json')==raw
+            assert git.call_count==1
+    finally:
+        C._fixed_json_locator.cache_clear()
+
+
+def test_held_quote_does_not_hold_global_lock_and_is_candidate_local(tmp_path):
+    c=object.__new__(C.Completion);c.lock=threading.RLock()
+    a={'key':'a','status':'HELD_WITH_REASON'}; b={'key':'b','status':'HELD_WITH_REASON'}
+    c.state={'records':{'a':a,'b':b}};c.price_registry_digest=lambda:'fixed'
+    c.save_record=lambda record:None
+    entered=threading.Event();resume=threading.Event()
+    def refresh(record,**kwargs):
+        entered.set();assert resume.wait(5)
+        raise ValueError('fixture quote failed')
+    c.refresh_price_hold=refresh
+    def run():
+        with c.lock:c._refresh_held_candidate(a)
+    thread=threading.Thread(target=run);thread.start()
+    try:
+        assert entered.wait(5)
+        assert c.lock.acquire(timeout=1)
+        try:b['status']='READY_FOR_SEARCH'
+        finally:c.lock.release()
+    finally:
+        resume.set();thread.join(5)
+    assert not thread.is_alive()
+    assert a['status']=='HELD_WITH_REASON' and a['metadata_refresh_error']=='fixture quote failed'
+    assert b['status']=='READY_FOR_SEARCH'
+
+
+def test_fixed_schedule_keys_cache_returns_independent_list():
+    loc={'commit':'a'*40,'path':'fixture.json'}
+    C._fixed_json_locator.cache_clear()
+    try:
+        with patch.object(O,'schedule_keys',return_value=['fixed-key']) as compute:
+            keys=C.fixed_schedule_keys(loc,{});keys.append('mutation')
+            assert C.fixed_schedule_keys(loc,{})==['fixed-key']
+            assert compute.call_count==1
+    finally:C._fixed_json_locator.cache_clear()

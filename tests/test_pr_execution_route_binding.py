@@ -287,3 +287,24 @@ def test_cycle_install_reuse_requires_exact_base_record_and_view(tmp_path,monkey
     assert comp.restore_cycle_installation(dict(base,problem={'fixed':False}),current,[row],cache) is None
     monkeypatch.setattr(C,'git',lambda *a,**kw:'b'*40)
     assert comp.restore_cycle_installation(base,current,[row],cache) is None
+
+
+def test_cycle_alias_cache_reuses_only_without_distinct_q3_owner(tmp_path,monkeypatch):
+    import sqlite3
+    comp=C.Completion.__new__(C.Completion);comp.directory=tmp_path/'completion'
+    row=dict(key='alias',status='READY_FOR_SEARCH',method='PR_DF',configuration_id='declared',prices=[1],
+             signal_carrier_configuration_id='carrier',installed_configuration_id='carrier')
+    base=comp.installation_base({'candidates':[],'expected':{}},{'fixed':True},{})
+    installed={'candidates':[dict(method='PR_DF',configuration_id='carrier',ready=True)],'expected':{'carrier':{'binding':'fixed'}}}
+    route={'kind':'prdf_d2_common_entry','configuration_ids':['carrier'],'view':str(tmp_path),'view_commit':'a'*40}
+    routes={'PR_DF':[route]};previous={'alias':((row,row,[route],installed['expected']['carrier']),{})}
+    cached=comp.capture_cycle_installation(base,installed,routes,previous,[row])
+    monkeypatch.setattr(C,'git',lambda *a,**kw:'a'*40)
+    db=tmp_path/'distributed/QUEUE.sqlite3';db.parent.mkdir()
+    with sqlite3.connect(db) as conn:
+        conn.execute('CREATE TABLE jobs(method TEXT,state TEXT,request TEXT)')
+        conn.execute('INSERT INTO jobs VALUES(?,?,?)',('PR_DF','RUNNING',json.dumps({'configuration_id':'unrelated'})))
+    assert comp.restore_cycle_installation(base,{},[row],cached) is not None
+    with sqlite3.connect(db) as conn:
+        conn.execute('INSERT INTO jobs VALUES(?,?,?)',('PR_DF','RUNNING',json.dumps({'configuration_id':'declared'})))
+    assert comp.restore_cycle_installation(base,{},[row],cached) is None

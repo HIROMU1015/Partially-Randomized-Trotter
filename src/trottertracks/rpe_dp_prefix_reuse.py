@@ -8,6 +8,8 @@ from concurrent.futures import ProcessPoolExecutor
 from contextlib import ExitStack, contextmanager
 from copy import deepcopy
 import fcntl
+import errno
+import shutil
 from fractions import Fraction
 import gzip
 import hashlib
@@ -226,22 +228,27 @@ class PrefixStore:
         self.last_write_bytes = len(data)
         if len(data) > self.max_bytes:
             return False
-        self.directory.mkdir(parents=True, exist_ok=True)
-        with (self.directory / '.prefix-storage.lock').open('a+b') as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
-            if not self._make_room(len(data)):
-                return False
-            name = None
-            try:
-                with tempfile.NamedTemporaryFile(dir=self.directory, prefix=_STAGING_PREFIX, delete=False) as file:
-                    name = file.name
-                    file.write(data)
-                    file.flush()
-                    os.fsync(file.fileno())
-                os.replace(name, self.directory / destination)
-            finally:
-                if name is not None:
-                    Path(name).unlink(missing_ok=True)
+        try:
+            self.directory.mkdir(parents=True, exist_ok=True)
+            if shutil.disk_usage(self.directory).free < len(data):return False
+            with (self.directory / '.prefix-storage.lock').open('a+b') as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX)
+                if not self._make_room(len(data)):
+                    return False
+                name = None
+                try:
+                    with tempfile.NamedTemporaryFile(dir=self.directory, prefix=_STAGING_PREFIX, delete=False) as file:
+                        name = file.name
+                        file.write(data)
+                        file.flush()
+                        os.fsync(file.fileno())
+                    os.replace(name, self.directory / destination)
+                finally:
+                    if name is not None:
+                        Path(name).unlink(missing_ok=True)
+        except OSError as error:
+            if error.errno not in (errno.ENOSPC,errno.EDQUOT):raise
+            return False
         return True
 
 

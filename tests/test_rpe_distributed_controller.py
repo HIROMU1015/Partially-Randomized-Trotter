@@ -864,7 +864,7 @@ class ControllerFailures(unittest.TestCase):
         self.assertGreater(profile['wall_seconds'],0)
         self.assertLessEqual(profile['report_cpu_seconds'],profile['thread_cpu_seconds'])
 
-    def test_spare_slot_matching_does_not_hold_queue_lock_and_discards_stale_result(self):
+    def test_spare_slot_matching_does_not_hold_queue_lock_or_discard_advisory_on_notify(self):
         from concurrent.futures import ThreadPoolExecutor
         ex=self.executor(capacity=1)
         self.enqueue(ex,'fixture-demand')
@@ -880,7 +880,7 @@ class ControllerFailures(unittest.TestCase):
                 try:ex.state.cv.notify_all()
                 finally:ex.state.cv.release()
             finally:release.set()
-            self.assertFalse(future.result(timeout=3))
+            self.assertTrue(future.result(timeout=3))
 
     def test_full_standby_window_does_not_starve_another_method_demand(self):
         ex = self.executor(capacity=1)
@@ -907,12 +907,14 @@ class ControllerFailures(unittest.TestCase):
         ex.state.standby_views={'PR_PAULI':a,'PR_DF':b}
         ex.state.tasks['standby']=SimpleNamespace(status='QUEUED',demand=False,rule={'kind':'artificial'},view=a)
         try:
+            self.assertTrue(a._standby_method_turn())
+            ex.state.active=a._standby_capacity()+a._standby_headroom()-2
             self.assertFalse(a._standby_method_turn())
             self.assertTrue(b._standby_method_turn())
             b._awaiting_probe_revision=getattr(ex.state,'probe_revision',0)
             self.assertTrue(a._standby_method_turn())
         finally:
-            ex.state.tasks.clear();ex.state.standby_views.clear()
+            ex.state.tasks.clear();ex.state.standby_views.clear();ex.state.active=0
 
     def test_fleet_prepares_two_waves_for_each_host_before_pbs_first_offer(self):
         from types import SimpleNamespace

@@ -92,11 +92,13 @@ def test_startup_hold_is_shared_by_batches_of_the_same_fixed_owner(tmp_path):
     from trottertracks.rpe_preparation_worker import hchain_startup_hold
     profile = dict(work_dir=str(tmp_path), host_id='local', interpreter='fixed-python')
     request = dict(preparation=dict(provider='HCHAIN_SCOPED',source={'commit':'fixed'}),
-                   original_contract=dict(scope_owner='owner',binding={'system':'H8'}))
+                   original_contract=dict(scope_owner='owner',binding={'system':'H8'},fixed_plan_sha256='plan-a'))
     fingerprint = dict(input_artifacts={'PLAN.json':'batch-a'},runtime_paths={},runtime={},tools={})
     first = hchain_startup_hold(profile,request,fingerprint)
     second = hchain_startup_hold(profile,request,dict(fingerprint,input_artifacts={'PLAN.json':'batch-b'}))
     assert first == second
+    different=dict(request,original_contract=dict(request['original_contract'],fixed_plan_sha256='plan-b'))
+    assert hchain_startup_hold(profile,different,fingerprint)!=first
     other = dict(request,original_contract=dict(scope_owner='other',binding={'system':'H8'}))
     assert hchain_startup_hold(profile,other,fingerprint) != first
 
@@ -171,3 +173,35 @@ def test_provider_contract_versions_are_fixed_by_plan_not_system_name():
     with pytest.raises(ValueError,match='fixed binding'):
         hchain.preparation_request(dict(plan,provider_contract=dict(contract,rank=4)),
                                    'b'*64,'signal',[['fixture',0]],**kwargs)
+
+
+def test_declared_prefix_startup_retains_exact_schedule_checks(tmp_path):
+    cell=dict(id='signal',method='FULL',R_outer=None,prefix=7)
+    plan=dict(cases=[dict(rounds=[cell])],scope=dict(price_paths=1),owner='owner',binding={'system':'FAKE'},target=-1,compiler='fixed',provider_contract={'startup_prefixes':True})
+    state=SimpleNamespace(binding=plan['binding'],target=-1,compiler='fixed',cases=plan['cases'])
+    def startup(*args,prefixes):
+        assert prefixes==(7,);return state
+    provider=SimpleNamespace(startup=startup,signal=lambda *_:pytest.fail('leaf'))
+    assert hchain.run(plan,'signal',[['signal',0]],tmp_path,tmp_path,provider,check_startup=True)['leaf_calls']==0
+
+
+def test_generic_saved_export_metadata(tmp_path):
+    from trottertracks.rpe_preparation_worker import verify_h8_saved_preparation_metadata
+    import json
+    p=tmp_path/'exports.json';p.write_text(json.dumps({'key:7':{'hash':'fixture'}}))
+    spec={'saved_preparation_export':dict(path='exports.json',key_prefix='key:',hash_field='hash',hashes={'7':'fixture'})}
+    verify_h8_saved_preparation_metadata(spec,{'hchain_assets':{'path':str(tmp_path),'files':{'exports.json':'fixture'}}})
+def test_startup_failure_is_consumed_not_prelaunch(tmp_path):
+    from trottertracks.rpe_preparation_worker import hchain_startup_failure, put
+    request = {'preparation': {'provider':'HCHAIN_SCOPED','stage':'signal','inputs':{'PLAN.json':'fixed'}}}
+    marker = tmp_path/'HCHAIN_STARTUP_FAILURE.json'
+    record = dict(schema='HCHAIN_STARTUP_FAILURE_V1', plan_sha256='fixed', stage='signal',
+                  field='binding', numerical_startup=True, leaf_started=False,
+                  automatic_retry=False, budget_disposition='CONSUMED_STARTUP')
+    put(marker, record)
+    result = hchain_startup_failure(tmp_path, request, 'unrelated tail')
+    assert result['budget_disposition']=='CONSUMED_STARTUP' and result['automatic_retry'] is False
+    put(marker, dict(record, plan_sha256='other'))
+    assert hchain_startup_failure(tmp_path, request, 'unrelated tail') is None
+    marker.unlink()
+    assert hchain_startup_failure(tmp_path, request, 'StartupMismatch: HCHAIN_STARTUP_MISMATCH: binding') == result

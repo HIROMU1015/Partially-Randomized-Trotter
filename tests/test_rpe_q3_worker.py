@@ -47,6 +47,8 @@ class FakeController:
             return dict(ok=True)
         if endpoint == '/v1/state':
             return dict(ok=True)
+        if endpoint == '/v1/attempt':
+            return dict(ok=True,state='COMPLETED_PENDING_TRANSFER')
         if endpoint == '/v1/complete':
             self.complete_calls += 1
             duplicate = self.completed is not None
@@ -876,3 +878,100 @@ def test_readiness_view_cache_detects_tracked_edits_and_index_changes(tmp_path):
         assert cache.view(tmp_path)==changed and probe.call_count==3
         tracked.unlink()
         assert cache.view(tmp_path)['tracked_changes']['tracked']=='MISSING'
+
+
+def test_terminal_observation_ack_is_durable_and_exact(tmp_path):
+    worker=object.__new__(W.Worker)
+    worker.profile={}
+    attempt=tmp_path/'attempt';attempt.mkdir()
+    sample={'attempt_id':'a','completed':True}
+    worker._terminal_preparation_observations={attempt:sample}
+    worker._capacity_feedback({'preparation_observation_ack':{'a':'wrong'}})
+    assert not (attempt/'PREPARATION_OBSERVATION_ACK.json').exists()
+    worker._capacity_feedback({'preparation_observation_ack':{'a':W.digest(sample)}})
+    assert W.read(attempt/'PREPARATION_OBSERVATION_ACK.json')=={'sha256':W.digest(sample)}
+    assert not worker._terminal_preparation_observations
+
+
+def test_implicit_prefix_budget_subtracts_non_cache_usage(tmp_path):
+    from trottertracks import rpe_worker_storage as storage
+    import time
+    p={'limit_bytes':1000,'roots':[str(tmp_path)],'sample_path':str(tmp_path/'sample.json')}
+    caches=[str(tmp_path/'cache1'),str(tmp_path/'cache2')]
+    assert storage.implicit_prefix_budget(p,caches,700)==350
+    W.atomic(Path(p['sample_path']),dict(policy=storage.policy_identity(p),sampled_epoch=time.time(),
+        report=dict(used_bytes=800,prefix_cache_bytes=300,prefix_cache_roots=caches)))
+    assert storage.implicit_prefix_budget(p,caches,700)==100
+
+
+def test_legacy_overlay_missing_new_hash_helpers_still_checks_fixed_content(tmp_path,monkeypatch):
+    import pytest
+    from trottertracks import rpe_q3_coordinator as Q
+    profile,assignment=fixture(str(tmp_path))
+    path='scripts/run_rpe_optimizer_q3_job.py';commit=assignment['source_manifest']['commit']
+    blob=subprocess.check_output(['git','show',commit+':'+path],cwd=ROOT)
+    assignment['input_hashes']=[dict(commit=commit,path=path,sha256=hashlib.sha256(blob).hexdigest())]
+    monkeypatch.delattr(W.Preparation,'fixed_file_sha')
+    monkeypatch.delattr(Q,'fixed_git_blob_sha')
+    assert W.validate_assignment(profile,assignment)['request_id']==assignment['job_id']
+    assignment['input_hashes'][0]['sha256']='0'*64
+    with pytest.raises(ValueError,match='Fixed input hash differs'):
+        W.validate_assignment(profile,assignment)
+
+
+def test_runtime_probe_shared_view_does_not_share_runtime_metadata(tmp_path):
+    from trottertracks.rpe_plan_readiness import RuntimeProbeBatch
+    interpreter=tmp_path/'python';interpreter.write_text('fixture')
+    shared=RuntimeProbeBatch(view_ttl=30.)
+    first=RuntimeProbeBatch(shared_view=shared)
+    second=RuntimeProbeBatch(shared_view=shared)
+    assert first.get(str(interpreter),False,lambda:{'packages':'old'})=={'packages':'old'}
+    assert second.get(str(interpreter),False,lambda:{'packages':'new'})=={'packages':'new'}
+
+
+def test_mailbox_terminal_index_avoids_repeat_assignment_json_reads(tmp_path,monkeypatch):
+    profile,assignment=fixture(str(tmp_path))
+    attempt=Path(profile['work_dir'])/assignment['job_id']/assignment['attempt_id'];attempt.mkdir(parents=True)
+    W.atomic(attempt/'ASSIGNMENT.json',assignment)
+    W.atomic(attempt/'WORKER_STATE.json',{'state':'TRANSFERRED','detail':{}})
+    first=W.Worker(profile,'http://unused',metadata_fast=True)
+    try:first._resource_offer()
+    finally:first.close()
+    original=W.read
+    def read(path):
+        if Path(path) in (attempt/'ASSIGNMENT.json',attempt/'WORKER_STATE.json'):
+            raise AssertionError('unchanged terminal JSON should not be opened')
+        return original(path)
+    monkeypatch.setattr(W,'read',read)
+    second=W.Worker(profile,'http://unused',metadata_fast=True)
+    try:
+        assert attempt in second._terminal_resources and attempt not in second.records
+        assert second._resource_offer()['occupied']==0
+    finally:second.close()
+
+
+def test_exclusive_mailbox_restart_scans_only_active(tmp_path,monkeypatch):
+    profile,assignment=fixture(str(tmp_path));profile['mailbox_indexed_spool']=True
+    worker=W.Worker(profile,'http://unused',metadata_fast=True)
+    try:
+        worker._acquire(assignment)
+        attempt=worker.work/assignment['job_id']/assignment['attempt_id']
+        W.save_state(attempt,'TRANSFERRED');worker._resource_offer()
+    finally:worker.close()
+    original=Path.glob
+    def no_history(path,pattern):
+        if pattern=='*/*/ASSIGNMENT.json':raise AssertionError('metadata poll scanned history')
+        return original(path,pattern)
+    monkeypatch.setattr(Path,'glob',no_history)
+    info=W.mailbox(profile,'status',{'metadata_only':True})
+    assert info['attempts']==[] and info['cached_prefixes']==[assignment['prefix_key']]
+    assert W.mailbox(profile,'resources')['resource_report']['occupied']==0
+    assert W.mailbox(profile,'ack',{'job_id':assignment['job_id'],'attempt_id':assignment['attempt_id']})['duplicate']
+
+
+def test_indexed_spool_rejects_legacy_history(tmp_path):
+    import pytest
+    profile,assignment=fixture(str(tmp_path));attempt=Path(profile['work_dir'])/'old'/'attempt';attempt.mkdir(parents=True)
+    W.atomic(attempt/'ASSIGNMENT.json',assignment)
+    with pytest.raises(ValueError,match='fresh dedicated spool'):
+        W.Worker(dict(profile,mailbox_indexed_spool=True),'http://unused',metadata_fast=True)

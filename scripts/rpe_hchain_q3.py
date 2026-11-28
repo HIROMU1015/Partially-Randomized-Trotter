@@ -66,7 +66,10 @@ def exact_price(value):
 def declared_provider_contract(binding, contract):
     """Optional fixed PLAN metadata; the historical H6/H8 route stays unchanged."""
     if contract is None:return None
-    if not isinstance(contract,dict) or set(contract)!={'system','rank','packages'}:
+    required={'system','rank','packages'}
+    optional={'openblas_coretype','provider_directory','entry_module','worker_module','priority_function',
+              'startup_source_files','startup_asset_files','signal_phase_cache_policy','saved_preparation_export','startup_prefixes'}
+    if not isinstance(contract,dict) or not required<=contract.keys() or set(contract)-required-optional:
         raise ValueError('H-chain provider contract must declare system, rank and runtime packages')
     if (not isinstance(contract['system'],str) or not contract['system']
             or type(contract['rank']) is not int or contract['rank']<1
@@ -76,7 +79,28 @@ def declared_provider_contract(binding, contract):
     if (not isinstance(packages,dict) or not {'qiskit','numpy'}<=packages.keys()
             or any(not isinstance(k,str) or not k or not isinstance(v,str) or not v for k,v in packages.items())):
         raise ValueError('H-chain provider runtime package versions must be fixed')
-    return dict(system=contract['system'],rank=contract['rank'],packages=dict(packages))
+    from pathlib import PurePosixPath
+    result=dict(system=contract['system'],rank=contract['rank'],packages=dict(packages))
+    for key in optional & contract.keys():
+        value=contract[key]
+        if key=='openblas_coretype':
+            from trottertracks.rpe_preparation_worker import valid_openblas_core
+            if not valid_openblas_core(value,value):raise ValueError('Invalid fixed OpenBLAS core')
+        if key in ('entry_module','worker_module','priority_function') and (not isinstance(value,str) or not value.isidentifier()):
+            raise ValueError('Invalid provider entry name')
+        if key in ('provider_directory','startup_source_files','startup_asset_files'):
+            paths=[value] if key=='provider_directory' else value
+            if not isinstance(paths,list) or any(not isinstance(path,str) or not path or PurePosixPath(path).is_absolute()
+                  or '..' in PurePosixPath(path).parts for path in paths):
+                raise ValueError('Invalid provider startup path')
+        if key=='startup_prefixes' and type(value) is not bool:raise ValueError('Invalid prefix-scoped startup declaration')
+        if key=='saved_preparation_export':
+            if (not isinstance(value,dict) or set(value)!={'path','key_prefix','hash_field'}
+                    or any(not isinstance(v,str) or not v for v in value.values())
+                    or PurePosixPath(value['path']).is_absolute() or '..' in PurePosixPath(value['path']).parts):
+                raise ValueError('Invalid saved preparation export declaration')
+        result[key]=value
+    return result
 
 
 def supported_binding(binding,contract=None):

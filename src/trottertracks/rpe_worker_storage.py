@@ -2,6 +2,7 @@
 from contextlib import ExitStack, closing
 from concurrent.futures import ThreadPoolExecutor
 import ctypes
+import errno
 import fcntl
 import hashlib
 import json
@@ -23,6 +24,7 @@ from .rpe_dp_prefix_reuse import PrefixStore
 
 
 SAMPLE_SECONDS = 5
+STALE_LOW_WATER_SECONDS = 30
 PREPARATION_COPIES = ('inputs', 'workspace', 'workspaces')
 GIT_TEMP_PACK_MIN_AGE = 300
 
@@ -31,6 +33,24 @@ def reclaim_watermarks(limit, *, proactive):
     """Use an earlier high-water mark in the independent storage watcher."""
     high, low = (80, 70) if proactive else (95, 90)
     return limit * high // 100, limit * low // 100
+
+
+def reusable_low_water_sample(policy, observation, age):
+    """Bound a delayed sample by physical space and the existing low-water mark."""
+    if not 0 <= age < STALE_LOW_WATER_SECONDS or observation.get('reason') is not None:
+        return None
+    used=observation.get('used_bytes');old_free=observation.get('filesystem_free_bytes')
+    if type(used) is not int or type(old_free) is not int:return None
+    try:
+        roots=[Path(root) for root in policy['roots']]
+        if not roots or not all(root.exists() for root in roots):return None
+        free=min(shutil.disk_usage(root).free for root in roots)
+    except (OSError,ValueError):return None
+    start,_=reclaim_watermarks(policy['limit_bytes'],proactive=True)
+    minimum=observation.get('filesystem_min_free_bytes',policy['limit_bytes']//10)
+    if free<minimum or used+max(0,old_free-free)>=start:return None
+    return dict(observation,filesystem_free_bytes=free,measurement_in_progress=True,
+                measurement_age_seconds=age)
 
 
 def duplicate_reclaim_target(usage):
@@ -234,6 +254,28 @@ def prefix_caches(profile):
     profiles = [profile, *(rule['profile'] for rule in profile.get('route_profiles', []))]
     return tuple(dict.fromkeys(p['prefix_cache_directory'] for p in profiles
                                if p.get('prefix_cache_directory')))
+
+
+def monitored_prefix_caches(policy, paths):
+    roots=[Path(root).resolve() for root in policy['roots']]
+    excluded=[Path(root) for root in policy_identity(policy).get('excluded_paths',())]
+    result={Path(path).resolve() for path in paths}
+    return tuple(sorted(str(path) for path in result if any(path.is_relative_to(root) for root in roots)
+                        and not any(path.is_relative_to(root) for root in excluded)))
+
+
+def implicit_prefix_budget(policy, paths, target):
+    caches=monitored_prefix_caches(policy,paths)
+    available=target
+    try:
+        saved=json.loads(Path(policy['sample_path']).read_bytes())
+        sample=saved['report']
+        if (saved['policy']==policy_identity(policy) and 0<=time.time()-saved['sampled_epoch']<STALE_LOW_WATER_SECONDS
+                and tuple(sample.get('prefix_cache_roots',()))==caches
+                and type(sample.get('used_bytes')) is int and type(sample.get('prefix_cache_bytes')) is int):
+            available=max(0,target-max(0,sample['used_bytes']-sample['prefix_cache_bytes']))
+    except (OSError,ValueError,KeyError,TypeError):pass
+    return max(1,available//max(1,len(caches)))
 
 
 def storage_exclusion_file(policy):
@@ -480,7 +522,8 @@ def _acknowledged_copies(spools, roots):
     for spool in sorted({Path(path).resolve() for path in spools}):
         if any(spool.is_relative_to(root) for root in monitored):
             for marker in spool.glob('*/*/WORKER_STATE.json'):
-                yield from _attempt_copies(marker)
+                if any((marker.parent/name).exists() for name in ('_dry_check',*PREPARATION_COPIES)):
+                    yield from _attempt_copies(marker)
 
 
 def _remove_copy(path):
@@ -1173,7 +1216,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             return None
         try:
             saved = json.loads(sample.read_bytes())
-            if saved['policy'] == identity and 0 <= time.time() - saved['sampled_epoch'] < SAMPLE_SECONDS:
+            if saved['policy'] == identity and 0 <= time.time() - saved['sampled_epoch'] < STALE_LOW_WATER_SECONDS:
                 report = saved['report']
                 if 'filesystem_free_bytes' not in report or bool(report.get('admission_sample')) != measurement_only:
                     return None
@@ -1182,6 +1225,9 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 ) == (start, target)
                 if proactive and not same_watermarks:
                     return None
+                age=time.time()-saved['sampled_epoch']
+                if age>=SAMPLE_SECONDS:
+                    return reusable_low_water_sample(policy,report,age) if while_measuring or cache_only else None
                 if (report['used_bytes'] is None or report['used_bytes'] < start
                         or (same_watermarks and saved.get('cleanup') == cleanup)):
                     if while_measuring:
@@ -1296,12 +1342,27 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     measured['compacted_metadata_bytes'] = compacted
                 if abandoned:
                     measured['reclaimed_metadata_temporary_bytes'] = abandoned
+            if type(measured.get('used_bytes')) is int and caches:
+                # This is optional accelerator sizing, not a second admission
+                # criterion. Measure once in the existing background sampler.
+                try:
+                    monitored=monitored_prefix_caches(policy,caches)
+                    measured['prefix_cache_bytes']=_used_bytes(monitored,timeout=du_timeout,excluded_paths=excluded_paths)
+                    measured['prefix_cache_roots']=list(monitored)
+                except (OSError,ValueError,subprocess.SubprocessError):pass
             if excluded_paths:
                 measured['excluded_paths'] = list(excluded_paths)
             if measurement_only:
                 measured['admission_sample'] = True
             measured['measurement_seconds'] = time.monotonic()-started
-            atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
+            try:
+                atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
+            except OSError as error:
+                if error.errno not in (errno.ENOSPC,errno.EDQUOT):raise
+                # The measurement remains valid even when its diagnostic
+                # persistence cannot allocate a block. In particular keep
+                # FILESYSTEM_SPACE_LOW so the existing cleanup lane runs.
+                measured['persist_error']=type(error).__name__+': '+str(error)
             return measured
     except OSError:
         return dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
@@ -1406,10 +1467,31 @@ class BackgroundStorage:
         if self.sample is None and now-self.measured_at >= .8*SAMPLE_SECONDS:
             self.sample = self.pool.submit(report, self.policy, spools=self.spools,
                 cache_directories=self.caches, proactive=True, measurement_only=True, refresh=True,nonblocking=True)
-        if self.measured is None or now-self.measured_at >= SAMPLE_SECONDS:
+        age=now-self.measured_at
+        if self.measured is None:
             return dict(limit_bytes=self.policy['limit_bytes'], used_bytes=None, accepting_new_jobs=False,
                         reason='STORAGE_MEASUREMENT_PENDING')
-        value = dict(self.measured)
+        if age>=SAMPLE_SECONDS:
+            value=reusable_low_water_sample(self.policy,self.measured,age)
+            if value is None:
+                return dict(limit_bytes=self.policy['limit_bytes'], used_bytes=None, accepting_new_jobs=False,
+                            reason='STORAGE_MEASUREMENT_PENDING')
+        else:
+            value = dict(self.measured)
+            # Low physical space is checked at every offer, independently of
+            # the age of the logical usage sample.
+            try:
+                roots=[Path(root) for root in self.policy['roots'] if Path(root).exists()]
+                if roots:
+                    free=min(shutil.disk_usage(root).free for root in roots)
+                    value['filesystem_free_bytes']=free
+                    if free<value.get('filesystem_min_free_bytes',self.policy['limit_bytes']//10):
+                        value.update(accepting_new_jobs=False,reason='FILESYSTEM_SPACE_LOW')
+            except OSError:
+                value.update(accepting_new_jobs=False,reason='STORAGE_MEASUREMENT_PENDING')
+        if self.cleanup is None and duplicate_reclaim_target(value):
+            self.cleanup=self.pool.submit(reclaim_from_measurement,self.policy,value,
+                spools=self.spools,cache_directories=self.caches,du_timeout=10)
         if self.cleanup_error is not None:
             value['cleanup_error'] = self.cleanup_error
         return value

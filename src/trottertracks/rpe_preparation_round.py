@@ -15,11 +15,19 @@ PF_METHODS=frozenset(('FULL_PF','TRUNCATED_PF'))
 PR_METHODS=frozenset(('PR_PAULI','PR_DF'))
 
 
+def copy_candidates(candidates):
+    # Generated configuration bodies are fixed by their configuration ID.
+    # Consumers only read them; clone mutable candidate/price/route fields.
+    memo={id(c['generated_configuration']):c['generated_configuration']
+          for c in candidates if c.get('generated_configuration') is not None}
+    return deepcopy(candidates,memo)
+
+
 def snapshot_context(context):
     """Copy writable search tables, sharing pinned readers and raw history."""
     result=dict(context)
     for field in ('candidates','expected','generation','pf_evidence_registry'):
-        if field in context:result[field]=deepcopy(context[field])
+        if field in context:result[field]=copy_candidates(context[field]) if field=='candidates' else deepcopy(context[field])
     if context.get('saved')is not None:
         result['saved']=copy(context['saved']);result['saved'].table=dict(context['saved'].table)
     return result
@@ -41,8 +49,15 @@ def _completion(root,problem,spec,run,runtime):
 def _merge_pf(context,after,routes,after_routes,methods):
     """PF's refreshed context must not overwrite a concurrently READY PR row."""
     methods=PF_METHODS.intersection(methods)
+    # Publish a new context and route table, leaving already running selector
+    # views on their previous complete snapshot.
+    context=dict(context,expected=dict(context['expected']))
+    routes=dict(routes)
+    if context.get('saved') is not None:
+        context['saved']=copy(context['saved']);context['saved'].table=dict(context['saved'].table)
+    if 'generation' in context:context['generation']=dict(context['generation'])
     old_ids={c.get('configuration_id')for c in context['candidates']if c['method']in methods}
-    chosen=[deepcopy(c)for c in after['candidates']if c['method']in methods]
+    chosen=copy_candidates([c for c in after['candidates']if c['method']in methods])
     new_ids={c.get('configuration_id')for c in chosen}
     if 'tau'in context and 'tau'in after and context['tau']!=after['tau']:
         raise ValueError('PF preparation changed the comparison threshold')

@@ -182,3 +182,56 @@ class HistoryJournal:
             snapshot['history'] = list(state['history'][-1:])
         write(snapshot)
         state.update(snapshot)
+
+
+_verified_family_files={}
+
+def externalize_family_metadata(state, directory):
+    """Optional new-round checkpoint layout; keep old full snapshots readable."""
+    import hashlib
+    from .rpe_q3_coordinator import atomic_json
+    directory=Path(directory);out=dict(state);families={}
+    for key,family in state.get('families',{}).items():
+        copy=dict(family);families[key]=copy
+        if family.get('status')!='READY_METADATA':continue
+        for field in ('configuration','template'):
+            if field not in family:continue
+            value=family[field]
+            raw=json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
+            digest=hashlib.sha256(raw).hexdigest();target=directory/'FAMILY_STATIC'/f'{digest}.json'
+            def identity():
+                st=target.stat();return st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns,st.st_ctime_ns
+            if target.is_file():
+                before=identity()
+                if _verified_family_files.get(target)!=before:
+                    existing=json.loads(target.read_bytes())
+                    encoded=json.dumps(existing,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
+                    if hashlib.sha256(encoded).hexdigest()!=digest or identity()!=before:raise ValueError('Fixed family metadata differs')
+                    _verified_family_files[target]=before
+            else:
+                target.parent.mkdir(parents=True,exist_ok=True);atomic_json(target,value)
+                _verified_family_files[target]=identity()
+            copy[field]={'family_metadata_sha256':digest}
+    out['families']=families;out['family_metadata_storage']='RPE_FAMILY_STATIC_V1'
+    return out
+
+
+def hydrate_family_metadata(state,directory):
+    if 'family_metadata_storage' not in state:return state
+    if state['family_metadata_storage']!='RPE_FAMILY_STATIC_V1':raise ValueError('Unknown family metadata layout')
+    import hashlib,re
+    result=dict(state);families={};directory=Path(directory)
+    for key,family in state.get('families',{}).items():
+        copy=dict(family);families[key]=copy
+        for field in ('configuration','template'):
+            value=family.get(field)
+            if not isinstance(value,dict) or set(value)!={'family_metadata_sha256'}:continue
+            digest=value['family_metadata_sha256']
+            if not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest):raise ValueError('Invalid family metadata digest')
+            path=directory/'FAMILY_STATIC'/f'{digest}.json'
+            restored=json.loads(path.read_bytes())
+            raw=json.dumps(restored,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
+            if hashlib.sha256(raw).hexdigest()!=digest:raise ValueError('Fixed family metadata digest differs')
+            copy[field]=restored
+    result['families']=families;result.pop('family_metadata_storage')
+    return result

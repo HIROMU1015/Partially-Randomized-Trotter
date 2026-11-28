@@ -545,15 +545,24 @@ def probe(executor, request, job_id, decision, *, publish=None, dispatch=None, t
     previous = {}
     if targets is not None and record.is_file():
         saved = json.loads(record.read_bytes())
-        if saved.get('assignment') == assignment:
+        if (saved.get('assignment') == assignment or saved.get('assignment_sha256')==Q.digest(assignment)):
             previous = saved.get('observations', {})
 
     def save(complete):
         with executor.state.cv:
             if not executor.state.closed:
                 record.parent.mkdir(parents=True, exist_ok=True)
-                Q.atomic_json(record, dict(assignment=assignment, observations={**previous, **observations},
-                                           complete=complete))
+                snapshot=dict(assignment=assignment,observations={**previous,**observations},complete=complete)
+                # A preclaim readiness receipt retains the complete request.
+                # Once the durable queue owns exactly those bytes, a repeated
+                # observation can refer to that immutable owner instead.
+                store=getattr(executor,'store',None)
+                row=store.row(job_id) if store is not None else None
+                if row is not None and row.get('request_sha256')==assignment['request_sha256'] and row.get('request')==assignment['request']:
+                    snapshot['assignment']={k:v for k,v in assignment.items() if k!='request'}
+                    snapshot['assignment_sha256']=Q.digest(assignment)
+                    snapshot['request_ref']={'job_id':job_id,'sha256':assignment['request_sha256'],'source':'QUEUE.sqlite3'}
+                Q.atomic_json(record,snapshot)
 
     decision.update(input_hashes=assignment['input_hashes'], execution_profiles={}, host_decisions={})
 

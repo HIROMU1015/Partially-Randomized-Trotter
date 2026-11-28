@@ -71,7 +71,11 @@ def partition_contact_valid(plan,contact,*,now=None):
     if settings.get('partition_start_requires_contact') is not True:return True
     lease=settings.get('partition_contact_seconds',30)
     if type(lease) is not int or lease<=0:raise ValueError('Invalid partition contact window')
-    age=(time.time() if now is None else now)-contact if type(contact) in (int,float) else float('inf')
+    if settings.get('partition_contact_protocol',1)==2:
+        observed=contact.get('observed_monotonic') if isinstance(contact,dict) else None
+        age=(time.monotonic() if now is None else now)-observed if type(observed) in (int,float) else float('inf')
+    else:
+        age=(time.time() if now is None else now)-contact if type(contact) in (int,float) else float('inf')
     return math.isfinite(age) and 0<=age<lease
 
 
@@ -298,7 +302,7 @@ def partition_round(round_spec, problem=None, *, independent=False):
     return parts
 
 
-def divide_budget(value, blocks, *, weights=None):
+def divide_budget(value, blocks, *, weights=None, minimum_positive=False):
     if value == 'UNLIMITED':
         return {block['id']: value for block in blocks}
     if type(value) is not int or value < 0:
@@ -310,15 +314,17 @@ def divide_budget(value, blocks, *, weights=None):
             raise ValueError('Invalid preparation leaf weights')
         total = sum(sizes)
         if total:
-            shares = [Fraction(value*n, total) for n in sizes]
+            base=[int(n>0) for n in sizes] if minimum_positive and value>=sum(n>0 for n in sizes) else [0]*count
+            remaining=value-sum(base)
+            shares = [Fraction(remaining*n,total) for n in sizes]
             caps = [int(share) for share in shares]
-            for i in sorted(range(count), key=lambda i: -(shares[i]-caps[i]))[:value-sum(caps)]:
+            for i in sorted(range(count), key=lambda i: -(shares[i]-caps[i]))[:remaining-sum(caps)]:
                 caps[i] += 1
-            return {block['id']:cap for block,cap in zip(blocks,caps)}
+            return {block['id']:cap+floor for block,cap,floor in zip(blocks,caps,base)}
     return {block['id']: value//count + (i < value%count) for i, block in enumerate(blocks)}
 
 
-def hchain_preparation_weights(plan, parts):
+def hchain_preparation_weights(plan, parts, batch_sizes=None):
     """Count fixed preparation leaves by width block, including shared price probes."""
     stages = {stage:{} for stage in ('signal','compile','audit')}
     cases = {case['id']:case for case in plan['cases']}
@@ -350,6 +356,28 @@ def hchain_preparation_weights(plan, parts):
                 cell = design['holdout']; holdouts[cell['id']] = cell
         stages['compile'][cid] = sum(paths(cell) for cell in anchors.values())
         stages['audit'][cid] = sum(paths(cell) for key,cell in holdouts.items() if key not in anchors)
+    if batch_sizes is not None:
+        for stage, weights in stages.items():
+            size=batch_sizes.get(stage,1)
+            if type(size) is not int or size<1:raise ValueError('Invalid preparation batch size')
+            for part, leaves in weights.items():weights[part]=(leaves+size-1)//size
+    return stages
+
+
+def exact_hchain_preparation_weights(plan, parts, settings, budgets, run, provider, worker):
+    """Count the same fixed stage batches that independent child rounds enqueue.
+
+    Shared anchors are counted once per actual independent child, rather than
+    pretending a different child owns its inputs. No leaf is executed here.
+    """
+    from run_rpe_hchain_round import batches
+    stages={stage:{} for stage in ('signal','compile','audit')}
+    by_id={case['id']:case for case in plan['cases']}
+    for part in parts:
+        selected=provider.select_cases(plan,[by_id[cid] for cid in part['case_ids']])
+        counts=Counter(batch[0][0] for batch in batches(selected,run/'independent-search'/'parts'/part['id'],
+                        worker,settings['batch_sizes'],budgets))
+        for stage in stages:stages[stage][part['id']]=counts[stage]
     return stages
 
 
@@ -377,6 +405,8 @@ def prepare_plan(run, settings, *, round_spec=None):
     independent = setup.get('mode') == 'independent'
     if setup.get('partition_start_requires_contact') is True:
         if not independent:raise ValueError('Partition contact leases require independent blocks')
+        setup.setdefault('partition_contact_protocol',2)
+        if setup['partition_contact_protocol'] not in (1,2):raise ValueError('Invalid partition contact protocol')
         partition_contact_valid({'settings':setup},None)
     if setup.get('partition_handoff') is True and setup.get('partition_start_requires_contact') is not True:
         raise ValueError('Partition handoff requires the fixed contact lease policy')
@@ -445,8 +475,15 @@ def prepare_plan(run, settings, *, round_spec=None):
         if hchain:
             from .rpe_hchain_scope import fixed_plan
             _, physical = fixed_plan(round_spec['hchain'])
-            prep_weights = hchain_preparation_weights(physical, parts)
-        prep_quotas = {stage: divide_budget(cap, parts, weights=prep_weights.get(stage))
+            if any(type(cap) is int and cap>0 for cap in prep.values()):
+                from .rpe_hchain_scope import provider_root
+                from run_rpe_hchain_round import load_provider
+                hs=round_spec['hchain']
+                provider,worker=load_provider(provider_root(hs),physical.get('provider_contract'))
+                prep_weights=exact_hchain_preparation_weights(physical,parts,hs,prep,run,provider,worker)
+            else:
+                prep_weights = hchain_preparation_weights(physical,parts,round_spec['hchain'].get('batch_sizes',{}))
+        prep_quotas = {stage: divide_budget(cap, parts, weights=prep_weights.get(stage),minimum_positive=hchain)
                        for stage,cap in prep.items()}
         for block in parts:
             quota = divide_budget(remaining[block['method']], grouped[block['method']])[block['id']]
@@ -553,7 +590,7 @@ def unit_members(plan, unit):
 
 
 def all_parts_finished(plan, coverage):
-    terminal = {'REQUESTED_WIDTH_RULE_EXHAUSTED', 'Q3_BUDGET_EXHAUSTED', 'EXPLICIT_STEP_LIMIT', 'HCHAIN_SCOPE_COMPLETE'}
+    terminal = {'REQUESTED_WIDTH_RULE_EXHAUSTED', 'Q3_BUDGET_EXHAUSTED', 'EXPLICIT_STEP_LIMIT', 'HCHAIN_SCOPE_COMPLETE','HCHAIN_INPUTS_EXHAUSTED'}
     return all((coverage.get(p['id'], {}).get('termination') or {}).get('reason') in terminal
                for p in pbs_units(plan))
 
@@ -875,7 +912,7 @@ class OfflineSearch:
                     raise
                 return None  # Do not reopen a held block on an unknown revision.
         paths = (part/'ROUND_RESULT.json', part/'KAPPA_STATE.json',
-                 self.directory/'CENTRAL_SHORTLIST.json', part/'ROUND.json', part/'PROBLEM.json')
+                 part/'ROUND.json', part/'PROBLEM.json')
         revision = [queue]
         for path in paths:
             try:
@@ -1034,6 +1071,22 @@ class OfflineSearch:
                 return  # Ownership was not established; leave this block running.
             if live:
                 return
+        if self.independent:
+            # A different block is useful only if it is currently eligible
+            # for claim. Advisory lock check does not transfer its ownership.
+            claimable=False
+            for block in self.parts:
+                if block['id']==self.part.name or time.monotonic()<getattr(self,'retry_after',{}).get(block['id'],0):continue
+                path=self.parts_dir/block['id']
+                if (path/'SEARCH_TERMINATION.json').exists() or self._input_wait_unchanged(path):continue
+                path.mkdir(parents=True,exist_ok=True)
+                try:
+                    with (path/'OWNER.lock').open('a+b') as lock:
+                        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                        if (path/'CENTRAL_HANDOFF.json').is_file() and partition_handed_off(self.plan,block,path):continue
+                        claimable=True;break
+                except (OSError,ValueError):continue
+            if not claimable:return
         self.request_stop()
 
     def _recover_fixed_input_failure(self, path, entry):
@@ -1456,7 +1509,16 @@ def advance_independent(worker, control):
         arguments=dict(disconnected=False,runnable=not active and storage.get('accepting_new_jobs',True),
                        batch=max(1,worker.slots),stop=stopping)
         if search.plan['settings'].get('partition_start_requires_contact') is True:
-            arguments['contact']=control.get('contact')
+            if search.plan['settings'].get('partition_contact_protocol',1)==2:
+                token=control.get('contact')
+                old=getattr(search,'contact_token',None)
+                if token is not None and old is not None and token!=old:
+                    search.contact_observed_monotonic=time.monotonic()
+                if token is not None:search.contact_token=token
+                # First observation after restart is not evidence of fresh
+                # contact. Wait until a new token arrives on this node.
+                arguments['contact']={'observed_monotonic':getattr(search,'contact_observed_monotonic',None)} if token is not None else None
+            else:arguments['contact']=control.get('contact')
         busy=search.advance(**arguments)
     except (OSError, KeyError, ValueError, subprocess.SubprocessError) as error:
         from .rpe_q3_worker import event

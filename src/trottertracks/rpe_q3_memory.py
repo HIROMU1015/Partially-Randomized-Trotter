@@ -1,7 +1,8 @@
 """Common, operational Q3 memory envelopes from accepted resource observations."""
-from collections import defaultdict
+from collections import Counter, defaultdict
 from copy import deepcopy
 import json
+import os
 from pathlib import Path
 
 from .rpe_host_profiles import q3_cpu_measurement_key
@@ -162,36 +163,145 @@ def preserve_owners(rows, settings):
 
 
 class MemoryLearner:
+    """Append new observations; recompute only envelopes of affected classes."""
     def __init__(self, path, settings):
         self.path=Path(path)
+        self.delta=self.path.with_suffix('.jsonl')
         self.policy=learning_policy(settings.get('q3_memory_learning'))
         self.observations={}
+        self.groups={}
+        self.group_rows={}
+        self.group_stats={}
+        self.schema='RPE_Q3_MEMORY_LEARNING_V1'
         if self.policy and self.path.is_file():
             saved=read(self.path)
-            if saved.get('schema')!='RPE_Q3_MEMORY_LEARNING_V1':
+            if saved.get('schema') not in ('RPE_Q3_MEMORY_LEARNING_V1','RPE_Q3_MEMORY_LEARNING_V2'):
                 raise ValueError('Unknown Q3 memory learning state')
+            self.schema=saved['schema']
             self.observations=saved['observations']
-            settings['q3_owned_reservations']=dict(settings.get('q3_owned_reservations',{}),**saved['owners'])
-            settings['q3_learned_memory']=envelopes(self.observations.values(),self.policy,settings)
+            owners=saved['owners']
+            if self.schema=='RPE_Q3_MEMORY_LEARNING_V2' and self.delta.is_file():
+                # Only this owning controller constructs the learner. Repair
+                # an interrupted final append; complete entries are durable.
+                with self.delta.open('r+b') as stream:
+                    while raw:=stream.readline():
+                        if not raw.endswith(b'\n'):
+                            stream.seek(-len(raw),1);stream.truncate();break
+                        event=json.loads(raw)
+                        for item in event['items']:
+                            prior=self.observations.setdefault(item['attempt_id'],item)
+                            if prior!=item:raise ValueError('Q3 observation identity changed')
+                        if 'owners' in event:owners=event['owners']
+            settings['q3_owned_reservations']=dict(settings.get('q3_owned_reservations',{}),**owners)
+        for item in self.observations.values():
+            self._group_observe(item,settings)
+        for key,jobs in self.groups.items():
+            self.group_stats[key]=(len(jobs),max(item['peak_rss_bytes'] for item in jobs.values()),
+                                   Counter(item['measurement_key'] for item in jobs.values()))
+            self.group_rows[key]=self._rows_for_stats(key,self.group_stats[key])
+        if self.policy:settings['q3_learned_memory']=self._combine(self.group_rows)
+
+    def _group_observe(self,item,settings):
+        if item['host'] not in {w['host_id'] for w in settings['workers']}:return None
+        key=tuple(item[k] for k in ('host','memory_class_key','method','route_kind','dp_workers','task_cpu_count'))
+        jobs=self.groups.setdefault(key,{})
+        old=jobs.get(item['job_id'])
+        if old is None or item['peak_rss_bytes']>old['peak_rss_bytes']:
+            jobs[item['job_id']]=item
+            return key
+        return None
+
+    def _rows_for_stats(self,group,stats):
+        count,peak,keys=stats
+        if count<self.policy['min_samples']:return {}
+        host,cls,method,route,dp,cpus=group
+        n,d=self.policy['margin_numerator'],self.policy['margin_denominator']
+        memory=max(self.policy['floor_bytes'],(peak*n+d-1)//d+self.policy['headroom_bytes'])
+        return {key:[dict(host=host,measurement_key=key,method=method,route_kind=route,
+                          dp_workers=dp,task_cpu_count=cpus,memory_bytes=memory)] for key in sorted(keys)}
+
+    @staticmethod
+    def _combine(rows):
+        result={}
+        for group in rows.values():
+            for key,values in group.items():result.setdefault(key,[]).extend(values)
+        return result
 
     def update(self, item, owners, settings):
         return self.update_many((item,), owners, settings)
 
     def update_many(self, items, owners, settings):
-        if not self.policy:
-            return False
-        observations = dict(self.observations)
+        if not self.policy:return False
+        added={}
         for item in items:
-            if item:
-                observations.setdefault(item['attempt_id'], item)
-        if len(observations) == len(self.observations):
-            return False
-        from .rpe_q3_coordinator import atomic_json
-        learned=envelopes(observations.values(),self.policy,settings)
-        snapshots=(preserve_owners(owners,settings) if learned!=settings.get('q3_learned_memory',{})
-                   else settings.get('q3_owned_reservations',{}))
-        atomic_json(self.path,dict(schema='RPE_Q3_MEMORY_LEARNING_V1',observations=observations,owners=snapshots))
-        self.observations=observations
-        settings['q3_owned_reservations']=snapshots
-        settings['q3_learned_memory']=learned
+            if item and item['attempt_id'] not in self.observations:added.setdefault(item['attempt_id'],item)
+        if not added:return False
+        # Stage only changed job maxima. Observations are append-only and a
+        # job maximum never decreases; neither a full group copy nor scanning
+        # unchanged samples is required to obtain its envelope.
+        profiles={w['host_id'] for w in settings['workers']}
+        staged={}
+        for item in added.values():
+            if item['host'] not in profiles:continue
+            key=tuple(item[k] for k in ('host','memory_class_key','method','route_kind','dp_workers','task_cpu_count'))
+            updates=staged.setdefault(key,{})
+            old=updates.get(item['job_id'],self.groups.get(key,{}).get(item['job_id']))
+            if old is None or item['peak_rss_bytes']>old['peak_rss_bytes']:updates[item['job_id']]=item
+        new_stats={};new_rows={}
+        for key,updates in staged.items():
+            if not updates:continue
+            jobs=self.groups.get(key,{})
+            size,peak,keys=self.group_stats.get(key,(0,0,Counter()))
+            keys=keys.copy()
+            for job,item in updates.items():
+                old=jobs.get(job)
+                if old is None:size+=1
+                else:
+                    prior=old['measurement_key'];keys[prior]-=1
+                    if keys[prior]==0:del keys[prior]
+                keys[item['measurement_key']]+=1
+                peak=max(peak,item['peak_rss_bytes'])
+            new_stats[key]=(size,peak,keys)
+            rows=self._rows_for_stats(key,new_stats[key])
+            if rows!=self.group_rows.get(key,{}):new_rows[key]=rows
+        try:
+            learned=(self._combine(self.group_rows | new_rows) if new_rows
+                     else settings.get('q3_learned_memory',{}))
+            snapshots=(preserve_owners(owners() if callable(owners) else owners,settings)
+                       if learned!=settings.get('q3_learned_memory',{}) else settings.get('q3_owned_reservations',{}))
+            from .rpe_q3_coordinator import atomic_json
+            if self.schema!='RPE_Q3_MEMORY_LEARNING_V2' or not self.path.is_file():
+                # Old readers must not silently ignore later journal events.
+                atomic_json(self.path,dict(schema='RPE_Q3_MEMORY_LEARNING_V2',
+                    observations=dict(self.observations,**added),owners=snapshots))
+                self.schema='RPE_Q3_MEMORY_LEARNING_V2'
+            else:
+                event=dict(items=list(added.values()))
+                if snapshots!=settings.get('q3_owned_reservations',{}):event['owners']=snapshots
+                fresh=not self.delta.exists()
+                with self.delta.open('a') as stream:
+                    stream.write(json.dumps(event,separators=(',',':'),allow_nan=False)+'\n')
+                    stream.flush();os.fsync(stream.fileno())
+                if fresh:
+                    fd=os.open(self.delta.parent,os.O_RDONLY|os.O_DIRECTORY)
+                    try:os.fsync(fd)
+                    finally:os.close(fd)
+            for key,updates in staged.items():
+                if updates:self.groups.setdefault(key,{}).update(updates)
+            self.group_stats.update(new_stats)
+            self.group_rows.update(new_rows)
+            self.observations.update(added)
+            settings['q3_owned_reservations']=snapshots
+            settings['q3_learned_memory']=learned
+        except BaseException:
+            # No staged group state was published before durable append.
+            raise
+        # Periodic compaction retains the existing fixed evidence and
+        # replays idempotently if interrupted before truncation.
+        if self.delta.is_file() and self.delta.stat().st_size>max(1024**2,2*self.path.stat().st_size):
+            try:
+                atomic_json(self.path,dict(schema=self.schema,observations=self.observations,owners=snapshots))
+                with self.delta.open('wb') as stream:stream.flush();os.fsync(stream.fileno())
+            except OSError:
+                pass
         return True

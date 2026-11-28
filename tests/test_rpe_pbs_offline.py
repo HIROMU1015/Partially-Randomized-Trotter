@@ -829,6 +829,9 @@ def test_independent_input_wait_is_not_relaunched_on_timer_alone(tmp_path, monke
     assert len(launches) == 1
     atomic(other.directory/'CENTRAL_SHORTLIST.json', {'new_input':True})
     other.recheck_at = 0
+    assert not other.advance(disconnected=False, runnable=True, batch=8)
+    atomic(held/'KAPPA_STATE.json', {'stop':{'reason':'WAITING_FOR_INPUTS'},'new_input':True})
+    other.recheck_at = 0
     assert other.advance(disconnected=False, runnable=True, batch=8)
     assert len(launches) == 2
 
@@ -839,6 +842,7 @@ def test_preparation_budget_weighting_preserves_total_and_zero_leaf_blocks():
     plan = dict(cases=[dict(id='a', rounds=[dict(id='one')]),
                        dict(id='b', rounds=[dict(id=str(i)) for i in range(4)])], designs=[])
     weights = hchain_preparation_weights(plan, parts)
+    assert hchain_preparation_weights(plan,parts,{'signal':3})['signal']=={'short':1,'long':2,'none':0}
     assert divide_budget(10, parts, weights=weights['signal']) == {'short':2,'long':8,'none':0}
     assert sum(divide_budget(7, parts, weights=weights['signal']).values()) == 7
     assert divide_budget('UNLIMITED', parts, weights=weights['signal']) == {p['id']:'UNLIMITED' for p in parts}
@@ -860,6 +864,12 @@ def test_hchain_idle_package_rotation_requires_same_revision_and_no_owners(tmp_p
     search._rotate_waiting_part()
     assert not (search.part/'STOP_REQUESTED.json').exists()
     atomic(marker,{'reason':'NO_RESERVED_WORK','queue_revision':store.idle_revision()})
+    import fcntl
+    other=tmp_path/'second';other.mkdir()
+    with (other/'OWNER.lock').open('a+b') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        search._rotate_waiting_part()
+        assert not (search.part/'STOP_REQUESTED.json').exists()
     search._rotate_waiting_part()
     assert read(search.part/'STOP_REQUESTED.json')['reason']=='PBS_BLOCK_HANDOFF'
 
@@ -1059,3 +1069,51 @@ def test_local_handoff_completion_requires_accepted_local_receipt(tmp_path):
     atomic(child/'ROUND_RESULT.json',{'methods':{}})
     with pytest.raises(ValueError,match='report changed'):
         local_handoff_coverage(plan,root)
+
+
+def test_batch_weight_keeps_small_nonempty_partition_when_budget_suffices():
+    from trottertracks.rpe_pbs_offline import divide_budget
+    parts=[{'id':'small'},{'id':'large'},{'id':'empty'}]
+    assert divide_budget(3,parts,weights={'small':1,'large':2,'empty':0},minimum_positive=True)=={'small':1,'large':2,'empty':0}
+
+
+def test_partition_contact_v2_uses_receiver_monotonic_not_central_wall_time():
+    from trottertracks.rpe_pbs_offline import partition_contact_valid
+    plan={'settings':{'partition_start_requires_contact':True,'partition_contact_protocol':2,'partition_contact_seconds':20}}
+    assert not partition_contact_valid(plan,99999999,now=100)
+    assert partition_contact_valid(plan,{'observed_monotonic':90},now=100)
+    assert not partition_contact_valid(plan,{'observed_monotonic':79},now=100)
+
+
+def test_explicit_handoff_entry_materializes_scope_without_starting_science(tmp_path):
+    from prepare_rpe_partition_handoff import operation
+    from trottertracks.rpe_pbs_offline import pbs_units,partition_handoff_record
+    run=tmp_path/'run';plan=independent_fixture(run)
+    plan['settings'].update(partition_start_requires_contact=True,partition_handoff=True)
+    plan['round']['executor']['distributed']['local_worker']={'host_id':'local','slots':2}
+    atomic(run/'PBS_PARTITION_PLAN.json',plan)
+    directory=run/'distributed'/'pbs';directory.mkdir(parents=True)
+    atomic(directory/'SETTINGS.json',{'remote_root':'fixture'})
+    unit=pbs_units(plan)[0];received=partition_handoff_record(plan,unit)
+    class GatewayFixture:
+        def __init__(self,settings):self.settings=settings
+        def call(self,payload):
+            if payload['action']=='managed_capabilities':return {'partition_handoff_protocol':1}
+            assert payload['action']=='fence_unstarted_partition'
+            return received
+        def close(self):pass
+    assert operation(run,unit['id'],'prepare',gateway_factory=GatewayFixture)==received
+    child=directory/'partition-handoffs'/unit['id']
+    assert not read(child/'ROUND.json')['science_approved']
+    assert not (child/'child-run').exists()
+
+
+def test_exact_preparation_weights_count_phase_split(tmp_path):
+    from trottertracks.rpe_pbs_offline import exact_hchain_preparation_weights
+    cells=[dict(id=str(i),method='FULL_PF',formula='4th(m5_best)',q=1,prefix=2,R_outer=1) for i in range(7)]
+    plan=dict(owner='fixture',scope=dict(system='H8',price_paths=1),cases=[dict(id='case',rounds=cells)],designs=[])
+    provider=SimpleNamespace(select_cases=lambda p,c:dict(p,cases=c))
+    worker=SimpleNamespace(h8_preparation_priority=lambda *args:lambda job:(0,1))
+    weights=exact_hchain_preparation_weights(plan,[dict(id='part',case_ids=['case'])],
+        {'batch_sizes':{'signal':50}},{'signal':3},tmp_path,provider,worker)
+    assert weights['signal']=={'part':2}

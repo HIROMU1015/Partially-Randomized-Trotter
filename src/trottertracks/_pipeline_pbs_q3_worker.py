@@ -652,8 +652,10 @@ class Worker:
             path = attempt / 'OWNED_RESOURCES.json'
             previous = read(path) if path.exists() else {}
             peak = max(previous.get('peak_rss_bytes', 0), sample['rss_bytes'])
+            if state in ('COMPLETED_PENDING_TRANSFER','TRANSFERRED'):
+                peak=max(peak,Resources.terminal_q3_peak(attempt,assignment,saved))
             observed = stamp()
-            cpu_observation=Resources.owned_cpu_observation(sample,previous,observed)
+            cpu_observation=Resources.owned_cpu_observation(sample,previous,observed,window_seconds=5.)
             resource = 'EXITED' if state == 'UNKNOWN' and persisted['detail'].get('resource_released') is True else resource_state(attempt, state)
             kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True,
                                                      workload=assignment.get('preparation_workload'))
@@ -661,7 +663,7 @@ class Worker:
             # samples stay in the conservative count-DP profile.
             job = dict(state=resource, resource_class=kind, dp_workers=max(saved.get('dp_workers') or 1,
                                                  saved.get('task_cpu_count') or 1),
-                       peak_rss_bytes=peak,
+                       peak_rss_bytes=peak,current_rss_bytes=sample['rss_bytes'],
                        rss_high_water_sum_bytes=max(previous.get('rss_high_water_sum_bytes',0),sample.get('rss_high_water_sum_bytes',0)),
                        **cpu_observation)
             if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
@@ -779,7 +781,7 @@ class Worker:
                                        automatic_retry=False, resource_released=True, pbs_attempt_exit=proof)
                 return state
         if state['state'] in ('STARTING', 'RUNNING') or (
-                state['state'] == 'UNKNOWN' and not (attempt / PBSAttempt.INTERRUPTED).is_file()
+                state['state'] == 'UNKNOWN' and time.monotonic()>=getattr(self,'_unknown_recheck_after',{}).get(attempt,0) and not (attempt / PBSAttempt.INTERRUPTED).is_file()
                 and (attempt / 'OUTCOME.json').is_file()
                 and (attempt / 'PROCESS_RETURN.json').is_file()):
             for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json'):
@@ -794,7 +796,11 @@ class Worker:
                     state = save_state(attempt, 'COMPLETED_PENDING_TRANSFER', outcome_status=observed['status'], recovered=True)
                     event(self.profile, 'RECOVER_COMPLETED', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'])
                 except Exception as error:
-                    state = save_state(attempt, 'UNKNOWN', reason=str(error), automatic_retry=False)
+                    if not hasattr(self,'_unknown_recheck_after'):self._unknown_recheck_after={}
+                    self._unknown_recheck_after[attempt]=time.monotonic()+5
+                    detail=dict(reason=str(error),automatic_retry=False)
+                    if state['state']!='UNKNOWN' or any(state['detail'].get(k)!=v for k,v in detail.items()):
+                        state=save_state(attempt,'UNKNOWN',**detail)
             else:
                 state = save_state(attempt, 'UNKNOWN', reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
         if state['state'] == 'UNKNOWN':
@@ -888,9 +894,9 @@ class Worker:
         payload = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], state=state['state'], detail=state['detail'])
         sending_q3 = (transfer and state['state'] == 'COMPLETED_PENDING_TRANSFER'
                       and not Preparation.is_preparation(assignment))
-        if not sending_q3 and state['state'] != 'TRANSFERRED' and self.reported.get(attempt) != state:
+        if not sending_q3 and state['state'] != 'TRANSFERRED' and self.reported.get(attempt) != payload:
             try:
-                self._post('/v1/state', payload); self.reported[attempt] = state
+                self._post('/v1/state', payload); self.reported[attempt] = payload
             except (OSError, ValueError, urllib.error.URLError) as error:
                 event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(error))
         if transfer and state['state'] == 'COMPLETED_PENDING_TRANSFER':
@@ -928,10 +934,10 @@ class Worker:
                 self._finish_transfer(attempt, assignment, response, timing)
             except (OSError, ValueError, urllib.error.URLError) as error:
                 event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
-                if sending_q3 and self.reported.get(attempt) != state:
+                if sending_q3 and self.reported.get(attempt) != payload:
                     try:
                         self._post('/v1/state', payload)
-                        self.reported[attempt] = state
+                        self.reported[attempt] = payload
                     except (OSError, ValueError, urllib.error.URLError) as notify_error:
                         event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(notify_error))
 

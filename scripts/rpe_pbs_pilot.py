@@ -22,7 +22,7 @@ import rpe_pbs_gateway as gateway
 from rpe_pbs_gateway import atomic, read, safe_id
 
 
-TERMINAL = {'F', 'X', 'SUBMIT_REJECTED', 'SUBMIT_LOST'}
+TERMINAL = {'F', 'X', 'SUBMIT_REJECTED', 'SUBMIT_LOST','RELEASED_UNSUBMITTED'}
 SUBMIT_RECHECK_SECONDS = 30
 POOL_NAME = 'shared-node'
 RESOURCES = dict(queue='workq', ncpus=96, mem='350gb', walltime='24:00:00')
@@ -59,6 +59,29 @@ def owned_jobs_by_name(token):
 def physical(pool, token, finished=None, *, scheduler=None, force=False, commit_loss=False):
     directory = pool/'allocations'/safe_id(token)
     row = gateway.snapshot(pool, finished, [directory], scheduler=scheduler, force=force)[0]
+    if row['status']=='SUBMIT_PENDING' and (directory/'RELEASE.json').is_file():
+        # Serialize with submit_once; only positive absence of its one-shot
+        # marker under the same lock permits an unsubmitted terminal state.
+        with (directory/'SUBMIT.lock').open('a') as lock:
+            try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            except BlockingIOError:return row
+            if (not (directory/'QSUB_STARTED.json').exists() and not (directory/'JOB_ID.json').exists()
+                    and not any((session/'SESSION_START.json').exists() for session in sessions(directory))):
+                if commit_loss:
+                    for session in sessions(directory):
+                        if not (session/'SESSION_START.json').exists():end(session,'RELEASED_UNSUBMITTED')
+                row['status']='RELEASED_UNSUBMITTED'
+                return row
+    if row['status']=='SUBMIT_AMBIGUOUS_HOLD':
+        # A missing qsub response is not permission to submit again. Only
+        # positive, uniquely named scheduler evidence can recover the ID.
+        try:jobs=owned_jobs_by_name(token)
+        except (OSError,subprocess.CalledProcessError,RuntimeError):return row
+        matches=[job for job,detail in jobs.items() if detail.get('Job_Name')=='RPE'+token[:12]]
+        if len(matches)==1:
+            atomic(directory/'JOB_ID.json',dict(job_id=matches[0],recovered=True))
+            return gateway.snapshot(pool,finished,[directory],scheduler=scheduler,force=True)[0]
+        return row
     if row['status'] == 'SUBMIT_REJECTED':
         # Even a nonzero qsub exit can be a lost connection after submission.
         managed = read(directory/'SPEC.json', {}).get('run_managed') is True
@@ -335,7 +358,10 @@ def update_session_control(directory, control):
         stop_session(directory)
     else:
         # A pause keeps the session and its owned attempts intact, even if idle.
-        selected = dict(control,release_when_idle=False) if control.get('pause') else control
+        selected = dict(control,release_when_idle=False) if control.get('pause') else dict(control)
+        if selected.get('contact_protocol')==2 and 'contact' in selected:
+            selected['contact_received_epoch']=(prior.get('contact_received_epoch')
+                if prior.get('contact')==selected['contact'] else time.time())
         if selected != prior:
             atomic(directory/'CONTROL.json', selected)
 
@@ -626,9 +652,9 @@ def attach_managed(root, spec):
                     successor = read(generation/'SUCCESSOR.json')
                     if successor is not None:
                         target = pool/'allocations'/safe_id(successor['token'])
-                        if not (target/'RELEASE.json').exists():
-                            raise ValueError('Managed successor is staged; await its exact handover')
                         next_row = physical(pool, target.name, commit_loss=True)
+                        if next_row['status'] not in TERMINAL and not (target/'RELEASE.json').exists():
+                            raise ValueError('Managed successor is staged; await its exact handover')
                         if next_row['status'] not in TERMINAL and (target/'QSUB_STARTED.json').exists():
                             raise ValueError('Managed successor release is not reconciled')
                     current = None
@@ -673,14 +699,44 @@ def attach_managed(root, spec):
     return dict(token=token, existing=prior is not None, pilot=binding['token'])
 
 
+def release_unused_successor(pool,generation):
+    """Fence only an unattached opt-in successor, not the current reservation.
+
+    The caller owns the managed pool lock. A concurrent submit can finish
+    after the fence, but can no longer claim a session or start science.
+    """
+    successor=read(generation/'SUCCESSOR.json')
+    if successor is None:return
+    target=pool/'allocations'/safe_id(successor['token'])
+    expected=read(target/'SPEC.json',{})
+    if (expected.get('predecessor')!=dict(token=generation.name,job_id=read(generation/'ALLOCATION.json',{}).get('job_id'))
+            or not expected.get('run_managed') or list(sessions(target))):
+        return
+    if not (target/'RELEASE.json').exists():
+        atomic(target/'RELEASE.json',dict(epoch=time.time(),reason='MANAGED_SESSION_STOP_UNUSED_SUCCESSOR'))
+    try:
+        row=physical(pool,target.name)
+        if row.get('job_id') and row['status'] in ('Q','H','W'):
+            gateway.handle(pool,dict(action='delete',token=target.name))
+    except (OSError,ValueError,RuntimeError,subprocess.CalledProcessError):
+        # The durable release remains pending; never cancel the predecessor
+        # session or turn an unknown target into a successful deletion.
+        return
+
+
 def managed_exchange(root, value, finished=None, scheduler=None):
     controls = dict(value.get('controls', {}))
     for token, control in list(controls.items()):
         directory = root/'allocations'/safe_id(token)
         binding = read(directory/'PILOT.json')
         if binding is not None:
-            with locked(session_pool(root, binding)):
+            pool=session_pool(root,binding)
+            with locked(pool):
                 update_session_control(directory, control)
+                if control.get('stop') and binding.get('managed_host'):
+                    generation=pool/'allocations'/safe_id(binding['token'])
+                    if not any(d!=directory and not (d/'SESSION_END.json').exists() for d in sessions(generation)):
+                        release_unused_successor(pool,generation)
             del controls[token]
     return gateway.exchange(root, dict(value, controls=controls), finished,
                             lambda root, finished: session_snapshot(root, finished, scheduler=scheduler))

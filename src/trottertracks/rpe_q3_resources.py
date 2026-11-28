@@ -267,7 +267,7 @@ def owned_tree_sample(pid, *, proc_root='/proc'):
                 sampled_pids=len(seen),cpu_sample_consistent=consistent and bool(cpu_identity))
 
 
-def owned_cpu_observation(sample,previous,observed):
+def owned_cpu_observation(sample,previous,observed,*,window_seconds=0):
     """Keep a last valid cumulative CPU baseline across unstable samples."""
     old=previous.get('cpu_baseline') or {}
     peak=previous.get('observed_cpu_cores',0)
@@ -277,7 +277,9 @@ def owned_cpu_observation(sample,previous,observed):
     if old.get('clock_id')==now['clock_id']:
         elapsed=now['monotonic']-old['monotonic']
         delta=now['seconds']-old['seconds']
-        if elapsed>0 and delta>=0:peak=max(peak,delta/elapsed)
+        if elapsed>0 and delta>=0:
+            if elapsed>=window_seconds:peak=max(peak,delta/elapsed)
+            else:return dict(cpu_seconds=now['seconds'],cpu_baseline=old,observed_cpu_cores=peak)
     return dict(cpu_seconds=now['seconds'],cpu_baseline=now,observed_cpu_cores=peak)
 
 
@@ -372,6 +374,20 @@ def valid_q3_execution_receipt(sample, request, receipt, outcome, *, policy_host
             and outcome['status'] in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD','INCONCLUSIVE'))
     except (KeyError, TypeError, ValueError):
         return False
+
+
+def terminal_q3_peak(attempt,assignment,profile):
+    """Use the finer supervisor peak only with its exact successful receipt."""
+    try:
+        def read(name):return json.loads((attempt/name).read_bytes())
+        sample=read('Q3_EXECUTION_RESOURCES.json');receipt=read('PROCESS_RETURN.json');outcome=read('OUTCOME.json')
+        from .rpe_host_profiles import q3_measurement_host
+        host=q3_measurement_host(profile)
+        if valid_q3_execution_receipt(sample,assignment['request'],receipt,outcome,
+                                      policy_host=host,attempt=assignment['attempt_id']):
+            return sample['peak_rss_bytes']
+    except (OSError,ValueError,TypeError,KeyError,ImportError):pass
+    return 0
 
 
 def _fixed_workload_document(root, name, sha):
@@ -732,7 +748,7 @@ def seed_reduced_q3_cpu_classes(peaks, policy):
                                          min(target, sample.get('observed_cpu_cores',0)))
 
 
-def comparable_q3_class_reservations(measured, waiting):
+def comparable_q3_class_reservations(measured, waiting, *, compatible_sources=()):
     """Conservative provisional cost from the same exact runtime at no smaller shots."""
     reservations={}
     for kind in set(waiting):
@@ -744,7 +760,10 @@ def comparable_q3_class_reservations(measured, waiting):
         samples=[]
         for previous,sample in measured.items():
             other=previous.split(':')
-            if (len(other)==8 and other[:-1]==fields[:-1] and other[-1].isdigit()
+            same_runtime=(len(other)==8 and other[:-1]==fields[:-1])
+            compatible=(len(other)==8 and other[:3]==fields[:3] and other[5:-1]==fields[5:-1]
+                        and any(pair=={'from':other[3:5],'to':fields[3:5]} for pair in compatible_sources))
+            if ((same_runtime or compatible) and other[-1].isdigit()
                     and int(other[-1])>=int(fields[-1]) and sample.get('peak_rss_bytes',0)>0):
                 samples.append(sample)
         if samples:
@@ -761,6 +780,7 @@ def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory,
         return cpu_need, math.ceil(sample['peak_rss_bytes'] * 1.5)
 
     free_cpu, free_memory = cpu, memory
+    unmaterialized = 0
     occupied = [job for job in jobs if job['state'] in OCCUPIED]
     for job in occupied:
         kind = job.get('resource_class')
@@ -769,9 +789,13 @@ def _measured_class_slots(waiting, offered, peaks, jobs, resources, cpu, memory,
         cpu_need, rss = footprint(kind)
         free_cpu -= cpu_need
         free_memory -= rss
+        # Available memory already includes the currently sampled RSS, but
+        # not the portion reserved for later growth or an unstarted attempt.
+        current = job.get('current_rss_bytes', 0)
+        unmaterialized += max(0, rss - max(0, current or 0))
     for key in ('remaining_group_memory_bytes', 'machine_mem_available_bytes'):
         if resources.get(key) is not None:
-            free_memory = min(free_memory, resources[key])
+            free_memory = min(free_memory, max(0, resources[key]-unmaterialized))
     counts = Counter(waiting)
     quotas = {}
     total = 0
@@ -819,17 +843,29 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
     inferred_classes = set()
     pack_classes = policy.get('pack_measured_task_classes') is True
     if policy.get('separate_task_resources'):
+        if state.get('schema')=='RPE_Q3_SLOT_STATE_V1' and state.get('task_resource_peak_scope')!='TERMINAL_ONLY':
+            # Legacy automatic slot state may contain a small running RSS.
+            # Rebuild from retained terminal receipts on first new-version poll.
+            state['task_resource_peaks']={}
+        state['task_resource_peak_scope']='TERMINAL_ONLY'
         peaks = state.setdefault('task_resource_peaks', {})
         seed_reduced_q3_cpu_classes(peaks, profile.get('q3_cpu_policy'))
         active = set(feedback.get('ready_task_classes', ()))
         occupied_classes = {job.get('resource_class') for job in jobs if job['state'] in OCCUPIED}
+        running_lower = {}
         for job in jobs:
             kind = job.get('resource_class')
             if kind is None:
                 continue
             if job['state'] in OCCUPIED:
                 active.add(kind)
-            entry = peaks.setdefault(kind, {})
+                # A partial running sample must never turn an inferred or
+                # isolated class into a measured one on the next poll.
+                entry = running_lower.setdefault(kind, {})
+            elif job['state'] in ('COMPLETED_PENDING_TRANSFER','TRANSFERRED','EXITED'):
+                entry = peaks.setdefault(kind, {})
+            else:
+                continue
             for metric in ('peak_rss_bytes', 'observed_cpu_cores', 'dp_workers'):
                 entry[metric] = max(entry.get(metric, 0), job.get(metric, 0))
         # Explicit request-bound reservations can admit a trial without
@@ -846,7 +882,8 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         peaks=deepcopy(measured_peaks)
         if pack_classes:
             inferred=comparable_q3_class_reservations(measured_peaks,
-                active | set(feedback.get('ready_task_class_order',())) | occupied_classes)
+                active | set(feedback.get('ready_task_class_order',())) | occupied_classes,
+                compatible_sources=profile.get('q3_resource_compatible_sources',()))
             for kind,sample in inferred.items():
                 peaks[kind]=sample
                 inferred_classes.add(kind)
@@ -860,6 +897,12 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
             if cpus>sample.get('dp_workers',0):declared_classes.add(kind)
             sample['declared_cpu']=cpus
             sample['dp_workers']=max(cpus,sample.get('dp_workers',0))
+        # Running observations increase an established/provisional
+        # reservation, but cannot by themselves establish a measured class.
+        for kind, sample in running_lower.items():
+            if peaks.get(kind, {}).get('peak_rss_bytes'):
+                for metric, value in sample.items():
+                    peaks[kind][metric] = max(peaks[kind].get(metric,0),value)
         active = sorted(active) or state.get('task_resource_classes', [])
         state['task_resource_classes'] = active
         if 'ready_task_class_order' in feedback:
@@ -867,11 +910,21 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
             cold_running = {kind for kind in occupied_classes if kind is not None and
                             not peaks.get(kind, {}).get('peak_rss_bytes')}
             previous_trial = state.get('isolated_resource_class')
+            cold_head = waiting[0] if waiting and not peaks.get(waiting[0],{}).get('peak_rss_bytes') else None
+            cold_wait = state.get('cold_class_wait')
+            if cold_head is None:
+                state.pop('cold_class_wait',None)
+            elif not cold_wait or cold_wait.get('kind')!=cold_head or now<cold_wait.get('since',now):
+                cold_wait={'kind':cold_head,'since':now};state['cold_class_wait']=cold_wait
+            drain_after=policy.get('cold_class_drain_seconds',30)
+            if type(drain_after) not in (int,float) or not math.isfinite(drain_after) or drain_after<0:
+                raise ValueError('Invalid cold class drain interval')
+            drain_due=bool(cold_head and cold_wait and now-cold_wait['since']>=drain_after)
             if previous_trial is not None and previous_trial in occupied_classes:
                 isolated = previous_trial
             elif cold_running:
                 isolated = min(cold_running)
-            elif waiting and not peaks.get(waiting[0], {}).get('peak_rss_bytes') and (not pack_classes or not occupied):
+            elif cold_head and (not pack_classes or not occupied or drain_due):
                 # Give the highest-priority cold request a turn after current
                 # work drains. Do not use a measured offer to start it.
                 isolated = waiting[0]

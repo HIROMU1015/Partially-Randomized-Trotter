@@ -824,7 +824,10 @@ class ConcurrentExecutor(O.Executor):
                      if method != self.method and getattr(view,'standby',None)
                      and not view._budget_reserved()
                      and (getattr(view,'_awaiting_probe_revision',None) != getattr(s,'probe_revision',0))]
-        if not competing:
+        # Fairness reserves the last shared positions. An idle selector
+        # must not hold an otherwise empty window hostage.
+        remaining=self._standby_capacity()+self._standby_headroom()-s.active-queued_count(s,'q3')
+        if not competing or remaining>len(competing):
             return True
         mine=queued_count(s,'speculative',self.method)
         return all(mine<=queued_count(s,'speculative',method) for method in competing)
@@ -1082,8 +1085,12 @@ class ConcurrentExecutor(O.Executor):
                 event=reselect()
                 with s.cv:
                     if task.event.is_set():return True
-                    if s.cv.revision!=revision:continue
                     if event:break
+                    if s.cv.revision!=revision:
+                        # Notifications also arrive for telemetry. Avoid
+                        # immediately repeating a costly advisory snapshot.
+                        s.cv.wait(.05)
+                        continue
                     if not self._standby_can_fill():
                         s.cv.wait()
                         continue
@@ -1161,16 +1168,20 @@ class ConcurrentExecutor(O.Executor):
                         finished_at=task.finished_at, seconds=task.finished_at-task.started_monotonic))
         if first:self.log(event='ADOPT',job=job.name,configuration=proposal['configuration_id'],status=answer['status'])
 
+    def detach_standby_view(self):
+        s=self.state
+        with s.cv:
+            views=getattr(s,'standby_views',{})
+            if self.method is not None and views.get(self.method) is self:
+                views.pop(self.method,None)
+                if getattr(self,'standby',None): self.standby.clear()
+                s.cv.notify_all()
+
     def finish(self):
         s=self.state
         with s.cv:
             if s.closed and s.driver.closed:return
-            if self.method is not None:
-                views = getattr(s,'standby_views',{})
-                if views.get(self.method) is self:
-                    views.pop(self.method,None)
-                if getattr(self,'standby',None):self.standby.clear()
-                s.cv.notify_all()
+            if self.method is not None:self.detach_standby_view()
             for t in s.tasks.values():
                 if t.status=='QUEUED'and(self.method is None or t.view.method==self.method):
                     if (self.method is None and getattr(s, 'retain_queued_preparation', False)
@@ -1414,7 +1425,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self.allocation_settings_path = settings_path
         self.allocation_config = config
         kwargs['max_concurrent'] = 1 if requested_capacity == 'auto' else requested_capacity
-        self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
+        self.store = JobStore(run/'distributed'/'QUEUE.sqlite3',**({'split_eligibility':True} if self.distributed.get('split_eligibility') is True else {}))
         self.q3_memory_learner = None
         if distributed.get('pbs') and self.distributed['pbs'].get('q3_memory_learning'):
             from .rpe_q3_memory import MemoryLearner
@@ -2493,7 +2504,7 @@ class DistributedExecutor(ConcurrentExecutor):
             revision=state.cv.revision
             snapshot=copy(self)
             snapshot.hosts=self.hosts.copy()
-            snapshot.host_admission_cache={}
+            snapshot.host_admission_cache=dict(self.host_admission_cache)
             snapshot.state=copy(state)
             snapshot.state.cv=threading.Condition()
             snapshot.state.owner_clock=dict(state.owner_clock)
@@ -2512,7 +2523,6 @@ class DistributedExecutor(ConcurrentExecutor):
             elif free>queued:result=True
             else:
                 with state.cv:
-                    if state.cv.revision!=revision:return False
                     tasks=tuple(copy(task) for task in tasks_with_status(state,'QUEUED')
                                 if task.demand and task.rule['kind']!='preparation')
                     snapshot.preparation_pending={job:dict(record,failures=dict(record.get('failures',{})))
@@ -2520,7 +2530,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 demand=snapshot._ready_queue(tasks=tasks,include_preparation=False)
                 result=free>len(snapshot._match_ready_jobs(demand,offers,owned=attempts))
         with state.cv:
-            return bool(result and state.cv.revision==revision and not state.failure and not state.closed)
+            return bool(result and not state.failure and not state.closed)
 
     @staticmethod
     def _bound_timing_profile(request, host, profile):
@@ -4089,9 +4099,11 @@ class DistributedExecutor(ConcurrentExecutor):
         """Submit an explicitly supplied graph; candidate selection stays outside."""
         from . import rpe_q3_coordinator as Q
         frozen = self.run_dir/'distributed'/'PREPARATION_GRAPH.json'
-        if frozen.exists() and json.loads(frozen.read_text()) != settings:
+        from .rpe_preparation_queue import load_preparation_graph,pack_preparation_graph
+        if frozen.exists() and load_preparation_graph(frozen)!=settings:
             raise ValueError('Preparation graph changed on resume; use a new run')
-        if not frozen.exists(): Q.atomic_json(frozen, settings)
+        if not frozen.exists():
+            Q.atomic_json(frozen,pack_preparation_graph(settings) if self.distributed.get('compact_preparation_graph') is True else settings)
         jobs, pending = {}, list(settings.get('tasks', []))
         self.independent_hchain_preparations = set()
         while pending:
@@ -4710,6 +4722,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     reply = dict(ok=True, disposition='STATE_OUTSIDE_CURRENT_RUN')
                 elif row['state'] == 'ACCEPTED':
                     reply = dict(ok=True, disposition='STATE_ALREADY_ACCEPTED', completion_sha256=row['completion_sha256'])
+                    if row.get('adopted_epoch') is not None:reply['publication_adopted']=True
                 else:
                     reply = dict(ok=True, state=row['state'])
                 replies[attempt] = reply
@@ -5372,11 +5385,11 @@ class DistributedExecutor(ConcurrentExecutor):
                     raise ValueError('Duplicate completion changed artifacts')
                 self._publish_transfer(row)
                 receipt = json.loads((job/'PROCESS_RETURN.json').read_text())
+                if not preparation and self.q3_memory_learner is not None:
+                    try:self._learn_q3_memory(row,transfer)
+                    except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                        self.log(event='Q3_MEMORY_OBSERVATION_FAILED',host_id=host,reason=str(error))
                 with self.state.cv:
-                    if not preparation and self.q3_memory_learner is not None:
-                        try:self._learn_q3_memory(row,transfer)
-                        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
-                            self.log(event='Q3_MEMORY_OBSERVATION_FAILED',host_id=host,reason=str(error))
                     self._finish_received_task(job, row, receipt)
                 return dict(ok=True, duplicate=True)
 
@@ -5460,11 +5473,11 @@ class DistributedExecutor(ConcurrentExecutor):
             observation = (self._q3_completion_observation(accepted, transfer, validation)
                            if not duplicate and validation is not None and self.distributed.get('work_conserving_search')
                            else None)
+            if not preparation and self.q3_memory_learner is not None:
+                try:self._learn_q3_memory(accepted,transfer)
+                except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
+                    self.log(event='Q3_MEMORY_OBSERVATION_FAILED',host_id=host,reason=str(error))
             with self.state.cv:
-                if not preparation and self.q3_memory_learner is not None:
-                    try:self._learn_q3_memory(accepted,transfer)
-                    except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as error:
-                        self.log(event='Q3_MEMORY_OBSERVATION_FAILED',host_id=host,reason=str(error))
                 if marker is not None and task is not None and task is self.state.tasks.get(job):
                     task.validated_transfer = (marker, validation_key, validation)
                 if observation is not None:
@@ -5482,14 +5495,16 @@ class DistributedExecutor(ConcurrentExecutor):
         if self.q3_memory_learner is None or not self.q3_memory_learner.policy:
             return
         from .rpe_q3_memory import observation
-        self._update_q3_memory(observation(row,transfer))
+        sample=observation(row,transfer)
+        with self.state.cv:self._update_q3_memory(sample)
 
     def _update_q3_memory(self,sample):
         if (sample is None or self.q3_memory_learner is None or not self.q3_memory_learner.policy
                 or sample['attempt_id'] in self.q3_memory_learner.observations):return
         pbs=self.distributed['pbs']
-        owned=self.store.rows_for(r['job_id'] for r in self._owned_attempts())
-        if self.q3_memory_learner.update(sample,owned.values(),pbs) and self.pbs_manager is not None:
+        def owned():
+            return self.store.rows_for(r['job_id'] for r in self._owned_attempts()).values()
+        if self.q3_memory_learner.update(sample,owned,pbs) and self.pbs_manager is not None:
             for key in ('q3_owned_reservations','q3_learned_memory'):
                 self.pbs_manager.settings[key]=pbs[key]
 
@@ -5988,18 +6003,20 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
                     return
                 try:executor._stop_after_failure(error)
                 finally:O.record_runtime_error(executor.run_dir,error,'METHOD_OPTIMIZE',method=method)
-            def finished(method, future):
+            def finished(method, view, future):
                 try:
                     report_failure(method, future)
                 finally:
+                    view.detach_standby_view()
                     with executor.state.cv:
                         executor.state.cv.notify_all()
 
             def submit(method):
                 options = dict(kwargs, close_executor=False) if keep_active else kwargs
-                future = pool.submit(O.optimize, root, problem, executor=executor.for_method(method),
+                view=executor.for_method(method)
+                future = pool.submit(O.optimize, root, problem, executor=view,
                                      methods=[method], scaled_finalizers=finalizers, **options)
-                future.add_done_callback(lambda done: finished(method, done))
+                future.add_done_callback(lambda done: finished(method, view, done))
                 return future
 
             futures = {m: submit(m) for m in methods}

@@ -732,3 +732,13 @@ for _name in tuple(vars(Base.ControllerFailures)):
         setattr(PreparationQueue,_name,None)
 
 if __name__=='__main__':unittest.main()
+
+
+def test_shared_graph_round_trip_preserves_each_task_request(tmp_path):
+    from trottertracks.rpe_preparation_queue import pack_preparation_graph,load_preparation_graph
+    import json,pytest
+    graph={'tasks':[{'name':str(i),'request':{'preparation':{'source':{'commit':'a'*40},'required_paths':{'assets':{'path':'x'*200}},'inputs':{'id':str(i)}}}} for i in range(3)]}
+    packed=pack_preparation_graph(graph);path=tmp_path/'graph.json';path.write_text(json.dumps(packed))
+    assert load_preparation_graph(path)==graph
+    sha=next(iter(packed['shared']));packed['shared'][sha]={};path.write_text(json.dumps(packed))
+    with pytest.raises(ValueError,match='hash differs'):load_preparation_graph(path)

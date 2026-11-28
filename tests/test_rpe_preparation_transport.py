@@ -792,3 +792,16 @@ def test_verified_own_hardlink_reuses_stable_identity_but_changed_bytes_rehash(t
     cache.path(sha).write_bytes(b'changed-content')
     with pytest.raises(ValueError,match='Corrupt cached artifact'):
         cache.missing([sha])
+
+
+def test_new_provider_declared_core_still_requires_observed_dispatch(monkeypatch):
+    import sys,json,pytest
+    from types import SimpleNamespace
+    profile={'interpreter':sys.executable,'openblas_coretype':'ZEN'}
+    need={'openblas_coretype':'ZEN','declared_openblas_coretype':'ZEN'}
+    probe={'executable':sys.executable,'version_info':[3,11],'packages':{}}
+    monkeypatch.setattr(P.subprocess,'run',lambda *a,**k:SimpleNamespace(returncode=0,stdout=json.dumps(probe),stderr='Core: Zen\n'))
+    assert P._runtime(profile,need)[0]['openblas_coretype']=='ZEN'
+    with pytest.raises(ValueError,match='Unsupported'):P._runtime(profile,{'openblas_coretype':'ZEN'})
+    monkeypatch.setattr(P.subprocess,'run',lambda *a,**k:SimpleNamespace(returncode=0,stdout=json.dumps(probe),stderr='Core: Haswell\n'))
+    with pytest.raises(ValueError,match='actual OpenBLAS'):P._runtime(profile,need)

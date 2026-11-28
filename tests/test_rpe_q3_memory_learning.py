@@ -135,3 +135,21 @@ def test_resume_bulk_observations_preserve_original_owner_envelope(tmp_path):
         assert P.resource_need(req,runtime,pbs,host)==(4,3*P.GIB)
         assert P.owned_resource_need(owner,runtime,pbs,host)==(4,8*P.GIB)
         assert not learner.update_many(observations,[owner],pbs)
+
+
+def test_incremental_group_maxima_match_full_reference(tmp_path):
+    host,runtime,pbs,req=setup();M.apply_policy({'pbs':pbs},True)
+    learner=M.MemoryLearner(tmp_path/'stats.json',pbs)
+    samples=[]
+    for i in range(80):
+        # Multiple attempts for one job, differing measurement keys; only
+        # the largest observation owns the group contribution.
+        item=dict(host=host,measurement_key='key'+str(i%3),memory_class_key='same',
+            method=req['method'],route_kind=req['route']['kind'],dp_workers=3,task_cpu_count=4,
+            job_id='job'+str(i%13),attempt_id='attempt'+str(i),peak_rss_bytes=(i+1)*1024**2)
+        samples.append(item)
+        learner.update(item,[],pbs)
+        assert pbs['q3_learned_memory']==M.envelopes(samples,M.learning_policy(True),pbs)
+    resumed=M.MemoryLearner(tmp_path/'stats.json',pbs)
+    assert len(resumed.observations)==80
+    assert pbs['q3_learned_memory']==M.envelopes(samples,M.learning_policy(True),pbs)

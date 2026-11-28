@@ -336,6 +336,10 @@ def test_hchain_independent_parent_and_child_use_exact_cases(tmp_path, monkeypat
     for name, data in (("ROUND.json", spec), ("PROBLEM.json", problem),
                        ("APPLIED_SCOPE.json", dict(run_id="search-test", scope=canonical))):
         central.write(run/name, data)
+    monkeypatch.setattr(scope,'provider_root',lambda _:ROOT)
+    monkeypatch.setattr(hchain,'load_provider',lambda *_:(
+        SimpleNamespace(select_cases=lambda p,c:dict(p,cases=c)),
+        SimpleNamespace(h8_preparation_priority=lambda *args:lambda job:(0,1))))
     partition = hchain.partition_for_run(run, spec)
     assert hchain.partition_for_run(run, spec) == partition
     assert len(partition["parts"]) == len(offline.pbs_units(partition)) == 2
@@ -676,3 +680,62 @@ def test_signal_batch_policy_reuses_fixed_h8_and_accepts_explicit_provider_polic
     provider.SIGNAL_BATCH_POLICY['phase_key_limit']=1
     with pytest.raises(ValueError,match='Invalid provider'):
         hchain.signal_batch_policy({'scope':{'system':'Hsynthetic'}},provider)
+
+
+def test_exhausted_inputs_are_operational_terminal_not_scientific_completion(tmp_path):
+    from trottertracks.rpe_q3_worker import read
+    import run_rpe_hchain_round as hchain
+    hchain.finish_block(tmp_path,{'FULL_PF':{'stop_reason':'WAITING_FOR_INPUTS'}},['FULL_PF'],
+                        exhausted={'PREPARATION_FAILED':1})
+    saved=read(tmp_path/'SEARCH_TERMINATION.json')
+    assert saved['reason']=='HCHAIN_INPUTS_EXHAUSTED' and not saved['scientific_scope_complete']
+
+
+def test_fixed_startup_declaration_checks_profile_and_manifest_without_provider(tmp_path):
+    from trottertracks.rpe_hchain_scope import verify_startup_contract
+    import pytest
+    settings=dict(openblas_coretype='HASWELL',provider_source={'files':{'worker.py':'sha'}},assets={'files':{'input':'sha'}})
+    plan={'scope':{'system':'H8'},'verified_saved_preparations':{'p':'sha'},
+          'provider_contract':{'openblas_coretype':'HASWELL','startup_source_files':['worker.py'],'startup_asset_files':['input']}}
+    profiles={'local':{'preparation_profiles':[{'provider':'HCHAIN_SCOPED','profile':{'openblas_coretype':'HASWELL'}}]}}
+    verify_startup_contract(settings,plan,{'preparation_profiles':profiles})
+    with pytest.raises(ValueError,match='OpenBLAS'):
+        verify_startup_contract(dict(settings,openblas_coretype='NEHALEM'),plan,{'preparation_profiles':profiles})
+    with pytest.raises(ValueError,match='file declaration'):
+        verify_startup_contract(dict(settings,assets={'files':{}}),plan,{'preparation_profiles':profiles})
+
+
+def test_late_ready_held_route_can_be_reannounced_without_new_input(monkeypatch):
+    from threading import Condition
+    from unittest.mock import Mock
+    clock=[10.]
+    monkeypatch.setattr(hchain.time,'monotonic',lambda:clock[0])
+    executor=SimpleNamespace(state=SimpleNamespace(cv=Condition()))
+    rows={'late':{'configuration_id':'late','method':'FULL_PF','ready':False}}
+    source=hchain.HChainReadySource(executor,rows)
+    view=Mock();trial=Mock();view.for_method.return_value=trial
+    view.expected={};view.routes={'FULL_PF':[]}
+    trial.route.return_value={'kind':'fixture'};trial.refresh_execution_hold.return_value={'hold':True}
+    trial.expected_for.return_value={}
+    rows['late']['ready']=True
+    source.publish(rows,{}, {}, set())
+    pending,take=source.subscribe('FULL_PF',{},[],view)
+    assert pending() and take()==([],None)
+    assert not source.retry_due()
+    clock[0]+=1.1;trial.refresh_execution_hold.return_value=None
+    assert source.retry_due()
+    source.publish(rows,{}, {},set())
+    assert [r['configuration_id'] for r in take()[0]]==['late']
+    assert not source.retry_due()
+
+
+def test_fixed_startup_checks_saved_export_at_controller_without_provider(tmp_path):
+    from trottertracks.rpe_hchain_scope import verify_startup_contract
+    import hashlib,json
+    path=tmp_path/'export.json';path.write_text(json.dumps({'p:2':{'hash':'fixture'}}))
+    settings={'assets':{'controller_path':str(tmp_path),'files':{'export.json':hashlib.sha256(path.read_bytes()).hexdigest()}}}
+    plan={'scope':{'system':'FAKE'},'verified_saved_preparations':{'2':{'saved':'fixture'}},
+          'provider_contract':{'saved_preparation_export':{'path':'export.json','key_prefix':'p:','hash_field':'hash'}}}
+    verify_startup_contract(settings,plan,{})
+    path.write_text('{}')
+    with pytest.raises(ValueError,match='export hash differs'):verify_startup_contract(settings,plan,{})

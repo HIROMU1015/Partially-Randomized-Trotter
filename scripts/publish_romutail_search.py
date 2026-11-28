@@ -21,6 +21,19 @@ GIT_BLOB_LIMIT = 100 * 1024**2
 
 def copy_metadata(source, target, *, limit=GIT_BLOB_LIMIT):
     """Strip only JSON line whitespace if needed. Preserve exact numeric tokens."""
+    if source.name=='KAPPA_STATE.json':
+        state=json.loads(source.read_bytes())
+        if 'family_metadata_storage' in state:
+            from trottertracks.rpe_width_checkpoint import hydrate_family_metadata
+            value=hydrate_family_metadata(state,source.parent)
+            raw=(json.dumps(value,ensure_ascii=False,separators=(',',':'),allow_nan=False)+'\n').encode()
+            if len(raw)>limit:raise ValueError('KAPPA_STATE.json exceeds publication size limit after hydration')
+            with NamedTemporaryFile(dir=target.parent,delete=False) as writer:
+                pending=Path(writer.name)
+                try:
+                    writer.write(raw);writer.flush();os.fchmod(writer.fileno(),0o644);os.replace(pending,target)
+                finally:pending.unlink(missing_ok=True)
+            return
     with source.open('rb') as reader, NamedTemporaryFile(dir=target.parent, delete=False) as writer:
         pending = Path(writer.name)
         try:

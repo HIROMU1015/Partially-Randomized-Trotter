@@ -31,7 +31,7 @@ def provider_root(settings):
         relative = PurePosixPath(name)
         if relative.is_absolute() or ".." in relative.parts or hashlib.sha256((path / relative).read_bytes()).hexdigest() != expected:
             raise ValueError(f"H-chain provider source differs: {name}")
-    return path / "scripts/h6_fixed_run"
+    return path / settings.get("provider_directory","scripts/h6_fixed_run")
 
 
 def pbs_profiles(distributed, node_count):
@@ -64,6 +64,53 @@ def pbs_profiles(distributed, node_count):
     if not all(worker["profile"].get("storage_limit") for worker in workers):
         raise ValueError("All PBS workers require the run's storage limit")
     return hosts
+
+
+def verify_startup_contract(settings,plan,distributed):
+    """Static declaration/placement check; no provider startup or leaf execution."""
+    declaration=plan.get('provider_contract') or {}
+    core=declaration.get('openblas_coretype',settings.get('openblas_coretype'))
+    if plan['scope'].get('system')=='H8' and plan.get('verified_saved_preparations') and core is None:
+        raise ValueError('Fixed H8 startup requires a declared OpenBLAS core')
+    if core is not None:
+        from .rpe_preparation_worker import valid_openblas_core
+        if not valid_openblas_core(core,declaration.get('openblas_coretype')) or settings.get('openblas_coretype')!=core:
+            raise ValueError('Fixed PLAN and selected OpenBLAS core differ')
+        profiles=distributed.get('preparation_profiles') or {}
+        if not profiles:raise ValueError('Missing H-chain preparation profiles for fixed OpenBLAS core')
+        allowed=(distributed.get('preparation_provider_hosts') or {}).get('HCHAIN_SCOPED',profiles.keys())
+        for host in allowed:
+            profile=profiles.get(host)
+            if profile is None:raise ValueError('Missing fixed H-chain preparation profile')
+            rules=[rule['profile'] for rule in profile.get('preparation_profiles',())
+                   if rule.get('provider')=='HCHAIN_SCOPED']
+            if not rules and profile.get('preparation_provider')=='HCHAIN_SCOPED':rules=[profile]
+            if not rules or any(p.get('openblas_coretype')!=core for p in rules):
+                raise ValueError('H-chain preparation profile OpenBLAS differs: '+host)
+    for field,declared in (('provider_source','startup_source_files'),('assets','startup_asset_files')):
+        required=declaration.get(declared,())
+        if not set(required)<=settings.get(field,{}).get('files',{}).keys():
+            raise ValueError('H-chain startup file declaration is not fully bound: '+field)
+    if declaration.get('provider_directory'):
+        settings['provider_directory']=declaration['provider_directory']
+    # The archived side of startup identity is fixed, so verify it once at
+    # Start without invoking the numerical provider. Remote readiness still
+    # checks the host's actual declared file bytes.
+    saved=plan.get('verified_saved_preparations') or {}
+    export=declaration.get('saved_preparation_export')
+    if saved and all(isinstance(v,dict) and 'saved' in v for v in saved.values()) and (export or plan['scope'].get('system')=='H8'):
+        from .rpe_preparation_worker import verify_h8_saved_preparation_metadata
+        export=export or dict(path='inputs/h8_preparation_export.json',key_prefix='faithful:p',hash_field='preparation_hash')
+        assets=settings['assets'];name=export['path']
+        if name not in assets.get('files',{}):raise ValueError('Saved preparation export not declared in assets')
+        root=Path(assets['controller_path']).resolve();relative=PurePosixPath(name)
+        if relative.is_absolute() or '..' in relative.parts:raise ValueError('Invalid saved preparation export path')
+        path=root/name
+        if not path.resolve().is_relative_to(root):raise ValueError('Saved preparation export escapes assets')
+        if hashlib.sha256(path.read_bytes()).hexdigest()!=assets['files'][name]:
+            raise ValueError('Controller saved preparation export hash differs')
+        verify_h8_saved_preparation_metadata({'saved_preparation_export':dict(export,hashes={str(k):v['saved'] for k,v in saved.items()})},
+            {'hchain_assets':dict(path=assets['controller_path'],files=assets['files'])})
 
 
 def resolve(config, requested):
@@ -139,6 +186,7 @@ def resolve(config, requested):
         if policy:
             settings['worker_policy_disposition'] = dict(applied=sorted(applied),
                 not_applied=sorted(set(policy)-applied))
+        verify_startup_contract(settings,plan,distributed)
         prep = distributed.setdefault("preparation", {}).setdefault("budgets", {})
         changes = scope.get("preparation_budgets", {})
         keys(changes, set(STAGES), "scope.preparation_budgets")
@@ -166,6 +214,11 @@ def resolve(config, requested):
         settings.setdefault("batch_sizes", {})
         if any(type(n) is not int or n < 1 for n in settings["batch_sizes"].values()):
             raise ValueError("Preparation batch sizes must be positive")
+        required_stages={'signal'} if plan.get('cases') else set()
+        if any(design.get('anchors') for design in plan.get('designs',())):required_stages.add('compile')
+        if any(design.get('holdout') for design in plan.get('designs',())):required_stages.add('audit')
+        if any(prep.get(stage,0) and stage not in settings['batch_sizes'] for stage in required_stages):
+            raise ValueError('Declare batch_sizes for the fixed preparation stages')
         canonical = dict(system=system, methods=methods, hchain_scope=frozen, execution_hosts=host_ids,
                          preparation_budgets=prep, stop=stop)
         return problem, spec, canonical

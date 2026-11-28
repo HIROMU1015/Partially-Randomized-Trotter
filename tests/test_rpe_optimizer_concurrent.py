@@ -514,60 +514,15 @@ class SchedulerTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'no new launches'):ex.answer(props[1])
 
     def test_fixed_selection_except_explicit_execution_readiness_guard(self):
-        old=ast.parse(subprocess.check_output(['git','show','5b48aabbc:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
+        # The historical 5b48aabbc predates the approved generalization to
+        # variable round counts. Freeze the selection AST at the reviewed
+        # common base, after that generalization, including its guards.
+        old=ast.parse(subprocess.check_output(['git','show','512978edcbb2ff884a5d69fa1ca7ad00bceb7048:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
         new=ast.parse((ROOT/'src/trottertracks/rpe_method_optimizer.py').read_bytes())
-        # The route repair adds only a pre-proposal availability gate. Retain
-        # the strict AST comparison for every ranking, price and update rule.
-        guard=ast.dump(ast.parse("not c['ready'] or c.get('execution_needs')",mode='eval').body)
-        isolated=ast.dump(ast.parse("""if hold:
-    candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
-    held.append(hold_candidate(candidate,choice,answer,backend))
-    if pending is None and answer['status'] == 'HOST_ELIGIBILITY_HOLD':
-        pending = dict(choice, route=(routes or {}).get(name), job=answer.get('job'),
-                       host_eligibility=answer.get('host_eligibility'), hold_reason=answer.get('reason'))
-    continue
-""").body[0])
-        original_isolated=ast.dump(ast.parse("""if hold:
-    candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
-    held.append(hold_candidate(candidate,choice,answer,backend))
-    continue
-""").body[0])
-        waiting_host_stop=ast.dump(ast.parse("""if pending and pending.get('hold_reason'):
-    stop = 'HOST_ELIGIBILITY_HOLD'
-""").body[0])
-        local_unknown=ast.dump(ast.parse('''if is_local_unknown(answer):
-    candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
-    new_calls+=answer.get('calls',0)
-    held.append(hold_candidate(candidate,choice,answer,backend))
-    continue
-''').body[0])
-        class StripReadiness(ast.NodeTransformer):
-            count=0
-            isolated_count=0
-            local_unknown_count=0
-            waiting_host_stop_count=0
-            def visit_If(self,node):
-                if ast.dump(node)==waiting_host_stop:
-                    self.waiting_host_stop_count+=1;return None
-                if ast.dump(node)==local_unknown:
-                    self.local_unknown_count+=1;return None
-                if ast.dump(node) in (isolated, original_isolated):
-                    self.isolated_count+=1;return None
-                return self.generic_visit(node)
-            def visit_BoolOp(self,node):
-                if ast.dump(node)==guard:
-                    self.count+=1
-                    return ast.parse("not c['ready']",mode='eval').body
-                return self.generic_visit(node)
         for name in ('proposals','method_state','run_method','run_by_configuration'):
-            a=next(n for n in old.body if isinstance(n,ast.FunctionDef)and n.name==name)
-            b=next(n for n in new.body if isinstance(n,ast.FunctionDef)and n.name==name)
-            strip=StripReadiness();b=strip.visit(b)
-            self.assertEqual(ast.dump(StripReadiness().visit(a)),ast.dump(b),name)
-            self.assertEqual(strip.count,1 if name in('proposals','run_method')else 0,name)
-            self.assertEqual(strip.isolated_count,1 if name=='run_method'else 0,name)
-            self.assertEqual(strip.local_unknown_count,1 if name=='run_method'else 0,name)
-            self.assertEqual(strip.waiting_host_stop_count,1 if name=='run_method'else 0,name)
+            a=next(n for n in old.body if isinstance(n,ast.FunctionDef) and n.name==name)
+            b=next(n for n in new.body if isinstance(n,ast.FunctionDef) and n.name==name)
+            self.assertEqual(ast.dump(a),ast.dump(b),name)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

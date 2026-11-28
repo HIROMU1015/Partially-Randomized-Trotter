@@ -1160,6 +1160,9 @@ class WidthDriver:
         journal_path = Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_width_checkpoint.py'
         loader = spec_from_file_location('trottertracks.rpe_width_checkpoint', journal_path)
         journal = module_from_spec(loader);loader.loader.exec_module(journal)
+        self.compact_family_metadata=self.spec.get('compact_family_metadata') is True or 'family_metadata_storage' in self.state
+        self.state=journal.hydrate_family_metadata(self.state,self.run)
+        self.family_metadata_module=journal
         self.point_journal = journal.PointJournal(self.run/'POINT_PROGRESS.jsonl', self.state)
         self.history_journal = journal.HistoryJournal(self.run/'KAPPA_HISTORY.jsonl', self.state)
         self.wide = self.spec.get('search_overrides', {}).get('schedule_wide', {})
@@ -1207,16 +1210,20 @@ class WidthDriver:
     def save(self):
         def write():
             from trottertracks.rpe_q3_coordinator import atomic_json
+            def save_snapshot(snapshot):
+                if getattr(self,'compact_family_metadata',False):
+                    snapshot=self.family_metadata_module.externalize_family_metadata(snapshot,self.run)
+                atomic_json(self.state_file,snapshot)
             history = getattr(self, 'history_journal', None)
             if history is not None:
                 saved = O.jsonable(self.state)
-                history.checkpoint(saved, lambda snapshot: atomic_json(self.state_file,snapshot))
+                history.checkpoint(saved,save_snapshot)
                 # Only compact after the durable snapshot is published.
                 self.state['history'] = saved['history']
                 if 'history_archive' in saved:
                     self.state['history_archive'] = saved['history_archive']
             else:
-                atomic_json(self.state_file,O.jsonable(self.state))
+                save_snapshot(O.jsonable(self.state))
         journal = getattr(self, 'point_journal', None)
         if journal is not None:
             journal.checkpoint(self.state, write)
@@ -2151,9 +2158,9 @@ class WidthDriver:
         """Publish validated registrations to each selector's private view."""
         from contextlib import nullcontext
         from types import SimpleNamespace
-        announced = {method: set() for method in self.methods}
-        observed = {method: set() for method in self.methods}
-        from trottertracks.rpe_preparation_round import PF_METHODS, _merge_pf, snapshot_context
+        announced = {method: {} for method in self.methods}
+        observed = {method: {} for method in self.methods}
+        from trottertracks.rpe_preparation_round import PF_METHODS, _merge_pf, snapshot_context, copy_candidates
         pf_methods = PF_METHODS.intersection(self.methods)
         pf_snapshots = {}
         pf_revision = dict.fromkeys(pf_methods, 0)
@@ -2180,7 +2187,7 @@ class WidthDriver:
             with condition:
                 executor.for_method(method).log(event='CANDIDATE_READY', configuration=record['configuration_id'],
                                                 completion_key=record['key'])
-                announced[method].add(record['key'])
+                announced[method][record['key']]=announced[method].get(record['key'],0)+1
                 condition.notify_all()
 
         def announce_pf(context, routes):
@@ -2201,11 +2208,11 @@ class WidthDriver:
         def has_new(method):
             with condition:
                 return not stop_preparation.is_set() and (
-                    len(announced[method]) > len(observed[method]) or
+                    any(rev>observed[method].get(key,0) for key,rev in announced[method].items()) or
                     (method in pf_methods and pf_revision[method] > pf_observed[method]))
 
         def subscriber(method, context, candidates, view):
-            seen = set()
+            seen = {}
             pf_seen = 0
             # A signal-ready candidate with a missing route or an active
             # execution hold has not yet reached a live selector.
@@ -2216,22 +2223,23 @@ class WidthDriver:
             def pending():
                 with condition:
                     return not stop_preparation.is_set() and (
-                        len(announced[method]) > len(seen) or
+                        any(rev>seen.get(key,0) for key,rev in announced[method].items()) or
                         (method in pf_methods and pf_revision[method] > pf_seen))
 
             def take():
                 nonlocal pf_seen
                 with condition:
-                    keys = announced[method] - seen
-                    seen.update(keys)
-                    observed[method].update(keys)
+                    revisions={key:rev for key,rev in announced[method].items() if rev>seen.get(key,0)}
+                    keys=set(revisions)
+                    seen.update(revisions)
+                    observed[method].update(revisions)
                     pf = pf_snapshots[method] if method in pf_methods and pf_revision[method] > pf_seen else None
                     if pf is not None:
                         pf_seen = pf_revision[method]
                         pf_observed[method] = pf_seen
                 if (not keys and pf is None) or stop_preparation.is_set():
                     return [], None
-                scratch = dict(context, candidates=deepcopy(candidates), expected=dict(view.expected))
+                scratch = dict(context, candidates=copy_candidates(candidates), expected=dict(view.expected))
                 scoped = dict(problem, execution_routes=view.routes)
                 if pf is not None:
                     scratch = snapshot_context(scratch)
@@ -2278,6 +2286,13 @@ class WidthDriver:
             return pending, take
         return announce, wait_for_preparation, SimpleNamespace(subscribe=subscriber, has_new=has_new,
                                                               announce_pf=announce_pf)
+
+    @staticmethod
+    def exact_replay_active(executor):
+        if executor is None:return False
+        return any((executor.store.row(h['job_id']) or {}).get('state') in
+                   ('QUEUED','ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')
+                   for h in getattr(executor,'prior_q3_holds',()) if h.get('replay_exact') is True)
 
     def cycle_executor(self, routes, expected, problem, active_spec, budgets):
         """Reuse the same run-owned queue and services across planning cycles."""
@@ -2759,7 +2774,8 @@ class WidthDriver:
                     nonlocal context, routes, pf_future
                     pf_context,pf_routes,pf=pf_future.result()
                     context,routes=_merge_pf(context,pf_context,routes,pf_routes,self.methods)
-                    executor.routes=routes;executor.expected=context['expected']
+                    with executor.state.cv:
+                        executor.routes=routes;executor.expected=context['expected']
                     O.apply_published(context['candidates'],routes, exploratory=exploratory)
                     self.pf_more=pf['status']=='PREPARATION_WAVE_PROCESSED'
                     K.CLI.write(self.run/'PF_PREPARATION_STATUS.json',pf)
@@ -2946,7 +2962,7 @@ class WidthDriver:
                     and not O.shared_stop(result)):
                 # The next planning cycle uses the same durable queue.
                 executor.state.retain_queued_preparation = True
-            keep_connected = (original_error is None and self.work_conserving_search
+            keep_connected = (original_error is None and (self.work_conserving_search or self.exact_replay_active(executor))
                               and getattr(executor, 'rpc_server', None) is not None
                               and not executor._user_stop_requested() and not O.shared_stop(result)
                               and getattr(executor.state,'failure',None) is None)
@@ -2954,6 +2970,7 @@ class WidthDriver:
                 self.waiting_executor = executor
                 self.waiting_optimize = optimize
                 self.waiting_revision = self.recovery_revision(executor)
+                self.waiting_owned_revision=self.recovery_revision(executor,owner_only=True) if self.exact_replay_active(executor) else None
             actions = [] if keep_connected else [('EXECUTOR_DRAIN', executor.finish)]
             if close_accepted_recovery is not None:
                 actions.insert(0,('ACCEPTED_PREPARATION_RECOVERY_DRAIN',close_accepted_recovery))
@@ -3226,6 +3243,28 @@ class WidthDriver:
             if O.shared_stop(result):
                 failed={m:r['stop_reason']for m,r in result.items()if r['stop_reason']=='UNKNOWN_RESULT'}
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
+            # Explicitly authorized exact replay can still own a durable
+            # attempt when a selector finishes this planning slice. Do not
+            # conclude the scientific search or cancel that queued owner.
+            replay_executor=getattr(self,'waiting_executor',None)
+            if replay_executor is not None and any(h.get('replay_exact') is True
+                    for h in getattr(replay_executor,'prior_q3_holds',())):
+                replay_executor.replay_prior_q3(wait=False)
+                while self.exact_replay_active(replay_executor):
+                    if (self.run/'STOP_REQUESTED.json').exists() or replay_executor._user_stop_requested():
+                        self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
+                    if replay_executor.state.failure:raise RuntimeError(str(replay_executor.state.failure))
+                    self.waiting_revision=self.recovery_revision(replay_executor)
+                    self.waiting_owned_revision=self.recovery_revision(replay_executor,owner_only=True)
+                    replay_executor.replay_prior_q3(wait=False)
+                    if not self.exact_replay_active(replay_executor):break
+                    self.wait_for_recovery(['OWNED_ATTEMPT'],recheck_delay)
+                    replay_executor.replay_prior_q3(wait=False)
+                    recheck_delay=min(recheck_delay*2,60)
+                # Replan only if the existing fixed cycle budget permits it.
+                # Do not spend a planning cycle merely waiting for a receipt.
+                result_holds=any(h.get('replay_exact') is True for h in replay_executor.prior_q3_holds)
+                if not result_holds and (end is None or self.state['cycle']<end):continue
             caps=self.spec.get('max_new_q3_per_method',{})
             launched=self.state.get('q3_launched',{})
             budget_stops = {m for m, r in result.items() if r['stop_reason'] == 'Q3_BUDGET_EXHAUSTED'}
@@ -3351,7 +3390,7 @@ class WidthDriver:
             self.waiting_executor = None
             executor.finish()
 
-    def recovery_revision(self, executor):
+    def recovery_revision(self, executor, *, owner_only=False):
         paths = (
             self.run/'distributed'/'pbs'/'offline-history'/'coverage',
             self.run/'HOST_ADMISSION.json',
@@ -3360,7 +3399,7 @@ class WidthDriver:
             self.run/'pf_auto'/'WAVES.json',
         )
         result = []
-        for path in paths:
+        for path in (paths[:1] if owner_only else paths):
             try:
                 stat = path.stat()
                 result.append((stat.st_ino, stat.st_size, stat.st_mtime_ns))
@@ -3371,9 +3410,9 @@ class WidthDriver:
                 # Reservation, STARTING and RUNNING telemetry do not resolve
                 # an input or an owner hold. Only meaningful durable changes
                 # wake the entire planner; host changes have their own signal.
-                result.append(db.execute("SELECT max(sequence) FROM events WHERE event IN "
-                    "('RESERVE','ACCEPT','ADOPT','UNKNOWN','HOST_ELIGIBILITY_UPDATED','REDISPATCH_AFTER_DRY_CHECK',"
-                    "'PBS_READY_BUFFER_REQUEUED','CANCEL_QUEUED')").fetchone()[0])
+                events=('ACCEPT','ADOPT','UNKNOWN','CANCEL_QUEUED','REDISPATCH_AFTER_DRY_CHECK','PBS_READY_BUFFER_REQUEUED')
+                if not owner_only:events+=('RESERVE','HOST_ELIGIBILITY_UPDATED')
+                result.append(db.execute("SELECT max(sequence) FROM events WHERE event IN ("+','.join('?' for _ in events)+")",events).fetchone()[0])
                 unresolved = [tuple(row) for row in db.execute("SELECT method,job_id FROM jobs WHERE state='UNKNOWN'")]
             # An imported owner receipt can arrive outside the queue RPC.  It
             # must wake its current-run owner even before a ledger event.
@@ -3415,7 +3454,7 @@ class WidthDriver:
             # A returning worker can make an unqueued candidate eligible.
             # Poll timestamps and fluctuating memory readings are not changes
             # to its identity or admission.
-            result.append(tuple(sorted(
+            if not owner_only:result.append(tuple(sorted(
                 (host, offer.get('capacity'), bool(offer.get('slots')),
                  offer.get('accepting_new_jobs'), json.dumps(offer.get('host_fingerprints'), sort_keys=True),
                  json.dumps(offer.get('host_admission'), sort_keys=True),
@@ -3425,7 +3464,10 @@ class WidthDriver:
 
     def wait_for_recovery(self, reasons, seconds):
         executor = getattr(self, 'waiting_executor', None)
-        baseline = self.waiting_revision if executor is not None else self.recovery_revision(None)
+        owner_only=(set(reasons)=={'OWNED_ATTEMPT'} and executor is not None and getattr(self,'waiting_owned_revision',None) is not None
+                    and self.exact_replay_active(executor))
+        baseline = self.waiting_owned_revision if owner_only else self.waiting_revision if executor is not None else self.recovery_revision(None)
+        revision=lambda: self.recovery_revision(executor,owner_only=True) if owner_only else self.recovery_revision(executor)
         self.state['recovery_wait'] = dict(reasons=reasons, recheck_epoch=time.time()+seconds)
         self.save()
         self.log(event='WAITING_FOR_RECOVERY', **self.state['recovery_wait'])
@@ -3441,7 +3483,7 @@ class WidthDriver:
         external_recheck = float('inf') if known_owners_only else time.monotonic() + 900
         stop = self.run/'STOP_REQUESTED.json'
         while not stop.exists():
-            if self.recovery_revision(executor) != baseline or time.monotonic() >= external_recheck:
+            if revision()!=baseline or time.monotonic() >= external_recheck:
                 return
             remaining = deadline - time.monotonic()
             if remaining <= 0:

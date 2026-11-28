@@ -149,8 +149,9 @@ class Isolation(unittest.TestCase):
         c=C.Completion.__new__(C.Completion);c.lock=threading.RLock()
         c.state=dict(records={'one':dict(key='one',status='READY_FOR_SEARCH',value=1)})
         c.save=lambda:(_ for _ in()).throw(AssertionError('Producer save forbidden'))
+        c.save_record=lambda _record:(_ for _ in()).throw(AssertionError('Producer delta forbidden'))
         def install(s,context,problem,records):
-            self.assertIsNot(s,c);records[0]['value']=2;s.save();return {'ARTIFICIAL':[]}
+            self.assertIsNot(s,c);records[0]['value']=2;s.save();s.save_record(records[0]);return {'ARTIFICIAL':[]}
         with patch.object(C.Completion,'install',install):_,rows=c.install_snapshot({}, {},{'one'})
         self.assertEqual(rows[0]['value'],2);self.assertEqual(c.state['records']['one']['value'],1)
 

@@ -47,8 +47,8 @@ def checked(settings, plan, *, verify_files=False, metadata_only=False, receipt_
                 pass
         updated = {}
 
-        def verify(name):
-            if name in verified:return
+        def verify(name,*,request_identity=False):
+            if name in verified:return updated.get(name,{}).get('configuration_id')
             expected = history["files"][name]
             relative = PurePosixPath(name)
             path = root / relative
@@ -58,7 +58,18 @@ def checked(settings, plan, *, verify_files=False, metadata_only=False, receipt_
             identity = _identity(path)
             row = dict(identity=list(identity),sha256=expected)
             stable = time.time_ns()-max(identity[-2:])>=1_000_000_000
-            if not (stable and cached.get(name)==row):
+            prior=cached.get(name,{})
+            if not isinstance(prior,dict):prior={}
+            trusted=stable and all(prior.get(k)==v for k,v in row.items())
+            if request_identity:
+                if trusted and isinstance(prior.get('configuration_id'),str):
+                    row['configuration_id']=prior['configuration_id']
+                else:
+                    raw=path.read_bytes()
+                    if hashlib.sha256(raw).hexdigest()!=expected:
+                        raise ValueError(f"Legacy H-chain evidence changed: {name}")
+                    row['configuration_id']=json.loads(raw)['configuration_id']
+            elif not trusted:
                 if digest(path) != expected:
                     raise ValueError(f"Legacy H-chain evidence changed: {name}")
             if _identity(path)!=identity:
@@ -66,6 +77,7 @@ def checked(settings, plan, *, verify_files=False, metadata_only=False, receipt_
             if stable:
                 updated[name]=row
             verified.add(name)
+            return row.get('configuration_id')
 
         selected_jobs = None
         if receipt_plan is not None:
@@ -81,12 +93,7 @@ def checked(settings, plan, *, verify_files=False, metadata_only=False, receipt_
             all_jobs = set(history["jobs"])
             for folder in history["jobs"]:
                 name = folder + "/REQUEST.json"
-                verify(name)
-                raw = (root/name).read_bytes()
-                if hashlib.sha256(raw).hexdigest()!=history["files"][name]:
-                    raise ValueError(f"Legacy H-chain request changed: {name}")
-                request = json.loads(raw)
-                if request["configuration_id"] in selected:
+                if verify(name,request_identity=True) in selected:
                     selected_jobs.append(folder)
             selected_job_set = set(selected_jobs)
 

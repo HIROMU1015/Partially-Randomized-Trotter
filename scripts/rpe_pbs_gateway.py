@@ -397,7 +397,15 @@ def exchange(root, incoming, finished=None, snapshotter=snapshot):
                 if old is None:
                     atomic(destination, response)
     for token, control in incoming.get('controls', {}).items():
-        atomic(root/'allocations'/safe_id(token)/'CONTROL.json', control)
+        path=root/'allocations'/safe_id(token)/'CONTROL.json'
+        control=dict(control)
+        if control.get('contact_protocol')==2 and 'contact' in control:
+            prior=read(path,{})
+            # Only a changed controller token is positive contact. This
+            # timestamp comes from the gateway, not the central host.
+            control['contact_received_epoch']=(prior.get('contact_received_epoch')
+                if prior.get('contact')==control['contact'] else time.time())
+        atomic(path,control)
     if incoming.get('responses_only') is True:
         return {}
     mode = incoming.get('request_mode')
@@ -772,8 +780,9 @@ def fence_unstarted_partition(root,value,now=None):
                     # evidence that a later replacement honors the fence.
                     state=read(allocation/'STATE.json',{})
                     control=read(allocation/'CONTROL.json',{})
-                    contact=control.get('contact')
-                    if (state.get('partition_handoff_protocol')!=1 or type(contact) not in (int,float)
+                    protocol=settings.get('partition_contact_protocol',1)
+                    contact=control.get('contact_received_epoch' if protocol==2 else 'contact')
+                    if (state.get('partition_handoff_protocol')!=protocol or type(contact) not in (int,float)
                             or not 0<=now-contact or now-contact<lease+grace):
                         raise ValueError('PBS ownership/contact is not safely expired')
                 if any(child.name!='OWNER.lock' for child in part.iterdir()):raise ValueError('Partition has checkpoint or claim evidence')
@@ -797,7 +806,7 @@ def fence_unstarted_partition(root,value,now=None):
 def handle(root, value, finished=None, scheduler=None):
     action = value['action']
     if action == 'managed_capabilities':
-        return dict(managed_keeper=True, mode='run-per-host', worker_session_replacement=True, managed_afterany_successor=True, response_consumption_receipts=True, partition_handoff_protocol=1)
+        return dict(managed_keeper=True, mode='run-per-host', worker_session_replacement=True, managed_afterany_successor=True, response_consumption_receipts=True, partition_handoff_protocol=1, partition_contact_protocols=[1,2], unstarted_fence=True)
     if action in ('attempt_stop', 'attempt_status'):
         return attempt_control(root, value)
     if action == 'intent_present':

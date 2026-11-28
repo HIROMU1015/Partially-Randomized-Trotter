@@ -247,6 +247,42 @@ def test_storage_inventory_marks_release_and_alternate_and_never_authorizes_dele
     assert lookup[str(extra)]['status']=='UNCONFIRMED_NOT_A_DELETION_CANDIDATE'
     assert data['status']=='INVENTORY_ONLY' and extra.is_dir()
 
+
+def test_stopped_provider_source_compaction_respects_pinned_restore(tmp_path):
+    from rpe_romutail_retention import compact_stopped_provider_sources
+    state=tmp_path/'state';state.mkdir();run=stopped_run(state,'old')
+    root=run/'pf_auto/candidates/one/pf_auto/pf_completion/provider_workspace';root.mkdir(parents=True)
+    def git(*args):return subprocess.check_output(['git',*args],cwd=root,text=True,stderr=subprocess.PIPE).strip()
+    git('init');git('config','user.name','fixture');git('config','user.email','fixture@example.invalid')
+    src=root/'src/file.py';src.parent.mkdir();src.write_text('fixture')
+    git('add','.');git('commit','-m','fixture');source=git('rev-parse','HEAD')
+    (root.parent/'PROVIDER_SOURCE.json').write_text(json.dumps({'source':source}))
+    pinned=tmp_path/'code';code=pinned/'src/trottertracks/pf_distributed_preparation.py';code.parent.mkdir(parents=True);code.write_text('pass\n')
+    (run/'CONTROLLER_CONFIG.json').write_text(json.dumps({'code_root':str(pinned)}))
+    assert compact_stopped_provider_sources(state,'old')['compacted']==0 and src.exists()
+    code.write_text('restore_provider_source(workspace)\n')
+    assert compact_stopped_provider_sources(state,'old')['compacted']==1 and not src.exists()
+    from rpe_romutail_retention import restore_stopped_provider_sources
+    assert restore_stopped_provider_sources(state,'old')['restored']==1
+    assert src.read_text()=='fixture'
+
+
+def test_diagnostic_archive_preserves_and_verifies_original_bytes(tmp_path):
+    from rpe_romutail_retention import pack_stopped_diagnostics,verify_diagnostic_archive,restore_diagnostic_archive
+    import sqlite3
+    state=tmp_path/'state';state.mkdir();run=stopped_run(state,'old')
+    db=run/'distributed/QUEUE.sqlite3';db.parent.mkdir()
+    with sqlite3.connect(db) as conn:
+        conn.execute('CREATE TABLE jobs(job_id TEXT,method TEXT,attempt_id TEXT,state TEXT)')
+        conn.execute("INSERT INTO jobs VALUES('job','FULL','attempt','ACCEPTED')")
+    diag=run/'jobs/FULL/job/TRANSPORT_TIMING.jsonl';diag.parent.mkdir(parents=True);diag.write_bytes(b'{"fixture":true}\n')
+    archive=tmp_path/'diag.jsonl.xz';result=pack_stopped_diagnostics(state,'old',archive)
+    assert result['files']==1 and result['originals_preserved'] and verify_diagnostic_archive(archive,'old')==1
+    assert diag.read_bytes()==b'{"fixture":true}\n'
+    diag.unlink()  # synthetic fixture only
+    assert restore_diagnostic_archive(state,'old',archive)['restored']==1
+    assert diag.read_bytes()==b'{"fixture":true}\n'
+
 def test_retention_protects_transitive_live_ancestors_and_rechecks_lock(tmp_path):
     from rpe_romutail_retention import stopped_runs
     from recover_stopped_rpe_run import stopped_lock
@@ -273,3 +309,26 @@ def test_change_only_report_keeps_inode_and_mtime(tmp_path):
     assert (after.st_ino,after.st_mtime_ns)==(before.st_ino,before.st_mtime_ns)
     write(target,dict(value,new=True),compact=True,only_changed=True)
     assert json.loads(target.read_text())['new'] is True
+
+
+def test_alternate_readiness_and_index_without_mutating_source(tmp_path):
+    from rpe_romutail_retention import alternate_relocation_readiness
+    from compact_rpe_git_objects import refresh_multi_pack_index
+    source=tmp_path/'source';source.mkdir()
+    def git(*args):
+        return subprocess.check_output(['git','-C',str(source),*args],text=True,stderr=subprocess.PIPE).strip()
+    git('init');git('config','user.name','fixture');git('config','user.email','fixture@example.invalid')
+    first=source/'first';first.write_text('one');git('add','.');git('commit','-m','first')
+    git('repack','-d')
+    second=source/'second';second.write_text('two');git('add','.');git('commit','-m','second')
+    git('repack')
+    objects=source/'.git/objects'
+    result=refresh_multi_pack_index(objects)
+    assert result['status']=='VERIFIED' and result['after']['multi_pack_index']
+    assert result['before']['pack_count']==result['after']['pack_count']
+    assert alternate_relocation_readiness(source,objects)['status']=='OBJECTS_AVAILABLE'
+    empty=tmp_path/'empty';empty.mkdir()
+    assert alternate_relocation_readiness(source,empty)['status']=='HOLD_MISSING_OBJECTS'
+    (empty/'info').mkdir();(empty/'info/alternates').write_text(str(objects)+'\n')
+    assert alternate_relocation_readiness(source,empty)['status']=='HOLD_TARGET_NOT_INDEPENDENT'
+    assert not (objects/'info/alternates').exists()

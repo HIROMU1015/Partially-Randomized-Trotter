@@ -28,7 +28,7 @@ from .rpe_pbs_worker import runtime_cpu_footprint, task_cpu_footprint
 from .rpe_worker_storage import SAMPLE_SECONDS, prefix_caches
 
 
-TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUBMIT_LOST', 'SUPERSEDED_UNSUBMITTED'}
+TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED', 'SUBMIT_LOST', 'SUPERSEDED_UNSUBMITTED','RELEASED_UNSUBMITTED'}
 GIB = 1024**3
 # The controller and the independently pinned worker use the same proof lifetime.
 Q3_WORKER_PROOF_SECONDS = 120
@@ -165,6 +165,7 @@ class Gateway:
 
     def _start(self):
         self.managed_gateway_verified = False
+        self._capabilities=None
         config = self.settings
         if config.get('gateway_sha256'):
             self.verify_gateway_file(config['gateway_script'], config['gateway_sha256'])
@@ -187,6 +188,13 @@ class Gateway:
     def call(self, payload):
         with self.call_lock:
             return self._call(payload)
+
+    def capabilities(self):
+        with self.call_lock:
+            if self.process is None or self.process.poll() is not None:self._start()
+            if getattr(self,'_capabilities',None) is None:
+                self._capabilities=self._call(dict(action='managed_capabilities'))
+            return self._capabilities
 
     def _call(self, payload):
         if self.process is None or self.process.poll() is not None:
@@ -1084,8 +1092,22 @@ class PbsManager:
         # allocation/attempt ownership change. Keep every other field exact.
         result={key:value for key,value in state.items() if key!='heartbeat'}
         if 'allocations' in result:
-            result['allocations']={token:{key:value for key,value in record.items() if key!='clock'}
-                                   for token,record in result['allocations'].items()}
+            allocations={}
+            for token,record in result['allocations'].items():
+                row={key:value for key,value in record.items() if key!='clock'}
+                observed=row.get('observed')
+                if isinstance(observed,dict):
+                    observed=dict(observed)
+                    worker=observed.get('worker')
+                    if isinstance(worker,dict):
+                        observed['worker']={k:v for k,v in worker.items()
+                            if k not in ('clock_id','monotonic','epoch','remaining_seconds')}
+                    scheduler=observed.get('scheduler')
+                    if isinstance(scheduler,dict):
+                        observed['scheduler']={k:v for k,v in scheduler.items() if k!='resources_used'}
+                    row['observed']=observed
+                allocations[token]=row
+            result['allocations']=allocations
         return result
 
     def save(self):
@@ -2048,7 +2070,10 @@ class PbsManager:
             path=directory/name
             if path.exists() and read(path)!=value:raise ValueError('Existing local handoff scope differs')
         capabilities=self.gateway.call(dict(action='managed_capabilities'))
-        if capabilities.get('partition_handoff_protocol')!=1:raise ValueError('Gateway has no partition handoff protocol')
+        protocol=plan['settings'].get('partition_contact_protocol',1)
+        if (capabilities.get('partition_handoff_protocol')!=1
+                or protocol not in capabilities.get('partition_contact_protocols',[1])):
+            raise ValueError('Gateway has no selected partition handoff protocol')
         receipt=self.gateway.call(dict(action='fence_unstarted_partition',plan_sha256=expected['plan_sha256'],unit=unit_id))
         if receipt!=expected:raise ValueError('Remote partition handoff differs from fixed scope')
         directory.mkdir(parents=True,exist_ok=True)
@@ -2155,6 +2180,8 @@ class PbsManager:
                     "SELECT method,count(*) FROM jobs WHERE state='ACCEPTED' GROUP BY method"))
             self.offline_progress_next = time.monotonic()+30
         self.controls[token].update(contact=int(time.time()), accepted_by_method=self.offline_progress)
+        if self.offline_plan and self.offline_plan['settings'].get('partition_contact_protocol')==2:
+            self.controls[token]['contact_protocol']=2
         from .rpe_pbs_offline import independent_plan
         if independent_plan(self.offline_plan):
             status = self.executor.run_dir/'PBS_PARTITION_STATUS.json'
@@ -2289,14 +2316,23 @@ class PbsManager:
 
     def _read_owned_bulk(self,gateway,*args,**kwargs):
         lanes=getattr(self,'bulk_parallel_gateways',()) if gateway is getattr(self,'bulk_gateway',None) else ()
-        return self._read_bulk(gateway,*args,parallel_gateways=lanes,**kwargs)
+        configured=getattr(self,'settings',{}).get('bulk_chunk_bytes',4*1024*1024)
+        limit=min(configured,getattr(self,'_bulk_chunk_limit',configured))
+        try:return self._read_bulk(gateway,*args,parallel_gateways=lanes,chunk_bytes=limit,**kwargs)
+        except TimeoutError:
+            # The ordinary harvest retry starts a fresh identity-bound stream.
+            # Retain the smaller chunk across reconnects; never publish a
+            # partial file or append a retry to its previous bytes.
+            self._bulk_chunk_limit=max(min(limit,64*1024),limit//2)
+            raise
 
     @staticmethod
-    def _read_bulk(gateway, token, kind, name, *, size=None, sink=None, parallel_gateways=(), **owner):
+    def _read_bulk(gateway, token, kind, name, *, size=None, sink=None, parallel_gateways=(), chunk_bytes=4*1024*1024, **owner):
         result = bytearray() if sink is None else None
         offset = 0
         identity = {}
-        limit = 4*1024*1024
+        limit = chunk_bytes
+        if type(limit) is not int or not 1<=limit<=4*1024*1024:raise ValueError('Invalid PBS bulk chunk size')
         def read_chunk(lane, start):
             chunk=lane.call(dict(action='read_bulk_chunk',token=token,kind=kind,name=name,
                                  offset=start,max_bytes=limit,**owner,**identity,
@@ -2372,15 +2408,11 @@ class PbsManager:
         cache=self.executor.artifact_cache
         missing = cache.missing(sorted(hashes))
         if missing:
-            # Transfer large CAS objects through a temporary file. put_file
-            # checks the complete SHA before publishing immutable bytes.
-            cache.root.mkdir(parents=True,exist_ok=True)
-            with tempfile.TemporaryDirectory(prefix='.pbs-bulk-',dir=cache.root.parent) as directory:
-                path=Path(directory)/'blob'
-                for sha in missing:
-                    with path.open('wb') as output:
-                        self._read_owned_bulk(gateway,token,'artifact',sha,sink=output)
-                    cache.put_file(path,sha)
+            # The stream owns its temporary CAS file and hashes each chunk
+            # in transfer order before linking the complete immutable object.
+            for sha in missing:
+                cache.put_stream(sha,lambda output: self._read_owned_bulk(
+                    gateway,token,'artifact',sha,sink=output))
         return data, {}
 
     def _accept_harvested(self, allocation, data, blobs, owners, *, live=False):
@@ -2418,6 +2450,7 @@ class PbsManager:
         data, blobs = fetched if fetched is not None else self._fetch_harvest(self.gateway, token)
         self._accept_harvested(allocation, data, blobs, owners)
         ended = allocation['status'] in TERMINAL or (allocation.get('worker') or {}).get('state') == 'EXITED'
+        fence_held=set()
         for item in data.get('incomplete', []) if ended else []:
             assignment = item['assignment']; row = self.executor.store.row(assignment['job_id'])
             if (owners is not None and (assignment['job_id'], assignment['attempt_id']) not in owners):
@@ -2431,13 +2464,20 @@ class PbsManager:
                     and (row.get('detail') or {}).get('pbs_allocation_token') == token
                     and row['request_sha256'] == assignment['request_sha256']):
                 try:
-                    fenced = self.gateway.call(dict(action='fence_unstarted', token=token,
-                        **{k:row[k] for k in ('job_id','attempt_id','request_sha256')})).get('state')
+                    capabilities=getattr(self.gateway,'capabilities',None)
+                    try:
+                        caps=capabilities() if capabilities is not None else self.gateway.call(dict(action='managed_capabilities'))
+                    except ValueError as error:
+                        if 'Unknown PBS gateway action' not in str(error):raise
+                        caps={}  # pre-capability legacy gateway
+                    if caps.get('unstarted_fence') is True:
+                        fenced = self.gateway.call(dict(action='fence_unstarted', token=token,
+                            **{k:row[k] for k in ('job_id','attempt_id','request_sha256')})).get('state')
+                        if fenced is not None:item=dict(item,state=fenced)
                 except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
                     self.log('PBS_UNSTARTED_FENCE_HELD', token=token, job_id=row['job_id'], reason=str(error))
-                    raise  # keep the original reservation for another harvest
-                if fenced is not None:
-                    item = dict(item, state=fenced)
+                    fence_held.add((row['job_id'],row['attempt_id']))
+                    continue  # retain this owner, but do not stop other harvests
             detail = item.get('state', {}).get('detail') or {}
             admission_exit = detail.get('pbs_admission_exit') or {}
             released_before_launch = (detail.get('resource_released') is True and
@@ -2460,12 +2500,13 @@ class PbsManager:
             # A shared pilot can expose several historical sessions with the
             # same host ID. An old session cannot declare a newer attempt lost.
             for row in self.executor._owned_attempts():
-                if row['host_id'] == data['host_id'] and row['state'] != 'UNKNOWN':
+                if (row['host_id'] == data['host_id'] and row['state'] != 'UNKNOWN'
+                        and (row['job_id'],row['attempt_id']) not in fence_held):
                     self.executor.rpc('/v1/state',dict(host_id=row['host_id'], job_id=row['job_id'],
                         attempt_id=row['attempt_id'], state='UNKNOWN',detail=dict(
                             reason='PBS_ENDED_WITHOUT_COMPLETE_ORIGINAL_ATTEMPT',automatic_retry=False)))
-        record['harvested'] = ended
-        if ended and self.settings.get('gateway_sha256'):
+        record['harvested'] = ended and not fence_held
+        if record['harvested'] and self.settings.get('gateway_sha256'):
             record['harvest_gateway_sha256'] = self.settings['gateway_sha256']
         self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=len(data['attempts']))
 
@@ -3006,10 +3047,12 @@ class PbsManager:
                     continue
                 prior=read(path)
                 if prior['request_sha256']!=proof['request_sha256']:
-                    raise ValueError('PBS consumed request identity differs')
+                    self.log('PBS_CONSUMPTION_RECEIPT_HELD',token=token,request_id=request_id,reason='request identity differs')
+                    continue
                 response_sha=prior.get('response_sha256') if prior.get('consumed') else digest(prior['response'])
                 if response_sha!=proof['response_sha256']:
-                    raise ValueError('PBS consumed response identity differs')
+                    self.log('PBS_CONSUMPTION_RECEIPT_HELD',token=token,request_id=request_id,reason='response identity differs')
+                    continue
                 if not prior.get('consumed'):
                     atomic(path,dict(request_sha256=prior['request_sha256'],response_sha256=response_sha,
                                      consumed=True,clock=prior['clock']))

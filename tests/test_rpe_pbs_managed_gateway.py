@@ -32,6 +32,9 @@ def scheduler(monkeypatch):
         return original(cmd,*args,**kwargs)
     monkeypatch.setattr(G,'qstat',lambda *ids:{k:v for k,v in jobs.items() if not ids or k in ids})
     monkeypatch.setattr(subprocess,'run',run)
+    # The production gateway now forks qsub asynchronously. Keep the
+    # synthetic scheduler in this process so no child can bypass the mock.
+    monkeypatch.setattr(G,'submit_async',G.submit_once)
     return SimpleNamespace(jobs=jobs,submissions=submissions,deletions=deletions)
 
 

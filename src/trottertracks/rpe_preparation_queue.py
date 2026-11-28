@@ -269,3 +269,39 @@ def save_horizon_preparation(path, reports, store):
                     outcome_status=status, adopted=job['adopted_epoch'] is not None)
         row['job_progress'] = progress
     write(path, list(rows.values()))
+
+
+def pack_preparation_graph(settings):
+    """Losslessly share immutable repeated task inputs in a new graph layout."""
+    from collections import Counter
+    fields=('source','required_paths','runtime_requirements')
+    counts=Counter();values={}
+    for task in settings.get('tasks',()):
+        prep=task['request']['preparation']
+        for field in fields:
+            if field in prep:
+                sha=digest(prep[field]);counts[sha]+=1;values[sha]=prep[field]
+    shared={sha:value for sha,value in values.items() if counts[sha]>1}
+    result=deepcopy(settings)
+    for task in result.get('tasks',()):
+        prep=task['request']['preparation']
+        for field in fields:
+            if field in prep and (sha:=digest(prep[field])) in shared:
+                prep[field]={'graph_shared_sha256':sha}
+    return {'schema':'RPE_SHARED_PREPARATION_GRAPH_V1','shared':shared,'graph':result}
+
+
+def load_preparation_graph(path):
+    import json
+    value=json.loads(Path(path).read_bytes())
+    if value.get('schema')!='RPE_SHARED_PREPARATION_GRAPH_V1':return value
+    shared=value['shared'];graph=value['graph']
+    for sha,item in shared.items():
+        if digest(item)!=sha:raise ValueError('Shared preparation graph input hash differs')
+    for task in graph.get('tasks',()):
+        prep=task['request']['preparation']
+        for field in ('source','required_paths','runtime_requirements'):
+            item=prep.get(field)
+            if isinstance(item,dict) and set(item)=={'graph_shared_sha256'}:
+                prep[field]=deepcopy(shared[item['graph_shared_sha256']])
+    return graph

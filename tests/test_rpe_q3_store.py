@@ -280,3 +280,27 @@ def test_eligibility_event_payload_is_lossless_and_deduplicated(tmp_path):
     assert [r['detail']['eligibility'] for r in reopened.events() if r['event']=='HOST_ELIGIBILITY_UPDATED']==[changed,first,changed]
     assert reopened.row('real')['eligibility']==changed
     assert reopened.claim('a',1,host_fingerprints={'real':facts})[0]['job_id']=='real'
+
+
+def test_split_eligibility_transient_update_preserves_claim_and_base_row(tmp_path):
+    from trottertracks.rpe_q3_store import JobStore,digest
+    import sqlite3,json
+    store=JobStore(tmp_path/'queue.sqlite3',split_eligibility=True)
+    request={'request_id':'job','route':{'kind':'synthetic'}}
+    facts={'runtime':'fixed'}
+    decision={'request_sha256':digest(request),'eligible_host_ids':['host'],'host_fingerprints':{'host':digest(facts)},
+              'input_hashes':[{'fixture':'x'*10000}],'deferred_hosts':['peer'],'host_decisions':{'peer':{'status':'HOLD'}}}
+    assert store.reserve('METHOD','job',request,1,True,eligibility=decision)
+    with sqlite3.connect(store.path) as db:
+        original=db.execute('SELECT eligibility,updated_epoch FROM jobs WHERE job_id=\'job\'').fetchone()
+        assert 'deferred_hosts' not in json.loads(original[0])
+    changed=dict(decision,deferred_hosts=['other'],host_decisions={'other':{'status':'HOLD'}})
+    assert store.set_eligibility('job',changed)
+    with sqlite3.connect(store.path) as db:
+        assert db.execute('SELECT eligibility,updated_epoch FROM jobs WHERE job_id=\'job\'').fetchone()==original
+    reopened=JobStore(store.path)
+    assert reopened.row('job')['eligibility']==changed
+    assert reopened.rows_for(['job'])['job']['eligibility']==changed
+    assert reopened.events()[-1]['detail']['eligibility']==changed
+    claimed=reopened.claim('host',1,host_fingerprints={'job':facts})
+    assert len(claimed)==1 and claimed[0]['eligibility']==changed

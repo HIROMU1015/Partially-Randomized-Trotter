@@ -215,7 +215,7 @@ class ResourceTests(unittest.TestCase):
         p = profile(separate_task_resources=True, pack_measured_task_classes=True)
         light = dict(resource_class='light', observed_cpu_cores=4, peak_rss_bytes=1_000_000)
         heavy = dict(resource_class='heavy', observed_cpu_cores=31, peak_rss_bytes=4_000_000)
-        jobs = [dict(light, state='RUNNING'), dict(heavy, state='TRANSFERRED')]
+        jobs = [dict(light, state='RUNNING'), dict(heavy, state='TRANSFERRED'), dict(light, state='TRANSFERRED')]
         order = feedback(0, 1, ready_task_class_order=['heavy'] + ['light']*12)
         _, offer = R.decide_slots(p, {}, resources(cpu=30), jobs, order)
         self.assertEqual(offer['admitted_task_classes'], ['light'])
@@ -479,3 +479,66 @@ def test_owned_cpu_baseline_skips_reaping_race_and_recovers():
     assert invalid==first
     last=owned_cpu_observation({'cpu_seconds':16,'cpu_sample_consistent':True},invalid,stamp(12))
     assert last['observed_cpu_cores']==2
+
+
+def test_provisional_q3_does_not_become_measured_from_running_rss():
+    gib=1024**3
+    source='q3:count_dp:PR_DF:v:a:1:26:16'
+    pending='q3:count_dp:PR_DF:v:a:1:26:15'
+    p=profile(separate_task_resources=True,pack_measured_task_classes=True)
+    facts=feedback(0,1,ready_task_classes=[pending],ready_task_class_order=[pending]*30,
+                   mixed_task_class_quotas=True)
+    measured=dict(task_resource_peaks={source:dict(peak_rss_bytes=20*gib,dp_workers=1)})
+    env=resources(cpu=96,memory=350*gib,free=350*gib)
+    state,first=R.decide_slots(p,measured,env,[],facts,now=1)
+    assert first['slots']==11
+    active=[dict(resource_class=pending,state='RUNNING',peak_rss_bytes=200*1024**2,
+                 current_rss_bytes=200*1024**2,dp_workers=1) for _ in range(11)]
+    state,second=R.decide_slots(p,state,env,active,facts,now=2)
+    assert second['slots']==0
+    assert pending not in state['task_resource_peaks']
+    assert pending in second['comparable_trial_classes']
+    final=dict(active[0],state='TRANSFERRED',peak_rss_bytes=21*gib)
+    state,_=R.decide_slots(p,state,env,[final],facts,now=3)
+    assert state['task_resource_peaks'][pending]['peak_rss_bytes']==21*gib
+
+
+def test_packing_accounts_for_reserved_growth_in_available_memory():
+    p=profile(separate_task_resources=True,pack_measured_task_classes=True)
+    kind='q3:count_dp:fixture';gib=1024**3
+    previous=dict(task_resource_peaks={kind:dict(peak_rss_bytes=4*gib,dp_workers=1)})
+    active=[dict(resource_class=kind,state='RUNNING',peak_rss_bytes=gib,current_rss_bytes=gib,dp_workers=1)]
+    f=feedback(0,1,ready_task_classes=[kind],ready_task_class_order=[kind]*10,mixed_task_class_quotas=True)
+    _,offer=R.decide_slots(p,previous,resources(cpu=16,memory=32*gib,free=10*gib),active,f,now=1)
+    assert offer['slots']==0  # 10 GiB available, less 5 GiB still reserved for growth.
+
+
+def test_pack_cold_head_eventually_drains_other_classes_without_signalling():
+    p=profile(separate_task_resources=True,pack_measured_task_classes=True,cold_class_drain_seconds=5)
+    known='q3:measured';cold='q3:cold'
+    previous=dict(task_resource_peaks={known:dict(peak_rss_bytes=1000000,dp_workers=1)})
+    active=[dict(resource_class=known,state='RUNNING',peak_rss_bytes=1000000,current_rss_bytes=1000000)]
+    f=feedback(0,1,ready_task_classes=[cold,known],ready_task_class_order=[cold,known,known])
+    state,offer=R.decide_slots(p,previous,resources(),active,f,now=1)
+    assert offer['slots']>0
+    state,offer=R.decide_slots(p,state,resources(),active,f,now=7)
+    assert offer['slots']==0 and offer['isolated_resource_class']==cold
+    _,offer=R.decide_slots(p,state,resources(),[],f,now=8)
+    assert offer['slots']==1 and offer['isolated_resource_class']==cold
+
+
+def test_legacy_running_peak_is_not_inherited_as_terminal_measurement():
+    p=profile(separate_task_resources=True,pack_measured_task_classes=True)
+    kind='q3:count_dp:PR_DF:v:a:1:26:15'
+    previous=dict(schema='RPE_Q3_SLOT_STATE_V1',task_resource_peaks={kind:{'peak_rss_bytes':200}})
+    f=feedback(0,1,ready_task_classes=[kind],ready_task_class_order=[kind]*10)
+    state,offer=R.decide_slots(p,previous,resources(),[],f,now=1)
+    assert kind not in state['task_resource_peaks'] and offer['slots']==1
+
+
+def test_cross_release_resource_seed_requires_declared_compatible_sources():
+    a='q3:count_dp:PR_DF:old:old:2:26:16';b='q3:count_dp:PR_DF:new:new:2:26:15'
+    measured={a:dict(peak_rss_bytes=123456,dp_workers=2)}
+    assert not R.comparable_q3_class_reservations(measured,[b])
+    assert R.comparable_q3_class_reservations(measured,[b],
+        compatible_sources=[{'from':['old','old'],'to':['new','new']}])[b]['peak_rss_bytes']==123456

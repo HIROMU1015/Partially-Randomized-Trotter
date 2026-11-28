@@ -429,3 +429,16 @@ def test_fixed_locator_cache_keeps_small_history_beyond_old_lru_count(monkeypatc
         for i in range(600):P._fixed_json_locator('/fixture',commit,str(i))
         assert len(calls)==600
     finally:P._fixed_json_locator.cache_clear()
+
+
+def test_externalized_family_metadata_checkpoint_restores_exact_values(tmp_path):
+    from trottertracks.rpe_width_checkpoint import externalize_family_metadata,hydrate_family_metadata
+    import pytest
+    state={'families':{'a':{'status':'READY_METADATA','configuration':{'payload':'x'*1000},'template':[1,2]},
+                       'b':{'status':'HELD','configuration':{'payload':'hold'}}},'cycle':1}
+    compact=externalize_family_metadata(state,tmp_path)
+    assert compact['families']['a']['configuration']!=state['families']['a']['configuration']
+    assert hydrate_family_metadata(compact,tmp_path)==state
+    key=compact['families']['a']['configuration']['family_metadata_sha256']
+    (tmp_path/'FAMILY_STATIC'/f'{key}.json').write_text('{}')
+    with pytest.raises(ValueError,match='digest differs'):hydrate_family_metadata(compact,tmp_path)

@@ -5,6 +5,7 @@ from concurrent.futures import ProcessPoolExecutor
 from contextlib import contextmanager
 import multiprocessing as mp
 import json
+import hashlib
 import os
 from pathlib import Path
 import sys
@@ -39,7 +40,7 @@ def leaves(plan, stage, targets):
         yield cell, index, name
 
 
-def preparation_request(plan, plan_sha, stage, targets, *, source, assets, spectral_signals=False, openblas_coretype=None):
+def preparation_request(plan, plan_sha, stage, targets, *, source, assets, spectral_signals=False, openblas_coretype=None, fixed_plan_sha256=None):
     """Build a request for configure_preparation_graph or submit_preparation.
 
     The plan must already be deposited in the existing artifact cache.
@@ -56,22 +57,32 @@ def preparation_request(plan, plan_sha, stage, targets, *, source, assets, spect
         from rpe_hchain_q3 import declared_provider_contract
         runtime['packages']=declared_provider_contract(plan['binding'],plan['provider_contract'])['packages']
     if openblas_coretype is not None:
-        if openblas_coretype not in ("HASWELL","NEHALEM"):
+        from trottertracks.rpe_preparation_worker import valid_openblas_core
+        declared=(plan.get('provider_contract') or {}).get('openblas_coretype')
+        if not valid_openblas_core(openblas_coretype,declared) or (declared is not None and declared!=openblas_coretype):
             raise ValueError("Unsupported fixed H-chain OpenBLAS core")
-        runtime.update(openblas_coretype=openblas_coretype,imports=["numpy"])
+        runtime.update(openblas_coretype=openblas_coretype,imports=["numpy","scipy.linalg"])
+        if declared is not None:runtime['declared_openblas_coretype']=declared
     request = dict(method="HCHAIN", route=dict(kind="preparation"),
                 original_contract=dict(scope_owner=plan["owner"], binding=plan["binding"], plan_sha256=plan_sha),
                 preparation=dict(stage=stage, provider="HCHAIN_SCOPED", source=source,
                     inputs={"PLAN.json": plan_sha}, outputs=outputs,
                     required_paths={"hchain_assets": assets}, runtime_requirements=runtime,
                     command=["@PYTHON@", "-B", "@TRANSPORT@/scripts/run_rpe_hchain_preparation.py",
-                             "--provider", "@SOURCE@/scripts/h6_fixed_run", "--assets", "@PATH:hchain_assets@",
+                             "--provider", "@SOURCE@/"+(plan.get("provider_contract") or {}).get("provider_directory","scripts/h6_fixed_run"), "--assets", "@PATH:hchain_assets@",
                              "--plan", "@INPUTS@/PLAN.json", "--output", "@WORK@",
                              "--stage", stage, "--targets", json.dumps(targets, separators=(",", ":"))]))
+    if fixed_plan_sha256 is not None:
+        request['original_contract']['fixed_plan_sha256']=fixed_plan_sha256
     # H8 startup also compares a reconstructed numerical identity. Its
     # archived side can be checked in readiness without invoking startup.
     saved = plan.get('verified_saved_preparations') or {}
-    if plan['scope'].get('system') == 'H8' and saved and all(isinstance(v,dict) and 'saved' in v for v in saved.values()):
+    export=(plan.get('provider_contract') or {}).get('saved_preparation_export')
+    if export is not None:
+        if not saved or not all(isinstance(v,dict) and 'saved' in v for v in saved.values()):
+            raise ValueError('Declared saved preparation export requires fixed hashes')
+        request['preparation']['saved_preparation_export']=dict(export,hashes={str(k):v['saved'] for k,v in saved.items()})
+    elif plan['scope'].get('system') == 'H8' and saved and all(isinstance(v,dict) and 'saved' in v for v in saved.values()):
         request['preparation']['h8_saved_preparation_hashes'] = {str(k):v['saved'] for k,v in saved.items()}
     if stage == "signal" and spectral_signals:
         request["preparation"]["command"].append("--spectral-signals")
@@ -177,7 +188,14 @@ def run(plan, stage, targets, assets, output, provider, *, prepare_spectra=None,
     if check_full_startup and (stage is not None or targets is not None or not check_startup):
         raise ValueError('Full startup check is identity-only and has no individual targets')
     selected = [] if check_full_startup else list(leaves(plan, stage, targets))
-    state = provider.startup(assets, plan["scope"])
+    # Only a new provider explicitly declaring this interface may choose a
+    # prefix-scoped startup. Full identity checks and historical providers
+    # retain the existing complete startup path and comparisons.
+    if not check_full_startup and (plan.get('provider_contract') or {}).get('startup_prefixes') is True:
+        prefixes=tuple(sorted({cell['prefix'] for cell,_,_ in selected}))
+        state=provider.startup(assets,plan['scope'],prefixes=prefixes)
+    else:
+        state = provider.startup(assets, plan["scope"])
     def mismatch(field, expected, observed):
         if observed != expected:
             # Keep exact evidence in the body log; no tolerance or retry.
@@ -271,7 +289,10 @@ def main():
     elif args.stage is None or args.targets is None:
         parser.error("--stage and --targets are required for a batch")
     sys.path.insert(0, str(args.provider))
-    import h6_scope_worker
+    import importlib
+    plan_bytes=args.plan.read_bytes()
+    plan=json.loads(plan_bytes)
+    h6_scope_worker=importlib.import_module((plan.get('provider_contract') or {}).get('worker_module','h6_scope_worker'))
 
     if Path(h6_scope_worker.__file__).resolve().parent != args.provider.resolve():
         raise ValueError("H-chain preparation worker is outside the fixed provider view")
@@ -279,8 +300,21 @@ def main():
     if args.spectral_signals:
         from h8_scope_backend import prepare_tail_spectra
         prepare_spectra = prepare_tail_spectra
-    result = run(json.loads(args.plan.read_bytes()), args.stage, args.targets, args.assets, args.output, h6_scope_worker,
-        prepare_spectra=prepare_spectra, cpus=preparation_cpus(), check_startup=args.check_startup,check_full_startup=args.check_full_startup)
+    try:
+        result = run(plan, args.stage, args.targets, args.assets, args.output, h6_scope_worker,
+            prepare_spectra=prepare_spectra, cpus=preparation_cpus(), check_startup=args.check_startup,check_full_startup=args.check_full_startup)
+    except StartupMismatch as error:
+        # Numerical startup has already executed; never classify this as a
+        # prelaunch rejection or authorize another scientific call.
+        from trottertracks.rpe_preparation_worker import put
+        try:
+            put(args.output/'HCHAIN_STARTUP_FAILURE.json', dict(
+                schema='HCHAIN_STARTUP_FAILURE_V1', plan_sha256=hashlib.sha256(plan_bytes).hexdigest(),
+                stage=args.stage, field=error.field, numerical_startup=True, leaf_started=False,
+                automatic_retry=False, budget_disposition='CONSUMED_STARTUP'))
+        except OSError as write_error:
+            print('Startup diagnostic write failed: '+str(write_error), file=sys.stderr, flush=True)
+        raise
     if args.check_startup:
         print(json.dumps(result),flush=True)
 

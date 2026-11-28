@@ -214,6 +214,10 @@ def test_contended_storage_sampler_uses_only_recent_actual_sample(tmp_path):
         saved['sampled_epoch']=time.time()-storage.SAMPLE_SECONDS-1
         (tmp_path/'sample.json').write_text(json.dumps(saved))
         result=storage.report(policy,refresh=True,proactive=True,measurement_only=True,nonblocking=True)
+        assert result['accepting_new_jobs'] and result['measurement_in_progress']
+        saved['sampled_epoch']=time.time()-storage.STALE_LOW_WATER_SECONDS-1
+        (tmp_path/'sample.json').write_text(json.dumps(saved))
+        result=storage.report(policy,refresh=True,proactive=True,measurement_only=True,nonblocking=True)
         assert result['reason']=='STORAGE_MEASUREMENT_PENDING' and not result['accepting_new_jobs']
 
 
@@ -258,3 +262,29 @@ def test_incremental_storage_ledger_disables_on_reconciliation_mismatch(tmp_path
     assert ledger.measure([str(tmp_path)],timeout=5,du=lambda:123)==123
     assert ledger.disabled
     assert ledger.measure([str(tmp_path)],timeout=5,du=lambda:456)==456
+
+
+def test_enospc_persistence_keeps_actual_pressure_measurement(tmp_path):
+    import errno
+    from types import SimpleNamespace
+    policy=dict(limit_bytes=10**9,roots=[str(tmp_path)],sample_path=str(tmp_path/'sample.json'))
+    with patch.object(storage,'policy_used_bytes',return_value=500000000), \
+            patch.object(storage.shutil,'disk_usage',return_value=SimpleNamespace(free=0)), \
+            patch.object(storage,'atomic_json',side_effect=OSError(errno.ENOSPC,'fixture full')):
+        value=storage.report(policy,refresh=True,proactive=True,measurement_only=True)
+    assert value['used_bytes']==500000000 and value['reason']=='FILESYSTEM_SPACE_LOW'
+    assert value['persist_error'] and not value['accepting_new_jobs']
+    assert storage.duplicate_reclaim_target(value)>0
+
+
+def test_delayed_sample_reuse_requires_headroom_and_current_free_space(tmp_path):
+    from types import SimpleNamespace
+    policy=dict(limit_bytes=1000,roots=[str(tmp_path)])
+    value=dict(limit_bytes=1000,used_bytes=300,reason=None,accepting_new_jobs=True,
+               filesystem_free_bytes=1000,filesystem_min_free_bytes=100)
+    with patch.object(storage.shutil,'disk_usage',return_value=SimpleNamespace(free=900)):
+        assert storage.reusable_low_water_sample(policy,value,10)['accepting_new_jobs']
+    with patch.object(storage.shutil,'disk_usage',return_value=SimpleNamespace(free=90)):
+        assert storage.reusable_low_water_sample(policy,value,10) is None
+    with patch.object(storage.shutil,'disk_usage',return_value=SimpleNamespace(free=300)):
+        assert storage.reusable_low_water_sample(policy,value,10) is None

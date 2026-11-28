@@ -148,12 +148,17 @@ def _source(profile, source):
     return root
 
 
-def preparation_environment(profile):
+def valid_openblas_core(core,declared=None):
+    return core in ('HASWELL','NEHALEM') or (isinstance(core,str) and core==declared
+                     and re.fullmatch(r'[A-Z][A-Z0-9_]{0,31}',core) is not None)
+
+
+def preparation_environment(profile,*,declared_core=None):
     """Select an explicitly pinned BLAS kernel before importing NumPy."""
     env = dict(os.environ)
     core = profile.get('openblas_coretype')
     if core is not None:
-        if core not in ('HASWELL', 'NEHALEM'):
+        if not valid_openblas_core(core,declared_core):
             raise ValueError('Unsupported fixed preparation OpenBLAS core')
         env.update(OPENBLAS_CORETYPE=core, OPENBLAS_NUM_THREADS='1',
                    OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
@@ -186,10 +191,11 @@ print(json.dumps(dict(executable=sys.executable, version=sys.version,
     version_info=list(sys.version_info), platform=platform.platform(), packages=packages,numpy_build=numpy_build)))
 """
     core=requirements.get('openblas_coretype')
-    env=preparation_environment(profile)
+    declared=requirements.get('declared_openblas_coretype')
+    env=preparation_environment(profile,declared_core=declared)
     imports=list(requirements.get('imports', []))
     if core is not None:
-        if core not in ('HASWELL','NEHALEM') or profile.get('openblas_coretype')!=core:
+        if not valid_openblas_core(core,declared) or profile.get('openblas_coretype')!=core:
             raise ValueError('Preparation fixed OpenBLAS profile differs')
         if 'numpy' not in imports:imports.append('numpy')
         env['OPENBLAS_VERBOSE']='2'
@@ -258,17 +264,21 @@ def _required_path_facts(profile, requirements):
 
 def verify_h8_saved_preparation_metadata(spec, path_facts):
     """Check the archived side of H8 startup identity without numerical startup."""
-    expected = spec.get('h8_saved_preparation_hashes')
-    if not expected:
-        return
+    declaration=spec.get('saved_preparation_export')
+    expected=spec.get('h8_saved_preparation_hashes')
+    if declaration is None and not expected:return
+    if declaration is None:
+        declaration=dict(path='inputs/h8_preparation_export.json',key_prefix='faithful:p',hash_field='preparation_hash',hashes=expected)
+    name=declaration['path'];expected=declaration['hashes']
+    from pathlib import PurePosixPath
+    if PurePosixPath(name).is_absolute() or '..' in PurePosixPath(name).parts:raise ValueError('Invalid saved preparation export path')
     facts = path_facts.get('hchain_assets') or {}
-    name = 'inputs/h8_preparation_export.json'
     if name not in facts.get('files', {}):
         raise ValueError('H8 saved preparation export is not declared in fixed runtime inputs')
     path = Path(facts['path'])/name
     exported = read(path)
     for prefix, saved in expected.items():
-        observed = (exported.get('faithful:p'+prefix) or {}).get('preparation_hash')
+        observed = (exported.get(declaration['key_prefix']+prefix) or {}).get(declaration['hash_field'])
         if observed != saved:
             raise ValueError('H8 saved preparation identity differs for prefix '+prefix+': expected '+str(saved)+', observed '+str(observed))
 
@@ -510,6 +520,35 @@ def _verify_fixed_git_inputs(root, locators):
                 raise ValueError('Preparation fixed Git input differs: ' + path)
 
 
+def hchain_startup_failure(directory, request, summary):
+    """Recognize an exited numerical startup, not a recoverable dry-check."""
+    spec = request['preparation']
+    if spec.get('provider') != 'HCHAIN_SCOPED':
+        return None
+    marker = directory/'HCHAIN_STARTUP_FAILURE.json'
+    field = None
+    if marker.is_file() and not marker.is_symlink():
+        try:
+            row = read(marker)
+            if (row.get('schema') == 'HCHAIN_STARTUP_FAILURE_V1'
+                    and row.get('plan_sha256') == spec.get('inputs', {}).get('PLAN.json')
+                    and row.get('stage') == spec.get('stage')
+                    and row.get('numerical_startup') is True and row.get('leaf_started') is False
+                    and row.get('automatic_retry') is False
+                    and row.get('budget_disposition') == 'CONSUMED_STARTUP'
+                    and isinstance(row.get('field'), str) and row['field']):
+                field = row['field']
+        except (OSError, ValueError, AttributeError):
+            pass
+    elif 'StartupMismatch: HCHAIN_STARTUP_MISMATCH: ' in summary:
+        # Historical fixed providers emitted just the traceback.
+        field = summary.split('HCHAIN_STARTUP_MISMATCH: ', 1)[1]
+    if field:
+        return dict(phase='HCHAIN_STARTUP_IDENTITY', field=field, leaf_started=False,
+                    numerical_startup=True, automatic_retry=False, budget_disposition='CONSUMED_STARTUP')
+    return None
+
+
 def hchain_startup_hold(profile, request, fingerprint):
     """Hold the same host/plan/runtime after an observed startup identity failure.
 
@@ -524,10 +563,10 @@ def hchain_startup_hold(profile, request, fingerprint):
     # packets; a plan-wide startup mismatch must hold their shared owner,
     # not just the single packet that first detected it.
     plan = dict(owner=contract.get('scope_owner'), binding=contract.get('binding'),
-                fixed_plan=contract.get('fixed_plan_sha256'))
+                fixed_plan=contract.get('fixed_plan_sha256') or contract.get('plan_sha256'))
     if not plan['owner']:
         plan['packet'] = fingerprint['input_artifacts'].get('PLAN.json')
-    key = digest(dict(host=profile['host_id'], source=spec['source'], plan=plan,
+    key = digest(dict(host=os.environ.get('RPE_Q3_MEASUREMENT_HOST_ID') or profile['host_id'], source=spec['source'], plan=plan,
                       assets=fingerprint['runtime_paths'], runtime=fingerprint['runtime'],
                       tools=fingerprint['tools'], interpreter=profile.get('interpreter'),
                       adapter=profile.get('preparation_adapter_manifest')))
@@ -948,7 +987,7 @@ def execute(assignment, base_profile, directory):
     input_heads={}
     if spec.get('return_git_delta') is True:
         input_heads={alias:_head(workspace) for alias,(workspace,_) in owned.items()}
-    env=dict(preparation_environment(profile),PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),
+    env=dict(preparation_environment(profile,declared_core=spec.get('runtime_requirements',{}).get('declared_openblas_coretype')),PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),
              RPE_PREPARATION_PYTHON=profile['interpreter'])
     if spec.get('publish_pauli_binding') is True:
         provider, manifest = owned['provider']
@@ -1047,10 +1086,10 @@ def execute(assignment, base_profile, directory):
             returncode=process.returncode if process.returncode>=0 else None,
             signal=-process.returncode if process.returncode<0 else None,
             scientific_body_started=True, returned_artifacts=len(artifacts))
-        if spec.get('provider') == 'HCHAIN_SCOPED' and 'StartupMismatch: HCHAIN_STARTUP_MISMATCH: ' in outcome['failure_summary']:
-            field = outcome['failure_summary'].split('HCHAIN_STARTUP_MISMATCH: ', 1)[1]
-            outcome['failure_diagnostic'].update(phase='HCHAIN_STARTUP_IDENTITY', field=field,
-                                                 leaf_started=False)
+        startup_failure = hchain_startup_failure(directory, request, outcome['failure_summary'])
+        if startup_failure:
+            field = startup_failure['field']
+            outcome['failure_diagnostic'].update(startup_failure)
             # Only a plan-wide binding mismatch blocks other batches. A single
             # schedule mismatch does not prove that other cells are invalid.
             hold = hchain_startup_hold(profile, request, fingerprint)

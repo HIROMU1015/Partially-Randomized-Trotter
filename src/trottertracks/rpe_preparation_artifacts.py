@@ -276,6 +276,29 @@ class ArtifactCache:
                 if self.missing([sha]):raise ValueError('Concurrent artifact install failed')
         finally:temporary.unlink(missing_ok=True)
 
+    def put_stream(self, sha, receive):
+        """Hash an owned incoming stream and publish without copying it twice."""
+        path=self.path(sha)
+        if not self.missing([sha]):return
+        path.parent.mkdir(parents=True,exist_ok=True)
+        temporary=path.with_name(path.name+'.transfer-'+uuid.uuid4().hex)
+        h=hashlib.sha256()
+        try:
+            with temporary.open('xb') as output:
+                class Sink:
+                    def write(self,raw):
+                        written=output.write(raw)
+                        if written!=len(raw):raise OSError('Incomplete CAS stream write')
+                        h.update(raw)
+                        return written
+                receive(Sink())
+                output.flush();os.fsync(output.fileno())
+            if h.hexdigest()!=sha:raise ValueError('Captured artifact changed: '+sha)
+            try:os.link(temporary,path)
+            except FileExistsError:
+                if self.missing([sha]):raise ValueError('Concurrent artifact install failed')
+        finally:temporary.unlink(missing_ok=True)
+
     def share_verified_file(self, source, sha):
         """Link an immutable CAS object from a trusted local worker, or defer to upload."""
         source = Path(source)

@@ -72,12 +72,12 @@ def preflight_context(problem, spec):
     return dict(candidates=list(rows.values()), expected=expected, legacy=legacy[1] if legacy else None)
 
 
-def load_provider(directory):
+def load_provider(directory,contract=None):
     original = list(sys.path)
     try:
         sys.path.insert(0, str(directory))
-        provider = importlib.import_module("run_h6_scope")
-        worker = importlib.import_module("h6_scope_worker")
+        provider = importlib.import_module((contract or {}).get("entry_module","run_h6_scope"))
+        worker = importlib.import_module((contract or {}).get("worker_module","h6_scope_worker"))
         if any(Path(module.__file__).resolve().parent != directory for module in (provider, worker)):
             raise ValueError("Imported H-chain provider differs from its fixed checkout")
         return provider, worker
@@ -100,6 +100,10 @@ def preparation_order(kind, cell, base_priority):
 def signal_batch_policy(plan, worker):
     """Use a provider-declared phase-cache policy, retaining fixed H8 defaults."""
     policy=getattr(worker,'SIGNAL_BATCH_POLICY',None)
+    declared=(plan.get('provider_contract') or {}).get('signal_phase_cache_policy')
+    if declared is not None:
+        if policy is not None and policy!=declared:raise ValueError('Provider signal batch policy differs from fixed PLAN')
+        policy=declared
     if policy is None:
         if plan['scope']['system']=='H8':
             policy={'phase_keys':{'2nd':1,'4th':2,'4th(m5_best)':6},'phase_key_limit':32}
@@ -113,7 +117,7 @@ def signal_batch_policy(plan, worker):
 
 
 def batches(plan, run, worker, sizes, budgets):
-    priority = worker.h8_preparation_priority(plan, run, circuit_size)
+    priority = getattr(worker,(plan.get('provider_contract') or {}).get('priority_function','h8_preparation_priority'))(plan,run,circuit_size)
     work = []
     for stage in scope.STAGES:
         if not budgets.get(stage):
@@ -170,7 +174,7 @@ def task_graph(executor, plan, run, worker, settings, budgets):
         targets = [[cell["id"], index] for _, cell, index in batch]
         request = preparation_request(packet, checksum, stage, targets, source=settings["provider_source"],
                                       assets=settings["assets"], spectral_signals=settings.get("spectral_signals", False),
-                                      openblas_coretype=settings.get("openblas_coretype"))
+                                      openblas_coretype=settings.get("openblas_coretype"),fixed_plan_sha256=settings["plan"]["sha256"])
         contract = dict(request["original_contract"], fixed_plan_sha256=settings["plan"]["sha256"])
         definitions.append(dict(name=f"hchain-{stage}-{len(definitions)}", request=request, contract=contract,
                                 approved=True, budget=budgets[stage]))
@@ -250,7 +254,7 @@ def preparation_priority_descriptors(graph, executor):
 
 def preparation_priorities(graph, executor, plan, run, worker, screen=None, *, small_price_size=64, descriptors=None):
     """Re-rank the frozen tasks using saved completion filenames, never resize them."""
-    priority = worker.h8_preparation_priority(plan, run, circuit_size)
+    priority = getattr(worker,(plan.get('provider_contract') or {}).get('priority_function','h8_preparation_priority'))(plan,run,circuit_size)
     inputs = {stage: planned_inputs(plan, stage) for stage in scope.STAGES}
     costs = approximate_price_priorities(plan, worker, screen)
     ranks = {}
@@ -437,10 +441,17 @@ HCHAIN_TERMINAL = {"SCALED_SHOT_GRID_COMPLETE", "EXPLORATORY_GRID_COMPLETE",
                    "Q3_BUDGET_EXHAUSTED", "STEP_LIMIT"}
 
 
-def finish_block(run, results, methods):
+def finish_block(run, results, methods, *, exhausted=None):
     if set(results) == set(methods) and all(r.get("stop_reason") in HCHAIN_TERMINAL for r in results.values()):
         write(run / "SEARCH_TERMINATION.json", dict(reason="HCHAIN_SCOPE_COMPLETE",
               methods={method: row["stop_reason"] for method, row in results.items()}))
+    elif (exhausted and set(results)==set(methods)
+          and any(r.get('stop_reason')=='WAITING_FOR_INPUTS' for r in results.values())
+          and all(r.get('stop_reason') in HCHAIN_TERMINAL|{'WAITING_FOR_INPUTS'} for r in results.values())):
+        # Operational terminal, never a claim that held science completed.
+        write(run/'SEARCH_TERMINATION.json',dict(reason='HCHAIN_INPUTS_EXHAUSTED',
+              methods={method:row['stop_reason'] for method,row in results.items()},
+              withheld=exhausted,scientific_scope_complete=False))
 
 
 def stream_ready_in_wave(screen, settings, spec, executor):
@@ -465,19 +476,25 @@ class HChainReadySource:
         self.lock = RLock()
         self.sent = {cid for cid, row in rows.items() if row['ready']}
         self.pending = {}
+        self.retry_after = {}
         self.routes = {}
         self.expected = {}
 
     def publish(self, rows, routes, expected, excluded):
         with self.lock:
             for cid, row in rows.items():
-                if row['ready'] and cid not in self.sent and cid not in excluded:
+                if (row['ready'] and cid not in self.sent and cid not in excluded
+                        and time.monotonic()>=self.retry_after.get(cid,0)):
+                    self.retry_after.pop(cid,None)
                     self.pending.setdefault(row['method'], {})[cid] = deepcopy(row)
                     self.sent.add(cid)
             self.routes = {method:list(rules) for method,rules in routes.items()}
             self.expected = dict(expected)
         with self.executor.state.cv:
             self.executor.state.cv.notify_all()
+
+    def retry_due(self):
+        with self.lock:return any(time.monotonic()>=deadline for deadline in self.retry_after.values())
 
     def has_new(self, method):
         with self.lock:
@@ -499,6 +516,11 @@ class HChainReadySource:
                 cid = row['configuration_id']
                 route = trial.route(cid)
                 if route is None or trial.refresh_execution_hold(cid):
+                    # Not delivered. A later publication may resolve the
+                    # route or hold; do not suppress that candidate forever.
+                    with self.lock:
+                        self.sent.discard(cid)
+                        self.retry_after[cid]=time.monotonic()+1
                     continue
                 row['execution_needs'] = []
                 row.pop('execution_hold', None)
@@ -543,7 +565,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
             if complete and not (run / "STOP_REQUESTED.json").exists():
                 write(run / "SEARCH_TERMINATION.json", dict(reason="HCHAIN_SCOPE_COMPLETE"))
             return
-    provider, worker = load_provider(scope.provider_root(settings))
+    provider, worker = load_provider(scope.provider_root(settings), *( [plan["provider_contract"]] if plan.get("provider_contract") else []))
     full_plan = plan
     plan = provider.select_cases(plan, cases)
     routes = {method: [] for method in spec["methods"]}
@@ -608,7 +630,8 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
     try:
         budgets = distributed["preparation"]["budgets"]
         graph_path = run / "distributed" / "PREPARATION_GRAPH.json"
-        graph = (json.loads(graph_path.read_bytes()) if graph_path.exists()
+        from trottertracks.rpe_preparation_queue import load_preparation_graph
+        graph = (load_preparation_graph(graph_path) if graph_path.exists()
                  else task_graph(executor, plan, run, worker, settings, budgets))
         # Preserve the frozen graph and its budget. The old H8 worker's
         # nearest-ready-candidate priority is an execution order only.
@@ -637,6 +660,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
             idle_marker = run/'HCHAIN_IDLE_WAIT.json'
             idle_marker.unlink(missing_ok=True)
             last_idle_check = 0.
+            last_ready_install = float("-inf")
             refresh = True
             initial_ready = {row["method"] for row in rows.values() if row["ready"]
                              and spec["max_new_q3_per_method"][row["method"]] == "UNLIMITED"}
@@ -669,7 +693,9 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                         initial_ready.update(method for method in spec['methods'] if live_source.has_new(method))
                     future = None
                     live_source = None
-                if future is not None and live_source is not None and refresh:
+                if (future is not None and live_source is not None and refresh
+                        and (not pending or time.monotonic()-last_ready_install>=1)):
+                    last_ready_install=time.monotonic()
                     # The opt-in screened wave uses its original exclusion
                     # set; never re-screen while the selector is running.
                     updated_routes = {method:list(items) for method,items in routes.items()}
@@ -681,7 +707,10 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                         routes, expected = updated_routes, updated_expected
                         with executor.state.cv:
                             executor.routes, executor.expected = routes, expected
-                        live_source.publish(rows, routes, expected, excluded)
+                    live_source.publish(rows, routes, expected, excluded)
+                elif future is not None and live_source is not None and live_source.retry_due():
+                    # Recheck a held route without rereading the signal/price tree.
+                    live_source.publish(rows, routes, expected, excluded)
                 if future is None and (refresh or initial_ready):
                     # Explicit inherited exact replays use the same ordinary
                     # nonblocking owner reconciliation as schedule searches.
@@ -693,11 +722,14 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                         retire_pruned_batches(executor, pending, requests, screen.state["skip_price_cells"])
                         priority_dirty = True
                     refresh = False
+                    last_ready_install=time.monotonic()
                     changed = initial_ready | install_ready(provider, plan, run, rows, routes, expected, spec,
                                                             final=not pending, excluded=excluded)
                     initial_ready.clear()
                     if changed or not pending:
-                        methods = [method for method in spec["methods"] if method in changed or method not in results]
+                        streaming=stream_ready_in_wave(screen,settings,spec,executor)
+                        methods = list(spec['methods']) if streaming and changed else [
+                            method for method in spec['methods'] if method in changed or method not in results]
                         if methods:
                             refresh = bool(pending)  # A coarse wave may have unsubmitted ready successors.
                             prices = {cid: row["prices"] for cid, row in rows.items() if row["ready"]}
@@ -706,7 +738,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                                            expected=dict(expected), saved=optimizer.SavedBackend([], prices),
                                            catalog={"candidates": []}, generate=None, generation={})
                             options = {}
-                            if stream_ready_in_wave(screen,settings,spec,executor):
+                            if streaming:
                                 live_source = HChainReadySource(executor, rows)
                                 options['ready_source'] = live_source
                             future = pool.submit(optimize, root, problem, context=context, executor=executor,
@@ -718,7 +750,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
                     # Only the independent package driver knows that no
                     # selector is active. The scheduler rechecks the queue
                     # revision and owners before issuing a normal handoff.
-                    if future is not None:
+                    if future is not None or getattr(executor,'preparation_pending',{}):
                         idle_marker.unlink(missing_ok=True)
                     elif time.monotonic()-last_idle_check >= 5:
                         last_idle_check = time.monotonic()
@@ -756,6 +788,9 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
         publish_partition_view(run)
     if complete and "case_ids" in settings and not (run / "STOP_REQUESTED.json").exists():
         if partition is None:
-            finish_block(run, results, spec["methods"])
+            exhausted=None
+            if not pending and withheld and hasattr(executor.store,'idle_revision') and executor.store.idle_revision() is not None:
+                exhausted=dict(Counter(receipt.get('status','UNKNOWN') for receipt in withheld.values()))
+            finish_block(run, results, spec["methods"],exhausted=exhausted)
         elif set(results) == set(spec["methods"]) and all(r.get("stop_reason") in HCHAIN_TERMINAL for r in results.values()):
             write(run / "SEARCH_TERMINATION.json", dict(reason="HCHAIN_SCOPE_COMPLETE"))

@@ -1591,8 +1591,8 @@ def test_consumed_response_compaction_requires_exact_receipt_and_ack(tmp_path):
     (spool/'requests'/'rpc.json').unlink()
     received=G.consumed_response_receipts(tmp_path/'remote',{})
     assert received=={'session':{'rpc':proof}}
-    with unittest.TestCase().assertRaisesRegex(ValueError,'identity differs'):
-        manager._compact_consumed_responses({'session':{'rpc':dict(proof,response_sha256='0'*64)}})
+    assert manager._compact_consumed_responses({'session':{'rpc':dict(proof,response_sha256='0'*64)}})=={}
+    assert not P.read(manager.directory/'responses'/'session'/'rpc.json').get('consumed')
     ack=manager._compact_consumed_responses(received)
     assert ack==received
     assert manager._compact_consumed_responses(received)==ack
@@ -1707,3 +1707,51 @@ def test_rollover_modes_are_explicit_and_drain_extension_is_measured_not_guessed
     P.observe_rollover_drain(obs,[new],clock(4))
     P.observe_rollover_drain(obs,[],clock(6))
     assert obs['observed_extension_seconds']==2 and obs['additional_owners']==[['new','backfill']]
+
+
+def test_old_gateway_or_failed_fence_does_not_wedge_harvest(tmp_path):
+    # Adapted from the independent review's artificial old-gateway repro.
+    from types import SimpleNamespace
+    for legacy in (True,False):
+        actions=[];rpcs=[]
+        def call(payload):
+            actions.append(payload['action'])
+            if legacy:raise ValueError('Unknown PBS gateway action')
+            if payload['action']=='managed_capabilities':return {'unstarted_fence':True}
+            raise OSError('fixture transient fence failure')
+        row=dict(job_id='j',attempt_id='a',host_id='pbs-1',state='ASSIGNED',started_epoch=None,
+                 request_sha256='r',detail={'pbs_allocation_token':'tok'})
+        m=object.__new__(P.PbsManager);m.gateway=SimpleNamespace(call=call);m.directory=tmp_path;m.settings={}
+        m.executor=SimpleNamespace(store=SimpleNamespace(row=lambda _:row),rpc=lambda *x:rpcs.append(x),
+                                   _owned_attempts=lambda:[row])
+        m.state={'allocations':{'tok':{}}};m.log=lambda *a,**kw:None
+        data=dict(host_id='pbs-1',attempts=[],incomplete=[dict(assignment=dict(job_id='j',attempt_id='a',request_sha256='r'),state=dict(state='ASSIGNED'))])
+        m._harvest(dict(token='tok',host_id='pbs-1',status='F',job_id='9.pbs'),fetched=(data,{}))
+        if legacy:
+            assert m.state['allocations']['tok']['harvested'] and rpcs
+            assert 'fence_unstarted' not in actions
+        else:
+            assert not m.state['allocations']['tok']['harvested'] and not rpcs
+
+
+def test_bulk_timeout_reduces_future_chunk_and_stream_atomic(tmp_path):
+    import hashlib
+    from trottertracks.rpe_preparation_artifacts import ArtifactCache
+    raw=b'a'*300000;sha=hashlib.sha256(raw).hexdigest()
+    manager=object.__new__(P.PbsManager);manager.settings={'bulk_chunk_bytes':4*1024*1024}
+    seen=[]
+    def transfer(gateway,*args,chunk_bytes,**kwargs):
+        seen.append(chunk_bytes)
+        if len(seen)==1:raise TimeoutError('fixture bandwidth')
+        kwargs['sink'].write(raw)
+    manager._read_bulk=transfer
+    cache=ArtifactCache(tmp_path/'cas')
+    with unittest.TestCase().assertRaises(TimeoutError):
+        cache.put_stream(sha,lambda sink:manager._read_owned_bulk(None,'a','artifact',sha,sink=sink))
+    assert not cache.path(sha).exists()
+    cache.put_stream(sha,lambda sink:manager._read_owned_bulk(None,'a','artifact',sha,sink=sink))
+    assert cache.path(sha).read_bytes()==raw and seen==[4*1024*1024,2*1024*1024]
+    other='0'*64
+    with unittest.TestCase().assertRaisesRegex(ValueError,'Captured artifact changed'):
+        cache.put_stream(other,lambda sink:sink.write(raw))
+    assert not cache.path(other).exists()

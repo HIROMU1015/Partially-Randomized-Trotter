@@ -208,10 +208,13 @@ def _view_fingerprint(path):
 
 class RuntimeProbeBatch:
     """Reuse metadata probes within one readiness batch, never across polls."""
-    def __init__(self):
+    def __init__(self, *, shared_view=None, view_ttl=None):
         self.values={}
         self.locks={}
         self.view_values={}
+        self.view_epochs={}
+        self.shared_view=shared_view
+        self.view_ttl=view_ttl
         self.lock=threading.Lock()
 
     @staticmethod
@@ -248,13 +251,14 @@ class RuntimeProbeBatch:
         still performs the ordinary unshared SOURCE/dry-check guards. Gitlinks,
         sparse/unmerged indices and unstable inventories use the original path.
         """
+        if self.shared_view is not None:return self.shared_view.view(path)
         root=Path(path).resolve()
         with self.lock:
             lock=self.locks.setdefault(('view',str(root)),threading.Lock())
         with lock:
             head=_git(root,'rev-parse','HEAD').decode().strip()
             entry=self.view_values.get(root)
-            if entry is not None:
+            if entry is not None and (self.view_ttl is None or time.monotonic()-self.view_epochs.get(root,float('-inf'))<self.view_ttl):
                 old_head,meta,files,before,value=entry
                 if (head==old_head and tuple(self._stat_key(p) for p in meta+files)==before):
                     return deepcopy(value)
@@ -282,6 +286,7 @@ class RuntimeProbeBatch:
             after=tuple(self._stat_key(p) for p in meta+files)
             if before==after and before[:len(meta)]==meta_initial and value['head']==head:
                 self.view_values[root]=(head,meta,files,after,deepcopy(value))
+                self.view_epochs[root]=time.monotonic()
             else:
                 self.view_values.pop(root,None)
             return value

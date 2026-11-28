@@ -17,6 +17,7 @@ from concurrent.futures import ThreadPoolExecutor
 import fcntl
 import hashlib
 import json
+import errno
 import os
 from pathlib import Path
 import subprocess
@@ -67,6 +68,16 @@ def atomic(path, value, *, publish_once=False):
         os.fsync(descriptor)
     finally:
         os.close(descriptor)
+
+
+def diagnostic_atomic(path,value):
+    """Optional resource telemetry must not kill a worker on ENOSPC."""
+    try:
+        atomic(path,value)
+        return True
+    except OSError as error:
+        if error.errno not in (errno.ENOSPC,errno.EDQUOT):raise
+        return False
 
 
 def exclusive(path, value):
@@ -176,9 +187,12 @@ def resource_state(attempt, state):
 def event(profile, name, **detail):
     value = dict(stamp(), event=name, host_id=profile['host_id'], **detail)
     path = Path(profile['work_dir']) / 'WORKER_EVENTS.jsonl'
-    with path.open('a') as stream:
-        fcntl.flock(stream, fcntl.LOCK_EX)
-        stream.write(json.dumps(value, default=str) + '\n'); stream.flush()
+    try:
+        with path.open('a') as stream:
+            fcntl.flock(stream, fcntl.LOCK_EX)
+            stream.write(json.dumps(value, default=str) + '\n'); stream.flush()
+    except OSError as error:
+        if error.errno not in (errno.ENOSPC,errno.EDQUOT):raise
 
 
 def save_state(attempt, state, **detail):
@@ -213,11 +227,14 @@ def validate_assignment(profile, assignment):
         raise ValueError('Worker HEAD differs from fixed SOURCE')
     for name, expected in manifest['files'].items():
         path = root / safe_relative(name)
-        if not path.is_file() or Preparation.fixed_file_sha(path) != expected:
+        if not path.is_file() or getattr(Preparation,'fixed_file_sha',
+            lambda p:hashlib.sha256(p.read_bytes()).hexdigest())(path)!=expected:
             raise ValueError('Worker SOURCE hash differs: ' + name)
     for locator in assignment.get('input_hashes', []):
         safe_relative(locator['path'])
-        from .rpe_q3_coordinator import fixed_git_blob_sha
+        from . import rpe_q3_coordinator as coordinator
+        fixed_git_blob_sha=getattr(coordinator,'fixed_git_blob_sha',
+            lambda root,commit,path:hashlib.sha256(subprocess.check_output(['git','show',commit+':'+path],cwd=root)).hexdigest())
         if fixed_git_blob_sha(root,locator['commit'],locator['path']) != locator['sha256']:
             raise ValueError('Fixed input hash differs: ' + locator['path'])
     resolved = deepcopy(request)
@@ -250,21 +267,24 @@ def validate_assignment(profile, assignment):
             identity=Storage.policy_identity(policy)
             if not any(cache.is_relative_to(Path(root)) for root in identity.get('excluded_paths',())):
                 _,target=Storage.reclaim_watermarks(limit,proactive=True)
-                execution['prefix_cache_max_bytes']=max(1,target)
+                # Split the disposable allowance among the distinct
+                # monitored prefix caches rather than giving each the quota.
+                execution['prefix_cache_max_bytes']=Storage.implicit_prefix_budget(
+                    policy,Storage.prefix_caches(base_profile),target)
     else:
         execution.pop('prefix_cache_directory', None)
     return resolved
 
 
-def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_parallel=1, deployment=None):
+def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_parallel=1, deployment=None, view_cache=None):
     """Read current execution identities; never acquire or launch a job."""
     from .rpe_host_eligibility import current_host_fingerprint
     # Operational overlays can run against an older pinned host module.
     import inspect
     runtime_cache=None
-    if 'runtime_cache' in inspect.signature(current_host_fingerprint).parameters:
+    if (len(challenges)>1 or view_cache is not None) and 'runtime_cache' in inspect.signature(current_host_fingerprint).parameters:
         from .rpe_plan_readiness import RuntimeProbeBatch
-        runtime_cache=RuntimeProbeBatch()
+        runtime_cache=RuntimeProbeBatch(shared_view=view_cache) if view_cache is not None else RuntimeProbeBatch()
     fingerprints, errors = {}, {}
     deployment = deployment or profile.get('pbs') or profile
     def check(assignment):
@@ -537,7 +557,7 @@ def local_result_manifest(attempt):
 
 
 class Worker:
-    def __init__(self, profile, controller, *, poll_seconds=1., transport=None):
+    def __init__(self, profile, controller, *, poll_seconds=1., transport=None, metadata_fast=False):
         self.profile = dict(profile)
         self.root = Path(profile['root']).resolve()
         self.work = Path(profile['work_dir']).resolve(); self.work.mkdir(parents=True, exist_ok=True)
@@ -569,12 +589,93 @@ class Worker:
             fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             self.lock.close(); raise ValueError('Another polling worker owns this work_dir')
-        for path in sorted(self.work.glob('*/*/ASSIGNMENT.json')):
+        self._metadata_fast=metadata_fast
+        self._terminal_profile_key=digest(self.profile) if metadata_fast else None
+        self._indexed_spool=profile.get('mailbox_indexed_spool') is True
+        self._indexed_active=set()
+        index_path=self.work/'MAILBOX_ACTIVE_V1.json'
+        if index_path.exists() and not self._indexed_spool:
+            self.lock.close();raise ValueError('Indexed mailbox spool requires its fixed writer profile')
+        if self._indexed_spool:
+            try:self._open_indexed_spool(index_path)
+            except BaseException:
+                self.lock.close();raise
+        saved_index=self._read_terminal_index() if metadata_fast and not self._indexed_spool else {}
+        paths=(sorted((self.work/name/'ASSIGNMENT.json' for name in self._indexed_active))
+               if self._indexed_spool and metadata_fast else sorted(self.work.glob('*/*/ASSIGNMENT.json')))
+        for path in paths:
+            if not path.is_file():continue # index publication precedes assignment publication
+            if self._indexed_spool and str(path.parent.relative_to(self.work)) not in self._indexed_active and metadata_fast:
+                continue
+            entry=saved_index.get(str(path.parent.relative_to(self.work)))
+            if entry and entry.get('identity')==self._terminal_identity(path.parent):
+                self._cache_terminal_summary(path.parent,entry['job'],entry.get('prefix'),entry.get('observation'))
+                continue
             assignment = read(path)
             if assignment.get('host_id', self.host_id) != self.host_id:
                 raise ValueError('Spool belongs to another host ID')
             self.records[path.parent] = assignment
         event(self.profile, 'WORKER_START', source_sha=self.source_sha, slots=self.slots)
+
+    def _open_indexed_spool(self,path):
+        """A new exclusive writer profile, never a migration of a mixed spool."""
+        identity=dict(host_id=self.host_id,source=self.source_sha)
+        if path.is_file():
+            saved=read(path)
+            if saved.get('schema')!='RPE_MAILBOX_ACTIVE_V1' or saved.get('identity')!=identity:
+                raise ValueError('Indexed mailbox spool writer/source differs')
+            for name in saved.get('active',[]):
+                parts=name.split('/')
+                if len(parts)!=2 or any(safe_id(part)!=part for part in parts):raise ValueError('Invalid indexed mailbox path')
+                self._indexed_active.add(name)
+            self._terminal_class_resources={row.get('resource_class'):row for row in saved.get('resources',[])}
+            self._terminal_prefixes.update(saved.get('prefixes',[]))
+            for name,sample in saved.get('observations',{}).items():
+                parts=name.split('/')
+                if len(parts)!=2 or any(safe_id(part)!=part for part in parts):raise ValueError('Invalid indexed observation path')
+                self._terminal_preparation_observations[self.work/name]=sample
+        else:
+            if next(self.work.glob('*/*/ASSIGNMENT.json'),None) is not None:
+                raise ValueError('Indexed mailbox requires a fresh dedicated spool; preserve mixed-writer history')
+            self._save_indexed_spool()
+
+    def _save_indexed_spool(self):
+        if not getattr(self,'_indexed_spool',False):return
+        atomic(self.work/'MAILBOX_ACTIVE_V1.json',dict(schema='RPE_MAILBOX_ACTIVE_V1',
+            identity=dict(host_id=self.host_id,source=self.source_sha),active=sorted(self._indexed_active),
+            resources=list(getattr(self,'_terminal_class_resources',{}).values()),prefixes=sorted(self._terminal_prefixes),
+            observations={str(path.relative_to(self.work)):sample for path,sample in self._terminal_preparation_observations.items()}))
+
+    def _terminal_identity(self,attempt):
+        facts=[]
+        for name in ('ASSIGNMENT.json','WORKER_STATE.json','WORKER_PROFILE.json','OWNED_RESOURCES.json',
+                     'Q3_EXECUTION_RESOURCES.json','PROCESS_RETURN.json','OUTCOME.json','PREPARATION_OBSERVATION_ACK.json'):
+            try:
+                info=(attempt/name).lstat()
+                facts.append([info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_ctime_ns])
+            except FileNotFoundError:facts.append(None)
+        return [self._terminal_profile_key,self.source_sha,facts]
+
+    def _read_terminal_index(self):
+        index=self.work/'TERMINAL_METADATA.jsonl';entries={}
+        if not index.is_file():return entries
+        try:
+            with index.open('r+b') as stream:
+                while raw:=stream.readline():
+                    if not raw.endswith(b'\n'):
+                        stream.seek(-len(raw),1);stream.truncate();break
+                    row=json.loads(raw);entries[row['path']]=row
+        except (OSError,ValueError,KeyError):return {}
+        return entries
+
+    def _append_terminal_index(self,attempt,job,prefix,observation):
+        if not getattr(self,'_metadata_fast',False) or getattr(self,'_indexed_spool',False):return
+        row=dict(path=str(attempt.relative_to(self.work)),identity=self._terminal_identity(attempt),
+                 job=job,prefix=prefix,observation=observation)
+        try:
+            with (self.work/'TERMINAL_METADATA.jsonl').open('a') as stream:
+                stream.write(json.dumps(row,separators=(',',':'))+'\n');stream.flush();os.fsync(stream.fileno())
+        except OSError:pass # advisory index, authoritative spool remains intact
 
     @property
     def capacity_state_dir(self):
@@ -587,7 +688,11 @@ class Worker:
         if ack:
             for path, sample in list(terminal.items()):
                 if ack.get(sample.get('attempt_id')) == digest(sample):
+                    if isinstance(path,Path) and not diagnostic_atomic(
+                            path/'PREPARATION_OBSERVATION_ACK.json',{'sha256':digest(sample)}):
+                        continue
                     terminal.pop(path, None)
+                    self._save_indexed_spool()
         feedback = response.get('capacity_feedback')
         if feedback is not None and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
             self.mixed_task_class_quotas = feedback.get('mixed_task_class_quotas') is True
@@ -622,14 +727,31 @@ class Worker:
                 assignment.get('q3_evaluator'), saved, preparation_detail=True,
                 workload=assignment.get('preparation_workload')),
                 dp_workers=max(saved.get('dp_workers') or 1, saved.get('task_cpu_count') or 1),
-                peak_rss_bytes=previous.get('peak_rss_bytes',0),
+                peak_rss_bytes=max(previous.get('peak_rss_bytes',0),Resources.terminal_q3_peak(attempt,assignment,saved)),
                 observed_cpu_cores=previous.get('observed_cpu_cores',0))
             observation = Resources.owned_preparation_observation(attempt, assignment, saved, job['peak_rss_bytes'])
             if observation is not None:
-                self._terminal_preparation_observations[attempt] = observation
+                marker=attempt/'PREPARATION_OBSERVATION_ACK.json'
+                try:ack=read(marker) if marker.is_file() else {}
+                except (OSError,ValueError):ack={}
+                if ack.get('sha256') != digest(observation):
+                    self._terminal_preparation_observations[attempt] = observation
+        self._cache_terminal_summary(attempt,job,assignment.get('prefix_key'),self._terminal_preparation_observations.get(attempt))
+        self._append_terminal_index(attempt,job,assignment.get('prefix_key'),self._terminal_preparation_observations.get(attempt))
+        if getattr(self,'_indexed_spool',False):
+            self._indexed_active.discard(str(attempt.relative_to(self.work)))
+            self._save_indexed_spool()
+
+    def _cache_terminal_summary(self,attempt,job,prefix,observation):
         self._terminal_resources[attempt] = job
-        if assignment.get('prefix_key'):
-            self._terminal_prefixes.add(assignment['prefix_key'])
+        if observation is not None:self._terminal_preparation_observations[attempt]=observation
+        classes=getattr(self,'_terminal_class_resources',None)
+        if classes is None:classes=self._terminal_class_resources={}
+        kind=job.get('resource_class')
+        summary=classes.setdefault(kind,dict(state='TRANSFERRED',resource_class=kind))
+        for key in ('peak_rss_bytes','observed_cpu_cores','dp_workers'):
+            summary[key]=max(summary.get(key,0),job.get(key,0))
+        if prefix:self._terminal_prefixes.add(prefix)
 
     def _cached_prefixes(self):
         prefixes = set(self._terminal_prefixes)
@@ -682,8 +804,10 @@ class Worker:
             path = attempt / 'OWNED_RESOURCES.json'
             previous = read(path) if path.exists() else {}
             peak = max(previous.get('peak_rss_bytes', 0), sample['rss_bytes'])
+            if state in ('COMPLETED_PENDING_TRANSFER','TRANSFERRED'):
+                peak=max(peak,Resources.terminal_q3_peak(attempt,assignment,saved))
             observed = stamp()
-            cpu_observation=Resources.owned_cpu_observation(sample,previous,observed)
+            cpu_observation=Resources.owned_cpu_observation(sample,previous,observed,window_seconds=5.)
             resource = 'EXITED' if state == 'UNKNOWN' and persisted['detail'].get('resource_released') is True else resource_state(attempt, state)
             kind = Resources.measured_resource_class(assignment['request'], assignment.get('q3_evaluator'), saved, preparation_detail=True,
                                                      workload=assignment.get('preparation_workload'))
@@ -691,17 +815,17 @@ class Worker:
             # samples stay in the conservative count-DP profile.
             job = dict(state=resource, resource_class=kind, dp_workers=max(saved.get('dp_workers') or 1,
                                                  saved.get('task_cpu_count') or 1),
-                       peak_rss_bytes=peak,
+                       peak_rss_bytes=peak,current_rss_bytes=sample['rss_bytes'],
                        rss_high_water_sum_bytes=max(previous.get('rss_high_water_sum_bytes',0),sample.get('rss_high_water_sum_bytes',0)),
                        **cpu_observation)
-            if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
-                atomic(path, dict(observed, **job))
+            if state in ('ASSIGNED','STARTING','RUNNING','UNKNOWN') and resource!='EXITED':
+                diagnostic_atomic(path,dict(observed,**job))
             if type(saved.get('task_memory_bytes')) is int and saved['task_memory_bytes']>0:
                 job['declared_memory_bytes']=saved['task_memory_bytes']
             jobs.append(job)
             observation = Resources.owned_preparation_observation(attempt, assignment, saved, peak)
             if observation is not None:preparation_observations.append(observation)
-        jobs.extend(self._terminal_resources.values())
+        jobs.extend(getattr(self,'_terminal_class_resources',self._terminal_resources).values())
         preparation_observations.extend(self._terminal_preparation_observations.values())
         feedback_path = self.capacity_state_dir / 'CAPACITY_FEEDBACK.json'
         state_path = self.capacity_state_dir / 'SLOT_STATE.json'
@@ -719,15 +843,19 @@ class Worker:
                 event(self.profile, 'SLOT_CAPACITY_DECISION', capacity=report['capacity'], stage=report['stage'],
                       reasons=report['reasons'], limits=report['limits'],
                       dp_workers_per_q3=report['dp_workers_per_q3'], feedback=report['feedback'])
-            if state != previous:atomic(state_path, state)
+            if state!=previous and not diagnostic_atomic(state_path,state):
+                report.update(slots=0,storage_persist_error=True)
             if self.profile.get('persist_resource_offer') is True:
-                atomic(self.work / 'RESOURCE_OFFER.json', report)
+                offer_path=self.work/'RESOURCE_OFFER.json'
+                try:old_offer=read(offer_path) if offer_path.is_file() else None
+                except (OSError,ValueError):old_offer=None
+                if report!=old_offer:diagnostic_atomic(offer_path,report)
         return report
 
     def _http(self, endpoint, payload):
         data = json.dumps(payload, allow_nan=False).encode()
         request = urllib.request.Request(self.controller + endpoint, data=data, headers={'Content-Type': 'application/json'})
-        with urllib.request.urlopen(request, timeout=10) as response:
+        with urllib.request.urlopen(request, timeout=(self.profile.get('completion_timeout_seconds',60) if endpoint=='/v1/complete' else 10)) as response:
             return json.load(response)
 
     def _post(self, endpoint, payload):
@@ -762,6 +890,11 @@ class Worker:
                 raise ValueError('Assignment changed for existing attempt')
             self.records[attempt] = before
             return
+        # Publish the active discovery entry before the authoritative assignment.
+        # An interrupted entry without ASSIGNMENT cannot launch anything.
+        if getattr(self,'_indexed_spool',False):
+            self._indexed_active.add(str(attempt.relative_to(self.work)))
+            self._save_indexed_spool()
         # ASSIGNMENT becomes visible only after the exact request/profile are durable.
         selected_profile = select_host_profile(self.profile, assignment)
         if 'pbs' in self.profile:
@@ -812,7 +945,8 @@ class Worker:
         if state['state'] in ('STARTING', 'RUNNING') or (
                 state['state'] == 'UNKNOWN' and not (attempt / PBSAttempt.INTERRUPTED).is_file()
                 and (attempt / 'OUTCOME.json').is_file()
-                and (attempt / 'PROCESS_RETURN.json').is_file()):
+                and (attempt / 'PROCESS_RETURN.json').is_file()
+                and time.monotonic()>=getattr(self,'_unknown_recheck_after',{}).get(attempt,0)):
             for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json'):
                 marker = attempt / name
                 if marker.exists() and process_alive(read(marker)['pid'], attempt):
@@ -825,7 +959,11 @@ class Worker:
                     state = save_state(attempt, 'COMPLETED_PENDING_TRANSFER', outcome_status=observed['status'], recovered=True)
                     event(self.profile, 'RECOVER_COMPLETED', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'])
                 except Exception as error:
-                    state = save_state(attempt, 'UNKNOWN', reason=str(error), automatic_retry=False)
+                    if not hasattr(self,'_unknown_recheck_after'):self._unknown_recheck_after={}
+                    self._unknown_recheck_after[attempt]=time.monotonic()+5
+                    detail=dict(reason=str(error),automatic_retry=False)
+                    if state['state']!='UNKNOWN' or any(state['detail'].get(k)!=v for k,v in detail.items()):
+                        state=save_state(attempt,'UNKNOWN',**detail)
             else:
                 state = save_state(attempt, 'UNKNOWN', reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
         if state['state'] == 'UNKNOWN':
@@ -878,7 +1016,20 @@ class Worker:
 
     def _check_challenges(self, challenges, report):
         parallel = max(1, min(len(challenges), int(report.get('slots') or 1)))
-        return host_fingerprints(self.profile, challenges, q3_parallel=parallel)
+        # Share only the stat-bound view facts. Runtime package probes are
+        # never cached across independent calls (interpreter stat alone does
+        # not establish the installed package state).
+        cache=getattr(self,'_readiness_view_cache',None)
+        if len(challenges)>1 or cache is not None:
+            from .rpe_plan_readiness import RuntimeProbeBatch
+            if cache is None:cache=self._readiness_view_cache=RuntimeProbeBatch(view_ttl=30.)
+        elif challenges:
+            key=challenges[0].get('request',{}).get('route',{}).get('view_commit')
+            if key and key==getattr(self,'_last_readiness_view',None):
+                from .rpe_plan_readiness import RuntimeProbeBatch
+                cache=self._readiness_view_cache=RuntimeProbeBatch(view_ttl=30.)
+            self._last_readiness_view=key
+        return host_fingerprints(self.profile,challenges,q3_parallel=parallel,**({'view_cache':cache} if cache is not None else {}))
 
     def _check_readiness_batch(self, challenges, report):
         ready, failed = [], {}
@@ -925,7 +1076,10 @@ class Worker:
                 except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
                     event(self.profile, 'READINESS_OFFLINE', reason=str(error))
             if not accepting:
-                cache.clear()
+                # Admission is still closed. A delayed capacity sample does
+                # not invalidate a request-bound proof within its own TTL.
+                if report.get('storage',{}).get('reason')!='STORAGE_MEASUREMENT_PENDING':
+                    cache.clear()
                 return result
             result['host_fingerprints'] = {job: fact for job, (_,fact,_) in cache.items()}
             # One metadata check per free slot; keep a replacement check in
@@ -966,7 +1120,10 @@ class Worker:
         if state['state'] == 'ASSIGNED':
             self._launch(attempt); state = read(attempt / 'WORKER_STATE.json')
         payload = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], state=state['state'], detail=state['detail'])
-        if state['state'] != 'TRANSFERRED' and self.reported.get(attempt) != state:
+        # Timestamps are not state transitions. Keep the full state receipt
+        # locally, but only report a changed state or detail.
+        previous=self.reported.get(attempt) or {}
+        if state['state'] != 'TRANSFERRED' and (previous.get('state'),previous.get('detail'))!=(state['state'],state['detail']):
             try:
                 response=self._post('/v1/state', payload)
                 self.reported[attempt] = state
@@ -987,23 +1144,35 @@ class Worker:
                         return
                 event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(error))
         if transfer and state['state'] == 'COMPLETED_PENDING_TRANSFER':
+            if not hasattr(self,'_transfer_backoff'):self._transfer_backoff={}
+            deadline,delay=self._transfer_backoff.get(attempt,(0,1))
+            if time.monotonic()<deadline:return
             try:
                 started = time.monotonic()
-                self._upload_artifacts(attempt, assignment)
+                owner={key:assignment[key] for key in ('job_id','attempt_id','request_sha256')}
+                response=None
                 if self.profile.get('local_result_manifest') is True and not Preparation.is_preparation(assignment):
-                    manifest = local_result_manifest(attempt)
-                    transfer = dict(local_files=manifest)
-                    size = sum(row['size'] for row in manifest.values())
+                    manifest=local_result_manifest(attempt)
+                    transfer=dict(local_files=manifest)
+                    size=sum(row['size'] for row in manifest.values())
                 else:
-                    files = result_bundle(attempt)
-                    transfer = dict(files=files)
-                    size = sum(len(v)*3//4-v.count('=') for v in files.values())
-                response = self._post('/v1/complete', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
-                    request_sha256=assignment['request_sha256'], **transfer))
+                    files=result_bundle(attempt)
+                    transfer=dict(files=files)
+                    size=sum(len(v)*3//4-v.count('=') for v in files.values())
+                    if deadline and not Preparation.is_preparation(assignment):
+                        try:observed=self._post('/v1/attempt',owner)
+                        except (OSError,ValueError,urllib.error.URLError):observed={}
+                        if (observed.get('publication_adopted') is True and observed.get('disposition')=='STATE_ALREADY_ACCEPTED'
+                                and observed.get('completion_sha256')==digest(files)):
+                            response=dict(ok=True,duplicate=True,reconciled=True);size=0
+                if response is None:
+                    self._upload_artifacts(attempt,assignment)
+                    response=self._post('/v1/complete',dict(owner,**transfer))
                 if response.get('ok') is not True:
                     raise ValueError('Controller refused completion')
                 timing = dict(upload_roundtrip_seconds=time.monotonic()-started, bytes=size)
                 save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
+                self._transfer_backoff.pop(attempt,None)
                 Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
                 event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                       seconds=timing['upload_roundtrip_seconds'], bytes=timing['bytes'],
@@ -1014,6 +1183,7 @@ class Worker:
                     # Optional telemetry cannot undo a durable completion acknowledgement.
                     event(self.profile, 'TRANSFER_METRIC_OFFLINE', job_id=assignment['job_id'], reason=str(error))
             except (OSError, ValueError, urllib.error.URLError) as error:
+                self._transfer_backoff[attempt]=(time.monotonic()+delay,min(delay*2,30))
                 event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
 
     def _artifact_inventory_payload(self):
@@ -1203,7 +1373,7 @@ def _mailbox_submit(worker, payload, *, offer=None):
 def mailbox_submit_batch(profile, assignments):
     """Share the one spool owner and its loaded records across submissions."""
     replies = []
-    worker = Worker(profile, 'http://127.0.0.1:1')
+    worker=Worker(profile,'http://127.0.0.1:1',metadata_fast=profile.get('mailbox_indexed_spool') is True)
     try:
         offer = worker._resource_offer()
         for assignment in assignments:
@@ -1275,7 +1445,7 @@ def mailbox(profile, action, payload=None):
         if Preparation.is_preparation(assignment):
             result['artifact_manifest'] = read(attempt/'OUTCOME.json').get('artifacts', {})
         return result
-    worker = Worker(profile, 'http://127.0.0.1:1')
+    worker=Worker(profile,'http://127.0.0.1:1',metadata_fast=(action=='resources' or (action=='status' and payload.get('metadata_only') is True) or (profile.get('mailbox_indexed_spool') is True and action in ('submit','ack'))))
     worker._mailbox_cached_storage = payload.get('cached_storage') is True and action in ('status','resources')
     try:
         if action == 'resources':
@@ -1287,7 +1457,11 @@ def mailbox(profile, action, payload=None):
         if action == 'ack':
             attempt = worker.work / safe_id(payload['job_id']) / safe_id(payload['attempt_id'])
             if attempt not in worker.records:
-                raise ValueError('Unknown completion attempt')
+                if not getattr(worker,'_indexed_spool',False) or not (attempt/'ASSIGNMENT.json').is_file():raise ValueError('Unknown completion attempt')
+                saved=read(attempt/'ASSIGNMENT.json')
+                if (saved.get('job_id'),saved.get('attempt_id'),saved.get('host_id',worker.host_id))!=(payload['job_id'],payload['attempt_id'],worker.host_id):
+                    raise ValueError('Indexed completion owner differs')
+                worker.records[attempt]=saved
             state = worker._reconcile(attempt, worker.records[attempt])
             if state['state'] not in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED'):
                 raise ValueError('Attempt is not complete')
@@ -1295,11 +1469,12 @@ def mailbox(profile, action, payload=None):
             if not duplicate:
                 save_state(attempt, 'TRANSFERRED', via='SSH_MAILBOX')
                 event(worker.profile, 'TRANSFER_ACK', job_id=payload['job_id'], attempt_id=payload['attempt_id'], via='SSH_MAILBOX')
+            if getattr(worker,'_indexed_spool',False):worker._remember_terminal(attempt,worker.records[attempt])
             Storage.reclaim_transferred_attempt(worker.profile.get('storage_limit'), attempt)
             return dict(ok=True, duplicate=duplicate)
         if action == 'status':
             metadata_only = payload.get('metadata_only') is True
-            attempts = []; cached = set()
+            attempts = []; cached = set(worker._terminal_prefixes)
             for attempt, assignment in worker.records.items():
                 state = worker._reconcile(attempt, assignment)
                 if state['state'] == 'ASSIGNED':

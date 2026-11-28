@@ -105,10 +105,16 @@ def archive_snapshot(run, ended, cache=None):
             "FROM jobs j, json_each(j.request,'$.preparation.input_git_bundles') b")}
         candidates = []
         if ended and hashes and not db.execute("SELECT 1 FROM jobs WHERE state NOT IN ('ACCEPTED','CANCELLED') LIMIT 1").fetchone():
-            candidates = [dict(row,request=json.loads(row['request'])) for row in db.execute(
-                "SELECT job_id,method,state,request_sha256,request,adopted_epoch FROM jobs "
+            candidates=[]
+            for row in db.execute(
+                "SELECT job_id,method,state,request_sha256,adopted_epoch,"
+                "json_extract(request,'$.preparation.input_git_bundles') AS bundles,"
+                "json_extract(request,'$.preparation.workspaces') AS workspaces FROM jobs "
                 "WHERE state='ACCEPTED' AND adopted_epoch IS NOT NULL AND "
-                "json_array_length(request,'$.preparation.input_git_bundles')>0")]
+                "json_array_length(request,'$.preparation.input_git_bundles')>0"):
+                item=dict(row);prep={'input_git_bundles':json.loads(item.pop('bundles')),
+                    'workspaces':json.loads(item.pop('workspaces') or 'null')}
+                candidates.append(dict(item,request={'preparation':prep},request_projected=True))
     if cache is not None:
         if ended and signature == _archive_db_signature(database):
             cache[key] = dict(signature=signature, hashes=sorted(hashes), candidates=candidates)
@@ -153,8 +159,14 @@ def archive_candidates(runs, current, rows=None, *, cache=None):
                     or outcome.get('status') != 'PREPARATION_COMPLETE'
                     or receipt.get('returncode') != 0 or receipt.get('signal') is not None):
                 continue
-            if optional(job/'REQUEST.json') != row['request']:
-                continue
+            saved_request=optional(job/'REQUEST.json')
+            if row.get('request_projected'):
+                from trottertracks.rpe_q3_worker import digest
+                if digest(saved_request)!=row['request_sha256']:continue
+                actual=saved_request.get('preparation') or {}
+                if actual.get('input_git_bundles')!=prep['input_git_bundles'] or actual.get('workspaces')!=prep.get('workspaces'):
+                    continue
+            elif saved_request!=row['request']:continue
             for bundle in bundles:
                 sha = safe_name(bundle['sha256'])
                 path = run/'distributed/artifacts'/sha[:2]/sha

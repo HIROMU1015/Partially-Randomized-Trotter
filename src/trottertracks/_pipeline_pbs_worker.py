@@ -915,7 +915,7 @@ class AllocationWorker(Worker):
                      resources=self.pbs_resources, capacity=self.slots,
                      remaining_seconds=self.remaining(),
                      start_clock=self.start_clock,
-                     exit_reason=self.exit_reason,rollover_guard=True,partition_handoff_protocol=1)
+                     exit_reason=self.exit_reason,rollover_guard=True,partition_handoff_protocol=(getattr(getattr(self,"offline_search",None),"plan",{}).get("settings",{}).get("partition_contact_protocol",1)))
         if getattr(self, 'offline_search', None) is not None:
             value['offline_revision'] = self.offline_search.shared_revision()
             if self.offline_search.independent:

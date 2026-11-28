@@ -43,8 +43,10 @@ class JobStore:
     this queue: candidate priority belongs to the existing optimizer.
     """
 
-    def __init__(self, path):
+    def __init__(self, path, *, split_eligibility=False):
         self.path = Path(path)
+        self.split_eligibility=bool(split_eligibility)
+        self._read_jobs='jobs'
         self._owned_lock=threading.Lock()
         self._owned_snapshot=None
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -97,6 +99,13 @@ class JobStore:
             ''')
             if 'eligibility' not in {r['name'] for r in db.execute('PRAGMA table_info(jobs)')}:
                 db.execute("ALTER TABLE jobs ADD COLUMN eligibility TEXT NOT NULL DEFAULT 'null'")
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='eligibility_ephemeral'").fetchone():
+                self.split_eligibility=True
+            if self.split_eligibility:
+                db.executescript("""CREATE TABLE IF NOT EXISTS eligibility_ephemeral(job_id TEXT PRIMARY KEY,value TEXT NOT NULL);
+                    CREATE VIEW IF NOT EXISTS jobs_with_eligibility AS SELECT jobs.*,eligibility_ephemeral.value AS eligibility_ephemeral
+                    FROM jobs LEFT JOIN eligibility_ephemeral USING(job_id);""")
+                self._read_jobs='jobs_with_eligibility AS jobs'
 
     @contextmanager
     def _connection(self, *, write=False):
@@ -123,7 +132,19 @@ class JobStore:
         value = dict(row)
         for key in ('request', 'contract', 'detail', 'eligibility'):
             value[key] = json.loads(value[key])
+        transient=value.pop('eligibility_ephemeral',None)
+        if transient is not None:value['eligibility'].update(json.loads(transient))
         return value
+
+    def _eligibility_parts(self,decision):
+        if not self.split_eligibility or not isinstance(decision,dict):return canonical(decision),None
+        ephemeral={k:v for k,v in decision.items() if k in ('deferred_hosts','host_decisions','decision_sha256')}
+        return canonical({k:v for k,v in decision.items() if k not in ephemeral}),canonical(ephemeral) if ephemeral else None
+
+    def _write_eligibility_ephemeral(self,db,job,transient):
+        if not self.split_eligibility:return
+        if transient is None:db.execute('DELETE FROM eligibility_ephemeral WHERE job_id=?',(job,))
+        else:db.execute('INSERT INTO eligibility_ephemeral VALUES(?,?) ON CONFLICT(job_id) DO UPDATE SET value=excluded.value',(job,transient))
 
     @staticmethod
     def _event(db, job_id, event, detail=None):
@@ -132,7 +153,7 @@ class JobStore:
 
     def row(self, job_id):
         with self._connection() as db:
-            return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
+            return self._decoded(db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone())
 
     def save_preparation_readiness(self, updates):
         values = [(job, None if record is None else canonical(record)) for job, record in updates.items()]
@@ -190,7 +211,7 @@ class JobStore:
                 block = ids[start:start+500]
                 placeholders = ','.join('?' for _ in block)
                 for row in database.execute(
-                        'SELECT job_id,method,host_id,attempt_id,state,request_sha256,completion_sha256 '
+                        'SELECT job_id,method,host_id,attempt_id,state,request_sha256,completion_sha256,adopted_epoch '
                         f'FROM jobs WHERE job_id IN ({placeholders})', block):
                     owners[row['job_id']] = dict(row)
         return owners
@@ -207,7 +228,7 @@ class JobStore:
                 group = ids[start:start+500]
                 what = ','.join('?' for _ in group)
                 result.update((row['job_id'], self._decoded(row)) for row in db.execute(
-                    f'SELECT * FROM jobs WHERE job_id IN ({what})', group))
+                    f'SELECT * FROM {self._read_jobs} WHERE job_id IN ({what})', group))
             return result
 
     def owned_rows(self):
@@ -245,7 +266,7 @@ class JobStore:
             for start in range(0,len(needed),500):
                 group=needed[start:start+500];what=','.join('?' for _ in group)
                 result.update((row['job_id'],self._decoded(row)) for row in db.execute(
-                    f'SELECT * FROM jobs WHERE job_id IN ({what})',group))
+                    f'SELECT * FROM {self._read_jobs} WHERE job_id IN ({what})',group))
             return current,changed,result
 
     def accepted_host(self, job_id, method):
@@ -286,7 +307,7 @@ class JobStore:
 
     def rows(self):
         with self._connection() as db:
-            return [self._decoded(row) for row in db.execute('SELECT * FROM jobs ORDER BY enqueued_epoch,job_id')]
+            return [self._decoded(row) for row in db.execute(f'SELECT * FROM {self._read_jobs} ORDER BY enqueued_epoch,job_id')]
 
     def resume_rows(self):
         """Restore outstanding requests without parsing historical accepted JSON.
@@ -298,7 +319,7 @@ class JobStore:
         with self._connection() as db:
             db.execute('BEGIN')
             active=[self._decoded(row) for row in db.execute(
-                "SELECT * FROM jobs WHERE state IN ('QUEUED','ASSIGNED','STARTING','RUNNING','UNKNOWN','COMPLETED_PENDING_TRANSFER') ORDER BY enqueued_epoch,job_id")]
+                f"SELECT * FROM {self._read_jobs} WHERE state IN ('QUEUED','ASSIGNED','STARTING','RUNNING','UNKNOWN','COMPLETED_PENDING_TRANSFER') ORDER BY enqueued_epoch,job_id")]
             accepted=[dict(row) for row in db.execute(
                 "SELECT job_id,method,attempt_id,state FROM jobs WHERE state='ACCEPTED' ORDER BY enqueued_epoch,job_id")]
             return active,accepted
@@ -316,8 +337,8 @@ class JobStore:
 
     def prelaunch_rejections(self):
         with self._connection() as db:
-            return [self._decoded(row) for row in db.execute("""
-                SELECT * FROM jobs WHERE state='UNKNOWN' AND completion_sha256 IS NULL
+            return [self._decoded(row) for row in db.execute(f"""
+                SELECT * FROM {self._read_jobs} WHERE state='UNKNOWN' AND completion_sha256 IS NULL
                     AND json_type(detail, '$.prelaunch_rejection') = 'object'
                     AND NOT EXISTS (SELECT 1 FROM events WHERE events.job_id=jobs.job_id
                         AND event='REDISPATCH_AFTER_DRY_CHECK')
@@ -327,7 +348,7 @@ class JobStore:
     def requeue_pbs_buffer(self, job_id, attempt_id):
         """Restore a reservation only after the PBS session proves no launch."""
         with self._connection(write=True) as db:
-            row = self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
+            row = self._decoded(db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone())
             if (not row or row['state'] != 'UNKNOWN' or row['attempt_id'] != attempt_id
                     or any(row[k] is not None for k in ('started_epoch', 'completed_epoch',
                                                         'adopted_epoch', 'completion_sha256'))):
@@ -355,7 +376,7 @@ class JobStore:
     def requeue_prelaunch(self, job_id, attempt_id, host, eligibility, facts):
         """Reuse the original reservation after a proved non-scientific exit."""
         with self._connection(write=True) as db:
-            row = self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
+            row = self._decoded(db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone())
             if not row or row['state'] != 'UNKNOWN' or row['attempt_id'] != attempt_id:
                 return False
             detail = row['detail']
@@ -388,9 +409,11 @@ class JobStore:
             self._event(db, job_id, 'REDISPATCH_AFTER_DRY_CHECK',
                         dict(original=previous, replacement_host=host, replacement_fingerprint=digest(facts),
                              request_sha256=row['request_sha256']))
+            persistent,transient=self._eligibility_parts(eligibility)
             db.execute("""UPDATE jobs SET state='QUEUED',host_id=NULL,attempt_id=NULL,assigned_epoch=NULL,
                           started_epoch=NULL,updated_epoch=?,detail=?,eligibility=? WHERE job_id=?""",
-                       (time.time(), canonical(dict(prelaunch_recovery=True)), canonical(eligibility), job_id))
+                       (time.time(), canonical(dict(prelaunch_recovery=True)), persistent, job_id))
+            self._write_eligibility_ephemeral(db,job_id,transient)
             return True
 
     def unadopted_results(self, method):
@@ -500,7 +523,7 @@ class JobStore:
         encoded, request_sha = canonical(request), digest(request)
         encoded_contract = canonical(contract)
         with self._connection(write=True) as db:
-            old = db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()
+            old = db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone()
             if old is not None:
                 if (old['method'] != method or old['request_sha256'] != request_sha or
                         old['contract'] != encoded_contract):
@@ -520,37 +543,39 @@ class JobStore:
                 if used >= budget:
                     return False
             now = time.time()
+            persistent,transient=self._eligibility_parts(eligibility)
             if old is None:
                 db.execute('''INSERT INTO jobs(job_id,method,request,request_sha256,contract,state,enqueued_epoch,updated_epoch,eligibility)
                               VALUES(?,?,?,?,?,'QUEUED',?,?,?)''',
-                           (job_id, method, encoded, request_sha, encoded_contract, now, now, canonical(eligibility)))
+                           (job_id, method, encoded, request_sha, encoded_contract, now, now, persistent))
             else:
                 db.execute("UPDATE jobs SET state='QUEUED',enqueued_epoch=?,updated_epoch=?,eligibility=? WHERE job_id=?",
-                           (now, now, canonical(eligibility), job_id))
+                           (now, now, persistent, job_id))
+            self._write_eligibility_ephemeral(db,job_id,transient)
             self._event(db, job_id, 'RESERVE')
             return True
 
     def set_eligibility(self, job_id, eligibility):
         """Refresh only an unassigned decision; never reassign a prior attempt."""
+        encoded=canonical(eligibility)
+        with self._connection() as db:
+            old=self._decoded(db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?',(job_id,)).fetchone())
+            if old is None or old['state']!='QUEUED':return False
+            if canonical(old['eligibility'])==encoded:return self.eligible(old['request'],eligibility)
         with self._connection(write=True) as db:
-            old = db.execute('SELECT state,request,eligibility FROM jobs WHERE job_id=?', (job_id,)).fetchone()
-            if old is None or old['state'] != 'QUEUED':
-                return False
-            available = self.eligible(json.loads(old['request']), eligibility)
-            state = 'QUEUED' if available else 'CANCELLED'
-            encoded = canonical(eligibility)
-            if old['eligibility'] != encoded or old['state'] != state:
-                db.execute('UPDATE jobs SET eligibility=?,state=?,updated_epoch=? WHERE job_id=?',
-                           (encoded, state, time.time(), job_id))
-                # Keep the full previous-format audit payload losslessly,
-                # compressed and stored once per distinct decision. The jobs
-                # row remains unchanged for the dispatch/claim hot path.
-                raw = encoded.encode()
-                key = hashlib.sha256(raw).hexdigest()
-                db.execute('INSERT OR IGNORE INTO eligibility_event_payloads VALUES (?,?)',
-                           (key, zlib.compress(raw, level=1)))
-                self._event(db, job_id, 'HOST_ELIGIBILITY_UPDATED' if available else 'HOST_ELIGIBILITY_HOLD',
-                            dict(eligibility_sha256=key))
+            raw=db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?',(job_id,)).fetchone()
+            old=self._decoded(raw)
+            if old is None or old['state']!='QUEUED':return False
+            available=self.eligible(old['request'],eligibility);state='QUEUED' if available else 'CANCELLED'
+            if canonical(old['eligibility'])!=encoded or old['state']!=state:
+                persistent,transient=self._eligibility_parts(eligibility)
+                if raw['eligibility']!=persistent or old['state']!=state:
+                    db.execute('UPDATE jobs SET eligibility=?,state=?,updated_epoch=? WHERE job_id=?',(persistent,state,time.time(),job_id))
+                if self.split_eligibility and raw['eligibility_ephemeral']!=transient:
+                    self._write_eligibility_ephemeral(db,job_id,transient)
+                data=encoded.encode();key=hashlib.sha256(data).hexdigest()
+                db.execute('INSERT OR IGNORE INTO eligibility_event_payloads VALUES (?,?)',(key,zlib.compress(data,level=1)))
+                self._event(db,job_id,'HOST_ELIGIBILITY_UPDATED' if available else 'HOST_ELIGIBILITY_HOLD',dict(eligibility_sha256=key))
             return available
 
     def cancel(self, method, job_id):
@@ -576,12 +601,12 @@ class JobStore:
         with self._connection(write=True) as db:
             if allowed_jobs is None:
                 queued = {row['job_id']: row for row in db.execute(
-                    "SELECT * FROM jobs WHERE state='QUEUED' ORDER BY enqueued_epoch,job_id")}
+                    f"SELECT * FROM {self._read_jobs} WHERE state='QUEUED' ORDER BY enqueued_epoch,job_id")}
                 order = list(queued)
             else:
                 order = list(dict.fromkeys(allowed_jobs))
                 queued = {row['job_id']: row for row in db.execute(
-                    "SELECT * FROM jobs WHERE state='QUEUED' AND job_id IN (SELECT value FROM json_each(?))",
+                    f"SELECT * FROM {self._read_jobs} WHERE state='QUEUED' AND job_id IN (SELECT value FROM json_each(?))",
                     (json.dumps(order),))}
             selected = []
             for job_id in order:
@@ -607,14 +632,13 @@ class JobStore:
                 db.execute("UPDATE jobs SET state='ASSIGNED',host_id=?,attempt_id=?,assigned_epoch=?,updated_epoch=?,detail=? WHERE job_id=?",
                            (host_id, attempt, now, now, canonical(detail), job_id))
                 self._event(db, job_id, 'ASSIGN', dict(host_id=host_id, attempt_id=attempt))
-                selected.append(self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()))
+                selected.append(self._decoded(db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone()))
                 if len(selected) >= slots:
                     break
             return selected
 
-    @staticmethod
-    def _owned(db, host_id, job_id, attempt_id):
-        row = db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()
+    def _owned(self,db, host_id, job_id, attempt_id):
+        row = db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone()
         if row is None or not attempt_id or row['host_id'] != host_id or row['attempt_id'] != attempt_id:
             raise ValueError('Unknown job or different execution host/attempt')
         return row
@@ -652,7 +676,7 @@ class JobStore:
                        (state, value, now, started, job_id))
             if state != old['state'] or value != old['detail']:
                 self._event(db, job_id, state, detail)
-            return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone())
+            return self._decoded(db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone())
 
     def complete(self, host_id, job_id, attempt_id, request_sha256, files):
         """Commit validated transferred artifacts exactly once.
@@ -679,7 +703,7 @@ class JobStore:
             db.execute("UPDATE jobs SET state='ACCEPTED',completion_sha256=?,completed_epoch=?,updated_epoch=? WHERE job_id=?",
                        (completion_sha, now, now, job_id))
             self._event(db, job_id, 'ACCEPT', dict(host_id=host_id, attempt_id=attempt_id))
-            return self._decoded(db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()), False
+            return self._decoded(db.execute(f'SELECT * FROM {self._read_jobs} WHERE job_id=?', (job_id,)).fetchone()), False
 
     def import_partition_preparation(self, job_id, method, request, contract, origin):
         """Register a previously accepted block result, without a new reservation."""

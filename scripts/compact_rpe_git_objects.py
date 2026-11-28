@@ -109,9 +109,30 @@ def batches(groups, batch_bytes):
     return sorted(result, key=lambda batch: sum(row[1] for row in batch[2]), reverse=True)
 
 
+def pack_inventory(objects):
+    directory=Path(objects)/'pack';count=size=0
+    for path in directory.glob('pack-*.pack'):
+        try:
+            info=path.stat();count+=1;size+=info.st_size
+        except FileNotFoundError:continue # another ordinary Git reader/maintenance may move it
+    return dict(pack_count=count,pack_bytes=size,multi_pack_index=(directory/'multi-pack-index').is_file())
+
+
+def refresh_multi_pack_index(objects):
+    """Index existing packs without repacking, pruning or changing alternates."""
+    objects = Path(objects).resolve(strict=True)
+    before = pack_inventory(objects)
+    if before['pack_count'] < 2:
+        return dict(status='NOT_NEEDED', before=before, after=before)
+    command = ['git', '--git-dir='+str(objects.parent), 'multi-pack-index', '--object-dir='+str(objects)]
+    for action in ('write', 'verify'):
+        subprocess.run([*command, action], env=git_environment(), check=True, capture_output=True)
+    return dict(status='VERIFIED', before=before, after=pack_inventory(objects))
+
+
 def compact(repository, state, *, min_age=600, minimum_object_bytes=10*1024**2,
             batch_bytes=BATCH_BYTES, pressure_fraction=0.20, force=False, workers=3,
-            proactive_bytes=5*GIB, min_free=MIN_FREE):
+            proactive_bytes=5*GIB, min_free=MIN_FREE, multi_pack_index=False):
     repository, state = Path(repository).resolve(), Path(state).resolve()
     env = git_environment()
 
@@ -146,12 +167,16 @@ def compact(repository, state, *, min_age=600, minimum_object_bytes=10*1024**2,
         allocated = sum(row[1] for _, _, rows in worklist for row in rows)
         pressure = starting < shutil.disk_usage(objects).total * pressure_fraction
         report = dict(status='RUNNING', available_before_bytes=starting, planned_loose_bytes=allocated,
-                      planned_objects=sum(len(rows) for _, _, rows in worklist), reclaimed_bytes=0, batches=[])
+                      planned_objects=sum(len(rows) for _, _, rows in worklist), reclaimed_bytes=0, batches=[],
+                      pack_before=pack_inventory(objects))
 
         def save(status):
             report.update(status=status, epoch=time.time(), available_after_bytes=free_bytes(objects))
+            if status!='RUNNING':report['pack_after']=pack_inventory(objects)
             atomic_json(report_path, report)
 
+        if multi_pack_index:
+            report['multi_pack_index'] = refresh_multi_pack_index(objects)
         if not worklist or (not force and not pressure and allocated < proactive_bytes):
             save('NO_COMPACTION_NEEDED')
             return report
@@ -294,8 +319,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repository', type=Path, required=True)
     parser.add_argument('--state-directory', type=Path, required=True)
+    parser.add_argument('--multi-pack-index', action='store_true', help='Opt in to indexing existing packs under the maintenance lock')
     args = parser.parse_args()
-    result = compact(args.repository, args.state_directory)
+    result = compact(args.repository, args.state_directory, multi_pack_index=args.multi_pack_index)
     print(json.dumps({key: value for key, value in result.items() if key != 'batches'}), flush=True)
 
 if __name__ == '__main__':
