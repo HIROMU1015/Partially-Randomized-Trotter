@@ -198,6 +198,21 @@ def compact(repository, state, *, min_age=600, minimum_object_bytes=10*1024**2,
             if key is None:
                 rejected.update({oid: time.time() for oid in ids})
                 return 0, 'NO_MATERIAL_SAVINGS'
+            # Inventory can be minutes old. Do not retain a new pack if any
+            # loose object was pruned or gained an external hardlink meanwhile.
+            before = {}
+            for size, blocks, oid, path in rows:
+                try:
+                    info = path.lstat()
+                    if (not stat.S_ISREG(info.st_mode) or info.st_size != size
+                            or info.st_blocks*512 != blocks or info.st_nlink != len(stores)
+                            or any(not path.samefile(store/path.relative_to(objects)) for store in stores)):
+                        return 0, 'LOOSE_INVENTORY_CHANGED'
+                    before[oid] = blocks
+                except OSError:
+                    return 0, 'LOOSE_INVENTORY_CHANGED'
+            if packed >= sum(before.values())*.95:
+                return 0, 'NO_MATERIAL_SAVINGS'
             with (work/'new.pack').open('rb') as stream:
                 installed = git('index-pack','--stdin','--strict',stdin=stream,text=True,capture_output=True,timeout=900).stdout.split()[-1]
             index = objects/'pack'/f'pack-{key}.idx'
@@ -222,13 +237,6 @@ def compact(repository, state, *, min_age=600, minimum_object_bytes=10*1024**2,
                 if index_ids(linked_index) != set(ids):
                     raise ValueError('Flat-store pack index differs')
                 check(ids, store)
-            before = {}
-            for _, _, oid, path in rows:
-                try:
-                    info = path.lstat()
-                    before[oid] = info.st_blocks*512 if info.st_nlink == len(stores) else 0
-                except FileNotFoundError:
-                    pass
             # Native Git removes only loose duplicates whose packed object is
             # present. It never prunes unreachable history in this operation.
             for store in stores:

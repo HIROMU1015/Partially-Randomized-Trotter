@@ -13,6 +13,7 @@ import sqlite3
 import threading
 import time
 import uuid
+import zlib
 from .rpe_q3_timing import stamp
 
 
@@ -81,6 +82,10 @@ class JobStore:
                     event TEXT NOT NULL,
                     epoch REAL NOT NULL,
                     detail TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS eligibility_event_payloads (
+                    sha256 TEXT PRIMARY KEY,
+                    compressed BLOB NOT NULL
                 );
                 CREATE INDEX IF NOT EXISTS prelaunch_redispatch
                     ON events(job_id) WHERE event='REDISPATCH_AFTER_DRY_CHECK';
@@ -411,7 +416,20 @@ class JobStore:
 
     def events(self):
         with self._connection() as db:
-            return [dict(row, detail=json.loads(row['detail'])) for row in db.execute('SELECT * FROM events ORDER BY sequence')]
+            result = []
+            for row in db.execute('SELECT * FROM events ORDER BY sequence'):
+                detail = json.loads(row['detail'])
+                if row['event'] in ('HOST_ELIGIBILITY_UPDATED', 'HOST_ELIGIBILITY_HOLD') and 'eligibility_sha256' in detail:
+                    key = detail.pop('eligibility_sha256')
+                    payload = db.execute('SELECT compressed FROM eligibility_event_payloads WHERE sha256=?', (key,)).fetchone()
+                    if payload is None:
+                        raise ValueError('Missing saved eligibility event payload')
+                    raw = zlib.decompress(payload[0])
+                    if hashlib.sha256(raw).hexdigest() != key:
+                        raise ValueError('Saved eligibility event payload differs')
+                    detail['eligibility'] = json.loads(raw)
+                result.append(dict(row, detail=detail))
+            return result
 
     def counts(self, method, started_only=False, *, observed_only=False):
         """Reserved scientific jobs; assigned attempts count as started.
@@ -501,7 +519,7 @@ class JobStore:
     def set_eligibility(self, job_id, eligibility):
         """Refresh only an unassigned decision; never reassign a prior attempt."""
         with self._connection(write=True) as db:
-            old = db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()
+            old = db.execute('SELECT state,request,eligibility FROM jobs WHERE job_id=?', (job_id,)).fetchone()
             if old is None or old['state'] != 'QUEUED':
                 return False
             available = self.eligible(json.loads(old['request']), eligibility)
@@ -510,8 +528,15 @@ class JobStore:
             if old['eligibility'] != encoded or old['state'] != state:
                 db.execute('UPDATE jobs SET eligibility=?,state=?,updated_epoch=? WHERE job_id=?',
                            (encoded, state, time.time(), job_id))
+                # Keep the full previous-format audit payload losslessly,
+                # compressed and stored once per distinct decision. The jobs
+                # row remains unchanged for the dispatch/claim hot path.
+                raw = encoded.encode()
+                key = hashlib.sha256(raw).hexdigest()
+                db.execute('INSERT OR IGNORE INTO eligibility_event_payloads VALUES (?,?)',
+                           (key, zlib.compress(raw, level=1)))
                 self._event(db, job_id, 'HOST_ELIGIBILITY_UPDATED' if available else 'HOST_ELIGIBILITY_HOLD',
-                            dict(eligibility=eligibility))
+                            dict(eligibility_sha256=key))
             return available
 
     def cancel(self, method, job_id):

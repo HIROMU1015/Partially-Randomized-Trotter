@@ -392,10 +392,12 @@ def read_preparation_readiness(directory, database=None):
 
 
 @lru_cache(maxsize=32)
-def _worker_cache(root):
-    return ArtifactCache(root)
+def _worker_cache(root, prior=()):
+    return ArtifactCache(root, prior_roots=prior)
 
 
 def worker_cache(profile):
     root = Path(profile.get('artifact_cache_directory') or Path(profile['work_dir']) / 'artifacts').resolve()
-    return _worker_cache(root)
+    shared = profile.get('central_artifact_cache_directory')
+    prior = (Path(shared).resolve(),) if shared else ()
+    return _worker_cache(root, prior)

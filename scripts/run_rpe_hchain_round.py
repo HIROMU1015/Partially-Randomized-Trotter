@@ -604,7 +604,7 @@ def run_round(root, run, problem, spec, extra, *, make_executor, plan_only=False
     def report():
         write(result_path, optimizer.jsonable(dict(methods=results, scope_owner=plan["owner"],
               ready=[cid for cid, row in rows.items() if row["ready"]], held_tasks=withheld, inherited=inherited,
-              price_pruned=sorted(excluded))))
+              price_pruned=sorted(excluded))), compact=True)
     try:
         budgets = distributed["preparation"]["budgets"]
         graph_path = run / "distributed" / "PREPARATION_GRAPH.json"

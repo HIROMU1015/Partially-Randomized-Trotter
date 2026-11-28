@@ -37,9 +37,10 @@ def load(path):
     if is_pbs_state(path):return read_pbs_state(path)
     return json.loads(Path(path).read_text())
 
-def write(path, value):
+def write(path, value, *, compact=False):
     path = Path(path); path.parent.mkdir(parents=True, exist_ok=True)
-    raw = json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False) + '\n'
+    formatting = dict(separators=(',', ':')) if compact else dict(indent=2)
+    raw = json.dumps(value, ensure_ascii=False, allow_nan=False, **formatting) + '\n'
     temp = path.with_name(path.name + '.tmp'); temp.write_text(raw); os.replace(temp, path)
 
 def immutable(path, value):

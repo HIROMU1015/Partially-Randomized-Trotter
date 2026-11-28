@@ -703,7 +703,9 @@ class ConcurrentExecutor(O.Executor):
         if speculative:
             # The dispatcher may consume the deque while route lookup runs.
             # Cancel only the original still-unstarted speculative tasks.
-            desired = {self.job_dir(p) for p in offered}
+            identities={(t.proposal.get('configuration_id'),tuple(t.proposal.get('vector',()))) for t in speculative}
+            desired={self.job_dir(p) for p in offered
+                     if (p.get('configuration_id'),tuple(p.get('vector',()))) in identities}
             with self.state.cv:
                 for t in speculative:
                     if (self.standby is proposals and t.status == 'QUEUED' and not t.demand
@@ -1495,6 +1497,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 profile = dict(profile)
                 profile.setdefault('root', str(self.computation_root))
                 profile.setdefault('work_dir', str(run/'distributed'/'server2-worker'))
+                # Only controller-launched local workers use the central CAS.
+                profile['central_artifact_cache_directory'] = str(self.artifact_cache.root)
                 if distributed.get('local_deployment_layout') and self.release_manifest:
                     profile['deployment'] = dict(manifest=distributed['release_manifest'],
                                                  layout=distributed['local_deployment_layout'])
@@ -5244,7 +5248,12 @@ class DistributedExecutor(ConcurrentExecutor):
             transfer.mkdir(parents=True, exist_ok=True)
             Q.install_files(transfer, files)
             if not (transfer/'REQUEST.json').exists():
-                _write(transfer/'REQUEST.json', row['request'])
+                source=job/'REQUEST.json'
+                expected=(json.dumps(row['request'],default=str)+'\n').encode()
+                if not source.is_symlink() and source.is_file() and source.read_bytes()==expected:
+                    try:os.link(source,transfer/'REQUEST.json')
+                    except OSError:_write(transfer/'REQUEST.json',row['request'])
+                else:_write(transfer/'REQUEST.json',row['request'])
             receipt = json.loads((transfer/'PROCESS_RETURN.json').read_text())
             outcome = json.loads((transfer/'OUTCOME.json').read_text(), parse_int=O._outcome_int)
             validation, rejection, validation_key = None, None, None

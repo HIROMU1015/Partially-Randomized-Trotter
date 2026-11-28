@@ -21,8 +21,12 @@ class FixedRouteInputs(unittest.TestCase):
         original = subprocess.check_output
         with patch('trottertracks.rpe_q3_coordinator.subprocess.check_output', wraps=original) as calls:
             first = input_hashes(ROOT, request, cache)
+            first_calls = calls.call_count
+            self.assertGreaterEqual(first_calls, 1)
             self.assertEqual(input_hashes(ROOT, request, cache), first)
-        self.assertEqual(calls.call_count, 1)
+        # Fixed Git object verification may require an initial lookup and
+        # blob read; the shared input cache must avoid both on repetition.
+        self.assertEqual(calls.call_count, first_calls)
         self.assertEqual(len(first), 1)
         self.assertEqual(first[0]['path'], 'AGENTS.md')
 

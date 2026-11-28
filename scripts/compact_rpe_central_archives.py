@@ -88,8 +88,7 @@ def compact(state, batch):
     registry = run_catalog(state)
     if any(live_driver(run) for run in registry.values()):
         return {'status':'DEFERRED_ACTIVE_CONTROLLER'}
-    rows = {run:read_rows(run) for run in registry.values()}
-    catalog = archive_candidates(registry.values(),registry.get(current),rows)
+    catalog = archive_candidates(registry.values(),registry.get(current))
     candidates = catalog['candidates'][:batch]
     if len(candidates) < 2:
         return {'status':'NO_COMPACTION_BATCH','candidates':len(candidates)}
@@ -128,7 +127,7 @@ def compact(state, batch):
             if registry != run_catalog(state) or any(live_driver(run) for run in registry.values()):
                 return {'status':'DEFERRED_OWNERSHIP_CHANGED'}
             current = load(state/'CURRENT_TARGET.json')['run_id']
-            now = archive_candidates(registry.values(),registry.get(current),{run:read_rows(run) for run in registry.values()})
+            now = archive_candidates(registry.values(),registry.get(current))
             if not all(row in now['candidates'] for row in candidates):
                 return {'status':'DEFERRED_REFERENCES_CHANGED'}
             for run in {registry[row['run_id']] for row in candidates}:

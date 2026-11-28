@@ -251,3 +251,24 @@ def test_capacity_history_batch_matches_individual_hosts(tmp_path):
     totals={'a':1.25,'b':2.5,'c':0.0,'missing':99}
     hosts=['host1','host2','none']
     assert store.capacity_history_batch(hosts,0,totals)=={h:store.capacity_history(h,0,totals) for h in hosts}
+
+
+def test_eligibility_event_payload_is_lossless_and_deduplicated(tmp_path):
+    from trottertracks.rpe_q3_store import JobStore, digest
+    import sqlite3
+    store=JobStore(tmp_path/'queue.sqlite3')
+    request=dict(request_id='real',route=dict(kind='synthetic_real_route'))
+    facts=dict(runtime='synthetic')
+    first=dict(request_sha256=digest(request),eligible_host_ids=['a'],host_fingerprints={'a':digest(facts)})
+    changed=dict(first, observation='a'*20000)
+    assert store.reserve('METHOD','real',request,1,True,eligibility=first)
+    for decision in (changed,first,changed):
+        assert store.set_eligibility('real',decision)
+    with sqlite3.connect(store.path) as db:
+        assert db.execute('SELECT count(*) FROM eligibility_event_payloads').fetchone()[0]==2
+        assert db.execute('SELECT max(length(compressed)) FROM eligibility_event_payloads').fetchone()[0]<1000
+        assert db.execute("SELECT max(length(detail)) FROM events WHERE event='HOST_ELIGIBILITY_UPDATED'").fetchone()[0]<1000
+    reopened=JobStore(store.path)
+    assert [r['detail']['eligibility'] for r in reopened.events() if r['event']=='HOST_ELIGIBILITY_UPDATED']==[changed,first,changed]
+    assert reopened.row('real')['eligibility']==changed
+    assert reopened.claim('a',1,host_fingerprints={'real':facts})[0]['job_id']=='real'

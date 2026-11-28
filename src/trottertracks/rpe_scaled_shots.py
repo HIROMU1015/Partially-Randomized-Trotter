@@ -187,8 +187,11 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
                 on_feasible(name, c, row)
 
     native_parents = set()
+    series_dirty = True
 
     def register(c):
+        nonlocal series_dirty
+        series_dirty = True
         M, cid = c['M'], c['configuration_id']
         parent = c.get('source_configuration_id')
         if parent and c.get('horizon_preparation'):
@@ -298,7 +301,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         return [min(reference, key=lambda r: (*allocation_order(r), r['vector']))] if reference else []
 
     def record(c, row, answer, *, selected):
-        nonlocal used, fatal
+        nonlocal used, fatal, series_dirty
+        series_dirty = True
         used += answer.get('calls', 0)
         absorb(c, row, answer)
         group = groups.get((c['method'], c['configuration_id'] or c['name'], c['M']))
@@ -342,21 +346,23 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         if price_work_pending is not None and price_work_pending():
             requested_stop = 'WORK_SLICE_YIELDED'
             break
-        # A pending dispatch does not change any series. Recompute a group's
-        # head only after its own evidence changes or it is registered anew.
-        series = []
-        for group in groups.values():
-            if 'pending_cache' not in group:
-                group['pending_cache'] = pending_allocations(group, depth)
-            if group['pending_cache']:
-                series.append(group['pending_cache'])
-        if retire_allocations is not None:
-            terminal = {key for key, (_, row) in registered.items()
-                        if row['status'] in evaluated or row['status'] in ('COST_PRUNED', 'TECHNICAL_HOLD')}
-            if terminal - retired:
-                retire_allocations(terminal - retired)
-                retired.update(terminal)
-        heads = [rows[0] for rows in series]
+        if series_dirty:
+            # A pending dispatch does not change any series. Recompute a group's
+            # head only after its own evidence changes or it is registered anew.
+            series = []
+            for group in groups.values():
+                if 'pending_cache' not in group:
+                    group['pending_cache'] = pending_allocations(group, depth)
+                if group['pending_cache']:
+                    series.append(group['pending_cache'])
+            if retire_allocations is not None:
+                terminal = {key for key, (_, row) in registered.items()
+                            if row['status'] in evaluated or row['status'] in ('COST_PRUNED', 'TECHNICAL_HOLD')}
+                if terminal - retired:
+                    retire_allocations(terminal - retired)
+                    retired.update(terminal)
+            heads = [rows[0] for rows in series]
+            series_dirty = False
         proposals = [row for row in heads if (row['configuration_id'], row['vector']) not in deferred]
         if not proposals and deferred:
             if await_dispatch is not None and await_dispatch(tuple(deferred.values())):

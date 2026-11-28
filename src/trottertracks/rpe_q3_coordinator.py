@@ -153,18 +153,33 @@ def _sync_directory(path):
 def install_files(job, files):
     """Idempotent import; controller-owned request/launch records stay original."""
     job = Path(job)
+    shared_events = {}
     for name, encoded in files.items():
         destination = _artifact_destination(job, name)
         value = base64.b64decode(encoded, validate=True)
         destination.parent.mkdir(parents=True, exist_ok=True)
+        # Preserve common/X/Y event originals through transport. They are
+        # immutable and already shared by the native producer.
+        key = hashlib.sha256(value).hexdigest() if destination.name == 'events_PRIVATE.json' else None
         if destination.exists():
             if destination.read_bytes() != value: raise ValueError('Changed immutable artifact: '+name)
         else:
+            source = shared_events.get(key) if key else None
+            if source is not None and not source.is_symlink() and source.is_file():
+                try:
+                    os.link(source, destination)
+                except OSError:
+                    pass
+                else:
+                    _sync_directory(destination.parent)
+                    continue
             temporary = destination.with_name(destination.name+'.transfer')
             with temporary.open('wb') as output:
                 output.write(value); output.flush(); os.fsync(output.fileno())
             temporary.replace(destination)
             _sync_directory(destination.parent)
+        if key is not None and not destination.is_symlink():
+            shared_events.setdefault(key, destination)
 
 
 def _same_artifact(source, destination):

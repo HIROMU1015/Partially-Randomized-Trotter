@@ -105,3 +105,105 @@ def test_old_retention_only_verified_readonly_replies(tmp_path):
         result=archive_old_logs(state,mount,minimum_bytes=1)
     assert len(result['archived_files'])==1 and (old/'PROGRESS.jsonl').is_symlink()
     assert (old/'PROGRESS.jsonl').read_text()=='history\n'
+
+
+def test_terminal_rpc_archive_retains_original_replay_path(tmp_path):
+    from rpe_romutail_retention import archive_terminal_rpc_sessions
+    state=tmp_path/'state';state.mkdir();run=stopped_run(state,'old');mount=tmp_path/'external';mount.mkdir()
+    p=run/'distributed/pbs';closed='a'*32;owned='b'*32
+    for token in (closed, owned):
+        source=p/'responses'/token;source.mkdir(parents=True)
+        (source/'one.json').write_bytes(b'{"request_sha256":"test","response":{"ok":true}}\n')
+    (p/'STATE.json').write_text(json.dumps({'allocations':{closed:{'status':'F'},owned:{'status':'R'}}}))
+    original=(p/'responses'/closed/'one.json').read_bytes()
+    with patch('rpe_romutail_retention.mounted_separately',return_value=True):
+        result=archive_terminal_rpc_sessions(state,mount,run_id='old')
+    assert len(result['sessions'])==1
+    assert (p/'responses'/closed).is_symlink() and (p/'responses'/closed/'one.json').read_bytes()==original
+    assert not (p/'responses'/owned).is_symlink()
+    manifest=Path(result['sessions'][0]['archive']).with_name(closed+'.archive.json')
+    assert json.loads(manifest.read_text())['entries']['one.json']['sha256']==hashlib.sha256(original).hexdigest()
+
+
+def test_share_only_exact_completed_event_triples(tmp_path):
+    from rpe_romutail_retention import share_stopped_event_originals
+    state=tmp_path/'state';state.mkdir();run=stopped_run(state,'old')
+    for candidate, values in [('same',[b'abc']*3),('different',[b'abc',b'abc',b'xyz'])]:
+        directory=run/'completion/candidates'/candidate
+        for name,raw in zip(('events_PRIVATE.json','axes_X/events_PRIVATE.json','axes_Y/events_PRIVATE.json'),values):
+            p=directory/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(raw)
+        (directory/'SHARED_EVENTS.json').write_text('{"digest":"saved"}')
+    result=share_stopped_event_originals(state,'old')
+    assert result['groups']==1 and result['shared_files']==2
+    same=run/'completion/candidates/same';different=run/'completion/candidates/different'
+    assert (same/'events_PRIVATE.json').samefile(same/'axes_X/events_PRIVATE.json')
+    assert not (different/'events_PRIVATE.json').samefile(different/'axes_X/events_PRIVATE.json')
+
+
+def test_install_files_keeps_shared_events_and_local_cas(tmp_path):
+    from trottertracks.rpe_q3_coordinator import install_files
+    from trottertracks.rpe_preparation_artifacts import worker_cache
+    root=tmp_path/'transfer';raw=b'private events';encoded=base64.b64encode(raw).decode()
+    names=['events_PRIVATE.json','axes_X/events_PRIVATE.json','axes_Y/events_PRIVATE.json']
+    install_files(root,dict.fromkeys(names,encoded));install_files(root,dict.fromkeys(names,encoded))
+    assert all((root/n).samefile(root/names[0]) for n in names)
+    central=ArtifactCache(tmp_path/'central');sha=hashlib.sha256(raw).hexdigest();central.put({sha:encoded})
+    worker=worker_cache(dict(work_dir=str(tmp_path/'worker'), central_artifact_cache_directory=str(central.root)))
+    assert worker.missing([sha])==[] and worker.path(sha).samefile(central.path(sha))
+    worker.path(sha).unlink();assert central.path(sha).read_bytes()==raw
+
+
+def test_compact_hchain_report_is_json_identical(tmp_path):
+    from trottertracks.rpe_local0_search import write
+    data={'numbers':[1,2,3],'name':'日本語','nested':{'x':True}}
+    full=tmp_path/'full.json';compact=tmp_path/'compact.json'
+    write(full,data);write(compact,data,compact=True)
+    assert json.loads(full.read_text())==json.loads(compact.read_text())==data
+    assert compact.stat().st_size<full.stat().st_size
+
+
+def test_share_only_accepted_request_with_matching_queue_digest(tmp_path):
+    import sqlite3
+    from rpe_romutail_retention import share_stopped_accepted_requests
+    from trottertracks.rpe_q3_store import digest
+    state=tmp_path/'state';state.mkdir();run=stopped_run(state,'old');d=run/'distributed';d.mkdir()
+    request={'request_id':'original'}; raw=json.dumps(request).encode()
+    with sqlite3.connect(d/'QUEUE.sqlite3') as db:
+        db.execute('CREATE TABLE jobs(job_id,method,attempt_id,request_sha256,state)')
+        for job, state_name, key in [('good','ACCEPTED',digest(request)),('unknown','UNKNOWN',digest(request)),('wrong','ACCEPTED','bad')]:
+            db.execute('INSERT INTO jobs VALUES(?,?,?,?,?)',(job,'M','a',key,state_name))
+            for p in (run/'jobs/M'/job/'REQUEST.json',d/'transfers'/job/'a/REQUEST.json'):
+                p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(raw)
+    result=share_stopped_accepted_requests(state,'old')
+    assert result['shared_files']==1
+    for job, expected in [('good',True),('unknown',False),('wrong',False)]:
+        assert (run/'jobs/M'/job/'REQUEST.json').samefile(d/'transfers'/job/'a/REQUEST.json')==expected
+
+
+def test_share_provider_packs_only_when_both_files_match(tmp_path):
+    from rpe_romutail_retention import share_stopped_provider_git_packs
+    state=tmp_path/'state';state.mkdir();run=stopped_run(state,'old')
+    name='pack-'+'a'*40; paths=[]
+    for candidate,index in [('first',b'index'),('second',b'index'),('different',b'other')]:
+        root=run/'pf_auto/candidates'/candidate/'pf_auto/pf_completion/provider_workspace/.git/objects/pack'
+        root.mkdir(parents=True);(root/(name+'.pack')).write_bytes(b'packed');(root/(name+'.idx')).write_bytes(index);paths.append(root)
+    result=share_stopped_provider_git_packs(state,'old')
+    assert result['shared_files']==2
+    assert (paths[0]/(name+'.pack')).samefile(paths[1]/(name+'.pack'))
+    assert not (paths[0]/(name+'.pack')).samefile(paths[2]/(name+'.pack'))
+
+
+def test_selective_rpc_archive_keeps_tiny_replies_and_reuses_verified_copy(tmp_path):
+    from rpe_romutail_retention import archive_terminal_rpc_large_files
+    state=tmp_path/'state';state.mkdir();run=stopped_run(state,'old');mount=tmp_path/'external';mount.mkdir()
+    p=run/'distributed/pbs';token='a'*32;source=p/'responses'/token;source.mkdir(parents=True)
+    (p/'STATE.json').write_text(json.dumps({'allocations':{token:{'status':'F'}}}))
+    large=b'abcd'*10000;(source/'large.json').write_bytes(large);(source/'small.json').write_bytes(b'{}')
+    saved=mount/'RomuTail-auto-coldstore/pbs-responses/old/sample'/token;saved.mkdir(parents=True)
+    (saved/'large.json').write_bytes(large)
+    with patch('rpe_romutail_retention.mounted_separately',return_value=True):
+        result=archive_terminal_rpc_large_files(state,mount,run_id='old',minimum_bytes=100)
+        again=archive_terminal_rpc_large_files(state,mount,run_id='old',minimum_bytes=100)
+    assert result['sessions'][0]['files']==1 and not again['sessions']
+    assert (source/'large.json').is_symlink() and (source/'large.json').read_bytes()==large
+    assert not (source/'small.json').is_symlink() and (source/'small.json').read_bytes()==b'{}'

@@ -952,3 +952,13 @@ H4、H6、H8などの運用機能（中央制御・最適化器の実行管理�
 - R18は `launcher_rollover_backfill_mode=no_extension` を既定として新規補充なしでdrainする。既存の明示的な旧見積り補充設定との互換性は維持するが、実機検収前に新たなestimated modeを有効化しない。見積りは実行時間の保証ではない。
 - R10の `incremental_usage` とR43の `persistent_dp_residual_pool` は選択可能な実装として保持し、既定有効化しない。R10のRomuTail実ファイル比較は既存duが速かった。R43は固定kernel一条件の数値・cache完全一致とpool再利用を確認したが、探索全体の高速化を保証しない。
 - 稼働固定版・既存RUN・PBS予約・科学SOURCE・入力・予算・STOPを維持する。次の新規releaseの配置や既存runへの適用は通常の固定release手順・実行許可に従う。
+
+### RomuTail中央の保存データ整理（2026-11-28）
+
+- 中央のメインGitリポジトリでは、長時間の自動 `gc --auto` の `repack -A --unpack-unreachable` が既存packから大量のloose objectを繰り返し生成した。中央の当該リポジトリに限って `gc.auto=0` と `maintenance.auto=false` を設定し、容量を確認する既存の制御付きpack整理・`prune-packed` を使用する。pack生成後のinstall直前にも既知のhardlink構成と回収可能量を再確認する。自動GC停止は、科学workerや他リポジトリの停止ではない。
+- 既存の停止済みrunを整理する場合、`rpe_romutail_retention.py` の `--share-events`、`--share-requests`、`--share-provider-packs` をrun指定で使用できる。イベント原本は共通/X/Yの全バイト、REQUESTはACCEPTEDの中央要求digestと元・転送の全バイト、provider Git packはpackとidxの両方の全バイトが一致するものだけを共有する。元パスと科学データの内容を維持し、未確定の要求、可変checkout、固定SOURCEは整理しない。
+- `--archive-terminal-responses --run-id ...` は保存済みの終了状態が確認できる旧通信セッションだけをT7に移す。各JSONをSHA-256で照合し、保存先を同期してから元セッションのディレクトリをリンクに交換する。旧版の再送経路も同じパスを使える。小ファイルが多数ある場合は `--large-files-only` で256 KiB以上だけを同じ方法で個別にリンクし、元の小ファイルはそのまま残す。T7接続が必要で、稼働中・未確定セッションや退避済み応答には既存の圧縮保守を適用しない。PBSへの接続・新規投入を伴わない。
+- 新しい共通実装では中央所有の照会を状態索引で絞り、結果順とUNKNOWNの所有規則を維持する。適格性の履歴は全文をSHA-256単位で可逆圧縮し、`JobStore.events()` で従来どおり復元する。割当判定用の現在値は変更しない。ローカルworkerのみ中央CASを既存のSHA照合付きhardlink再利用の対象にする。転送の共通イベントとREQUESTは内容一致のとき同一inodeへ共有し、H-chain結果JSONは値を変えずcompact出力する。
+- 大容量の旧provider workspaceのclean SOURCEを遡及compactするのは、そのrunの通常Resumeに復元経路があり、稼働中の別runが依存しないと確認できる場合に限る。新規runのsparse checkoutと既存 `compact_provider_source` / `restore_provider_source` は引き続き使用する。固定版の探索・実行・所有を無断で切り替えない。
+
+先行する公開共通版の43件のR系対応（R1/R2/R11/R12を含む）を保持し、ここでは独立した保存データ対策と候補系列の再走査削減のみを統合する。稼働中の固定版は切り替えない。
